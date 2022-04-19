@@ -1,0 +1,9 @@
+<router-outlet></router-outlet>
+
+<!--
+    Sample usage of translations with marker for extract:translations npm command
+    and pluralization based on vars
+ -->
+<p style="display: none;">
+    {{ sampleTranslationStr | translate: { count: this.count } }}
+</p>

@@ -1,0 +1,12 @@
+{
+  "compareUrlFormat": "{{host}}/Delivery-Projects/concesur/concenet_front/-/compare/{{previousTag}}...{{currentTag}}",
+  "issueUrlFormat": "{{host}}/Delivery-Projects/concesur/concenet_front/-/issues/{{id}}",
+  "userUrlFormat": "{{host}}/{{user}}",
+  "commitUrlFormat": "{{host}}/Delivery-Projects/concesur/concenet_front/-/commit/{{hash}}",
+  "bumpFiles": [
+    {
+      "filename": "package.json",
+      "updater": "package-json-version-updater.js"
+    }
+  ]
+}

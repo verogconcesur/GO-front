@@ -1,0 +1,23 @@
+@use '@angular/material' as mat;
+@import '@angular/material/theming';
+
+@mixin app-component-theme($theme) {
+  // Some useful material theming mixins:
+
+  // $config: mat.define-typography-config();
+  // $primary: map-get($theme, primary);
+  // $accent: map-get($theme, accent);
+
+  // .app-component {
+  //   background: mat.get-color-from-palette($primary, 500);
+  //   color: mat.get-contrast-color-from-palette($primary, 500);
+
+  //   font: {
+  //     family: mat.font-family($config, headline);
+  //     size: mat.font-size($config, headline);
+  //     weight: mat.font-weight($config, headline);
+  //   }
+
+  //   @include mat.elevation(5);
+  // }
+}

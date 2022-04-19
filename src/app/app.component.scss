@@ -1,0 +1,21 @@
+@import 'utils/core';
+
+.sample-use-of-responsive-mixin {
+  // default
+  width: 1600px;
+
+  // $desktop
+  @include respond-to($desktop) {
+    width: 1200px;
+  }
+
+  // $tablet - $desktop
+  @include respond-to($desktop, $tablet) {
+    width: 90%;
+  }
+
+  // 0 - $mobile
+  @include respond-to($mobile) {
+    width: 100%;
+  }
+}
