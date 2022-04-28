@@ -1,0 +1,58 @@
+<div class="login" fxLayout="row" fxLayout.sm="column" fxLayout.xs="column">
+    <!-- Content -->
+    <div fxFlex="50" fxFlex.sm="100" fxFlex.xs="100" fxFlexOrder.sm="1" fxFlexOrder.xs="1">
+        <div class="login-content" fxLayout="column" fxLayoutAlign="center center">
+            <div>
+                <div class="login-content__title mat-display-2">{{ labels.title | translate }}</div>
+                <div class="login-content__description mat-subheading-2">{{ labels.description | translate }}</div>
+
+                <form [formGroup]="loginForm">
+                    <!-- userName -->
+                    <div>
+                        <mat-form-field appearance="outline" class="login-content__input userName-input">
+                            <mat-label>{{ labels.email | translate }}</mat-label>
+                            <input matInput formControlName="userName" />
+                            <mat-error
+                                class="login-content__error"
+                                *ngIf="loginForm.controls.userName.invalid && loginForm.controls.userName.touched"
+                            >
+                                {{ labels.userNameRequired | translate }}
+                            </mat-error>
+                        </mat-form-field>
+                    </div>
+
+                    <!-- Password -->
+                    <div>
+                        <mat-form-field appearance="outline" class="login-content__input">
+                            <mat-label>{{ labels.password | translate }}</mat-label>
+                            <input matInput type="password" formControlName="password" />
+                            <mat-error
+                                class="login-content__error"
+                                *ngIf="loginForm.controls.password.invalid && loginForm.controls.password.touched"
+                            >
+                                {{ labels.passwordRequired | translate }}
+                            </mat-error>
+                        </mat-form-field>
+                    </div>
+
+                    <div class="login-content__forgotPassword">
+                        {{ labels.forgotPassword | translate }}
+                    </div>
+
+                    <button
+                        mat-flat-button
+                        color="primary"
+                        class="mat-button-fill login-content__btn"
+                        [disabled]="!loginForm.valid"
+                        (click)="doLogin()"
+                    >
+                        {{ labels.signIn | translate }}
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Image -->
+    <div class="login-image" fxFlex="50" fxFlex.sm="100" fxFlex.xs="100" fxFlexOrder.sm="0" fxFlexOrder.xs="0"></div>
+</div>

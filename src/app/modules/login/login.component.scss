@@ -1,0 +1,41 @@
+@import 'utils/core';
+
+.login {
+  height: 100%;
+
+  .login-content {
+    height: 100%;
+
+    &__title {
+      margin: 36px 0 0 0;
+    }
+
+    &__description {
+      margin-bottom: 30px;
+    }
+
+    &__input {
+      width: 427px;
+
+      &.userName-input {
+        margin-bottom: 15px;
+      }
+    }
+
+    &__forgotPassword {
+      cursor: pointer;
+      padding-bottom: 49px;
+      text-align: right;
+    }
+
+    &__btn {
+      height: 48px;
+      margin-bottom: 36px;
+    }
+  }
+
+  .login-image {
+    background: url(/assets/img/login-img@2x.png) no-repeat;
+    background-size: cover;
+  }
+}

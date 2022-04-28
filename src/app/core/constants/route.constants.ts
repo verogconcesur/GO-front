@@ -1,13 +1,19 @@
-export class RouteConstants {
+export enum RouteConstants {
   // Common
-  public static readonly EMPTY = '';
-  public static readonly CREATE = 'create';
-  public static readonly CLONE = 'clone';
-  public static readonly EDIT = 'edit';
-  public static readonly DISPLAY = 'display';
-  public static readonly BACK = 'back';
-  public static readonly OTHER = '**';
+  EMPTY = '',
+  CREATE = 'create',
+  CLONE = 'clone',
+  EDIT = 'edit',
+  DISPLAY = 'display',
+  BACK = 'back',
+  OTHER = '**',
 
   // Route Params
-  public static readonly ID = '/:id';
+  ID = '/:id',
+
+  // Login
+  LOGIN = 'login',
+
+  // Dashboard
+  DASHBOARD = 'dashboard'
 }
