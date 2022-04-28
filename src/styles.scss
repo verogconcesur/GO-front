@@ -1,87 +1,29 @@
-// ANGULAR MATERIAL
-// ----------------
-// More info about Angular Material Theming:
-// https://material.angular.io/guide/theming
-// -----------------------------------------
 @use '@angular/material' as mat;
 @import '@angular/material/theming';
 
-// Mixin to include custom components themes styles
-// for a given Angular Material theme
+// Mixin to include custom components themes styles for a given Angular Material theme
 @import 'app/app.component.scss-theme.scss';
 @import 'app/layout/default-layout/default-layout.component.scss-theme.scss';
+@import 'app/modules/login/login.component.scss-theme.scss';
 
-@mixin custom-components-theme($theme) {
+@mixin custom-components-theme($theme, $main-typography) {
   @include app-component-theme($theme);
   @include default-layout-component-theme($theme);
-  // Add more component themes mixins here...
+  @include login-component-theme($theme, $main-typography);
 }
-
-// These is the default Angular Material typography config. Override it if you need to.
-// More info:
-// https://material.angular.io/guide/typography
-$custom-typography: mat.define-typography-config(
-  $font-family: 'Helvetica, sans-serif',
-  $display-4: mat.define-typography-level(112px, 112px, 300, $letter-spacing: -0.05em),
-  $display-3: mat.define-typography-level(56px, 56px, 400, $letter-spacing: -0.02em),
-  $display-2: mat.define-typography-level(45px, 48px, 400, $letter-spacing: -0.005em),
-  $display-1: mat.define-typography-level(34px, 40px, 400),
-  $headline: mat.define-typography-level(24px, 32px, 400),
-  $title: mat.define-typography-level(20px, 32px, 500),
-  $subheading-2: mat.define-typography-level(16px, 28px, 400),
-  $subheading-1: mat.define-typography-level(15px, 24px, 400),
-  $body-2: mat.define-typography-level(14px, 24px, 500),
-  $body-1: mat.define-typography-level(14px, 20px, 400),
-  $caption: mat.define-typography-level(12px, 20px, 400),
-  $button: mat.define-typography-level(14px, 14px, 500),
-  $input: mat.define-typography-level(inherit, 1.125, 400)
-) !default;
-
-// Include core Angular Material styles (with custom typography)
-@include mat.core($custom-typography);
 
 // Load theme and custom components styles for current theme
-@import 'themes/light-theme.scss';
-@include mat.all-component-themes($light-theme);
-@include custom-components-theme($light-theme);
+@import 'themes/concenet-theme.scss';
+@include mat-core($concenet-main-typography);
+@include angular-material-theme($concenet-theme);
+@include custom-components-theme($concenet-theme, $concenet-main-typography);
 
-// Load multi-theme
-/*
-.light-theme {
-  @import 'themes/light-theme.scss';
-  @include mat.all-component-themes($light-theme);
-  @include custom-components-theme($light-theme);
-}
+@import 'globals.scss';
+@import 'mat-input.scss';
+@import 'mat-button.scss';
 
-.dark-theme {
-  @import 'themes/dark-theme.scss';
-  @include mat.all-component-themes($dark-theme);
-  @include custom-components-theme($dark-theme);
-}
-*/
+@include globals-theme($concenet-theme, $concenet-main-typography);
+@include custom-mat-input-theme($concenet-theme, $concenet-main-typography);
+@include custom-mat-button-theme($concenet-theme, $concenet-main-typography);
 
-// BASE STYLES
-// -----------
-html,
-body {
-  height: 100%;
-}
 
-body {
-  margin: 0;
-}
-
-.sr-only {
-  position: absolute;
-  width: 1px;
-  height: 1px;
-  padding: 0;
-  margin: -1px;
-  overflow: hidden;
-  clip: rect(0, 0, 0, 0);
-  border: 0;
-}
-
-.mat-app-background {
-  height: 100%;
-}

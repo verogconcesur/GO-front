@@ -3,6 +3,16 @@
     "no": "No",
     "yes": "Yes"
   },
+  "login": {
+    "description": "Please enter your credentials",
+    "email": "Username",
+    "forgotPassword": "have you forgotten your password?",
+    "password": "Password",
+    "passwordRequired": "Password is required",
+    "signIn": "Log in",
+    "title": "Log in",
+    "userNameRequired": "Username is required"
+  },
   "sample": {
     "text": "There {count, plural, =0{is} one{is} other{are}} {count, plural, =0{} one{a} other{several}} {count, plural, =0{nothing} one{thing} other{things}}"
   }
