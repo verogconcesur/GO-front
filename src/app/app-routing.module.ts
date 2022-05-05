@@ -1,11 +1,17 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 import { RouteConstants } from '@app/constants/route.constants';
+import { DashboardLayoutComponent } from '@layout/dashboard-layout/dashboard-layout.component';
 
 const routes: Routes = [
   {
     path: RouteConstants.LOGIN,
     loadChildren: () => import('./modules/login/login.module').then((m) => m.LoginModule)
+  },
+  {
+    path: RouteConstants.DASHBOARD,
+    component: DashboardLayoutComponent,
+    // loadChildren: () => import('./modules/login/login.module').then((m) => m.LoginModule)
   },
   {
     path: RouteConstants.OTHER,

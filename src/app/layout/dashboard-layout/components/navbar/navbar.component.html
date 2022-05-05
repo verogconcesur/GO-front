@@ -1,0 +1,22 @@
+<mat-toolbar class="navbar" fxLayout="row" fxLayoutAlign="space-between center" color="primary">
+    <!-- Left side -->
+    <div fxLayout="row">
+        <div class="navbar__title">
+            {{labels.title | translate}}
+        </div>
+        <mat-divider [vertical]="true"></mat-divider>
+    </div>
+    <!-- Right side -->
+    <div fxLayout="row">
+        <button mat-icon-button [matMenuTriggerFor]="profileMenu" aria-label="Profile">
+            <mat-icon>person</mat-icon>
+        </button>
+    </div>
+</mat-toolbar>
+
+<mat-menu #profileMenu="matMenu">
+    <button mat-menu-item (click)="doLogout()">
+        <mat-icon>exit_to_app</mat-icon>
+        <span>{{labels.logout | translate}}</span>
+    </button>
+</mat-menu>

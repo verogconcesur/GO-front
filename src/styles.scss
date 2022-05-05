@@ -3,12 +3,14 @@
 
 // Mixin to include custom components themes styles for a given Angular Material theme
 @import 'app/app.component.scss-theme.scss';
-@import 'app/layout/default-layout/default-layout.component.scss-theme.scss';
+@import 'app/layout/dashboard-layout/dashboard-layout.component.scss-theme.scss';
+@import 'app/layout/dashboard-layout/components/navbar/navbar.component.scss-theme.scss';
 @import 'app/modules/login/login.component.scss-theme.scss';
 
 @mixin custom-components-theme($theme, $main-typography) {
   @include app-component-theme($theme);
-  @include default-layout-component-theme($theme);
+  @include dashboard-layout-component-theme($theme, $main-typography);
+  @include navbar-component-theme($theme, $main-typography);
   @include login-component-theme($theme, $main-typography);
 }
 

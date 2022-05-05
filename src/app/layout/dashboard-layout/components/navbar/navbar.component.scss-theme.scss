@@ -1,0 +1,10 @@
+@import '@angular/material/theming';
+
+@mixin navbar-component-theme($theme, $main-typo) {
+    $primary: map-get($theme, primary);
+    .navbar{
+        mat-divider{
+            background-color: mat-color($primary, 50);
+        }
+    }
+}
