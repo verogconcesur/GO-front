@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { Router } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { RouteConstants } from '@app/constants/route.constants';
 import { AuthenticationService } from '@app/security/authentication.service';
 import { ConcenetError } from '@app/types/error';
@@ -34,6 +34,7 @@ export class LoginComponent implements OnInit {
   constructor(
     private fb: FormBuilder,
     private router: Router,
+    private route: ActivatedRoute,
     private spinnerService: ProgressSpinnerDialogService,
     private authenticationService: AuthenticationService,
     private globalMessageService: GlobalMessageService
@@ -45,6 +46,12 @@ export class LoginComponent implements OnInit {
     } else {
       this.initializeForm();
     }
+  }
+
+  public redirectToforgotPassword(): void {
+    this.router.navigate(['./' + RouteConstants.FORGOT_PASSWORD], {
+      relativeTo: this.route
+    });
   }
 
   public doLogin(): void {
