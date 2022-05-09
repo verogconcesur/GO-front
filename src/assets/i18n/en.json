@@ -9,6 +9,27 @@
     "forgotPassword": "have you forgotten your password?",
     "password": "Password",
     "passwordRequired": "Password is required",
+    "recoverpassword": {
+      "description": "Enter your user name and we will send you the instructions to reset your password.",
+      "email": "Password reset successful, please check your inbox",
+      "restore": "Restore password",
+      "title": "Have you forgotten your password?",
+      "userName": "Username",
+      "userNameRequired": "Username is required"
+    },
+    "restorePassword": {
+      "changedSuccesfully": "Password has been succesfully modified",
+      "description": "Establish a new password and recover access to your account",
+      "password1": "New password",
+      "password2": "Repeat new password",
+      "passwordMatch": "Password must match",
+      "passwordPattern": "The password must contain at least one number, one capital letter, one symbol and its length must be between 8 and 50 characters.",
+      "passwordRequired": "The password is mandatory.",
+      "save": "Save new password",
+      "title": "New password",
+      "userName": "User name",
+      "userNameRequired": "Username is required"
+    },
     "signIn": "Log in",
     "title": "Log in",
     "userNameRequired": "Username is required"

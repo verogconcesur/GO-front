@@ -13,6 +13,8 @@ export enum RouteConstants {
 
   // Login
   LOGIN = 'login',
+  FORGOT_PASSWORD = 'forgot-password',
+  RESTORE_PASSWORD = 'restore-password',
 
   // Dashboard
   DASHBOARD = 'dashboard'
