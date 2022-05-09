@@ -5,6 +5,8 @@ import { ENV } from '@app/constants/global.constants';
 import { Env } from '@app/types/env';
 import { ConcenetError } from '@app/types/error';
 import LoginDTO from '@data/models/login-dto';
+import RoleDTO from '@data/models/role-dto';
+import PermissionsDTO from '@data/models/permissions-dto';
 import { Observable, throwError } from 'rxjs';
 import { catchError } from 'rxjs/operators';
 
@@ -19,6 +21,8 @@ export class AuthenticationService {
   private readonly EXPIRES_IN = 'expires_in';
   private readonly USER_ID = 'user_id';
   private readonly USER_FULL_NAME = 'user_full_name';
+  private readonly USER_ROLE = 'user_role';
+  private readonly USER_PERMISSIONS = 'user_permissions';
 
   private tokenInterval: NodeJS.Timer = null;
 
@@ -138,6 +142,53 @@ export class AuthenticationService {
   }
 
   /**
+   * Retrieves the user role
+   *
+   * @returns the userRole
+   */
+  getUserRole(): RoleDTO{
+    return JSON.parse(sessionStorage.getItem(this.USER_ROLE));
+  }
+
+  /**
+   * Remove the userRole
+   */
+   removeUserRole() {
+    sessionStorage.removeItem(this.USER_ROLE);
+  }
+
+  /**
+   * Retrieves the user permissions
+   *
+   * @returns an array with user permissions
+   */
+  getUserPermissions(): PermissionsDTO[] {
+    return JSON.parse(sessionStorage.getItem(this.USER_PERMISSIONS));
+  }
+
+  /**
+   * Remove the userRole
+   */
+   removeUserPermissions() {
+    sessionStorage.removeItem(this.USER_PERMISSIONS);
+  }
+
+  /**
+   * Check if user has at least one of the permission passed by parameter
+   *
+   * @returns boolean
+   */
+   hasUserAnyPermission(permissions: string[]){
+    const userPermissions = this.getUserPermissions().map(permission => permission.code);
+    return permissions.reduce((prevValue, currentValue) => {
+      if(!prevValue){
+        return userPermissions.indexOf(currentValue) >= 0;
+      }
+      return prevValue;
+    }, false);
+  }
+
+  /**
    * Stores the Logged user
    *
    * @param loginData
@@ -147,6 +198,8 @@ export class AuthenticationService {
     sessionStorage.setItem(this.EXPIRES_IN, loginData.expires_in.toString());
     sessionStorage.setItem(this.USER_ID, loginData.user.id.toString());
     sessionStorage.setItem(this.USER_FULL_NAME, loginData.user.firstName + loginData.user.lastName);
+    sessionStorage.setItem(this.USER_ROLE, JSON.stringify(loginData.user.role));
+    sessionStorage.setItem(this.USER_PERMISSIONS, JSON.stringify(loginData.user.permissions));
   }
 
   /**
@@ -181,6 +234,8 @@ export class AuthenticationService {
     this.removeExpiresIn();
     this.removeUserId();
     this.removeUserFullName();
+    this.removeUserRole();
+    this.removeUserPermissions();
     clearInterval(this.tokenInterval);
   }
 }
