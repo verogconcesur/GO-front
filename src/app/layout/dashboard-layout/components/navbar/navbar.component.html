@@ -1,0 +1,78 @@
+<mat-toolbar class="navbar" fxLayout="row" fxLayoutAlign="space-between center" color="primary">
+    <!-- Left side -->
+    <div class=" navbar__left" fxLayout="row" fxLayoutAlign="start center" >
+        <!-- Responsive: Shown for mobile -->
+        <div class="responsive__mobile">
+            <button mat-icon-button [matMenuTriggerFor]="appMenu" aria-label="Menu">
+                <mat-icon>menu</mat-icon>
+            </button>
+        </div>
+        <!-- END Shown for mobile -->
+        <div class="navbar__title">
+            {{labels.title | translate}}
+        </div>
+        <!-- Responsive: Shown for desktop and tablet -->
+        <div class="responsive__desktop-and-tablet">
+            <div fxLayout="row" fxLayoutAlign="start center">
+                <mat-divider [vertical]="true"></mat-divider>
+                <button mat-button>{{labels.workflow | translate}}</button>
+                <button mat-button>{{labels.clients | translate}}</button>
+                <button mat-button>{{labels.vehicles | translate}}</button>
+                <button mat-button>{{labels.advanceSearch | translate}}</button>
+                <button mat-button>{{labels.administration | translate}}</button>
+            </div>
+        </div>
+        <!-- END Shown for desktop and tablet -->
+    </div>
+    <!-- Right side -->
+    <div fxLayout="row" class="navbar__right"  fxLayoutAlign="end center">
+        <!-- Responsive search input -->
+        <div class=" responsive__desktop-large">
+            <form class="navbar__search" fxLayout="row" fxLayoutAlign="end center">
+                <mat-form-field class="example-full-width" appearance="outline">
+                    <input matInput [placeholder]="labels.search | translate">
+                    <mat-icon matSuffix>search</mat-icon>
+                </mat-form-field>
+            </form>
+        </div>
+        <button class="responsive__less-than-desktop-large" mat-icon-button aria-label="Search">
+            <mat-icon>search</mat-icon>
+        </button>
+        <!-- END Responsive search input -->
+        <button mat-icon-button aria-label="Email">
+            <mat-icon>alternate_email</mat-icon>
+        </button>
+        <button mat-icon-button aria-label="Notification">
+            <mat-icon>notifications</mat-icon>
+        </button>
+        <button mat-icon-button [matMenuTriggerFor]="profileMenu" aria-label="Profile">
+            <mat-icon>person</mat-icon>
+        </button>
+    </div>
+</mat-toolbar>
+
+
+<mat-menu #appMenu="matMenu">
+    <button mat-menu-item>
+        <span>{{labels.workflow | translate}}</span>
+    </button>
+    <button mat-menu-item>
+        <span>{{labels.clients | translate}}</span>
+    </button>
+    <button mat-menu-item>
+        <span>{{labels.vehicles | translate}}</span>
+    </button>
+    <button mat-menu-item>
+        <span>{{labels.advanceSearch | translate}}</span>
+    </button>
+    <button mat-menu-item>
+        <span>{{labels.administration | translate}}</span>
+    </button>
+</mat-menu>
+
+<mat-menu #profileMenu="matMenu">
+    <button mat-menu-item (click)="doLogout()">
+        <mat-icon>exit_to_app</mat-icon>
+        <span>{{labels.logout | translate}}</span>
+    </button>
+</mat-menu>
