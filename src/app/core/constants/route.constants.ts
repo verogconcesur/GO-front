@@ -1,3 +1,5 @@
+import { PermissionConstants } from './permission.constants';
+
 export enum RouteConstants {
   // Common
   EMPTY = '',
@@ -17,3 +19,9 @@ export enum RouteConstants {
   // Dashboard
   DASHBOARD = 'dashboard'
 }
+
+export const RoutePermissionConstants: Record<string, PermissionConstants[]> = {
+  //For routes with permissions specify an array with the permissions that the user must have to access
+  // (as long as one is met, he can access)
+  DASHBOARD: [PermissionConstants.ISADMIN]
+};

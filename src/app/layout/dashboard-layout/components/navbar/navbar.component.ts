@@ -12,7 +12,13 @@ import { marker } from '@biesbjerg/ngx-translate-extract-marker';
 export class NavbarComponent implements OnInit {
   public labels = {
     title: marker('app.title'),
-    logout: marker('logout.logout')
+    logout: marker('logout.logout'),
+    workflow: marker('app.menu.workflow'),
+    clients: marker('app.menu.clients'),
+    vehicles: marker('app.menu.vehicles'),
+    advanceSearch: marker('app.menu.advanceSearch'),
+    administration: marker('app.menu.administration'),
+    search: marker('common.search')
   };
 
   constructor(
