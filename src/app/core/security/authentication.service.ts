@@ -178,7 +178,7 @@ export class AuthenticationService {
    *
    * @returns boolean
    */
-   hasUserAnyPermission(permissions: string[]){
+   hasUserAnyPermission(permissions: string[]): boolean{
     const userPermissions = this.getUserPermissions().map(permission => permission.code);
     return permissions.reduce((prevValue, currentValue) => {
       if(!prevValue){
