@@ -1,11 +1,10 @@
-import { HttpClient, HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
+import { HttpClient, HttpClientModule } from '@angular/common/http';
 import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { DEFAULT_I18N_LANG, ENV } from '@app/constants/global.constants';
 import { CoreModule } from '@app/core.module';
 import { translateLoaderFactory } from '@app/locale/translate-loader.factory';
-import { TokenInterceptor } from '@app/security/token.interceptor';
 import { environment } from '@env';
 import { LayoutModule } from '@layout/layout.module';
 import { TranslateCompiler, TranslateLoader, TranslateModule, TranslateService } from '@ngx-translate/core';
@@ -13,6 +12,11 @@ import { LoggerModule, NgxLoggerLevel } from 'ngx-logger';
 import { TranslateMessageFormatCompiler } from 'ngx-translate-messageformat-compiler';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
+import mockServer from './app.mock';
+
+if (environment.apiBaseUrl?.length <= 0) {
+  mockServer();
+}
 
 @NgModule({
   declarations: [AppComponent],
@@ -44,12 +48,7 @@ import { AppComponent } from './app.component';
     // * IMPORTANT: When you need to use environment variables,
     // * provide them like this! And use them with `@Inject(ENV)`.
     // * See `app.component.ts` for an example.
-    { provide: ENV, useValue: environment },
-    {
-      provide: HTTP_INTERCEPTORS,
-      useClass: TokenInterceptor,
-      multi: true
-    }
+    { provide: ENV, useValue: environment }
   ],
   bootstrap: [AppComponent]
 })

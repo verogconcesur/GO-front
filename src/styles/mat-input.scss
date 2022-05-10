@@ -1,5 +1,0 @@
-@import '~@angular/material/theming';
-
-@mixin custom-mat-input-theme($theme, $main-typo) {
-  $foreground: map-get($theme, foreground);
-}
