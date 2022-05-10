@@ -1,0 +1,40 @@
+@import '@angular/material/theming';
+
+@mixin navbar-component-theme($theme, $main-typo) {
+  $primary: map-get($theme, primary);
+  .navbar {
+    mat-divider {
+      background-color: mat-contrast($primary, statusNeutral);
+      opacity: 0.2;
+    }
+    &__search {
+      color: mat-contrast($primary, statusNeutral);
+      .mat-form-field-appearance-outline .mat-form-field-wrapper {
+        margin: 0 0;
+        padding: 0 0;
+        border-radius: 4px;
+        font-size: 0.9em;
+        overflow: hidden;
+        .mat-form-field-flex {
+          background-color: rgba(0, 0, 0, 0.24);
+        }
+        .mat-form-field-infix {
+          border-top: 0;
+          padding: 0.6em 0 0.5em 0;
+        }
+        .mat-form-field-suffix {
+          top: 0.5em;
+        }
+      }
+      ::placeholder {
+        /* Chrome, Firefox, Opera, Safari 10.1+ */
+        color: darken(mat-contrast($primary, statusNeutral), 10%);
+        opacity: 1; /* Firefox */
+      }
+      ::-ms-input-placeholder {
+        /* Microsoft Edge */
+        color: darken(mat-contrast($primary, statusNeutral), 10%);
+      }
+    }
+  }
+}
