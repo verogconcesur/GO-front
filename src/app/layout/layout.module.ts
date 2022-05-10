@@ -1,13 +1,12 @@
 import { NgModule } from '@angular/core';
 import { RouterModule } from '@angular/router';
 import { SharedModule } from '@shared/shared.module';
-import { DashboardLayoutComponent } from './dashboard-layout/dashboard-layout.component';
-import { NavbarComponent } from './dashboard-layout/components/navbar/navbar.component';
+import { DefaultLayoutComponent } from './default-layout/default-layout.component';
 
 @NgModule({
-  declarations: [DashboardLayoutComponent, NavbarComponent],
+  declarations: [DefaultLayoutComponent],
   imports: [RouterModule, SharedModule],
-  exports: [DashboardLayoutComponent],
+  exports: [DefaultLayoutComponent],
   providers: []
 })
 export class LayoutModule {}

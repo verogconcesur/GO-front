@@ -1,29 +1,13 @@
-import { PermissionConstants } from './permission.constants';
-
-export enum RouteConstants {
+export class RouteConstants {
   // Common
-  EMPTY = '',
-  CREATE = 'create',
-  CLONE = 'clone',
-  EDIT = 'edit',
-  DISPLAY = 'display',
-  BACK = 'back',
-  OTHER = '**',
+  public static readonly EMPTY = '';
+  public static readonly CREATE = 'create';
+  public static readonly CLONE = 'clone';
+  public static readonly EDIT = 'edit';
+  public static readonly DISPLAY = 'display';
+  public static readonly BACK = 'back';
+  public static readonly OTHER = '**';
 
   // Route Params
-  ID = '/:id',
-
-  // Login
-  LOGIN = 'login',
-  FORGOT_PASSWORD = 'forgot-password',
-  RESTORE_PASSWORD = 'restore-password',
-
-  // Dashboard
-  DASHBOARD = 'dashboard'
+  public static readonly ID = '/:id';
 }
-
-export const RoutePermissionConstants: Record<string, PermissionConstants[]> = {
-  //For routes with permissions specify an array with the permissions that the user must have to access
-  // (as long as one is met, he can access)
-  DASHBOARD: [PermissionConstants.ISADMIN]
-};
