@@ -1,0 +1,38 @@
+@import '~@angular/material/theming';
+
+@mixin custom-mat-button-theme($theme, $main-typo) {
+  $primary: map-get($theme, primary);
+
+  // common
+  button {
+    &.mat-button,
+    &.mat-flat-button {
+      font-size: 1rem;
+
+      &.mat-button-fill {
+        width: 100%;
+      }
+    }
+
+    // mat-flat-button styles
+    &.mat-flat-button {
+      &:hover {
+        background-color: darken(mat-color($primary, 500), 10%);
+      }
+    }
+  }
+
+  // Disable styles for primary buttons
+  .mat-flat-button.mat-primary.mat-button-disabled,
+  .mat-flat-button.mat-button-disabled.mat-button-disabled,
+  .mat-raised-button.mat-primary.mat-button-disabled,
+  .mat-raised-button.mat-button-disabled.mat-button-disabled,
+  .mat-fab.mat-primary.mat-button-disabled,
+  .mat-fab.mat-button-disabled.mat-button-disabled,
+  .mat-mini-fab.mat-primary.mat-button-disabled,
+  .mat-mini-fab.mat-button-disabled.mat-button-disabled {
+    background-color: mat-color($primary, 500);
+    color: mat-contrast($primary, 500);
+    opacity: 0.5;
+  }
+}

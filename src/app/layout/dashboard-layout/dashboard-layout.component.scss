@@ -1,0 +1,12 @@
+.dashboard-layout-component {
+  app-navbar {
+    flex: 0 0 auto;
+  }
+
+  ng-container {
+    padding: 16px;
+    box-sizing: border-box;
+    flex: 1 1 auto;
+    overflow: auto;
+  }
+}
