@@ -1,49 +1,49 @@
 @import 'utils/core';
 
 .navbar {
-    mat-divider{
-        margin: 0 15px;
-        height: 40px;
-    }
+  mat-divider {
+    margin: 0 15px;
+    height: 40px;
+  }
 
-    &__right {
-        button{
-            margin: 0 10px;
-        }
-        @include respond-to($mobile) {
-            button{
-                margin: 0 0;
-            }
-        }
+  &__right {
+    button {
+      margin: 0 10px;
     }
+    @include respond-to($mobile) {
+      button {
+        margin: 0 0;
+      }
+    }
+  }
 
-    //Responsive
-    .responsive__desktop-and-tablet{
-        display: block;
+  //Responsive
+  .responsive__desktop-and-tablet {
+    display: block;
+  }
+  .responsive__mobile {
+    display: none;
+  }
+  .responsive__desktop-large {
+    display: block;
+  }
+  .responsive__less-than-desktop-large {
+    display: none;
+  }
+  @include respond-to($desktop-small) {
+    .responsive__desktop-and-tablet {
+      display: none;
     }
-    .responsive__mobile{
-        display: none;
+    .responsive__mobile {
+      display: block;
     }
-    .responsive__desktop-large{
-        display: block;
+  }
+  @include respond-to($desktop-large) {
+    .responsive__desktop-large {
+      display: none;
     }
-    .responsive__less-than-desktop-large{
-        display: none;
+    .responsive__less-than-desktop-large {
+      display: block;
     }
-    @include respond-to($desktop-small) {
-        .responsive__desktop-and-tablet{
-            display: none;
-        }
-        .responsive__mobile{
-            display: block;
-        }
-    }
-    @include respond-to($desktop-large) {
-        .responsive__desktop-large{
-            display: none;
-        }
-        .responsive__less-than-desktop-large{
-            display: block;
-        }
-    }
+  }
 }
