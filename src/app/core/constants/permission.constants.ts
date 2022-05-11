@@ -4,7 +4,5 @@ export enum PermissionConstants {
     //Asignar fichas a otros usuarios
     ASIGFICH='ASIGFICH',
     //Reordenar fichas cuando sea posible
-    REORDFICH='REORDFICH',
-
-    PRUEBA='PRUEBA' //PRUEBA
+    REORDFICH='REORDFICH'
 }

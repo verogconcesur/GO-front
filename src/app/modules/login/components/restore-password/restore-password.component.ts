@@ -87,7 +87,7 @@ export class RestorePasswordComponent implements OnInit {
         passConfirmation: ['', Validators.required]
       },
       {
-        validator: ConfirmPasswordValidator.mustMatch('pass', 'passConfirmation')
+        validators: ConfirmPasswordValidator.mustMatch('pass', 'passConfirmation')
       }
     );
   }

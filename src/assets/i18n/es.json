@@ -52,5 +52,10 @@
 	},
 	"sample": {
 		"text": "{count, plural, =0{No hay} one{Hay una} other{Hay varias}} {count, plural, =0{nada} one{cosa} other{cosas}}"
+	},
+	"user": {
+		"myProfile": {
+			"title": "Mí perfil"
+		}
 	}
 }
