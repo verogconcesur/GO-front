@@ -6,8 +6,8 @@ export interface CustomDialogButtonConfigI {
   label?: string;
   iconName?: string;
   iconFontSet?: string;
-  iconsPosition?: 'start' | 'end';
-  disabledFn?: () => void;
-  hiddenFn?: () => void;
+  iconPosition?: 'start' | 'end';
+  disabledFn?: () => boolean;
+  hiddenFn?: () => boolean;
   clickFn?: () => void;
 }

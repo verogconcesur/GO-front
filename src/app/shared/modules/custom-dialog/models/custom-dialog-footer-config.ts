@@ -1,25 +1,24 @@
 import { CustomDialogButtonConfig } from './custom-dialog-button-config';
 import { CustomDialogFooterConfigI } from '../interfaces/custom-dialog-footer-config';
-import { throwError } from 'rxjs';
 
-export class CustomDialogFooterConfig {
+export class CustomDialogFooterConfig implements CustomDialogFooterConfigI {
   public show = false;
-  public leftSideButtonsWrapper: CustomDialogButtonConfig[] = [];
-  public rightSideButtonsWrapper: CustomDialogButtonConfig[] = [];
+  public leftSideButtons: CustomDialogButtonConfig[] = [];
+  public rightSideButtons: CustomDialogButtonConfig[] = [];
 
   constructor(config: CustomDialogFooterConfigI) {
     try {
       if (config && config.show) {
         this.show = true;
         if (config.leftSideButtons && config.leftSideButtons.length) {
-          this.leftSideButtonsWrapper = config.leftSideButtons.map(objI => new CustomDialogButtonConfig(objI));
+          this.leftSideButtons = config.leftSideButtons.map(objI => new CustomDialogButtonConfig(objI));
         }
         if (config.rightSideButtons && config.rightSideButtons.length) {
-          this.rightSideButtonsWrapper = config.rightSideButtons.map(objI => new CustomDialogButtonConfig(objI));
+          this.rightSideButtons = config.rightSideButtons.map(objI => new CustomDialogButtonConfig(objI));
         }
       }
     } catch (error) {
-      console.log(error);
+      console.error(error);
     }
   }
 }

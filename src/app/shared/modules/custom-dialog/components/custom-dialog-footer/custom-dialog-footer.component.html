@@ -1,3 +1,12 @@
-<div class="custom-dialog__footer" fxLayout="row" fxLayoutAlign="space-between center">
-    footer
+<div class="custom-dialog__footer" fxLayout="row" fxLayoutAlign="space-between center" *ngIf="config?.show">
+    <app-custom-dialog-buttons-wrapper
+        [buttons]="config.leftSideButtons"
+        (buttonClick)="buttonClick($event)"
+        class="custom-dialog__footer__buttons-wrapper"
+    ></app-custom-dialog-buttons-wrapper>
+    <app-custom-dialog-buttons-wrapper
+        [buttons]="config.rightSideButtons"
+        (buttonClick)="buttonClick($event)"
+        class="custom-dialog__footer__buttons-wrapper"
+    ></app-custom-dialog-buttons-wrapper>
 </div>

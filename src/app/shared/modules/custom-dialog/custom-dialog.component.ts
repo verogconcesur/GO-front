@@ -6,6 +6,7 @@ import { CustomDialogHeaderConfigI } from './interfaces/custom-dialog-header-con
 import { take } from 'rxjs/operators';
 import { ConcenetError } from '@app/types/error';
 import { CustomDialogFooterConfig } from './models/custom-dialog-footer-config';
+import { CustomDialogService } from './services/custom-dialog.service';
 
 @Component({
   selector: 'app-custom-dialog',
@@ -16,10 +17,12 @@ export class CustomDialogComponent implements AfterViewInit, OnDestroy {
   @ViewChild('customContainerRef', { read: ViewContainerRef, static: true }) public dynamicViewContainer: ViewContainerRef;
   public headerConfig: CustomDialogHeaderConfigI = {};
   public footerConfig: CustomDialogFooterConfig = null;
+  private modalId: string;
   private componentRef: ComponentRef<ComponentForCustomDialog> = null;
 
   constructor(
     public dialogRef: MatDialogRef<ComponentForCustomDialog>,
+    private customDialogService: CustomDialogService,
     @Inject(MAT_DIALOG_DATA) public config: CustomDialogConfigI
   ) {}
 
@@ -75,6 +78,7 @@ export class CustomDialogComponent implements AfterViewInit, OnDestroy {
   private loadInnerModalComponent(): void {
     this.componentRef = this.dynamicViewContainer.createComponent(this.config.component);
     this.componentRef.instance.setModalModeActive(true);
+    this.modalId = this.componentRef.instance.MODAL_ID;
   }
 
   private getComponentConfiguration(): void {
@@ -83,6 +87,6 @@ export class CustomDialogComponent implements AfterViewInit, OnDestroy {
   }
 
   private close(): void {
-    this.dialogRef.close(true);
+    this.customDialogService.close(this.modalId);
   }
 }

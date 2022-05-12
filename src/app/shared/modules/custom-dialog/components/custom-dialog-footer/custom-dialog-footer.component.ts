@@ -1,5 +1,6 @@
 import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
 import { CustomDialogFooterConfig } from '../../models/custom-dialog-footer-config';
+import { CustomDialogButtonConfig } from '../../models/custom-dialog-button-config';
 
 @Component({
   selector: 'app-custom-dialog-footer',
@@ -14,4 +15,14 @@ export class CustomDialogFooterComponent implements OnInit {
   constructor() {}
 
   ngOnInit(): void {}
+
+  public buttonClick = (button: CustomDialogButtonConfig) => {
+    if (button.type === 'close') {
+      this.close.emit(true);
+    } else if (button.type === 'submit') {
+      this.submit.emit(true);
+    } else {
+      button.clickFn();
+    }
+  };
 }

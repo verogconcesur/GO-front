@@ -1,7 +1,6 @@
 import { CustomDialogButtonConfigI } from '../interfaces/custom-dialog.button';
-import { throwError } from 'rxjs';
 
-export class CustomDialogButtonConfig {
+export class CustomDialogButtonConfig implements CustomDialogButtonConfigI {
   public type: 'close' | 'submit' | 'custom';
   public design: '' | 'raised' | 'stroked' | 'flat' | 'icon' | 'fab' | 'mini-fab';
   public color: '' | 'primary' | 'warn' | 'accent';
@@ -9,9 +8,9 @@ export class CustomDialogButtonConfig {
   public label: string;
   public iconName: string;
   public iconFontSet: 'concenet' | string;
-  public iconsPosition: 'start' | 'end';
-  public disabledFn: () => void;
-  public hiddenFn: () => void;
+  public iconPosition: 'start' | 'end';
+  public disabledFn: () => boolean;
+  public hiddenFn: () => boolean;
   public clickFn: () => void;
   private errorMessage = 'Error creating button:';
 
@@ -23,13 +22,42 @@ export class CustomDialogButtonConfig {
     this.label = config.label ? config.label : '';
     this.iconName = config.iconName ? config.iconName : '';
     this.iconFontSet = config.iconFontSet ? config.iconFontSet : '';
-    this.iconsPosition = config.iconsPosition ? config.iconsPosition : 'end';
-    this.disabledFn = config.disabledFn ? config.disabledFn : null;
-    this.hiddenFn = config.hiddenFn ? config.hiddenFn : null;
+    this.iconPosition = config.iconPosition ? config.iconPosition : 'end';
+    this.disabledFn = config.disabledFn ? config.disabledFn : () => false;
+    this.hiddenFn = config.hiddenFn ? config.hiddenFn : () => false;
     this.clickFn = config.clickFn ? config.clickFn : null;
-    //Check if everything is ok
+    //Check if button definition is ok
     if (!this.label && !this.iconName) {
-      throwError(`${this.errorMessage} Label or IconName necessary`);
+      throw new Error(`${this.errorMessage} Label or IconName necessary`);
+    } else if (this.type === 'custom' && !this.clickFn) {
+      throw new Error(`${this.errorMessage} Button type 'custom' requires to define a 'clickFn' function`);
+    } else if (!this.iconName && this.iconFontSet) {
+      throw new Error(`${this.errorMessage} Icon fontset defined but not 'iconName' found`);
+    }
+  }
+
+  public getClass() {
+    switch (this.design) {
+      case 'raised':
+        return `${this.class} mat-raised-button`;
+        break;
+      case 'stroked':
+        return `${this.class} mat-stroked-button`;
+        break;
+      case 'flat':
+        return `${this.class} mat-flat-button`;
+        break;
+      case 'icon':
+        return `${this.class} mat-icon-button`;
+        break;
+      case 'fab':
+        return `${this.class} mat-fab`;
+        break;
+      case 'mini-fab':
+        return `${this.class} mat-mini-fab`;
+        break;
+      default:
+        return this.class;
     }
   }
 }

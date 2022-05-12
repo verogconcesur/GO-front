@@ -20,11 +20,15 @@ export class MyProfileComponent extends ComponentForCustomDialog implements OnIn
     title: marker(MyProfileComponentModalEnum.TITLE)
   };
 
+  public varShowTestButton = true;
+
   constructor() {
     super(MyProfileComponentModalEnum.ID, MyProfileComponentModalEnum.PANEL_CLASS, marker(MyProfileComponentModalEnum.TITLE));
   }
 
-  ngOnInit(): void {}
+  ngOnInit(): void {
+    // this.testHiddenAndDisabled();
+  }
 
   public confirmCloseCustomDialog(): Observable<boolean> {
     //TODO: DGDC confirmar que se puede cerrar la modal
@@ -48,16 +52,37 @@ export class MyProfileComponent extends ComponentForCustomDialog implements OnIn
           iconName: 'close',
           design: 'stroked'
         }
+        // {
+        //   type: 'custom',
+        //   label: 'hide',
+        //   color: 'warn',
+        //   design: 'fab',
+        //   clickFn: this.testHiddenAndDisabled,
+        //   hiddenFn: this.hideTestButton
+        // }
       ],
       rightSideButtons: [
         {
           type: 'submit',
-          label: marker('common.submit'),
-          iconName: 'person',
-          iconsPosition: 'start',
-          design: 'raised'
+          label: marker('common.save'),
+          // iconName: 'person',
+          // iconPosition: 'start',
+          design: 'raised',
+          color: 'primary'
+          // disabledFn: this.disableSaveButton
         }
       ]
     };
   }
+
+  // public hideTestButton = (): boolean => !this.varShowTestButton;
+
+  // public disableSaveButton = (): boolean => this.varShowTestButton;
+
+  // public testHiddenAndDisabled = (): void => {
+  //   this.varShowTestButton = false;
+  //   setTimeout(() => {
+  //     this.varShowTestButton = true;
+  //   }, 5000);
+  // };
 }

@@ -10,6 +10,8 @@
 		"title": "Concenet"
 	},
 	"common": {
+		"cancel": "Cancel",
+		"save": "Save",
 		"search": "Search"
 	},
 	"confirmdialog": {

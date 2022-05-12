@@ -32,4 +32,8 @@ export class CustomDialogService {
 
     return dialogRef.afterClosed();
   }
+
+  public close(id: string): void {
+    this.dialog.getDialogById(id).close();
+  }
 }
