@@ -5,6 +5,7 @@ import { CustomDialogConfigI } from './interfaces/custom-dialog-config';
 import { CustomDialogHeaderConfigI } from './interfaces/custom-dialog-header-config';
 import { take } from 'rxjs/operators';
 import { ConcenetError } from '@app/types/error';
+import { CustomDialogFooterConfig } from './models/custom-dialog-footer-config';
 
 @Component({
   selector: 'app-custom-dialog',
@@ -12,15 +13,15 @@ import { ConcenetError } from '@app/types/error';
   styleUrls: ['./custom-dialog.component.scss']
 })
 export class CustomDialogComponent implements AfterViewInit, OnDestroy {
-
   @ViewChild('customContainerRef', { read: ViewContainerRef, static: true }) public dynamicViewContainer: ViewContainerRef;
   public headerConfig: CustomDialogHeaderConfigI = {};
+  public footerConfig: CustomDialogFooterConfig = null;
   private componentRef: ComponentRef<ComponentForCustomDialog> = null;
 
   constructor(
     public dialogRef: MatDialogRef<ComponentForCustomDialog>,
-    @Inject(MAT_DIALOG_DATA) public config: CustomDialogConfigI,
-  ) { }
+    @Inject(MAT_DIALOG_DATA) public config: CustomDialogConfigI
+  ) {}
 
   ngAfterViewInit(): void {
     this.loadInnerModalComponent();
@@ -32,20 +33,41 @@ export class CustomDialogComponent implements AfterViewInit, OnDestroy {
   }
 
   public closeAction(): void {
-    if(this.componentRef.instance.confirmCloseCustomDialog){
-      this.componentRef.instance.confirmCloseCustomDialog()
-      .pipe(take(1))
-      .subscribe({
-        next: (ok) => {
-          if(ok){
-            this.close();
+    if (this.componentRef.instance.confirmCloseCustomDialog) {
+      this.componentRef.instance
+        .confirmCloseCustomDialog()
+        .pipe(take(1))
+        .subscribe({
+          next: ok => {
+            if (ok) {
+              this.close();
+            }
+          },
+          error: (error: ConcenetError) => {
+            console.log(error);
           }
-        },
-        error: (error: ConcenetError) => {
-          console.log(error);
-        }
-      });
-    }else{
+        });
+    } else {
+      this.close();
+    }
+  }
+
+  public submitAction(): void {
+    if (this.componentRef.instance.onSubmitCustomDialog) {
+      this.componentRef.instance
+        .onSubmitCustomDialog()
+        .pipe(take(1))
+        .subscribe({
+          next: ok => {
+            if (ok) {
+              this.close();
+            }
+          },
+          error: (error: ConcenetError) => {
+            console.log(error);
+          }
+        });
+    } else {
       this.close();
     }
   }
@@ -57,11 +79,10 @@ export class CustomDialogComponent implements AfterViewInit, OnDestroy {
 
   private getComponentConfiguration(): void {
     this.headerConfig.titleLabel = this.componentRef.instance.MODAL_TITLE;
+    this.footerConfig = new CustomDialogFooterConfig(this.componentRef.instance.setAndGetFooterConfig());
   }
 
   private close(): void {
     this.dialogRef.close(true);
   }
-
 }
-
