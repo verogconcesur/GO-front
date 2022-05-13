@@ -1,7 +1,5 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
-import { RouteConstants } from '@app/constants/route.constants';
-import { AuthenticationService } from '@app/security/authentication.service';
 import { marker } from '@biesbjerg/ngx-translate-extract-marker';
 
 @Component({
@@ -12,7 +10,6 @@ import { marker } from '@biesbjerg/ngx-translate-extract-marker';
 export class NavbarComponent implements OnInit {
   public labels = {
     title: marker('app.title'),
-    logout: marker('logout.logout'),
     workflow: marker('app.menu.workflow'),
     clients: marker('app.menu.clients'),
     vehicles: marker('app.menu.vehicles'),
@@ -21,17 +18,7 @@ export class NavbarComponent implements OnInit {
     search: marker('common.search')
   };
 
-  constructor(
-    private router: Router,
-    private authenticationService: AuthenticationService
-  ) { }
+  constructor(private router: Router) {}
 
-  ngOnInit(): void {
-  }
-
-  public doLogout(): void{
-    this.authenticationService.logout();
-    this.router.navigate([RouteConstants.LOGIN]);
-  }
-
+  ngOnInit(): void {}
 }

@@ -1,0 +1,116 @@
+<button mat-icon-button aria-label="Profile" [matMenuTriggerFor]="profileMenu" class="user-profile-button">
+    <mat-icon fontSet="concenet">user</mat-icon>
+</button>
+
+<mat-menu #profileMenu="matMenu" class="user-profile-menu">
+    <div class="mat-subheading-1 user-profile-menu__title">{{ labels.title | translate }}</div>
+
+    <!-- Spinner -->
+    <ng-container *ngIf="showSpinner">
+        <div class="overlay-spinner">
+            <mat-spinner diameter="26"></mat-spinner>
+        </div>
+    </ng-container>
+
+    <!-- General Data -->
+    <mat-accordion>
+        <mat-expansion-panel
+            class="mat-elevation-z0"
+            (opened)="panelDataOpenState = true"
+            (closed)="panelDataOpenState = false"
+            (click)="$event.stopPropagation()"
+        >
+            <mat-expansion-panel-header>
+                <mat-panel-title>{{ labels.data | translate }}</mat-panel-title>
+            </mat-expansion-panel-header>
+            <div class="user-data-group">
+                <div class="user-data-group__title">{{ labels.name | translate }}</div>
+                <div class="user-data-group__content">{{ userDetails?.name }}</div>
+            </div>
+
+            <div class="user-data-group">
+                <div class="user-data-group__title">{{ labels.lastName | translate }}</div>
+                <div class="user-data-group__content">{{ userDetails?.lastName }}</div>
+            </div>
+
+            <div class="user-data-group">
+                <div class="user-data-group__title">{{ labels.email | translate }}</div>
+                <div class="user-data-group__content">{{ userDetails?.email }}</div>
+            </div>
+
+            <div class="user-data-group">
+                <div class="user-data-group__title">{{ labels.nick | translate }}</div>
+                <div class="user-data-group__content">{{ userDetails?.userName }}</div>
+            </div>
+        </mat-expansion-panel>
+    </mat-accordion>
+
+    <!-- Organization -->
+    <mat-accordion>
+        <mat-expansion-panel
+            class="mat-elevation-z0"
+            (opened)="panelOrganizationOpenState = true"
+            (closed)="panelOrganizationOpenState = false"
+            (click)="$event.stopPropagation()"
+        >
+            <mat-expansion-panel-header>
+                <mat-panel-title>{{ labels.organization | translate }}</mat-panel-title>
+            </mat-expansion-panel-header>
+            <div class="user-data-group">
+                <div class="user-data-group__title">{{ labels.brand | translate }}</div>
+                <div class="user-data-group__content" *ngFor="let brand of userDetails?.brands">
+                    {{ brand.name }}
+                </div>
+            </div>
+
+            <div class="user-data-group">
+                <div class="user-data-group__title">{{ labels.facility | translate }}</div>
+                <div class="user-data-group__content" *ngFor="let facility of userDetails?.facilities">
+                    {{ facility.name }}
+                </div>
+            </div>
+
+            <div class="user-data-group">
+                <div class="user-data-group__title">{{ labels.department | translate }}</div>
+                <div class="user-data-group__content" *ngFor="let department of userDetails?.departments">
+                    {{ department.name }}
+                </div>
+            </div>
+
+            <div class="user-data-group">
+                <div class="user-data-group__title">{{ labels.specialty | translate }}</div>
+                <div class="user-data-group__content" *ngFor="let specialty of userDetails?.specialties">
+                    {{ specialty.name }}
+                </div>
+            </div>
+        </mat-expansion-panel>
+    </mat-accordion>
+
+    <!-- Sign -->
+    <mat-accordion>
+        <mat-expansion-panel
+            class="mat-elevation-z0"
+            (opened)="panelSignOpenState = true"
+            (closed)="panelSignOpenState = false"
+            (click)="$event.stopPropagation()"
+        >
+            <mat-expansion-panel-header>
+                <mat-panel-title>{{ labels.sign | translate }}</mat-panel-title>
+            </mat-expansion-panel-header>
+        </mat-expansion-panel>
+    </mat-accordion>
+
+    <!-- divider -->
+    <div class="actions-divider"></div>
+
+    <!-- Actions -->
+    <button mat-menu-item class="edit-profile-btn">
+        <!-- <mat-icon>edit</mat-icon> -->
+        <span>{{ labels.edit | translate }}</span>
+    </button>
+
+    <button mat-menu-item (click)="doLogout()" class="logout-btn">
+        <span>{{ labels.logout | translate }}</span>
+        <mat-icon>exit_to_app</mat-icon>
+    </button>
+</mat-menu>
