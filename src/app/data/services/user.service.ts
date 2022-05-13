@@ -3,6 +3,7 @@ import { Inject, Injectable } from '@angular/core';
 import { ENV } from '@app/constants/global.constants';
 import { Env } from '@app/types/env';
 import { ConcenetError } from '@app/types/error';
+import UserDetailsDTO from '@data/models/user-details-dto';
 import UserDTO from '@data/models/user-dto';
 import { Observable, throwError } from 'rxjs';
 import { catchError } from 'rxjs/operators';
@@ -11,8 +12,9 @@ import { catchError } from 'rxjs/operators';
   providedIn: 'root'
 })
 export class UserService {
-  public readonly RESTORE_PASSWORD_PATH = '/api/users/forgotPass';
-  public readonly CHANGE_PASSWORD_PATH = '/api/users/forgotPassChange';
+  private readonly RESTORE_PASSWORD_PATH = '/api/users/forgotPass';
+  private readonly CHANGE_PASSWORD_PATH = '/api/users/forgotPassChange';
+  private readonly USER_DETAILS_PATH = '/api/users';
 
   constructor(@Inject(ENV) private env: Env, private http: HttpClient) {}
 
@@ -30,6 +32,12 @@ export class UserService {
   }): Observable<UserDTO> {
     return this.http
       .post<UserDTO>(`${this.env.apiBaseUrl}${this.CHANGE_PASSWORD_PATH}`, credentials)
+      .pipe(catchError((error) => throwError(error as ConcenetError)));
+  }
+
+  public getUserDetailsById(userId: number): Observable<UserDetailsDTO> {
+    return this.http
+      .get<UserDetailsDTO>(`${this.env.apiBaseUrl}${this.USER_DETAILS_PATH}/${userId}`)
       .pipe(catchError((error) => throwError(error as ConcenetError)));
   }
 }

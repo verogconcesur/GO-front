@@ -15,6 +15,6 @@ import { ProgressSpinnerDialogService } from './services/progress-spinner-dialog
   declarations: [ProgressSpinnerDialogComponent, ConfirmDialogComponent, GoBackComponent],
   imports: [TranslateModule, CommonModule, MaterialModule, FlexLayoutModule, ReactiveFormsModule, TranslateModule],
   providers: [GlobalMessageService, ConfirmDialogService, ProgressSpinnerDialogService],
-  exports: [TranslateModule, MaterialModule, FlexLayoutModule, ReactiveFormsModule, GoBackComponent]
+  exports: [TranslateModule, MaterialModule, FlexLayoutModule, ReactiveFormsModule, GoBackComponent, CommonModule]
 })
 export class SharedModule {}

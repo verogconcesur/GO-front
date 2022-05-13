@@ -40,14 +40,16 @@
         </button>
         <!-- END Responsive search input -->
         <button mat-icon-button aria-label="Email">
-            <mat-icon>alternate_email</mat-icon>
+            <!-- TODO: JF Put ngClass to handle the proper icon, when there will comments from the backend side -->
+            <mat-icon fontSet="concenet">comments</mat-icon>
         </button>
         <button mat-icon-button aria-label="Notification">
-            <mat-icon>notifications</mat-icon>
+            <!-- TODO: JF Put ngClass to handle the proper icon, when there will notifications from the backend side -->
+            <mat-icon fontSet="concenet">notifications-on</mat-icon>
         </button>
-        <button mat-icon-button [matMenuTriggerFor]="profileMenu" aria-label="Profile">
-            <mat-icon>person</mat-icon>
-        </button>
+
+        <!-- User Profile Component -->
+        <app-user-profile></app-user-profile>
     </div>
 </mat-toolbar>
 
@@ -69,9 +71,3 @@
     </button>
 </mat-menu>
 
-<mat-menu #profileMenu="matMenu">
-    <button mat-menu-item (click)="doLogout()">
-        <mat-icon>exit_to_app</mat-icon>
-        <span>{{ labels.logout | translate }}</span>
-    </button>
-</mat-menu>
