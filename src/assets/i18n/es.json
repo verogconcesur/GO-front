@@ -1,59 +1,59 @@
 {
-	"app": {
-		"menu": {
-			"administration": "Administración",
-			"advanceSearch": "Búsqueda avanzada",
-			"clients": "Clientes",
-			"vehicles": "Vehículos",
-			"workflow": "Workflow"
-		},
-		"title": "Concenet"
-	},
-	"common": {
+  "app": {
+    "menu": {
+      "administration": "Administración",
+      "advanceSearch": "Búsqueda avanzada",
+      "clients": "Clientes",
+      "vehicles": "Vehículos",
+      "workflow": "Workflow"
+    },
+    "title": "Concenet"
+  },
+  "common": {
 		"cancel": "Cancelar",
 		"save": "Guardar",
-		"search": "Buscar"
-	},
-	"confirmdialog": {
-		"no": "No",
-		"yes": "Sí"
-	},
-	"login": {
-		"description": "Por favor, introduzca sus credenciales",
-		"email": "Nombre de usuario",
-		"forgotPassword": "¿Has olvidado tu contraseña?",
-		"password": "Contraseña",
-		"passwordRequired": "La contraseña es obligatoria",
-		"recoverpassword": {
-			"description": "Introduce tu nombre de usuario y te enviaremos las instrucciones para restablecer tu contraseña.",
-			"email": "Reestablecimiento de contraseña realizado correctamente, revise su bandeja de entrada",
-			"restore": "Restablecer contraseña",
-			"title": "¿Has olvidado tu contraseña?",
-			"userName": "Nombre de usuario",
-			"userNameRequired": "El nombre de usuario es obligatorio"
-		},
-		"restorePassword": {
-			"changedSuccesfully": "La contraseña se ha modificado correctamente",
-			"description": "Establece una nueva contraseña y recupera acceso a tu cuenta.",
-			"password1": "Nueva contraseña",
-			"password2": "Repite nueva contraseña",
-			"passwordMatch": "La contraseña debe coincidir",
-			"passwordPattern": "La contraseña debe contener al menos un número, una letra mayúscula, un símbolo y su loguitud debe ser entre 8 y 50 caracteres.",
-			"passwordRequired": "La contraseña es obligatoria",
-			"save": "Guardar nueva contraseña",
-			"title": "Nueva contraseña",
-			"userName": "Usuario",
-			"userNameRequired": "El nombre de usuario es obligatorio"
-		},
-		"signIn": "Iniciar sesión",
-		"title": "Inicia sesión",
-		"userNameRequired": "El nombre de usuario es obligatorio"
-	},
-	"logout": {
-		"logout": "Cerrar sesión"
-	},
-	"sample": {
-		"text": "{count, plural, =0{No hay} one{Hay una} other{Hay varias}} {count, plural, =0{nada} one{cosa} other{cosas}}"
+    "search": "Buscar"
+  },
+  "confirmdialog": {
+    "no": "No",
+    "yes": "Sí"
+  },
+  "login": {
+    "description": "Por favor, introduzca sus credenciales",
+    "email": "Nombre de usuario",
+    "forgotPassword": "¿Has olvidado tu contraseña?",
+    "password": "Contraseña",
+    "passwordRequired": "La contraseña es obligatoria",
+    "recoverpassword": {
+      "description": "Introduce tu nombre de usuario y te enviaremos las instrucciones para restablecer tu contraseña.",
+      "email": "Reestablecimiento de contraseña realizado correctamente, revise su bandeja de entrada",
+      "restore": "Restablecer contraseña",
+      "title": "¿Has olvidado tu contraseña?",
+      "userName": "Nombre de usuario",
+      "userNameRequired": "El nombre de usuario es obligatorio"
+    },
+    "restorePassword": {
+      "changedSuccesfully": "La contraseña se ha modificado correctamente",
+      "description": "Establece una nueva contraseña y recupera acceso a tu cuenta.",
+      "password1": "Nueva contraseña",
+      "password2": "Repite nueva contraseña",
+      "passwordMatch": "La contraseña debe coincidir",
+      "passwordPattern": "La contraseña debe contener al menos un número, una letra mayúscula, un símbolo y su loguitud debe ser entre 8 y 50 caracteres.",
+      "passwordRequired": "La contraseña es obligatoria",
+      "save": "Guardar nueva contraseña",
+      "title": "Nueva contraseña",
+      "userName": "Usuario",
+      "userNameRequired": "El nombre de usuario es obligatorio"
+    },
+    "signIn": "Iniciar sesión",
+    "title": "Inicia sesión",
+    "userNameRequired": "El nombre de usuario es obligatorio"
+  },
+  "logout": {
+    "logout": "Cerrar sesión"
+  },
+  "sample": {
+    "text": "{count, plural, =0{No hay} one{Hay una} other{Hay varias}} {count, plural, =0{nada} one{cosa} other{cosas}}"
 	},
 	"user": {
 		"myProfile": {
@@ -81,5 +81,5 @@
 		"specialty": "Especialidad",
 		"title": "Tu perfil",
 		"userName": "Nombre de usuario"
-	}
+  }
 }

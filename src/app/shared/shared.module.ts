@@ -22,8 +22,8 @@ import { CustomDialogModule } from './modules/custom-dialog/custom-dialog.module
     MaterialModule,
     FlexLayoutModule,
     ReactiveFormsModule,
-    CustomDialogModule,
     GoBackComponent,
+    CommonModule,
     MyProfileComponent
   ]
 })
