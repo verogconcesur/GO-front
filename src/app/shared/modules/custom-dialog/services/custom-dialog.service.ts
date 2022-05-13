@@ -9,15 +9,15 @@ export class CustomDialogService {
   constructor(private dialog: MatDialog) {}
 
   /**
-   * Open a custom dialog
+   * @functio open a custom dialog
    *
-   * @param config custom configuration options
+   * @param config: CustomDialogConfigI
    *
    * @returns an `Observable<any>` which will be resolved
    */
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   public open(config: CustomDialogConfigI): Observable<any> {
-    const { maxWidth, minWidth, width, disableClose, component, id, panelClass } = config;
+    const { maxWidth, minWidth, width, disableClose, component, id, panelClass, extendedComponentData } = config;
     const dialogRef = this.dialog.open(CustomDialogComponent, {
       id,
       panelClass,
@@ -26,13 +26,18 @@ export class CustomDialogService {
       width,
       disableClose,
       data: {
-        component
+        component,
+        extendedComponentData
       }
     });
 
     return dialogRef.afterClosed();
   }
 
+  /**
+   * @function close
+   * @param id of the dialog to close
+   */
   public close(id: string): void {
     this.dialog.getDialogById(id).close();
   }

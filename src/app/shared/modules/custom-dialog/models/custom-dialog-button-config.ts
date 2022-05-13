@@ -1,5 +1,9 @@
-import { CustomDialogButtonConfigI } from '../interfaces/custom-dialog.button';
+import { CustomDialogButtonConfigI } from '../interfaces/custom-dialog-button-config';
 
+/**
+ * @class CustomDialogButtonConfig
+ * @implements CustomDialogButtonConfigI
+ */
 export class CustomDialogButtonConfig implements CustomDialogButtonConfigI {
   public type: 'close' | 'submit' | 'custom';
   public design: '' | 'raised' | 'stroked' | 'flat' | 'icon' | 'fab' | 'mini-fab';
@@ -14,6 +18,10 @@ export class CustomDialogButtonConfig implements CustomDialogButtonConfigI {
   public clickFn: () => void;
   private errorMessage = 'Error creating button:';
 
+  /**
+   * @constructor CustomDialogButtonConfig
+   * @param config: CustomDialogButtonConfigI
+   */
   constructor(config: CustomDialogButtonConfigI) {
     this.type = config.type;
     this.design = config.design ? config.design : '';
@@ -33,9 +41,16 @@ export class CustomDialogButtonConfig implements CustomDialogButtonConfigI {
       throw new Error(`${this.errorMessage} Button type 'custom' requires to define a 'clickFn' function`);
     } else if (!this.iconName && this.iconFontSet) {
       throw new Error(`${this.errorMessage} Icon fontset defined but not 'iconName' found`);
+    } else if (this.disabledFn && this.disabledFn.toString().indexOf('=>') === -1) {
+      throw new Error(`${this.errorMessage} disabledFn must be an arrow function`);
+    } else if (this.hiddenFn && this.hiddenFn.toString().indexOf('=>') === -1) {
+      throw new Error(`${this.errorMessage} hiddenFn must be an arrow function`);
+    } else if (this.clickFn && this.clickFn.toString().indexOf('=>') === -1) {
+      throw new Error(`${this.errorMessage} clickFn must be an arrow function`);
     }
   }
 
+  //Return the class to use in the button
   public getClass() {
     switch (this.design) {
       case 'raised':

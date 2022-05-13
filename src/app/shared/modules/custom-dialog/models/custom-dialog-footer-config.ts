@@ -1,11 +1,19 @@
 import { CustomDialogButtonConfig } from './custom-dialog-button-config';
 import { CustomDialogFooterConfigI } from '../interfaces/custom-dialog-footer-config';
 
+/**
+ * @class CustomDialogFooterConfig
+ * @implements CustomDialogFooterConfigI
+ */
 export class CustomDialogFooterConfig implements CustomDialogFooterConfigI {
   public show = false;
   public leftSideButtons: CustomDialogButtonConfig[] = [];
   public rightSideButtons: CustomDialogButtonConfig[] = [];
 
+  /**
+   * @constructs CustomDialogFooterConfig
+   * @param config: CustomDialogFooterConfigI
+   */
   constructor(config: CustomDialogFooterConfigI) {
     try {
       if (config && config.show) {

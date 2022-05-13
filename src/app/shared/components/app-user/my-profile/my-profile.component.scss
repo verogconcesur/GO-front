@@ -1,0 +1,38 @@
+@import 'utils/core';
+
+.profile-content {
+  padding-right: 15px;
+  .profile-content__form {
+    .user-data__section {
+      &__title {
+        margin: 15px 0 5px 0;
+        &.first-child {
+          margin-top: 0px;
+        }
+      }
+      &__group {
+        &__title {
+          padding-bottom: 0px;
+          text-transform: uppercase;
+          margin-bottom: 0px;
+          padding-right: 0.5rem;
+          &::after {
+            content: ':';
+          }
+        }
+
+        &__content {
+          margin-bottom: 0px;
+          padding-right: 0.5rem;
+
+          &::after {
+            content: ',';
+          }
+          &:last-child:after {
+            content: '';
+          }
+        }
+      }
+    }
+  }
+}

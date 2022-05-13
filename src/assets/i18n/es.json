@@ -57,7 +57,29 @@
 	},
 	"user": {
 		"myProfile": {
+			"edit": "Editar perfil",
 			"title": "Mí perfil"
 		}
+	},
+	"userProfile": {
+		"brand": "Marca",
+		"data": "Datos generales",
+		"department": "Departamento",
+		"edit": "Editar perfil",
+		"email": "Email",
+		"facility": "Instalaciones",
+		"firstName": "Apellido 1",
+		"firstNameRequired": "El primer apellido es obligatorio",
+		"lastName": "Apellidos",
+		"lastName2": "Apellido 2",
+		"name": "Nombre",
+		"nameRequired": "El nombre es obligatorio",
+		"nick": "Nick",
+		"organization": "Organizacion",
+		"role": "Rol",
+		"sign": "Firma",
+		"specialty": "Especialidad",
+		"title": "Tu perfil",
+		"userName": "Nombre de usuario"
 	}
 }

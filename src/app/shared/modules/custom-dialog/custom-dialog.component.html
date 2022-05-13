@@ -1,7 +1,9 @@
 <div class="custom-dialog">
     <app-custom-dialog-header [config]="headerConfig" (close)="closeAction()"></app-custom-dialog-header>
     <mat-divider class="custom-dialog__divider"></mat-divider>
-    <ng-container #customContainerRef></ng-container>
+    <div class="custom-dialog__content">
+        <ng-container #customContainerRef></ng-container>
+    </div>
     <mat-divider class="custom-dialog__divider"></mat-divider>
     <app-custom-dialog-footer
         [config]="footerConfig"

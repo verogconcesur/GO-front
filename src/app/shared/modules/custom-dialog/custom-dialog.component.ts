@@ -1,6 +1,6 @@
 import { AfterViewInit, Component, ComponentRef, Inject, OnDestroy, ViewChild, ViewContainerRef } from '@angular/core';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
-import { ComponentForCustomDialog } from './models/component-for-custom-dialog';
+import { ComponentToExtendForCustomDialog } from './models/component-for-custom-dialog';
 import { CustomDialogConfigI } from './interfaces/custom-dialog-config';
 import { CustomDialogHeaderConfigI } from './interfaces/custom-dialog-header-config';
 import { take } from 'rxjs/operators';
@@ -17,11 +17,10 @@ export class CustomDialogComponent implements AfterViewInit, OnDestroy {
   @ViewChild('customContainerRef', { read: ViewContainerRef, static: true }) public dynamicViewContainer: ViewContainerRef;
   public headerConfig: CustomDialogHeaderConfigI = {};
   public footerConfig: CustomDialogFooterConfig = null;
-  private modalId: string;
-  private componentRef: ComponentRef<ComponentForCustomDialog> = null;
+  private componentRef: ComponentRef<ComponentToExtendForCustomDialog> = null;
 
   constructor(
-    public dialogRef: MatDialogRef<ComponentForCustomDialog>,
+    public dialogRef: MatDialogRef<ComponentToExtendForCustomDialog>,
     private customDialogService: CustomDialogService,
     @Inject(MAT_DIALOG_DATA) public config: CustomDialogConfigI
   ) {}
@@ -43,7 +42,7 @@ export class CustomDialogComponent implements AfterViewInit, OnDestroy {
         .subscribe({
           next: ok => {
             if (ok) {
-              this.close();
+              this.close(false);
             }
           },
           error: (error: ConcenetError) => {
@@ -51,7 +50,7 @@ export class CustomDialogComponent implements AfterViewInit, OnDestroy {
           }
         });
     } else {
-      this.close();
+      this.close(false);
     }
   }
 
@@ -63,7 +62,7 @@ export class CustomDialogComponent implements AfterViewInit, OnDestroy {
         .subscribe({
           next: ok => {
             if (ok) {
-              this.close();
+              this.close(ok);
             }
           },
           error: (error: ConcenetError) => {
@@ -71,14 +70,16 @@ export class CustomDialogComponent implements AfterViewInit, OnDestroy {
           }
         });
     } else {
-      this.close();
+      this.close(true);
     }
   }
 
   private loadInnerModalComponent(): void {
     this.componentRef = this.dynamicViewContainer.createComponent(this.config.component);
     this.componentRef.instance.setModalModeActive(true);
-    this.modalId = this.componentRef.instance.MODAL_ID;
+    if (this.config.extendedComponentData) {
+      this.componentRef.instance.extendedComponentData = this.config.extendedComponentData;
+    }
   }
 
   private getComponentConfiguration(): void {
@@ -86,7 +87,7 @@ export class CustomDialogComponent implements AfterViewInit, OnDestroy {
     this.footerConfig = new CustomDialogFooterConfig(this.componentRef.instance.setAndGetFooterConfig());
   }
 
-  private close(): void {
-    this.customDialogService.close(this.modalId);
+  private close(result: boolean): void {
+    this.dialogRef.close(result);
   }
 }

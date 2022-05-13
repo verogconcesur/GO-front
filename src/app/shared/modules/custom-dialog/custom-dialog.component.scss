@@ -1,4 +1,10 @@
 .custom-dialog {
+  &__content {
+    // TODO: DGDC el max-height habría que calcularlo en funcion de si tiene cabecera y footer
+    max-height: 67vh;
+    overflow-y: auto;
+    overflow-x: hidden;
+  }
   &__divider {
     margin: 15px 0;
     padding: 0;

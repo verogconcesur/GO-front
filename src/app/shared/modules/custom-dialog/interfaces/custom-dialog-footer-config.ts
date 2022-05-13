@@ -1,10 +1,10 @@
-import { CustomDialogButtonConfigI } from './custom-dialog.button';
+import { CustomDialogButtonConfigI } from './custom-dialog-button-config';
 
 /**
- * CustomDialogFooterConfigI
- * show: boolean;
- * leftSideButtons?: CustomDialogButtonConfigI[];
- * rightSideButtons?: CustomDialogButtonConfigI[];
+ * @interface CustomDialogFooterConfigI
+ * - show: boolean;
+ * - leftSideButtons?: CustomDialogButtonConfigI[];
+ * - rightSideButtons?: CustomDialogButtonConfigI[];
  */
 export interface CustomDialogFooterConfigI {
   show: boolean;
