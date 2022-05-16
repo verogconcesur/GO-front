@@ -44,6 +44,7 @@ export class MyProfileComponent extends ComponentToExtendForCustomDialog impleme
     specialty: marker('userProfile.specialty'),
     nameRequired: marker('userProfile.nameRequired'),
     firstNameRequired: marker('userProfile.firstNameRequired'),
+    password: marker('login.password'),
     password1: marker('login.restorePassword.password1'),
     password2: marker('login.restorePassword.password2'),
     passwordRequired: marker('login.restorePassword.passwordRequired'),
@@ -70,7 +71,7 @@ export class MyProfileComponent extends ComponentToExtendForCustomDialog impleme
   }
 
   public confirmCloseCustomDialog(): Observable<boolean> {
-    if (this.profileForm.touched || this.profileForm.dirty) {
+    if (this.profileForm.touched && this.profileForm.dirty) {
       return this.confirmDialogService.open({
         title: this.translateService.instant(marker('common.warning')),
         message: this.translateService.instant(marker('common.unsavedChangesExit'))
@@ -111,7 +112,7 @@ export class MyProfileComponent extends ComponentToExtendForCustomDialog impleme
           label: marker('common.save'),
           design: 'raised',
           color: 'primary',
-          disabledFn: () => !(this.profileForm.touched && this.profileForm.valid)
+          disabledFn: () => !(this.profileForm.touched && this.profileForm.dirty && this.profileForm.valid)
         }
       ]
     };
@@ -131,7 +132,8 @@ export class MyProfileComponent extends ComponentToExtendForCustomDialog impleme
 
   private showPasswordFieldsAndSet = () => {
     this.profileForm.get('password').setValue('');
-    this.profileForm.get('passwordConfirmation').setValue('');
+    this.profileForm.get('newPassword').setValue('');
+    this.profileForm.get('newPasswordConfirmation').setValue('');
     this.showPasswordFields = true;
   };
 
@@ -144,8 +146,9 @@ export class MyProfileComponent extends ComponentToExtendForCustomDialog impleme
         email: [{ value: this.userDetails.email, disabled: true }, Validators.required],
         userName: [{ value: this.userDetails.userName, disabled: true }, Validators.required],
         role: [{ value: this.userDetails.role.name, disabled: true }, Validators.required],
-        password: [this.userDetails.password, [Validators.required, Validators.pattern(passwordPattern)]],
-        passwordConfirmation: [this.userDetails.password, Validators.required],
+        password: [this.userDetails.password, Validators.required],
+        newPassword: [this.userDetails.password, [Validators.required, Validators.pattern(passwordPattern)]],
+        newPasswordConfirmation: [this.userDetails.password, Validators.required],
         brands: [
           {
             value: this.userDetails.brands.reduce((prev, curr) => (prev ? `${prev}, ${curr.name}` : curr.name), ''),
@@ -173,7 +176,7 @@ export class MyProfileComponent extends ComponentToExtendForCustomDialog impleme
         // firma: [null, Validators.required]
       },
       {
-        validators: ConfirmPasswordValidator.mustMatch('password', 'passwordConfirmation')
+        validators: ConfirmPasswordValidator.mustMatch('newPassword', 'newPasswordConfirmation')
       }
     );
   }
