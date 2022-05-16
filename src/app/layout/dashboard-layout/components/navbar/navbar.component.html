@@ -27,7 +27,7 @@
     <!-- Right side -->
     <div fxLayout="row" class="navbar__right" fxLayoutAlign="end center">
         <!-- Responsive search input -->
-        <div class="responsive__desktop-large">
+        <div class="responsive__tablet_or_more">
             <form class="navbar__search" fxLayout="row" fxLayoutAlign="end center">
                 <mat-form-field class="example-full-width" appearance="outline">
                     <input matInput [placeholder]="labels.search | translate" />
@@ -35,7 +35,7 @@
                 </mat-form-field>
             </form>
         </div>
-        <button class="responsive__less-than-desktop-large" mat-icon-button aria-label="Search">
+        <button class="responsive__less-than-tablet" mat-icon-button aria-label="Search">
             <mat-icon>search</mat-icon>
         </button>
         <!-- END Responsive search input -->
@@ -70,4 +70,3 @@
         <span>{{ labels.administration | translate }}</span>
     </button>
 </mat-menu>
-
