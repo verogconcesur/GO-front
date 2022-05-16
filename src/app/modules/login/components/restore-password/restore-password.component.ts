@@ -12,6 +12,7 @@ import { GlobalMessageService } from '@shared/services/global-message.service';
 import { ProgressSpinnerDialogService } from '@shared/services/progress-spinner-dialog.service';
 import ConfirmPasswordValidator from '@shared/validators/confirm-password.validator';
 import { finalize } from 'rxjs/operators';
+import { passwordPattern } from '@app/constants/patterns.constants';
 
 @UntilDestroy()
 @Component({
@@ -68,32 +69,30 @@ export class RestorePasswordComponent implements OnInit {
         })
       )
       .subscribe({
-        next: (response) => {
+        next: response => {
           this.changePasswordSuccessfully(response);
         },
-        error: (error) => {
+        error: error => {
           this.changePasswordError(error);
         }
       });
   }
 
   private initializeForm(): void {
-    const passPattern = new RegExp('^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[@#$%^&*])(?=.{8,})');
-
     this.restorePasswordForm = this.fb.group(
       {
         userName: ['', Validators.required],
-        pass: ['', [Validators.required, Validators.pattern(passPattern)]],
+        pass: ['', [Validators.required, Validators.pattern(passwordPattern)]],
         passConfirmation: ['', Validators.required]
       },
       {
-        validator: ConfirmPasswordValidator.mustMatch('pass', 'passConfirmation')
+        validators: ConfirmPasswordValidator.mustMatch('pass', 'passConfirmation')
       }
     );
   }
 
   private getHashFromURL(): void {
-    this.route.queryParams.pipe(untilDestroyed(this)).subscribe((params) => {
+    this.route.queryParams.pipe(untilDestroyed(this)).subscribe(params => {
       this.hash = params.hash;
     });
   }

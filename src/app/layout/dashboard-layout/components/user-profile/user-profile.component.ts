@@ -8,6 +8,9 @@ import UserDetailsDTO from '@data/models/user-details-dto';
 import { UserService } from '@data/services/user.service';
 import { GlobalMessageService } from '@shared/services/global-message.service';
 import { ProgressSpinnerDialogService } from '@shared/services/progress-spinner-dialog.service';
+import { CustomDialogService } from '@shared/modules/custom-dialog/services/custom-dialog.service';
+import { MyProfileComponent, MyProfileComponentModalEnum } from '@shared/components/app-user/my-profile/my-profile.component';
+import { take } from 'rxjs/operators';
 
 @Component({
   selector: 'app-user-profile',
@@ -44,7 +47,8 @@ export class UserProfileComponent implements OnInit {
     private userService: UserService,
     private globalMessageService: GlobalMessageService,
     private authenticationService: AuthenticationService,
-    private spinnerService: ProgressSpinnerDialogService
+    private spinnerService: ProgressSpinnerDialogService,
+    private customDialogService: CustomDialogService
   ) {}
 
   ngOnInit(): void {
@@ -55,7 +59,7 @@ export class UserProfileComponent implements OnInit {
     const userId = Number(this.authenticationService.getUserId());
 
     this.userService.getUserDetailsById(userId).subscribe({
-      next: (response) => {
+      next: response => {
         this.userDetails = response;
       },
       error: (error: ConcenetError) => {
@@ -71,6 +75,19 @@ export class UserProfileComponent implements OnInit {
 
   public get showSpinner(): boolean {
     return !this.userDetails && !this.error;
+  }
+
+  public showEditProfileDialog(): void {
+    this.customDialogService
+      .open({
+        component: MyProfileComponent,
+        extendedComponentData: this.userDetails,
+        id: MyProfileComponentModalEnum.ID,
+        panelClass: MyProfileComponentModalEnum.PANEL_CLASS,
+        minWidth: '300px',
+        disableClose: true
+      })
+      .pipe(take(1));
   }
 
   public doLogout(): void {

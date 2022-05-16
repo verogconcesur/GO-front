@@ -1,72 +1,82 @@
 {
-  "app": {
-    "menu": {
-      "administration": "Administration",
-      "advanceSearch": "Advanced search",
-      "clients": "Clients",
-      "vehicles": "Vehicles",
-      "workflow": "Workflow"
-    },
-    "title": "Concenet"
-  },
-  "common": {
-    "search": "Search"
-  },
-  "confirmdialog": {
-    "no": "No",
-    "yes": "Yes"
-  },
-  "login": {
-    "description": "Please enter your credentials",
-    "email": "Username",
-    "forgotPassword": "have you forgotten your password?",
-    "password": "Password",
-    "passwordRequired": "Password is required",
-    "recoverpassword": {
-      "description": "Enter your user name and we will send you the instructions to reset your password.",
-      "email": "Password reset successful, please check your inbox",
-      "restore": "Restore password",
-      "title": "Have you forgotten your password?",
-      "userName": "Username",
-      "userNameRequired": "Username is required"
-    },
-    "restorePassword": {
-      "changedSuccesfully": "Password has been succesfully modified",
-      "description": "Establish a new password and recover access to your account",
-      "password1": "New password",
-      "password2": "Repeat new password",
-      "passwordMatch": "Password must match",
-      "passwordPattern": "The password must contain at least one number, one capital letter, one symbol and its length must be between 8 and 50 characters.",
-      "passwordRequired": "The password is mandatory.",
-      "save": "Save new password",
-      "title": "New password",
-      "userName": "User name",
-      "userNameRequired": "Username is required"
-    },
-    "signIn": "Log in",
-    "title": "Log in",
-    "userNameRequired": "Username is required"
-  },
-  "logout": {
-    "logout": "Log out"
-  },
-  "sample": {
-    "text": "There {count, plural, =0{is} one{is} other{are}} {count, plural, =0{} one{a} other{several}} {count, plural, =0{nothing} one{thing} other{things}}"
-  },
-  "userProfile": {
-    "brand": "Brand",
-    "data": "General data",
-    "department": "Department",
-    "edit": "Edit profile",
-    "email": "Email",
-    "facility": "Facilities",
-    "lastName": "Last name",
-    "name": "Name",
-    "nick": "Nick",
-    "organization": "Organization",
-    "role": "Role",
-    "sign": "Sign",
-    "specialty": "Specialty",
-    "title": "Your profile"
-  }
+	"app": {
+		"menu": {
+			"administration": "Administration",
+			"advanceSearch": "Advanced search",
+			"clients": "Clients",
+			"vehicles": "Vehicles",
+			"workflow": "Workflow"
+		},
+		"title": "Concenet"
+	},
+	"common": {
+		"cancel": "Cancel",
+		"save": "Save",
+		"search": "Search",
+		"unsavedChangesExit": "There are unsaved changes, do you want to continue?",
+		"warning": "Warning"
+	},
+	"confirmdialog": {
+		"no": "No",
+		"yes": "Yes"
+	},
+	"login": {
+		"description": "Please enter your credentials",
+		"email": "Username",
+		"forgotPassword": "have you forgotten your password?",
+		"password": "Password",
+		"passwordRequired": "Password is required",
+		"recoverpassword": {
+			"description": "Enter your user name and we will send you the instructions to reset your password.",
+			"email": "Password reset successful, please check your inbox",
+			"restore": "Restore password",
+			"title": "Have you forgotten your password?",
+			"userName": "Username",
+			"userNameRequired": "Username is required"
+		},
+		"restorePassword": {
+			"changedSuccesfully": "Password has been succesfully modified",
+			"description": "Establish a new password and recover access to your account",
+			"password1": "New password",
+			"password2": "Repeat new password",
+			"passwordMatch": "Password must match",
+			"passwordPattern": "The password must contain at least one number, one capital letter, one symbol and its length must be between 8 and 50 characters.",
+			"passwordRequired": "The password is mandatory.",
+			"save": "Save new password",
+			"title": "New password",
+			"userName": "User name",
+			"userNameRequired": "Username is required"
+		},
+		"signIn": "Log in",
+		"title": "Log in",
+		"userNameRequired": "Username is required"
+	},
+	"logout": {
+		"logout": "Log out"
+	},
+	"sample": {
+		"text": "There {count, plural, =0{is} one{is} other{are}} {count, plural, =0{} one{a} other{several}} {count, plural, =0{nothing} one{thing} other{things}}"
+	},
+	"userProfile": {
+		"brand": "Brand",
+		"changePassword": "Change password",
+		"data": "General data",
+		"department": "Department",
+		"edit": "Edit profile",
+		"email": "Email",
+		"facility": "Facilities",
+		"firstName": "Last name 1",
+		"firstNameRequired": "Last name 1 required",
+		"lastName": "Last name",
+		"lastName2": "Last name 2",
+		"name": "Name",
+		"nameRequired": "Name required",
+		"nick": "Nick",
+		"organization": "Organization",
+		"role": "Role",
+		"sign": "Sign",
+		"specialty": "Specialty",
+		"title": "Your profile",
+		"userName": "User name"
+	}
 }

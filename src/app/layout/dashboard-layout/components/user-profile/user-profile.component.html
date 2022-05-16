@@ -104,7 +104,7 @@
     <div class="actions-divider"></div>
 
     <!-- Actions -->
-    <button mat-menu-item class="edit-profile-btn">
+    <button mat-menu-item (click)="showEditProfileDialog()" class="edit-profile-btn">
         <!-- <mat-icon>edit</mat-icon> -->
         <span>{{ labels.edit | translate }}</span>
     </button>
