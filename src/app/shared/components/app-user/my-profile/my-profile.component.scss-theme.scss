@@ -2,7 +2,6 @@
 
 @mixin my-profile-component-theme($theme, $main-typo) {
   $primary: map-get($theme, primary);
-  $warn: map-get($theme, warn);
   $foreground: map-get($theme, foreground);
 
   .profile-content {

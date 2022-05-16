@@ -6,7 +6,7 @@
                 <div class="login-content__title mat-display-2">{{ labels.title | translate }}</div>
                 <div class="login-content__description mat-subheading-2">{{ labels.description | translate }}</div>
 
-                <form [formGroup]="loginForm">
+                <form [formGroup]="loginForm" *ngIf="loginForm">
                     <!-- userName -->
                     <div>
                         <mat-form-field appearance="outline" class="login-content__input userName-input">

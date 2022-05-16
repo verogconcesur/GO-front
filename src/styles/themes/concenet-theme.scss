@@ -31,13 +31,13 @@ $concenet-theme-colors: (
     800: #ffffff,
     900: #000000,
     // Used like black
-    A100: #000000,
+      A100: #000000,
     A200: #000000,
     A400: #ffffff,
     A700: #ffffff,
     statusNeutral: #fff,
     //Used like WHITE
-    statusSuccess: #fff,
+      statusSuccess: #fff,
     statusWarning: #fff,
     statusError: #fff
   )
@@ -114,7 +114,7 @@ $concenet-background: (
   disabled-list-option: map-get($mat-grey, 200),
   tooltip: map-get($mat-grey, 700),
   icon-background: rgba(black, 0.5),
-  note-background: #f7f7f7,
+  note-background: rgba(#fff, 0.9),
   version-chip: #f2f2f2,
   snackbar: #454751
 );

@@ -1,7 +1,7 @@
 <button
     mat-button
     *ngFor="let button of buttons"
-    [class]="button.getClass()"
+    [class]="'custom-dialog__button ' + button.getClass()"
     [color]="button.color"
     [disabled]="button.disabledFn()"
     [style.visibility]="button.hiddenFn() ? 'hidden' : 'visible'"

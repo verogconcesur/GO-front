@@ -6,6 +6,12 @@ import { CustomDialogFooterConfigI } from '@shared/modules/custom-dialog/interfa
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { ProgressSpinnerDialogService } from '@shared/services/progress-spinner-dialog.service';
 import UserDTO from '@data/models/user-dto';
+import UserDetailsDTO from '@data/models/user-details-dto';
+import { ConfirmDialogService } from '@shared/services/confirm-dialog.service';
+import { take } from 'rxjs/operators';
+import { TranslateService } from '@ngx-translate/core';
+import ConfirmPasswordValidator from '@shared/validators/confirm-password.validator';
+import { passwordPattern } from '@app/constants/patterns.constants';
 
 export const enum MyProfileComponentModalEnum {
   ID = 'my-profile-dialog-id',
@@ -37,18 +43,24 @@ export class MyProfileComponent extends ComponentToExtendForCustomDialog impleme
     department: marker('userProfile.department'),
     specialty: marker('userProfile.specialty'),
     nameRequired: marker('userProfile.nameRequired'),
-    firstNameRequired: marker('userProfile.firstNameRequired')
+    firstNameRequired: marker('userProfile.firstNameRequired'),
+    password1: marker('login.restorePassword.password1'),
+    password2: marker('login.restorePassword.password2'),
+    passwordRequired: marker('login.restorePassword.passwordRequired'),
+    passwordPattern: marker('login.restorePassword.passwordPattern'),
+    passwordMatch: marker('login.restorePassword.passwordMatch')
   };
 
-  public panelDataOpenState = true;
-  public panelOrganizationOpenState = true;
-  public panelSignOpenState = true;
-
+  public showPasswordFields = false;
   public profileForm: FormGroup;
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  public userDetails: any = null;
+  public userDetails: UserDetailsDTO = null;
 
-  constructor(private fb: FormBuilder, private spinnerService: ProgressSpinnerDialogService) {
+  constructor(
+    private fb: FormBuilder,
+    private spinnerService: ProgressSpinnerDialogService,
+    private confirmDialogService: ConfirmDialogService,
+    private translateService: TranslateService
+  ) {
     super(MyProfileComponentModalEnum.ID, MyProfileComponentModalEnum.PANEL_CLASS, marker(MyProfileComponentModalEnum.TITLE));
   }
 
@@ -58,15 +70,20 @@ export class MyProfileComponent extends ComponentToExtendForCustomDialog impleme
   }
 
   public confirmCloseCustomDialog(): Observable<boolean> {
-    //TODO: DGDC confirmar que se puede cerrar la modal
-    console.log('My profile confirmCloseCustomDialog');
-    return of(true);
+    if (this.profileForm.touched || this.profileForm.dirty) {
+      return this.confirmDialogService.open({
+        title: this.translateService.instant(marker('common.warning')),
+        message: this.translateService.instant(marker('common.unsavedChangesExit'))
+      });
+    } else {
+      return of(true);
+    }
   }
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   public onSubmitCustomDialog(): Observable<any> {
-    //TODO: DGDC realizar las acciones necesarias para confirmar cambios si los hay y cerrar modal
-    console.log('My profile onSubmitCustomDialog');
+    //TODO: DGDC invocar función para guardar cambios
+    console.log('My profile onSubmitCustomDialog - saving: ', { ...this.userDetails, ...this.profileForm.value });
     return of(true);
   }
 
@@ -77,8 +94,15 @@ export class MyProfileComponent extends ComponentToExtendForCustomDialog impleme
         {
           type: 'close',
           label: marker('common.cancel'),
-          iconName: 'close',
           design: 'stroked'
+        },
+        {
+          type: 'custom',
+          label: marker('userProfile.changePassword'),
+          design: 'stroked',
+          color: 'warn',
+          clickFn: this.showPasswordFieldsAndSet,
+          hiddenFn: () => this.showPasswordFields
         }
       ],
       rightSideButtons: [
@@ -86,29 +110,71 @@ export class MyProfileComponent extends ComponentToExtendForCustomDialog impleme
           type: 'submit',
           label: marker('common.save'),
           design: 'raised',
-          color: 'primary'
+          color: 'primary',
+          disabledFn: () => !(this.profileForm.touched && this.profileForm.valid)
         }
       ]
     };
   }
 
+  // Convenience getter for easy access to form fields
+  get form() {
+    return this.profileForm.controls;
+  }
+
+  public disableTooltip(value: string): boolean {
+    if (value && value.length > 22) {
+      return false;
+    }
+    return true;
+  }
+
+  private showPasswordFieldsAndSet = () => {
+    this.profileForm.get('password').setValue('');
+    this.profileForm.get('passwordConfirmation').setValue('');
+    this.showPasswordFields = true;
+  };
+
   private initializeForm(): void {
-    this.profileForm = this.fb.group({
-      id: [{ value: this.userDetails.id, disabled: true }, Validators.required],
-      name: [this.userDetails.name, Validators.required],
-      firstName: [this.userDetails.firstName, Validators.required],
-      lastName: [this.userDetails.lastName],
-      email: [{ value: this.userDetails.email, disabled: true }, Validators.required],
-      userName: [{ value: this.userDetails.userName, disabled: true }, Validators.required],
-      password: [this.userDetails.password, Validators.required],
-      passwordConfirmation: [this.userDetails.password, Validators.required],
-      role: [{ value: this.userDetails.role.name, disabled: true }, Validators.required],
-      marcas: [{ value: this.userDetails.marcas, disabled: true }, Validators.required],
-      instalaciones: [{ value: this.userDetails.instalaciones, disabled: true }, Validators.required],
-      departamentos: [{ value: this.userDetails.departamentos, disabled: true }, Validators.required],
-      especialidades: [{ value: this.userDetails.especialidades, disabled: true }, Validators.required],
-      firma: [this.userDetails.firma, Validators.required]
-    });
-    console.log(this.userDetails, this.profileForm);
+    this.profileForm = this.fb.group(
+      {
+        name: [this.userDetails.name, Validators.required],
+        firstName: [this.userDetails.firstName],
+        lastName: [this.userDetails.lastName],
+        email: [{ value: this.userDetails.email, disabled: true }, Validators.required],
+        userName: [{ value: this.userDetails.userName, disabled: true }, Validators.required],
+        role: [{ value: this.userDetails.role.name, disabled: true }, Validators.required],
+        password: [this.userDetails.password, [Validators.required, Validators.pattern(passwordPattern)]],
+        passwordConfirmation: [this.userDetails.password, Validators.required],
+        brands: [
+          {
+            value: this.userDetails.brands.reduce((prev, curr) => (prev ? `${prev}, ${curr.name}` : curr.name), ''),
+            disabled: true
+          }
+        ],
+        facilities: [
+          {
+            value: this.userDetails.facilities.reduce((prev, curr) => (prev ? `${prev}, ${curr.name}` : curr.name), ''),
+            disabled: true
+          }
+        ],
+        departments: [
+          {
+            value: this.userDetails.departments.reduce((prev, curr) => (prev ? `${prev}, ${curr.name}` : curr.name), ''),
+            disabled: true
+          }
+        ],
+        specialties: [
+          {
+            value: this.userDetails.specialties.reduce((prev, curr) => (prev ? `${prev}, ${curr.name}` : curr.name), ''),
+            disabled: true
+          }
+        ]
+        // firma: [null, Validators.required]
+      },
+      {
+        validators: ConfirmPasswordValidator.mustMatch('password', 'passwordConfirmation')
+      }
+    );
   }
 }
