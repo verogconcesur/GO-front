@@ -10,7 +10,7 @@
     button {
       margin: 0 10px;
     }
-    @include respond-to($mobile) {
+    @include respond-to(calc(#{$mobile} + 50px)) {
       button {
         margin: 0 0;
       }
@@ -24,13 +24,13 @@
   .responsive__mobile {
     display: none;
   }
-  .responsive__desktop-large {
+  .responsive__tablet_or_more {
     display: block;
   }
-  .responsive__less-than-desktop-large {
+  .responsive__less-than-tablet {
     display: none;
   }
-  @include respond-to($desktop-small) {
+  @include respond-to($desktop) {
     .responsive__desktop-and-tablet {
       display: none;
     }
@@ -38,11 +38,12 @@
       display: block;
     }
   }
-  @include respond-to($desktop-large) {
-    .responsive__desktop-large {
+
+  @include respond-to(calc(#{$mobile} + 50px)) {
+    .responsive__tablet_or_more {
       display: none;
     }
-    .responsive__less-than-desktop-large {
+    .responsive__less-than-tablet {
       display: block;
     }
   }
