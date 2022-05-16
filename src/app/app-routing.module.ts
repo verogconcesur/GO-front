@@ -7,13 +7,13 @@ import { DashboardLayoutComponent } from '@layout/dashboard-layout/dashboard-lay
 const routes: Routes = [
   {
     path: RouteConstants.LOGIN,
-    loadChildren: () => import('./modules/login/login.module').then((m) => m.LoginModule)
+    loadChildren: () => import('./modules/login/login.module').then(m => m.LoginModule)
   },
   {
     path: RouteConstants.DASHBOARD,
     component: DashboardLayoutComponent,
     canActivate: [AuthGuardService],
-    data: {permissions: RoutePermissionConstants.DASHBOARD}
+    data: { permissions: RoutePermissionConstants.DASHBOARD }
     // loadChildren: () => import('./modules/login/login.module').then((m) => m.LoginModule)
   },
   {

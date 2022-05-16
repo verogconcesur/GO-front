@@ -1,0 +1,10 @@
+<div class="custom-dialog__header" fxLayout="row" fxLayoutAlign="space-between center">
+    <div class="custom-dialog__header__title mat-title">
+        {{ config.titleLabel | translate }}
+    </div>
+    <div class="custom-dialog__header__close-button">
+        <button mat-icon-button aria-label="close" (click)="close.emit(true)" fxLayout="row" fxLayoutAlign="center center">
+            <mat-icon>close</mat-icon>
+        </button>
+    </div>
+</div>

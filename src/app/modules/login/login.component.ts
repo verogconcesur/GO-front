@@ -42,7 +42,7 @@ export class LoginComponent implements OnInit {
 
   ngOnInit(): void {
     if (this.authenticationService.isUserLogged()) {
-      this.router.navigate([RouteConstants.DASHBOARD]);
+      this.router.navigate(['/', RouteConstants.DASHBOARD]);
     } else {
       this.initializeForm();
     }
@@ -83,9 +83,9 @@ export class LoginComponent implements OnInit {
   }
 
   private loginSuccess(loginData: LoginDTO): void {
-    // this.router.navigate([RouteConstants.DASHBOARD]);
     this.authenticationService.setLoggedUser(loginData);
     this.authenticationService.keepTokenAlive(loginData.access_token, loginData.expires_in);
+    this.router.navigate(['/', RouteConstants.DASHBOARD]);
   }
 
   private loginError(error: ConcenetError): void {
