@@ -11,15 +11,6 @@
         }
       }
       &__group {
-        display: flex;
-        justify-content: start;
-        align-items: center;
-        mat-form-field {
-          margin-right: 20px;
-          &:last-child {
-            margin-right: 0px;
-          }
-        }
         &__title {
           padding-bottom: 0px;
           text-transform: uppercase;
