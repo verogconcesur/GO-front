@@ -7,7 +7,7 @@ import { DashboardLayoutComponent } from '@layout/dashboard-layout/dashboard-lay
 const routes: Routes = [
   {
     path: RouteConstants.LOGIN,
-    loadChildren: () => import('./modules/login/login.module').then(m => m.LoginModule)
+    loadChildren: () => import('./modules/login/login.module').then((m) => m.LoginModule)
   },
   {
     path: RouteConstants.DASHBOARD,
@@ -24,7 +24,7 @@ const routes: Routes = [
 ];
 
 @NgModule({
-  imports: [RouterModule.forRoot(routes, { relativeLinkResolution: 'legacy' })],
+  imports: [RouterModule.forRoot(routes, { relativeLinkResolution: 'legacy', useHash: true })],
   exports: [RouterModule]
 })
 export class AppRoutingModule {}

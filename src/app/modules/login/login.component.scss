@@ -17,6 +17,10 @@
     &__input {
       width: 427px;
 
+      @include respond-to($mobile) {
+        width: 100%;
+      }
+
       &.userName-input {
         margin-bottom: 15px;
       }
@@ -24,7 +28,7 @@
 
     &__forgotPassword {
       cursor: pointer;
-      padding-bottom: 49px;
+      padding: 32px 0 49px 0;
       text-align: right;
       transition: color 0.5s ease;
     }
