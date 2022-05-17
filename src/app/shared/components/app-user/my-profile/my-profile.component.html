@@ -9,7 +9,7 @@
                 <div class="user-data__section__title first-child">
                     {{ labels.data | translate }}
                 </div>
-                <div class="user-data__section__group">
+                <div class="user-data__section__group" fxLayout="row wrap" fxLayoutAlign="space-between center">
                     <!-- Name -->
                     <mat-form-field appearance="outline" floatLabel="always">
                         <mat-label>{{ labels.name | translate }}</mat-label>
@@ -39,7 +39,7 @@
                     </mat-form-field>
                 </div>
 
-                <div class="user-data__section__group" *ngIf="showPasswordFields">
+                <div class="user-data__section__group" fxLayout="row wrap" fxLayoutAlign="space-between center" *ngIf="showPasswordFields">
                     <!-- password -->
                     <mat-form-field appearance="outline" floatLabel="always">
                         <mat-label>{{ labels.password | translate }}</mat-label>
@@ -78,7 +78,7 @@
                     </mat-form-field>
                 </div>
 
-                <div class="user-data__section__group">
+                <div class="user-data__section__group" fxLayout="row wrap" fxLayoutAlign="space-between center">
                     <!-- userName -->
                     <mat-form-field appearance="outline" floatLabel="always">
                         <mat-label>{{ labels.userName | translate }}</mat-label>
@@ -103,7 +103,7 @@
                     {{ labels.organization | translate }}
                 </div>
 
-                <div class="user-data__section__group">
+                <div class="user-data__section__group" fxLayout="row wrap" fxLayoutAlign="space-between center">
                     <!-- brands -->
                     <mat-form-field
                         appearance="outline"
@@ -142,7 +142,7 @@
                     </mat-form-field>
                 </div>
 
-                <div class="user-data__section__group">
+                <div class="user-data__section__group" fxLayout="row wrap" fxLayoutAlign="space-between center">
                     <!-- specialties -->
                     <mat-form-field
                         appearance="outline"
