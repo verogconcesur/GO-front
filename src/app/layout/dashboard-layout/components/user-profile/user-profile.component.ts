@@ -84,7 +84,6 @@ export class UserProfileComponent implements OnInit {
         extendedComponentData: this.userDetails,
         id: MyProfileComponentModalEnum.ID,
         panelClass: MyProfileComponentModalEnum.PANEL_CLASS,
-        minWidth: '300px',
         disableClose: true
       })
       .pipe(take(1));

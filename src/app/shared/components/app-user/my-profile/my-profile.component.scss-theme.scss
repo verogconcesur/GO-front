@@ -1,4 +1,5 @@
 @import '@angular/material/theming';
+@import 'utils/core';
 
 @mixin my-profile-component-theme($theme, $main-typo) {
   $primary: map-get($theme, primary);
@@ -13,6 +14,15 @@
           font-weight: 600;
         }
         &__group {
+          mat-form-field {
+            margin-right: 20px;
+            &:last-child {
+              margin-right: 0px;
+            }
+            @include respond-to(calc(#{$tablet-small} - 25px)) {
+              margin-right: 0px;
+            }
+          }
           &__title {
             color: mat-contrast($primary, 100);
             font-size: 0.75rem;
@@ -23,6 +33,18 @@
             color: mat-color($foreground, secondary-text);
             font-size: 0.875rem;
           }
+        }
+      }
+      .smaller-mat-form-fields {
+        @include respond-to(calc(#{$tablet-small} - 25px)) {
+          mat-form-field{
+            width: 47%;
+          }      
+        }
+        @include respond-to(calc(#{$mobile} - 120px)) {
+          mat-form-field{
+            width: 97%;
+          }      
         }
       }
     }
