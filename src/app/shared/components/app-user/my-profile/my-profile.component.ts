@@ -1,17 +1,19 @@
 import { Component, OnInit } from '@angular/core';
 import { marker } from '@biesbjerg/ngx-translate-extract-marker';
 import { ComponentToExtendForCustomDialog } from '@shared/modules/custom-dialog/models/component-for-custom-dialog';
-import { Observable, of } from 'rxjs';
+import { Observable, of, throwError } from 'rxjs';
 import { CustomDialogFooterConfigI } from '@shared/modules/custom-dialog/interfaces/custom-dialog-footer-config';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { ProgressSpinnerDialogService } from '@shared/services/progress-spinner-dialog.service';
-import UserDTO from '@data/models/user-dto';
 import UserDetailsDTO from '@data/models/user-details-dto';
 import { ConfirmDialogService } from '@shared/services/confirm-dialog.service';
-import { take } from 'rxjs/operators';
 import { TranslateService } from '@ngx-translate/core';
 import ConfirmPasswordValidator from '@shared/validators/confirm-password.validator';
 import { passwordPattern } from '@app/constants/patterns.constants';
+import { UserService } from '@data/services/user.service';
+import { GlobalMessageService } from '@shared/services/global-message.service';
+import { catchError, finalize, map } from 'rxjs/operators';
+import { ConcenetError } from '@app/types/error';
 
 export const enum MyProfileComponentModalEnum {
   ID = 'my-profile-dialog-id',
@@ -60,7 +62,9 @@ export class MyProfileComponent extends ComponentToExtendForCustomDialog impleme
     private fb: FormBuilder,
     private spinnerService: ProgressSpinnerDialogService,
     private confirmDialogService: ConfirmDialogService,
-    private translateService: TranslateService
+    private translateService: TranslateService,
+    private userService: UserService,
+    private globalMessageService: GlobalMessageService
   ) {
     super(MyProfileComponentModalEnum.ID, MyProfileComponentModalEnum.PANEL_CLASS, marker(MyProfileComponentModalEnum.TITLE));
   }
@@ -83,9 +87,50 @@ export class MyProfileComponent extends ComponentToExtendForCustomDialog impleme
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   public onSubmitCustomDialog(): Observable<any> {
-    //TODO: DGDC invocar función para guardar cambios
-    console.log('My profile onSubmitCustomDialog - saving: ', { ...this.userDetails, ...this.profileForm.value });
-    return of(true);
+    const formValue = this.profileForm.value;
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const newData: any = {
+      id: this.userDetails.id,
+      name: formValue.name,
+      firstName: formValue.firstName,
+      lastName: formValue.lastName,
+      email: formValue.email,
+      currentPass: null,
+      newPass: null,
+      newPassConfirmation: null
+    };
+    if (
+      this.showPasswordFields &&
+      formValue.password !== formValue.newPassword &&
+      formValue.newPassword === formValue.newPasswordConfirmation
+    ) {
+      //There are changes in password
+      newData.currentPass = formValue.password;
+      newData.newPass = formValue.newPassword;
+      newData.newPassConfirmation = formValue.newPasswordConfirmation;
+    }
+    const spinner = this.spinnerService.show();
+    return this.userService.postUserDetails(newData).pipe(
+      map((response) => {
+        this.userDetails = response;
+        this.globalMessageService.showSuccess({
+          message: marker('common.successOperation'),
+          actionText: 'Close'
+        });
+        return this.userDetails;
+      }),
+      catchError((error) => {
+        const err = error as ConcenetError;
+        this.globalMessageService.showError({
+          message: err.message,
+          actionText: 'Close'
+        });
+        return of(false);
+      }),
+      finalize(() => {
+        this.spinnerService.hide(spinner);
+      })
+    );
   }
 
   public setAndGetFooterConfig(): CustomDialogFooterConfigI | null {
@@ -95,7 +140,7 @@ export class MyProfileComponent extends ComponentToExtendForCustomDialog impleme
         {
           type: 'close',
           label: marker('common.cancel'),
-          design: 'stroked'
+          design: 'flat'
         },
         {
           type: 'custom',
@@ -143,7 +188,7 @@ export class MyProfileComponent extends ComponentToExtendForCustomDialog impleme
         name: [this.userDetails.name, Validators.required],
         firstName: [this.userDetails.firstName],
         lastName: [this.userDetails.lastName],
-        email: [{ value: this.userDetails.email, disabled: true }, Validators.required],
+        email: [this.userDetails.email, Validators.required],
         userName: [{ value: this.userDetails.userName, disabled: true }, Validators.required],
         role: [{ value: this.userDetails.role.name, disabled: true }, Validators.required],
         password: [this.userDetails.password, Validators.required],

@@ -13,6 +13,7 @@
 		"cancel": "Cancelar",
 		"save": "Guardar",
 		"search": "Buscar",
+		"successOperation": "Operación realizada con éxito.",
 		"unsavedChangesExit": "Hay cambios en el formulario sin guardar, ¿desea salir igualmente?",
 		"warning": "Advertencia"
 	},

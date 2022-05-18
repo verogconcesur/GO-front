@@ -13,6 +13,7 @@
 		"cancel": "Cancel",
 		"save": "Save",
 		"search": "Search",
+		"successOperation": "Success operation.",
 		"unsavedChangesExit": "There are unsaved changes, do you want to continue?",
 		"warning": "Warning"
 	},

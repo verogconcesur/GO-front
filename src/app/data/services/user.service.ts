@@ -40,4 +40,19 @@ export class UserService {
       .get<UserDetailsDTO>(`${this.env.apiBaseUrl}${this.USER_DETAILS_PATH}/${userId}`)
       .pipe(catchError((error) => throwError(error as ConcenetError)));
   }
+
+  public postUserDetails(userData: {
+    id: number;
+    name: string;
+    firstName: string;
+    lastName: string;
+    email: string;
+    currentPass?: string | null;
+    newPass?: string | null;
+    newPassConfirmation?: string | null;
+  }): Observable<UserDetailsDTO> {
+    return this.http
+      .post<UserDetailsDTO>(`${this.env.apiBaseUrl}${this.USER_DETAILS_PATH}`, userData)
+      .pipe(catchError((error) => throwError(error as ConcenetError)));
+  }
 }

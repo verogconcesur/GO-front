@@ -20,6 +20,19 @@
         background-color: darken(mat-color($primary, 500), 10%);
       }
     }
+
+    &.close-modal-button.mat-icon-button {
+      width: 30px;
+      height: 30px;
+      line-height: 30px;
+      border-radius: 5px;
+      // background-color: lighten(mat-color($primary, A100), 20%);
+      background-color: rgba(mat-color($primary, A100), 30%);
+      color: mat-color($primary, 900);
+      &:hover {
+        background-color: rgba(mat-color($primary, A100), 40%);
+      }
+    }
   }
 
   // Disable styles for primary buttons
