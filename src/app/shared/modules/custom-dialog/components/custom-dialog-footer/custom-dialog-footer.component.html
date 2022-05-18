@@ -1,12 +1,18 @@
-<div class="custom-dialog__footer" fxLayout="row" fxLayout.xs="column"
- fxLayoutAlign="start start" fxLayoutAlign.gt-xs="space-between center" *ngIf="config?.show">
+<div
+    class="custom-dialog__footer"
+    fxLayout="row-reverse"
+    fxLayout.xs="column"
+    fxLayoutAlign="start start"
+    fxLayoutAlign.gt-xs="space-between center"
+    *ngIf="config?.show"
+>
     <app-custom-dialog-buttons-wrapper
-        [buttons]="config.leftSideButtons"
+        [buttons]="config.rightSideButtons"
         (buttonClick)="buttonClick($event)"
         class="custom-dialog__footer__buttons-wrapper"
     ></app-custom-dialog-buttons-wrapper>
     <app-custom-dialog-buttons-wrapper
-        [buttons]="config.rightSideButtons"
+        [buttons]="config.leftSideButtons"
         (buttonClick)="buttonClick($event)"
         class="custom-dialog__footer__buttons-wrapper"
     ></app-custom-dialog-buttons-wrapper>

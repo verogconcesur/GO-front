@@ -55,6 +55,10 @@
 	"logout": {
 		"logout": "Cerrar sesión"
 	},
+	"roles": {
+		"create": "Crear rol",
+		"title": "Roles y permisos"
+	},
 	"sample": {
 		"text": "{count, plural, =0{No hay} one{Hay una} other{Hay varias}} {count, plural, =0{nada} one{cosa} other{cosas}}"
 	},
@@ -85,5 +89,9 @@
 		"specialty": "Especialidad",
 		"title": "Tu perfil",
 		"userName": "Nombre de usuario"
+	},
+	"users": {
+		"create": "Crear usuario",
+		"title": "Usuarios"
 	}
 }
