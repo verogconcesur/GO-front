@@ -1,0 +1,99 @@
+@import '@angular/material/theming';
+@import 'utils/core';
+
+@mixin administration-layout-component-theme($theme, $main-typo) {
+  $primary: map-get($theme, primary);
+
+  .mat-toolbar-row {
+    height: 85px;
+    padding-left: 24px !important;
+    padding-right: 0 !important;
+  }
+
+  .mat-toolbar-group__btn.mat-stroked-button {
+    border: 1px solid mat-contrast($primary, 400);
+    height: 37px;
+    margin-right: 24px;
+
+    .btn-text {
+      @include respond-to($mobile) {
+        display: none;
+      }
+    }
+
+    .mat-icon {
+      height: 20px;
+      line-height: 20px;
+    }
+  }
+
+  .mat-toolbar-group__profile {
+    background-color: darken(mat-color($primary, 500), 10%);
+    box-sizing: border-box;
+    height: 100%;
+    padding: 20px 24px;
+
+    .user-profile__img {
+      background-color: rgba(mat-contrast($primary, 300), 0.16);
+      border-radius: 50%;
+      cursor: pointer;
+      height: 48px;
+      margin-right: 24px;
+      width: 48px;
+
+      @include respond-to($mobile) {
+        margin-right: 0;
+      }
+
+      .mat-icon {
+        height: 48px;
+        width: 48px;
+        line-height: 48px;
+        text-align: center;
+      }
+    }
+
+    .user-profile-data {
+      .user-profile__name {
+        font-size: 1rem;
+        font-weight: 600;
+
+        @include respond-to($mobile) {
+          display: none;
+        }
+      }
+
+      .user-profile__view {
+        font-size: 14px;
+        font-weight: 400;
+        cursor: pointer;
+
+        @include respond-to($mobile) {
+          display: none;
+        }
+      }
+    }
+  }
+
+  // Sidenav
+  .administration-container {
+    .left-sidenav-panel {
+      background-color: mat-contrast($primary, 900);
+
+      .left-menu {
+        .left-menu-option {
+          font-size: 1rem;
+          font-weight: 500;
+          color: mat-contrast($primary, 200);
+
+          &.active,
+          &:hover {
+            background-color: mat-contrast($primary, 800);
+            color: mat-contrast($primary, 500);
+            font-weight: 600;
+          }
+        }
+      }
+    }
+  }
+}
