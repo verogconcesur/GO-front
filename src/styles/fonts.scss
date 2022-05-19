@@ -1,9 +1,9 @@
 @font-face {
   font-family: 'concenet';
-  src: url('/assets/fonts/concenet.eot?dvvfk2');
-  src: url('/assets/fonts/concenet.eot?dvvfk2#iefix') format('embedded-opentype'),
-    url('/assets/fonts/concenet.ttf?dvvfk2') format('truetype'), url('/assets/fonts/concenet.woff?dvvfk2') format('woff'),
-    url('/assets/fonts/concenet.svg?dvvfk2#concenet') format('svg');
+  src: url('/assets/fonts/concenet.eot?jynphe');
+  src: url('/assets/fonts/concenet.eot?jynphe#iefix') format('embedded-opentype'),
+    url('/assets/fonts/concenet.ttf?jynphe') format('truetype'), url('/assets/fonts/concenet.woff?jynphe') format('woff'),
+    url('/assets/fonts/concenet.svg?jynphe#concenet') format('svg');
   font-weight: normal;
   font-style: normal;
   font-display: block;
@@ -35,6 +35,27 @@
   -moz-osx-font-smoothing: grayscale;
 }
 
+.translate:before {
+  content: '\e90b';
+}
+.workflows:before {
+  content: '\e905';
+}
+.templates:before {
+  content: '\e906';
+}
+.organization:before {
+  content: '\e907';
+}
+.forms:before {
+  content: '\e908';
+}
+.users:before {
+  content: '\e909';
+}
+.user-profile:before {
+  content: '\e90a';
+}
 .user:before {
   content: '\e900';
 }
