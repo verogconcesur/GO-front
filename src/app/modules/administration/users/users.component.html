@@ -1,0 +1,14 @@
+<div class="users-container">
+    <app-users-header
+        [buttonLabel]="selectedTab === 'users' ? labels.createUser : labels.createRole"
+        [showFilterButton]="selectedTab === 'users' ? true : false"
+    ></app-users-header>
+    <mat-tab-group class="mat-tab-page-sections" mat-align-tabs="start" (selectedTabChange)="changeSelectedTab($event)">
+        <mat-tab label="{{ labels.users | translate }}">
+            <app-users-list></app-users-list>
+        </mat-tab>
+        <mat-tab label="{{ labels.roles | translate }}">
+            <app-roles-list></app-roles-list>
+        </mat-tab>
+    </mat-tab-group>
+</div>

@@ -59,7 +59,7 @@ export class UserProfileComponent implements OnInit {
     const userId = Number(this.authenticationService.getUserId());
 
     this.userService.getUserDetailsById(userId).subscribe({
-      next: response => {
+      next: (response) => {
         this.userDetails = response;
       },
       error: (error: ConcenetError) => {
@@ -86,7 +86,12 @@ export class UserProfileComponent implements OnInit {
         panelClass: MyProfileComponentModalEnum.PANEL_CLASS,
         disableClose: true
       })
-      .pipe(take(1));
+      .pipe(take(1))
+      .subscribe((response) => {
+        if (response) {
+          this.userDetails = response;
+        }
+      });
   }
 
   public doLogout(): void {

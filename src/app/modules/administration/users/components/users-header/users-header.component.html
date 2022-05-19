@@ -1,0 +1,24 @@
+<div class="users-header" fxLayout="row" fxLayoutAlign="space-between center">
+    <h1 class="users-header__title" mat-headline>Usuarios</h1>
+    <div class="users-header__actions-wrapper" fxLayout="row" fxLayoutAlign="end center">
+        <div class="users-header__actions-wrapper__search-form-wrapper">
+            <form
+                class="users-header__actions-wrapper__search-form smaller-mat-form-fields"
+                fxLayout="row"
+                fxLayoutAlign="end center"
+            >
+                <mat-form-field appearance="outline" class="smaller-mat-form-fields__no-margin">
+                    <input matInput [placeholder]="labels.search | translate" />
+                    <mat-icon matSuffix>search</mat-icon>
+                </mat-form-field>
+            </form>
+        </div>
+        <button class="users-header__actions-wrapper__search-button mat-square-icon" mat-raised-button>
+            <mat-icon>search</mat-icon>
+        </button>
+        <button *ngIf="showFilterButton" color="dark" class="filter-action mat-square-icon" mat-flat-button>
+            <mat-icon>filter_list</mat-icon>
+        </button>
+        <button class="create-action" mat-raised-button color="primary">{{ buttonLabel | translate }}</button>
+    </div>
+</div>

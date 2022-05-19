@@ -1,0 +1,11 @@
+@import 'utils/core';
+
+.users-container {
+  padding: 20px;
+  @include respond-to($tablet-small) {
+    padding: 10px;
+  }
+  @include respond-to($mobile) {
+    padding: 5px;
+  }
+}

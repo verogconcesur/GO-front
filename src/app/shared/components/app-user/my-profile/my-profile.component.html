@@ -39,7 +39,30 @@
                     </mat-form-field>
                 </div>
 
-                <div class="user-data__section__group" fxLayout="row wrap" fxLayoutAlign="space-between center" *ngIf="showPasswordFields">
+                <div class="user-data__section__group" fxLayout="row wrap" fxLayoutAlign="space-between center">
+                    <!-- Email -->
+                    <mat-form-field appearance="outline" floatLabel="always">
+                        <mat-label>{{ labels.email | translate }}</mat-label>
+                        <input matInput formControlName="email" />
+                    </mat-form-field>
+                    <!-- userName -->
+                    <mat-form-field appearance="outline" floatLabel="always">
+                        <mat-label>{{ labels.userName | translate }}</mat-label>
+                        <input matInput formControlName="userName" />
+                    </mat-form-field>
+                    <!-- role -->
+                    <mat-form-field appearance="outline" floatLabel="always">
+                        <mat-label>{{ labels.role | translate }}</mat-label>
+                        <input matInput formControlName="role" />
+                    </mat-form-field>
+                </div>
+
+                <div
+                    class="user-data__section__group"
+                    fxLayout="row wrap"
+                    fxLayoutAlign="space-between center"
+                    *ngIf="showPasswordFields"
+                >
                     <!-- password -->
                     <mat-form-field appearance="outline" floatLabel="always">
                         <mat-label>{{ labels.password | translate }}</mat-label>
@@ -75,24 +98,6 @@
                                 labels.passwordMatch | translate
                             }}</span>
                         </mat-error>
-                    </mat-form-field>
-                </div>
-
-                <div class="user-data__section__group" fxLayout="row wrap" fxLayoutAlign="space-between center">
-                    <!-- userName -->
-                    <mat-form-field appearance="outline" floatLabel="always">
-                        <mat-label>{{ labels.userName | translate }}</mat-label>
-                        <input matInput formControlName="userName" />
-                    </mat-form-field>
-                    <!-- Email -->
-                    <mat-form-field appearance="outline" floatLabel="always">
-                        <mat-label>{{ labels.email | translate }}</mat-label>
-                        <input matInput formControlName="email" />
-                    </mat-form-field>
-                    <!-- role -->
-                    <mat-form-field appearance="outline" floatLabel="always">
-                        <mat-label>{{ labels.role | translate }}</mat-label>
-                        <input matInput formControlName="role" />
                     </mat-form-field>
                 </div>
             </div>

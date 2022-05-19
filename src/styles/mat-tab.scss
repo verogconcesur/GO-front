@@ -1,0 +1,20 @@
+@import '~@angular/material/theming';
+
+@mixin custom-mat-tab-theme($theme, $main-typo) {
+  $primary: map-get($theme, primary);
+
+  //Used for sections in administration pages
+  .mat-tab-page-sections {
+    .mat-tab-header {
+      border-bottom: 0px;
+      .mat-tab-label {
+        @include mat-typography-level-to-styles($main-typo, title);
+        font-weight: 400;
+      }
+
+      .mat-tab-label.mat-tab-label-active {
+        @include mat-typography-level-to-styles($main-typo, title);
+      }
+    }
+  }
+}

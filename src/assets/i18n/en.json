@@ -23,6 +23,7 @@
     "cancel": "Cancel",
     "save": "Save",
     "search": "Search",
+		"successOperation": "Success operation.",
     "unsavedChangesExit": "There are unsaved changes, do you want to continue?",
     "warning": "Warning"
   },
@@ -64,6 +65,10 @@
   "logout": {
     "logout": "Log out"
   },
+	"roles": {
+		"create": "Create Role",
+		"title": "Roles and permissions"
+	},
   "sample": {
     "text": "There {count, plural, =0{is} one{is} other{are}} {count, plural, =0{} one{a} other{several}} {count, plural, =0{nothing} one{thing} other{things}}"
   },
@@ -88,5 +93,9 @@
     "specialty": "Specialty",
     "title": "Your profile",
     "userName": "User name"
+	},
+	"users": {
+		"create": "Create user",
+		"title": "Users"
   }
 }

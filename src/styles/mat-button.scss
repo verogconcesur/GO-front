@@ -2,6 +2,7 @@
 
 @mixin custom-mat-button-theme($theme, $main-typo) {
   $primary: map-get($theme, primary);
+  $warn: map-get($theme, warn);
 
   // common
   button {
@@ -18,6 +19,35 @@
     &.mat-flat-button {
       &:hover {
         background-color: darken(mat-color($primary, 500), 10%);
+      }
+    }
+
+    &.close-modal-button.mat-icon-button {
+      width: 30px;
+      height: 30px;
+      line-height: 30px;
+      border-radius: 5px;
+      // background-color: lighten(mat-color($primary, A100), 20%);
+      background-color: rgba(mat-color($primary, A100), 30%);
+      color: mat-color($primary, 900);
+      &:hover {
+        background-color: rgba(mat-color($primary, A100), 40%);
+      }
+    }
+
+    &.mat-square-icon {
+      border-radius: 5px;
+      padding: 0 0;
+      min-width: 36px;
+      line-height: 36px;
+    }
+
+    //COLORS
+    &.mat-dark {
+      background-color: rgba(mat-contrast($warn, A100), 90%);
+      color: mat-color($warn, A100);
+      &:hover {
+        background-color: rgba(mat-contrast($warn, A100), 70%);
       }
     }
   }

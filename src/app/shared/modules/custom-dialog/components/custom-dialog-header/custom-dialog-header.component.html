@@ -3,7 +3,14 @@
         {{ config.titleLabel | translate }}
     </div>
     <div class="custom-dialog__header__close-button">
-        <button mat-icon-button aria-label="close" (click)="close.emit(true)" fxLayout="row" fxLayoutAlign="center center">
+        <button
+            mat-icon-button
+            aria-label="close"
+            class="close-modal-button"
+            (click)="close.emit(true)"
+            fxLayout="row"
+            fxLayoutAlign="center center"
+        >
             <mat-icon>close</mat-icon>
         </button>
     </div>

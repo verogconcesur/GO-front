@@ -2,4 +2,7 @@
 
 .user-profile-button {
   margin: 0 10px;
+  @include respond-to(calc(#{$mobile} + 50px)) {
+    margin: 0 0;
+  }
 }
