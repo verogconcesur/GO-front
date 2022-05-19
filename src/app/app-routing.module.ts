@@ -22,7 +22,18 @@ const routes: Routes = [
     component: AdministrationLayoutComponent,
     canActivate: [AuthGuardService],
     // data: { permissions: RoutePermissionConstants.ADMINISTRATION }
-    loadChildren: () => import('./modules/administration/users/users.module').then((m) => m.UsersModule)
+    children: [
+      {
+        path: RouteConstants.USERS,
+        canActivate: [AuthGuardService],
+        loadChildren: () => import('./modules/administration/users/users.module').then((m) => m.UsersModule)
+      },
+      {
+        path: RouteConstants.OTHER,
+        pathMatch: 'full',
+        redirectTo: RouteConstants.USERS
+      }
+    ]
   },
   {
     path: RouteConstants.OTHER,

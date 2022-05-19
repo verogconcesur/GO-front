@@ -110,11 +110,11 @@ export class MyProfileComponent extends ComponentToExtendForCustomDialog impleme
       newData.newPassConfirmation = formValue.newPasswordConfirmation;
     }
     const spinner = this.spinnerService.show();
-    return this.userService.postUserDetails(newData).pipe(
+    return this.userService.editUserProfile(newData).pipe(
       map((response) => {
         this.userDetails = response;
         this.globalMessageService.showSuccess({
-          message: marker('common.successOperation'),
+          message: this.translateService.instant(marker('common.successOperation')),
           actionText: 'Close'
         });
         return this.userDetails;
@@ -196,25 +196,37 @@ export class MyProfileComponent extends ComponentToExtendForCustomDialog impleme
         newPasswordConfirmation: [this.userDetails.password, Validators.required],
         brands: [
           {
-            value: this.userDetails.brands.reduce((prev, curr) => (prev ? `${prev}, ${curr.name}` : curr.name), ''),
+            value:
+              this.userDetails.brands && Array.isArray(this.userDetails.brands)
+                ? this.userDetails.brands.reduce((prev, curr) => (prev ? `${prev}, ${curr.name}` : curr.name), '')
+                : '',
             disabled: true
           }
         ],
         facilities: [
           {
-            value: this.userDetails.facilities.reduce((prev, curr) => (prev ? `${prev}, ${curr.name}` : curr.name), ''),
+            value:
+              this.userDetails.facilities && Array.isArray(this.userDetails.facilities)
+                ? this.userDetails.facilities.reduce((prev, curr) => (prev ? `${prev}, ${curr.name}` : curr.name), '')
+                : '',
             disabled: true
           }
         ],
         departments: [
           {
-            value: this.userDetails.departments.reduce((prev, curr) => (prev ? `${prev}, ${curr.name}` : curr.name), ''),
+            value:
+              this.userDetails.departments && Array.isArray(this.userDetails.departments)
+                ? this.userDetails.departments.reduce((prev, curr) => (prev ? `${prev}, ${curr.name}` : curr.name), '')
+                : '',
             disabled: true
           }
         ],
         specialties: [
           {
-            value: this.userDetails.specialties.reduce((prev, curr) => (prev ? `${prev}, ${curr.name}` : curr.name), ''),
+            value:
+              this.userDetails.specialties && Array.isArray(this.userDetails.specialties)
+                ? this.userDetails.specialties.reduce((prev, curr) => (prev ? `${prev}, ${curr.name}` : curr.name), '')
+                : '',
             disabled: true
           }
         ]

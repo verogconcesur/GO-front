@@ -22,7 +22,9 @@ export enum RouteConstants {
   DASHBOARD = 'dashboard',
 
   //Administration
-  ADMINISTRATION = 'administration'
+  ADMINISTRATION = 'administration',
+  //Users
+  USERS = 'users'
 }
 
 export const RoutePermissionConstants: Record<string, PermissionConstants[]> = {
