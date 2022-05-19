@@ -2,6 +2,7 @@
 
 @mixin custom-mat-button-theme($theme, $main-typo) {
   $primary: map-get($theme, primary);
+  $warn: map-get($theme, warn);
 
   // common
   button {
@@ -31,6 +32,22 @@
       color: mat-color($primary, 900);
       &:hover {
         background-color: rgba(mat-color($primary, A100), 40%);
+      }
+    }
+
+    &.mat-square-icon {
+      border-radius: 5px;
+      padding: 0 0;
+      min-width: 36px;
+      line-height: 36px;
+    }
+
+    //COLORS
+    &.mat-dark {
+      background-color: rgba(mat-contrast($warn, A100), 90%);
+      color: mat-color($warn, A100);
+      &:hover {
+        background-color: rgba(mat-contrast($warn, A100), 70%);
       }
     }
   }

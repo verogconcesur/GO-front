@@ -1,4 +1,5 @@
 import { Component, Input, OnInit } from '@angular/core';
+import { marker } from '@biesbjerg/ngx-translate-extract-marker';
 
 @Component({
   selector: 'app-users-header',
@@ -8,6 +9,10 @@ import { Component, Input, OnInit } from '@angular/core';
 export class UsersHeaderComponent implements OnInit {
   @Input() buttonLabel: string;
   @Input() showFilterButton: boolean;
+
+  public labels = {
+    search: marker('common.search')
+  };
 
   constructor() {}
 
