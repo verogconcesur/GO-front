@@ -15,6 +15,7 @@ export class UserService {
   private readonly RESTORE_PASSWORD_PATH = '/api/users/forgotPass';
   private readonly CHANGE_PASSWORD_PATH = '/api/users/forgotPassChange';
   private readonly USER_DETAILS_PATH = '/api/users';
+  private readonly USER_EDIT_PROFILE_PATH = '/api/users/editProfile';
 
   constructor(@Inject(ENV) private env: Env, private http: HttpClient) {}
 
@@ -41,18 +42,18 @@ export class UserService {
       .pipe(catchError((error) => throwError(error as ConcenetError)));
   }
 
-  public postUserDetails(userData: {
+  public editUserProfile(userData: {
     id: number;
     name: string;
     firstName: string;
     lastName: string;
     email: string;
-    currentPass?: string | null;
-    newPass?: string | null;
-    newPassConfirmation?: string | null;
+    currentPass: string | null;
+    newPass: string | null;
+    newPassConfirmation: string | null;
   }): Observable<UserDetailsDTO> {
     return this.http
-      .post<UserDetailsDTO>(`${this.env.apiBaseUrl}${this.USER_DETAILS_PATH}`, userData)
+      .put<UserDetailsDTO>(`${this.env.apiBaseUrl}${this.USER_EDIT_PROFILE_PATH}`, userData)
       .pipe(catchError((error) => throwError(error as ConcenetError)));
   }
 }
