@@ -13,17 +13,16 @@ const routes: Routes = [
   {
     path: RouteConstants.DASHBOARD,
     component: DashboardLayoutComponent,
-    canActivate: [AuthGuardService],
-    data: { permissions: RoutePermissionConstants.DASHBOARD }
+    canActivate: [AuthGuardService]
+    // data: { permissions: RoutePermissionConstants.DASHBOARD }
     // loadChildren: () => import('./modules/login/login.module').then((m) => m.LoginModule)
   },
   {
     path: RouteConstants.ADMINISTRATION,
     component: AdministrationLayoutComponent,
-    // canActivate: [AuthGuardService],
-    data: { permissions: RoutePermissionConstants.ADMINISTRATION }
-    // TODO: JF: Import administration module with lazy loading.
-    // loadChildren: () => import('./modules/login/login.module').then((m) => m.LoginModule)
+    canActivate: [AuthGuardService],
+    // data: { permissions: RoutePermissionConstants.ADMINISTRATION }
+    loadChildren: () => import('./modules/administration/users/users.module').then((m) => m.UsersModule)
   },
   {
     path: RouteConstants.OTHER,
