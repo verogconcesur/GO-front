@@ -20,10 +20,11 @@
     "title": "Concenet"
   },
   "common": {
+    "actions": "Actions",
     "cancel": "Cancel",
     "save": "Save",
     "search": "Search",
-		"successOperation": "Success operation.",
+    "successOperation": "Success operation.",
     "unsavedChangesExit": "There are unsaved changes, do you want to continue?",
     "warning": "Warning"
   },
@@ -65,10 +66,18 @@
   "logout": {
     "logout": "Log out"
   },
-	"roles": {
-		"create": "Create Role",
-		"title": "Roles and permissions"
-	},
+  "pagination": {
+    "firstPage": "First page",
+    "itemsPerPage": "Items per page",
+    "lastPage": "Last page",
+    "nextPage": "Next Page",
+    "pageOf": "Page {num1} of {num2}",
+    "prevPage": "Previous page"
+  },
+  "roles": {
+    "create": "Create Role",
+    "title": "Roles and permissions"
+  },
   "sample": {
     "text": "There {count, plural, =0{is} one{is} other{are}} {count, plural, =0{} one{a} other{several}} {count, plural, =0{nothing} one{thing} other{things}}"
   },
@@ -93,9 +102,11 @@
     "specialty": "Specialty",
     "title": "Your profile",
     "userName": "User name"
-	},
-	"users": {
-		"create": "Create user",
-		"title": "Users"
+  },
+  "users": {
+    "create": "Create user",
+    "fullName": "Full name",
+    "permissionsGroup": "Permissions group",
+    "title": "Users"
   }
 }

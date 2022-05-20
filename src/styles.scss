@@ -36,9 +36,13 @@
 @import 'mat-button.scss';
 @import 'mat-extension-panel.scss';
 @import 'mat-tab.scss';
+@import 'mat-table.scss';
+@import 'mat-paginator.scss';
 
 @include globals-theme($concenet-theme, $concenet-main-typography);
 @include custom-mat-input-theme($concenet-theme, $concenet-main-typography);
 @include custom-mat-button-theme($concenet-theme, $concenet-main-typography);
 @include custom-mat-extension-panel-theme($concenet-theme, $concenet-main-typography);
 @include custom-mat-tab-theme($concenet-theme, $concenet-main-typography);
+@include custom-mat-table-theme($concenet-theme, $concenet-main-typography);
+@include custom-mat-paginator-theme($concenet-theme, $concenet-main-typography);
