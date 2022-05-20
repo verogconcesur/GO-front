@@ -3,6 +3,7 @@
 
 @mixin administration-layout-component-theme($theme, $main-typo) {
   $primary: map-get($theme, primary);
+  $background: map-get($theme, background);
 
   .mat-toolbar-row {
     height: 85px;
@@ -95,5 +96,9 @@
         }
       }
     }
+  }
+
+  .left-sidenav-content {
+    background-color: mat-color($background, background-administration);
   }
 }

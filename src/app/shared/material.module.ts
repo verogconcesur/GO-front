@@ -1,4 +1,4 @@
-import { NgModule } from '@angular/core';
+import { Injectable, NgModule } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
 import { MatCheckboxModule } from '@angular/material/checkbox';
@@ -22,6 +22,9 @@ import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { MatTabsModule } from '@angular/material/tabs';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { MatTooltipModule } from '@angular/material/tooltip';
+import { MatTableModule } from '@angular/material/table';
+import { MatPaginatorIntl, MatPaginatorModule } from '@angular/material/paginator';
+import { MyCustomPaginatorIntl } from './providers/my-custom-paginator-intl';
 
 @NgModule({
   declarations: [],
@@ -48,8 +51,11 @@ import { MatTooltipModule } from '@angular/material/tooltip';
     MatNativeDateModule,
     MatRadioModule,
     MatDialogModule,
-    MatExpansionModule
+    MatExpansionModule,
+    MatTableModule,
+    MatPaginatorModule
   ],
+  providers: [{ provide: MatPaginatorIntl, useClass: MyCustomPaginatorIntl }],
   exports: [
     MatButtonModule,
     MatToolbarModule,
@@ -73,7 +79,9 @@ import { MatTooltipModule } from '@angular/material/tooltip';
     MatNativeDateModule,
     MatRadioModule,
     MatDialogModule,
-    MatExpansionModule
+    MatExpansionModule,
+    MatTableModule,
+    MatPaginatorModule
   ]
 })
 export class MaterialModule {}
