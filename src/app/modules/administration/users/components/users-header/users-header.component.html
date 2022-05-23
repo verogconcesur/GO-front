@@ -19,6 +19,8 @@
         <button *ngIf="showFilterButton" color="dark" class="filter-action mat-square-icon" mat-flat-button>
             <mat-icon>filter_list</mat-icon>
         </button>
-        <button class="create-action" mat-raised-button color="primary">{{ buttonLabel | translate }}</button>
+        <button class="create-action" (click)="buttonCreateAction.emit()" mat-raised-button color="primary">
+            {{ buttonLabel | translate }}
+        </button>
     </div>
 </div>
