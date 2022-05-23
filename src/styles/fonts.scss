@@ -1,9 +1,9 @@
 @font-face {
   font-family: 'concenet';
-  src: url('/assets/fonts/concenet.eot?jynphe');
-  src: url('/assets/fonts/concenet.eot?jynphe#iefix') format('embedded-opentype'),
-    url('/assets/fonts/concenet.ttf?jynphe') format('truetype'), url('/assets/fonts/concenet.woff?jynphe') format('woff'),
-    url('/assets/fonts/concenet.svg?jynphe#concenet') format('svg');
+  src: url('/assets/fonts/concenet.eot?z9bjzz');
+  src: url('/assets/fonts/concenet.eot?z9bjzz#iefix') format('embedded-opentype'),
+    url('/assets/fonts/concenet.ttf?z9bjzz') format('truetype'), url('/assets/fonts/concenet.woff?z9bjzz') format('woff'),
+    url('/assets/fonts/concenet.svg?z9bjzz#concenet') format('svg');
   font-weight: normal;
   font-style: normal;
   font-display: block;
@@ -35,6 +35,15 @@
   -moz-osx-font-smoothing: grayscale;
 }
 
+.search:before {
+  content: '\e90e';
+}
+.delete:before {
+  content: '\e90c';
+}
+.edit:before {
+  content: '\e90d';
+}
 .translate:before {
   content: '\e90b';
 }

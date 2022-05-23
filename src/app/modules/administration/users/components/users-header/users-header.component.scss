@@ -1,13 +1,16 @@
 @import 'utils/core';
 
 .users-header {
-  padding: 0 5px 25px 25px;
+  padding: 0 30px 25px 30px;
+
   @include respond-to($tablet-small) {
     padding: 0 5px 25px 0;
   }
+
   &__title {
     margin-bottom: 0;
   }
+
   &__actions-wrapper {
     .create-action {
       margin-left: 40px;
@@ -16,20 +19,25 @@
         margin-left: 5px;
       }
     }
+
     &__search-form-wrapper {
       display: inline-block;
     }
+
     &__search-button {
       display: none;
     }
+
     @include respond-to($mobile) {
       &__search-form-wrapper {
         display: none;
       }
+
       &__search-button {
         display: block;
       }
     }
+
     .filter-action {
       margin-left: 5px;
     }

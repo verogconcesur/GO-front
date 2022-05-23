@@ -17,6 +17,8 @@
     margin-right: 24px;
 
     .btn-text {
+      padding-right: 8px;
+
       @include respond-to($mobile) {
         display: none;
       }

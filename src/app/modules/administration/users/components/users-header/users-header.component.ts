@@ -11,7 +11,8 @@ export class UsersHeaderComponent implements OnInit {
   @Input() showFilterButton: boolean;
 
   public labels = {
-    search: marker('common.search')
+    search: marker('common.search'),
+    title: marker('administration.users')
   };
 
   constructor() {}

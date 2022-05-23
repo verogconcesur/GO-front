@@ -29,6 +29,8 @@ export class AdministrationLayoutComponent implements OnInit {
     workflows: marker('administration.workflows')
   };
 
+  public readonly USERS_TEMPLATE_PATH = RouteConstants.USERS;
+
   public userDetails: UserDetailsDTO;
 
   constructor(

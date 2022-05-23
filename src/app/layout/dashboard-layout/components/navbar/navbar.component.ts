@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
+import { RouteConstants } from '@app/constants/route.constants';
 import { marker } from '@biesbjerg/ngx-translate-extract-marker';
 
 @Component({
@@ -21,4 +22,8 @@ export class NavbarComponent implements OnInit {
   constructor(private router: Router) {}
 
   ngOnInit(): void {}
+
+  public navigateToAdministration(): void {
+    this.router.navigate([RouteConstants.ADMINISTRATION]);
+  }
 }

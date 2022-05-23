@@ -1,0 +1,10 @@
+@import 'utils/core';
+
+.roles-list-container {
+  padding: 50px 30px;
+  box-sizing: border-box;
+
+  @include respond-to($tablet-small) {
+    padding: 50px 0;
+  }
+}
