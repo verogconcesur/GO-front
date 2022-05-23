@@ -1,4 +1,4 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { marker } from '@biesbjerg/ngx-translate-extract-marker';
 
 @Component({
@@ -9,6 +9,7 @@ import { marker } from '@biesbjerg/ngx-translate-extract-marker';
 export class UsersHeaderComponent implements OnInit {
   @Input() buttonLabel: string;
   @Input() showFilterButton: boolean;
+  @Output() buttonCreateAction: EventEmitter<void> = new EventEmitter();
 
   public labels = {
     search: marker('common.search'),
