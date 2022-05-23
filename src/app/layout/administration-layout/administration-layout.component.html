@@ -38,10 +38,12 @@
 
     <!-- Sidenav -->
     <mat-drawer-container class="administration-container" autosize [hasBackdrop]="false">
-        <mat-drawer #drawer class="left-sidenav-panel" mode="side" [opened]="true">
+        <mat-drawer #drawer class="left-sidenav-panel" mode="push" [opened]="false">
             <!-- Administration menu -->
             <ul class="left-menu">
-                <li class="left-menu-option"><mat-icon fontSet="concenet">users</mat-icon> {{ labels.users | translate }}</li>
+                <li class="left-menu-option" [routerLink]="USERS_TEMPLATE_PATH" routerLinkActive="active">
+                    <mat-icon fontSet="concenet">users</mat-icon> {{ labels.users | translate }}
+                </li>
                 <li class="left-menu-option"><mat-icon fontSet="concenet">forms</mat-icon> {{ labels.records | translate }}</li>
                 <li class="left-menu-option">
                     <mat-icon fontSet="concenet">organization</mat-icon> {{ labels.organization | translate }}
@@ -49,7 +51,7 @@
                 <li class="left-menu-option">
                     <mat-icon fontSet="concenet">templates</mat-icon> {{ labels.templates | translate }}
                 </li>
-                <li class="left-menu-option active">
+                <li class="left-menu-option">
                     <mat-icon fontSet="concenet">workflows</mat-icon> {{ labels.workflows | translate }}
                 </li>
             </ul>

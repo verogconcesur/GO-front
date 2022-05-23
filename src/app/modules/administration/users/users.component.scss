@@ -1,10 +1,13 @@
 @import 'utils/core';
 
 .users-container {
-  padding: 20px;
+  padding: 48px;
+  box-sizing: border-box;
+
   @include respond-to($tablet-small) {
     padding: 10px;
   }
+
   @include respond-to($mobile) {
     padding: 5px;
   }

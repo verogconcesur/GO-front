@@ -19,7 +19,7 @@
                 <button mat-button>{{ labels.clients | translate }}</button>
                 <button mat-button>{{ labels.vehicles | translate }}</button>
                 <button mat-button>{{ labels.advanceSearch | translate }}</button>
-                <button mat-button>{{ labels.administration | translate }}</button>
+                <button mat-button (click)="navigateToAdministration()">{{ labels.administration | translate }}</button>
             </div>
         </div>
         <!-- END Shown for desktop and tablet -->
@@ -66,7 +66,7 @@
     <button mat-menu-item>
         <span>{{ labels.advanceSearch | translate }}</span>
     </button>
-    <button mat-menu-item>
+    <button mat-menu-item (click)="navigateToAdministration()">
         <span>{{ labels.administration | translate }}</span>
     </button>
 </mat-menu>

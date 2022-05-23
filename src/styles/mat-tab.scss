@@ -2,19 +2,31 @@
 
 @mixin custom-mat-tab-theme($theme, $main-typo) {
   $primary: map-get($theme, primary);
+  $foreground: map-get($theme, foreground);
 
   //Used for sections in administration pages
   .mat-tab-page-sections {
     .mat-tab-header {
       border-bottom: 0px;
+
       .mat-tab-label {
-        @include mat-typography-level-to-styles($main-typo, title);
+        color: mat-color($foreground, secondary-text);
+        font-size: 1.5rem;
         font-weight: 400;
+        padding: 0 15px;
       }
 
       .mat-tab-label.mat-tab-label-active {
-        @include mat-typography-level-to-styles($main-typo, title);
+        color: mat-color($foreground, secondary-text);
+        font-size: 1.5rem;
+        font-weight: 900;
       }
     }
+  }
+
+  .mat-tab-group.mat-primary .mat-ink-bar,
+  .mat-tab-nav-bar.mat-primary .mat-ink-bar {
+    height: 3px;
+    background-color: mat-color($primary, 500);
   }
 }
