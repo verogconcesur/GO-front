@@ -1,0 +1,17 @@
+<div class="create-role-component">
+    <form [formGroup]="roleForm">
+        <mat-form-field appearance="outline" class="create-role__input">
+            <mat-label>{{ labels.roleName | translate }}</mat-label>
+            <input matInput formControlName="roleName" />
+            <mat-error
+                class="create-role__error"
+                *ngIf="roleForm.controls?.roleName.invalid && roleForm.controls?.roleName.touched"
+            >
+                {{ labels.roleNameRequired | translate }}
+            </mat-error>
+        </mat-form-field>
+
+        <!-- Permissions -->
+        <app-users-permissions [permissions]="permissionsList"></app-users-permissions>
+    </form>
+</div>

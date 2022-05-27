@@ -113,6 +113,12 @@
     "create": "Crear usuario",
     "fullName": "Nombre y apellidos",
     "permissionsGroup": "Grupo permisos",
+    "roles": {
+      "create": "Crear rol",
+      "roleName": "Nombre del rol",
+      "roleNameRequired": "El nombre del rol es un elemento requerido",
+      "selectAll": "Seleccionar todos"
+    },
     "title": "Usuarios"
   }
 }

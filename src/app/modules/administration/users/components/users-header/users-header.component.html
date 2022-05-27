@@ -1,5 +1,6 @@
-<div class="users-header" fxLayout="row" fxLayoutAlign="space-between center">
+<div class="users-header" fxLayout="row wrap" fxLayoutAlign="space-between center">
     <h1 class="users-header__title mat-display-2">{{ labels.title | translate }}</h1>
+
     <div class="users-header__actions-wrapper" fxLayout="row" fxLayoutAlign="end center">
         <div class="users-header__actions-wrapper__search-form-wrapper">
             <form
@@ -8,14 +9,17 @@
                 fxLayoutAlign="end center"
             >
                 <mat-form-field appearance="outline" class="smaller-mat-form-fields__no-margin">
-                    <input matInput [placeholder]="labels.search | translate" />
+                    <mat-label>{{ labels.search | translate }}</mat-label>
+                    <input matInput [placeholder]="labels.search | translate" type="text" />
                     <mat-icon matSuffix>search</mat-icon>
                 </mat-form-field>
             </form>
         </div>
+
         <button class="users-header__actions-wrapper__search-button mat-square-icon" mat-raised-button>
             <mat-icon>search</mat-icon>
         </button>
+
         <button *ngIf="showFilterButton" color="dark" class="filter-action mat-square-icon" mat-flat-button>
             <mat-icon>filter_list</mat-icon>
         </button>

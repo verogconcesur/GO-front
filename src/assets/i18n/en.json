@@ -107,6 +107,12 @@
     "create": "Create user",
     "fullName": "Full name",
     "permissionsGroup": "Permissions group",
+    "roles": {
+      "create": "Create role",
+      "roleName": "Role name",
+      "roleNameRequired": "Role name is a required element",
+      "selectAll": "Select all"
+    },
     "title": "Users"
   }
 }
