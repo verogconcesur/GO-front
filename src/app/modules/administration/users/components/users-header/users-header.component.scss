@@ -3,17 +3,31 @@
 .users-header {
   padding: 0 30px 25px 30px;
 
+  &__title {
+    margin-bottom: 25px;
+  }
+
   @include respond-to($tablet-small) {
     padding: 0 5px 25px 0;
   }
 
-  &__title {
-    margin-bottom: 0;
+  @include respond-to($mobile) {
+    padding: 25px 5px;
+
+    &__title {
+      margin-right: 50%;
+    }
   }
 
   &__actions-wrapper {
+    @include respond-to($mobile) {
+      width: 100%;
+    }
+
     .create-action {
-      margin-left: 40px;
+      box-sizing: border-box;
+      height: 48px;
+      margin-left: 20px;
 
       @include respond-to($tablet-small) {
         margin-left: 5px;

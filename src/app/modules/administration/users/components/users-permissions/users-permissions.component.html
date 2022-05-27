@@ -1,0 +1,20 @@
+<div class="permissions-list">
+    <div fxLayout="row" fxLayoutAlign="space-between center" class="permissions-list__header">
+        {{ labels.selectAll | translate }}
+        <mat-checkbox color="primary" [checked]="allSelected" [indeterminate]="someSelected()" (change)="setAll($event.checked)">
+        </mat-checkbox>
+    </div>
+    <div class="permissions-list__content">
+        <ul>
+            <li
+                fxLayout="row"
+                fxLayoutAlign="space-between center"
+                class="permissions-list__content-element"
+                *ngFor="let permission of permissionsStructure?.permissions"
+            >
+                <span>{{ permission.description }}</span>
+                <mat-checkbox [(ngModel)]="permission.completed" (ngModelChange)="updateAllComplete()"> </mat-checkbox>
+            </li>
+        </ul>
+    </div>
+</div>

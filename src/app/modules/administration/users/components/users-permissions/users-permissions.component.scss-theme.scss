@@ -1,0 +1,28 @@
+@import '~@angular/material/theming';
+
+@mixin users-permissions-component-theme($theme, $main-typo) {
+  $primary: map-get($theme, primary);
+  $foreground: map-get($theme, foreground);
+  $background: map-get($theme, background);
+
+  .permissions-list {
+    border: solid 1px mat-contrast($primary, 300);
+
+    &__header {
+      background-color: mat-color($background, background-administration);
+      color: mat-contrast($primary, 100);
+      font-size: 0.75rem;
+      font-weight: 600;
+    }
+
+    &__content {
+      ul {
+        .permissions-list__content-element {
+          color: mat-color($foreground, secondary-text);
+          font-size: 1rem;
+          border-bottom: 1px solid mat-contrast($primary, 300);
+        }
+      }
+    }
+  }
+}

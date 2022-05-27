@@ -2,10 +2,12 @@ import { Component, OnInit } from '@angular/core';
 import { ConcenetError } from '@app/types/error';
 import RoleDTO from '@data/models/role-dto';
 import { RoleService } from '@data/services/role.service';
+import { CustomDialogService } from '@shared/modules/custom-dialog/services/custom-dialog.service';
 import { GlobalMessageService } from '@shared/services/global-message.service';
 import { ProgressSpinnerDialogService } from '@shared/services/progress-spinner-dialog.service';
 import { NGXLogger } from 'ngx-logger';
-import { finalize } from 'rxjs/operators';
+import { finalize, take } from 'rxjs/operators';
+import { CreateEditRoleComponent, CreateEditRoleComponentModalEnum } from '../create-edit-role/create-edit-role.component';
 
 @Component({
   selector: 'app-roles-list',
@@ -19,7 +21,8 @@ export class RolesListComponent implements OnInit {
     private roleService: RoleService,
     private spinnerService: ProgressSpinnerDialogService,
     private globalMessageService: GlobalMessageService,
-    private logger: NGXLogger
+    private logger: NGXLogger,
+    private customDialogService: CustomDialogService
   ) {}
 
   ngOnInit(): void {
@@ -62,15 +65,29 @@ export class RolesListComponent implements OnInit {
         })
       )
       .subscribe({
-        next: (response) => {},
+        next: (response) => {
+          this.roles = this.roles.filter((role) => role.id !== roleId);
+        },
         error: (error) => {
-          this.logger.error(error.error.message);
+          this.logger.error(error.message);
 
           this.globalMessageService.showError({
-            message: error.error.message,
+            message: error.message,
             actionText: 'Close'
           });
         }
       });
+  }
+
+  public openCreateRoleDialog(): void {
+    this.customDialogService
+      .open({
+        component: CreateEditRoleComponent,
+        id: CreateEditRoleComponentModalEnum.ID,
+        panelClass: CreateEditRoleComponentModalEnum.PANEL_CLASS,
+        disableClose: true,
+        width: '922px'
+      })
+      .pipe(take(1));
   }
 }

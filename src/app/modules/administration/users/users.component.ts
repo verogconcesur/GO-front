@@ -30,8 +30,7 @@ export class UsersComponent implements OnInit {
       // TODO: DGDC descomentar cuando mergeemos
       //this.usersListComponent.openCreateUserDialog();
     } else {
-      // TODO: DGDC link with create role action
-      // this.rolesListComponent.openCreateRoleDialog();
+      this.rolesListComponent.openCreateRoleDialog();
     }
   }
 

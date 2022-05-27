@@ -1,0 +1,27 @@
+.permissions-list {
+  border-radius: 4px;
+
+  &__header {
+    border-radius: 4px;
+    height: 49px;
+    padding: 0 20px;
+    text-transform: uppercase;
+  }
+
+  &__content {
+    ul {
+      list-style: none;
+      margin: 0;
+      padding: 0;
+
+      .permissions-list__content-element {
+        height: 57px;
+        padding: 0 20px;
+
+        &:last-child {
+          border-bottom: none;
+        }
+      }
+    }
+  }
+}
