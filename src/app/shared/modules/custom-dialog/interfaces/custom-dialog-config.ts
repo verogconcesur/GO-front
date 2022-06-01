@@ -20,5 +20,8 @@ export interface CustomDialogConfigI {
   maxWidth?: number | string;
   minWidth?: number | string;
   width?: string;
+  maxHeight?: number | string;
+  minHeight?: number | string;
+  height?: string;
   disableClose?: boolean;
 }

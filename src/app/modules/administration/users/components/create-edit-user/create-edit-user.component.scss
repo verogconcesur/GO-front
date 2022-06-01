@@ -1,0 +1,45 @@
+@import 'utils/core';
+
+.create-edit-user-content {
+  padding-right: 15px;
+  .create-edit-user-content__form {
+    .user-data__section {
+      &__title {
+        margin: 0 0 5px 0;
+        &.first-child {
+          margin-top: 0px;
+        }
+      }
+      &__info {
+        margin: 0 0 5px 0;
+        line-height: 38px;
+      }
+      &__group {
+        &__title {
+          padding-bottom: 0px;
+          text-transform: uppercase;
+          margin-bottom: 0px;
+          padding-right: 0.5rem;
+          &::after {
+            content: ':';
+          }
+        }
+
+        &__content {
+          margin-bottom: 0px;
+          padding-right: 0.5rem;
+
+          &::after {
+            content: ',';
+          }
+          &:last-child:after {
+            content: '';
+          }
+        }
+      }
+      &.permissions-section {
+        margin-bottom: 30px;
+      }
+    }
+  }
+}

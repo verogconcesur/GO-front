@@ -11,6 +11,8 @@ import { catchError } from 'rxjs/operators';
   providedIn: 'root'
 })
 export class PermissionsService {
+  public PERMISSIONS_CODES_FOR_ROLES = 1;
+  public PERMISSIONS_CODES_FOR_USERS = 2;
   private readonly GET_PERMISSIONS_PATH = '/api/permissions';
 
   constructor(@Inject(ENV) private env: Env, private http: HttpClient) {}
@@ -18,6 +20,6 @@ export class PermissionsService {
   public getAllPermissions(): Observable<PermissionsDTO[]> {
     return this.http
       .get<PermissionsDTO[]>(`${this.env.apiBaseUrl}${this.GET_PERMISSIONS_PATH}`)
-      .pipe(catchError((error) => throwError(error as ConcenetError)));
+      .pipe(catchError((error) => throwError(error.error as ConcenetError)));
   }
 }

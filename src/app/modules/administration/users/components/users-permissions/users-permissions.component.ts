@@ -1,6 +1,10 @@
-import { AfterViewInit, Component, Input, OnInit } from '@angular/core';
+import { AfterViewInit, Component, Input, OnChanges, OnInit, SimpleChanges } from '@angular/core';
+import { ConcenetError } from '@app/types/error';
 import { marker } from '@biesbjerg/ngx-translate-extract-marker';
 import PermissionsDTO from '@data/models/permissions-dto';
+import RoleDTO from '@data/models/role-dto';
+import { PermissionsService } from '@data/services/permissions.service';
+import { GlobalMessageService } from '@shared/services/global-message.service';
 
 export interface PermisssionsStructure {
   id?: number;
@@ -14,13 +18,15 @@ export interface PermisssionsStructure {
   templateUrl: './users-permissions.component.html',
   styleUrls: ['./users-permissions.component.scss']
 })
-export class UsersPermissionsComponent implements OnInit, AfterViewInit {
+export class UsersPermissionsComponent implements OnInit, OnChanges {
+  @Input() overFlowLayerLabel = '';
+  @Input() showOverFlowLayer = false;
   @Input() permissions: PermissionsDTO[];
+  @Input() type: 'CREATE_EDIT_ROLE' | 'CREATE_EDIT_USER' = 'CREATE_EDIT_USER';
 
   public labels = {
     selectAll: marker('users.roles.selectAll')
   };
-
   public permissionsStructure: PermisssionsStructure;
   public allSelected = false;
 
@@ -28,18 +34,30 @@ export class UsersPermissionsComponent implements OnInit, AfterViewInit {
 
   ngOnInit(): void {}
 
-  ngAfterViewInit(): void {
-    // TODO: JF Check this.permissions in onChange cycle hook
-    setTimeout(() => {
+  ngOnChanges(changes: SimpleChanges): void {
+    if (changes.permissions?.currentValue && this.permissions) {
       this.manageDataStructre();
-    }, 1000);
+    }
+  }
+
+  public resetRolesPermissions(): void {
+    this.manageDataStructre();
   }
 
   public manageDataStructre(): void {
+    const rolesDefaultPermissions =
+      this.permissions && this.type === 'CREATE_EDIT_USER'
+        ? this.permissions.map((permission: PermissionsDTO) => permission.id)
+        : [];
     this.permissionsStructure = {
-      completed: false,
-      permissions: this.permissions.map((p) => ({ id: p.id, description: p.description, completed: false }))
+      completed: this.type === 'CREATE_EDIT_USER' ? true : false,
+      permissions: this.permissions.map((p) => ({
+        id: p.id,
+        description: p.description,
+        completed: rolesDefaultPermissions.indexOf(p.id) >= 0
+      }))
     };
+    this.updateAllComplete();
   }
 
   // Checkbox management
@@ -62,5 +80,16 @@ export class UsersPermissionsComponent implements OnInit, AfterViewInit {
       return;
     }
     this.permissionsStructure?.permissions.forEach((p) => (p.completed = completed));
+  }
+
+  public getPermissionsChecked(): PermissionsDTO[] {
+    const permissionsChecked = this.permissionsStructure.permissions.filter((p) => p.completed).map((p) => p.id);
+    return this.permissions.filter((permission: PermissionsDTO) => permissionsChecked.indexOf(permission.id) >= 0);
+  }
+
+  public hasChangesRespectRolePermissions(): boolean {
+    const array1 = this.getPermissionsChecked()?.map((p: PermissionsDTO) => p.id);
+    const array2 = this.permissions?.map((p: PermissionsDTO) => p.id);
+    return !(array1 && array2 && array1.length === array2.length && array1.every((value, index) => value === array2[index]));
   }
 }

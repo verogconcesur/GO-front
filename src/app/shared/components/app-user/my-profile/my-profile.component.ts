@@ -120,7 +120,7 @@ export class MyProfileComponent extends ComponentToExtendForCustomDialog impleme
         return this.userDetails;
       }),
       catchError((error) => {
-        const err = error as ConcenetError;
+        const err = error.error as ConcenetError;
         this.globalMessageService.showError({
           message: err.message,
           actionText: 'Close'

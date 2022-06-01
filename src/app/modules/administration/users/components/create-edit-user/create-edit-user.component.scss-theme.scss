@@ -1,0 +1,66 @@
+@import '@angular/material/theming';
+@import 'utils/core';
+
+@mixin create-edit-user-component-theme($theme, $main-typo) {
+  $primary: map-get($theme, primary);
+  $foreground: map-get($theme, foreground);
+
+  .create-edit-user-content {
+    .create-edit-user-content__form {
+      .user-data__section {
+        &__title {
+          color: mat-color($primary, 500);
+          font-size: 1rem;
+          font-weight: 600;
+        }
+        &__info {
+          font-size: 0.85rem;
+        }
+        &__group {
+          mat-form-field {
+            margin-right: 20px;
+            &:last-child {
+              margin-right: 0px;
+            }
+            @include respond-to(calc(#{$tablet-small} - 25px)) {
+              margin-right: 0px;
+            }
+          }
+          &__title {
+            color: mat-contrast($primary, 100);
+            font-size: 0.75rem;
+            font-weight: 600;
+          }
+
+          &__content {
+            color: mat-color($foreground, secondary-text);
+            font-size: 0.875rem;
+          }
+
+          &.password-group {
+            display: flex;
+            align-items: center;
+            flex-direction: row;
+            flex-wrap: wrap;
+            justify-content: flex-start;
+            @include respond-to(calc(#{$tablet-small} - 25px)) {
+              justify-content: space-between;
+            }
+          }
+        }
+      }
+      .smaller-mat-form-fields {
+        @include respond-to(calc(#{$tablet-small} - 25px)) {
+          mat-form-field {
+            width: 47%;
+          }
+        }
+        @include respond-to(calc(#{$mobile} - 120px)) {
+          mat-form-field {
+            width: 97%;
+          }
+        }
+      }
+    }
+  }
+}

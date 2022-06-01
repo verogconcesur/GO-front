@@ -4,7 +4,7 @@
   padding: 0 30px 25px 30px;
 
   &__title {
-    margin-bottom: 25px;
+    margin-bottom: 0px;
   }
 
   @include respond-to($tablet-small) {
@@ -26,7 +26,7 @@
 
     .create-action {
       box-sizing: border-box;
-      height: 48px;
+      // height: 48px;
       margin-left: 20px;
 
       @include respond-to($tablet-small) {
@@ -38,22 +38,19 @@
       display: inline-block;
     }
 
-    &__search-button {
-      display: none;
-    }
-
-    @include respond-to($mobile) {
-      &__search-form-wrapper {
-        display: none;
-      }
-
-      &__search-button {
-        display: block;
-      }
-    }
-
     .filter-action {
       margin-left: 5px;
+      &.active:before {
+        content: '';
+        display: block;
+        position: absolute;
+        right: -5px;
+        top: -5px;
+        width: 15px;
+        height: 15px;
+        border-radius: 50%;
+        background-color: yellowgreen;
+      }
     }
   }
 }

@@ -12,6 +12,7 @@ import { catchError } from 'rxjs/operators';
 })
 export class RoleService {
   private readonly GET_ROLES_PATH = '/api/roles';
+  private readonly POST_ROLES_PATH = '/api/roles';
   private readonly DELETE_ROLE_PATH = '/api/roles';
 
   constructor(@Inject(ENV) private env: Env, private http: HttpClient) {}
@@ -19,12 +20,18 @@ export class RoleService {
   public getAllRoles(): Observable<RoleDTO[]> {
     return this.http
       .get<RoleDTO[]>(`${this.env.apiBaseUrl}${this.GET_ROLES_PATH}`)
-      .pipe(catchError((error) => throwError(error as ConcenetError)));
+      .pipe(catchError((error) => throwError(error.error as ConcenetError)));
+  }
+
+  public addRole(role: RoleDTO): Observable<RoleDTO> {
+    return this.http
+      .post<RoleDTO>(`${this.env.apiBaseUrl}${this.POST_ROLES_PATH}`, role)
+      .pipe(catchError((error) => throwError(error.error as ConcenetError)));
   }
 
   public deleteRoleById(roleId: number): Observable<void> {
     return this.http
       .delete<void>(`${this.env.apiBaseUrl}${this.DELETE_ROLE_PATH}/${roleId}`)
-      .pipe(catchError((error) => throwError(error as ConcenetError)));
+      .pipe(catchError((error) => throwError(error.error as ConcenetError)));
   }
 }

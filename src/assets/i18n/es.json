@@ -21,7 +21,10 @@
   },
   "common": {
     "actions": "Acciones",
+    "apply": "Aplicar",
     "cancel": "Cancelar",
+    "filter": "Filtro",
+    "reset": "Restaurar",
     "save": "Guardar",
     "search": "Buscar",
     "successOperation": "Operación realizada con éxito.",
@@ -76,16 +79,23 @@
   },
   "roles": {
     "create": "Crear rol",
+    "deleteConfirmation": "¿Realmente quiere eliminar este rol?",
     "title": "Roles y permisos"
   },
   "sample": {
     "text": "{count, plural, =0{No hay} one{Hay una} other{Hay varias}} {count, plural, =0{nada} one{cosa} other{cosas}}"
   },
   "user": {
+    "add": "Añadir usuario",
+    "deleteConfirmation": "¿Realmente quiere eliminar este usuario?",
+    "edit": "Editar usuario",
     "myProfile": {
       "edit": "Editar perfil",
       "title": "Mí perfil"
-    }
+    },
+    "permissionsInheritFromRole": "Heredados de <b>{role}</b>*",
+    "selectRoleFirst": "Primero selecciona un rol",
+    "userPermissions": "Permisos de usuario"
   },
   "userProfile": {
     "brand": "Marca",
@@ -112,6 +122,7 @@
   "users": {
     "create": "Crear usuario",
     "fullName": "Nombre y apellidos",
+    "permissions": "Permisos",
     "permissionsGroup": "Grupo permisos",
     "roles": {
       "create": "Crear rol",

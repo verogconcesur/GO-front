@@ -19,6 +19,7 @@ export class AuthenticationService {
 
   private readonly ACCESS_TOKEN = 'access_token';
   private readonly EXPIRES_IN = 'expires_in';
+  private readonly TOKEN_TIMESTAMP = 'token_timestamp';
   private readonly USER_ID = 'user_id';
   private readonly USER_FULL_NAME = 'user_full_name';
   private readonly USER_ROLE = 'user_role';
@@ -34,22 +35,25 @@ export class AuthenticationService {
       .pipe(catchError((error) => throwError(error as ConcenetError)));
   }
 
-  public keepTokenAlive(token: string, expires_in: number): void {
-    const refreshTime = 3000;
-
-    clearInterval(this.tokenInterval);
-
-    if (token && expires_in) {
-      this.tokenInterval = setInterval(() => {
-        this.refreshToken().subscribe({
-          next: (loginData) => {
-            this.setLoggedUser(loginData);
-          },
-          error: (error: ConcenetError) => {
-            console.log(error.message);
-          }
-        });
-      }, expires_in - refreshTime);
+  public keepTokenAlive(): void {
+    const refreshTimeBeforeTokenExpires = 3000;
+    if (!this.tokenInterval) {
+      const token = this.getToken();
+      const expires_in = this.getExpiresIn();
+      const token_timestamp = this.getTokenTimestamp();
+      if (token && expires_in && token_timestamp) {
+        const timeToExpire = token_timestamp + expires_in - refreshTimeBeforeTokenExpires;
+        this.tokenInterval = setInterval(() => {
+          this.refreshToken().subscribe({
+            next: (loginData) => {
+              this.setLoggedUser(loginData);
+            },
+            error: (error: ConcenetError) => {
+              console.log(error.message);
+            }
+          });
+        }, timeToExpire - +new Date());
+      }
     }
   }
 
@@ -99,7 +103,7 @@ export class AuthenticationService {
    * @returns the token expires_in
    */
   getExpiresIn() {
-    return sessionStorage.getItem(this.EXPIRES_IN);
+    return parseInt(sessionStorage.getItem(this.EXPIRES_IN), 10);
   }
 
   /**
@@ -107,6 +111,31 @@ export class AuthenticationService {
    */
   removeExpiresIn() {
     sessionStorage.removeItem(this.EXPIRES_IN);
+  }
+
+  /**
+   * Stores the token token_timestamp
+   *
+   * @param timestamp token token_timestamp
+   */
+  setTokenTimestamp(timestamp: number) {
+    sessionStorage.setItem(this.TOKEN_TIMESTAMP, timestamp.toString());
+  }
+
+  /**
+   * Retrieves the token token_timestamp
+   *
+   * @returns the token_timestamp
+   */
+  getTokenTimestamp() {
+    return parseInt(sessionStorage.getItem(this.TOKEN_TIMESTAMP), 10);
+  }
+
+  /**
+   * Remove the saved token_timestamp
+   */
+  removeTokenTimestamp() {
+    sessionStorage.removeItem(this.TOKEN_TIMESTAMP);
   }
 
   /**
@@ -146,14 +175,14 @@ export class AuthenticationService {
    *
    * @returns the userRole
    */
-  getUserRole(): RoleDTO{
+  getUserRole(): RoleDTO {
     return JSON.parse(sessionStorage.getItem(this.USER_ROLE));
   }
 
   /**
    * Remove the userRole
    */
-   removeUserRole() {
+  removeUserRole() {
     sessionStorage.removeItem(this.USER_ROLE);
   }
 
@@ -169,7 +198,7 @@ export class AuthenticationService {
   /**
    * Remove the userRole
    */
-   removeUserPermissions() {
+  removeUserPermissions() {
     sessionStorage.removeItem(this.USER_PERMISSIONS);
   }
 
@@ -178,10 +207,10 @@ export class AuthenticationService {
    *
    * @returns boolean
    */
-   hasUserAnyPermission(permissions: string[]): boolean{
-    const userPermissions = this.getUserPermissions().map(permission => permission.code);
+  hasUserAnyPermission(permissions: string[]): boolean {
+    const userPermissions = this.getUserPermissions().map((permission) => permission.code);
     return permissions.reduce((prevValue, currentValue) => {
-      if(!prevValue){
+      if (!prevValue) {
         return userPermissions.indexOf(currentValue) >= 0;
       }
       return prevValue;
@@ -194,12 +223,18 @@ export class AuthenticationService {
    * @param loginData
    */
   setLoggedUser(loginData: LoginDTO): void {
+    if (this.tokenInterval) {
+      clearInterval(this.tokenInterval);
+      this.tokenInterval = null;
+    }
     sessionStorage.setItem(this.ACCESS_TOKEN, loginData.access_token);
     sessionStorage.setItem(this.EXPIRES_IN, loginData.expires_in.toString());
+    sessionStorage.setItem(this.TOKEN_TIMESTAMP, (+new Date()).toString());
     sessionStorage.setItem(this.USER_ID, loginData.user.id.toString());
     sessionStorage.setItem(this.USER_FULL_NAME, loginData.user.firstName + loginData.user.lastName);
     sessionStorage.setItem(this.USER_ROLE, JSON.stringify(loginData.user.role));
     sessionStorage.setItem(this.USER_PERMISSIONS, JSON.stringify(loginData.user.permissions));
+    this.keepTokenAlive();
   }
 
   /**
@@ -207,7 +242,7 @@ export class AuthenticationService {
    */
   getLoggedUser(): {
     access_token: string;
-    expires_in: string;
+    expires_in: number;
     user_id: string;
     user_full_name: string;
   } {

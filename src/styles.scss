@@ -12,6 +12,7 @@
 @import 'app/layout/dashboard-layout/components/user-profile/user-profile.component.scss-theme.scss';
 @import 'app/layout/administration-layout/administration-layout.component.scss-theme.scss';
 @import 'app/modules/administration/users/components/users-permissions/users-permissions.component.scss-theme.scss';
+@import 'app/modules/administration/users/components/create-edit-user/create-edit-user.component.scss-theme.scss';
 
 @mixin custom-components-theme($theme, $main-typography) {
   @include app-component-theme($theme);
@@ -24,6 +25,7 @@
   @include user-profile-component-theme($theme, $main-typography);
   @include administration-layout-component-theme($theme, $main-typography);
   @include users-permissions-component-theme($theme, $main-typography);
+  @include create-edit-user-component-theme($theme, $main-typography);
 }
 
 // Load theme and custom components styles for current theme

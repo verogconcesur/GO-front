@@ -55,11 +55,28 @@
       padding: 0.25em 0 0.75em 0;
       font-size: 14px;
     }
+    &__button-height {
+      &.mat-form-field-appearance-outline .mat-form-field-infix,
+      &.mat-form-field-appearance-outline .mat-form-field-suffix {
+        padding: 0.2em 0 0.25em 0;
+        .mat-input-element {
+          position: absolute;
+          margin-top: -11px;
+        }
+      }
+    }
     .mat-form-field-appearance-outline .mat-form-field-infix .mat-select-arrow {
       margin-top: 10px;
     }
     .mat-form-field-appearance-outline .mat-select-empty + .mat-form-field-label-wrapper .mat-form-field-label {
       margin-top: -0.75em;
+    }
+    .mat-form-field-appearance-outline .mat-select + .mat-form-field-label-wrapper .mat-form-field-label {
+      margin-top: -0.3em;
+    }
+    .mat-select &__no-margin.mat-form-field-appearance-outline .mat-form-field-wrapper {
+      padding: 0 0;
+      margin: 0 0;
     }
     &__no-margin.mat-form-field-appearance-outline .mat-form-field-wrapper {
       padding: 0 0;

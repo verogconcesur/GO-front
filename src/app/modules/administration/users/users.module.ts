@@ -7,7 +7,9 @@ import { UsersHeaderComponent } from './components/users-header/users-header.com
 import { UsersListComponent } from './components/users-list/users-list.component';
 import { UsersPermissionsComponent } from './components/users-permissions/users-permissions.component';
 import { UsersRoutingModule } from './users-routing.module';
+import { UsersFilterComponent } from './components/users-filter/users-filter.component';
 import { UsersComponent } from './users.component';
+import { CreateEditUserComponent } from './components/create-edit-user/create-edit-user.component';
 
 @NgModule({
   declarations: [
@@ -16,7 +18,9 @@ import { UsersComponent } from './users.component';
     UsersListComponent,
     RolesListComponent,
     CreateEditRoleComponent,
-    UsersPermissionsComponent
+    UsersPermissionsComponent,
+    UsersFilterComponent,
+    CreateEditUserComponent
   ],
   imports: [CommonModule, UsersRoutingModule, SharedModule]
 })
