@@ -84,7 +84,6 @@ export class LoginComponent implements OnInit {
 
   private loginSuccess(loginData: LoginDTO): void {
     this.authenticationService.setLoggedUser(loginData);
-    this.authenticationService.keepTokenAlive(loginData.access_token, loginData.expires_in);
     this.router.navigate(['/', RouteConstants.DASHBOARD]);
   }
 

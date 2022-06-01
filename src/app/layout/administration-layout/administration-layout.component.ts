@@ -1,4 +1,5 @@
-import { Component, OnInit } from '@angular/core';
+import { AfterViewInit, Component, OnInit, ViewChild, ViewContainerRef } from '@angular/core';
+import { MatDrawer } from '@angular/material/sidenav';
 import { Router } from '@angular/router';
 import { RouteConstants } from '@app/constants/route.constants';
 import { AuthenticationService } from '@app/security/authentication.service';
@@ -8,6 +9,7 @@ import UserDetailsDTO from '@data/models/user-details-dto';
 import { UserService } from '@data/services/user.service';
 import { MyProfileComponent, MyProfileComponentModalEnum } from '@shared/components/app-user/my-profile/my-profile.component';
 import { CustomDialogService } from '@shared/modules/custom-dialog/services/custom-dialog.service';
+import { FilterDrawerService } from '@shared/modules/filter-drawer/services/filter-drawer.service';
 import { GlobalMessageService } from '@shared/services/global-message.service';
 import { NGXLogger } from 'ngx-logger';
 import { take } from 'rxjs/operators';
@@ -28,6 +30,7 @@ export class AdministrationLayoutComponent implements OnInit {
     viewProfile: marker('administration.viewProfile'),
     workflows: marker('administration.workflows')
   };
+  public filterDrawerDisableClose = false;
 
   public readonly USERS_TEMPLATE_PATH = RouteConstants.USERS;
 

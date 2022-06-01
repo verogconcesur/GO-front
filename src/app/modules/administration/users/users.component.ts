@@ -1,6 +1,8 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { MatTabChangeEvent } from '@angular/material/tabs';
 import { marker } from '@biesbjerg/ngx-translate-extract-marker';
+import UserDetailsDTO from '@data/models/user-details-dto';
+import { Observable } from 'rxjs';
 import { RolesListComponent } from './components/roles-list/roles-list.component';
 import { UsersListComponent } from './components/users-list/users-list.component';
 
@@ -27,10 +29,36 @@ export class UsersComponent implements OnInit {
 
   public buttonCreateAction(): void {
     if (this.selectedTab === 'users') {
-      // TODO: DGDC descomentar cuando mergeemos
-      //this.usersListComponent.openCreateUserDialog();
+      this.usersListComponent.openCreateUserDialog();
     } else {
       this.rolesListComponent.openCreateRoleDialog();
+    }
+  }
+
+  public getFilteredData = (
+    text: string
+  ): Observable<{ content: UserDetailsDTO[]; optionLabelFn: (option: UserDetailsDTO) => string }> => {
+    if (this.selectedTab === 'users') {
+      return this.usersListComponent.getFilteredData(text);
+    } else {
+      //TODO: DGDC link with filter role action
+    }
+  };
+
+  public buttonShowFilterDrawerAction(): void {
+    if (this.selectedTab === 'users') {
+      this.usersListComponent.openFilterUserDialog();
+    } else {
+      //TODO: DGDC link with filter role action
+    }
+  }
+
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  public buttonSearchAction(option: any): void {
+    if (this.selectedTab === 'users') {
+      return this.usersListComponent.showFilterOptionSelected(option);
+    } else {
+      //TODO: DGDC link with filter role action
     }
   }
 
@@ -40,5 +68,12 @@ export class UsersComponent implements OnInit {
     } else {
       this.selectedTab = 'roles';
     }
+  }
+
+  public areFiltersSettedAndActive(): boolean {
+    if (this.selectedTab === 'users') {
+      return this.usersListComponent?.areFiltersSettedAndActive();
+    }
+    return false;
   }
 }

@@ -1,0 +1,22 @@
+<div class="filter-drawer-wrapper" fxLayout="column" fxLayoutAlign="space-between center">
+    <div class="filter-drawer-wrapper__header">
+        <button class="close-button close-modal-button" mat-icon-button (click)="filterDrawerService.closeFilter()">
+            <mat-icon>close</mat-icon>
+        </button>
+        <h2 class="mat-display-1">{{ labels.title | translate }}</h2>
+        <ng-container class="filter-drawer-wrapper__content" #filterDrawerInnerContainerRef></ng-container>
+    </div>
+    <div class="filter-drawer-wrapper__footer" fxLayout="row" fxLayoutAlign="space-between center">
+        <button mat-stroked-button color="warn" (click)="filterDrawerService.resetFilter()">
+            {{ labels.reset | translate }}
+        </button>
+        <button
+            mat-flat-button
+            color="primary"
+            (click)="filterDrawerService.submitFilter()"
+            [disabled]="filterDrawerService.isSubmitFilterButtonDisabled()"
+        >
+            {{ labels.apply | translate }}
+        </button>
+    </div>
+</div>

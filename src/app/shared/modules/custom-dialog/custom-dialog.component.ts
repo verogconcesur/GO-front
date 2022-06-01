@@ -40,7 +40,7 @@ export class CustomDialogComponent implements AfterViewInit, OnDestroy {
         .confirmCloseCustomDialog()
         .pipe(take(1))
         .subscribe({
-          next: ok => {
+          next: (ok) => {
             if (ok) {
               this.close(false);
             }
@@ -60,7 +60,7 @@ export class CustomDialogComponent implements AfterViewInit, OnDestroy {
         .onSubmitCustomDialog()
         .pipe(take(1))
         .subscribe({
-          next: ok => {
+          next: (ok) => {
             if (ok) {
               this.close(ok);
             }
@@ -87,7 +87,8 @@ export class CustomDialogComponent implements AfterViewInit, OnDestroy {
     this.footerConfig = new CustomDialogFooterConfig(this.componentRef.instance.setAndGetFooterConfig());
   }
 
-  private close(result: boolean): void {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  private close(result: any): void {
     this.dialogRef.close(result);
   }
 }

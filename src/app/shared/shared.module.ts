@@ -12,6 +12,7 @@ import { CustomDialogModule } from './modules/custom-dialog/custom-dialog.module
 import { ConfirmDialogService } from './services/confirm-dialog.service';
 import { GlobalMessageService } from './services/global-message.service';
 import { ProgressSpinnerDialogService } from './services/progress-spinner-dialog.service';
+import { FilterDrawerModule } from './modules/filter-drawer/filter-drawer.module';
 
 @NgModule({
   declarations: [ProgressSpinnerDialogComponent, ConfirmDialogComponent, GoBackComponent, MyProfileComponent],
@@ -21,8 +22,9 @@ import { ProgressSpinnerDialogService } from './services/progress-spinner-dialog
     MaterialModule,
     FlexLayoutModule,
     ReactiveFormsModule,
+    FormsModule,
     CustomDialogModule,
-    FormsModule
+    FilterDrawerModule
   ],
   providers: [GlobalMessageService, ConfirmDialogService, ProgressSpinnerDialogService],
   exports: [
@@ -30,10 +32,11 @@ import { ProgressSpinnerDialogService } from './services/progress-spinner-dialog
     MaterialModule,
     FlexLayoutModule,
     ReactiveFormsModule,
+    FormsModule,
     GoBackComponent,
     CommonModule,
     MyProfileComponent,
-    FormsModule
+    FilterDrawerModule
   ]
 })
 export class SharedModule {}

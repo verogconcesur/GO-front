@@ -2,7 +2,11 @@
     <app-users-header
         [buttonLabel]="selectedTab === 'users' ? labels.createUser : labels.createRole"
         [showFilterButton]="selectedTab === 'users' ? true : false"
+        [areFiltersSettedAndActive]="areFiltersSettedAndActive()"
+        [searchFn]="getFilteredData"
         (buttonCreateAction)="buttonCreateAction()"
+        (buttonShowFilterDrawerAction)="buttonShowFilterDrawerAction()"
+        (buttonSearchAction)="buttonSearchAction($event)"
     ></app-users-header>
     <mat-tab-group class="mat-tab-page-sections" mat-align-tabs="start" (selectedTabChange)="changeSelectedTab($event)">
         <mat-tab label="{{ labels.users | translate }}">

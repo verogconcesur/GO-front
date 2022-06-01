@@ -17,13 +17,28 @@ export class CustomDialogService {
    */
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   public open(config: CustomDialogConfigI): Observable<any> {
-    const { maxWidth, minWidth, width, disableClose, component, id, panelClass, extendedComponentData } = config;
+    const {
+      maxWidth,
+      minWidth,
+      width,
+      maxHeight,
+      minHeight,
+      height,
+      disableClose,
+      component,
+      id,
+      panelClass,
+      extendedComponentData
+    } = config;
     const dialogRef = this.dialog.open(CustomDialogComponent, {
       id,
       panelClass,
       maxWidth,
       minWidth,
       width,
+      maxHeight,
+      minHeight,
+      height,
       disableClose,
       data: {
         component,

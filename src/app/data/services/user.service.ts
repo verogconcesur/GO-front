@@ -8,9 +8,9 @@ import PaginationResponseI from '@data/interfaces/pagination-response';
 import UserDetailsDTO from '@data/models/user-details-dto';
 import UserDTO from '@data/models/user-dto';
 import UserFilterDTO from '@data/models/user-filter-dto';
+import { getPaginationUrlGetParams } from '@data/utils/pagination-aux';
 import { Observable, throwError } from 'rxjs';
 import { catchError } from 'rxjs/operators';
-import { getPaginationUrlGetParams } from './pagination-aux';
 
 @Injectable({
   providedIn: 'root'
@@ -21,6 +21,8 @@ export class UserService {
   private readonly USER_DETAILS_PATH = '/api/users';
   private readonly USER_EDIT_PROFILE_PATH = '/api/users/editProfile';
   private readonly SEARCH_USERS_PATH = '/api/users/search';
+  private readonly USER_ADD_PATH = '/api/users';
+  private readonly USER_DELETE_PATH = '/api/users';
 
   constructor(@Inject(ENV) private env: Env, private http: HttpClient) {}
 
@@ -44,6 +46,12 @@ export class UserService {
   public getUserDetailsById(userId: number): Observable<UserDetailsDTO> {
     return this.http
       .get<UserDetailsDTO>(`${this.env.apiBaseUrl}${this.USER_DETAILS_PATH}/${userId}`)
+      .pipe(catchError((error) => throwError(error as ConcenetError)));
+  }
+
+  public addUser(userData: UserDetailsDTO): Observable<UserDetailsDTO> {
+    return this.http
+      .post<UserDetailsDTO>(`${this.env.apiBaseUrl}${this.USER_ADD_PATH}`, userData)
       .pipe(catchError((error) => throwError(error as ConcenetError)));
   }
 
@@ -72,5 +80,12 @@ export class UserService {
         userFilter
       )
       .pipe(catchError((error) => throwError(error as ConcenetError)));
+  }
+
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  public deleteUser(userData: UserDetailsDTO): Observable<any> {
+    return this.http
+      .delete(`${this.env.apiBaseUrl}${this.USER_DELETE_PATH}/${userData.id}`)
+      .pipe(catchError((error) => throwError(error.error as ConcenetError)));
   }
 }

@@ -7,20 +7,39 @@
                 class="users-header__actions-wrapper__search-form smaller-mat-form-fields"
                 fxLayout="row"
                 fxLayoutAlign="end center"
+                (ngSubmit)="searchAction()"
             >
-                <mat-form-field appearance="outline" class="smaller-mat-form-fields__no-margin">
-                    <mat-label>{{ labels.search | translate }}</mat-label>
-                    <input matInput [placeholder]="labels.search | translate" type="text" />
-                    <mat-icon matSuffix>search</mat-icon>
+                <mat-form-field
+                    appearance="outline"
+                    class="smaller-mat-form-fields__no-margin smaller-mat-form-fields__button-height"
+                >
+                    <input
+                        type="text"
+                        matInput
+                        [placeholder]="labels.search | translate"
+                        [formControl]="filterTextSearchControl"
+                        [matAutocomplete]="auto"
+                        (keyup.enter)="searchAction()"
+                    />
+                    <button mat-icon-button aria-label="Search" type="button" matSuffix (click)="searchAction()">
+                        <mat-icon>search</mat-icon>
+                    </button>
+                    <mat-autocomplete autoActiveFirstOption #auto="matAutocomplete" [displayWith]="transformOptionLabel">
+                        <mat-option *ngFor="let option of filteredOptions | async" [value]="option">
+                            {{ transformOptionLabel(option) }}
+                        </mat-option>
+                    </mat-autocomplete>
                 </mat-form-field>
             </form>
         </div>
-
-        <button class="users-header__actions-wrapper__search-button mat-square-icon" mat-raised-button>
-            <mat-icon>search</mat-icon>
-        </button>
-
-        <button *ngIf="showFilterButton" color="dark" class="filter-action mat-square-icon" mat-flat-button>
+        <button
+            *ngIf="showFilterButton"
+            color="dark"
+            class="filter-action mat-square-icon"
+            (click)="buttonShowFilterDrawerAction.emit()"
+            [class.active]="areFiltersSettedAndActive"
+            mat-flat-button
+        >
             <mat-icon>filter_list</mat-icon>
         </button>
         <button class="create-action" (click)="buttonCreateAction.emit()" mat-raised-button color="primary">

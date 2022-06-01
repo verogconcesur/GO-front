@@ -13,15 +13,20 @@ export class AuthGuardService implements CanActivate {
     //Roles are passed in route data
     const permissions = route.data.permissions as Array<string>;
     const userLogged = this.authenticationService.isUserLogged();
+    if (userLogged) {
+      this.authenticationService.keepTokenAlive();
+    }
     if (userLogged && permissions && Array.isArray(permissions) && permissions.length) {
-      return this.authenticationService.hasUserAnyPermission(permissions);
-    } else if (userLogged && permissions && (!Array.isArray(permissions) || permissions.length)) {
-      if (!userLogged) {
-        this.router.navigate([RouteConstants.LOGIN]);
-      } else {
+      const hasPermissions = this.authenticationService.hasUserAnyPermission(permissions);
+      if (!hasPermissions) {
         this.router.navigate([RouteConstants.DASHBOARD]);
       }
+      return hasPermissions;
+    } else if (userLogged && permissions && (!Array.isArray(permissions) || permissions.length)) {
       return false;
+    }
+    if (!userLogged) {
+      this.router.navigate([RouteConstants.LOGIN]);
     }
     return userLogged;
   }
