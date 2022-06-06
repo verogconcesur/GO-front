@@ -1,0 +1,8 @@
+@import '~@angular/material/theming';
+
+@mixin custom-mat-checkbox-theme($theme, $main-typo) {
+  .mat-checkbox-layout {
+    // The important is necessary
+    white-space: normal !important;
+  }
+}

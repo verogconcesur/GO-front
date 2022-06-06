@@ -12,7 +12,7 @@
                 <div class="mat-role-card__icons">
                     <!-- TODO: JF Uncomment when translations will be available -->
                     <!-- <mat-icon fontSet="concenet">translate</mat-icon> -->
-                    <mat-icon fontSet="concenet">edit</mat-icon>
+                    <mat-icon fontSet="concenet" (click)="openCreateRoleDialog(role)">edit</mat-icon>
                     <mat-icon fontSet="concenet" (click)="deleteRole(role.id)">delete</mat-icon>
                 </div>
             </div>

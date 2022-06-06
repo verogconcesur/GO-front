@@ -5,6 +5,7 @@ import PermissionsDTO from '@data/models/permissions-dto';
 import RoleDTO from '@data/models/role-dto';
 import { PermissionsService } from '@data/services/permissions.service';
 import { GlobalMessageService } from '@shared/services/global-message.service';
+import { haveArraysSameValues } from '@shared/utils/array-comparation-function';
 
 export interface PermisssionsStructure {
   id?: number;
@@ -22,6 +23,7 @@ export class UsersPermissionsComponent implements OnInit, OnChanges {
   @Input() overFlowLayerLabel = '';
   @Input() showOverFlowLayer = false;
   @Input() permissions: PermissionsDTO[];
+  @Input() permissionsToSelectByDefault: PermissionsDTO[];
   @Input() type: 'CREATE_EDIT_ROLE' | 'CREATE_EDIT_USER' = 'CREATE_EDIT_USER';
 
   public labels = {
@@ -35,20 +37,28 @@ export class UsersPermissionsComponent implements OnInit, OnChanges {
   ngOnInit(): void {}
 
   ngOnChanges(changes: SimpleChanges): void {
-    if (changes.permissions?.currentValue && this.permissions) {
+    if (
+      (changes.permissions?.currentValue && this.permissions) ||
+      (this.permissions && changes.permissionsToSelectByDefault && this.permissionsToSelectByDefault)
+    ) {
       this.manageDataStructre();
     }
   }
 
   public resetRolesPermissions(): void {
-    this.manageDataStructre();
+    this.manageDataStructre(true);
   }
 
-  public manageDataStructre(): void {
-    const rolesDefaultPermissions =
-      this.permissions && this.type === 'CREATE_EDIT_USER'
-        ? this.permissions.map((permission: PermissionsDTO) => permission.id)
-        : [];
+  public manageDataStructre(userRolePermissionsAsDefault = false): void {
+    let rolesDefaultPermissions: number[] = [];
+    if (
+      userRolePermissionsAsDefault ||
+      (this.permissions && this.type === 'CREATE_EDIT_USER' && !this.permissionsToSelectByDefault)
+    ) {
+      rolesDefaultPermissions = this.permissions.map((permission: PermissionsDTO) => permission.id);
+    } else if (this.permissions && this.permissionsToSelectByDefault) {
+      rolesDefaultPermissions = this.permissionsToSelectByDefault.map((permission: PermissionsDTO) => permission.id);
+    }
     this.permissionsStructure = {
       completed: this.type === 'CREATE_EDIT_USER' ? true : false,
       permissions: this.permissions.map((p) => ({
@@ -83,6 +93,9 @@ export class UsersPermissionsComponent implements OnInit, OnChanges {
   }
 
   public getPermissionsChecked(): PermissionsDTO[] {
+    if (!this.permissionsStructure?.permissions || !this.permissions) {
+      return [];
+    }
     const permissionsChecked = this.permissionsStructure.permissions.filter((p) => p.completed).map((p) => p.id);
     return this.permissions.filter((permission: PermissionsDTO) => permissionsChecked.indexOf(permission.id) >= 0);
   }
@@ -90,6 +103,12 @@ export class UsersPermissionsComponent implements OnInit, OnChanges {
   public hasChangesRespectRolePermissions(): boolean {
     const array1 = this.getPermissionsChecked()?.map((p: PermissionsDTO) => p.id);
     const array2 = this.permissions?.map((p: PermissionsDTO) => p.id);
-    return !(array1 && array2 && array1.length === array2.length && array1.every((value, index) => value === array2[index]));
+    return haveArraysSameValues(array1, array2);
+  }
+
+  public hasChangesRespectDefaultCheckedPermissions(): boolean {
+    const array1 = this.getPermissionsChecked()?.map((p: PermissionsDTO) => p.id);
+    const array2 = this.permissionsToSelectByDefault?.map((p: PermissionsDTO) => p.id);
+    return haveArraysSameValues(array1, array2);
   }
 }

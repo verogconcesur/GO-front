@@ -12,14 +12,16 @@ import { NGXLogger } from 'ngx-logger';
 import RoleDTO from '@data/models/role-dto';
 import BrandDTO from '@data/models/brand-dto';
 import FacilitiesGroupedByBrand from '@data/interfaces/facilities-grouped-by-brand';
-import DespartmentsGroupedByFacility from '@data/interfaces/departments-grouped-by-facility';
+import DepartmentsGroupedByFacility from '@data/interfaces/departments-grouped-by-facility';
 import SpecialtiesGroupedByDepartment from '@data/interfaces/specialties-grouped-by-department';
 import DepartmentDTO from '@data/models/department-dto';
 import FacilityDTO from '@data/models/facility-dto';
 import SpecialtyDTO from '@data/models/specialty-dto';
 import { take } from 'rxjs/operators';
 import UserFilterDTO from '@data/models/user-filter-dto';
+import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
 
+@UntilDestroy()
 @Component({
   selector: 'app-users-filter',
   templateUrl: './users-filter.component.html',
@@ -37,7 +39,7 @@ export class UsersFilterComponent extends FilterDrawerClassToExnted implements O
   public rolesAsyncList: Observable<RoleDTO[]>;
   public brandsAsyncList: Observable<BrandDTO[]>;
   public facilitiesList: FacilitiesGroupedByBrand[];
-  public departmentsList: DespartmentsGroupedByFacility[];
+  public departmentsList: DepartmentsGroupedByFacility[];
   public specialtiesList: SpecialtiesGroupedByDepartment[];
 
   constructor(
@@ -55,6 +57,7 @@ export class UsersFilterComponent extends FilterDrawerClassToExnted implements O
   ngOnInit(): void {
     this.initializeForm();
     this.getListOptions();
+    this.initializeListeners();
   }
 
   public resetFilter(value?: UserFilterDTO): Observable<UserFilterDTO> {
@@ -121,7 +124,7 @@ export class UsersFilterComponent extends FilterDrawerClassToExnted implements O
           selected = selected.filter(
             (department: DepartmentDTO) =>
               this.departmentsList.filter(
-                (dg: DespartmentsGroupedByFacility) =>
+                (dg: DepartmentsGroupedByFacility) =>
                   dg.departments.filter((d: DepartmentDTO) => d.id === department.id).length > 0
               ).length > 0
           );
@@ -172,6 +175,14 @@ export class UsersFilterComponent extends FilterDrawerClassToExnted implements O
       facilities: [[]],
       departments: [[]],
       specialties: [[]]
+    });
+  }
+
+  private initializeListeners(): void {
+    this.roleService.rolesChange$.pipe(untilDestroyed(this)).subscribe({
+      next: (change) => {
+        this.getListOptions();
+      }
     });
   }
 }

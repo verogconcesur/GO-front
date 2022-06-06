@@ -1,9 +1,5 @@
 import { Injectable } from '@angular/core';
-import {
-  MatSnackBar,
-  MatSnackBarHorizontalPosition,
-  MatSnackBarVerticalPosition
-} from '@angular/material/snack-bar';
+import { MatSnackBar, MatSnackBarHorizontalPosition, MatSnackBarVerticalPosition } from '@angular/material/snack-bar';
 import {
   GLOBAL_MESSAGE_DEFAULT_DURATION,
   GLOBAL_MESSAGE_DEFAULT_HORIZONTAL_POSITION,
@@ -73,11 +69,12 @@ export class GlobalMessageService {
   }
 
   private showMessage(className: string, config: GlobalMessageConfig): void {
+    if (!config.message) {
+      return;
+    }
     const duration = config.duration || GLOBAL_MESSAGE_DEFAULT_DURATION;
-    const horizontalPosition =
-      config.horizontalPosition || GLOBAL_MESSAGE_DEFAULT_HORIZONTAL_POSITION;
-    const verticalPosition =
-      config.verticalPosition || GLOBAL_MESSAGE_DEFAULT_VERTICAL_POSITION;
+    const horizontalPosition = config.horizontalPosition || GLOBAL_MESSAGE_DEFAULT_HORIZONTAL_POSITION;
+    const verticalPosition = config.verticalPosition || GLOBAL_MESSAGE_DEFAULT_VERTICAL_POSITION;
 
     this.snackBar.open(config.message, config.actionText, {
       duration,

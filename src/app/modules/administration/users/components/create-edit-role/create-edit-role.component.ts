@@ -3,11 +3,13 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ConcenetError } from '@app/types/error';
 import { marker } from '@biesbjerg/ngx-translate-extract-marker';
 import PermissionsDTO from '@data/models/permissions-dto';
+import RoleDTO from '@data/models/role-dto';
 import { PermissionsService } from '@data/services/permissions.service';
 import { RoleService } from '@data/services/role.service';
 import { TranslateService } from '@ngx-translate/core';
 import { CustomDialogFooterConfigI } from '@shared/modules/custom-dialog/interfaces/custom-dialog-footer-config';
 import { ComponentToExtendForCustomDialog } from '@shared/modules/custom-dialog/models/component-for-custom-dialog';
+import { CustomDialogService } from '@shared/modules/custom-dialog/services/custom-dialog.service';
 import { ConfirmDialogService } from '@shared/services/confirm-dialog.service';
 import { GlobalMessageService } from '@shared/services/global-message.service';
 import { ProgressSpinnerDialogService } from '@shared/services/progress-spinner-dialog.service';
@@ -36,6 +38,7 @@ export class CreateEditRoleComponent extends ComponentToExtendForCustomDialog im
   };
   public permissions: PermissionsDTO[] = [];
   public roleForm: FormGroup;
+  public roleToEdit: RoleDTO = null;
 
   constructor(
     private fb: FormBuilder,
@@ -44,7 +47,9 @@ export class CreateEditRoleComponent extends ComponentToExtendForCustomDialog im
     private roleService: RoleService,
     private spinnerService: ProgressSpinnerDialogService,
     private permissionsService: PermissionsService,
-    private globalMessageService: GlobalMessageService
+    private globalMessageService: GlobalMessageService,
+    private confirmationDialog: ConfirmDialogService,
+    private customDialogService: CustomDialogService
   ) {
     super(
       CreateEditRoleComponentModalEnum.ID,
@@ -54,14 +59,18 @@ export class CreateEditRoleComponent extends ComponentToExtendForCustomDialog im
   }
 
   ngOnInit(): void {
-    this.initalizeFormGroup();
+    this.roleToEdit = this.extendedComponentData;
+    if (this.roleToEdit) {
+      this.MODAL_TITLE = marker('users.roles.edit');
+    }
     this.getAllPermissions();
+    this.initalizeFormGroup();
   }
 
   public initalizeFormGroup(): void {
     this.roleForm = this.fb.group({
-      name: ['', Validators.required],
-      permissions: [[]]
+      name: [this.roleToEdit ? this.roleToEdit.name : '', Validators.required],
+      permissions: [this.roleToEdit ? this.roleToEdit.permissions : []]
     });
   }
 
@@ -80,9 +89,13 @@ export class CreateEditRoleComponent extends ComponentToExtendForCustomDialog im
   public onSubmitCustomDialog(): Observable<any> {
     const formValue = this.roleForm.value;
     formValue.permissions = this.permissionsListComponent.getPermissionsChecked();
+    if (this.roleToEdit) {
+      formValue.id = this.roleToEdit.id;
+    }
     const spinner = this.spinnerService.show();
-    return this.roleService.addRole(formValue).pipe(
+    return this.roleService.addOrEditRole(formValue).pipe(
       map((response) => {
+        this.roleService.rolesChange$.next(true);
         this.globalMessageService.showSuccess({
           message: this.translateService.instant(marker('common.successOperation')),
           actionText: 'Close'
@@ -90,9 +103,8 @@ export class CreateEditRoleComponent extends ComponentToExtendForCustomDialog im
         return response;
       }),
       catchError((error) => {
-        const err = error.error as ConcenetError;
         this.globalMessageService.showError({
-          message: err.message,
+          message: error.message,
           actionText: 'Close'
         });
         return of(false);
@@ -106,17 +118,61 @@ export class CreateEditRoleComponent extends ComponentToExtendForCustomDialog im
   public setAndGetFooterConfig(): CustomDialogFooterConfigI | null {
     return {
       show: true,
+      leftSideButtons: [
+        {
+          type: 'custom',
+          label: marker('users.roles.delete'),
+          design: 'stroked',
+          color: 'warn',
+          clickFn: this.deleteRole,
+          hiddenFn: () => !this.roleToEdit
+        }
+      ],
       rightSideButtons: [
         {
           type: 'submit',
           label: marker('common.save'),
           design: 'raised',
           color: 'primary',
-          disabledFn: () => !(this.roleForm?.touched && this.roleForm?.dirty && this.roleForm?.valid)
+          disabledFn: () =>
+            !(
+              ((this.roleForm?.touched && this.roleForm?.dirty) ||
+                this.permissionsListComponent.hasChangesRespectDefaultCheckedPermissions()) &&
+              this.roleForm?.valid
+            )
         }
       ]
     };
   }
+
+  public getPermissionsSelectedByDefault = (): PermissionsDTO[] | null =>
+    this.roleToEdit?.permissions ? this.roleToEdit.permissions : null;
+
+  private deleteRole = () => {
+    this.confirmationDialog
+      .open({
+        title: this.translateService.instant(marker('common.warning')),
+        message: this.translateService.instant(marker('users.roles.deleteConfirmation'))
+      })
+      .subscribe((ok: boolean) => {
+        if (ok) {
+          this.roleService
+            .deleteRoleById(this.roleToEdit.id)
+            .pipe(take(1))
+            .subscribe({
+              next: (response) => {
+                this.customDialogService.close(this.MODAL_ID, true);
+              },
+              error: (error) => {
+                this.globalMessageService.showError({
+                  message: error.message,
+                  actionText: 'Close'
+                });
+              }
+            });
+        }
+      });
+  };
 
   private getAllPermissions(): void {
     this.permissionsService

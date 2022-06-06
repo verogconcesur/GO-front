@@ -1,3 +1,4 @@
+import { Observable } from 'rxjs';
 import { CustomDialogButtonConfigI } from '../interfaces/custom-dialog-button-config';
 
 /**

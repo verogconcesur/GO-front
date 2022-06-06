@@ -192,7 +192,8 @@ export class AuthenticationService {
    * @returns an array with user permissions
    */
   getUserPermissions(): PermissionsDTO[] {
-    return JSON.parse(sessionStorage.getItem(this.USER_PERMISSIONS));
+    const permissions = JSON.parse(sessionStorage.getItem(this.USER_PERMISSIONS));
+    return permissions ? permissions : [];
   }
 
   /**

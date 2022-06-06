@@ -24,7 +24,12 @@
                     <button mat-icon-button aria-label="Search" type="button" matSuffix (click)="searchAction()">
                         <mat-icon>search</mat-icon>
                     </button>
-                    <mat-autocomplete autoActiveFirstOption #auto="matAutocomplete" [displayWith]="transformOptionLabel">
+                    <mat-autocomplete
+                        autoActiveFirstOption
+                        #auto="matAutocomplete"
+                        [displayWith]="transformOptionLabel"
+                        (optionSelected)="searchAction()"
+                    >
                         <mat-option *ngFor="let option of filteredOptions | async" [value]="option">
                             {{ transformOptionLabel(option) }}
                         </mat-option>

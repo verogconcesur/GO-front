@@ -19,7 +19,9 @@
                 <button mat-button>{{ labels.clients | translate }}</button>
                 <button mat-button>{{ labels.vehicles | translate }}</button>
                 <button mat-button>{{ labels.advanceSearch | translate }}</button>
-                <button mat-button (click)="navigateToAdministration()">{{ labels.administration | translate }}</button>
+                <button mat-button *ngIf="isAdmin()" (click)="navigateToAdministration()">
+                    {{ labels.administration | translate }}
+                </button>
             </div>
         </div>
         <!-- END Shown for desktop and tablet -->

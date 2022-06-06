@@ -43,6 +43,8 @@
 @import 'mat-cards.scss';
 @import 'mat-table.scss';
 @import 'mat-paginator.scss';
+@import 'mat-checkbox.scss';
+@import 'global-message.scss';
 
 @include globals-theme($concenet-theme, $concenet-main-typography);
 @include custom-mat-input-theme($concenet-theme, $concenet-main-typography);
@@ -52,3 +54,5 @@
 @include custom-mat-card-theme($concenet-theme, $concenet-main-typography);
 @include custom-mat-table-theme($concenet-theme, $concenet-main-typography);
 @include custom-mat-paginator-theme($concenet-theme, $concenet-main-typography);
+@include custom-mat-checkbox-theme($concenet-theme, $concenet-main-typography);
+@include global-message-theme($concenet-theme, $concenet-main-typography);
