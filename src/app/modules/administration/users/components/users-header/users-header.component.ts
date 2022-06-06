@@ -4,7 +4,7 @@ import { marker } from '@biesbjerg/ngx-translate-extract-marker';
 import UserDetailsDTO from '@data/models/user-details-dto';
 import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
 import { Observable, of } from 'rxjs';
-import { delay, filter, map, startWith, switchMap } from 'rxjs/operators';
+import { map, switchMap, take } from 'rxjs/operators';
 
 @UntilDestroy()
 @Component({
@@ -13,12 +13,13 @@ import { delay, filter, map, startWith, switchMap } from 'rxjs/operators';
   styleUrls: ['./users-header.component.scss']
 })
 export class UsersHeaderComponent implements OnInit {
+  @Input() tab: 'users' | 'roles';
   @Input() buttonLabel: string;
   @Input() showFilterButton: boolean;
   @Input() areFiltersSettedAndActive: boolean;
   @Input() searchFn: (
     text: string
-  ) => Observable<{ content: UserDetailsDTO[]; optionLabelFn: (option: UserDetailsDTO) => string }>;
+  ) => Observable<{ content: UserDetailsDTO[]; optionLabelFn: (option: UserDetailsDTO) => string } | null>;
   @Output() buttonCreateAction: EventEmitter<void> = new EventEmitter();
   @Output() buttonShowFilterDrawerAction: EventEmitter<void> = new EventEmitter();
   @Output() buttonSearchAction: EventEmitter<void> = new EventEmitter();
@@ -40,17 +41,31 @@ export class UsersHeaderComponent implements OnInit {
     );
   }
 
+  public resetFilter(): void {
+    this.filterTextSearchControl.setValue(null);
+  }
+
   public searchAction(): void {
     this.buttonSearchAction.emit(this.filterTextSearchControl.value);
   }
 
   private filter(value: string): Observable<UserDetailsDTO[]> {
     const filterValue = value && typeof value === 'string' ? value.toString().toLowerCase() : '';
-    return this.searchFn(filterValue).pipe(
-      map((result) => {
-        this.transformOptionLabel = result.optionLabelFn;
-        return result.content;
-      })
-    );
+    if (this.searchFn && this.tab !== 'roles') {
+      return this.searchFn(filterValue).pipe(
+        take(1),
+        map((result) => {
+          if (result) {
+            this.transformOptionLabel = result.optionLabelFn;
+            return result.content;
+          } else {
+            return [];
+          }
+        })
+      );
+    } else {
+      this.searchAction();
+      return of([]);
+    }
   }
 }

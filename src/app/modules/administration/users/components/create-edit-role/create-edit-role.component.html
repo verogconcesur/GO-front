@@ -12,6 +12,7 @@
         <app-users-permissions
             #permissionsListComponent
             [permissions]="permissions"
+            [permissionsToSelectByDefault]="getPermissionsSelectedByDefault()"
             [type]="'CREATE_EDIT_ROLE'"
         ></app-users-permissions>
     </form>

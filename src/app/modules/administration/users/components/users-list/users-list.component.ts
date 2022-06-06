@@ -15,11 +15,12 @@ import {
 import { CustomDialogService } from '@shared/modules/custom-dialog/services/custom-dialog.service';
 import { FilterDrawerService } from '@shared/modules/filter-drawer/services/filter-drawer.service';
 import { Observable, of } from 'rxjs';
-import { filter, map, take } from 'rxjs/operators';
+import { map, take } from 'rxjs/operators';
 import { UsersFilterComponent } from '../users-filter/users-filter.component';
 import { ConfirmDialogService } from '@shared/services/confirm-dialog.service';
 import { TranslateService } from '@ngx-translate/core';
 import { GlobalMessageService } from '@shared/services/global-message.service';
+import { RoleService } from '@data/services/role.service';
 
 @UntilDestroy()
 @Component({
@@ -53,20 +54,23 @@ export class UsersListComponent implements OnInit {
     private filterDrawerService: FilterDrawerService,
     private confirmationDialog: ConfirmDialogService,
     private globalMessageService: GlobalMessageService,
-    private translateService: TranslateService
+    private translateService: TranslateService,
+    private roleService: RoleService
   ) {}
 
   ngOnInit(): void {
     this.getUsers();
     this.setSidenavFilterDrawerConfiguration();
+    this.initializeListeners();
   }
 
-  public openCreateUserDialog = (): void => {
+  public openCreateEditUserDialog = (user?: UserDetailsDTO): void => {
     this.customDialogService
       .open({
         id: CreateEditUserComponentModalEnum.ID,
         panelClass: CreateEditUserComponentModalEnum.PANEL_CLASS,
         component: CreateEditUserComponent,
+        extendedComponentData: user ? user : null,
         disableClose: true
       })
       .pipe(take(1))
@@ -174,7 +178,12 @@ export class UsersListComponent implements OnInit {
       });
   };
 
-  public optionLabelFn = (option: UserDetailsDTO): string => `${option.name} ${option.firstName} ${option.lastName}`;
+  public optionLabelFn = (option: UserDetailsDTO): string => {
+    if (option) {
+      return `${option.name} ${option.firstName} ${option.lastName}`;
+    }
+    return '';
+  };
 
   public areFiltersSettedAndActive = (): boolean =>
     this.filterValue.brands?.length > 0 ||
@@ -183,7 +192,7 @@ export class UsersListComponent implements OnInit {
     this.filterValue.roles?.length > 0 ||
     this.filterValue.specialties?.length > 0;
 
-  public deleteUser(user: UserDetailsDTO): void {
+  public deleteUser = (user: UserDetailsDTO): void => {
     this.confirmationDialog
       .open({
         title: this.translateService.instant(marker('common.warning')),
@@ -212,7 +221,7 @@ export class UsersListComponent implements OnInit {
             });
         }
       });
-  }
+  };
 
   private setSidenavFilterDrawerConfiguration = () => {
     this.filterDrawerService.setComponentToShowInsideFilterDrawer(UsersFilterComponent);
@@ -232,4 +241,12 @@ export class UsersListComponent implements OnInit {
     roles: filterValue.roles.map((role: BrandDTO) => role.id),
     specialties: filterValue.specialties.map((spec: BrandDTO) => spec.id)
   });
+
+  private initializeListeners(): void {
+    this.roleService.rolesChange$.pipe(untilDestroyed(this)).subscribe({
+      next: (change) => {
+        this.getUsers();
+      }
+    });
+  }
 }

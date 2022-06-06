@@ -11,7 +11,7 @@ import ConfirmPasswordValidator from '@shared/validators/confirm-password.valida
 import { passwordPattern } from '@app/constants/patterns.constants';
 import { UserService } from '@data/services/user.service';
 import { GlobalMessageService } from '@shared/services/global-message.service';
-import { catchError, finalize, map, take } from 'rxjs/operators';
+import { catchError, finalize, map, take, tap } from 'rxjs/operators';
 import { ConcenetError } from '@app/types/error';
 import BrandDTO from '@data/models/brand-dto';
 import { BrandService } from '@data/services/brand.service';
@@ -23,7 +23,7 @@ import { DepartmentService } from '@data/services/deparment.service';
 import SpecialtyDTO from '@data/models/specialty-dto';
 import { SpecialtyService } from '@data/services/specialty.service';
 import FacilitiesGroupedByBrand from '@data/interfaces/facilities-grouped-by-brand';
-import DespartmentsGroupedByFacility from '@data/interfaces/departments-grouped-by-facility';
+import DepartmentsGroupedByFacility from '@data/interfaces/departments-grouped-by-facility';
 import SpecialtiesGroupedByDepartment from '@data/interfaces/specialties-grouped-by-department';
 import RoleDTO from '@data/models/role-dto';
 import { RoleService } from '@data/services/role.service';
@@ -32,6 +32,8 @@ import UserDetailsDTO from '@data/models/user-details-dto';
 import { PermissionsService } from '@data/services/permissions.service';
 import PermissionsDTO from '@data/models/permissions-dto';
 import { MatCheckboxChange } from '@angular/material/checkbox';
+import { haveArraysSameValues } from '@shared/utils/array-comparation-function';
+import { CustomDialogService } from '@shared/modules/custom-dialog/services/custom-dialog.service';
 
 export const enum CreateEditUserComponentModalEnum {
   ID = 'create-edit-user-dialog-id',
@@ -82,8 +84,9 @@ export class CreateEditUserComponent extends ComponentToExtendForCustomDialog im
   public rolesAsyncList: Observable<RoleDTO[]>;
   public brandsAsyncList: Observable<BrandDTO[]>;
   public facilitiesList: FacilitiesGroupedByBrand[];
-  public departmentsList: DespartmentsGroupedByFacility[];
+  public departmentsList: DepartmentsGroupedByFacility[];
   public specialtiesList: SpecialtiesGroupedByDepartment[];
+  public userToEdit: UserDetailsDTO = null;
 
   constructor(
     private fb: FormBuilder,
@@ -98,16 +101,22 @@ export class CreateEditUserComponent extends ComponentToExtendForCustomDialog im
     private facilitySevice: FacilityService,
     private departmentService: DepartmentService,
     private permissionsService: PermissionsService,
-    private specialtyService: SpecialtyService
+    private specialtyService: SpecialtyService,
+    private confirmationDialog: ConfirmDialogService,
+    private customDialogService: CustomDialogService
   ) {
     super(
       CreateEditUserComponentModalEnum.ID,
       CreateEditUserComponentModalEnum.PANEL_CLASS,
-      marker(CreateEditUserComponentModalEnum.TITLE)
+      CreateEditUserComponentModalEnum.TITLE
     );
   }
 
   ngOnInit() {
+    this.userToEdit = this.extendedComponentData;
+    if (this.userToEdit) {
+      this.MODAL_TITLE = marker('user.edit');
+    }
     this.getUsersPermissions();
     this.initializeForm();
     this.getListOptions();
@@ -138,6 +147,9 @@ export class CreateEditUserComponent extends ComponentToExtendForCustomDialog im
       ...this.userPermissions.filter((pObj) => pObj.checked).map((pObj) => pObj.permission)
     ];
     formValue.password = formValue.newPassword;
+    if (this.userToEdit) {
+      formValue.id = this.userToEdit.id;
+    }
     const spinner = this.spinnerService.show();
     return this.userService.addUser(formValue).pipe(
       map((response) => {
@@ -164,14 +176,24 @@ export class CreateEditUserComponent extends ComponentToExtendForCustomDialog im
   public setAndGetFooterConfig(): CustomDialogFooterConfigI | null {
     return {
       show: true,
-      leftSideButtons: [],
+      leftSideButtons: [
+        {
+          type: 'custom',
+          label: marker('user.delete'),
+          design: 'stroked',
+          color: 'warn',
+          clickFn: this.deleteUser,
+          hiddenFn: () => !this.userToEdit
+        }
+      ],
       rightSideButtons: [
         {
           type: 'submit',
           label: marker('common.save'),
           design: 'raised',
           color: 'primary',
-          disabledFn: () => !(this.userForm.touched && this.userForm.dirty && this.userForm.valid)
+          disabledFn: () =>
+            !(((this.userForm.touched && this.userForm.dirty) || this.changesInPermissions()) && this.userForm.valid)
         }
       ]
     };
@@ -182,13 +204,25 @@ export class CreateEditUserComponent extends ComponentToExtendForCustomDialog im
     return this.userForm.controls;
   }
 
-  public getFacilitiesOptions(): void {
+  public getFacilitiesOptions(initialLoad = false): void {
     this.facilitySevice
       .getFacilitiesOptionsListByBrands(this.userForm.get('brands').value)
       .pipe(take(1))
       .subscribe({
         next: (response) => {
           this.facilitiesList = response;
+          if (this.userToEdit && initialLoad) {
+            this.userForm.get('facilities').setValue(
+              this.userForm.get('facilities').value.map((f: FacilityDTO) => {
+                let facToReturn = f;
+                response.forEach((group: FacilitiesGroupedByBrand) => {
+                  const found = group.facilities.find((fac: FacilityDTO) => fac.id === f.id);
+                  facToReturn = found ? found : facToReturn;
+                });
+                return facToReturn;
+              })
+            );
+          }
           let selected = this.userForm.get('facilities').value ? this.userForm.get('facilities').value : [];
           selected = selected.filter(
             (facility: FacilityDTO) =>
@@ -197,7 +231,7 @@ export class CreateEditUserComponent extends ComponentToExtendForCustomDialog im
               ).length > 0
           );
           this.userForm.get('facilities').setValue(selected);
-          this.getDepartmentsOptions();
+          this.getDepartmentsOptions(initialLoad);
         },
         error: (error) => {
           this.logger.error(error);
@@ -205,23 +239,35 @@ export class CreateEditUserComponent extends ComponentToExtendForCustomDialog im
       });
   }
 
-  public getDepartmentsOptions(): void {
+  public getDepartmentsOptions(initialLoad = false): void {
     this.departmentService
       .getDepartmentOptionsListByFacilities(this.userForm.get('facilities').value)
       .pipe(take(1))
       .subscribe({
         next: (response) => {
           this.departmentsList = response;
+          if (this.userToEdit && initialLoad) {
+            this.userForm.get('departments').setValue(
+              this.userForm.get('departments').value.map((item: DepartmentDTO) => {
+                let itemToReturn = item;
+                response.forEach((group: DepartmentsGroupedByFacility) => {
+                  const found = group.departments.find((i: DepartmentDTO) => i.id === item.id);
+                  itemToReturn = found ? found : itemToReturn;
+                });
+                return itemToReturn;
+              })
+            );
+          }
           let selected = this.userForm.get('departments').value ? this.userForm.get('departments').value : [];
           selected = selected.filter(
             (department: DepartmentDTO) =>
               this.departmentsList.filter(
-                (dg: DespartmentsGroupedByFacility) =>
+                (dg: DepartmentsGroupedByFacility) =>
                   dg.departments.filter((d: DepartmentDTO) => d.id === department.id).length > 0
               ).length > 0
           );
           this.userForm.get('departments').setValue(selected);
-          this.getSpecialtiesOptions();
+          this.getSpecialtiesOptions(initialLoad);
         },
         error: (error) => {
           this.logger.error(error);
@@ -229,13 +275,25 @@ export class CreateEditUserComponent extends ComponentToExtendForCustomDialog im
       });
   }
 
-  public getSpecialtiesOptions(): void {
+  public getSpecialtiesOptions(initialLoad = false): void {
     this.specialtyService
       .getSpecialtyOptionsListByDepartments(this.userForm.get('departments').value)
       .pipe(take(1))
       .subscribe({
         next: (response) => {
           this.specialtiesList = response;
+          if (this.userToEdit && initialLoad) {
+            this.userForm.get('specialties').setValue(
+              this.userForm.get('specialties').value.map((item: SpecialtyDTO) => {
+                let itemToReturn = item;
+                response.forEach((group: SpecialtiesGroupedByDepartment) => {
+                  const found = group.specialties.find((i: SpecialtyDTO) => i.id === item.id);
+                  itemToReturn = found ? found : itemToReturn;
+                });
+                return itemToReturn;
+              })
+            );
+          }
           let selected = this.userForm.get('specialties').value ? this.userForm.get('specialties').value : [];
           selected = selected.filter(
             (specialty: SpecialtyDTO) =>
@@ -256,29 +314,82 @@ export class CreateEditUserComponent extends ComponentToExtendForCustomDialog im
     permissionObj.checked = event.checked;
   };
 
+  public getPermissionsSelectedByDefault = (): PermissionsDTO[] | null =>
+    this.userToEdit?.permissions ? this.userToEdit.permissions : null;
+
   private getListOptions(): void {
-    this.rolesAsyncList = this.roleService.getAllRoles();
-    this.brandsAsyncList = this.brandService.getAllBrands();
+    this.rolesAsyncList = this.roleService.getAllRoles().pipe(
+      tap({
+        next: (roles: RoleDTO[]) => {
+          if (this.userToEdit) {
+            this.userForm.get('role').setValue(roles.find((role: RoleDTO) => role.id === this.userToEdit.role.id));
+          }
+        }
+      })
+    );
     this.facilitiesList = [];
     this.departmentsList = [];
     this.specialtiesList = [];
+    this.brandsAsyncList = this.brandService.getAllBrands().pipe(
+      tap({
+        next: (brands: BrandDTO[]) => {
+          if (this.userToEdit) {
+            this.userForm
+              .get('brands')
+              .setValue(
+                this.userForm.get('brands').value.map((b: BrandDTO) => brands.find((brand: BrandDTO) => brand.id === b.id))
+              );
+            this.getFacilitiesOptions(true);
+          }
+        }
+      })
+    );
   }
+
+  private deleteUser = () => {
+    this.confirmationDialog
+      .open({
+        title: this.translateService.instant(marker('common.warning')),
+        message: this.translateService.instant(marker('user.deleteConfirmation'))
+      })
+      .subscribe((ok: boolean) => {
+        if (ok) {
+          this.userService
+            .deleteUser(this.userToEdit)
+            .pipe(take(1))
+            .subscribe({
+              next: (response) => {
+                this.customDialogService.close(this.MODAL_ID, true);
+              },
+              error: (error) => {
+                this.globalMessageService.showError({
+                  message: error.message,
+                  actionText: 'Close'
+                });
+              }
+            });
+        }
+      });
+  };
 
   private initializeForm(): void {
     this.userForm = this.fb.group(
       {
-        name: [null, Validators.required],
-        firstName: [null],
-        lastName: [null],
-        email: [null, Validators.required],
-        userName: [null, Validators.required],
-        role: [null, Validators.required],
-        newPassword: [null, [Validators.required, Validators.pattern(passwordPattern)]],
-        newPasswordConfirmation: [null, Validators.required],
-        brands: [null],
-        facilities: [null],
-        departments: [null],
-        specialties: [null]
+        name: [this.userToEdit ? this.userToEdit.name : null, Validators.required],
+        firstName: [this.userToEdit ? this.userToEdit.firstName : null],
+        lastName: [this.userToEdit ? this.userToEdit.lastName : null],
+        email: [this.userToEdit ? this.userToEdit.email : null, Validators.required],
+        userName: [this.userToEdit ? this.userToEdit.userName : null, Validators.required],
+        role: [this.userToEdit ? this.userToEdit.role : null, Validators.required],
+        newPassword: [
+          this.userToEdit ? this.userToEdit.password : null,
+          [Validators.required, Validators.pattern(passwordPattern)]
+        ],
+        newPasswordConfirmation: [this.userToEdit ? this.userToEdit.password : null, Validators.required],
+        brands: [this.userToEdit ? this.userToEdit.brands : null],
+        facilities: [this.userToEdit ? this.userToEdit.facilities : null],
+        departments: [this.userToEdit ? this.userToEdit.departments : null],
+        specialties: [this.userToEdit ? this.userToEdit.specialties : null]
       },
       {
         validators: ConfirmPasswordValidator.mustMatch('newPassword', 'newPasswordConfirmation')
@@ -294,7 +405,13 @@ export class CreateEditUserComponent extends ComponentToExtendForCustomDialog im
         next: (response) => {
           this.userPermissions = response
             .filter((r) => r.type === this.permissionsService.PERMISSIONS_CODES_FOR_USERS)
-            .map((p: PermissionsDTO) => ({ permission: p, checked: false }));
+            .map((p: PermissionsDTO) => ({
+              permission: p,
+              checked:
+                this.userToEdit?.permissions && this.userToEdit.permissions.find((up: PermissionsDTO) => up.id === p.id)
+                  ? true
+                  : false
+            }));
         },
         error: (error: ConcenetError) => {
           this.globalMessageService.showError({
@@ -303,5 +420,18 @@ export class CreateEditUserComponent extends ComponentToExtendForCustomDialog im
           });
         }
       });
+  }
+
+  private changesInPermissions(): boolean {
+    return haveArraysSameValues(
+      this.userToEdit ? this.userToEdit.permissions.map((p) => p.id).sort() : [],
+      [
+        ...this.permissionsListComponent.getPermissionsChecked().map((p) => p.id),
+        ...this.userPermissions
+          .filter((pObj) => pObj.checked)
+          .map((pObj) => pObj.permission)
+          .map((p) => p.id)
+      ].sort()
+    );
   }
 }

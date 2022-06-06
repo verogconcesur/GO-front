@@ -4,13 +4,14 @@ import { ENV } from '@app/constants/global.constants';
 import { Env } from '@app/types/env';
 import { ConcenetError } from '@app/types/error';
 import RoleDTO from '@data/models/role-dto';
-import { Observable, throwError } from 'rxjs';
+import { Observable, Subject, throwError } from 'rxjs';
 import { catchError } from 'rxjs/operators';
 
 @Injectable({
   providedIn: 'root'
 })
 export class RoleService {
+  public rolesChange$ = new Subject();
   private readonly GET_ROLES_PATH = '/api/roles';
   private readonly POST_ROLES_PATH = '/api/roles';
   private readonly DELETE_ROLE_PATH = '/api/roles';
@@ -23,7 +24,7 @@ export class RoleService {
       .pipe(catchError((error) => throwError(error.error as ConcenetError)));
   }
 
-  public addRole(role: RoleDTO): Observable<RoleDTO> {
+  public addOrEditRole(role: RoleDTO): Observable<RoleDTO> {
     return this.http
       .post<RoleDTO>(`${this.env.apiBaseUrl}${this.POST_ROLES_PATH}`, role)
       .pipe(catchError((error) => throwError(error.error as ConcenetError)));

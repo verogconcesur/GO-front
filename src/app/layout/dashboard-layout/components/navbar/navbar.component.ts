@@ -1,6 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
+import { PermissionConstants } from '@app/constants/permission.constants';
 import { RouteConstants } from '@app/constants/route.constants';
+import { AuthenticationService } from '@app/security/authentication.service';
 import { marker } from '@biesbjerg/ngx-translate-extract-marker';
 
 @Component({
@@ -19,11 +21,15 @@ export class NavbarComponent implements OnInit {
     search: marker('common.search')
   };
 
-  constructor(private router: Router) {}
+  constructor(private router: Router, private authService: AuthenticationService) {}
 
   ngOnInit(): void {}
 
   public navigateToAdministration(): void {
     this.router.navigate([RouteConstants.ADMINISTRATION]);
+  }
+
+  public isAdmin(): boolean {
+    return this.authService.hasUserAnyPermission([PermissionConstants.ISADMIN]);
   }
 }

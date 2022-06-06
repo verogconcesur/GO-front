@@ -1,5 +1,7 @@
 <div class="users-container">
     <app-users-header
+        #usersHeader
+        [tab]="selectedTab"
         [buttonLabel]="selectedTab === 'users' ? labels.createUser : labels.createRole"
         [showFilterButton]="selectedTab === 'users' ? true : false"
         [areFiltersSettedAndActive]="areFiltersSettedAndActive()"

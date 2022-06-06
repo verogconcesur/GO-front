@@ -1,11 +1,15 @@
 import { Injectable } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
-import { Observable } from 'rxjs';
+import { Observable, Subject } from 'rxjs';
 import { CustomDialogComponent } from '../custom-dialog.component';
 import { CustomDialogConfigI } from '../interfaces/custom-dialog-config';
 
-@Injectable()
+@Injectable({
+  providedIn: 'root'
+})
 export class CustomDialogService {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  public closeResult$ = new Subject<{ id: string; result: any }>();
   constructor(private dialog: MatDialog) {}
 
   /**
@@ -53,7 +57,12 @@ export class CustomDialogService {
    * @function close
    * @param id of the dialog to close
    */
-  public close(id: string): void {
-    this.dialog.getDialogById(id).close();
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  public close(id: string, result?: any): void {
+    if (result) {
+      this.closeResult$.next({ id, result });
+    } else {
+      this.dialog.getDialogById(id).close();
+    }
   }
 }

@@ -15,6 +15,7 @@ import { ENV } from '@app/constants/global.constants';
 import { RouteConstants } from '@app/constants/route.constants';
 import { Env } from '@app/types/env';
 import { ConcenetError } from '@app/types/error';
+import { GlobalMessageService } from '@shared/services/global-message.service';
 import { Observable, throwError } from 'rxjs';
 import { catchError } from 'rxjs/operators';
 import { AuthenticationService } from './authentication.service';
@@ -29,7 +30,12 @@ export class TokenInterceptor implements HttpInterceptor {
 
   private readonly BYPASS_URLS: string[] = ['/assets/', 'accounts.logout'];
 
-  constructor(@Inject(ENV) private env: Env, private router: Router, private authenticationService: AuthenticationService) {}
+  constructor(
+    @Inject(ENV) private env: Env,
+    private router: Router,
+    private authenticationService: AuthenticationService,
+    private globalMessage: GlobalMessageService
+  ) {}
 
   intercept(req: HttpRequest<unknown>, next: HttpHandler): ObservableResponse {
     if (this.bypassInterceptor(req)) {
@@ -84,7 +90,10 @@ export class TokenInterceptor implements HttpInterceptor {
 
   private handle403Error(error: ConcenetError): ObservableResponse {
     this.router.navigate([RouteConstants.DASHBOARD]);
-
+    this.globalMessage.showError({
+      message: error.message,
+      actionText: 'Close'
+    });
     return throwError(error);
   }
 }

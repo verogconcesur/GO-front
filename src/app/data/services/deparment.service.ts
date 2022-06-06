@@ -3,7 +3,7 @@ import { Inject, Injectable } from '@angular/core';
 import { ENV } from '@app/constants/global.constants';
 import { Env } from '@app/types/env';
 import { ConcenetError } from '@app/types/error';
-import DespartmentsGroupedByFacility from '@data/interfaces/departments-grouped-by-facility';
+import DepartmentsGroupedByFacility from '@data/interfaces/departments-grouped-by-facility';
 import FacilitiesGroupedByBrand from '@data/interfaces/facilities-grouped-by-brand';
 import DepartmentDTO from '@data/models/department-dto';
 import FacilityDTO from '@data/models/facility-dto';
@@ -24,7 +24,7 @@ export class DepartmentService {
     this.departmentsByFacilities = {};
   }
 
-  public getDepartmentOptionsListByFacilities(facilities: FacilityDTO[]): Observable<DespartmentsGroupedByFacility[]> {
+  public getDepartmentOptionsListByFacilities(facilities: FacilityDTO[]): Observable<DepartmentsGroupedByFacility[]> {
     const ids = facilities.map((facility: FacilityDTO) => facility.id);
     const departmentsByFacilitiesInMemory = Object.keys(this.departmentsByFacilities).map((id: string) => parseInt(id, 10));
     const facilitiesToSearch = facilities.filter(
@@ -65,8 +65,8 @@ export class DepartmentService {
     }
   }
 
-  private getDepartmentsGroupedToReturn(facilityIdsToUse: number[]): DespartmentsGroupedByFacility[] {
-    let list: DespartmentsGroupedByFacility[] = [];
+  private getDepartmentsGroupedToReturn(facilityIdsToUse: number[]): DepartmentsGroupedByFacility[] {
+    let list: DepartmentsGroupedByFacility[] = [];
     let departmentsForFacility: DepartmentDTO[] = [];
     facilityIdsToUse.forEach((id) => {
       departmentsForFacility = this.departmentsByFacilities[id.toString()];

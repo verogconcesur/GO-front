@@ -189,6 +189,7 @@
                     [overFlowLayerLabel]="labels.selectRoleFirst"
                     [showOverFlowLayer]="form.role.value ? false : true"
                     [permissions]="form.role?.value?.permissions"
+                    [permissionsToSelectByDefault]="getPermissionsSelectedByDefault()"
                 ></app-users-permissions>
             </div>
 

@@ -20,6 +20,7 @@
     "title": "Concenet"
   },
   "common": {
+    "accessDenied": "Access denied.",
     "actions": "Actions",
     "apply": "Apply",
     "cancel": "Cancel",
@@ -87,6 +88,7 @@
   },
   "user": {
     "add": "Add user",
+    "delete": "Delete user",
     "deleteConfirmation": "Do you really want to delete this user?",
     "edit": "Edit user",
     "myProfile": {
@@ -126,6 +128,9 @@
     "permissionsGroup": "Permissions group",
     "roles": {
       "create": "Create role",
+      "delete": "Delete role",
+      "deleteConfirmation": "Do you really want to delete this role?",
+      "edit": "Edit role",
       "roleName": "Role name",
       "roleNameRequired": "Role name is a required element",
       "selectAll": "Select all"

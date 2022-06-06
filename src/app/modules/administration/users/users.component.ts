@@ -2,8 +2,9 @@ import { Component, OnInit, ViewChild } from '@angular/core';
 import { MatTabChangeEvent } from '@angular/material/tabs';
 import { marker } from '@biesbjerg/ngx-translate-extract-marker';
 import UserDetailsDTO from '@data/models/user-details-dto';
-import { Observable } from 'rxjs';
+import { Observable, of } from 'rxjs';
 import { RolesListComponent } from './components/roles-list/roles-list.component';
+import { UsersHeaderComponent } from './components/users-header/users-header.component';
 import { UsersListComponent } from './components/users-list/users-list.component';
 
 @Component({
@@ -14,6 +15,7 @@ import { UsersListComponent } from './components/users-list/users-list.component
 export class UsersComponent implements OnInit {
   @ViewChild('usersList') usersListComponent: UsersListComponent;
   @ViewChild('rolesList') rolesListComponent: RolesListComponent;
+  @ViewChild('usersHeader') usersHeader: UsersHeaderComponent;
   public selectedTab: 'users' | 'roles' = 'users';
 
   public labels = {
@@ -23,13 +25,15 @@ export class UsersComponent implements OnInit {
     createRole: marker('roles.create')
   };
 
+  private lastFilterSearch: string;
+
   constructor() {}
 
   ngOnInit(): void {}
 
   public buttonCreateAction(): void {
     if (this.selectedTab === 'users') {
-      this.usersListComponent.openCreateUserDialog();
+      this.usersListComponent.openCreateEditUserDialog();
     } else {
       this.rolesListComponent.openCreateRoleDialog();
     }
@@ -37,11 +41,12 @@ export class UsersComponent implements OnInit {
 
   public getFilteredData = (
     text: string
-  ): Observable<{ content: UserDetailsDTO[]; optionLabelFn: (option: UserDetailsDTO) => string }> => {
+  ): Observable<{ content: UserDetailsDTO[]; optionLabelFn: (option: UserDetailsDTO) => string } | null> => {
     if (this.selectedTab === 'users') {
       return this.usersListComponent.getFilteredData(text);
     } else {
-      //TODO: DGDC link with filter role action
+      // For roles we don't do the filter inside the input, we do it over the roles directly
+      return of(null);
     }
   };
 
@@ -49,20 +54,25 @@ export class UsersComponent implements OnInit {
     if (this.selectedTab === 'users') {
       this.usersListComponent.openFilterUserDialog();
     } else {
-      //TODO: DGDC link with filter role action
+      //Nothing to do, no filter drawer for roles
     }
   }
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   public buttonSearchAction(option: any): void {
+    this.lastFilterSearch = option;
     if (this.selectedTab === 'users') {
       return this.usersListComponent.showFilterOptionSelected(option);
     } else {
-      //TODO: DGDC link with filter role action
+      return this.rolesListComponent.filterRoles(option);
     }
   }
 
   public changeSelectedTab(tab: MatTabChangeEvent): void {
+    this.usersHeader?.resetFilter();
+    if (this.lastFilterSearch) {
+      this.buttonSearchAction(null);
+    }
     if (tab.index === 0) {
       this.selectedTab = 'users';
     } else {

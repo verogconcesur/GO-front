@@ -20,6 +20,7 @@
     "title": "Concenet"
   },
   "common": {
+    "accessDenied": "Acceso denegado. No tiene privilegios suficientes.",
     "actions": "Acciones",
     "apply": "Aplicar",
     "cancel": "Cancelar",
@@ -87,6 +88,7 @@
   },
   "user": {
     "add": "Añadir usuario",
+    "delete": "Eliminar usuario",
     "deleteConfirmation": "¿Realmente quiere eliminar este usuario?",
     "edit": "Editar usuario",
     "myProfile": {
@@ -126,6 +128,9 @@
     "permissionsGroup": "Grupo permisos",
     "roles": {
       "create": "Crear rol",
+      "delete": "Eliminar rol",
+      "deleteConfirmation": "¿Está seguro que desea eliminar este rol?",
+      "edit": "Editar rol",
       "roleName": "Nombre del rol",
       "roleNameRequired": "El nombre del rol es un elemento requerido",
       "selectAll": "Seleccionar todos"

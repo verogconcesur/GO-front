@@ -36,6 +36,11 @@
 
     &__search-form-wrapper {
       display: inline-block;
+      @include respond-to($mobile) {
+        mat-form-field {
+          max-width: 170px;
+        }
+      }
     }
 
     .filter-action {
