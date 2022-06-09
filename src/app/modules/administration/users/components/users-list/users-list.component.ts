@@ -15,12 +15,15 @@ import {
 import { CustomDialogService } from '@shared/modules/custom-dialog/services/custom-dialog.service';
 import { FilterDrawerService } from '@shared/modules/filter-drawer/services/filter-drawer.service';
 import { Observable, of } from 'rxjs';
-import { map, take } from 'rxjs/operators';
+import { finalize, map, take } from 'rxjs/operators';
 import { UsersFilterComponent } from '../users-filter/users-filter.component';
 import { ConfirmDialogService } from '@shared/services/confirm-dialog.service';
 import { TranslateService } from '@ngx-translate/core';
 import { GlobalMessageService } from '@shared/services/global-message.service';
 import { RoleService } from '@data/services/role.service';
+import FacilityDTO from '@data/models/facility-dto';
+import SpecialtyDTO from '@data/models/specialty-dto';
+import { ProgressSpinnerDialogService } from '@shared/services/progress-spinner-dialog.service';
 
 @UntilDestroy()
 @Component({
@@ -32,8 +35,12 @@ export class UsersListComponent implements OnInit {
   public labels = {
     fullName: marker('users.fullName'),
     permissionsGroup: marker('users.permissionsGroup'),
+    brand: marker('userProfile.brand'),
+    facility: marker('userProfile.facility'),
     department: marker('userProfile.department'),
-    actions: marker('common.actions')
+    specialty: marker('userProfile.specialty'),
+    actions: marker('common.actions'),
+    noDataToShow: marker('errors.noDataToShow')
   };
 
   public paginationConfig = {
@@ -43,7 +50,7 @@ export class UsersListComponent implements OnInit {
     page: 0,
     ariaLabel: 'Select page'
   };
-  public displayedColumns = ['fullName', 'permissionsGroup', 'department', 'actions'];
+  public displayedColumns = ['fullName', 'permissionsGroup', 'brand', 'facility', 'department', 'specialty', 'actions'];
   public dataSource: UserDetailsDTO[] = [];
   private filterValue: UserFilterDTO;
   private textSearchValue = '';
@@ -55,7 +62,8 @@ export class UsersListComponent implements OnInit {
     private confirmationDialog: ConfirmDialogService,
     private globalMessageService: GlobalMessageService,
     private translateService: TranslateService,
-    private roleService: RoleService
+    private roleService: RoleService,
+    private spinnerService: ProgressSpinnerDialogService
   ) {}
 
   ngOnInit(): void {
@@ -71,14 +79,15 @@ export class UsersListComponent implements OnInit {
         panelClass: CreateEditUserComponentModalEnum.PANEL_CLASS,
         component: CreateEditUserComponent,
         extendedComponentData: user ? user : null,
-        disableClose: true
+        disableClose: true,
+        width: '700px'
       })
       .pipe(take(1))
       .subscribe((response) => {
         if (response) {
           this.globalMessageService.showSuccess({
             message: this.translateService.instant(marker('common.successOperation')),
-            actionText: 'Close'
+            actionText: this.translateService.instant(marker('common.close'))
           });
           this.getUsers();
         }
@@ -91,13 +100,12 @@ export class UsersListComponent implements OnInit {
 
   public showFilterOptionSelected = (opt?: UserDetailsDTO | string): void => {
     if (opt && typeof opt !== 'string') {
-      // this.paginationConfig.length = 1;
-      // this.dataSource = [opt];
       this.textSearchValue = this.optionLabelFn(opt).toLowerCase();
     } else {
       opt = opt ? opt : '';
       this.textSearchValue = opt.toString().toLowerCase();
     }
+    this.paginationConfig.page = 0;
     this.getUsers();
   };
 
@@ -133,18 +141,20 @@ export class UsersListComponent implements OnInit {
     }
   };
 
-  public getUserDepartments = (user: UserDetailsDTO): string => {
-    let departmentsName = '';
-    user?.departments?.forEach((deparment: DepartmentDTO) => {
-      if (departmentsName) {
-        departmentsName += ', ';
+  public getUserOrganizationLabel = (data: BrandDTO[] | FacilityDTO[] | DepartmentDTO[] | SpecialtyDTO[]): string => {
+    let label = '';
+    data = data && Array.isArray(data) ? data : [];
+    data.forEach((item: BrandDTO | FacilityDTO | DepartmentDTO | SpecialtyDTO) => {
+      if (label) {
+        label += ', ';
       }
-      departmentsName += deparment.name;
+      label += item.name;
     });
-    return departmentsName;
+    return label;
   };
 
   public getUsers = (pageEvent?: PageEvent): void => {
+    const spinner = this.spinnerService.show();
     if (pageEvent) {
       this.paginationConfig.page = pageEvent.pageIndex;
       this.paginationConfig.pageSize = pageEvent.pageSize;
@@ -172,6 +182,10 @@ export class UsersListComponent implements OnInit {
           size: this.paginationConfig.pageSize
         }
       )
+      .pipe(
+        take(1),
+        finalize(() => this.spinnerService.hide(spinner))
+      )
       .subscribe((response: PaginationResponseI<UserDetailsDTO>) => {
         this.paginationConfig.length = response.totalElements;
         this.dataSource = response.content;
@@ -180,7 +194,11 @@ export class UsersListComponent implements OnInit {
 
   public optionLabelFn = (option: UserDetailsDTO): string => {
     if (option) {
-      return `${option.name} ${option.firstName} ${option.lastName}`;
+      let fullName = '';
+      fullName += option.name ? option.name : '';
+      fullName += option.firstName ? ' ' + option.firstName : '';
+      fullName += option.lastName ? ' ' + option.lastName : '';
+      return fullName;
     }
     return '';
   };
@@ -208,14 +226,14 @@ export class UsersListComponent implements OnInit {
               next: (response) => {
                 this.globalMessageService.showSuccess({
                   message: this.translateService.instant(marker('common.successOperation')),
-                  actionText: 'Close'
+                  actionText: this.translateService.instant(marker('common.close'))
                 });
                 this.getUsers();
               },
               error: (error) => {
                 this.globalMessageService.showError({
                   message: this.translateService.instant(marker('common.successOperation')),
-                  actionText: 'Close'
+                  actionText: this.translateService.instant(marker('common.close'))
                 });
               }
             });

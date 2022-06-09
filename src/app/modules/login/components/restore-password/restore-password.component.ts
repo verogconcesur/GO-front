@@ -69,10 +69,10 @@ export class RestorePasswordComponent implements OnInit {
         })
       )
       .subscribe({
-        next: response => {
+        next: (response) => {
           this.changePasswordSuccessfully(response);
         },
-        error: error => {
+        error: (error) => {
           this.changePasswordError(error);
         }
       });
@@ -92,7 +92,7 @@ export class RestorePasswordComponent implements OnInit {
   }
 
   private getHashFromURL(): void {
-    this.route.queryParams.pipe(untilDestroyed(this)).subscribe(params => {
+    this.route.queryParams.pipe(untilDestroyed(this)).subscribe((params) => {
       this.hash = params.hash;
     });
   }
@@ -100,7 +100,7 @@ export class RestorePasswordComponent implements OnInit {
   private changePasswordSuccessfully(loginData: UserDTO): void {
     this.globalMessageService.showSuccess({
       message: this.translate.instant(marker('login.restorePassword.changedSuccesfully')),
-      actionText: 'Close',
+      actionText: this.translate.instant(marker('common.close')),
       duration: 3000
     });
 
@@ -110,7 +110,7 @@ export class RestorePasswordComponent implements OnInit {
   private changePasswordError(error: ConcenetError): void {
     this.globalMessageService.showError({
       message: error.message,
-      actionText: 'Close'
+      actionText: this.translate.instant(marker('common.close'))
     });
   }
 }

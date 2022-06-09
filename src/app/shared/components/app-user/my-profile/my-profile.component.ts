@@ -115,7 +115,7 @@ export class MyProfileComponent extends ComponentToExtendForCustomDialog impleme
         this.userDetails = response;
         this.globalMessageService.showSuccess({
           message: this.translateService.instant(marker('common.successOperation')),
-          actionText: 'Close'
+          actionText: this.translateService.instant(marker('common.close'))
         });
         return this.userDetails;
       }),
@@ -123,7 +123,7 @@ export class MyProfileComponent extends ComponentToExtendForCustomDialog impleme
         const err = error.error as ConcenetError;
         this.globalMessageService.showError({
           message: err.message,
-          actionText: 'Close'
+          actionText: this.translateService.instant(marker('common.close'))
         });
         return of(false);
       }),
@@ -188,7 +188,7 @@ export class MyProfileComponent extends ComponentToExtendForCustomDialog impleme
         name: [this.userDetails.name, Validators.required],
         firstName: [this.userDetails.firstName],
         lastName: [this.userDetails.lastName],
-        email: [this.userDetails.email, Validators.required],
+        email: [this.userDetails.email],
         userName: [{ value: this.userDetails.userName, disabled: true }, Validators.required],
         role: [{ value: this.userDetails.role.name, disabled: true }, Validators.required],
         password: [this.userDetails.password, Validators.required],

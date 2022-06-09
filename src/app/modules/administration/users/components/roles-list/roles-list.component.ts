@@ -19,6 +19,9 @@ import { CreateEditRoleComponent, CreateEditRoleComponentModalEnum } from '../cr
   styleUrls: ['./roles-list.component.scss']
 })
 export class RolesListComponent implements OnInit {
+  public labels = {
+    noDataToShow: marker('errors.noDataToShow')
+  };
   public roles: RoleDTO[];
   private originalRoles: RoleDTO[];
 
@@ -56,7 +59,7 @@ export class RolesListComponent implements OnInit {
 
           this.globalMessageService.showError({
             message: error.message,
-            actionText: 'Close'
+            actionText: this.translateService.instant(marker('common.close'))
           });
         }
       });
@@ -94,14 +97,14 @@ export class RolesListComponent implements OnInit {
                 this.originalRoles = this.originalRoles.filter((role) => role.id !== roleId);
                 this.globalMessageService.showSuccess({
                   message: this.translateService.instant(marker('common.successOperation')),
-                  actionText: 'Close'
+                  actionText: this.translateService.instant(marker('common.close'))
                 });
               },
               error: (error) => {
                 this.logger.error(error.message);
                 this.globalMessageService.showError({
                   message: error.message,
-                  actionText: 'Close'
+                  actionText: this.translateService.instant(marker('common.close'))
                 });
               }
             });

@@ -7,9 +7,9 @@ import { ConcenetError } from '@app/types/error';
 import { marker } from '@biesbjerg/ngx-translate-extract-marker';
 import UserDetailsDTO from '@data/models/user-details-dto';
 import { UserService } from '@data/services/user.service';
+import { TranslateService } from '@ngx-translate/core';
 import { MyProfileComponent, MyProfileComponentModalEnum } from '@shared/components/app-user/my-profile/my-profile.component';
 import { CustomDialogService } from '@shared/modules/custom-dialog/services/custom-dialog.service';
-import { FilterDrawerService } from '@shared/modules/filter-drawer/services/filter-drawer.service';
 import { GlobalMessageService } from '@shared/services/global-message.service';
 import { NGXLogger } from 'ngx-logger';
 import { take } from 'rxjs/operators';
@@ -40,6 +40,7 @@ export class AdministrationLayoutComponent implements OnInit {
     private router: Router,
     private userService: UserService,
     private logger: NGXLogger,
+    private translateService: TranslateService,
     private globalMessageService: GlobalMessageService,
     private authenticationService: AuthenticationService,
     private customDialogService: CustomDialogService
@@ -61,7 +62,7 @@ export class AdministrationLayoutComponent implements OnInit {
 
         this.globalMessageService.showError({
           message: error.message,
-          actionText: 'Close'
+          actionText: this.translateService.instant(marker('common.close'))
         });
       }
     });
@@ -78,7 +79,8 @@ export class AdministrationLayoutComponent implements OnInit {
         extendedComponentData: this.userDetails,
         id: MyProfileComponentModalEnum.ID,
         panelClass: MyProfileComponentModalEnum.PANEL_CLASS,
-        disableClose: true
+        disableClose: true,
+        width: '700px'
       })
       .pipe(take(1))
       .subscribe((response) => {

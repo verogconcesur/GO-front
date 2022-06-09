@@ -13,9 +13,16 @@ import { ConfirmDialogService } from './services/confirm-dialog.service';
 import { GlobalMessageService } from './services/global-message.service';
 import { ProgressSpinnerDialogService } from './services/progress-spinner-dialog.service';
 import { FilterDrawerModule } from './modules/filter-drawer/filter-drawer.module';
+import { ShowToolbarIfTruncatedDirective } from './directives/showToolbarIfTruncated.directive';
 
 @NgModule({
-  declarations: [ProgressSpinnerDialogComponent, ConfirmDialogComponent, GoBackComponent, MyProfileComponent],
+  declarations: [
+    ProgressSpinnerDialogComponent,
+    ConfirmDialogComponent,
+    GoBackComponent,
+    MyProfileComponent,
+    ShowToolbarIfTruncatedDirective
+  ],
   imports: [
     TranslateModule,
     CommonModule,
@@ -36,7 +43,8 @@ import { FilterDrawerModule } from './modules/filter-drawer/filter-drawer.module
     GoBackComponent,
     CommonModule,
     MyProfileComponent,
-    FilterDrawerModule
+    FilterDrawerModule,
+    ShowToolbarIfTruncatedDirective
   ]
 })
 export class SharedModule {}

@@ -34,7 +34,8 @@ export class CreateEditRoleComponent extends ComponentToExtendForCustomDialog im
     title: marker('users.roles.create'),
     roleName: marker('users.roles.roleName'),
     roleNameRequired: marker('users.roles.roleNameRequired'),
-    selectAll: marker('users.roles.selectAll')
+    selectAll: marker('users.roles.selectAll'),
+    maxLengthError: marker('errors.maxLengthError')
   };
   public permissions: PermissionsDTO[] = [];
   public roleForm: FormGroup;
@@ -69,7 +70,8 @@ export class CreateEditRoleComponent extends ComponentToExtendForCustomDialog im
 
   public initalizeFormGroup(): void {
     this.roleForm = this.fb.group({
-      name: [this.roleToEdit ? this.roleToEdit.name : '', Validators.required],
+      //TODO: DGDC maxlength 30??
+      name: [this.roleToEdit ? this.roleToEdit.name : '', [Validators.required, Validators.maxLength(30)]],
       permissions: [this.roleToEdit ? this.roleToEdit.permissions : []]
     });
   }
@@ -98,14 +100,14 @@ export class CreateEditRoleComponent extends ComponentToExtendForCustomDialog im
         this.roleService.rolesChange$.next(true);
         this.globalMessageService.showSuccess({
           message: this.translateService.instant(marker('common.successOperation')),
-          actionText: 'Close'
+          actionText: this.translateService.instant(marker('common.close'))
         });
         return response;
       }),
       catchError((error) => {
         this.globalMessageService.showError({
           message: error.message,
-          actionText: 'Close'
+          actionText: this.translateService.instant(marker('common.close'))
         });
         return of(false);
       }),
@@ -138,6 +140,7 @@ export class CreateEditRoleComponent extends ComponentToExtendForCustomDialog im
             !(
               ((this.roleForm?.touched && this.roleForm?.dirty) ||
                 this.permissionsListComponent.hasChangesRespectDefaultCheckedPermissions()) &&
+              (this.permissionsListComponent.someSelected() || this.permissionsListComponent.allSelected) &&
               this.roleForm?.valid
             )
         }
@@ -166,7 +169,7 @@ export class CreateEditRoleComponent extends ComponentToExtendForCustomDialog im
               error: (error) => {
                 this.globalMessageService.showError({
                   message: error.message,
-                  actionText: 'Close'
+                  actionText: this.translateService.instant(marker('common.close'))
                 });
               }
             });
@@ -185,7 +188,7 @@ export class CreateEditRoleComponent extends ComponentToExtendForCustomDialog im
         error: (error: ConcenetError) => {
           this.globalMessageService.showError({
             message: error.message,
-            actionText: 'Close'
+            actionText: this.translateService.instant(marker('common.close'))
           });
         }
       });

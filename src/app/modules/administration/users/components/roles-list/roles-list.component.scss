@@ -11,4 +11,11 @@
   .mat-role-card__icons {
     cursor: pointer;
   }
+
+  &__no-data {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
 }

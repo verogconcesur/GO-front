@@ -17,5 +17,8 @@
                 </div>
             </div>
         </mat-card>
+        <div class="roles-list-container__no-data" *ngIf="!roles || roles.length === 0">
+            {{ labels.noDataToShow | translate }}
+        </div>
     </div>
 </div>

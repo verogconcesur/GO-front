@@ -23,7 +23,7 @@ export class UsersPermissionsComponent implements OnInit, OnChanges {
   @Input() overFlowLayerLabel = '';
   @Input() showOverFlowLayer = false;
   @Input() permissions: PermissionsDTO[];
-  @Input() permissionsToSelectByDefault: PermissionsDTO[];
+  @Input() permissionsToSelectByDefault: PermissionsDTO[] = [];
   @Input() type: 'CREATE_EDIT_ROLE' | 'CREATE_EDIT_USER' = 'CREATE_EDIT_USER';
 
   public labels = {
@@ -103,12 +103,12 @@ export class UsersPermissionsComponent implements OnInit, OnChanges {
   public hasChangesRespectRolePermissions(): boolean {
     const array1 = this.getPermissionsChecked()?.map((p: PermissionsDTO) => p.id);
     const array2 = this.permissions?.map((p: PermissionsDTO) => p.id);
-    return haveArraysSameValues(array1, array2);
+    return !haveArraysSameValues(array1, array2);
   }
 
   public hasChangesRespectDefaultCheckedPermissions(): boolean {
     const array1 = this.getPermissionsChecked()?.map((p: PermissionsDTO) => p.id);
     const array2 = this.permissionsToSelectByDefault?.map((p: PermissionsDTO) => p.id);
-    return haveArraysSameValues(array1, array2);
+    return !haveArraysSameValues(array1, array2);
   }
 }
