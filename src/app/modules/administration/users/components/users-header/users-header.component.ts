@@ -29,6 +29,7 @@ export class UsersHeaderComponent implements OnInit {
 
   public labels = {
     search: marker('common.search'),
+    filter: marker('common.filterAction'),
     title: marker('administration.users')
   };
 
@@ -47,6 +48,13 @@ export class UsersHeaderComponent implements OnInit {
 
   public searchAction(): void {
     this.buttonSearchAction.emit(this.filterTextSearchControl.value);
+  }
+
+  public getSearchLabel(): string {
+    if (this.tab === 'users') {
+      return this.labels.search;
+    }
+    return this.labels.filter;
   }
 
   private filter(value: string): Observable<UserDetailsDTO[]> {

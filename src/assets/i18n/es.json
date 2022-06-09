@@ -24,17 +24,26 @@
     "actions": "Acciones",
     "apply": "Aplicar",
     "cancel": "Cancelar",
+    "close": "Cerrar",
     "filter": "Filtro",
+    "filterAction": "Filtrar",
     "reset": "Restaurar",
     "save": "Guardar",
     "search": "Buscar",
     "successOperation": "Operación realizada con éxito.",
     "unsavedChangesExit": "Hay cambios en el formulario sin guardar, ¿desea salir igualmente?",
+    "unselectAll": "Deseleccionar todos",
     "warning": "Advertencia"
   },
   "confirmdialog": {
     "no": "No",
     "yes": "Sí"
+  },
+  "errors": {
+    "emailPattern": "El texto introducido debe ser un email.",
+    "maxLengthError": "La longitud máxima permitida es de {length} caracteres.",
+    "required": "Este campo es obligatorio.",
+    "noDataToShow": "No hay datos para mostrar"
   },
   "login": {
     "description": "Por favor, introduzca sus credenciales",

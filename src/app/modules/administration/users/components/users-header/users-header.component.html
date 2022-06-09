@@ -11,21 +11,29 @@
             >
                 <mat-form-field
                     appearance="outline"
-                    class="smaller-mat-form-fields__no-margin smaller-mat-form-fields__button-height"
+                    class="smaller-mat-form-fields__no-margin"
+                    [ngClass]="{ 'smaller-mat-form-fields__button-height': tab === 'users' }"
                 >
                     <input
                         type="text"
                         matInput
-                        [placeholder]="labels.search | translate"
+                        [placeholder]="getSearchLabel() | translate"
                         [formControl]="filterTextSearchControl"
                         [matAutocomplete]="auto"
                         (keyup.enter)="searchAction()"
                     />
-                    <button mat-icon-button aria-label="Search" type="button" matSuffix (click)="searchAction()">
+                    <button
+                        mat-icon-button
+                        *ngIf="tab === 'users'"
+                        aria-label="Search"
+                        type="button"
+                        matSuffix
+                        (click)="searchAction()"
+                    >
                         <mat-icon>search</mat-icon>
                     </button>
                     <mat-autocomplete
-                        autoActiveFirstOption
+                        autoActiveFirstOption="false"
                         #auto="matAutocomplete"
                         [displayWith]="transformOptionLabel"
                         (optionSelected)="searchAction()"

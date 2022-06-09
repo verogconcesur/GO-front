@@ -1,9 +1,10 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { marker } from '@biesbjerg/ngx-translate-extract-marker';
 import { ComponentToExtendForCustomDialog } from '@shared/modules/custom-dialog/models/component-for-custom-dialog';
 import { Observable, of } from 'rxjs';
 import { CustomDialogFooterConfigI } from '@shared/modules/custom-dialog/interfaces/custom-dialog-footer-config';
-import { FormGroup, FormBuilder, Validators } from '@angular/forms';
+import { FormGroup, FormBuilder, Validators, FormControl, AbstractControl } from '@angular/forms';
 import { ProgressSpinnerDialogService } from '@shared/services/progress-spinner-dialog.service';
 import { ConfirmDialogService } from '@shared/services/confirm-dialog.service';
 import { TranslateService } from '@ngx-translate/core';
@@ -77,15 +78,20 @@ export class CreateEditUserComponent extends ComponentToExtendForCustomDialog im
     selectRoleFirst: marker('user.selectRoleFirst'),
     permissionsInheritFromRole: marker('user.permissionsInheritFromRole'),
     reset: marker('common.reset'),
-    userPermissions: marker('user.userPermissions')
+    userPermissions: marker('user.userPermissions'),
+    required: marker('errors.required'),
+    emailError: marker('errors.emailPattern'),
+    selectAll: marker('users.roles.selectAll'),
+    unselectAll: marker('common.unselectAll')
   };
   public userPermissions: { permission: PermissionsDTO; checked: boolean }[] = [];
   public userForm: FormGroup;
   public rolesAsyncList: Observable<RoleDTO[]>;
   public brandsAsyncList: Observable<BrandDTO[]>;
-  public facilitiesList: FacilitiesGroupedByBrand[];
-  public departmentsList: DepartmentsGroupedByFacility[];
-  public specialtiesList: SpecialtiesGroupedByDepartment[];
+  public brandsList: BrandDTO[] = [];
+  public facilitiesList: FacilitiesGroupedByBrand[] = [];
+  public departmentsList: DepartmentsGroupedByFacility[] = [];
+  public specialtiesList: SpecialtiesGroupedByDepartment[] = [];
   public userToEdit: UserDetailsDTO = null;
 
   constructor(
@@ -155,7 +161,7 @@ export class CreateEditUserComponent extends ComponentToExtendForCustomDialog im
       map((response) => {
         this.globalMessageService.showSuccess({
           message: this.translateService.instant(marker('common.successOperation')),
-          actionText: 'Close'
+          actionText: this.translateService.instant(marker('common.close'))
         });
         return response;
       }),
@@ -163,7 +169,7 @@ export class CreateEditUserComponent extends ComponentToExtendForCustomDialog im
         const err = error.error as ConcenetError;
         this.globalMessageService.showError({
           message: err.message,
-          actionText: 'Close'
+          actionText: this.translateService.instant(marker('common.close'))
         });
         return of(false);
       }),
@@ -202,6 +208,46 @@ export class CreateEditUserComponent extends ComponentToExtendForCustomDialog im
   // Convenience getter for easy access to form fields
   get form() {
     return this.userForm.controls;
+  }
+
+  public selectAll(type: 'specialties' | 'departments' | 'facilities' | 'brands', control: AbstractControl, list: any[]) {
+    if (type === 'brands') {
+      control.setValue(list);
+    } else {
+      control.setValue(list.reduce((prev, act) => [...prev, ...act[type]], []));
+    }
+    this.getOptionsAfterSelection(type);
+  }
+
+  public unselectAll(type: 'specialties' | 'departments' | 'facilities' | 'brands', control: AbstractControl) {
+    control.setValue([]);
+    this.getOptionsAfterSelection(type);
+  }
+
+  public hasAllSelected(
+    type: 'specialties' | 'departments' | 'facilities' | 'brands',
+    control: AbstractControl,
+    list: any[]
+  ): boolean {
+    if (type !== 'brands') {
+      list = list.reduce((prev, act) => [...prev, ...act[type]], []);
+    }
+    const actualValue = control.value ? control.value : [];
+    return haveArraysSameValues(actualValue.map((item: any) => item.id).sort(), list.map((item: any) => item.id).sort());
+  }
+
+  public getOptionsAfterSelection(type: 'specialties' | 'departments' | 'facilities' | 'brands') {
+    switch (type) {
+      case 'brands':
+        this.getFacilitiesOptions();
+        break;
+      case 'facilities':
+        this.getDepartmentsOptions();
+        break;
+      case 'departments':
+        this.getSpecialtiesOptions();
+        break;
+    }
   }
 
   public getFacilitiesOptions(initialLoad = false): void {
@@ -333,6 +379,7 @@ export class CreateEditUserComponent extends ComponentToExtendForCustomDialog im
     this.brandsAsyncList = this.brandService.getAllBrands().pipe(
       tap({
         next: (brands: BrandDTO[]) => {
+          this.brandsList = brands;
           if (this.userToEdit) {
             this.userForm
               .get('brands')
@@ -364,7 +411,7 @@ export class CreateEditUserComponent extends ComponentToExtendForCustomDialog im
               error: (error) => {
                 this.globalMessageService.showError({
                   message: error.message,
-                  actionText: 'Close'
+                  actionText: this.translateService.instant(marker('common.close'))
                 });
               }
             });
@@ -378,7 +425,7 @@ export class CreateEditUserComponent extends ComponentToExtendForCustomDialog im
         name: [this.userToEdit ? this.userToEdit.name : null, Validators.required],
         firstName: [this.userToEdit ? this.userToEdit.firstName : null],
         lastName: [this.userToEdit ? this.userToEdit.lastName : null],
-        email: [this.userToEdit ? this.userToEdit.email : null, Validators.required],
+        email: [this.userToEdit ? this.userToEdit.email : null, [Validators.email]],
         userName: [this.userToEdit ? this.userToEdit.userName : null, Validators.required],
         role: [this.userToEdit ? this.userToEdit.role : null, Validators.required],
         newPassword: [
@@ -386,9 +433,9 @@ export class CreateEditUserComponent extends ComponentToExtendForCustomDialog im
           [Validators.required, Validators.pattern(passwordPattern)]
         ],
         newPasswordConfirmation: [this.userToEdit ? this.userToEdit.password : null, Validators.required],
-        brands: [this.userToEdit ? this.userToEdit.brands : null],
-        facilities: [this.userToEdit ? this.userToEdit.facilities : null],
-        departments: [this.userToEdit ? this.userToEdit.departments : null],
+        brands: [this.userToEdit ? this.userToEdit.brands : null, Validators.required],
+        facilities: [this.userToEdit ? this.userToEdit.facilities : null, Validators.required],
+        departments: [this.userToEdit ? this.userToEdit.departments : null, Validators.required],
         specialties: [this.userToEdit ? this.userToEdit.specialties : null]
       },
       {
@@ -416,7 +463,7 @@ export class CreateEditUserComponent extends ComponentToExtendForCustomDialog im
         error: (error: ConcenetError) => {
           this.globalMessageService.showError({
             message: error.message,
-            actionText: 'Close'
+            actionText: this.translateService.instant(marker('common.close'))
           });
         }
       });

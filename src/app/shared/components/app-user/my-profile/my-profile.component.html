@@ -9,7 +9,7 @@
                 <div class="user-data__section__title first-child">
                     {{ labels.data | translate }}
                 </div>
-                <div class="user-data__section__group" fxLayout="row wrap" fxLayoutAlign="space-between center">
+                <div class="user-data__section__group grid-group">
                     <!-- Name -->
                     <mat-form-field appearance="outline" floatLabel="always">
                         <mat-label>{{ labels.name | translate }}</mat-label>
@@ -37,9 +37,6 @@
                         <mat-label>{{ labels.lastName | translate }}</mat-label>
                         <input matInput formControlName="lastName" />
                     </mat-form-field>
-                </div>
-
-                <div class="user-data__section__group" fxLayout="row wrap" fxLayoutAlign="space-between center">
                     <!-- Email -->
                     <mat-form-field appearance="outline" floatLabel="always">
                         <mat-label>{{ labels.email | translate }}</mat-label>
@@ -55,16 +52,8 @@
                         <mat-label>{{ labels.role | translate }}</mat-label>
                         <input matInput formControlName="role" />
                     </mat-form-field>
-                </div>
-
-                <div
-                    class="user-data__section__group"
-                    fxLayout="row wrap"
-                    fxLayoutAlign="space-between center"
-                    *ngIf="showPasswordFields"
-                >
                     <!-- password -->
-                    <mat-form-field appearance="outline" floatLabel="always">
+                    <mat-form-field appearance="outline" floatLabel="always" *ngIf="showPasswordFields">
                         <mat-label>{{ labels.password | translate }}</mat-label>
                         <input matInput formControlName="password" type="password" />
                         <mat-error class="restore-password-content__error" *ngIf="form.password.errors && form.password.touched">
@@ -72,7 +61,7 @@
                         </mat-error>
                     </mat-form-field>
                     <!-- newPassword -->
-                    <mat-form-field appearance="outline" floatLabel="always">
+                    <mat-form-field appearance="outline" floatLabel="always" *ngIf="showPasswordFields">
                         <mat-label>{{ labels.password1 | translate }}</mat-label>
                         <input matInput formControlName="newPassword" type="password" />
                         <mat-error
@@ -84,7 +73,7 @@
                         </mat-error>
                     </mat-form-field>
                     <!-- newPasswordConfirmation -->
-                    <mat-form-field appearance="outline" floatLabel="always">
+                    <mat-form-field appearance="outline" floatLabel="always" *ngIf="showPasswordFields">
                         <mat-label>{{ labels.password2 | translate }}</mat-label>
                         <input matInput formControlName="newPasswordConfirmation" type="password" />
                         <mat-error
@@ -108,7 +97,7 @@
                     {{ labels.organization | translate }}
                 </div>
 
-                <div class="user-data__section__group" fxLayout="row wrap" fxLayoutAlign="space-between center">
+                <div class="user-data__section__group grid-group">
                     <!-- brands -->
                     <mat-form-field
                         appearance="outline"
@@ -145,9 +134,6 @@
                         <mat-label>{{ labels.department | translate }}</mat-label>
                         <input matInput formControlName="departments" />
                     </mat-form-field>
-                </div>
-
-                <div class="user-data__section__group" fxLayout="row wrap" fxLayoutAlign="space-between center">
                     <!-- specialties -->
                     <mat-form-field
                         appearance="outline"

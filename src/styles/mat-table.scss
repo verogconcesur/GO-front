@@ -7,6 +7,18 @@
 
   .mat-table {
     background-color: transparent;
+    &.table-ellipsis {
+      width: 100%;
+      table-layout: fixed;
+      th,
+      td {
+        overflow: hidden;
+        width: auto;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+        padding-left: 10px;
+      }
+    }
     .mat-header-row .mat-header-cell {
       text-transform: uppercase;
       font-weight: 600;

@@ -56,7 +56,7 @@ export class ForgotPasswordComponent implements OnInit {
 
           this.globalMessageService.showSuccess({
             message: this.translate.instant(marker('login.recoverpassword.email')),
-            actionText: 'Close',
+            actionText: this.translate.instant(marker('common.close')),
             duration: 3000
           });
         },

@@ -15,10 +15,15 @@
       }
     }
 
+    &.mat-button-w-100-left {
+      width: 100%;
+      text-align: left;
+    }
+
     // mat-flat-button styles
     &.mat-flat-button {
       &:hover {
-        background-color: darken(mat-color($primary, 500), 10%);
+        opacity: 0.85;
       }
     }
 

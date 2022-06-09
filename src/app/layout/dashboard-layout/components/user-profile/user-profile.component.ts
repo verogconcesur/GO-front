@@ -7,10 +7,10 @@ import { marker } from '@biesbjerg/ngx-translate-extract-marker';
 import UserDetailsDTO from '@data/models/user-details-dto';
 import { UserService } from '@data/services/user.service';
 import { GlobalMessageService } from '@shared/services/global-message.service';
-import { ProgressSpinnerDialogService } from '@shared/services/progress-spinner-dialog.service';
 import { CustomDialogService } from '@shared/modules/custom-dialog/services/custom-dialog.service';
 import { MyProfileComponent, MyProfileComponentModalEnum } from '@shared/components/app-user/my-profile/my-profile.component';
 import { take } from 'rxjs/operators';
+import { TranslateService } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-user-profile',
@@ -47,7 +47,7 @@ export class UserProfileComponent implements OnInit {
     private userService: UserService,
     private globalMessageService: GlobalMessageService,
     private authenticationService: AuthenticationService,
-    private spinnerService: ProgressSpinnerDialogService,
+    private translateService: TranslateService,
     private customDialogService: CustomDialogService
   ) {}
 
@@ -67,7 +67,7 @@ export class UserProfileComponent implements OnInit {
 
         this.globalMessageService.showError({
           message: this.error.message,
-          actionText: 'Close'
+          actionText: this.translateService.instant(marker('common.close'))
         });
       }
     });
@@ -84,7 +84,8 @@ export class UserProfileComponent implements OnInit {
         extendedComponentData: this.userDetails,
         id: MyProfileComponentModalEnum.ID,
         panelClass: MyProfileComponentModalEnum.PANEL_CLASS,
-        disableClose: true
+        disableClose: true,
+        width: '700px'
       })
       .pipe(take(1))
       .subscribe((response) => {

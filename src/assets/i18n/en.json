@@ -24,17 +24,26 @@
     "actions": "Actions",
     "apply": "Apply",
     "cancel": "Cancel",
+    "close": "Close",
     "filter": "Filter",
+    "filterAction": "Filter",
     "reset": "Reset",
     "save": "Save",
     "search": "Search",
     "successOperation": "Success operation.",
     "unsavedChangesExit": "There are unsaved changes, do you want to continue?",
+    "unselectAll": "Unselect all",
     "warning": "Warning"
   },
   "confirmdialog": {
     "no": "No",
     "yes": "Yes"
+  },
+  "errors": {
+    "emailPattern": "The text must be an email.",
+    "maxLengthError": "The max length allowed for this field is {length} characters.",
+    "required": "This field is required.",
+    "noDataToShow": "No data to show in table"
   },
   "login": {
     "description": "Please enter your credentials",

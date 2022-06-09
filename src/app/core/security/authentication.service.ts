@@ -36,13 +36,15 @@ export class AuthenticationService {
   }
 
   public keepTokenAlive(): void {
-    const refreshTimeBeforeTokenExpires = 3000;
+    const refreshTimeBeforeTokenExpires = 10000;
     if (!this.tokenInterval) {
       const token = this.getToken();
       const expires_in = this.getExpiresIn();
+      // const expires_in = 60000;
       const token_timestamp = this.getTokenTimestamp();
       if (token && expires_in && token_timestamp) {
         const timeToExpire = token_timestamp + expires_in - refreshTimeBeforeTokenExpires;
+        // console.log(timeToExpire, +new Date(), timeToExpire - +new Date());
         this.tokenInterval = setInterval(() => {
           this.refreshToken().subscribe({
             next: (loginData) => {

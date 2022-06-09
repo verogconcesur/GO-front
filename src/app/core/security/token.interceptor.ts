@@ -10,11 +10,14 @@ import {
   HttpUserEvent
 } from '@angular/common/http';
 import { Inject, Injectable } from '@angular/core';
+import { MatDialog } from '@angular/material/dialog';
 import { Router } from '@angular/router';
 import { ENV } from '@app/constants/global.constants';
 import { RouteConstants } from '@app/constants/route.constants';
 import { Env } from '@app/types/env';
 import { ConcenetError } from '@app/types/error';
+import { marker } from '@biesbjerg/ngx-translate-extract-marker';
+import { TranslateService } from '@ngx-translate/core';
 import { GlobalMessageService } from '@shared/services/global-message.service';
 import { Observable, throwError } from 'rxjs';
 import { catchError } from 'rxjs/operators';
@@ -34,7 +37,9 @@ export class TokenInterceptor implements HttpInterceptor {
     @Inject(ENV) private env: Env,
     private router: Router,
     private authenticationService: AuthenticationService,
-    private globalMessage: GlobalMessageService
+    private translateService: TranslateService,
+    private globalMessage: GlobalMessageService,
+    private dialog: MatDialog
   ) {}
 
   intercept(req: HttpRequest<unknown>, next: HttpHandler): ObservableResponse {
@@ -80,8 +85,10 @@ export class TokenInterceptor implements HttpInterceptor {
 
     switch (error.status) {
       case 401:
+        this.dialog.closeAll();
         return this.logout(error.error);
       case 403:
+        this.dialog.closeAll();
         return this.handle403Error(error.error);
       default:
         return throwError(error);
@@ -91,8 +98,8 @@ export class TokenInterceptor implements HttpInterceptor {
   private handle403Error(error: ConcenetError): ObservableResponse {
     this.router.navigate([RouteConstants.DASHBOARD]);
     this.globalMessage.showError({
-      message: error.message,
-      actionText: 'Close'
+      message: this.translateService.instant(marker('common.accessDenied')),
+      actionText: this.translateService.instant(marker('common.close'))
     });
     return throwError(error);
   }

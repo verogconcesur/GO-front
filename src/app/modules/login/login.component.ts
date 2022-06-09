@@ -7,6 +7,7 @@ import { ConcenetError } from '@app/types/error';
 import { marker } from '@biesbjerg/ngx-translate-extract-marker';
 import LoginDTO from '@data/models/login-dto';
 import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
+import { TranslateService } from '@ngx-translate/core';
 import { GlobalMessageService } from '@shared/services/global-message.service';
 import { ProgressSpinnerDialogService } from '@shared/services/progress-spinner-dialog.service';
 import { finalize } from 'rxjs/operators';
@@ -37,7 +38,8 @@ export class LoginComponent implements OnInit {
     private route: ActivatedRoute,
     private spinnerService: ProgressSpinnerDialogService,
     private authenticationService: AuthenticationService,
-    private globalMessageService: GlobalMessageService
+    private globalMessageService: GlobalMessageService,
+    private translateService: TranslateService
   ) {}
 
   ngOnInit(): void {
@@ -90,7 +92,7 @@ export class LoginComponent implements OnInit {
   private loginError(error: ConcenetError): void {
     this.globalMessageService.showError({
       message: error.message,
-      actionText: 'Close'
+      actionText: this.translateService.instant(marker('common.close'))
     });
   }
 }
