@@ -25,14 +25,26 @@
     "apply": "Apply",
     "cancel": "Cancel",
     "close": "Close",
+    "delete": "Delete",
+    "duplicate": "Duplicate",
+    "edit": "Edit",
+    "emails": "Emails",
     "filter": "Filter",
     "filterAction": "Filter",
+    "footer": "Footer",
+    "header": "Header",
+    "insert": "Insert",
+    "insertTextHere": "Insert text here.",
+    "logo": "Logo",
     "reset": "Reset",
     "save": "Save",
     "search": "Search",
+    "select": "Select",
+    "selectImageFile": "Select image file",
     "successOperation": "Success operation.",
     "unsavedChangesExit": "There are unsaved changes, do you want to continue?",
     "unselectAll": "Unselect all",
+    "users": "Users",
     "warning": "Warning"
   },
   "confirmdialog": {
@@ -42,8 +54,8 @@
   "errors": {
     "emailPattern": "The text must be an email.",
     "maxLengthError": "The max length allowed for this field is {length} characters.",
-    "required": "This field is required.",
-    "noDataToShow": "No data to show in table"
+    "noDataToShow": "No data to show in table",
+    "required": "This field is required."
   },
   "login": {
     "description": "Please enter your credentials",
@@ -79,6 +91,28 @@
   "logout": {
     "logout": "Log out"
   },
+  "organizations": {
+    "brands": {
+      "create": "Create brand",
+      "delete": "Delete brand",
+      "edit": "Edit brand",
+      "name": "Brand name",
+      "title": "Brands"
+    },
+    "departments": {
+      "create": "Create department",
+      "title": "Departments"
+    },
+    "facilities": {
+      "create": "Create facility",
+      "numFacilities": "{numItems} {numItems, plural, =0{facilities} one{facility} other{instalaciones}}",
+      "title": "Facilities"
+    },
+    "specialties": {
+      "create": "Create specialty",
+      "title": "Specialties"
+    }
+  },
   "pagination": {
     "firstPage": "First page",
     "itemsPerPage": "Items per page",
@@ -86,6 +120,10 @@
     "nextPage": "Next Page",
     "pageOf": "Page {num1} of {num2}",
     "prevPage": "Previous page"
+  },
+  "quill": {
+    "htmlCodeInsertion": "Insert html code",
+    "invalidHtmlText": "Invalid html tags, the text can't contain: {tags}"
   },
   "roles": {
     "create": "Create Role",

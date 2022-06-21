@@ -1,0 +1,9 @@
+@import 'utils/core';
+
+.brands {
+  margin-top: 20px;
+  &__no-brands {
+    width: 100%;
+    text-align: center;
+  }
+}

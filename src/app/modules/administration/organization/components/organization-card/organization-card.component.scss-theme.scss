@@ -1,0 +1,22 @@
+@import '@angular/material/theming';
+@import 'utils/core';
+
+@mixin organization-card-component-theme($theme, $main-typo) {
+  $primary: map-get($theme, primary);
+  $foreground: map-get($theme, foreground);
+
+  .organization-card {
+    background-color: mat-contrast($primary, 400);
+    &__button-menu {
+      color: mat-color($primary, 500);
+      font-size: 1.2em;
+    }
+    &__title {
+      color: mat-color($foreground, secondary-text);
+    }
+    &__subtitle {
+      color: mat-contrast($primary, 50);
+      font-weight: 600;
+    }
+  }
+}

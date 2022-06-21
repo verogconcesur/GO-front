@@ -1,0 +1,32 @@
+.organization-card {
+  width: 368px;
+  height: 190px;
+  margin: 0 20px 20px 0;
+  cursor: pointer;
+  position: relative;
+  padding: 12px;
+  overflow: hidden;
+  &__button-menu {
+    position: absolute;
+    top: 0;
+    right: 0;
+  }
+  &__title {
+    margin: 0;
+    padding: 12px 0 0 12px;
+  }
+  &__subtitle {
+    margin: 0;
+    padding: 0 0 0 12px;
+  }
+  &__bg-img {
+    position: absolute;
+    width: auto;
+    height: 175px;
+    right: -25px;
+    bottom: -25px;
+    opacity: 0.3;
+    max-width: 75%;
+    object-fit: contain;
+  }
+}

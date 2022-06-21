@@ -1,9 +1,8 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { marker } from '@biesbjerg/ngx-translate-extract-marker';
-import { ComponentToExtendForCustomDialog } from '@shared/modules/custom-dialog/models/component-for-custom-dialog';
+import { ComponentToExtendForCustomDialog, CustomDialogFooterConfigI, CustomDialogService } from '@jenga/custom-dialog';
 import { Observable, of } from 'rxjs';
-import { CustomDialogFooterConfigI } from '@shared/modules/custom-dialog/interfaces/custom-dialog-footer-config';
 import { FormGroup, FormBuilder, Validators, FormControl, AbstractControl } from '@angular/forms';
 import { ProgressSpinnerDialogService } from '@shared/services/progress-spinner-dialog.service';
 import { ConfirmDialogService } from '@shared/services/confirm-dialog.service';
@@ -34,7 +33,6 @@ import { PermissionsService } from '@data/services/permissions.service';
 import PermissionsDTO from '@data/models/permissions-dto';
 import { MatCheckboxChange } from '@angular/material/checkbox';
 import { haveArraysSameValues } from '@shared/utils/array-comparation-function';
-import { CustomDialogService } from '@shared/modules/custom-dialog/services/custom-dialog.service';
 
 export const enum CreateEditUserComponentModalEnum {
   ID = 'create-edit-user-dialog-id',
@@ -108,7 +106,6 @@ export class CreateEditUserComponent extends ComponentToExtendForCustomDialog im
     private departmentService: DepartmentService,
     private permissionsService: PermissionsService,
     private specialtyService: SpecialtyService,
-    private confirmationDialog: ConfirmDialogService,
     private customDialogService: CustomDialogService
   ) {
     super(
@@ -394,7 +391,7 @@ export class CreateEditUserComponent extends ComponentToExtendForCustomDialog im
   }
 
   private deleteUser = () => {
-    this.confirmationDialog
+    this.confirmDialogService
       .open({
         title: this.translateService.instant(marker('common.warning')),
         message: this.translateService.instant(marker('user.deleteConfirmation'))

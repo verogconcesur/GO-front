@@ -1,5 +1,6 @@
 import { HttpClient } from '@angular/common/http';
 import { Inject, Injectable } from '@angular/core';
+import { ActivatedRouteSnapshot, Router, RouterStateSnapshot } from '@angular/router';
 import { ENV } from '@app/constants/global.constants';
 import { Env } from '@app/types/env';
 import { ConcenetError } from '@app/types/error';
@@ -15,12 +16,27 @@ import { catchError, map, reduce } from 'rxjs/operators';
 export class FacilityService {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   private facilitiesByBrand: any = {};
+  private readonly GET_FACILITY = '/api/facilities/';
   private readonly GET_FACILITIES_PATH = '/api/facilities/findAllByBrands/';
 
-  constructor(@Inject(ENV) private env: Env, private http: HttpClient) {}
+  constructor(@Inject(ENV) private env: Env, private http: HttpClient, private router: Router) {}
 
   public resetFacilitiesData(): void {
     this.facilitiesByBrand = {};
+  }
+
+  //Used to resolove :id route, if we have the data in the routerState we don't ask for it
+  public resolve(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): Observable<FacilityDTO> {
+    const navigation = this.router.getCurrentNavigation();
+    const routerState = navigation.extras.state as { facility: FacilityDTO };
+    if (routerState?.facility?.id) {
+      return of(routerState.facility);
+    } else {
+      const id = route.params.idFacility;
+      return this.http
+        .get<FacilityDTO>(`${this.env.apiBaseUrl}${this.GET_FACILITY}${id}`)
+        .pipe(catchError((error) => throwError(error as ConcenetError)));
+    }
   }
 
   public getFacilitiesOptionsListByBrands(brands: BrandDTO[]): Observable<FacilitiesGroupedByBrand[]> {

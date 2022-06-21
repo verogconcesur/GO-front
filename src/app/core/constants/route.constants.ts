@@ -1,5 +1,7 @@
 import { PermissionConstants } from './permission.constants';
 
+export const RoutingUseHash = true;
+
 export enum RouteConstants {
   // Common
   EMPTY = '',
@@ -11,7 +13,7 @@ export enum RouteConstants {
   OTHER = '**',
 
   // Route Params
-  ID = '/:id',
+  ID = ':id',
 
   // Login
   LOGIN = 'login',
@@ -24,12 +26,21 @@ export enum RouteConstants {
   //Administration
   ADMINISTRATION = 'administration',
   //Users
-  USERS = 'users'
+  USERS = 'users',
+  //Organization
+  ORGANIZATION = 'organization',
+  BRANDS = 'brands',
+  ID_BRAND = ':idBrand',
+  FACILITIES = 'facilities',
+  ID_FACILITY = ':idFacility',
+  DEPARTMENTS = 'departments',
+  ID_DEPARTMENT = ':idDepartment',
+  SPECIALTIES = 'specialties'
 }
 
 export const RoutePermissionConstants: Record<string, PermissionConstants[]> = {
   //For routes with permissions specify an array with the permissions that the user must have to access
   // (as long as one is met, he can access)
   DASHBOARD: [],
-  ADMINISTRATION: [] //For example [PermissionConstants.ISADMIN]
+  ADMINISTRATION: [PermissionConstants.ISADMIN]
 };

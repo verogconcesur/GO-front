@@ -17,6 +17,9 @@
         text-overflow: ellipsis;
         white-space: nowrap;
         padding-left: 10px;
+        &.no-ellipsis {
+          overflow: inherit;
+        }
       }
     }
     .mat-header-row .mat-header-cell {

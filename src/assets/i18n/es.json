@@ -25,14 +25,26 @@
     "apply": "Aplicar",
     "cancel": "Cancelar",
     "close": "Cerrar",
+    "delete": "Eliminar",
+    "duplicate": "Duplicar",
+    "edit": "Editar",
+    "emails": "Emails",
     "filter": "Filtro",
     "filterAction": "Filtrar",
+    "footer": "Pie",
+    "header": "Cabecera",
+    "insert": "Insertar",
+    "insertTextHere": "Introduzca el texto aquí.",
+    "logo": "Logo",
     "reset": "Restaurar",
     "save": "Guardar",
     "search": "Buscar",
+    "select": "Seleccionar",
+    "selectImageFile": "Selecciona una imagen",
     "successOperation": "Operación realizada con éxito.",
     "unsavedChangesExit": "Hay cambios en el formulario sin guardar, ¿desea salir igualmente?",
     "unselectAll": "Deseleccionar todos",
+    "users": "Usuarios",
     "warning": "Advertencia"
   },
   "confirmdialog": {
@@ -42,8 +54,8 @@
   "errors": {
     "emailPattern": "El texto introducido debe ser un email.",
     "maxLengthError": "La longitud máxima permitida es de {length} caracteres.",
-    "required": "Este campo es obligatorio.",
-    "noDataToShow": "No hay datos para mostrar"
+    "noDataToShow": "No hay datos para mostrar",
+    "required": "Este campo es obligatorio."
   },
   "login": {
     "description": "Por favor, introduzca sus credenciales",
@@ -79,6 +91,28 @@
   "logout": {
     "logout": "Cerrar sesión"
   },
+  "organizations": {
+    "brands": {
+      "create": "Crear marca",
+      "delete": "Eliminar marca",
+      "edit": "Editar marca",
+      "name": "Nombre de marca",
+      "title": "Marcas"
+    },
+    "departments": {
+      "create": "Crear departamento",
+      "title": "Departamentos"
+    },
+    "facilities": {
+      "create": "Crear instalación",
+      "numFacilities": "{numItems} {numItems, plural, =0{instalaciones} one{instalación} other{instalaciones}}",
+      "title": "Instalaciones"
+    },
+    "specialties": {
+      "create": "Crear especialidad",
+      "title": "Especialidades"
+    }
+  },
   "pagination": {
     "firstPage": "Primera página",
     "itemsPerPage": "Elementos por página",
@@ -86,6 +120,10 @@
     "nextPage": "Siguiente página",
     "pageOf": "Página {num1} de {num2}",
     "prevPage": "Página previa"
+  },
+  "quill": {
+    "htmlCodeInsertion": "Inserta el código html",
+    "invalidHtmlText": "Etiquetas html inválidas, el texto no puede contener: {tags}"
   },
   "roles": {
     "create": "Crear rol",

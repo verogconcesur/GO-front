@@ -25,6 +25,7 @@
     "noImplicitAny": true
   },
   "angularCompilerOptions": {
+    "preserveSymlinks": true,
     "fullTemplateTypeCheck": true,
     "strictInjectionParameters": true
   }

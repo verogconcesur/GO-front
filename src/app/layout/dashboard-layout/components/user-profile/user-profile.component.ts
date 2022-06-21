@@ -7,7 +7,7 @@ import { marker } from '@biesbjerg/ngx-translate-extract-marker';
 import UserDetailsDTO from '@data/models/user-details-dto';
 import { UserService } from '@data/services/user.service';
 import { GlobalMessageService } from '@shared/services/global-message.service';
-import { CustomDialogService } from '@shared/modules/custom-dialog/services/custom-dialog.service';
+import { CustomDialogService } from '@jenga/custom-dialog';
 import { MyProfileComponent, MyProfileComponentModalEnum } from '@shared/components/app-user/my-profile/my-profile.component';
 import { take } from 'rxjs/operators';
 import { TranslateService } from '@ngx-translate/core';

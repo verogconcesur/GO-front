@@ -51,7 +51,7 @@
 
         <!-- Sidenav menu -->
         <mat-drawer-container class="administration-container" autosize [hasBackdrop]="false">
-            <mat-drawer #menuDrawer class="left-sidenav-panel" mode="push" [opened]="false">
+            <mat-drawer #menuDrawer class="left-sidenav-panel" mode="side" [opened]="false">
                 <!-- Administration menu -->
                 <ul class="left-menu">
                     <li class="left-menu-option" [routerLink]="USERS_TEMPLATE_PATH" routerLinkActive="active">
@@ -60,7 +60,7 @@
                     <li class="left-menu-option">
                         <mat-icon fontSet="concenet">forms</mat-icon> {{ labels.records | translate }}
                     </li>
-                    <li class="left-menu-option">
+                    <li class="left-menu-option" [routerLink]="ORGANIZATION_TEMPLATE_PATH" routerLinkActive="active">
                         <mat-icon fontSet="concenet">organization</mat-icon> {{ labels.organization | translate }}
                     </li>
                     <li class="left-menu-option">
