@@ -1,6 +1,6 @@
 import { DOCUMENT } from '@angular/common';
 import { HttpClient } from '@angular/common/http';
-import { Inject, Injectable } from '@angular/core';
+import { Inject, Injectable, OnDestroy } from '@angular/core';
 import { ENV } from '@app/constants/global.constants';
 import { Env } from '@app/types/env';
 import { ConcenetError } from '@app/types/error';
@@ -8,12 +8,12 @@ import LoginDTO from '@data/models/login-dto';
 import RoleDTO from '@data/models/role-dto';
 import PermissionsDTO from '@data/models/permissions-dto';
 import { Observable, throwError } from 'rxjs';
-import { catchError } from 'rxjs/operators';
+import { catchError, take } from 'rxjs/operators';
 
 @Injectable({
   providedIn: 'root'
 })
-export class AuthenticationService {
+export class AuthenticationService implements OnDestroy {
   public readonly LOGIN_PATH = '/api/users/login';
   public readonly REFRESH_TOKEN_PATH = '/api/users/refreshToken';
 
@@ -28,6 +28,12 @@ export class AuthenticationService {
   private tokenInterval: NodeJS.Timer = null;
 
   constructor(@Inject(ENV) private env: Env, @Inject(DOCUMENT) private document: Document, private http: HttpClient) {}
+
+  ngOnDestroy(): void {
+    if (this.tokenInterval) {
+      clearInterval(this.tokenInterval);
+    }
+  }
 
   public signIn(credentials: { userName: string; password: string }): Observable<LoginDTO> {
     return this.http
@@ -46,14 +52,16 @@ export class AuthenticationService {
         const timeToExpire = token_timestamp + expires_in - refreshTimeBeforeTokenExpires;
         // console.log(timeToExpire, +new Date(), timeToExpire - +new Date());
         this.tokenInterval = setInterval(() => {
-          this.refreshToken().subscribe({
-            next: (loginData) => {
-              this.setLoggedUser(loginData);
-            },
-            error: (error: ConcenetError) => {
-              console.log(error.message);
-            }
-          });
+          this.refreshToken()
+            .pipe(take(1))
+            .subscribe({
+              next: (loginData) => {
+                this.setTokenData(loginData);
+              },
+              error: (error: ConcenetError) => {
+                console.log(error.message);
+              }
+            });
         }, timeToExpire - +new Date());
       }
     }
@@ -226,6 +234,14 @@ export class AuthenticationService {
    * @param loginData
    */
   setLoggedUser(loginData: LoginDTO): void {
+    this.setTokenData(loginData);
+    sessionStorage.setItem(this.USER_ID, loginData.user.id.toString());
+    sessionStorage.setItem(this.USER_FULL_NAME, loginData.user.firstName + loginData.user.lastName);
+    sessionStorage.setItem(this.USER_ROLE, JSON.stringify(loginData.user.role));
+    sessionStorage.setItem(this.USER_PERMISSIONS, JSON.stringify(loginData.user.permissions));
+  }
+
+  setTokenData(loginData: LoginDTO): void {
     if (this.tokenInterval) {
       clearInterval(this.tokenInterval);
       this.tokenInterval = null;
@@ -233,10 +249,6 @@ export class AuthenticationService {
     sessionStorage.setItem(this.ACCESS_TOKEN, loginData.access_token);
     sessionStorage.setItem(this.EXPIRES_IN, loginData.expires_in.toString());
     sessionStorage.setItem(this.TOKEN_TIMESTAMP, (+new Date()).toString());
-    sessionStorage.setItem(this.USER_ID, loginData.user.id.toString());
-    sessionStorage.setItem(this.USER_FULL_NAME, loginData.user.firstName + loginData.user.lastName);
-    sessionStorage.setItem(this.USER_ROLE, JSON.stringify(loginData.user.role));
-    sessionStorage.setItem(this.USER_PERMISSIONS, JSON.stringify(loginData.user.permissions));
     this.keepTokenAlive();
   }
 

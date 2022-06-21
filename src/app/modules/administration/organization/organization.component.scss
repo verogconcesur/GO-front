@@ -1,0 +1,24 @@
+@import 'utils/core';
+
+.organization-container {
+  padding: 48px;
+  box-sizing: border-box;
+
+  @include respond-to($tablet-small) {
+    padding: 10px;
+  }
+
+  @include respond-to($mobile) {
+    padding: 5px;
+  }
+
+  &__content {
+    padding: 0 30px 25px 30px;
+    @include respond-to($tablet-small) {
+      padding: 0 5px 25px 0;
+    }
+    @include respond-to($mobile) {
+      padding: 25px 5px;
+    }
+  }
+}

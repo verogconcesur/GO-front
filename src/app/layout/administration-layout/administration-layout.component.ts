@@ -1,5 +1,4 @@
-import { AfterViewInit, Component, OnInit, ViewChild, ViewContainerRef } from '@angular/core';
-import { MatDrawer } from '@angular/material/sidenav';
+import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { RouteConstants } from '@app/constants/route.constants';
 import { AuthenticationService } from '@app/security/authentication.service';
@@ -9,7 +8,7 @@ import UserDetailsDTO from '@data/models/user-details-dto';
 import { UserService } from '@data/services/user.service';
 import { TranslateService } from '@ngx-translate/core';
 import { MyProfileComponent, MyProfileComponentModalEnum } from '@shared/components/app-user/my-profile/my-profile.component';
-import { CustomDialogService } from '@shared/modules/custom-dialog/services/custom-dialog.service';
+import { CustomDialogService } from '@jenga/custom-dialog';
 import { GlobalMessageService } from '@shared/services/global-message.service';
 import { NGXLogger } from 'ngx-logger';
 import { take } from 'rxjs/operators';
@@ -33,6 +32,7 @@ export class AdministrationLayoutComponent implements OnInit {
   public filterDrawerDisableClose = false;
 
   public readonly USERS_TEMPLATE_PATH = RouteConstants.USERS;
+  public readonly ORGANIZATION_TEMPLATE_PATH = RouteConstants.ORGANIZATION;
 
   public userDetails: UserDetailsDTO;
 

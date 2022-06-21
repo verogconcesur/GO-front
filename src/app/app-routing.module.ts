@@ -1,6 +1,6 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
-import { RouteConstants, RoutePermissionConstants } from '@app/constants/route.constants';
+import { RouteConstants, RoutePermissionConstants, RoutingUseHash } from '@app/constants/route.constants';
 import { AuthGuardService } from '@app/security/guards/authentication.guard';
 import { AdministrationLayoutComponent } from '@layout/administration-layout/administration-layout.component';
 import { DashboardLayoutComponent } from '@layout/dashboard-layout/dashboard-layout.component';
@@ -13,20 +13,25 @@ const routes: Routes = [
   {
     path: RouteConstants.DASHBOARD,
     component: DashboardLayoutComponent,
-    canActivate: [AuthGuardService]
-    // data: { permissions: RoutePermissionConstants.DASHBOARD }
+    canActivate: [AuthGuardService],
+    data: { permissions: RoutePermissionConstants.DASHBOARD }
     // loadChildren: () => import('./modules/login/login.module').then((m) => m.LoginModule)
   },
   {
     path: RouteConstants.ADMINISTRATION,
     component: AdministrationLayoutComponent,
     canActivate: [AuthGuardService],
-    // data: { permissions: RoutePermissionConstants.ADMINISTRATION }
+    data: { permissions: RoutePermissionConstants.ADMINISTRATION },
     children: [
       {
         path: RouteConstants.USERS,
         canActivate: [AuthGuardService],
         loadChildren: () => import('./modules/administration/users/users.module').then((m) => m.UsersModule)
+      },
+      {
+        path: RouteConstants.ORGANIZATION,
+        canActivate: [AuthGuardService],
+        loadChildren: () => import('./modules/administration/organization/organization.module').then((m) => m.OrganizationModule)
       },
       {
         path: RouteConstants.OTHER,
@@ -43,7 +48,7 @@ const routes: Routes = [
 ];
 
 @NgModule({
-  imports: [RouterModule.forRoot(routes, { relativeLinkResolution: 'legacy', useHash: true })],
+  imports: [RouterModule.forRoot(routes, { relativeLinkResolution: 'legacy', useHash: RoutingUseHash })],
   exports: [RouterModule]
 })
 export class AppRoutingModule {}

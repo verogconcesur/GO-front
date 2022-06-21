@@ -12,7 +12,7 @@ import {
   CreateEditUserComponent,
   CreateEditUserComponentModalEnum
 } from '@modules/administration/users/components/create-edit-user/create-edit-user.component';
-import { CustomDialogService } from '@shared/modules/custom-dialog/services/custom-dialog.service';
+import { CustomDialogService } from '@jenga/custom-dialog';
 import { FilterDrawerService } from '@shared/modules/filter-drawer/services/filter-drawer.service';
 import { Observable, of } from 'rxjs';
 import { finalize, map, take } from 'rxjs/operators';
@@ -105,7 +105,6 @@ export class UsersListComponent implements OnInit {
       opt = opt ? opt : '';
       this.textSearchValue = opt.toString().toLowerCase();
     }
-    this.paginationConfig.page = 0;
     this.getUsers();
   };
 
@@ -158,6 +157,8 @@ export class UsersListComponent implements OnInit {
     if (pageEvent) {
       this.paginationConfig.page = pageEvent.pageIndex;
       this.paginationConfig.pageSize = pageEvent.pageSize;
+    } else {
+      this.paginationConfig.page = 0;
     }
     if (!this.filterValue) {
       this.filterValue = {
@@ -204,11 +205,11 @@ export class UsersListComponent implements OnInit {
   };
 
   public areFiltersSettedAndActive = (): boolean =>
-    this.filterValue.brands?.length > 0 ||
-    this.filterValue.departments?.length > 0 ||
-    this.filterValue.facilities?.length > 0 ||
-    this.filterValue.roles?.length > 0 ||
-    this.filterValue.specialties?.length > 0;
+    this.filterValue?.brands?.length > 0 ||
+    this.filterValue?.departments?.length > 0 ||
+    this.filterValue?.facilities?.length > 0 ||
+    this.filterValue?.roles?.length > 0 ||
+    this.filterValue?.specialties?.length > 0;
 
   public deleteUser = (user: UserDetailsDTO): void => {
     this.confirmationDialog
@@ -245,7 +246,7 @@ export class UsersListComponent implements OnInit {
     this.filterDrawerService.setComponentToShowInsideFilterDrawer(UsersFilterComponent);
     this.filterDrawerService.filterValueSubject$.pipe(untilDestroyed(this)).subscribe((filterValue: UserFilterDTO) => {
       this.filterValue = filterValue;
-      this.getUsers();
+      setTimeout(() => this.getUsers());
     });
   };
 

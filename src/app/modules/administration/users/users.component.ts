@@ -2,9 +2,10 @@ import { Component, OnInit, ViewChild } from '@angular/core';
 import { MatTabChangeEvent } from '@angular/material/tabs';
 import { marker } from '@biesbjerg/ngx-translate-extract-marker';
 import UserDetailsDTO from '@data/models/user-details-dto';
+// eslint-disable-next-line max-len
+import { AdministrationCommonHeaderSectionComponent } from '@shared/components/administration-common-header-section/administration-common-header-section.component';
 import { Observable, of } from 'rxjs';
 import { RolesListComponent } from './components/roles-list/roles-list.component';
-import { UsersHeaderComponent } from './components/users-header/users-header.component';
 import { UsersListComponent } from './components/users-list/users-list.component';
 
 @Component({
@@ -15,7 +16,7 @@ import { UsersListComponent } from './components/users-list/users-list.component
 export class UsersComponent implements OnInit {
   @ViewChild('usersList') usersListComponent: UsersListComponent;
   @ViewChild('rolesList') rolesListComponent: RolesListComponent;
-  @ViewChild('usersHeader') usersHeader: UsersHeaderComponent;
+  @ViewChild('usersHeader') usersHeader: AdministrationCommonHeaderSectionComponent;
   public selectedTab: 'users' | 'roles' = 'users';
 
   public labels = {

@@ -32,15 +32,9 @@ export class ConfirmDialogComponent implements OnInit {
     this.title = this.config.title;
     this.message = this.config.message;
 
-    this.yesActionText = await this.getTranslationStr(
-      this.config.yesActionText,
-      marker('confirmdialog.yes')
-    );
+    this.yesActionText = await this.getTranslationStr(this.config.yesActionText, marker('confirmdialog.yes'));
 
-    this.noActionText = await this.getTranslationStr(
-      this.config.noActionText,
-      marker('confirmdialog.no')
-    );
+    this.noActionText = await this.getTranslationStr(this.config.noActionText, marker('confirmdialog.no'));
   }
 
   onConfirm(): void {
@@ -51,12 +45,7 @@ export class ConfirmDialogComponent implements OnInit {
     this.dialogRef.close(false);
   }
 
-  private async getTranslationStr(
-    value: string,
-    defaultValue: string
-  ): Promise<string> {
-    return value
-      ? of(value).toPromise()
-      : this.translateService.get(defaultValue).toPromise();
+  private async getTranslationStr(value: string, defaultValue: string): Promise<string> {
+    return value || value === '' ? of(value).toPromise() : this.translateService.get(defaultValue).toPromise();
   }
 }

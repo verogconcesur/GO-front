@@ -137,6 +137,7 @@ export class FilterDrawerService implements OnDestroy {
   private printComponentInFilterDrawer(): void {
     if (this.filterDrawerComponent && this.filterDrawerInnerRef && this.componentToShowInFilterDrawer) {
       this.filterValueSubject$.next(null);
+      this.filterDrawerInnerRef.clear();
       this.filterDrawerInnerComponentRef = this.filterDrawerInnerRef.createComponent(this.componentToShowInFilterDrawer);
       // this.filterDrawerInnerComponentRef.instance.data = .....;
     }

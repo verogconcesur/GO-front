@@ -1,5 +1,6 @@
 import { HttpClient } from '@angular/common/http';
 import { Inject, Injectable } from '@angular/core';
+import { ActivatedRouteSnapshot, Router, RouterStateSnapshot } from '@angular/router';
 import { ENV } from '@app/constants/global.constants';
 import { Env } from '@app/types/env';
 import { ConcenetError } from '@app/types/error';
@@ -16,12 +17,27 @@ import { catchError, map, reduce } from 'rxjs/operators';
 export class DepartmentService {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   private departmentsByFacilities: any = {};
+  private readonly GET_DEPARMENT_PATH = '/api/departments/';
   private readonly GET_DEPARMENTS_PATH = '/api/departments/findAllByFacilities/';
 
-  constructor(@Inject(ENV) private env: Env, private http: HttpClient) {}
+  constructor(@Inject(ENV) private env: Env, private http: HttpClient, private router: Router) {}
 
   public resetDepartmentsData(): void {
     this.departmentsByFacilities = {};
+  }
+
+  //Used to resolove :id route, if we have the data in the routerState we don't ask for it
+  public resolve(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): Observable<DepartmentDTO> {
+    const navigation = this.router.getCurrentNavigation();
+    const routerState = navigation.extras.state as { department: DepartmentDTO };
+    if (routerState?.department?.id) {
+      return of(routerState.department);
+    } else {
+      const id = route.params.idDepartment;
+      return this.http
+        .get<DepartmentDTO>(`${this.env.apiBaseUrl}${this.GET_DEPARMENT_PATH}${id}`)
+        .pipe(catchError((error) => throwError(error as ConcenetError)));
+    }
   }
 
   public getDepartmentOptionsListByFacilities(facilities: FacilityDTO[]): Observable<DepartmentsGroupedByFacility[]> {

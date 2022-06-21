@@ -45,6 +45,10 @@
       padding: 0 0;
       min-width: 36px;
       line-height: 36px;
+      &.square-28 {
+        min-width: 28px;
+        line-height: 28px;
+      }
     }
 
     //COLORS

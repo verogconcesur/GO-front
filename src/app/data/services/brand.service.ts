@@ -1,23 +1,51 @@
 import { HttpClient } from '@angular/common/http';
 import { Inject, Injectable } from '@angular/core';
+import { ActivatedRouteSnapshot, Router, RouterStateSnapshot } from '@angular/router';
 import { ENV } from '@app/constants/global.constants';
 import { Env } from '@app/types/env';
 import { ConcenetError } from '@app/types/error';
 import BrandDTO from '@data/models/brand-dto';
-import { Observable, throwError } from 'rxjs';
-import { catchError } from 'rxjs/operators';
+import { Observable, of, throwError } from 'rxjs';
+import { catchError, map } from 'rxjs/operators';
 
 @Injectable({
   providedIn: 'root'
 })
 export class BrandService {
   private readonly GET_BRANDS_PATH = '/api/brands';
+  private readonly GET_BRANDS_LIST_PATH = '/api/brands/list';
 
-  constructor(@Inject(ENV) private env: Env, private http: HttpClient) {}
+  constructor(@Inject(ENV) private env: Env, private http: HttpClient, private router: Router) {}
 
   public getAllBrands(): Observable<BrandDTO[]> {
     return this.http
       .get<BrandDTO[]>(`${this.env.apiBaseUrl}${this.GET_BRANDS_PATH}`)
+      .pipe(catchError((error) => throwError(error as ConcenetError)));
+  }
+
+  public getAllBrandsList(): Observable<BrandDTO[]> {
+    return this.http
+      .get<BrandDTO[]>(`${this.env.apiBaseUrl}${this.GET_BRANDS_LIST_PATH}`)
+      .pipe(catchError((error) => throwError(error as ConcenetError)));
+  }
+
+  //Used to resolove :id route, if we have the data in the routerState we don't ask for it
+  public resolve(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): Observable<BrandDTO> {
+    const navigation = this.router.getCurrentNavigation();
+    const routerState = navigation.extras.state as { brand: BrandDTO };
+    if (routerState?.brand?.id) {
+      return of(routerState.brand);
+    } else {
+      const id = route.params.idBrand;
+      return this.http
+        .get<BrandDTO>(`${this.env.apiBaseUrl}${this.GET_BRANDS_PATH}/${id}`)
+        .pipe(catchError((error) => throwError(error as ConcenetError)));
+    }
+  }
+
+  public addBrand(brand: BrandDTO): Observable<BrandDTO> {
+    return this.http
+      .post<BrandDTO>(`${this.env.apiBaseUrl}${this.GET_BRANDS_PATH}`, brand)
       .pipe(catchError((error) => throwError(error as ConcenetError)));
   }
 }

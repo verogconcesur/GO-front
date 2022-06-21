@@ -1,5 +1,7 @@
 @use '@angular/material' as mat;
 @import '@angular/material/theming';
+//Quill text editor
+@import '~quill/dist/quill.snow.css';
 
 // Mixin to include custom components themes styles for a given Angular Material theme
 @import 'app/app.component.scss-theme.scss';
@@ -13,6 +15,9 @@
 @import 'app/layout/administration-layout/administration-layout.component.scss-theme.scss';
 @import 'app/modules/administration/users/components/users-permissions/users-permissions.component.scss-theme.scss';
 @import 'app/modules/administration/users/components/create-edit-user/create-edit-user.component.scss-theme.scss';
+@import 'app/modules/administration/organization/components/organization-card/organization-card.component.scss-theme.scss';
+@import 'app/shared/components/administration-common-header-section/administration-common-header-section.component.scss-theme.scss';
+@import 'app/modules/administration/organization/components/create-edit-brand/create-edit-brand.component.scss-theme.scss';
 
 @mixin custom-components-theme($theme, $main-typography) {
   @include app-component-theme($theme);
@@ -26,6 +31,9 @@
   @include administration-layout-component-theme($theme, $main-typography);
   @include users-permissions-component-theme($theme, $main-typography);
   @include create-edit-user-component-theme($theme, $main-typography);
+  @include organization-card-component-theme($theme, $main-typography);
+  @include administration-common-header-section-component-theme($theme, $main-typography);
+  @include create-edit-brand-component-theme($theme, $main-typography);
 }
 
 // Load theme and custom components styles for current theme
@@ -36,6 +44,7 @@
 
 @import 'fonts.scss';
 @import 'globals.scss';
+@import 'quill-text-editor.scss';
 @import 'mat-input.scss';
 @import 'mat-button.scss';
 @import 'mat-extension-panel.scss';
@@ -45,9 +54,11 @@
 @import 'mat-paginator.scss';
 @import 'mat-checkbox.scss';
 @import 'mat-tooltip.scss';
+@import 'mat-menu.scss';
 @import 'global-message.scss';
 
 @include globals-theme($concenet-theme, $concenet-main-typography);
+@include quill-text-editor-theme($concenet-theme, $concenet-main-typography);
 @include custom-mat-input-theme($concenet-theme, $concenet-main-typography);
 @include custom-mat-button-theme($concenet-theme, $concenet-main-typography);
 @include custom-mat-extension-panel-theme($concenet-theme, $concenet-main-typography);
@@ -57,4 +68,5 @@
 @include custom-mat-paginator-theme($concenet-theme, $concenet-main-typography);
 @include custom-mat-checkbox-theme($concenet-theme, $concenet-main-typography);
 @include custom-mat-tooltip-theme($concenet-theme, $concenet-main-typography);
+@include custom-mat-menu-theme($concenet-theme, $concenet-main-typography);
 @include global-message-theme($concenet-theme, $concenet-main-typography);

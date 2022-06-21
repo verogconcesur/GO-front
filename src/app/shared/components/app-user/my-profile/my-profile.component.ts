@@ -1,8 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { marker } from '@biesbjerg/ngx-translate-extract-marker';
-import { ComponentToExtendForCustomDialog } from '@shared/modules/custom-dialog/models/component-for-custom-dialog';
+import { ComponentToExtendForCustomDialog, CustomDialogFooterConfigI } from '@jenga/custom-dialog';
 import { Observable, of, throwError } from 'rxjs';
-import { CustomDialogFooterConfigI } from '@shared/modules/custom-dialog/interfaces/custom-dialog-footer-config';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { ProgressSpinnerDialogService } from '@shared/services/progress-spinner-dialog.service';
 import UserDetailsDTO from '@data/models/user-details-dto';
