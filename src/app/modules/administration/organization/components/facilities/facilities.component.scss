@@ -1,0 +1,9 @@
+@import 'utils/core';
+
+.facilities {
+  margin-top: 20px;
+  &__no-facilities {
+    width: 100%;
+    text-align: center;
+  }
+}

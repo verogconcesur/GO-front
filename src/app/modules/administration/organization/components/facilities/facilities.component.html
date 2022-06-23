@@ -2,8 +2,23 @@
     [showSearchOfFilterInput]="false"
     [title]="labels.title"
     [buttonLabel]="labels.createActionLabel"
-    (buttonCreateAction)="buttonCreateAction()"
+    (buttonCreateAction)="buttonCreateEditAction()"
 ></app-administration-common-header-section>
-<div *ngFor="let facility of facilities$ | async">
-    <button mat-button (click)="goTo(facility)">{{ facility.name }}</button>
+<div class="facilities">
+    <div class="facilities__list" fxLayout="row wrap" fxLayoutAlign="flex-start center">
+        <app-organization-card
+            *ngFor="let item of facilities$ | async"
+            [item]="item"
+            [title]="item.name"
+            [subtitle]="getSubtitle(item) | async"
+            (edit)="editAction(item)"
+            (delete)="deleteAction(item)"
+            (duplicate)="duplicateAction(item)"
+            (showUsers)="showUsersAction(item)"
+            (click)="goTo(item)"
+        ></app-organization-card>
+    </div>
+    <div class="facilities__no-facilities" *ngIf="!hasFacilities">
+        {{ labels.noDataToShow | translate }}
+    </div>
 </div>
