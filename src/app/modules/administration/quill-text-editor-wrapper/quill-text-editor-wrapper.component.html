@@ -1,9 +1,0 @@
-<quill-editor
-    *ngIf="quillToolbarOptions"
-    [placeholder]="placeholder | translate"
-    [modules]="quillToolbarOptions"
-    (onEditorCreated)="editorCreated($event)"
-    (onContentChanged)="onContentChanged.emit($event)"
-    [id]="customClass"
->
-</quill-editor>

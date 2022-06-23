@@ -10,7 +10,7 @@ import { SpecialtiesComponent } from './components/specialties/specialties.compo
 import { OrganizationComponent } from './organization.component';
 import { OrganizationCardComponent } from './components/organization-card/organization-card.component';
 import { CreateEditBrandComponent } from './components/create-edit-brand/create-edit-brand.component';
-import { QuillTextEditorWrapperModule } from '../quill-text-editor-wrapper/quill-text-editor-wrapper.module';
+import { TextEditorWrapperModule } from '@modules/text-editor-wrapper/text-editor-wrapper.module';
 
 @NgModule({
   declarations: [
@@ -22,6 +22,6 @@ import { QuillTextEditorWrapperModule } from '../quill-text-editor-wrapper/quill
     OrganizationCardComponent,
     CreateEditBrandComponent
   ],
-  imports: [CommonModule, SharedModule, QuillTextEditorWrapperModule, OrganizationRoutingModule]
+  imports: [CommonModule, SharedModule, TextEditorWrapperModule, OrganizationRoutingModule]
 })
 export class OrganizationModule {}

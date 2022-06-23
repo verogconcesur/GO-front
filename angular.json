@@ -24,8 +24,14 @@
             "polyfills": "src/polyfills.ts",
             "tsConfig": "tsconfig.app.json",
             "assets": ["src/favicon.ico", "src/robots.txt", "src/assets"],
-            "styles": ["src/styles.scss"],
-            "scripts": [],
+            "styles": ["src/styles.scss", "node_modules/summernote/dist/summernote-lite.min.css"],
+            "scripts": [
+              "node_modules/jquery/dist/jquery.min.js",
+              "node_modules/summernote/dist/summernote-lite.min.js",
+              "node_modules/summernote/dist/lang/summernote-es-ES.js",
+              "src/assets/summernote-plugins/summernote-table-border-toggle.js",
+              "src/assets/summernote-plugins/summernote-table-headers.js"
+            ],
             "stylePreprocessorOptions": {
               "includePaths": ["src/styles"]
             },

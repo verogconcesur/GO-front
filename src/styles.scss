@@ -1,7 +1,5 @@
 @use '@angular/material' as mat;
 @import '@angular/material/theming';
-//Quill text editor
-@import '~quill/dist/quill.snow.css';
 
 // Mixin to include custom components themes styles for a given Angular Material theme
 @import 'app/app.component.scss-theme.scss';
@@ -44,7 +42,6 @@
 
 @import 'fonts.scss';
 @import 'globals.scss';
-@import 'quill-text-editor.scss';
 @import 'mat-input.scss';
 @import 'mat-button.scss';
 @import 'mat-extension-panel.scss';
@@ -58,7 +55,6 @@
 @import 'global-message.scss';
 
 @include globals-theme($concenet-theme, $concenet-main-typography);
-@include quill-text-editor-theme($concenet-theme, $concenet-main-typography);
 @include custom-mat-input-theme($concenet-theme, $concenet-main-typography);
 @include custom-mat-button-theme($concenet-theme, $concenet-main-typography);
 @include custom-mat-extension-panel-theme($concenet-theme, $concenet-main-typography);
