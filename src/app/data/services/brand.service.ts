@@ -14,6 +14,8 @@ import { catchError, map } from 'rxjs/operators';
 export class BrandService {
   private readonly GET_BRANDS_PATH = '/api/brands';
   private readonly GET_BRANDS_LIST_PATH = '/api/brands/list';
+  private readonly DUPLICATE_BRAND_PATH = '/api/brands/duplicate';
+  private readonly DELETE_BRAND_PATH = '/api/brands';
 
   constructor(@Inject(ENV) private env: Env, private http: HttpClient, private router: Router) {}
 
@@ -39,13 +41,25 @@ export class BrandService {
       const id = route.params.idBrand;
       return this.http
         .get<BrandDTO>(`${this.env.apiBaseUrl}${this.GET_BRANDS_PATH}/${id}`)
-        .pipe(catchError((error) => throwError(error as ConcenetError)));
+        .pipe(catchError((error) => throwError(error.error as ConcenetError)));
     }
   }
 
   public addBrand(brand: BrandDTO): Observable<BrandDTO> {
     return this.http
       .post<BrandDTO>(`${this.env.apiBaseUrl}${this.GET_BRANDS_PATH}`, brand)
-      .pipe(catchError((error) => throwError(error as ConcenetError)));
+      .pipe(catchError((error) => throwError(error.error as ConcenetError)));
+  }
+
+  public duplicateBrand(id: number): Observable<BrandDTO> {
+    return this.http
+      .get<BrandDTO>(`${this.env.apiBaseUrl}${this.DUPLICATE_BRAND_PATH}/${id}`)
+      .pipe(catchError((error) => throwError(error.error as ConcenetError)));
+  }
+
+  public deleteBrand(id: number): Observable<BrandDTO> {
+    return this.http
+      .delete<BrandDTO>(`${this.env.apiBaseUrl}${this.DELETE_BRAND_PATH}/${id}`)
+      .pipe(catchError((error) => throwError(error.error as ConcenetError)));
   }
 }

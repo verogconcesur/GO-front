@@ -2,13 +2,16 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { RouteConstants } from '@app/constants/route.constants';
+import { ConcenetError } from '@app/types/error';
 import { marker } from '@biesbjerg/ngx-translate-extract-marker';
 import BrandDTO from '@data/models/brand-dto';
 import { BrandService } from '@data/services/brand.service';
 import { CustomDialogService } from '@jenga/custom-dialog';
 import { TranslateService } from '@ngx-translate/core';
+import { ConfirmDialogService } from '@shared/services/confirm-dialog.service';
 import { GlobalMessageService } from '@shared/services/global-message.service';
 import { ProgressSpinnerDialogService } from '@shared/services/progress-spinner-dialog.service';
+import { NGXLogger } from 'ngx-logger';
 import { Observable } from 'rxjs';
 import { finalize, map, tap, take } from 'rxjs/operators';
 import { CreateEditBrandComponent, CreateEditBrandComponentModalEnum } from '../create-edit-brand/create-edit-brand.component';
@@ -33,7 +36,9 @@ export class BrandsComponent implements OnInit {
     private spinnerService: ProgressSpinnerDialogService,
     private translateService: TranslateService,
     private customDialogService: CustomDialogService,
-    private globalMessageService: GlobalMessageService
+    private globalMessageService: GlobalMessageService,
+    private logger: NGXLogger,
+    private confirmationDialog: ConfirmDialogService
   ) {}
 
   ngOnInit(): void {
@@ -82,15 +87,64 @@ export class BrandsComponent implements OnInit {
   }
 
   public deleteAction(item: BrandDTO): void {
-    console.log('delete', item);
+    this.confirmationDialog
+      .open({
+        title: this.translateService.instant(marker('common.warning')),
+        message: this.translateService.instant(marker('organizations.brands.deleteConfirmation'))
+      })
+      .pipe(take(1))
+      .subscribe((ok: boolean) => {
+        if (ok) {
+          const spinner = this.spinnerService.show();
+          this.brandsService
+            .deleteBrand(item.id)
+            .pipe(
+              take(1),
+              finalize(() => this.spinnerService.hide(spinner))
+            )
+            .subscribe({
+              next: (response) => {
+                this.getBrands();
+              },
+              error: (error: ConcenetError) => {
+                this.logger.error(error);
+                this.globalMessageService.showError({
+                  message: error.message,
+                  actionText: this.translateService.instant(marker('common.close'))
+                });
+              }
+            });
+        }
+      });
   }
 
   public duplicateAction(item: BrandDTO): void {
-    console.log('duplicate', item);
+    const spinner = this.spinnerService.show();
+    this.brandsService
+      .duplicateBrand(item.id)
+      .pipe(
+        take(1),
+        finalize(() => this.spinnerService.hide(spinner))
+      )
+      .subscribe({
+        next: (response) => {
+          if (response) {
+            this.getBrands();
+          }
+        },
+        error: (error: ConcenetError) => {
+          this.logger.error(error);
+
+          this.globalMessageService.showError({
+            message: error.message,
+            actionText: this.translateService.instant(marker('common.close'))
+          });
+        }
+      });
   }
 
   public showUsersAction(item: BrandDTO): void {
-    console.log('showUsers', item);
+    this.router.navigate([`${RouteConstants.ADMINISTRATION}/${RouteConstants.USERS}`], { state: { brands: [item] } });
   }
 
   public getLogo(item: BrandDTO): string | null {
