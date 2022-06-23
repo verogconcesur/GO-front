@@ -121,10 +121,6 @@
     "pageOf": "Página {num1} de {num2}",
     "prevPage": "Página previa"
   },
-  "quill": {
-    "htmlCodeInsertion": "Inserta el código html",
-    "invalidHtmlText": "Etiquetas html inválidas, el texto no puede contener: {tags}"
-  },
   "roles": {
     "create": "Crear rol",
     "deleteConfirmation": "¿Realmente quiere eliminar este rol?",
@@ -132,6 +128,15 @@
   },
   "sample": {
     "text": "{count, plural, =0{No hay} one{Hay una} other{Hay varias}} {count, plural, =0{nada} one{cosa} other{cosas}}"
+  },
+  "textEditor": {
+    "htmlCodeInsertion": "Inserta el código html",
+    "invalidHtmlText": "Etiquetas html inválidas, el texto no puede contener: {tags}",
+    "tooltips": {
+      "tableBorderToggle": "Ocultar/mostrar bordes",
+      "tableHeaders": "Cambiar encabezado de la tabla",
+      "varOptions": "Insertar variable"
+    }
   },
   "user": {
     "add": "Añadir usuario",

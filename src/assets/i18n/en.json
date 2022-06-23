@@ -121,10 +121,6 @@
     "pageOf": "Page {num1} of {num2}",
     "prevPage": "Previous page"
   },
-  "quill": {
-    "htmlCodeInsertion": "Insert html code",
-    "invalidHtmlText": "Invalid html tags, the text can't contain: {tags}"
-  },
   "roles": {
     "create": "Create Role",
     "deleteConfirmation": "Do you really want to delete this role?",
@@ -132,6 +128,15 @@
   },
   "sample": {
     "text": "There {count, plural, =0{is} one{is} other{are}} {count, plural, =0{} one{a} other{several}} {count, plural, =0{nothing} one{thing} other{things}}"
+  },
+  "textEditor": {
+    "htmlCodeInsertion": "Insert html code",
+    "invalidHtmlText": "Invalid html tags, the text can't contain: {tags}",
+    "tooltips": {
+      "tableBorderToggle": "Hide/show borders",
+      "tableHeaders": "Toggle table header",
+      "varOptions": "Insert variable"
+    }
   },
   "user": {
     "add": "Add user",

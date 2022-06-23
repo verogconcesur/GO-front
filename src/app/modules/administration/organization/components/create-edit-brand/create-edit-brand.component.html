@@ -32,24 +32,26 @@
                 <!-- Cabecera -->
                 <div class="brand-data__section__group">
                     <div class="brand-data__section__group__title">{{ labels.header | translate }}</div>
-                    <app-quill-text-editor-wrapper
+                    <app-text-editor-wrapper
+                        id="headerEditor"
+                        textEditorId="headerEditor"
                         [initialValue]="form?.header?.value"
-                        [quillEditorOptionsConfig]="quillEditorToolbarOptions"
+                        [textEditorOptionsConfig]="textEditorToolbarOptions"
                         [placeholder]="labels.insertText | translate"
-                        customClass="quillEditor-header"
-                        (onContentChanged)="quillEditorContentChanged('header', $event)"
-                    ></app-quill-text-editor-wrapper>
+                        (onContentChanged)="textEditorContentChanged('header', $event)"
+                    ></app-text-editor-wrapper>
                 </div>
                 <!-- Footer -->
                 <div class="brand-data__section__group">
                     <div class="brand-data__section__group__title">{{ labels.footer | translate }}</div>
-                    <app-quill-text-editor-wrapper
+                    <app-text-editor-wrapper
+                        id="footerEditor"
+                        textEditorId="footerEditor"
                         [initialValue]="form?.footer?.value"
-                        [quillEditorOptionsConfig]="quillEditorToolbarOptions"
+                        [textEditorOptionsConfig]="textEditorToolbarOptions"
                         [placeholder]="labels.insertText | translate"
-                        customClass="quillEditor-footer"
-                        (onContentChanged)="quillEditorContentChanged('footer', $event)"
-                    ></app-quill-text-editor-wrapper>
+                        (onContentChanged)="textEditorContentChanged('footer', $event)"
+                    ></app-text-editor-wrapper>
                 </div>
             </div>
 

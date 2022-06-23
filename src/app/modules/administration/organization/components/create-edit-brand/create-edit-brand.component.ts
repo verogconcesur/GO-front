@@ -1,3 +1,4 @@
+/* eslint-disable max-len */
 import { Component, ElementRef, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ConcenetError } from '@app/types/error';
@@ -5,14 +6,13 @@ import { marker } from '@biesbjerg/ngx-translate-extract-marker';
 import BrandDTO from '@data/models/brand-dto';
 import { BrandService } from '@data/services/brand.service';
 import { ComponentToExtendForCustomDialog, CustomDialogFooterConfigI } from '@jenga/custom-dialog';
+import { TextEditorWrapperConfigI } from '@modules/text-editor-wrapper/interfaces/text-editor-wrapper-config.interface';
 // eslint-disable-next-line max-len
-import { QuillTextEditorWrapperConfigI } from '@modules/administration/quill-text-editor-wrapper/interfaces/quill-text-editor-wrapper-config.interface';
 import { TranslateService } from '@ngx-translate/core';
 import { ConfirmDialogService } from '@shared/services/confirm-dialog.service';
 import { GlobalMessageService } from '@shared/services/global-message.service';
 import { ProgressSpinnerDialogService } from '@shared/services/progress-spinner-dialog.service';
 import { NGXLogger } from 'ngx-logger';
-import { Delta } from 'quill';
 import { Observable, of } from 'rxjs';
 import { catchError, finalize, map } from 'rxjs/operators';
 
@@ -46,9 +46,9 @@ export class CreateEditBrandComponent extends ComponentToExtendForCustomDialog i
   };
   public brandForm: FormGroup;
   public brandToEdit: BrandDTO = null;
-  public quillEditorToolbarOptions: QuillTextEditorWrapperConfigI = {
-    addHtmlInsertionOption: true
-    // addVariablesInsertionOption: true,
+  public textEditorToolbarOptions: TextEditorWrapperConfigI = {
+    addHtmlModificationOption: true
+    // addVariablesInsertionOption: false,
     // variablesOpt: ['una', 'dos']
   };
 
@@ -79,7 +79,6 @@ export class CreateEditBrandComponent extends ComponentToExtendForCustomDialog i
   ngOnDestroy(): void {}
 
   public confirmCloseCustomDialog(): Observable<boolean> {
-    console.log(this.brandForm);
     if (this.brandForm.touched && this.brandForm.dirty) {
       return this.confirmDialogService.open({
         title: this.translateService.instant(marker('common.warning')),
@@ -159,13 +158,13 @@ export class CreateEditBrandComponent extends ComponentToExtendForCustomDialog i
     console.log('delete brand', this.brandToEdit);
   };
 
-  public quillEditorContentChanged(type: 'header' | 'footer', obj: { html: string }) {
-    if (type === 'header' && obj.html !== this.form.header.value) {
-      this.brandForm.get('header').setValue(obj.html, { emitEvent: true });
+  public textEditorContentChanged(type: 'header' | 'footer', html: string) {
+    if (type === 'header' && html !== this.form.header.value) {
+      this.brandForm.get('header').setValue(html, { emitEvent: true });
       this.brandForm.get('header').markAsDirty();
       this.brandForm.get('header').markAsTouched();
-    } else if (type === 'footer' && obj.html !== this.form.footer.value) {
-      this.brandForm.get('footer').setValue(obj.html, { emitEvent: true });
+    } else if (type === 'footer' && html !== this.form.footer.value) {
+      this.brandForm.get('footer').setValue(html, { emitEvent: true });
       this.brandForm.get('footer').markAsDirty();
       this.brandForm.get('footer').markAsTouched();
     }

@@ -116,4 +116,17 @@
   .height-100 {
     height: 100%;
   }
+
+  .note-modal-backdrop {
+    display: none !important;
+  }
+  .note-editing-area {
+    background-color: white;
+  }
+  .note-editor .note-editing-area .note-editable table.table-no-bordered {
+    td,
+    th {
+      border: 0px;
+    }
+  }
 }

@@ -68,7 +68,6 @@ export class CreateEditRoleComponent extends ComponentToExtendForCustomDialog im
 
   public initalizeFormGroup(): void {
     this.roleForm = this.fb.group({
-      //TODO: DGDC maxlength 30??
       name: [this.roleToEdit ? this.roleToEdit.name : '', [Validators.required, Validators.maxLength(30)]],
       permissions: [this.roleToEdit ? this.roleToEdit.permissions : []]
     });
