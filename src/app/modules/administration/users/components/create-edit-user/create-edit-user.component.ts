@@ -163,9 +163,8 @@ export class CreateEditUserComponent extends ComponentToExtendForCustomDialog im
         return response;
       }),
       catchError((error) => {
-        const err = error.error as ConcenetError;
         this.globalMessageService.showError({
-          message: err.message,
+          message: error.message,
           actionText: this.translateService.instant(marker('common.close'))
         });
         return of(false);

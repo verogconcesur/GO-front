@@ -5,7 +5,7 @@ import { ConcenetError } from '@app/types/error';
 import { marker } from '@biesbjerg/ngx-translate-extract-marker';
 import BrandDTO from '@data/models/brand-dto';
 import { BrandService } from '@data/services/brand.service';
-import { ComponentToExtendForCustomDialog, CustomDialogFooterConfigI } from '@jenga/custom-dialog';
+import { ComponentToExtendForCustomDialog, CustomDialogFooterConfigI, CustomDialogService } from '@jenga/custom-dialog';
 import { TextEditorWrapperConfigI } from '@modules/text-editor-wrapper/interfaces/text-editor-wrapper-config.interface';
 // eslint-disable-next-line max-len
 import { TranslateService } from '@ngx-translate/core';
@@ -14,7 +14,7 @@ import { GlobalMessageService } from '@shared/services/global-message.service';
 import { ProgressSpinnerDialogService } from '@shared/services/progress-spinner-dialog.service';
 import { NGXLogger } from 'ngx-logger';
 import { Observable, of } from 'rxjs';
-import { catchError, finalize, map } from 'rxjs/operators';
+import { catchError, finalize, map, take } from 'rxjs/operators';
 
 export const enum CreateEditBrandComponentModalEnum {
   ID = 'create-edit-brand-dialog-id',
@@ -56,6 +56,7 @@ export class CreateEditBrandComponent extends ComponentToExtendForCustomDialog i
     private fb: FormBuilder,
     private spinnerService: ProgressSpinnerDialogService,
     private confirmDialogService: ConfirmDialogService,
+    private customDialogService: CustomDialogService,
     private translateService: TranslateService,
     private globalMessageService: GlobalMessageService,
     private logger: NGXLogger,
@@ -111,9 +112,8 @@ export class CreateEditBrandComponent extends ComponentToExtendForCustomDialog i
           return response;
         }),
         catchError((error) => {
-          const err = error.error as ConcenetError;
           this.globalMessageService.showError({
-            message: err.message,
+            message: error.message,
             actionText: this.translateService.instant(marker('common.close'))
           });
           return of(false);
@@ -155,7 +155,36 @@ export class CreateEditBrandComponent extends ComponentToExtendForCustomDialog i
   }
 
   public deleteBrand = (): void => {
-    console.log('delete brand', this.brandToEdit);
+    this.confirmDialogService
+      .open({
+        title: this.translateService.instant(marker('common.warning')),
+        message: this.translateService.instant(marker('organizations.brands.deleteConfirmation'))
+      })
+      .pipe(take(1))
+      .subscribe((ok: boolean) => {
+        if (ok) {
+          const spinner = this.spinnerService.show();
+          this.brandService
+            .deleteBrand(this.brandToEdit.id)
+            .pipe(
+              take(1),
+              finalize(() => this.spinnerService.hide(spinner))
+            )
+            .subscribe({
+              next: (response) => {
+                this.customDialogService.close(this.MODAL_ID, true);
+              },
+              error: (error: ConcenetError) => {
+                console.log(error);
+                this.logger.error(error);
+                this.globalMessageService.showError({
+                  message: error.message,
+                  actionText: this.translateService.instant(marker('common.close'))
+                });
+              }
+            });
+        }
+      });
   };
 
   public textEditorContentChanged(type: 'header' | 'footer', html: string) {
