@@ -1,6 +1,6 @@
 export default interface BrandDTO {
   id: number;
-  name: string;
+  name?: string;
   numFacilities?: number;
   logo?: string;
   logoContentType?: string;

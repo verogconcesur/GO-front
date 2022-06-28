@@ -28,7 +28,7 @@ export class FilterDrawerService implements OnDestroy {
   constructor(private confirmationDialog: ConfirmDialogService, private translateService: TranslateService) {}
 
   ngOnDestroy(): void {
-    this.filterValueSubject$.next(null);
+    this.filterValueSubject$.complete();
     this.filterDrawerComponent = null;
     this.filterDrawerInnerRef = null;
     this.componentToShowInFilterDrawer = null;
@@ -45,9 +45,9 @@ export class FilterDrawerService implements OnDestroy {
     this.printComponentInFilterDrawer();
   }
 
-  public setComponentToShowInsideFilterDrawer(component: ComponentType<FilterDrawerClassToExnted>): void {
+  public setComponentToShowInsideFilterDrawer(component: ComponentType<FilterDrawerClassToExnted>, defaultValue: any): void {
     this.componentToShowInFilterDrawer = component;
-    this.printComponentInFilterDrawer();
+    this.printComponentInFilterDrawer(defaultValue);
   }
 
   public toggleFilterDrawer(): void {
@@ -134,12 +134,16 @@ export class FilterDrawerService implements OnDestroy {
     return formTouchedOrDirty;
   }
 
-  private printComponentInFilterDrawer(): void {
+  private printComponentInFilterDrawer(defaultValue?: any): void {
     if (this.filterDrawerComponent && this.filterDrawerInnerRef && this.componentToShowInFilterDrawer) {
-      this.filterValueSubject$.next(null);
       this.filterDrawerInnerRef.clear();
       this.filterDrawerInnerComponentRef = this.filterDrawerInnerRef.createComponent(this.componentToShowInFilterDrawer);
-      // this.filterDrawerInnerComponentRef.instance.data = .....;
+      if (defaultValue) {
+        this.filterDrawerInnerComponentRef.instance.defaultValue = defaultValue;
+        this.filterValueSubject$.next(defaultValue);
+      } else {
+        this.filterValueSubject$.next(null);
+      }
     }
   }
 }
