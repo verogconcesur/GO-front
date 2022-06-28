@@ -144,7 +144,9 @@ export class BrandsComponent implements OnInit {
   }
 
   public showUsersAction(item: BrandDTO): void {
-    this.router.navigate([`${RouteConstants.ADMINISTRATION}/${RouteConstants.USERS}`], { state: { brands: [item] } });
+    this.router.navigate([`${RouteConstants.ADMINISTRATION}/${RouteConstants.USERS}`], {
+      state: { brands: [{ id: item.id }] }
+    });
   }
 
   public getLogo(item: BrandDTO): string | null {

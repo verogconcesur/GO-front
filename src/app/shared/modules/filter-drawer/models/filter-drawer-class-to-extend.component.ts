@@ -9,6 +9,8 @@ import { Observable } from 'rxjs';
  * @override isFilterFormValid function
  */
 export abstract class FilterDrawerClassToExnted {
+  public defaultValue: any;
+
   constructor() {}
 
   public abstract resetFilter(value?: any): Observable<any>;

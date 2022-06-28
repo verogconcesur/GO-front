@@ -91,13 +91,22 @@ export class DepartmentService {
           ...list,
           {
             facilityId: departmentsForFacility[0].facilities[0].id,
-            facilityName:
-              departmentsForFacility[0].facilities[0].name + ' (' + departmentsForFacility[0].facilities[0].brands[0].name + ')',
+            facilityName: this.getDepartmentsGroupedName(departmentsForFacility),
             departments: departmentsForFacility
           }
         ];
       }
     });
     return list;
+  }
+
+  private getDepartmentsGroupedName(departmentsForFacility: DepartmentDTO[]): string {
+    if (departmentsForFacility[0]?.facilities[0] && departmentsForFacility[0].facilities[0].brands[0]) {
+      return departmentsForFacility[0].facilities[0].name + ' (' + departmentsForFacility[0].facilities[0].brands[0].name + ')';
+    } else if (departmentsForFacility[0]?.facilities[0]?.name) {
+      return departmentsForFacility[0].facilities[0].name;
+    } else {
+      return '';
+    }
   }
 }

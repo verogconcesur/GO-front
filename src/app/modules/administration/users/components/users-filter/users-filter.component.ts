@@ -17,9 +17,10 @@ import SpecialtiesGroupedByDepartment from '@data/interfaces/specialties-grouped
 import DepartmentDTO from '@data/models/department-dto';
 import FacilityDTO from '@data/models/facility-dto';
 import SpecialtyDTO from '@data/models/specialty-dto';
-import { take } from 'rxjs/operators';
+import { take, tap } from 'rxjs/operators';
 import UserFilterDTO from '@data/models/user-filter-dto';
 import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
+import { FilterDrawerService } from '@shared/modules/filter-drawer/services/filter-drawer.service';
 
 @UntilDestroy()
 @Component({
@@ -49,7 +50,8 @@ export class UsersFilterComponent extends FilterDrawerClassToExnted implements O
     private brandService: BrandService,
     private facilitySevice: FacilityService,
     private departmentService: DepartmentService,
-    private specialtyService: SpecialtyService
+    private specialtyService: SpecialtyService,
+    private filterDrawerService: FilterDrawerService
   ) {
     super();
   }
@@ -63,7 +65,13 @@ export class UsersFilterComponent extends FilterDrawerClassToExnted implements O
   public resetFilter(value?: UserFilterDTO): Observable<UserFilterDTO> {
     this.filterForm.reset();
     if (value) {
-      this.filterForm.setValue(value);
+      this.filterForm.setValue({
+        roles: value.roles,
+        brands: value.brands,
+        facilities: value.facilities,
+        departments: value.departments,
+        specialties: value.specialties
+      });
     } else {
       this.filterForm.get('roles').setValue([]);
       this.filterForm.get('brands').setValue([]);
@@ -90,7 +98,7 @@ export class UsersFilterComponent extends FilterDrawerClassToExnted implements O
   get form() {
     return this.filterForm.controls;
   }
-  public getFacilitiesOptions(): void {
+  public getFacilitiesOptions(init?: boolean): void {
     this.facilitySevice
       .getFacilitiesOptionsListByBrands(this.filterForm.get('brands').value)
       .pipe(take(1))
@@ -104,8 +112,24 @@ export class UsersFilterComponent extends FilterDrawerClassToExnted implements O
                 (fg: FacilitiesGroupedByBrand) => fg.facilities.filter((f: FacilityDTO) => f.id === facility.id).length > 0
               ).length > 0
           );
+          if (init) {
+            //Usado cuando los filtros se setean empleando la navegación que sólo le pasa el id del elemento
+            selected = selected.map((facility: FacilityDTO) => {
+              let itemToReturn = facility;
+              this.facilitiesList.find((fg: FacilitiesGroupedByBrand) =>
+                fg.facilities.find((f: FacilityDTO) => {
+                  if (f.id === facility.id) {
+                    itemToReturn = f;
+                    return true;
+                  }
+                  return false;
+                })
+              );
+              return itemToReturn;
+            });
+          }
           this.filterForm.get('facilities').setValue(selected);
-          this.getDepartmentsOptions();
+          this.getDepartmentsOptions(init);
         },
         error: (error) => {
           this.logger.error(error);
@@ -113,7 +137,7 @@ export class UsersFilterComponent extends FilterDrawerClassToExnted implements O
       });
   }
 
-  public getDepartmentsOptions(): void {
+  public getDepartmentsOptions(init?: boolean): void {
     this.departmentService
       .getDepartmentOptionsListByFacilities(this.filterForm.get('facilities').value)
       .pipe(take(1))
@@ -129,7 +153,7 @@ export class UsersFilterComponent extends FilterDrawerClassToExnted implements O
               ).length > 0
           );
           this.filterForm.get('departments').setValue(selected);
-          this.getSpecialtiesOptions();
+          this.getSpecialtiesOptions(init);
         },
         error: (error) => {
           this.logger.error(error);
@@ -137,7 +161,7 @@ export class UsersFilterComponent extends FilterDrawerClassToExnted implements O
       });
   }
 
-  public getSpecialtiesOptions(): void {
+  public getSpecialtiesOptions(init?: boolean): void {
     this.specialtyService
       .getSpecialtyOptionsListByDepartments(this.filterForm.get('departments').value)
       .pipe(take(1))
@@ -153,6 +177,10 @@ export class UsersFilterComponent extends FilterDrawerClassToExnted implements O
               ).length > 0
           );
           this.filterForm.get('specialties').setValue(selected);
+          if (init) {
+            this.defaultValue = this.filterForm.value;
+            this.filterDrawerService.filterValueSubject$.next(this.defaultValue);
+          }
         },
         error: (error) => {
           this.logger.error(error);
@@ -162,7 +190,21 @@ export class UsersFilterComponent extends FilterDrawerClassToExnted implements O
 
   private getListOptions(): void {
     this.rolesAsyncList = this.roleService.getAllRoles();
-    this.brandsAsyncList = this.brandService.getAllBrands();
+    this.brandsAsyncList = this.brandService.getAllBrands().pipe(
+      tap((brands: BrandDTO[]) => {
+        if (this.filterForm.get('brands').value.length) {
+          //Se había inicializado el formulario con datos
+          this.filterForm
+            .get('brands')
+            .setValue(
+              this.filterForm
+                .get('brands')
+                .value.map((brandDefault: BrandDTO) => brands.find((brand) => brand.id === brandDefault.id))
+            );
+          this.getFacilitiesOptions(true);
+        }
+      })
+    );
     this.facilitiesList = [];
     this.departmentsList = [];
     this.specialtiesList = [];
@@ -176,9 +218,15 @@ export class UsersFilterComponent extends FilterDrawerClassToExnted implements O
       departments: [[]],
       specialties: [[]]
     });
+    ['brands', 'facilities', 'departments', 'specialties'].forEach((k) => {
+      if (this.defaultValue && this.defaultValue[k] && this.defaultValue[k].length) {
+        this.filterForm.get(k).setValue(this.defaultValue[k]);
+      }
+    });
   }
 
   private initializeListeners(): void {
+    //If a role is created we must create this listener because the filter must reload the options
     this.roleService.rolesChange$.pipe(untilDestroyed(this)).subscribe({
       next: (change) => {
         this.getListOptions();
