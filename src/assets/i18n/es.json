@@ -1,194 +1,204 @@
 {
-  "administration": {
-    "exit": "Salir de configuración",
-    "organization": "Organización",
-    "records": "Fichas",
-    "templates": "Plantillas",
-    "title": "Concenet",
-    "users": "Usuarios",
-    "viewProfile": "Ver perfil",
-    "workflows": "Workflows"
-  },
-  "app": {
-    "menu": {
-      "administration": "Administración",
-      "advanceSearch": "Búsqueda avanzada",
-      "clients": "Clientes",
-      "vehicles": "Vehículos",
-      "workflow": "Workflow"
-    },
-    "title": "Concenet"
-  },
-  "common": {
-    "accessDenied": "Acceso denegado. No tiene privilegios suficientes.",
-    "actions": "Acciones",
-    "apply": "Aplicar",
-    "cancel": "Cancelar",
-    "close": "Cerrar",
-    "delete": "Eliminar",
-    "duplicate": "Duplicar",
-    "edit": "Editar",
-    "emails": "Emails",
-    "filter": "Filtro",
-    "filterAction": "Filtrar",
-    "footer": "Pie",
-    "header": "Cabecera",
-    "insert": "Insertar",
-    "insertTextHere": "Introduzca el texto aquí.",
-    "logo": "Logo",
-    "reset": "Restaurar",
-    "save": "Guardar",
-    "search": "Buscar",
-    "select": "Seleccionar",
-    "selectImageFile": "Selecciona una imagen",
-    "successOperation": "Operación realizada con éxito.",
-    "unsavedChangesExit": "Hay cambios en el formulario sin guardar, ¿desea salir igualmente?",
-    "unselectAll": "Deseleccionar todos",
-    "users": "Usuarios",
-    "warning": "Advertencia"
-  },
-  "confirmdialog": {
-    "no": "No",
-    "yes": "Sí"
-  },
-  "errors": {
-    "emailPattern": "El texto introducido debe ser un email.",
-    "maxLengthError": "La longitud máxima permitida es de {length} caracteres.",
-    "noDataToShow": "No hay datos para mostrar",
-    "required": "Este campo es obligatorio."
-  },
-  "login": {
-    "description": "Por favor, introduzca sus credenciales",
-    "email": "Nombre de usuario",
-    "forgotPassword": "¿Has olvidado tu contraseña?",
-    "password": "Contraseña",
-    "passwordRequired": "La contraseña es obligatoria",
-    "recoverpassword": {
-      "description": "Introduce tu nombre de usuario y te enviaremos las instrucciones para restablecer tu contraseña.",
-      "email": "Reestablecimiento de contraseña realizado correctamente, revise su bandeja de entrada",
-      "restore": "Restablecer contraseña",
-      "title": "¿Has olvidado tu contraseña?",
-      "userName": "Nombre de usuario",
-      "userNameRequired": "El nombre de usuario es obligatorio"
-    },
-    "restorePassword": {
-      "changedSuccesfully": "La contraseña se ha modificado correctamente",
-      "description": "Establece una nueva contraseña y recupera acceso a tu cuenta.",
-      "password1": "Nueva contraseña",
-      "password2": "Repite nueva contraseña",
-      "passwordMatch": "La contraseña debe coincidir",
-      "passwordPattern": "La contraseña debe contener al menos un número, una letra mayúscula, un símbolo y su longitud debe ser entre 8 y 50 caracteres.",
-      "passwordRequired": "La contraseña es obligatoria",
-      "save": "Guardar nueva contraseña",
-      "title": "Nueva contraseña",
-      "userName": "Usuario",
-      "userNameRequired": "El nombre de usuario es obligatorio"
-    },
-    "signIn": "Iniciar sesión",
-    "title": "Inicia sesión",
-    "userNameRequired": "El nombre de usuario es obligatorio"
-  },
-  "logout": {
-    "logout": "Cerrar sesión"
-  },
-  "organizations": {
-    "brands": {
-      "create": "Crear marca",
-      "delete": "Eliminar marca",
-      "edit": "Editar marca",
-      "name": "Nombre de marca",
-      "title": "Marcas",
-      "deleteConfirmation": "¿Realmente quiere eliminar esta marca?"
-    },
-    "departments": {
-      "create": "Crear departamento",
-      "numDepartments": "{numItems} {numItems, plural, =0{departamentos} one{departamento} other{departamentos}}",
-      "title": "Departamentos"
-    },
-    "facilities": {
-      "create": "Crear instalación",
-      "numFacilities": "{numItems} {numItems, plural, =0{instalaciones} one{instalación} other{instalaciones}}",
-      "title": "Instalaciones"
-    },
-    "specialties": {
-      "create": "Crear especialidad",
-      "title": "Especialidades"
-    }
-  },
-  "pagination": {
-    "firstPage": "Primera página",
-    "itemsPerPage": "Elementos por página",
-    "lastPage": "Última página",
-    "nextPage": "Siguiente página",
-    "pageOf": "Página {num1} de {num2}",
-    "prevPage": "Página previa"
-  },
-  "roles": {
-    "create": "Crear rol",
-    "deleteConfirmation": "¿Realmente quiere eliminar este rol?",
-    "title": "Roles y permisos"
-  },
-  "sample": {
-    "text": "{count, plural, =0{No hay} one{Hay una} other{Hay varias}} {count, plural, =0{nada} one{cosa} other{cosas}}"
-  },
-  "textEditor": {
-    "htmlCodeInsertion": "Inserta el código html",
-    "invalidHtmlText": "Etiquetas html inválidas, el texto no puede contener: {tags}",
-    "tooltips": {
-      "tableBorderToggle": "Ocultar/mostrar bordes",
-      "tableHeaders": "Cambiar encabezado de la tabla",
-      "varOptions": "Insertar variable"
-    }
-  },
-  "user": {
-    "add": "Añadir usuario",
-    "delete": "Eliminar usuario",
-    "deleteConfirmation": "¿Realmente quiere eliminar este usuario?",
-    "edit": "Editar usuario",
-    "myProfile": {
-      "edit": "Editar perfil",
-      "title": "Mí perfil"
-    },
-    "permissionsInheritFromRole": "Heredados de <b>{role}</b>*",
-    "selectRoleFirst": "Primero selecciona un rol",
-    "userPermissions": "Permisos de usuario"
-  },
-  "userProfile": {
-    "brand": "Marca",
-    "changePassword": "Cambiar contraseña",
-    "data": "Datos generales",
-    "department": "Departamento",
-    "edit": "Editar perfil",
-    "email": "Email",
-    "facility": "Instalaciones",
-    "firstName": "Apellido 1",
-    "firstNameRequired": "El primer apellido es obligatorio",
-    "lastName": "Apellidos",
-    "lastName2": "Apellido 2",
-    "name": "Nombre",
-    "nameRequired": "El nombre es obligatorio",
-    "nick": "Nick",
-    "organization": "Organización",
-    "role": "Rol",
-    "sign": "Firma",
-    "specialty": "Especialidad",
-    "title": "Tu perfil",
-    "userName": "Nombre de usuario"
-  },
-  "users": {
-    "create": "Crear usuario",
-    "fullName": "Nombre y apellidos",
-    "permissions": "Permisos",
-    "permissionsGroup": "Grupo permisos",
-    "roles": {
-      "create": "Crear rol",
-      "delete": "Eliminar rol",
-      "deleteConfirmation": "¿Está seguro que desea eliminar este rol?",
-      "edit": "Editar rol",
-      "roleName": "Nombre del rol",
-      "roleNameRequired": "El nombre del rol es un elemento requerido",
-      "selectAll": "Seleccionar todos"
-    },
-    "title": "Usuarios"
-  }
+	"administration": {
+		"exit": "Salir de configuración",
+		"organization": "Organización",
+		"records": "Fichas",
+		"templates": "Plantillas",
+		"title": "Concenet",
+		"users": "Usuarios",
+		"viewProfile": "Ver perfil",
+		"workflows": "Workflows"
+	},
+	"app": {
+		"menu": {
+			"administration": "Administración",
+			"advanceSearch": "Búsqueda avanzada",
+			"clients": "Clientes",
+			"vehicles": "Vehículos",
+			"workflow": "Workflow"
+		},
+		"title": "Concenet"
+	},
+	"common": {
+		"accessDenied": "Acceso denegado. No tiene privilegios suficientes.",
+		"actions": "Acciones",
+		"address": "Dirección",
+		"apply": "Aplicar",
+		"brands": "Marcas",
+		"cancel": "Cancelar",
+		"cif": "CIF",
+		"close": "Cerrar",
+		"country": "País",
+		"delete": "Eliminar",
+		"duplicate": "Duplicar",
+		"edit": "Editar",
+		"emails": "Emails",
+		"filter": "Filtro",
+		"filterAction": "Filtrar",
+		"footer": "Pie",
+		"header": "Cabecera",
+		"insert": "Insertar",
+		"insertTextHere": "Introduzca el texto aquí.",
+		"logo": "Logo",
+		"postalCode": "Código Postal",
+		"province": "Provincia",
+		"reset": "Restaurar",
+		"save": "Guardar",
+		"search": "Buscar",
+		"select": "Seleccionar",
+		"selectImageFile": "Selecciona una imagen",
+		"successOperation": "Operación realizada con éxito.",
+		"town": "Ciudad",
+		"unsavedChangesExit": "Hay cambios en el formulario sin guardar, ¿desea salir igualmente?",
+		"unselectAll": "Deseleccionar todos",
+		"users": "Usuarios",
+		"warning": "Advertencia"
+	},
+	"confirmdialog": {
+		"no": "No",
+		"yes": "Sí"
+	},
+	"errors": {
+		"emailPattern": "El texto introducido debe ser un email.",
+		"maxLengthError": "La longitud máxima permitida es de {length} caracteres.",
+		"noDataToShow": "No hay datos para mostrar",
+		"required": "Este campo es obligatorio."
+	},
+	"login": {
+		"description": "Por favor, introduzca sus credenciales",
+		"email": "Nombre de usuario",
+		"forgotPassword": "¿Has olvidado tu contraseña?",
+		"password": "Contraseña",
+		"passwordRequired": "La contraseña es obligatoria",
+		"recoverpassword": {
+			"description": "Introduce tu nombre de usuario y te enviaremos las instrucciones para restablecer tu contraseña.",
+			"email": "Reestablecimiento de contraseña realizado correctamente, revise su bandeja de entrada",
+			"restore": "Restablecer contraseña",
+			"title": "¿Has olvidado tu contraseña?",
+			"userName": "Nombre de usuario",
+			"userNameRequired": "El nombre de usuario es obligatorio"
+		},
+		"restorePassword": {
+			"changedSuccesfully": "La contraseña se ha modificado correctamente",
+			"description": "Establece una nueva contraseña y recupera acceso a tu cuenta.",
+			"password1": "Nueva contraseña",
+			"password2": "Repite nueva contraseña",
+			"passwordMatch": "La contraseña debe coincidir",
+			"passwordPattern": "La contraseña debe contener al menos un número, una letra mayúscula, un símbolo y su longitud debe ser entre 8 y 50 caracteres.",
+			"passwordRequired": "La contraseña es obligatoria",
+			"save": "Guardar nueva contraseña",
+			"title": "Nueva contraseña",
+			"userName": "Usuario",
+			"userNameRequired": "El nombre de usuario es obligatorio"
+		},
+		"signIn": "Iniciar sesión",
+		"title": "Inicia sesión",
+		"userNameRequired": "El nombre de usuario es obligatorio"
+	},
+	"logout": {
+		"logout": "Cerrar sesión"
+	},
+	"organizations": {
+		"brands": {
+			"create": "Crear marca",
+			"delete": "Eliminar marca",
+			"deleteConfirmation": "¿Realmente quiere eliminar esta marca?",
+			"edit": "Editar marca",
+			"name": "Nombre de marca",
+			"title": "Marcas"
+		},
+		"departments": {
+			"create": "Crear departamento",
+			"numDepartments": "{numItems} {numItems, plural, =0{departamentos} one{departamento} other{departamentos}}",
+			"title": "Departamentos"
+		},
+		"facilities": {
+			"create": "Crear instalación",
+			"delete": "Eliminar instalación",
+			"deleteConfirmation": "¿Realmente quiere eliminar esta instalación?",
+			"edit": "Editar instalación",
+			"numFacilities": "{numItems} {numItems, plural, =0{instalaciones} one{instalación} other{instalaciones}}",
+			"title": "Instalaciones"
+		},
+		"specialties": {
+			"create": "Crear especialidad",
+			"title": "Especialidades"
+		}
+	},
+	"pagination": {
+		"firstPage": "Primera página",
+		"itemsPerPage": "Elementos por página",
+		"lastPage": "Última página",
+		"nextPage": "Siguiente página",
+		"pageOf": "Página {num1} de {num2}",
+		"prevPage": "Página previa"
+	},
+	"roles": {
+		"create": "Crear rol",
+		"deleteConfirmation": "¿Realmente quiere eliminar este rol?",
+		"title": "Roles y permisos"
+	},
+	"sample": {
+		"text": "{count, plural, =0{No hay} one{Hay una} other{Hay varias}} {count, plural, =0{nada} one{cosa} other{cosas}}"
+	},
+	"textEditor": {
+		"htmlCodeInsertion": "Inserta el código html",
+		"invalidHtmlText": "Etiquetas html inválidas, el texto no puede contener: {tags}",
+		"tooltips": {
+			"tableBorderToggle": "Ocultar/mostrar bordes",
+			"tableHeaders": "Cambiar encabezado de la tabla",
+			"varOptions": "Insertar variable"
+		}
+	},
+	"user": {
+		"add": "Añadir usuario",
+		"delete": "Eliminar usuario",
+		"deleteConfirmation": "¿Realmente quiere eliminar este usuario?",
+		"edit": "Editar usuario",
+		"myProfile": {
+			"edit": "Editar perfil",
+			"title": "Mí perfil"
+		},
+		"permissionsInheritFromRole": "Heredados de <b>{role}</b>*",
+		"selectRoleFirst": "Primero selecciona un rol",
+		"userPermissions": "Permisos de usuario"
+	},
+	"userProfile": {
+		"brand": "Marca",
+		"changePassword": "Cambiar contraseña",
+		"data": "Datos generales",
+		"department": "Departamento",
+		"edit": "Editar perfil",
+		"email": "Email",
+		"facility": "Instalaciones",
+		"firstName": "Apellido 1",
+		"firstNameRequired": "El primer apellido es obligatorio",
+		"lastName": "Apellidos",
+		"lastName2": "Apellido 2",
+		"name": "Nombre",
+		"nameRequired": "El nombre es obligatorio",
+		"nick": "Nick",
+		"organization": "Organización",
+		"role": "Rol",
+		"sign": "Firma",
+		"specialty": "Especialidad",
+		"title": "Tu perfil",
+		"userName": "Nombre de usuario"
+	},
+	"users": {
+		"create": "Crear usuario",
+		"fullName": "Nombre y apellidos",
+		"permissions": "Permisos",
+		"permissionsGroup": "Grupo permisos",
+		"roles": {
+			"create": "Crear rol",
+			"delete": "Eliminar rol",
+			"deleteConfirmation": "¿Está seguro que desea eliminar este rol?",
+			"edit": "Editar rol",
+			"roleName": "Nombre del rol",
+			"roleNameRequired": "El nombre del rol es un elemento requerido",
+			"selectAll": "Seleccionar todos"
+		},
+		"title": "Usuarios"
+	}
 }

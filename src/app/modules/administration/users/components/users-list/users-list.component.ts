@@ -256,7 +256,7 @@ export class UsersListComponent implements OnInit {
     search: filterValue.search,
     brands: filterValue.brands.map((brand: BrandDTO) => brand.id),
     departments: filterValue.departments.map((dep: DepartmentDTO) => dep.id),
-    facilities: filterValue.facilities.map((fac: BrandDTO) => fac.id),
+    facilities: filterValue.facilities.map((fac: FacilityDTO) => fac.id),
     roles: filterValue.roles.map((role: BrandDTO) => role.id),
     specialties: filterValue.specialties.map((spec: BrandDTO) => spec.id)
   });

@@ -1,0 +1,174 @@
+<div class="create-edit-facility-content" fxLayout="column" fxLayoutAlign="center center">
+    <div *ngIf="!isModalModeActive()">
+        <div class="create-edit-facility-content__title mat-display-2">{{ labels.title | translate }}</div>
+    </div>
+    <div class="create-edit-facility-content__form">
+        <form [formGroup]="facilityForm" *ngIf="facilityForm" class="smaller-mat-form-fields">
+            <!-- General Data -->
+            <div class="facility-data__section">
+                <div class="facility-data__section__title first-child">
+                    {{ labels.data | translate }}
+                </div>
+                <div class="facility-data__section__group grid-group">
+                    <!-- Name -->
+                    <mat-form-field appearance="outline" floatLabel="always">
+                        <mat-label>{{ labels.name | translate }}</mat-label>
+                        <input matInput formControlName="name" />
+                        <mat-error
+                            class="facility-data__error"
+                            *ngIf="facilityForm.controls.name.invalid && facilityForm.controls.name.touched"
+                        >
+                            {{ labels.nameRequired | translate }}
+                        </mat-error>
+                    </mat-form-field>
+
+                    <!-- Brands -->
+                    <mat-form-field appearance="outline" floatLabel="always">
+                        <mat-label>{{ labels.brands | translate }}</mat-label>
+                        <mat-select formControlName="brands" multiple>
+                            <button
+                                mat-button
+                                class="mat-button-w-100-left"
+                                *ngIf="!hasAllSelected(form.brands, brandsList)"
+                                (click)="selectAll(form.brands, brandsList)"
+                            >
+                                {{ labels.selectAll | translate }}
+                            </button>
+                            <button
+                                mat-button
+                                class="mat-button-w-100-left"
+                                *ngIf="hasAllSelected(form.brands, brandsList)"
+                                (click)="unselectAll(form.brands)"
+                            >
+                                {{ labels.unselectAll | translate }}
+                            </button>
+                            <mat-option *ngFor="let brand of brandsAsyncList | async" [value]="brand">{{
+                                brand.name
+                            }}</mat-option>
+                        </mat-select>
+                        <mat-error *ngIf="form?.brands.invalid && form?.brands.touched">
+                            <span *ngIf="form.brands.errors.required">{{ labels.required | translate }}</span>
+                        </mat-error>
+                    </mat-form-field>
+
+                    <!-- Address -->
+                    <mat-form-field appearance="outline" floatLabel="always">
+                        <mat-label>{{ labels.address | translate }}</mat-label>
+                        <input matInput formControlName="address" />
+                        <mat-error
+                            class="facility-data__error"
+                            *ngIf="facilityForm.controls.address.invalid && facilityForm.controls.address.touched"
+                        >
+                            {{ labels.required | translate }}
+                        </mat-error>
+                    </mat-form-field>
+
+                    <!-- Country -->
+                    <mat-form-field appearance="outline" floatLabel="always">
+                        <mat-label>{{ labels.country | translate }}</mat-label>
+                        <mat-select formControlName="country">
+                            <mat-option *ngFor="let country of countryAsyncList | async" [value]="country">{{
+                                country.name
+                            }}</mat-option>
+                        </mat-select>
+                        <mat-error *ngIf="form?.country.invalid && form?.country.touched">
+                            <span *ngIf="form.country.errors.required">{{ labels.required | translate }}</span>
+                        </mat-error>
+                    </mat-form-field>
+
+                    <!-- Province -->
+                    <mat-form-field appearance="outline" floatLabel="always">
+                        <mat-label>{{ labels.province | translate }}</mat-label>
+                        <mat-select formControlName="province">
+                            <mat-option *ngFor="let province of provinceList" [value]="province">{{ province.name }}</mat-option>
+                        </mat-select>
+                        <mat-error *ngIf="form?.province.invalid && form?.province.touched">
+                            <span *ngIf="form.province.errors.required">{{ labels.required | translate }}</span>
+                        </mat-error>
+                    </mat-form-field>
+
+                    <!-- Town -->
+                    <mat-form-field appearance="outline" floatLabel="always">
+                        <mat-label>{{ labels.town | translate }}</mat-label>
+                        <mat-select formControlName="town">
+                            <mat-option *ngFor="let town of townList" [value]="town">{{ town.name }}</mat-option>
+                        </mat-select>
+                        <mat-error *ngIf="form?.town.invalid && form?.town.touched">
+                            <span *ngIf="form.town.errors.required">{{ labels.required | translate }}</span>
+                        </mat-error>
+                    </mat-form-field>
+
+                    <!-- PostalCode -->
+                    <mat-form-field appearance="outline" floatLabel="always">
+                        <mat-label>{{ labels.postalCode | translate }}</mat-label>
+                        <input matInput formControlName="postalCode" />
+                        <mat-error
+                            class="facility-data__error"
+                            *ngIf="facilityForm.controls.postalCode.invalid && facilityForm.controls.postalCode.touched"
+                        >
+                            {{ labels.required | translate }}
+                        </mat-error>
+                    </mat-form-field>
+
+                    <!-- Cif -->
+                    <mat-form-field appearance="outline" floatLabel="always">
+                        <mat-label>{{ labels.cif | translate }}</mat-label>
+                        <input matInput formControlName="cif" />
+                        <mat-error
+                            class="facility-data__error"
+                            *ngIf="facilityForm.controls.cif.invalid && facilityForm.controls.cif.touched"
+                        >
+                            {{ labels.required | translate }}
+                        </mat-error>
+                    </mat-form-field>
+
+                    <!-- Email -->
+                    <mat-form-field appearance="outline" floatLabel="always">
+                        <mat-label>{{ labels.email | translate }}</mat-label>
+                        <input matInput formControlName="email" />
+                        <mat-error
+                            class="facility-data__error"
+                            *ngIf="facilityForm.controls.email.invalid && facilityForm.controls.email.touched"
+                        >
+                            {{ labels.required | translate }}
+                        </mat-error>
+                    </mat-form-field>
+                </div>
+            </div>
+
+            <!-- Emails -->
+            <div class="facility-data__section">
+                <div class="facility-data__section__title">
+                    {{ labels.emails | translate }}
+                </div>
+                <!-- Cabecera -->
+                <div class="facility-data__section__group">
+                    <div class="facility-data__section__group__title">{{ labels.header | translate }}</div>
+                    <app-text-editor-wrapper
+                        id="headerEditor"
+                        textEditorId="headerEditor"
+                        [initialValue]="form?.header?.value"
+                        [textEditorOptionsConfig]="textEditorToolbarOptions"
+                        [placeholder]="labels.insertText | translate"
+                        (onContentChanged)="textEditorContentChanged('header', $event)"
+                    ></app-text-editor-wrapper>
+                </div>
+                <!-- Footer -->
+                <div class="facility-data__section__group">
+                    <div class="facility-data__section__group__title">{{ labels.footer | translate }}</div>
+                    <app-text-editor-wrapper
+                        id="footerEditor"
+                        textEditorId="footerEditor"
+                        [initialValue]="form?.footer?.value"
+                        [textEditorOptionsConfig]="textEditorToolbarOptions"
+                        [placeholder]="labels.insertText | translate"
+                        (onContentChanged)="textEditorContentChanged('footer', $event)"
+                    ></app-text-editor-wrapper>
+                </div>
+            </div>
+        </form>
+    </div>
+    <div class="create-edit-facility-content__buttons">
+        <!-- TODO: buttons used when the component is not opened with customDialogService -->
+    </div>
+</div>

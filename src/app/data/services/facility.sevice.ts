@@ -18,6 +18,8 @@ export class FacilityService {
   private facilitiesByBrand: any = {};
   private readonly GET_FACILITY = '/api/facilities/';
   private readonly GET_FACILITIES_PATH = '/api/facilities/findAllByBrands/';
+  private readonly DELETE_FACILITY_PATH = '/api/facilities';
+  private readonly DUPLICATE_FACILITY_PATH = '/api/facilities/duplicate';
 
   constructor(@Inject(ENV) private env: Env, private http: HttpClient, private router: Router) {}
 
@@ -76,6 +78,24 @@ export class FacilityService {
     } else {
       return of([]);
     }
+  }
+
+  public addFacility(facility: FacilityDTO): Observable<FacilityDTO> {
+    return this.http
+      .post<FacilityDTO>(`${this.env.apiBaseUrl}${this.GET_FACILITY}`, facility)
+      .pipe(catchError((error) => throwError(error.error as ConcenetError)));
+  }
+
+  public deleteFacility(id: number): Observable<FacilityDTO> {
+    return this.http
+      .delete<FacilityDTO>(`${this.env.apiBaseUrl}${this.DELETE_FACILITY_PATH}/${id}`)
+      .pipe(catchError((error) => throwError(error.error as ConcenetError)));
+  }
+
+  public duplicateFacility(id: number): Observable<FacilityDTO> {
+    return this.http
+      .get<FacilityDTO>(`${this.env.apiBaseUrl}${this.DUPLICATE_FACILITY_PATH}/${id}`)
+      .pipe(catchError((error) => throwError(error.error as ConcenetError)));
   }
 
   private getFacilitiesGroupedToReturn(brandsIdsToUse: number[]): FacilitiesGroupedByBrand[] {
