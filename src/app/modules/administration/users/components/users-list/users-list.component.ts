@@ -259,13 +259,13 @@ export class UsersListComponent implements OnInit {
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   private transformFilterValue = (filterValue: UserFilterDTO): any => ({
-    email: filterValue?.email,
-    search: filterValue?.search,
-    brands: filterValue?.brands?.map((brand: BrandDTO) => brand.id),
-    departments: filterValue?.departments?.map((dep: DepartmentDTO) => dep.id),
-    facilities: filterValue?.facilities?.map((fac: BrandDTO) => fac.id),
-    roles: filterValue?.roles?.map((role: BrandDTO) => role.id),
-    specialties: filterValue?.specialties?.map((spec: BrandDTO) => spec.id)
+    email: filterValue.email,
+    search: filterValue.search,
+    brands: filterValue.brands.map((brand: BrandDTO) => brand.id),
+    departments: filterValue.departments.map((dep: DepartmentDTO) => dep.id),
+    facilities: filterValue.facilities.map((fac: FacilityDTO) => fac.id),
+    roles: filterValue.roles.map((role: BrandDTO) => role.id),
+    specialties: filterValue.specialties.map((spec: BrandDTO) => spec.id)
   });
 
   private initializeListeners(): void {

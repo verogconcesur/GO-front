@@ -11,6 +11,13 @@ import { finalize, tap, take } from 'rxjs/operators';
 import { ProgressSpinnerDialogService } from '@shared/services/progress-spinner-dialog.service';
 import { GlobalMessageService } from '@shared/services/global-message.service';
 import { TranslateService } from '@ngx-translate/core';
+import {
+  CreateEditFacilityComponent,
+  CreateEditFacilityComponentModalEnum
+} from '../create-edit-facility/create-edit-facility.component';
+import { ConfirmDialogService } from '@shared/services/confirm-dialog.service';
+import { ConcenetError } from '@app/types/error';
+import { NGXLogger } from 'ngx-logger';
 
 @Component({
   selector: 'app-facilities',
@@ -36,7 +43,9 @@ export class FacilitiesComponent implements OnInit {
     private customDialogService: CustomDialogService,
     private spinnerService: ProgressSpinnerDialogService,
     private globalMessageService: GlobalMessageService,
-    private translateService: TranslateService
+    private translateService: TranslateService,
+    private confirmationDialog: ConfirmDialogService,
+    private logger: NGXLogger
   ) {}
 
   ngOnInit(): void {
@@ -57,25 +66,25 @@ export class FacilitiesComponent implements OnInit {
   }
 
   public buttonCreateEditAction(facility?: FacilityDTO) {
-    // this.customDialogService
-    //   .open({
-    //     id: CreateEditFacilityComponentModalEnum.ID,
-    //     panelClass: CreateEditFacilityComponentModalEnum.PANEL_CLASS,
-    //     component: CreateEditFacilityComponent,
-    //     extendedComponentData: facility ? facility : null,
-    //     disableClose: true,
-    //     width: '900px'
-    //   })
-    //   .pipe(take(1))
-    //   .subscribe((response) => {
-    //     if (response) {
-    //       this.globalMessageService.showSuccess({
-    //         message: this.translateService.instant(marker('common.successOperation')),
-    //         actionText: this.translateService.instant(marker('common.close'))
-    //       });
-    //       this.getFacilities();
-    //     }
-    //   });
+    this.customDialogService
+      .open({
+        id: CreateEditFacilityComponentModalEnum.ID,
+        panelClass: CreateEditFacilityComponentModalEnum.PANEL_CLASS,
+        component: CreateEditFacilityComponent,
+        extendedComponentData: facility ? facility : null,
+        disableClose: true,
+        width: '900px'
+      })
+      .pipe(take(1))
+      .subscribe((response) => {
+        if (response) {
+          this.globalMessageService.showSuccess({
+            message: this.translateService.instant(marker('common.successOperation')),
+            actionText: this.translateService.instant(marker('common.close'))
+          });
+          this.getFacilities();
+        }
+      });
   }
 
   public getSubtitle(item: FacilityDTO): Observable<string> {
@@ -89,17 +98,65 @@ export class FacilitiesComponent implements OnInit {
   }
 
   public deleteAction(item: FacilityDTO): void {
-    console.log('delete', item);
+    this.confirmationDialog
+      .open({
+        title: this.translateService.instant(marker('common.warning')),
+        message: this.translateService.instant(marker('organizations.brands.deleteConfirmation'))
+      })
+      .pipe(take(1))
+      .subscribe((ok: boolean) => {
+        if (ok) {
+          const spinner = this.spinnerService.show();
+          this.facilitiesService
+            .deleteFacility(item.id)
+            .pipe(
+              take(1),
+              finalize(() => this.spinnerService.hide(spinner))
+            )
+            .subscribe({
+              next: (response) => {
+                this.getFacilities();
+              },
+              error: (error: ConcenetError) => {
+                this.logger.error(error);
+                this.globalMessageService.showError({
+                  message: error.message,
+                  actionText: this.translateService.instant(marker('common.close'))
+                });
+              }
+            });
+        }
+      });
   }
 
   public duplicateAction(item: FacilityDTO): void {
-    console.log('duplicate', item);
+    const spinner = this.spinnerService.show();
+    this.facilitiesService
+      .duplicateFacility(item.id)
+      .pipe(
+        take(1),
+        finalize(() => this.spinnerService.hide(spinner))
+      )
+      .subscribe({
+        next: (response) => {
+          if (response) {
+            this.getFacilities();
+          }
+        },
+        error: (error: ConcenetError) => {
+          this.logger.error(error);
+
+          this.globalMessageService.showError({
+            message: error.message,
+            actionText: this.translateService.instant(marker('common.close'))
+          });
+        }
+      });
   }
 
   public showUsersAction(item: FacilityDTO): void {
     console.log('showUsers', item);
   }
-
 
   private getFacilities(): void {
     const spinner = this.spinnerService.show();

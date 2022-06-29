@@ -1,198 +1,208 @@
 {
-  "administration": {
-    "exit": "Exit settings",
-    "organization": "Organization",
-    "records": "Records",
-    "templates": "Templates",
-    "title": "Concenet",
-    "users": "Users",
-    "viewProfile": "View profile",
-    "workflows": "Workflows"
-  },
-  "app": {
-    "menu": {
-      "administration": "Administration",
-      "advanceSearch": "Advanced search",
-      "clients": "Clients",
-      "vehicles": "Vehicles",
-      "workflow": "Workflow"
-    },
-    "title": "Concenet"
-  },
-  "common": {
-    "accessDenied": "Access denied.",
-    "actions": "Actions",
-    "apply": "Apply",
-    "cancel": "Cancel",
-    "close": "Close",
-    "delete": "Delete",
-    "duplicate": "Duplicate",
-    "edit": "Edit",
-    "emails": "Emails",
-    "filter": "Filter",
-    "filterAction": "Filter",
-    "footer": "Footer",
-    "header": "Header",
-    "insert": "Insert",
-    "insertTextHere": "Insert text here.",
-    "logo": "Logo",
-    "reset": "Reset",
-    "save": "Save",
-    "search": "Search",
-    "select": "Select",
-    "selectImageFile": "Select image file",
-    "successOperation": "Success operation.",
-    "unsavedChangesExit": "There are unsaved changes, do you want to continue?",
-    "unselectAll": "Unselect all",
-    "users": "Users",
-    "warning": "Warning"
-  },
-  "confirmdialog": {
-    "no": "No",
-    "yes": "Yes"
-  },
-  "errors": {
-    "emailPattern": "The text must be an email.",
-    "maxLengthError": "The max length allowed for this field is {length} characters.",
-    "noDataToShow": "No data to show in table",
-    "required": "This field is required."
-  },
-  "login": {
-    "description": "Please enter your credentials",
-    "email": "Username",
-    "forgotPassword": "have you forgotten your password?",
-    "password": "Password",
-    "passwordRequired": "Password is required",
-    "recoverpassword": {
-      "description": "Enter your user name and we will send you the instructions to reset your password.",
-      "email": "Password reset successful, please check your inbox",
-      "restore": "Restore password",
-      "title": "Have you forgotten your password?",
-      "userName": "Username",
-      "userNameRequired": "Username is required"
-    },
-    "restorePassword": {
-      "changedSuccesfully": "Password has been succesfully modified",
-      "description": "Establish a new password and recover access to your account",
-      "password1": "New password",
-      "password2": "Repeat new password",
-      "passwordMatch": "Password must match",
-      "passwordPattern": "The password must contain at least one number, one capital letter, one symbol and its length must be between 8 and 50 characters.",
-      "passwordRequired": "The password is mandatory.",
-      "save": "Save new password",
-      "title": "New password",
-      "userName": "User name",
-      "userNameRequired": "Username is required"
-    },
-    "signIn": "Log in",
-    "title": "Log in",
-    "userNameRequired": "Username is required"
-  },
-  "logout": {
-    "logout": "Log out"
-  },
-  "organizations": {
-    "brands": {
-      "create": "Create brand",
-      "delete": "Delete brand",
-      "deleteConfirmation": "Do you really want to delete this brand?",
-      "edit": "Edit brand",
-      "name": "Brand name",
-      "title": "Brands"
-    },
-    "departments": {
-      "create": "Create department",
-      "delete": "Delete department",
-      "deleteConfirmation": "Do you really want to delete this department?",
-      "edit": "Edit department",
-      "numDepartments": "{numItems} {numItems, plural, =0{departments} one{department} other{departments}}",
-      "title": "Departments"
-    },
-    "facilities": {
-      "create": "Create facility",
-      "numFacilities": "{numItems} {numItems, plural, =0{facilities} one{facility} other{facilities}}",
-      "title": "Facilities"
-    },
-    "specialties": {
-      "create": "Create specialty",
-      "numSpecialties": "{numItems} {numItems, plural, =0{specialties} one{specialty} other{specialties}}",
-      "title": "Specialties"
-    }
-  },
-  "pagination": {
-    "firstPage": "First page",
-    "itemsPerPage": "Items per page",
-    "lastPage": "Last page",
-    "nextPage": "Next Page",
-    "pageOf": "Page {num1} of {num2}",
-    "prevPage": "Previous page"
-  },
-  "roles": {
-    "create": "Create Role",
-    "deleteConfirmation": "Do you really want to delete this role?",
-    "title": "Roles and permissions"
-  },
-  "sample": {
-    "text": "There {count, plural, =0{is} one{is} other{are}} {count, plural, =0{} one{a} other{several}} {count, plural, =0{nothing} one{thing} other{things}}"
-  },
-  "textEditor": {
-    "htmlCodeInsertion": "Insert html code",
-    "invalidHtmlText": "Invalid html tags, the text can't contain: {tags}",
-    "tooltips": {
-      "tableBorderToggle": "Hide/show borders",
-      "tableHeaders": "Toggle table header",
-      "varOptions": "Insert variable"
-    }
-  },
-  "user": {
-    "add": "Add user",
-    "delete": "Delete user",
-    "deleteConfirmation": "Do you really want to delete this user?",
-    "edit": "Edit user",
-    "myProfile": {
-      "edit": "Edit profile",
-      "title": "My profile"
-    },
-    "permissionsInheritFromRole": "Inherited from <b>{role}</b>*",
-    "selectRoleFirst": "First select a role",
-    "userPermissions": "User's permissions"
-  },
-  "userProfile": {
-    "brand": "Brand",
-    "changePassword": "Change password",
-    "data": "General data",
-    "department": "Department",
-    "edit": "Edit profile",
-    "email": "Email",
-    "facility": "Facilities",
-    "firstName": "Last name 1",
-    "firstNameRequired": "Last name 1 required",
-    "lastName": "Last name",
-    "lastName2": "Last name 2",
-    "name": "Name",
-    "nameRequired": "Name required",
-    "nick": "Nick",
-    "organization": "Organization",
-    "role": "Role",
-    "sign": "Sign",
-    "specialty": "Specialty",
-    "title": "Your profile",
-    "userName": "User name"
-  },
-  "users": {
-    "create": "Create user",
-    "fullName": "Full name",
-    "permissions": "Permissions",
-    "permissionsGroup": "Permissions group",
-    "roles": {
-      "create": "Create role",
-      "delete": "Delete role",
-      "deleteConfirmation": "Do you really want to delete this role?",
-      "edit": "Edit role",
-      "roleName": "Role name",
-      "roleNameRequired": "Role name is a required element",
-      "selectAll": "Select all"
-    },
-    "title": "Users"
-  }
+	"administration": {
+		"exit": "Exit settings",
+		"organization": "Organization",
+		"records": "Records",
+		"templates": "Templates",
+		"title": "Concenet",
+		"users": "Users",
+		"viewProfile": "View profile",
+		"workflows": "Workflows"
+	},
+	"app": {
+		"menu": {
+			"administration": "Administration",
+			"advanceSearch": "Advanced search",
+			"clients": "Clients",
+			"vehicles": "Vehicles",
+			"workflow": "Workflow"
+		},
+		"title": "Concenet"
+	},
+	"common": {
+		"accessDenied": "Access denied.",
+		"actions": "Actions",
+		"address": "Address",
+		"apply": "Apply",
+		"brands": "Brands",
+		"cancel": "Cancel",
+		"cif": "CIF",
+		"close": "Close",
+		"country": "Country",
+		"delete": "Delete",
+		"duplicate": "Duplicate",
+		"edit": "Edit",
+		"emails": "Emails",
+		"filter": "Filter",
+		"filterAction": "Filter",
+		"footer": "Footer",
+		"header": "Header",
+		"insert": "Insert",
+		"insertTextHere": "Insert text here.",
+		"logo": "Logo",
+		"postalCode": "Postal Code",
+		"province": "Province",
+		"reset": "Reset",
+		"save": "Save",
+		"search": "Search",
+		"select": "Select",
+		"selectImageFile": "Select image file",
+		"successOperation": "Success operation.",
+		"town": "Town",
+		"unsavedChangesExit": "There are unsaved changes, do you want to continue?",
+		"unselectAll": "Unselect all",
+		"users": "Users",
+		"warning": "Warning"
+	},
+	"confirmdialog": {
+		"no": "No",
+		"yes": "Yes"
+	},
+	"errors": {
+		"emailPattern": "The text must be an email.",
+		"maxLengthError": "The max length allowed for this field is {length} characters.",
+		"noDataToShow": "No data to show in table",
+		"required": "This field is required."
+	},
+	"login": {
+		"description": "Please enter your credentials",
+		"email": "Username",
+		"forgotPassword": "have you forgotten your password?",
+		"password": "Password",
+		"passwordRequired": "Password is required",
+		"recoverpassword": {
+			"description": "Enter your user name and we will send you the instructions to reset your password.",
+			"email": "Password reset successful, please check your inbox",
+			"restore": "Restore password",
+			"title": "Have you forgotten your password?",
+			"userName": "Username",
+			"userNameRequired": "Username is required"
+		},
+		"restorePassword": {
+			"changedSuccesfully": "Password has been succesfully modified",
+			"description": "Establish a new password and recover access to your account",
+			"password1": "New password",
+			"password2": "Repeat new password",
+			"passwordMatch": "Password must match",
+			"passwordPattern": "The password must contain at least one number, one capital letter, one symbol and its length must be between 8 and 50 characters.",
+			"passwordRequired": "The password is mandatory.",
+			"save": "Save new password",
+			"title": "New password",
+			"userName": "User name",
+			"userNameRequired": "Username is required"
+		},
+		"signIn": "Log in",
+		"title": "Log in",
+		"userNameRequired": "Username is required"
+	},
+	"logout": {
+		"logout": "Log out"
+	},
+	"organizations": {
+		"brands": {
+			"create": "Create brand",
+			"delete": "Delete brand",
+			"deleteConfirmation": "Do you really want to delete this brand?",
+			"edit": "Edit brand",
+			"name": "Brand name",
+			"title": "Brands"
+		},
+		"departments": {
+			"create": "Create department",
+			"delete": "Delete department",
+			"deleteConfirmation": "Do you really want to delete this department?",
+			"edit": "Edit department",
+			"numDepartments": "{numItems} {numItems, plural, =0{departments} one{department} other{departments}}",
+			"title": "Departments"
+		},
+		"facilities": {
+			"create": "Create facility",
+			"delete": "Delete facility",
+			"deleteConfirmation": "Do you really want to delete this facility?",
+			"edit": "Edit facility",
+			"numFacilities": "{numItems} {numItems, plural, =0{facilities} one{facility} other{facilities}}",
+			"title": "Facilities"
+		},
+		"specialties": {
+			"create": "Create specialty",
+			"numSpecialties": "{numItems} {numItems, plural, =0{specialties} one{specialty} other{specialties}}",
+			"title": "Specialties"
+		}
+	},
+	"pagination": {
+		"firstPage": "First page",
+		"itemsPerPage": "Items per page",
+		"lastPage": "Last page",
+		"nextPage": "Next Page",
+		"pageOf": "Page {num1} of {num2}",
+		"prevPage": "Previous page"
+	},
+	"roles": {
+		"create": "Create Role",
+		"deleteConfirmation": "Do you really want to delete this role?",
+		"title": "Roles and permissions"
+	},
+	"sample": {
+		"text": "There {count, plural, =0{is} one{is} other{are}} {count, plural, =0{} one{a} other{several}} {count, plural, =0{nothing} one{thing} other{things}}"
+	},
+	"textEditor": {
+		"htmlCodeInsertion": "Insert html code",
+		"invalidHtmlText": "Invalid html tags, the text can't contain: {tags}",
+		"tooltips": {
+			"tableBorderToggle": "Hide/show borders",
+			"tableHeaders": "Toggle table header",
+			"varOptions": "Insert variable"
+		}
+	},
+	"user": {
+		"add": "Add user",
+		"delete": "Delete user",
+		"deleteConfirmation": "Do you really want to delete this user?",
+		"edit": "Edit user",
+		"myProfile": {
+			"edit": "Edit profile",
+			"title": "My profile"
+		},
+		"permissionsInheritFromRole": "Inherited from <b>{role}</b>*",
+		"selectRoleFirst": "First select a role",
+		"userPermissions": "User's permissions"
+	},
+	"userProfile": {
+		"brand": "Brand",
+		"changePassword": "Change password",
+		"data": "General data",
+		"department": "Department",
+		"edit": "Edit profile",
+		"email": "Email",
+		"facility": "Facilities",
+		"firstName": "Last name 1",
+		"firstNameRequired": "Last name 1 required",
+		"lastName": "Last name",
+		"lastName2": "Last name 2",
+		"name": "Name",
+		"nameRequired": "Name required",
+		"nick": "Nick",
+		"organization": "Organization",
+		"role": "Role",
+		"sign": "Sign",
+		"specialty": "Specialty",
+		"title": "Your profile",
+		"userName": "User name"
+	},
+	"users": {
+		"create": "Create user",
+		"fullName": "Full name",
+		"permissions": "Permissions",
+		"permissionsGroup": "Permissions group",
+		"roles": {
+			"create": "Create role",
+			"delete": "Delete role",
+			"deleteConfirmation": "Do you really want to delete this role?",
+			"edit": "Edit role",
+			"roleName": "Role name",
+			"roleNameRequired": "Role name is a required element",
+			"selectAll": "Select all"
+		},
+		"title": "Users"
+	}
 }
