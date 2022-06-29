@@ -1,0 +1,9 @@
+@import 'utils/core';
+
+.departments {
+  margin-top: 20px;
+  &__no-departments {
+    width: 100%;
+    text-align: center;
+  }
+}

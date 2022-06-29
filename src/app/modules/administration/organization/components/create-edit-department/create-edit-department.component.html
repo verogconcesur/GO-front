@@ -1,0 +1,73 @@
+<div class="create-edit-department-content" fxLayout="column" fxLayoutAlign="center center">
+    <div *ngIf="!isModalModeActive()">
+        <div class="create-edit-department-content__title mat-display-2">{{ labels.title | translate }}</div>
+    </div>
+    <div class="create-edit-department-content__form">
+        <form [formGroup]="departmentForm" *ngIf="departmentForm" class="smaller-mat-form-fields">
+            <!-- General Data -->
+            <div class="department-data__section">
+                <div class="department-data__section__title first-child">
+                    {{ labels.data | translate }}
+                </div>
+                <div class="department-data__section__group" fxLayout="row wrap" fxLayoutAlign="flex-start center">
+                    <!-- Name -->
+                    <mat-form-field appearance="outline" floatLabel="always">
+                        <mat-label>{{ labels.name | translate }}</mat-label>
+                        <input matInput formControlName="name" />
+                        <mat-error
+                            class="department-data__error"
+                            *ngIf="departmentForm.controls.name.invalid && departmentForm.controls.name.touched"
+                        >
+                            {{ labels.nameRequired | translate }}
+                        </mat-error>
+                    </mat-form-field>
+                    <!-- Email -->
+                    <mat-form-field appearance="outline" floatLabel="always">
+                        <mat-label>{{ labels.email | translate }}</mat-label>
+                        <input matInput formControlName="email" />
+                        <mat-error
+                            class="department-data__error"
+                            *ngIf="departmentForm.controls.name.invalid && departmentForm.controls.name.touched"
+                        >
+                            {{ labels.errorEmailPattern | translate }}
+                        </mat-error>
+                    </mat-form-field>
+                </div>
+            </div>
+
+            <!-- Emails -->
+            <div class="department-data__section">
+                <div class="department-data__section__title">
+                    {{ labels.emails | translate }}
+                </div>
+                <!-- Cabecera -->
+                <div class="department-data__section__group">
+                    <div class="department-data__section__group__title">{{ labels.header | translate }}</div>
+                    <app-text-editor-wrapper
+                        id="headerEditor"
+                        textEditorId="headerEditor"
+                        [initialValue]="form?.header?.value"
+                        [textEditorOptionsConfig]="textEditorToolbarOptions"
+                        [placeholder]="labels.insertText | translate"
+                        (onContentChanged)="textEditorContentChanged('header', $event)"
+                    ></app-text-editor-wrapper>
+                </div>
+                <!-- Footer -->
+                <div class="department-data__section__group">
+                    <div class="department-data__section__group__title">{{ labels.footer | translate }}</div>
+                    <app-text-editor-wrapper
+                        id="footerEditor"
+                        textEditorId="footerEditor"
+                        [initialValue]="form?.footer?.value"
+                        [textEditorOptionsConfig]="textEditorToolbarOptions"
+                        [placeholder]="labels.insertText | translate"
+                        (onContentChanged)="textEditorContentChanged('footer', $event)"
+                    ></app-text-editor-wrapper>
+                </div>
+            </div>
+        </form>
+    </div>
+    <div class="create-edit-department-content__buttons">
+        <!-- TODO: buttons used when the component is not opened with customDialogService -->
+    </div>
+</div>
