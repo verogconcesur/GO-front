@@ -11,6 +11,7 @@ import { OrganizationComponent } from './organization.component';
 import { OrganizationCardComponent } from './components/organization-card/organization-card.component';
 import { CreateEditBrandComponent } from './components/create-edit-brand/create-edit-brand.component';
 import { TextEditorWrapperModule } from '@modules/text-editor-wrapper/text-editor-wrapper.module';
+import { CreateEditDepartmentComponent } from './components/create-edit-department/create-edit-department.component';
 
 @NgModule({
   declarations: [
@@ -20,7 +21,8 @@ import { TextEditorWrapperModule } from '@modules/text-editor-wrapper/text-edito
     DepartmentsComponent,
     SpecialtiesComponent,
     OrganizationCardComponent,
-    CreateEditBrandComponent
+    CreateEditBrandComponent,
+    CreateEditDepartmentComponent
   ],
   imports: [CommonModule, SharedModule, TextEditorWrapperModule, OrganizationRoutingModule]
 })

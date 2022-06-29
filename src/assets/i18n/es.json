@@ -95,13 +95,16 @@
     "brands": {
       "create": "Crear marca",
       "delete": "Eliminar marca",
+      "deleteConfirmation": "¿Realmente quiere eliminar esta marca?",
       "edit": "Editar marca",
       "name": "Nombre de marca",
-      "title": "Marcas",
-      "deleteConfirmation": "¿Realmente quiere eliminar esta marca?"
+      "title": "Marcas"
     },
     "departments": {
       "create": "Crear departamento",
+      "delete": "Eliminar departamento",
+      "deleteConfirmation": "¿Realmente quiere eliminar este departamento?",
+      "edit": "Editar departamento",
       "numDepartments": "{numItems} {numItems, plural, =0{departamentos} one{departamento} other{departamentos}}",
       "title": "Departamentos"
     },
@@ -112,6 +115,7 @@
     },
     "specialties": {
       "create": "Crear especialidad",
+      "numSpecialties": "{numItems} {numItems, plural, =0{especialidades} one{especialidad} other{especialidades}}",
       "title": "Especialidades"
     }
   },

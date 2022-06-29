@@ -152,6 +152,22 @@ export class UsersFilterComponent extends FilterDrawerClassToExnted implements O
                   dg.departments.filter((d: DepartmentDTO) => d.id === department.id).length > 0
               ).length > 0
           );
+          if (init) {
+            //Usado cuando los filtros se setean empleando la navegación que sólo le pasa el id del elemento
+            selected = selected.map((department: DepartmentDTO) => {
+              let itemToReturn = department;
+              this.departmentsList.find((dg: DepartmentsGroupedByFacility) =>
+                dg.departments.find((d: DepartmentDTO) => {
+                  if (d.id === department.id) {
+                    itemToReturn = d;
+                    return true;
+                  }
+                  return false;
+                })
+              );
+              return itemToReturn;
+            });
+          }
           this.filterForm.get('departments').setValue(selected);
           this.getSpecialtiesOptions(init);
         },
