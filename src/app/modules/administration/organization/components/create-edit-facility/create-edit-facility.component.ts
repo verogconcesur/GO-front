@@ -1,4 +1,3 @@
-/* eslint-disable max-len */
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { AbstractControl, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ConcenetError } from '@app/types/error';
@@ -7,7 +6,6 @@ import FacilityDTO from '@data/models/facility-dto';
 import { FacilityService } from '@data/services/facility.sevice';
 import { ComponentToExtendForCustomDialog, CustomDialogFooterConfigI, CustomDialogService } from '@jenga/custom-dialog';
 import { TextEditorWrapperConfigI } from '@modules/text-editor-wrapper/interfaces/text-editor-wrapper-config.interface';
-// eslint-disable-next-line max-len
 import { TranslateService } from '@ngx-translate/core';
 import { ConfirmDialogService } from '@shared/services/confirm-dialog.service';
 import { GlobalMessageService } from '@shared/services/global-message.service';
@@ -236,7 +234,10 @@ export class CreateEditFacilityComponent extends ComponentToExtendForCustomDialo
 
   public hasAllSelected(control: AbstractControl, list: BrandDTO[]): boolean {
     const actualValue = control.value ? control.value : [];
-    return haveArraysSameValues(actualValue.map((item: BrandDTO) => item.id).sort(), list.map((item: BrandDTO) => item.id).sort());
+    return haveArraysSameValues(
+      actualValue.map((item: BrandDTO) => item.id).sort(),
+      list.map((item: BrandDTO) => item.id).sort()
+    );
   }
 
   private getListOptions(): void {

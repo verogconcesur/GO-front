@@ -8,8 +8,9 @@ describe('CreateEditFacilityComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [CreateEditFacilityComponent]
-    }).compileComponents();
+      declarations: [ CreateEditFacilityComponent ]
+    })
+    .compileComponents();
   });
 
   beforeEach(() => {
