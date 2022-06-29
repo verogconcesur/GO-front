@@ -109,6 +109,9 @@
 		},
 		"departments": {
 			"create": "Create department",
+			"delete": "Delete department",
+			"deleteConfirmation": "Do you really want to delete this department?",
+			"edit": "Edit department",
 			"numDepartments": "{numItems} {numItems, plural, =0{departments} one{department} other{departments}}",
 			"title": "Departments"
 		},
@@ -122,6 +125,7 @@
 		},
 		"specialties": {
 			"create": "Create specialty",
+			"numSpecialties": "{numItems} {numItems, plural, =0{specialties} one{specialty} other{specialties}}",
 			"title": "Specialties"
 		}
 	},

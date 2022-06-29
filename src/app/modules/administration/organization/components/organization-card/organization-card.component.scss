@@ -1,6 +1,11 @@
 .organization-card {
-  width: 368px;
-  height: 190px;
+  // width: 368px;
+  min-width: 285px;
+  max-width: 368px;
+  width: 30%;
+  min-height: 170px;
+  max-height: 190px;
+  height: 20%;
   margin: 0 20px 20px 0;
   cursor: pointer;
   position: relative;
@@ -22,7 +27,7 @@
   &__bg-img {
     position: absolute;
     width: auto;
-    height: 175px;
+    height: 80%;
     right: -25px;
     bottom: -25px;
     opacity: 0.3;

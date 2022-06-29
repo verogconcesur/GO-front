@@ -67,9 +67,27 @@ export class UsersListComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
-    this.getUsers();
+    this.setInitialFilterValue();
     this.setSidenavFilterDrawerConfiguration();
     this.initializeListeners();
+  }
+
+  public setInitialFilterValue(): void {
+    const historyState = history.state as {
+      brands: BrandDTO[];
+      departments: DepartmentDTO[];
+      facilities: FacilityDTO[];
+      specialties: SpecialtyDTO[];
+    };
+    this.filterValue = {
+      brands: historyState?.brands ? historyState.brands : [],
+      departments: historyState?.departments ? historyState.departments : [],
+      email: '',
+      facilities: historyState?.facilities ? historyState.facilities : [],
+      roles: [],
+      search: '',
+      specialties: historyState?.specialties ? historyState.specialties : []
+    };
   }
 
   public openCreateEditUserDialog = (user?: UserDetailsDTO): void => {
@@ -160,17 +178,6 @@ export class UsersListComponent implements OnInit {
     } else {
       this.paginationConfig.page = 0;
     }
-    if (!this.filterValue) {
-      this.filterValue = {
-        brands: [],
-        departments: [],
-        email: '',
-        facilities: [],
-        roles: [],
-        search: '',
-        specialties: []
-      };
-    }
     this.userService
       .searchUsers(
         {
@@ -243,7 +250,7 @@ export class UsersListComponent implements OnInit {
   };
 
   private setSidenavFilterDrawerConfiguration = () => {
-    this.filterDrawerService.setComponentToShowInsideFilterDrawer(UsersFilterComponent);
+    this.filterDrawerService.setComponentToShowInsideFilterDrawer(UsersFilterComponent, this.filterValue);
     this.filterDrawerService.filterValueSubject$.pipe(untilDestroyed(this)).subscribe((filterValue: UserFilterDTO) => {
       this.filterValue = filterValue;
       setTimeout(() => this.getUsers());

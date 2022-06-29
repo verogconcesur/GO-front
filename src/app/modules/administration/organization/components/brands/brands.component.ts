@@ -144,7 +144,9 @@ export class BrandsComponent implements OnInit {
   }
 
   public showUsersAction(item: BrandDTO): void {
-    this.router.navigate([`${RouteConstants.ADMINISTRATION}/${RouteConstants.USERS}`], { state: { brands: [item] } });
+    this.router.navigate([`${RouteConstants.ADMINISTRATION}/${RouteConstants.USERS}`], {
+      state: { brands: [{ id: item.id }] }
+    });
   }
 
   public getLogo(item: BrandDTO): string | null {
@@ -157,6 +159,7 @@ export class BrandsComponent implements OnInit {
   private getBrands(): void {
     const spinner = this.spinnerService.show();
     this.brands$ = this.brandsService.getAllBrandsList().pipe(
+      take(1),
       tap((data: BrandDTO[]) => (this.hasBrands = data.length > 0 ? true : false)),
       finalize(() => this.spinnerService.hide(spinner))
     );

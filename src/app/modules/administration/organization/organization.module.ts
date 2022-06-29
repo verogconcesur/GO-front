@@ -12,6 +12,7 @@ import { OrganizationCardComponent } from './components/organization-card/organi
 import { CreateEditBrandComponent } from './components/create-edit-brand/create-edit-brand.component';
 import { TextEditorWrapperModule } from '@modules/text-editor-wrapper/text-editor-wrapper.module';
 import { CreateEditFacilityComponent } from './components/create-edit-facility/create-edit-facility.component';
+import { CreateEditDepartmentComponent } from './components/create-edit-department/create-edit-department.component';
 
 @NgModule({
   declarations: [
@@ -22,7 +23,8 @@ import { CreateEditFacilityComponent } from './components/create-edit-facility/c
     SpecialtiesComponent,
     OrganizationCardComponent,
     CreateEditBrandComponent,
-    CreateEditFacilityComponent
+    CreateEditFacilityComponent,
+    CreateEditDepartmentComponent
   ],
   imports: [CommonModule, SharedModule, TextEditorWrapperModule, OrganizationRoutingModule]
 })

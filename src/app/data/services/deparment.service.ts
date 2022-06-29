@@ -19,6 +19,8 @@ export class DepartmentService {
   private departmentsByFacilities: any = {};
   private readonly GET_DEPARMENT_PATH = '/api/departments/';
   private readonly GET_DEPARMENTS_PATH = '/api/departments/findAllByFacilities/';
+  private readonly DUPLICATE_DEPARTMENT_PATH = '/api/departments/duplicate';
+  private readonly DELETE_DEPARTMENT_PATH = '/api/departments';
 
   constructor(@Inject(ENV) private env: Env, private http: HttpClient, private router: Router) {}
 
@@ -71,6 +73,18 @@ export class DepartmentService {
     }
   }
 
+  public addDepartment(item: DepartmentDTO): Observable<DepartmentDTO> {
+    return this.http
+      .post<DepartmentDTO>(`${this.env.apiBaseUrl}${this.GET_DEPARMENT_PATH}`, item)
+      .pipe(catchError((error) => throwError(error.error as ConcenetError)));
+  }
+
+  public deleteDepartment(id: number): Observable<DepartmentDTO> {
+    return this.http
+      .delete<DepartmentDTO>(`${this.env.apiBaseUrl}${this.DELETE_DEPARTMENT_PATH}/${id}`)
+      .pipe(catchError((error) => throwError(error.error as ConcenetError)));
+  }
+
   public getDepartmentsByFacilitiesIds(ids: number[]): Observable<DepartmentDTO[]> {
     if (ids && ids.length > 0) {
       return this.http
@@ -79,6 +93,12 @@ export class DepartmentService {
     } else {
       return of([]);
     }
+  }
+
+  public duplicateDepartment(id: number): Observable<DepartmentDTO> {
+    return this.http
+      .get<DepartmentDTO>(`${this.env.apiBaseUrl}${this.DUPLICATE_DEPARTMENT_PATH}/${id}`)
+      .pipe(catchError((error) => throwError(error.error as ConcenetError)));
   }
 
   private getDepartmentsGroupedToReturn(facilityIdsToUse: number[]): DepartmentsGroupedByFacility[] {
@@ -91,13 +111,22 @@ export class DepartmentService {
           ...list,
           {
             facilityId: departmentsForFacility[0].facilities[0].id,
-            facilityName:
-              departmentsForFacility[0].facilities[0].name + ' (' + departmentsForFacility[0].facilities[0].brands[0].name + ')',
+            facilityName: this.getDepartmentsGroupedName(departmentsForFacility),
             departments: departmentsForFacility
           }
         ];
       }
     });
     return list;
+  }
+
+  private getDepartmentsGroupedName(departmentsForFacility: DepartmentDTO[]): string {
+    if (departmentsForFacility[0]?.facilities[0] && departmentsForFacility[0].facilities[0].brands[0]) {
+      return departmentsForFacility[0].facilities[0].name + ' (' + departmentsForFacility[0].facilities[0].brands[0].name + ')';
+    } else if (departmentsForFacility[0]?.facilities[0]?.name) {
+      return departmentsForFacility[0].facilities[0].name;
+    } else {
+      return '';
+    }
   }
 }

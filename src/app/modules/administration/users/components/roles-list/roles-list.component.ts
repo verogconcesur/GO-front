@@ -36,17 +36,19 @@ export class RolesListComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
-    this.getAllAvailableRoles();
+    this.getAllAvailableRoles(false);
   }
 
-  public getAllAvailableRoles(): void {
-    const spinner = this.spinnerService.show();
+  public getAllAvailableRoles(showSpinner = true): void {
+    const spinner = showSpinner ? this.spinnerService.show() : null;
 
     this.roleService
       .getAllRoles()
       .pipe(
         finalize(() => {
-          this.spinnerService.hide(spinner);
+          if (spinner) {
+            this.spinnerService.hide(spinner);
+          }
         })
       )
       .subscribe({
