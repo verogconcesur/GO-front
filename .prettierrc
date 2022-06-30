@@ -12,6 +12,13 @@
         "parser": "angular",
         "tabWidth": 4
       }
+    },
+    {
+      "files": "*.json",
+      "options": {
+        "singleQuote": false,
+        "tabWidth": 4
+      }
     }
   ]
 }
