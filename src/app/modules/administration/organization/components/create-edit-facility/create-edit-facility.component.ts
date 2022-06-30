@@ -53,6 +53,7 @@ export class CreateEditFacilityComponent extends ComponentToExtendForCustomDialo
     footer: marker('common.footer'),
     insertText: marker('common.insertTextHere'),
     required: marker('errors.required'),
+    emailError: marker('errors.emailPattern'),
     selectAll: marker('users.roles.selectAll'),
     unselectAll: marker('common.unselectAll')
   };
@@ -305,7 +306,7 @@ export class CreateEditFacilityComponent extends ComponentToExtendForCustomDialo
       address: [this.facilityToEdit ? this.facilityToEdit.address : null],
       brands: [this.facilityToEdit ? this.facilityToEdit.brands : [], Validators.required],
       cif: [this.facilityToEdit ? this.facilityToEdit.cif : null],
-      email: [this.facilityToEdit ? this.facilityToEdit.email : null],
+      email: [this.facilityToEdit ? this.facilityToEdit.email : null, Validators.email],
       footer: [this.facilityToEdit ? this.facilityToEdit.footer : ''],
       header: [this.facilityToEdit ? this.facilityToEdit.header : ''],
       id: [this.facilityToEdit ? this.facilityToEdit.id : null],

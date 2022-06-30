@@ -55,12 +55,6 @@
                     <mat-form-field appearance="outline" floatLabel="always">
                         <mat-label>{{ labels.address | translate }}</mat-label>
                         <input matInput formControlName="address" />
-                        <mat-error
-                            class="facility-data__error"
-                            *ngIf="facilityForm.controls.address.invalid && facilityForm.controls.address.touched"
-                        >
-                            {{ labels.required | translate }}
-                        </mat-error>
                     </mat-form-field>
 
                     <!-- Country -->
@@ -71,9 +65,6 @@
                                 country.name
                             }}</mat-option>
                         </mat-select>
-                        <mat-error *ngIf="form?.country.invalid && form?.country.touched">
-                            <span *ngIf="form.country.errors.required">{{ labels.required | translate }}</span>
-                        </mat-error>
                     </mat-form-field>
 
                     <!-- Province -->
@@ -82,9 +73,6 @@
                         <mat-select formControlName="province">
                             <mat-option *ngFor="let province of provinceList" [value]="province">{{ province.name }}</mat-option>
                         </mat-select>
-                        <mat-error *ngIf="form?.province.invalid && form?.province.touched">
-                            <span *ngIf="form.province.errors.required">{{ labels.required | translate }}</span>
-                        </mat-error>
                     </mat-form-field>
 
                     <!-- Town -->
@@ -93,33 +81,18 @@
                         <mat-select formControlName="town">
                             <mat-option *ngFor="let town of townList" [value]="town">{{ town.name }}</mat-option>
                         </mat-select>
-                        <mat-error *ngIf="form?.town.invalid && form?.town.touched">
-                            <span *ngIf="form.town.errors.required">{{ labels.required | translate }}</span>
-                        </mat-error>
                     </mat-form-field>
 
                     <!-- PostalCode -->
                     <mat-form-field appearance="outline" floatLabel="always">
                         <mat-label>{{ labels.postalCode | translate }}</mat-label>
                         <input matInput formControlName="postalCode" />
-                        <mat-error
-                            class="facility-data__error"
-                            *ngIf="facilityForm.controls.postalCode.invalid && facilityForm.controls.postalCode.touched"
-                        >
-                            {{ labels.required | translate }}
-                        </mat-error>
                     </mat-form-field>
 
                     <!-- Cif -->
                     <mat-form-field appearance="outline" floatLabel="always">
                         <mat-label>{{ labels.cif | translate }}</mat-label>
                         <input matInput formControlName="cif" />
-                        <mat-error
-                            class="facility-data__error"
-                            *ngIf="facilityForm.controls.cif.invalid && facilityForm.controls.cif.touched"
-                        >
-                            {{ labels.required | translate }}
-                        </mat-error>
                     </mat-form-field>
 
                     <!-- Email -->
@@ -128,9 +101,13 @@
                         <input matInput formControlName="email" />
                         <mat-error
                             class="facility-data__error"
-                            *ngIf="facilityForm.controls.email.invalid && facilityForm.controls.email.touched"
+                            *ngIf="
+                                facilityForm.controls.email.invalid &&
+                                facilityForm.controls.email.touched &&
+                                facilityForm.controls.email.hasError('email')
+                            "
                         >
-                            {{ labels.required | translate }}
+                            {{ labels.emailError | translate }}
                         </mat-error>
                     </mat-form-field>
                 </div>
