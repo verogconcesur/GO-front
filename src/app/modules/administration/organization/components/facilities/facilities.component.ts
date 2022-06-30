@@ -155,7 +155,9 @@ export class FacilitiesComponent implements OnInit {
   }
 
   public showUsersAction(item: FacilityDTO): void {
-    console.log('showUsers', item);
+    this.router.navigate([`${RouteConstants.ADMINISTRATION}/${RouteConstants.USERS}`], {
+      state: { brands: [{ id: this.brandId }], facilities: [item]}
+    });
   }
 
   private getFacilities(): void {
