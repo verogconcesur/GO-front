@@ -27,7 +27,7 @@
                         <input matInput formControlName="email" />
                         <mat-error
                             class="department-data__error"
-                            *ngIf="departmentForm.controls.name.invalid && departmentForm.controls.name.touched"
+                            *ngIf="departmentForm.controls.email.invalid && departmentForm.controls.email.touched"
                         >
                             {{ labels.errorEmailPattern | translate }}
                         </mat-error>
