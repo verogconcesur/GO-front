@@ -55,25 +55,22 @@ export class BrandsComponent implements OnInit {
   }
 
   public buttonCreateEditAction(brand?: BrandDTO) {
-    this.customDialogService
-      .open({
-        id: CreateEditBrandComponentModalEnum.ID,
-        panelClass: CreateEditBrandComponentModalEnum.PANEL_CLASS,
-        component: CreateEditBrandComponent,
-        extendedComponentData: brand ? brand : null,
-        disableClose: true,
-        width: '900px'
-      })
-      .pipe(take(1))
-      .subscribe((response) => {
-        if (response) {
-          this.globalMessageService.showSuccess({
-            message: this.translateService.instant(marker('common.successOperation')),
-            actionText: this.translateService.instant(marker('common.close'))
-          });
-          this.getBrands();
-        }
-      });
+    if (brand) {
+      const spinner = this.spinnerService.show();
+      this.brandsService
+        .getBrandById(brand.id)
+        .pipe(
+          take(1),
+          finalize(() => {
+            this.spinnerService.hide(spinner);
+          })
+        )
+        .subscribe((b: BrandDTO) => {
+          this.openEditCreateModal(b);
+        });
+    } else {
+      this.openEditCreateModal();
+    }
   }
 
   public getSubtitle(item: BrandDTO): Observable<string> {
@@ -163,5 +160,27 @@ export class BrandsComponent implements OnInit {
       tap((data: BrandDTO[]) => (this.hasBrands = data.length > 0 ? true : false)),
       finalize(() => this.spinnerService.hide(spinner))
     );
+  }
+
+  private openEditCreateModal(brand?: BrandDTO) {
+    this.customDialogService
+      .open({
+        id: CreateEditBrandComponentModalEnum.ID,
+        panelClass: CreateEditBrandComponentModalEnum.PANEL_CLASS,
+        component: CreateEditBrandComponent,
+        extendedComponentData: brand ? brand : null,
+        disableClose: true,
+        width: '900px'
+      })
+      .pipe(take(1))
+      .subscribe((response) => {
+        if (response) {
+          this.globalMessageService.showSuccess({
+            message: this.translateService.instant(marker('common.successOperation')),
+            actionText: this.translateService.instant(marker('common.close'))
+          });
+          this.getBrands();
+        }
+      });
   }
 }

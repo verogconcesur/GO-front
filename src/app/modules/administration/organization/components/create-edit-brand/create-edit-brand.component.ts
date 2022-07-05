@@ -93,13 +93,15 @@ export class CreateEditBrandComponent extends ComponentToExtendForCustomDialog i
   public onSubmitCustomDialog(): Observable<boolean | BrandDTO> {
     const formValue = this.brandForm.value;
     const spinner = this.spinnerService.show();
+    console.log(formValue);
+    // return of(false);
     return this.brandService
       .addBrand({
-        footer: formValue.footer,
-        header: formValue.header,
+        footer: formValue.footer ? formValue.footer : null,
+        header: formValue.header ? formValue.header : null,
         id: formValue.id,
-        logo: formValue.logoB64.split(';base64,')[1],
-        logoContentType: formValue.logoB64.split(';base64,')[0].split('data:')[1],
+        logo: formValue.logoB64 ? formValue.logoB64.split(';base64,')[1] : null,
+        logoContentType: formValue.logoB64 ? formValue.logoB64.split(';base64,')[0].split('data:')[1] : null,
         name: formValue.name,
         numFacilities: formValue.numFacilities
       })
@@ -234,9 +236,13 @@ export class CreateEditBrandComponent extends ComponentToExtendForCustomDialog i
       id: [this.brandToEdit ? this.brandToEdit.id : null],
       numFacilities: [this.brandToEdit ? this.brandToEdit.numFacilities : null],
       name: [this.brandToEdit ? this.brandToEdit.name : '', Validators.required],
-      header: [this.brandToEdit ? this.brandToEdit.header : ''],
-      footer: [this.brandToEdit ? this.brandToEdit.footer : ''],
-      logoB64: [this.brandToEdit ? `data:${this.brandToEdit.logoContentType};base64,${this.brandToEdit.logo}` : ''],
+      header: [this.brandToEdit ? this.brandToEdit.header : null],
+      footer: [this.brandToEdit ? this.brandToEdit.footer : null],
+      logoB64: [
+        this.brandToEdit && this.brandToEdit.logoContentType && this.brandToEdit.logo
+          ? `data:${this.brandToEdit.logoContentType};base64,${this.brandToEdit.logo}`
+          : ''
+      ],
       myfilename: [
         this.brandToEdit?.logo ? `${this.brandToEdit.name}_logo` : this.translateService.instant(this.labels.selectFile)
       ]
