@@ -96,8 +96,8 @@ export class CreateEditDepartmentComponent extends ComponentToExtendForCustomDia
     const spinner = this.spinnerService.show();
     return this.departmentService
       .addDepartment({
-        footer: formValue.footer,
-        header: formValue.header,
+        footer: formValue.footer ? formValue.footer : null,
+        header: formValue.header ? formValue.header : null,
         id: formValue.id,
         facility: {
           id: this.facilityId

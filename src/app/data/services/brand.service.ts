@@ -19,6 +19,12 @@ export class BrandService {
 
   constructor(@Inject(ENV) private env: Env, private http: HttpClient, private router: Router) {}
 
+  public getBrandById(id: number): Observable<BrandDTO> {
+    return this.http
+      .get<BrandDTO>(`${this.env.apiBaseUrl}${this.GET_BRANDS_PATH}/${id}`)
+      .pipe(catchError((error) => throwError(error as ConcenetError)));
+  }
+
   public getAllBrands(): Observable<BrandDTO[]> {
     return this.http
       .get<BrandDTO[]>(`${this.env.apiBaseUrl}${this.GET_BRANDS_PATH}`)
