@@ -307,15 +307,15 @@ export class CreateEditFacilityComponent extends ComponentToExtendForCustomDialo
       brands: [this.facilityToEdit ? this.facilityToEdit.brands : [], Validators.required],
       cif: [this.facilityToEdit ? this.facilityToEdit.cif : null],
       email: [this.facilityToEdit ? this.facilityToEdit.email : null, Validators.email],
-      footer: [this.facilityToEdit ? this.facilityToEdit.footer : ''],
-      header: [this.facilityToEdit ? this.facilityToEdit.header : ''],
+      footer: [this.facilityToEdit ? this.facilityToEdit.footer : null],
+      header: [this.facilityToEdit ? this.facilityToEdit.header : null],
       id: [this.facilityToEdit ? this.facilityToEdit.id : null],
-      name: [this.facilityToEdit ? this.facilityToEdit.name : '', Validators.required],
+      name: [this.facilityToEdit ? this.facilityToEdit.name : null, Validators.required],
       numDepartments: [this.facilityToEdit ? this.facilityToEdit.numDepartments : 0],
-      postalCode: [this.facilityToEdit ? this.facilityToEdit.postalCode : ''],
-      town: [this.facilityToEdit ? this.facilityToEdit.town : ''],
-      province: [this.facilityToEdit && this.facilityToEdit.town ? this.facilityToEdit.town.province : ''],
-      country: [this.facilityToEdit && this.facilityToEdit.town ? this.facilityToEdit.town.province.country : '']
+      postalCode: [this.facilityToEdit ? this.facilityToEdit.postalCode : null],
+      town: [this.facilityToEdit ? this.facilityToEdit.town : null],
+      province: [this.facilityToEdit && this.facilityToEdit.town ? this.facilityToEdit.town.province : null],
+      country: [this.facilityToEdit && this.facilityToEdit.town ? this.facilityToEdit.town.province.country : null]
     });
     this.facilityForm.controls.country.valueChanges.subscribe((x) => {
       this.form.province.setValue('');
