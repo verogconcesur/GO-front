@@ -204,11 +204,11 @@ export class CreateEditDepartmentComponent extends ComponentToExtendForCustomDia
   private initializeForm = (): void => {
     this.departmentForm = this.fb.group({
       id: [this.departmentToEdit ? this.departmentToEdit.id : null],
-      numSpecialties: [this.departmentToEdit ? this.departmentToEdit.numSpecialties : null],
+      numSpecialties: [this.departmentToEdit ? this.departmentToEdit.numSpecialties : 0],
       name: [this.departmentToEdit ? this.departmentToEdit.name : '', Validators.required],
-      email: [this.departmentToEdit ? this.departmentToEdit.email : '', Validators.email],
-      header: [this.departmentToEdit ? this.departmentToEdit.header : ''],
-      footer: [this.departmentToEdit ? this.departmentToEdit.footer : '']
+      email: [this.departmentToEdit ? this.departmentToEdit.email : null, Validators.email],
+      header: [this.departmentToEdit ? this.departmentToEdit.header : null],
+      footer: [this.departmentToEdit ? this.departmentToEdit.footer : null]
     });
   };
 }
