@@ -95,6 +95,12 @@ export class DepartmentService {
     }
   }
 
+  public getDepartmentsById(id: number): Observable<DepartmentDTO> {
+    return this.http
+      .get<DepartmentDTO>(`${this.env.apiBaseUrl}${this.GET_DEPARMENT_PATH}${id}`)
+      .pipe(catchError((error) => throwError(error as ConcenetError)));
+  }
+
   public duplicateDepartment(id: number): Observable<DepartmentDTO> {
     return this.http
       .get<DepartmentDTO>(`${this.env.apiBaseUrl}${this.DUPLICATE_DEPARTMENT_PATH}/${id}`)
