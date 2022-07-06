@@ -80,6 +80,12 @@ export class FacilityService {
     }
   }
 
+  public getFacilitiesById(id: number): Observable<FacilityDTO> {
+    return this.http
+      .get<FacilityDTO>(`${this.env.apiBaseUrl}${this.GET_FACILITY}${id}`)
+      .pipe(catchError((error) => throwError(error as ConcenetError)));
+  }
+
   public addFacility(facility: FacilityDTO): Observable<FacilityDTO> {
     return this.http
       .post<FacilityDTO>(`${this.env.apiBaseUrl}${this.GET_FACILITY}`, facility)

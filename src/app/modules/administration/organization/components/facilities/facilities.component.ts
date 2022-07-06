@@ -66,27 +66,23 @@ export class FacilitiesComponent implements OnInit {
   }
 
   public buttonCreateEditAction(facility?: FacilityDTO) {
-    this.customDialogService
-      .open({
-        id: CreateEditFacilityComponentModalEnum.ID,
-        panelClass: CreateEditFacilityComponentModalEnum.PANEL_CLASS,
-        component: CreateEditFacilityComponent,
-        extendedComponentData: facility ? facility : null,
-        disableClose: true,
-        width: '900px'
-      })
-      .pipe(take(1))
-      .subscribe((response) => {
-        if (response) {
-          this.globalMessageService.showSuccess({
-            message: this.translateService.instant(marker('common.successOperation')),
-            actionText: this.translateService.instant(marker('common.close'))
-          });
-          this.getFacilities();
-        }
-      });
+    if (facility) {
+      const spinner = this.spinnerService.show();
+      this.facilitiesService
+        .getFacilitiesById(facility.id)
+        .pipe(
+          take(1),
+          finalize(() => {
+            this.spinnerService.hide(spinner);
+          })
+        )
+        .subscribe((f: FacilityDTO) => {
+          this.openEditCreateModal(f);
+        });
+    } else {
+      this.openEditCreateModal();
+    }
   }
-
   public getSubtitle(item: FacilityDTO): Observable<string> {
     return this.translateService.get(marker('organizations.departments.numDepartments'), {
       numItems: item.numDepartments.toString()
@@ -156,7 +152,7 @@ export class FacilitiesComponent implements OnInit {
 
   public showUsersAction(item: FacilityDTO): void {
     this.router.navigate([`${RouteConstants.ADMINISTRATION}/${RouteConstants.USERS}`], {
-      state: { brands: [{ id: this.brandId }], facilities: [item]}
+      state: { brands: [{ id: this.brandId }], facilities: [item] }
     });
   }
 
@@ -166,5 +162,26 @@ export class FacilitiesComponent implements OnInit {
       tap((data: FacilityDTO[]) => (this.hasFacilities = data.length > 0 ? true : false)),
       finalize(() => this.spinnerService.hide(spinner))
     );
+  }
+  private openEditCreateModal(facility?: FacilityDTO) {
+    this.customDialogService
+      .open({
+        id: CreateEditFacilityComponentModalEnum.ID,
+        panelClass: CreateEditFacilityComponentModalEnum.PANEL_CLASS,
+        component: CreateEditFacilityComponent,
+        extendedComponentData: facility ? facility : null,
+        disableClose: true,
+        width: '900px'
+      })
+      .pipe(take(1))
+      .subscribe((response) => {
+        if (response) {
+          this.globalMessageService.showSuccess({
+            message: this.translateService.instant(marker('common.successOperation')),
+            actionText: this.translateService.instant(marker('common.close'))
+          });
+          this.getFacilities();
+        }
+      });
   }
 }
