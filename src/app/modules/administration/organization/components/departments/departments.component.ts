@@ -66,29 +66,23 @@ export class DepartmentsComponent implements OnInit {
     );
   }
 
-  public buttonCreateEditAction(deparment?: DepartmentDTO) {
-    this.customDialogService
-      .open({
-        id: CreateEditDepartmentComponentModalEnum.ID,
-        panelClass: CreateEditDepartmentComponentModalEnum.PANEL_CLASS,
-        component: CreateEditDepartmentComponent,
-        extendedComponentData: {
-          department: deparment ? deparment : null,
-          facilityId: this.facilityId
-        },
-        disableClose: true,
-        width: '900px'
-      })
-      .pipe(take(1))
-      .subscribe((response) => {
-        if (response) {
-          this.globalMessageService.showSuccess({
-            message: this.translateService.instant(marker('common.successOperation')),
-            actionText: this.translateService.instant(marker('common.close'))
-          });
-          this.getDepartments();
-        }
-      });
+  public buttonCreateEditAction(department?: DepartmentDTO) {
+    if (department) {
+      const spinner = this.spinnerService.show();
+      this.departmentsService
+        .getDepartmentsById(department.id)
+        .pipe(
+          take(1),
+          finalize(() => {
+            this.spinnerService.hide(spinner);
+          })
+        )
+        .subscribe((f: DepartmentDTO) => {
+          this.openEditCreateModal(f);
+        });
+    } else {
+      this.openEditCreateModal();
+    }
   }
 
   public getSubtitle(item: DepartmentDTO): Observable<string> {
@@ -171,5 +165,29 @@ export class DepartmentsComponent implements OnInit {
       tap((data: DepartmentDTO[]) => (this.hasDepartments = data.length > 0 ? true : false)),
       finalize(() => this.spinnerService.hide(spinner))
     );
+  }
+  private openEditCreateModal(deparment?: DepartmentDTO) {
+    this.customDialogService
+      .open({
+        id: CreateEditDepartmentComponentModalEnum.ID,
+        panelClass: CreateEditDepartmentComponentModalEnum.PANEL_CLASS,
+        component: CreateEditDepartmentComponent,
+        extendedComponentData: {
+          department: deparment ? deparment : null,
+          facilityId: this.facilityId
+        },
+        disableClose: true,
+        width: '900px'
+      })
+      .pipe(take(1))
+      .subscribe((response) => {
+        if (response) {
+          this.globalMessageService.showSuccess({
+            message: this.translateService.instant(marker('common.successOperation')),
+            actionText: this.translateService.instant(marker('common.close'))
+          });
+          this.getDepartments();
+        }
+      });
   }
 }
