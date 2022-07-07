@@ -3,7 +3,29 @@
         "exit": "Salir de configuración",
         "organization": "Organización",
         "records": "Fichas",
-        "templates": "Plantillas",
+        "templates": {
+            "attachments": {
+                "create": "Crear plantilla de categorías de adjuntos",
+                "title": "Categoría de adjuntos"
+            },
+            "budgets": {
+                "create": "Crear plantilla de presupuestos",
+                "title": "Presupuestos"
+            },
+            "checklists": {
+                "create": "Crear checklist",
+                "title": "Checklists"
+            },
+            "clientTimeline": {
+                "create": "Crear timeline de cliente",
+                "title": "Timeline de cliente"
+            },
+            "communications": {
+                "create": "Crear plantilla de comunicación",
+                "title": "Comunicación"
+            },
+            "title": "Plantillas"
+        },
         "title": "Concenet",
         "users": "Usuarios",
         "viewProfile": "Ver perfil",

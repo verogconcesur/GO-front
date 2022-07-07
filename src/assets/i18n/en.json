@@ -3,7 +3,29 @@
         "exit": "Exit settings",
         "organization": "Organization",
         "records": "Records",
-        "templates": "Templates",
+        "templates": {
+            "attachments": {
+                "create": "Create attachment category template",
+                "title": "Attachments categories"
+            },
+            "budgets": {
+                "create": "Create budget template",
+                "title": "Budgets"
+            },
+            "checklists": {
+                "create": "Create checklist",
+                "title": "Checklists"
+            },
+            "clientTimeline": {
+                "create": "Create client timeline",
+                "title": "Client timeline"
+            },
+            "communications": {
+                "create": "Create communication template",
+                "title": "Communication"
+            },
+            "title": "Templates"
+        },
         "title": "Concenet",
         "users": "Users",
         "viewProfile": "View profile",
