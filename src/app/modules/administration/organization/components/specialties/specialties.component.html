@@ -2,8 +2,21 @@
     [showSearchOfFilterInput]="false"
     [title]="labels.title"
     [buttonLabel]="labels.createActionLabel"
-    (buttonCreateAction)="buttonCreateAction()"
+    (buttonCreateAction)="buttonCreateEditAction()"
 ></app-administration-common-header-section>
-<div *ngFor="let specialty of specialties$ | async">
-    <button mat-button>{{ specialty.name }}</button>
+<div class="specialties">
+    <div class="specialties__list" fxLayout="row wrap" fxLayoutAlign="flex-start center">
+        <app-organization-card
+            *ngFor="let item of specialties$ | async"
+            [item]="item"
+            [title]="item.name"
+            (edit)="editAction(item)"
+            (delete)="deleteAction(item)"
+            (duplicate)="duplicateAction(item)"
+            (showUsers)="showUsersAction(item)"
+        ></app-organization-card>
+    </div>
+    <div class="specialties__no-departments" *ngIf="!hasSpecialties">
+        {{ labels.noDataToShow | translate }}
+    </div>
 </div>

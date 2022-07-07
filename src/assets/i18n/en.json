@@ -125,6 +125,9 @@
         },
         "specialties": {
             "create": "Create specialty",
+            "delete": "Delete specialty",
+            "deleteConfirmation": "Do you really want to delete this specialty?",
+            "edit": "Edit specialty",
             "numSpecialties": "{numItems} {numItems, plural, =0{specialties} one{specialty} other{specialties}}",
             "title": "Specialties"
         }

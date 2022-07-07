@@ -18,6 +18,7 @@
 @import 'app/modules/administration/organization/components/create-edit-brand/create-edit-brand.component.scss-theme.scss';
 @import 'app/modules/administration/organization/components/create-edit-facility/create-edit-facility.component.scss-theme.scss';
 @import 'app/modules/administration/organization/components/create-edit-department/create-edit-department.component.scss-theme.scss';
+@import 'app/modules/administration/organization/components/create-edit-specialty/create-edit-specialty.component.scss-theme.scss';
 
 @mixin custom-components-theme($theme, $main-typography) {
   @include app-component-theme($theme);
@@ -36,6 +37,7 @@
   @include create-edit-brand-component-theme($theme, $main-typography);
   @include create-edit-facility-component-theme($theme, $main-typography);
   @include create-edit-department-component-theme($theme, $main-typography);
+  @include create-edit-specialty-component-theme($theme, $main-typography);
 }
 
 // Load theme and custom components styles for current theme

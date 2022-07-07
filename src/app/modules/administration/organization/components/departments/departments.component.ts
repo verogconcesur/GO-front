@@ -162,7 +162,7 @@ export class DepartmentsComponent implements OnInit {
     const spinner = this.spinnerService.show();
     this.departments$ = this.departmentsService.getDepartmentsByFacilitiesIds([this.facilityId]).pipe(
       take(1),
-      tap((data: DepartmentDTO[]) => (this.hasDepartments = data.length > 0 ? true : false)),
+      tap((data: DepartmentDTO[]) => (this.hasDepartments = data && data.length > 0 ? true : false)),
       finalize(() => this.spinnerService.hide(spinner))
     );
   }

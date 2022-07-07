@@ -159,7 +159,7 @@ export class FacilitiesComponent implements OnInit {
   private getFacilities(): void {
     const spinner = this.spinnerService.show();
     this.facilities$ = this.facilitiesService.getFacilitiesByBrandsIds([this.brandId]).pipe(
-      tap((data: FacilityDTO[]) => (this.hasFacilities = data.length > 0 ? true : false)),
+      tap((data: FacilityDTO[]) => (this.hasFacilities = data && data.length > 0 ? true : false)),
       finalize(() => this.spinnerService.hide(spinner))
     );
   }
