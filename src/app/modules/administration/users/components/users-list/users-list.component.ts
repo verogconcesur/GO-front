@@ -265,7 +265,7 @@ export class UsersListComponent implements OnInit {
     departments: filterValue?.departments?.map((dep: DepartmentDTO) => dep.id),
     facilities: filterValue?.facilities?.map((fac: FacilityDTO) => fac.id),
     roles: filterValue?.roles?.map((role: BrandDTO) => role.id),
-    specialties: filterValue?.specialties?.map((spec: BrandDTO) => spec.id)
+    specialties: filterValue?.specialties?.map((spec: SpecialtyDTO) => spec.id)
   });
 
   private initializeListeners(): void {

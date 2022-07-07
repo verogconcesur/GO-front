@@ -1,0 +1,52 @@
+<form [formGroup]="filterForm" *ngIf="filterForm" class="templates-filter" fxLayout="column" fxLayoutAlign="center center">
+    <!-- brands -->
+    <mat-form-field appearance="outline" floatLabel="always">
+        <mat-label>{{ labels.brand | translate }}</mat-label>
+        <mat-select formControlName="brands" multiple (selectionChange)="getFacilitiesOptions()">
+            <mat-option *ngFor="let brand of brandsAsyncList | async" [value]="brand">{{ brand.name }}</mat-option>
+        </mat-select>
+    </mat-form-field>
+    <!-- facilities -->
+    <mat-form-field appearance="outline" floatLabel="always">
+        <mat-label>{{ labels.facility | translate }}</mat-label>
+        <mat-select
+            formControlName="facilities"
+            multiple
+            (selectionChange)="getDepartmentsOptions()"
+            [disabled]="!facilitiesList || !facilitiesList.length"
+        >
+            <mat-optgroup *ngFor="let group of facilitiesList" [label]="group.brandName">
+                <mat-option *ngFor="let facility of group.facilities" [value]="facility">
+                    {{ facility.name }}
+                </mat-option>
+            </mat-optgroup>
+        </mat-select>
+    </mat-form-field>
+    <!-- departments -->
+    <mat-form-field appearance="outline" floatLabel="always">
+        <mat-label>{{ labels.department | translate }}</mat-label>
+        <mat-select
+            formControlName="departments"
+            multiple
+            (selectionChange)="getSpecialtiesOptions()"
+            [disabled]="!departmentsList || !departmentsList.length"
+        >
+            <mat-optgroup *ngFor="let group of departmentsList" [label]="group.facilityName">
+                <mat-option *ngFor="let department of group.departments" [value]="department">
+                    {{ department.name }}
+                </mat-option>
+            </mat-optgroup>
+        </mat-select>
+    </mat-form-field>
+    <!-- specialties -->
+    <mat-form-field appearance="outline" floatLabel="always">
+        <mat-label>{{ labels.specialty | translate }}</mat-label>
+        <mat-select formControlName="specialties" multiple [disabled]="!specialtiesList || !specialtiesList.length">
+            <mat-optgroup *ngFor="let group of specialtiesList" [label]="group.departmentName">
+                <mat-option *ngFor="let specialty of group.specialties" [value]="specialty">
+                    {{ specialty.name }}
+                </mat-option>
+            </mat-optgroup>
+        </mat-select>
+    </mat-form-field>
+</form>

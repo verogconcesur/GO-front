@@ -34,6 +34,11 @@ const routes: Routes = [
         loadChildren: () => import('./modules/administration/organization/organization.module').then((m) => m.OrganizationModule)
       },
       {
+        path: RouteConstants.TEMPLATES,
+        canActivate: [AuthGuardService],
+        loadChildren: () => import('./modules/administration/templates/templates.module').then((m) => m.TemplatesModule)
+      },
+      {
         path: RouteConstants.OTHER,
         pathMatch: 'full',
         redirectTo: RouteConstants.USERS

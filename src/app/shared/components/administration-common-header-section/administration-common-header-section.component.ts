@@ -71,7 +71,7 @@ export class AdministrationCommonHeaderSectionComponent implements OnInit {
           }
         })
       );
-    } else {
+    } else if (this.searchType === 'filter') {
       this.searchAction();
       return of([]);
     }
