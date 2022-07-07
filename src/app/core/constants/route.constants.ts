@@ -35,7 +35,14 @@ export enum RouteConstants {
   ID_FACILITY = ':idFacility',
   DEPARTMENTS = 'departments',
   ID_DEPARTMENT = ':idDepartment',
-  SPECIALTIES = 'specialties'
+  SPECIALTIES = 'specialties',
+  //Templates
+  TEMPLATES = 'templates',
+  COMMUNICATIONS = 'communications',
+  BUDGETS = 'budgets',
+  CHECKLISTS = 'checklists',
+  ATTACHMENTS = 'attachments',
+  CLIENT_TIMELINE = 'client-timeline'
 }
 
 export const RoutePermissionConstants: Record<string, PermissionConstants[]> = {
