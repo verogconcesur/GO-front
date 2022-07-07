@@ -157,7 +157,7 @@ export class BrandsComponent implements OnInit {
     const spinner = this.spinnerService.show();
     this.brands$ = this.brandsService.getAllBrandsList().pipe(
       take(1),
-      tap((data: BrandDTO[]) => (this.hasBrands = data.length > 0 ? true : false)),
+      tap((data: BrandDTO[]) => (this.hasBrands = data && data.length > 0 ? true : false)),
       finalize(() => this.spinnerService.hide(spinner))
     );
   }

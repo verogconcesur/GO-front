@@ -15,7 +15,10 @@ import { catchError, map, reduce } from 'rxjs/operators';
 export class SpecialtyService {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   private specialtiesByDepartments: any = {};
-  private readonly GET_SPECIALTY_PATH = '/api/specialties/findAllByDepartments/';
+  private readonly GET_SPECIALTY_PATH = '/api/specialties/';
+  private readonly GET_SPECIALTIES_PATH = '/api/specialties/findAllByDepartments/';
+  private readonly DELETE_SPECIALTY_PATH = '/api/specialties';
+  private readonly DUPLICATE_SPECIALTYT_PATH = '/api/specialties/duplicate';
 
   constructor(@Inject(ENV) private env: Env, private http: HttpClient) {}
 
@@ -55,11 +58,35 @@ export class SpecialtyService {
   public getSpecialtiesByDepartmentIds(ids: number[]): Observable<SpecialtyDTO[]> {
     if (ids && ids.length > 0) {
       return this.http
-        .get<SpecialtyDTO[]>(`${this.env.apiBaseUrl}${this.GET_SPECIALTY_PATH}${ids.join(',')}`)
+        .get<SpecialtyDTO[]>(`${this.env.apiBaseUrl}${this.GET_SPECIALTIES_PATH}${ids.join(',')}`)
         .pipe(catchError((error) => throwError(error as ConcenetError)));
     } else {
       return of([]);
     }
+  }
+
+  public getSpecialtiesById(id: number): Observable<SpecialtyDTO> {
+    return this.http
+      .get<SpecialtyDTO>(`${this.env.apiBaseUrl}${this.GET_SPECIALTY_PATH}${id}`)
+      .pipe(catchError((error) => throwError(error as ConcenetError)));
+  }
+
+  public addSpecialty(item: SpecialtyDTO): Observable<SpecialtyDTO> {
+    return this.http
+      .post<SpecialtyDTO>(`${this.env.apiBaseUrl}${this.GET_SPECIALTY_PATH}`, item)
+      .pipe(catchError((error) => throwError(error.error as ConcenetError)));
+  }
+
+  public deleteSpecialty(id: number): Observable<SpecialtyDTO> {
+    return this.http
+      .delete<SpecialtyDTO>(`${this.env.apiBaseUrl}${this.DELETE_SPECIALTY_PATH}/${id}`)
+      .pipe(catchError((error) => throwError(error.error as ConcenetError)));
+  }
+
+  public duplicateSpecialty(id: number): Observable<SpecialtyDTO> {
+    return this.http
+      .get<SpecialtyDTO>(`${this.env.apiBaseUrl}${this.DUPLICATE_SPECIALTYT_PATH}/${id}`)
+      .pipe(catchError((error) => throwError(error.error as ConcenetError)));
   }
 
   private getSpecialtiesToReturn(departmentIdsToUse: number[]): SpecialtiesGroupedByDepartment[] {

@@ -147,6 +147,9 @@
         },
         "specialties": {
             "create": "Crear especialidad",
+            "delete": "Eliminar especialidad",
+            "deleteConfirmation": "¿Realmente quiere eliminar esta especialidad?",
+            "edit": "Editar especialidad",
             "numSpecialties": "{numItems} {numItems, plural, =0{especialidades} one{especialidad} other{especialidades}}",
             "title": "Especialidades"
         }
