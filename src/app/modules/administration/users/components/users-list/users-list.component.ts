@@ -250,7 +250,13 @@ export class UsersListComponent implements OnInit {
   };
 
   private setSidenavFilterDrawerConfiguration = () => {
-    this.filterDrawerService.setComponentToShowInsideFilterDrawer(UsersFilterComponent, this.filterValue);
+    this.filterDrawerService.setComponentToShowInsideFilterDrawer(UsersFilterComponent, {
+      brands: this.filterValue?.brands ? this.filterValue.brands : [],
+      departments: this.filterValue?.departments ? this.filterValue.departments : [],
+      facilities: this.filterValue?.facilities ? this.filterValue.facilities : [],
+      roles: this.filterValue?.roles ? this.filterValue.roles : [],
+      specialties: this.filterValue?.specialties ? this.filterValue.specialties : []
+    });
     this.filterDrawerService.filterValueSubject$.pipe(untilDestroyed(this)).subscribe((filterValue: UserFilterDTO) => {
       this.filterValue = filterValue;
       setTimeout(() => this.getUsers());
