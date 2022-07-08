@@ -86,7 +86,7 @@ export class UsersFilterComponent extends FilterDrawerClassToExnted implements O
     return of(this.filterForm.value);
   }
   public isFilterFormTouchedOrDirty(): boolean {
-    return this.filterForm?.touched || this.filterForm?.dirty;
+    return this.filterForm?.dirty;
   }
   public isFilterFormValid(): boolean {
     return this.filterForm?.valid;
@@ -192,10 +192,32 @@ export class UsersFilterComponent extends FilterDrawerClassToExnted implements O
                   sg.specialties.filter((s: SpecialtyDTO) => s.id === specialty.id).length > 0
               ).length > 0
           );
+          if (init) {
+            //Usado cuando los filtros se setean empleando la navegación que sólo le pasa el id del elemento
+            selected = selected.map((specialty: SpecialtyDTO) => {
+              let itemToReturn = specialty;
+              this.specialtiesList.find((sg: SpecialtiesGroupedByDepartment) =>
+              sg.specialties.find((s: SpecialtyDTO) => {
+                  if (s.id === specialty.id) {
+                    itemToReturn = s;
+                    return true;
+                  }
+                  return false;
+                })
+              );
+              return itemToReturn;
+            });
+          }
           this.filterForm.get('specialties').setValue(selected);
           if (init) {
             this.defaultValue = this.filterForm.value;
-            this.filterDrawerService.filterValueSubject$.next(this.defaultValue);
+            this.filterDrawerService.filterValueSubject$.next({
+              brands: this.defaultValue?.brands ? this.defaultValue.brands : [],
+              departments: this.defaultValue?.departments ? this.defaultValue.departments : [],
+              facilities: this.defaultValue?.facilities ? this.defaultValue.facilities : [],
+              roles: this.defaultValue?.roles ? this.defaultValue.roles : [],
+              specialties: this.defaultValue?.specialties ? this.defaultValue.specialties : []
+            });
           }
         },
         error: (error) => {
