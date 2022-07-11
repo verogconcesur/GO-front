@@ -18,6 +18,7 @@
 @import 'app/modules/administration/organization/components/create-edit-brand/create-edit-brand.component.scss-theme.scss';
 @import 'app/modules/administration/organization/components/create-edit-facility/create-edit-facility.component.scss-theme.scss';
 @import 'app/modules/administration/organization/components/create-edit-department/create-edit-department.component.scss-theme.scss';
+@import 'app/modules/administration/templates/template-common-styles.scss-theme.scss';
 @import 'app/modules/administration/organization/components/create-edit-specialty/create-edit-specialty.component.scss-theme.scss';
 
 @mixin custom-components-theme($theme, $main-typography) {
@@ -37,6 +38,7 @@
   @include create-edit-brand-component-theme($theme, $main-typography);
   @include create-edit-facility-component-theme($theme, $main-typography);
   @include create-edit-department-component-theme($theme, $main-typography);
+  @include template-common-styles-theme($theme, $main-typography);
   @include create-edit-specialty-component-theme($theme, $main-typography);
 }
 
@@ -59,6 +61,7 @@
 @import 'mat-tooltip.scss';
 @import 'mat-menu.scss';
 @import 'global-message.scss';
+@import 'drag-drop.scss';
 
 @include globals-theme($concenet-theme, $concenet-main-typography);
 @include custom-mat-input-theme($concenet-theme, $concenet-main-typography);
@@ -72,3 +75,4 @@
 @include custom-mat-tooltip-theme($concenet-theme, $concenet-main-typography);
 @include custom-mat-menu-theme($concenet-theme, $concenet-main-typography);
 @include global-message-theme($concenet-theme, $concenet-main-typography);
+@include custom-drag-drop-theme($concenet-theme, $concenet-main-typography);

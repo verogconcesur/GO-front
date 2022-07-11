@@ -1,0 +1,68 @@
+@import '@angular/material/theming';
+@import 'utils/core';
+
+@mixin template-common-styles-theme($theme, $main-typo) {
+  $primary: map-get($theme, primary);
+  $foreground: map-get($theme, foreground);
+
+  //List items
+  .items-list-wrapper {
+    padding: 50px 30px;
+    .items-list-container {
+      box-sizing: border-box;
+      @include respond-to($tablet-small) {
+        padding: 50px 0;
+      }
+
+      .mat-item-card__icons {
+        cursor: pointer;
+      }
+
+      &__no-data {
+        width: 100%;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+      }
+    }
+  }
+
+  //Create Edit template
+  .create-edit-template-content {
+    .create-edit-template-content__form {
+      .template-data__section {
+        &__title {
+          color: mat-color($primary, 500);
+          font-size: 1rem;
+          font-weight: 600;
+        }
+        &__info {
+          font-size: 0.85rem;
+        }
+        &__group {
+          mat-form-field {
+            width: 97%;
+            margin: 0 7px;
+          }
+          &__title {
+            color: mat-contrast($primary, 100);
+            font-size: 0.75rem;
+            font-weight: 600;
+          }
+        }
+      }
+      .smaller-mat-form-fields {
+        @include respond-to(calc(#{$tablet-small} - 25px)) {
+          mat-form-field {
+            width: 95%;
+          }
+        }
+        @include respond-to(calc(#{$mobile} - 120px)) {
+          mat-form-field {
+            width: 97%;
+          }
+        }
+      }
+    }
+  }
+}

@@ -92,7 +92,7 @@
           &.active,
           &:hover {
             background-color: mat-contrast($primary, 800);
-            color: mat-contrast($primary, 500);
+            color: mat-contrast($primary, 400);
             font-weight: 600;
           }
         }
