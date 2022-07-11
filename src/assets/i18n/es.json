@@ -9,7 +9,14 @@
                 "title": "Categoría de adjuntos"
             },
             "budgets": {
+                "add": "Nueva plantilla de presupuesto",
                 "create": "Crear plantilla de presupuestos",
+                "delete": "Eliminar plantilla de presupuesto",
+                "deleteConfirmation": "¿Realmente quieres eliminar esta plantilla?",
+                "edit": "Editar plantilla de presupuesto",
+                "lineConcept": "Concepto de la línea",
+                "lines": "Líneas",
+                "name": "Nombre plantilla presupuesto",
                 "title": "Presupuestos"
             },
             "checklists": {
@@ -51,6 +58,9 @@
         "cif": "CIF",
         "close": "Cerrar",
         "country": "País",
+        "create": "Crear",
+        "dateEnd": "Fecha de fin",
+        "dateIni": "Fecha de inicio",
         "delete": "Eliminar",
         "duplicate": "Duplicar",
         "edit": "Editar",
@@ -62,6 +72,7 @@
         "insert": "Insertar",
         "insertTextHere": "Introduzca el texto aquí.",
         "logo": "Logo",
+        "newLine": "Nueva línea",
         "postalCode": "Código Postal",
         "province": "Provincia",
         "reset": "Restaurar",

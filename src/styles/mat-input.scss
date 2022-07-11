@@ -23,6 +23,9 @@
       margin-top: 0.2em;
       background-color: mat-color($background, note-background);
     }
+    &.date-picker .mat-form-field-subscript-wrapper {
+      margin-top: 2.2em;
+    }
 
     //Focused
     &.mat-focused {
@@ -54,6 +57,11 @@
     .mat-form-field-appearance-outline .mat-form-field-suffix {
       padding: 0.25em 0 0.75em 0;
       font-size: 14px;
+    }
+    .mat-form-field-appearance-outline.date-picker .mat-form-field-infix,
+    .mat-form-field-appearance-outline.date-picker .mat-form-field-suffix {
+      padding: 0.25em 0 0.6em 0;
+      margin-top: -0.3em;
     }
     &__button-height {
       &.mat-form-field-appearance-outline .mat-form-field-infix,

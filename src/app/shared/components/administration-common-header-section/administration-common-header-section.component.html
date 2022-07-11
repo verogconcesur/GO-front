@@ -57,7 +57,10 @@
             <mat-icon>filter_list</mat-icon>
         </button>
         <button class="create-action" (click)="buttonCreateAction.emit()" mat-raised-button color="primary">
-            {{ buttonLabel | translate }}
+            <span class="create-action__small-label">{{
+                buttonSmallLabel ? (buttonSmallLabel | translate) : (buttonLabel | translate)
+            }}</span>
+            <span class="create-action__normal-label">{{ buttonLabel | translate }}</span>
         </button>
     </div>
 </div>

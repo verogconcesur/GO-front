@@ -4,7 +4,7 @@
   $primary: map-get($theme, primary);
   $foreground: map-get($theme, foreground);
 
-  .mat-role-card {
+  .mat-item-card {
     margin-bottom: 20px;
     max-width: calc(50% - 20px);
 

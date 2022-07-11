@@ -9,7 +9,14 @@
                 "title": "Attachments categories"
             },
             "budgets": {
+                "add": "New budget template",
                 "create": "Create budget template",
+                "delete": "Delete budget template",
+                "deleteConfirmation": "Do you really want to delete this budget template?",
+                "edit": "Edit budget template",
+                "lineConcept": "Line concept",
+                "lines": "Lines",
+                "name": "Budget's template name",
                 "title": "Budgets"
             },
             "checklists": {
@@ -51,6 +58,9 @@
         "cif": "CIF",
         "close": "Close",
         "country": "Country",
+        "create": "Create",
+        "dateEnd": "Final date",
+        "dateIni": "Initial date",
         "delete": "Delete",
         "duplicate": "Duplicate",
         "edit": "Edit",
@@ -62,6 +72,7 @@
         "insert": "Insert",
         "insertTextHere": "Insert text here.",
         "logo": "Logo",
+        "newLine": "New line",
         "postalCode": "Postal Code",
         "province": "Province",
         "reset": "Reset",
