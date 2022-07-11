@@ -14,6 +14,7 @@ import { map, switchMap, take } from 'rxjs/operators';
 export class AdministrationCommonHeaderSectionComponent implements OnInit {
   @Input() searchType: 'search' | 'filter' | '';
   @Input() buttonLabel: string;
+  @Input() buttonSmallLabel: string;
   @Input() showSearchOfFilterInput = true;
   @Input() showFilterButton = false;
   @Input() title = '';

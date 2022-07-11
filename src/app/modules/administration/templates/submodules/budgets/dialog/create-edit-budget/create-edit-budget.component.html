@@ -1,0 +1,280 @@
+<div class="create-edit-template-content" fxLayout="column" fxLayoutAlign="center center">
+    <div *ngIf="!isModalModeActive()">
+        <div class="create-edit-template-content__title mat-display-2">{{ labels.title | translate }}</div>
+    </div>
+    <div class="create-edit-template-content__form">
+        <form [formGroup]="budgetForm" *ngIf="budgetForm" class="smaller-mat-form-fields">
+            <!-- General Data -->
+            <div class="template-data__section">
+                <div class="template-data__section__title first-child">
+                    {{ labels.data | translate }}
+                </div>
+                <div class="template-data__section__group grid-group" formGroupName="template">
+                    <!-- Name -->
+                    <mat-form-field appearance="outline" floatLabel="always" class="first-item">
+                        <mat-label>{{ labels.name | translate }}</mat-label>
+                        <input matInput formControlName="name" />
+                        <mat-error
+                            class="template-data__error"
+                            *ngIf="budgetForm.get('template.name').invalid && budgetForm.get('template.name').touched"
+                        >
+                            {{ labels.nameRequired | translate }}
+                        </mat-error>
+                    </mat-form-field>
+                    <!-- brands -->
+                    <mat-form-field appearance="outline" floatLabel="always">
+                        <mat-label>{{ labels.brand | translate }}</mat-label>
+                        <mat-select formControlName="brands" multiple (selectionChange)="getFacilitiesOptions()">
+                            <button
+                                mat-button
+                                class="mat-button-w-100-left"
+                                *ngIf="!hasAllSelected('brands', budgetForm.get('template.brands'), brandsList)"
+                                (click)="selectAll('brands', budgetForm.get('template.brands'), brandsList)"
+                            >
+                                {{ labels.selectAll | translate }}
+                            </button>
+                            <button
+                                mat-button
+                                class="mat-button-w-100-left"
+                                *ngIf="hasAllSelected('brands', budgetForm.get('template.brands'), brandsList)"
+                                (click)="unselectAll('brands', budgetForm.get('template.brands'))"
+                            >
+                                {{ labels.unselectAll | translate }}
+                            </button>
+                            <mat-option *ngFor="let brand of brandsAsyncList | async" [value]="brand">{{
+                                brand.name
+                            }}</mat-option>
+                        </mat-select>
+                        <mat-error *ngIf="budgetForm.get('template.brands').invalid && budgetForm.get('template.brands').touched">
+                            <span *ngIf="budgetForm.get('template.brands').errors.required">{{
+                                labels.required | translate
+                            }}</span>
+                        </mat-error>
+                    </mat-form-field>
+
+                    <!-- facilities -->
+                    <mat-form-field appearance="outline" floatLabel="always">
+                        <mat-label>{{ labels.facility | translate }}</mat-label>
+                        <mat-select
+                            formControlName="facilities"
+                            multiple
+                            (selectionChange)="getDepartmentsOptions()"
+                            [disabled]="!facilitiesList || !facilitiesList.length"
+                        >
+                            <button
+                                mat-button
+                                class="mat-button-w-100-left"
+                                *ngIf="!hasAllSelected('facilities', budgetForm.get('template.facilities'), facilitiesList)"
+                                (click)="selectAll('facilities', budgetForm.get('template.facilities'), facilitiesList)"
+                            >
+                                {{ labels.selectAll | translate }}
+                            </button>
+                            <button
+                                mat-button
+                                class="mat-button-w-100-left"
+                                *ngIf="hasAllSelected('facilities', budgetForm.get('template.facilities'), facilitiesList)"
+                                (click)="unselectAll('facilities', budgetForm.get('template.facilities'))"
+                            >
+                                {{ labels.unselectAll | translate }}
+                            </button>
+                            <mat-optgroup *ngFor="let group of facilitiesList" [label]="group.brandName">
+                                <mat-option *ngFor="let facility of group.facilities" [value]="facility">
+                                    {{ facility.name }}
+                                </mat-option>
+                            </mat-optgroup>
+                        </mat-select>
+                        <mat-error
+                            *ngIf="budgetForm.get('template.facilities').invalid && budgetForm.get('template.facilities').touched"
+                        >
+                            <span *ngIf="budgetForm.get('template.facilities').errors.required">{{
+                                labels.required | translate
+                            }}</span>
+                        </mat-error>
+                    </mat-form-field>
+                    <!-- departments -->
+                    <mat-form-field appearance="outline" floatLabel="always">
+                        <mat-label>{{ labels.department | translate }}</mat-label>
+                        <mat-select
+                            formControlName="departments"
+                            multiple
+                            (selectionChange)="getSpecialtiesOptions()"
+                            [disabled]="!departmentsList || !departmentsList.length"
+                        >
+                            <button
+                                mat-button
+                                class="mat-button-w-100-left"
+                                *ngIf="!hasAllSelected('departments', budgetForm.get('template.departments'), departmentsList)"
+                                (click)="selectAll('departments', budgetForm.get('template.departments'), departmentsList)"
+                            >
+                                {{ labels.selectAll | translate }}
+                            </button>
+                            <button
+                                mat-button
+                                class="mat-button-w-100-left"
+                                *ngIf="hasAllSelected('departments', budgetForm.get('template.departments'), departmentsList)"
+                                (click)="unselectAll('departments', budgetForm.get('template.departments'))"
+                            >
+                                {{ labels.unselectAll | translate }}
+                            </button>
+
+                            <mat-optgroup *ngFor="let group of departmentsList" [label]="group.facilityName">
+                                <mat-option *ngFor="let department of group.departments" [value]="department">
+                                    {{ department.name }}
+                                </mat-option>
+                            </mat-optgroup>
+                        </mat-select>
+                        <mat-error
+                            *ngIf="
+                                budgetForm.get('template.departments').invalid && budgetForm.get('template.departments').touched
+                            "
+                        >
+                            <span *ngIf="budgetForm.get('template.departments').errors.required">{{
+                                labels.required | translate
+                            }}</span>
+                        </mat-error>
+                    </mat-form-field>
+                    <!-- specialties -->
+                    <mat-form-field appearance="outline" floatLabel="always">
+                        <mat-label>{{ labels.specialty | translate }}</mat-label>
+                        <mat-select
+                            formControlName="specialties"
+                            multiple
+                            [disabled]="!specialtiesList || !specialtiesList.length"
+                        >
+                            <button
+                                mat-button
+                                class="mat-button-w-100-left"
+                                *ngIf="!hasAllSelected('specialties', budgetForm.get('template.specialties'), specialtiesList)"
+                                (click)="selectAll('specialties', budgetForm.get('template.specialties'), specialtiesList)"
+                            >
+                                {{ labels.selectAll | translate }}
+                            </button>
+                            <button
+                                mat-button
+                                class="mat-button-w-100-left"
+                                *ngIf="hasAllSelected('specialties', budgetForm.get('template.specialties'), specialtiesList)"
+                                (click)="unselectAll('specialties', budgetForm.get('template.specialties'))"
+                            >
+                                {{ labels.unselectAll | translate }}
+                            </button>
+
+                            <mat-optgroup *ngFor="let group of specialtiesList" [label]="group.departmentName">
+                                <mat-option *ngFor="let specialty of group.specialties" [value]="specialty">
+                                    {{ specialty.name }}
+                                </mat-option>
+                            </mat-optgroup>
+                        </mat-select>
+                    </mat-form-field>
+                </div>
+
+                <div class="template-data__section__group grid-group">
+                    <mat-form-field
+                        appearance="outline"
+                        class="smaller-mat-form-fields__no-margin date-picker"
+                        floatLabel="always"
+                    >
+                        <mat-label>{{ labels.iniDate | translate }}</mat-label>
+                        <input
+                            matInput
+                            readonly
+                            [matDatepicker]="pickerIni"
+                            placeholder="DD/MM/YYYY"
+                            formControlName="startDate"
+                            [max]="endDate"
+                            (dateChange)="startDate = $event.value"
+                        />
+                        <mat-datepicker-toggle matSuffix [for]="pickerIni"></mat-datepicker-toggle>
+                        <mat-datepicker #pickerIni></mat-datepicker>
+                        <mat-error *ngIf="budgetForm.get('startDate').invalid && budgetForm.get('startDate').touched">
+                            <span *ngIf="budgetForm.get('startDate').errors.required">{{ labels.required | translate }}</span>
+                        </mat-error>
+                    </mat-form-field>
+                    <mat-form-field
+                        appearance="outline"
+                        class="smaller-mat-form-fields__no-margin date-picker"
+                        floatLabel="always"
+                    >
+                        <mat-label>{{ labels.endDate | translate }}</mat-label>
+                        <input
+                            matInput
+                            readonly
+                            [matDatepicker]="pickerEnd"
+                            placeholder="DD/MM/YYYY"
+                            formControlName="endDate"
+                            [min]="startDate"
+                            (dateChange)="endDate = $event.value"
+                        />
+                        <mat-datepicker-toggle matSuffix [for]="pickerEnd"></mat-datepicker-toggle>
+                        <mat-datepicker #pickerEnd></mat-datepicker>
+                        <mat-error *ngIf="budgetForm.get('endDate').invalid && budgetForm.get('endDate').touched">
+                            <span *ngIf="budgetForm.get('endDate').errors.required">{{ labels.required | translate }}</span>
+                        </mat-error>
+                    </mat-form-field>
+                </div>
+            </div>
+            <!-- Budget lines -->
+            <div class="template-data__section">
+                <div class="template-data__section__title first-child">{{ labels.budgetsLines | translate }} *</div>
+                <div class="template-data__section__group">
+                    <div cdkDropListGroup>
+                        <div
+                            cdkDropList
+                            class="droplist-with-handle budgets-lines-list"
+                            (cdkDropListDropped)="dropBudgetLine($event)"
+                        >
+                            <ng-container *ngFor="let itemForm of templateBudgetLines.controls; let i = index">
+                                <div
+                                    class="draggable-item budget-line smaller-mat-form-fields"
+                                    [formGroup]="itemForm"
+                                    cdkDrag
+                                    cdkDragBoundary=".budgets-lines-list"
+                                >
+                                    <div class="budget-line-custom-placeholder" *cdkDragPlaceholder></div>
+                                    <mat-icon cdkDragHandle class="opacity-04">drag_indicator</mat-icon>
+
+                                    <mat-form-field
+                                        appearance="outline"
+                                        class="smaller-mat-form-fields__no-margin"
+                                        floatLabel="always"
+                                    >
+                                        <mat-label>Concepto</mat-label>
+                                        <input type="text" matInput formControlName="description" />
+                                        <!-- <input type="text" matInput [(ngModel)]="item.description" /> -->
+                                    </mat-form-field>
+
+                                    <mat-form-field
+                                        appearance="outline"
+                                        class="smaller-mat-form-fields__no-margin"
+                                        floatLabel="always"
+                                    >
+                                        <mat-label>Precio</mat-label>
+                                        <input type="number" min="0" matInput formControlName="amount" />
+                                        <span matSuffix>€</span>
+                                    </mat-form-field>
+
+                                    <div class="budget-line__actions">
+                                        <button mat-button class="opacity-04" (click)="deleteBudgetLine(i)">
+                                            <mat-icon>close</mat-icon>
+                                        </button>
+                                    </div>
+                                </div>
+                            </ng-container>
+                        </div>
+                    </div>
+                    <mat-error *ngIf="budgetForm.get('templateBudgetLines').invalid">
+                        <span *ngIf="budgetForm?.get('templateBudgetLines')?.errors?.required && budgetForm?.touched">{{
+                            labels.required | translate
+                        }}</span>
+                    </mat-error>
+                    <button mat-button class="v-align-bottom opacity-06 no-padding" (click)="addBudgetLine()">
+                        <mat-icon>add</mat-icon>
+                        {{ labels.newLine | translate }}
+                    </button>
+                </div>
+            </div>
+        </form>
+    </div>
+    <div class="create-edit-template-content__buttons">
+        <!-- TODO: buttons used when the component is not opened with customDialogService -->
+    </div>
+</div>

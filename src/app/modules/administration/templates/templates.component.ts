@@ -40,7 +40,8 @@ export class TemplatesComponent implements OnInit {
     createBudgets: marker('administration.templates.budgets.create'),
     createChecklists: marker('administration.templates.checklists.create'),
     createAttachments: marker('administration.templates.attachments.create'),
-    createClientTimeline: marker('administration.templates.clientTimeline.create')
+    createClientTimeline: marker('administration.templates.clientTimeline.create'),
+    create: marker('common.create')
   };
 
   private lastFilterSearch: string;
@@ -73,18 +74,18 @@ export class TemplatesComponent implements OnInit {
     }
   }
 
-  public getHeaderCreateButtonLabel(): string {
+  public getHeaderCreateButtonLabel(type?: 'small'): string {
     switch (this.selectedTab) {
       case RouteConstants.COMMUNICATIONS:
-        return this.labels.createCommunication;
+        return type && type === 'small' ? this.labels.create : this.labels.createCommunication;
       case RouteConstants.BUDGETS:
-        return this.labels.createBudgets;
+        return type && type === 'small' ? this.labels.create : this.labels.createBudgets;
       case RouteConstants.CHECKLISTS:
-        return this.labels.createChecklists;
+        return type && type === 'small' ? this.labels.create : this.labels.createChecklists;
       case RouteConstants.ATTACHMENTS:
-        return this.labels.createAttachments;
+        return type && type === 'small' ? this.labels.create : this.labels.createAttachments;
       case RouteConstants.CLIENT_TIMELINE:
-        return this.labels.createClientTimeline;
+        return type && type === 'small' ? this.labels.create : this.labels.createClientTimeline;
     }
   }
 
