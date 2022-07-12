@@ -1,20 +1,24 @@
 import { Component, OnInit } from '@angular/core';
 import { PageEvent } from '@angular/material/paginator';
+import { marker } from '@biesbjerg/ngx-translate-extract-marker';
 import PaginationResponseI from '@data/interfaces/pagination-response';
 import BrandDTO from '@data/models/brand-dto';
 import DepartmentDTO from '@data/models/department-dto';
 import FacilityDTO from '@data/models/facility-dto';
 import SpecialtyDTO from '@data/models/specialty-dto';
-import TemplatesCommunicationDTO from '@data/models/templates-communication-dto';
+import TemplatesCommonDTO from '@data/models/templates-common-dto';
 import TemplatesFilterDTO from '@data/models/templates-filter-dto';
 import { TemplatesCommunicationService } from '@data/services/templates-communication.service';
+import { CustomDialogService } from '@jenga/custom-dialog';
 import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
+import { TranslateService } from '@ngx-translate/core';
 // eslint-disable-next-line max-len
 import { AdministrationCommonHeaderSectionClassToExtend } from '@shared/components/administration-common-header-section/administration-common-header-section-class-to-extend';
 import { FilterDrawerService } from '@shared/modules/filter-drawer/services/filter-drawer.service';
+import { GlobalMessageService } from '@shared/services/global-message.service';
 import { ProgressSpinnerDialogService } from '@shared/services/progress-spinner-dialog.service';
 import { Observable, of } from 'rxjs';
-import { finalize, map, take } from 'rxjs/operators';
+import { map, take, finalize } from 'rxjs/operators';
 
 @UntilDestroy()
 @Component({
@@ -23,7 +27,10 @@ import { finalize, map, take } from 'rxjs/operators';
   styleUrls: ['./communication.component.scss']
 })
 export class CommunicationComponent extends AdministrationCommonHeaderSectionClassToExtend implements OnInit {
-  public dataSource: TemplatesCommunicationDTO[] = [];
+  public labels = {
+    noDataToShow: marker('errors.noDataToShow')
+  };
+  public dataSource: TemplatesCommonDTO[] = [];
   public paginationConfig = {
     length: 1,
     pageSize: 5,
@@ -36,8 +43,11 @@ export class CommunicationComponent extends AdministrationCommonHeaderSectionCla
 
   constructor(
     private filterDrawerService: FilterDrawerService,
-    private communicationService: TemplatesCommunicationService,
-    private spinnerService: ProgressSpinnerDialogService
+    private comunicationService: TemplatesCommunicationService,
+    private spinnerService: ProgressSpinnerDialogService,
+    private customDialogService: CustomDialogService,
+    private globalMessageService: GlobalMessageService,
+    private translateService: TranslateService
   ) {
     super();
   }
@@ -47,13 +57,13 @@ export class CommunicationComponent extends AdministrationCommonHeaderSectionCla
   }
 
   public headerCreateAction(): void {
-    throw new Error('Method headerCreateAction not implemented.');
+    this.openCreateEditCommunicationDialog();
   }
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   public headerGetFilteredData(text: string): Observable<{ content: any[]; optionLabelFn: (option: any) => string }> {
     this.textSearchValue = text;
     if (text.length >= 3) {
-      return this.communicationService
+      return this.comunicationService
         .searchCommunicationsTemplates(
           {
             ...this.transformFilterValue(this.filterValue),
@@ -65,7 +75,8 @@ export class CommunicationComponent extends AdministrationCommonHeaderSectionCla
           }
         )
         .pipe(
-          map((response: PaginationResponseI<TemplatesCommunicationDTO>) => ({
+          take(1),
+          map((response: PaginationResponseI<TemplatesCommonDTO>) => ({
             content: response.content,
             optionLabelFn: this.optionLabelFn
           }))
@@ -77,7 +88,6 @@ export class CommunicationComponent extends AdministrationCommonHeaderSectionCla
       });
     }
   }
-
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   public headerSearchAction(opt: any): void {
     if (opt && typeof opt !== 'string') {
@@ -88,7 +98,6 @@ export class CommunicationComponent extends AdministrationCommonHeaderSectionCla
     }
     this.getData();
   }
-
   public getData(pageEvent?: PageEvent): void {
     const spinner = this.spinnerService.show();
     if (pageEvent) {
@@ -97,7 +106,7 @@ export class CommunicationComponent extends AdministrationCommonHeaderSectionCla
     } else {
       this.paginationConfig.page = 0;
     }
-    this.communicationService
+    this.comunicationService
       .searchCommunicationsTemplates(
         {
           ...this.transformFilterValue(this.filterValue),
@@ -112,19 +121,27 @@ export class CommunicationComponent extends AdministrationCommonHeaderSectionCla
         take(1),
         finalize(() => this.spinnerService.hide(spinner))
       )
-      .subscribe((response: PaginationResponseI<TemplatesCommunicationDTO>) => {
+      .subscribe((response: PaginationResponseI<TemplatesCommonDTO>) => {
         this.paginationConfig.length = response.totalElements;
         this.dataSource = response.content;
       });
   }
 
-  public optionLabelFn = (option: TemplatesCommunicationDTO): string => {
+  public deleteCommunication(id: number) {
+    console.log('eliminar', id);
+  }
+
+  public optionLabelFn = (option: TemplatesCommonDTO): string => {
     if (option) {
       let name = '';
       name += option.name ? option.name : '';
       return name;
     }
     return '';
+  };
+
+  public openCreateEditCommunicationDialog = (budget?: TemplatesCommonDTO): void => {
+    console.log('openCreateEditCommunication');
   };
 
   private initializeFilterListener() {
