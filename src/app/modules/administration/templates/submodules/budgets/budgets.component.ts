@@ -16,6 +16,7 @@ import { TranslateService } from '@ngx-translate/core';
 // eslint-disable-next-line max-len
 import { AdministrationCommonHeaderSectionClassToExtend } from '@shared/components/administration-common-header-section/administration-common-header-section-class-to-extend';
 import { FilterDrawerService } from '@shared/modules/filter-drawer/services/filter-drawer.service';
+import { ConfirmDialogService } from '@shared/services/confirm-dialog.service';
 import { GlobalMessageService } from '@shared/services/global-message.service';
 import { ProgressSpinnerDialogService } from '@shared/services/progress-spinner-dialog.service';
 import { Observable, of } from 'rxjs';
@@ -52,7 +53,8 @@ export class BudgetsComponent extends AdministrationCommonHeaderSectionClassToEx
     private spinnerService: ProgressSpinnerDialogService,
     private customDialogService: CustomDialogService,
     private globalMessageService: GlobalMessageService,
-    private translateService: TranslateService
+    private translateService: TranslateService,
+    private confirmDialogService: ConfirmDialogService
   ) {
     super();
   }
@@ -64,6 +66,20 @@ export class BudgetsComponent extends AdministrationCommonHeaderSectionClassToEx
   public headerCreateAction(): void {
     this.openCreateEditBudgetDialog();
   }
+
+  public editAction(budget: TemplatesBudgetDTO): void {
+    const spinner = this.spinnerService.show();
+    this.budgetService
+      .findById(budget.id)
+      .pipe(
+        take(1),
+        finalize(() => this.spinnerService.hide(spinner))
+      )
+      .subscribe((b: TemplatesBudgetDetailsDTO) => {
+        this.openCreateEditBudgetDialog(b);
+      });
+  }
+
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   public headerGetFilteredData(text: string): Observable<{ content: any[]; optionLabelFn: (option: any) => string }> {
     this.textSearchValue = text;
@@ -133,7 +149,33 @@ export class BudgetsComponent extends AdministrationCommonHeaderSectionClassToEx
   }
 
   public deleteBudget(id: number) {
-    console.log('eliminar', id);
+    this.confirmDialogService
+      .open({
+        title: this.translateService.instant(marker('common.warning')),
+        message: this.translateService.instant(marker('administration.templates.budgets.deleteConfirmation'))
+      })
+      .subscribe((ok: boolean) => {
+        if (ok) {
+          const spinner = this.spinnerService.show();
+          this.budgetService
+            .deleteBudgetById(id)
+            .pipe(
+              take(1),
+              finalize(() => this.spinnerService.hide(spinner))
+            )
+            .subscribe({
+              next: (response) => {
+                setTimeout(() => this.getData());
+              },
+              error: (error) => {
+                this.globalMessageService.showError({
+                  message: error.message,
+                  actionText: this.translateService.instant(marker('common.close'))
+                });
+              }
+            });
+        }
+      });
   }
 
   public optionLabelFn = (option: TemplatesBudgetDTO): string => {
@@ -145,7 +187,7 @@ export class BudgetsComponent extends AdministrationCommonHeaderSectionClassToEx
     return '';
   };
 
-  public openCreateEditBudgetDialog = (budget?: TemplatesBudgetDetailsDTO): void => {
+  private openCreateEditBudgetDialog = (budget?: TemplatesBudgetDetailsDTO): void => {
     this.customDialogService
       .open({
         id: CreateEditBudgetComponentModalEnum.ID,
