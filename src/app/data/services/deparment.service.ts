@@ -5,7 +5,7 @@ import { ENV } from '@app/constants/global.constants';
 import { Env } from '@app/types/env';
 import { ConcenetError } from '@app/types/error';
 import DepartmentsGroupedByFacility from '@data/interfaces/departments-grouped-by-facility';
-import FacilitiesGroupedByBrand from '@data/interfaces/facilities-grouped-by-brand';
+import BrandDTO from '@data/models/brand-dto';
 import DepartmentDTO from '@data/models/department-dto';
 import FacilityDTO from '@data/models/facility-dto';
 import { forkJoin, Observable, of, throwError } from 'rxjs';

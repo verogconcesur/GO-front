@@ -15,7 +15,13 @@
             (selectionChange)="getDepartmentsOptions()"
             [disabled]="!facilitiesList || !facilitiesList.length"
         >
-            <mat-optgroup *ngFor="let group of facilitiesList" [label]="group.brandName">
+            <mat-optgroup
+                *ngFor="let group of facilitiesList"
+                [label]="group.brandName"
+                matTooltip="{{ group.tooltipBrandName }}"
+                [matTooltipDisabled]="!group.tooltipBrandName"
+                matTooltipPosition="before"
+            >
                 <mat-option *ngFor="let facility of group.facilities" [value]="facility">
                     {{ facility.name }}
                 </mat-option>

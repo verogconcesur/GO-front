@@ -115,14 +115,11 @@ export class CreateEditBudgetComponent extends ComponentToExtendForCustomDialog 
     }
   }
 
-  public dateChange($event: any) {
-    console.log($event);
-  }
-
   public onSubmitCustomDialog(): Observable<boolean | TemplatesBudgetDetailsDTO> {
     const formValue = this.budgetForm.value;
     if (this.budgetToEdit) {
       formValue.id = this.budgetToEdit.id;
+      formValue.template.id = this.budgetToEdit.template.id;
     }
     const spinner = this.spinnerService.show();
     return this.budgetService.addOrEditBudget(formValue).pipe(
@@ -184,6 +181,8 @@ export class CreateEditBudgetComponent extends ComponentToExtendForCustomDialog 
       return item;
     });
     this.templateBudgetLines.setValue(list);
+    this.budgetForm.get('templateBudgetLines').markAsDirty();
+    this.budgetForm.get('templateBudgetLines').markAsTouched();
   }
 
   public addBudgetLine() {
@@ -392,9 +391,13 @@ export class CreateEditBudgetComponent extends ComponentToExtendForCustomDialog 
       })
       .subscribe((ok: boolean) => {
         if (ok) {
+          const spinner = this.spinnerService.show();
           this.budgetService
             .deleteBudgetById(this.budgetToEdit.id)
-            .pipe(take(1))
+            .pipe(
+              take(1),
+              finalize(() => this.spinnerService.hide(spinner))
+            )
             .subscribe({
               next: (response) => {
                 this.customDialogService.close(this.MODAL_ID, true);
@@ -426,8 +429,8 @@ export class CreateEditBudgetComponent extends ComponentToExtendForCustomDialog 
         });
     }
     this.budgetForm = this.fb.group({
-      endDate: [this.budgetToEdit ? this.budgetToEdit.endDate : null, Validators.required],
-      startDate: [this.budgetToEdit ? this.budgetToEdit.startDate : null, Validators.required],
+      endDate: [this.budgetToEdit?.endDate ? new Date(this.budgetToEdit.endDate) : null, Validators.required],
+      startDate: [this.budgetToEdit?.startDate ? new Date(this.budgetToEdit.startDate) : null, Validators.required],
       templateBudgetLines: this.fb.array(budgetLines, [Validators.required]),
       template: this.fb.group({
         name: [this.budgetToEdit ? this.budgetToEdit.template.name : null, Validators.required],

@@ -4,9 +4,11 @@ import { ActivatedRouteSnapshot, Router, RouterStateSnapshot } from '@angular/ro
 import { ENV } from '@app/constants/global.constants';
 import { Env } from '@app/types/env';
 import { ConcenetError } from '@app/types/error';
+import { marker } from '@biesbjerg/ngx-translate-extract-marker';
 import FacilitiesGroupedByBrand from '@data/interfaces/facilities-grouped-by-brand';
 import BrandDTO from '@data/models/brand-dto';
 import FacilityDTO from '@data/models/facility-dto';
+import { TranslateService } from '@ngx-translate/core';
 import { forkJoin, Observable, of, throwError } from 'rxjs';
 import { catchError, map, reduce } from 'rxjs/operators';
 
@@ -21,7 +23,12 @@ export class FacilityService {
   private readonly DELETE_FACILITY_PATH = '/api/facilities';
   private readonly DUPLICATE_FACILITY_PATH = '/api/facilities/duplicate';
 
-  constructor(@Inject(ENV) private env: Env, private http: HttpClient, private router: Router) {}
+  constructor(
+    @Inject(ENV) private env: Env,
+    private http: HttpClient,
+    private router: Router,
+    private translateService: TranslateService
+  ) {}
 
   public resetFacilitiesData(): void {
     this.facilitiesByBrand = {};
@@ -74,7 +81,7 @@ export class FacilityService {
     if (ids && ids.length > 0) {
       return this.http
         .get<FacilityDTO[]>(`${this.env.apiBaseUrl}${this.GET_FACILITIES_PATH}${ids.join(',')}`)
-        .pipe(catchError((error) => throwError(error as ConcenetError)));
+        .pipe(catchError((error) => throwError(error.error as ConcenetError)));
     } else {
       return of([]);
     }
@@ -83,7 +90,7 @@ export class FacilityService {
   public getFacilitiesById(id: number): Observable<FacilityDTO> {
     return this.http
       .get<FacilityDTO>(`${this.env.apiBaseUrl}${this.GET_FACILITY}${id}`)
-      .pipe(catchError((error) => throwError(error as ConcenetError)));
+      .pipe(catchError((error) => throwError(error.error as ConcenetError)));
   }
 
   public addFacility(facility: FacilityDTO): Observable<FacilityDTO> {
@@ -105,21 +112,54 @@ export class FacilityService {
   }
 
   private getFacilitiesGroupedToReturn(brandsIdsToUse: number[]): FacilitiesGroupedByBrand[] {
-    let facilitiesList: FacilitiesGroupedByBrand[] = [];
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const brandsInserted: any[] = [];
+    const facilitiesGroupedByBrand: FacilitiesGroupedByBrand[] = [];
     let facilitiesForBrand: FacilityDTO[] = [];
     brandsIdsToUse.forEach((id) => {
       facilitiesForBrand = this.facilitiesByBrand[id.toString()];
       if (facilitiesForBrand && facilitiesForBrand.length) {
-        facilitiesList = [
-          ...facilitiesList,
-          {
-            brandId: facilitiesForBrand[0].brands[0].id,
-            brandName: facilitiesForBrand[0].brands[0].name,
-            facilities: facilitiesForBrand
+        const uniqueBrand: FacilityDTO[] = [];
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        const multiBrand: any = {};
+        facilitiesForBrand.forEach((facility) => {
+          if (facility.brands?.length === 1) {
+            uniqueBrand.push(facility);
+          } else {
+            const multiId = facility.brands.map((fac) => fac.id).join('#');
+            multiBrand[multiId] = multiBrand[multiId] ? multiBrand[multiId] : [];
+            multiBrand[multiId].push(facility);
           }
-        ];
+        });
+        if (uniqueBrand.length > 0 && brandsInserted.indexOf(id) === -1) {
+          brandsInserted.push(id);
+          facilitiesGroupedByBrand.push({
+            brandId: [id],
+            brandName: uniqueBrand[0].brands[0].name,
+            facilities: uniqueBrand
+          });
+        }
+        if (Object.keys(multiBrand).length > 0) {
+          Object.keys(multiBrand).forEach((k) => {
+            if (brandsInserted.indexOf(k) === -1) {
+              brandsInserted.push(k);
+              facilitiesGroupedByBrand.push({
+                brandId: [...multiBrand[k][0].brands.map((brand: BrandDTO) => brand.id)],
+                brandName:
+                  multiBrand[k][0].brands?.length > 1
+                    ? this.translateService.instant(marker('organizations.brands.multiBrands'))
+                    : multiBrand[k][0].brands[0].name,
+                tooltipBrandName: multiBrand[k][0].brands.reduce(
+                  (prev: string, curr: BrandDTO) => (prev ? (prev += `/${curr.name}`) : curr.name),
+                  ''
+                ),
+                facilities: multiBrand[k]
+              });
+            }
+          });
+        }
       }
     });
-    return facilitiesList;
+    return facilitiesGroupedByBrand;
   }
 }
