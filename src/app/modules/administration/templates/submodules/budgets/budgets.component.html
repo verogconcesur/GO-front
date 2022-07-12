@@ -1,16 +1,10 @@
 <div class="items-list-wrapper">
     <div class="items-list-container">
-        <mat-card
-            class="mat-template-card"
-            fxFlex="calc(50% - 20px)"
-            fxFlex.sm="calc(50% - 20px)"
-            fxFlex.xs="100"
-            *ngFor="let item of dataSource"
-        >
+        <mat-card class="mat-template-card" *ngFor="let item of dataSource">
             <div fxLayout="row" fxLayoutAlign="space-between center">
                 <div class="mat-item-card__title">{{ item.name }}</div>
                 <div class="mat-item-card__icons">
-                    <mat-icon fontSet="concenet" (click)="openCreateEditBudgetDialog(item)">edit</mat-icon>
+                    <mat-icon fontSet="concenet" (click)="editAction(item)">edit</mat-icon>
                     <mat-icon fontSet="concenet" (click)="deleteBudget(item.id)">delete</mat-icon>
                 </div>
             </div>

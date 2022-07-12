@@ -34,6 +34,12 @@ export class TemplatesBudgetsService {
       .pipe(catchError((error) => throwError(error as ConcenetError)));
   }
 
+  public findById(id: number): Observable<TemplatesBudgetDetailsDTO> {
+    return this.http
+      .get<TemplatesBudgetDetailsDTO>(`${this.env.apiBaseUrl}${this.POST_BUDGETS_PATH}/${id}`)
+      .pipe(catchError((error) => throwError(error as ConcenetError)));
+  }
+
   public addOrEditBudget(data: TemplatesBudgetDetailsDTO): Observable<TemplatesBudgetDetailsDTO> {
     return this.http
       .post<TemplatesBudgetDetailsDTO>(`${this.env.apiBaseUrl}${this.POST_BUDGETS_PATH}`, {

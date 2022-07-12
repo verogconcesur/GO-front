@@ -137,6 +137,7 @@
             "delete": "Delete brand",
             "deleteConfirmation": "Do you really want to delete this brand?",
             "edit": "Edit brand",
+            "multiBrands": "Multibrand",
             "name": "Brand name",
             "title": "Brands"
         },

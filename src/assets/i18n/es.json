@@ -137,6 +137,7 @@
             "delete": "Eliminar marca",
             "deleteConfirmation": "¿Realmente quiere eliminar esta marca?",
             "edit": "Editar marca",
+            "multiBrands": "Multimarca",
             "name": "Nombre de marca",
             "title": "Marcas"
         },
