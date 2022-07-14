@@ -57,6 +57,7 @@
         "cancel": "Cancelar",
         "cif": "CIF",
         "close": "Cerrar",
+        "concept": "Concepto",
         "country": "País",
         "create": "Crear",
         "dateEnd": "Fecha de fin",
@@ -74,6 +75,7 @@
         "logo": "Logo",
         "newLine": "Nueva línea",
         "postalCode": "Código Postal",
+        "price": "Precio",
         "province": "Provincia",
         "reset": "Restaurar",
         "save": "Guardar",
@@ -92,10 +94,12 @@
         "yes": "Sí"
     },
     "errors": {
+        "dateFormat": "La fecha debe tener este formato: {format}",
         "emailPattern": "El texto introducido debe ser un email.",
         "maxLengthError": "La longitud máxima permitida es de {length} caracteres.",
         "noDataToShow": "No hay datos para mostrar",
-        "required": "Este campo es obligatorio."
+        "required": "Este campo es obligatorio.",
+        "unknown": "Error desconocido"
     },
     "login": {
         "description": "Por favor, introduzca sus credenciales",

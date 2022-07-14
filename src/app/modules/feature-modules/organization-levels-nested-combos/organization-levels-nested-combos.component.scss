@@ -1,0 +1,6 @@
+//Los estilos los hereda del padre, para ello:
+// - El componente padre debe definirse con encapsulation: ViewEncapsulation.None
+// - Se debe especificar que el display de este componente concuerde con el del pader:
+//      app-organization-levels-nested-combos {
+//          display: contents;
+//      }

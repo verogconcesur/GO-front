@@ -57,6 +57,7 @@
         "cancel": "Cancel",
         "cif": "CIF",
         "close": "Close",
+        "concept": "Concept",
         "country": "Country",
         "create": "Create",
         "dateEnd": "Final date",
@@ -74,6 +75,7 @@
         "logo": "Logo",
         "newLine": "New line",
         "postalCode": "Postal Code",
+        "price": "Price",
         "province": "Province",
         "reset": "Reset",
         "save": "Save",
@@ -92,10 +94,12 @@
         "yes": "Yes"
     },
     "errors": {
+        "dateFormat": "The date must have this format: {format}",
         "emailPattern": "The text must be an email.",
         "maxLengthError": "The max length allowed for this field is {length} characters.",
         "noDataToShow": "No data to show in table",
-        "required": "This field is required."
+        "required": "This field is required.",
+        "unknown": "Unknown error"
     },
     "login": {
         "description": "Please enter your credentials",

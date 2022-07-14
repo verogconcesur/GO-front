@@ -4,22 +4,22 @@
 // Mixin to include custom components themes styles for a given Angular Material theme
 @import 'app/app.component.scss-theme.scss';
 @import 'app/layout/dashboard-layout/components/navbar/navbar.component.scss-theme.scss';
-@import 'app/modules/login/login.component.scss-theme.scss';
-@import 'app/modules/login/components/forgot-password/forgot-password.scss-theme.scss';
-@import 'app/modules/login/components/restore-password/restore-password.scss-theme.scss';
+@import 'app/modules/app-modules/login/login.component.scss-theme.scss';
+@import 'app/modules/app-modules/login/components/forgot-password/forgot-password.scss-theme.scss';
+@import 'app/modules/app-modules/login/components/restore-password/restore-password.scss-theme.scss';
 @import 'app/shared/components/go-back/go-back.component.scss-theme.scss';
-@import 'app/shared/components/app-user/my-profile/my-profile.component.scss-theme.scss';
+@import 'app/modules/feature-modules/my-profile-dialog/my-profile.component.scss-theme.scss';
 @import 'app/layout/dashboard-layout/components/user-profile/user-profile.component.scss-theme.scss';
 @import 'app/layout/administration-layout/administration-layout.component.scss-theme.scss';
-@import 'app/modules/administration/users/components/users-permissions/users-permissions.component.scss-theme.scss';
-@import 'app/modules/administration/users/components/create-edit-user/create-edit-user.component.scss-theme.scss';
-@import 'app/modules/administration/organization/components/organization-card/organization-card.component.scss-theme.scss';
-@import 'app/shared/components/administration-common-header-section/administration-common-header-section.component.scss-theme.scss';
-@import 'app/modules/administration/organization/components/create-edit-brand/create-edit-brand.component.scss-theme.scss';
-@import 'app/modules/administration/organization/components/create-edit-facility/create-edit-facility.component.scss-theme.scss';
-@import 'app/modules/administration/organization/components/create-edit-department/create-edit-department.component.scss-theme.scss';
-@import 'app/modules/administration/templates/template-common-styles.scss-theme.scss';
-@import 'app/modules/administration/organization/components/create-edit-specialty/create-edit-specialty.component.scss-theme.scss';
+@import 'app/modules/app-modules/administration/users/components/users-permissions/users-permissions.component.scss-theme.scss';
+@import 'app/modules/app-modules/administration/users/components/create-edit-user/create-edit-user.component.scss-theme.scss';
+@import 'app/modules/app-modules/administration/organization/components/organization-card/organization-card.component.scss-theme.scss';
+@import 'app/modules/feature-modules/administration-common-header-section/administration-common-header-section.component.scss-theme.scss';
+@import 'app/modules/app-modules/administration/organization/components/create-edit-brand/create-edit-brand.component.scss-theme.scss';
+@import 'app/modules/app-modules/administration/organization/components/create-edit-facility/create-edit-facility.component.scss-theme.scss';
+@import 'app/modules/app-modules/administration/organization/components/create-edit-department/create-edit-department.component.scss-theme.scss';
+@import 'app/modules/app-modules/administration/templates/template-common-styles.scss-theme.scss';
+@import 'app/modules/app-modules/administration/organization/components/create-edit-specialty/create-edit-specialty.component.scss-theme.scss';
 
 @mixin custom-components-theme($theme, $main-typography) {
   @include app-component-theme($theme);

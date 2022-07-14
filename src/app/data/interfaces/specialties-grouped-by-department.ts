@@ -4,4 +4,5 @@ export default interface SpecialtiesGroupedByDepartment {
   departmentId: number;
   departmentName: string;
   specialties: SpecialtyDTO[];
+  tooltipDepartmentName?: string;
 }

@@ -4,10 +4,12 @@ import { ActivatedRouteSnapshot, Router, RouterStateSnapshot } from '@angular/ro
 import { ENV } from '@app/constants/global.constants';
 import { Env } from '@app/types/env';
 import { ConcenetError } from '@app/types/error';
+import { marker } from '@biesbjerg/ngx-translate-extract-marker';
 import DepartmentsGroupedByFacility from '@data/interfaces/departments-grouped-by-facility';
 import BrandDTO from '@data/models/brand-dto';
 import DepartmentDTO from '@data/models/department-dto';
 import FacilityDTO from '@data/models/facility-dto';
+import { TranslateService } from '@ngx-translate/core';
 import { forkJoin, Observable, of, throwError } from 'rxjs';
 import { catchError, map, reduce } from 'rxjs/operators';
 
@@ -22,7 +24,12 @@ export class DepartmentService {
   private readonly DUPLICATE_DEPARTMENT_PATH = '/api/departments/duplicate';
   private readonly DELETE_DEPARTMENT_PATH = '/api/departments';
 
-  constructor(@Inject(ENV) private env: Env, private http: HttpClient, private router: Router) {}
+  constructor(
+    @Inject(ENV) private env: Env,
+    private http: HttpClient,
+    private router: Router,
+    private translateService: TranslateService
+  ) {}
 
   public resetDepartmentsData(): void {
     this.departmentsByFacilities = {};
@@ -118,6 +125,7 @@ export class DepartmentService {
           {
             facilityId: departmentsForFacility[0].facilities[0].id,
             facilityName: this.getDepartmentsGroupedName(departmentsForFacility),
+            tooltipFacilityName: this.getBrandTooltipGroupedName(departmentsForFacility),
             departments: departmentsForFacility
           }
         ];
@@ -128,11 +136,34 @@ export class DepartmentService {
 
   private getDepartmentsGroupedName(departmentsForFacility: DepartmentDTO[]): string {
     if (departmentsForFacility[0]?.facilities[0] && departmentsForFacility[0].facilities[0].brands[0]) {
-      return departmentsForFacility[0].facilities[0].name + ' (' + departmentsForFacility[0].facilities[0].brands[0].name + ')';
+      return (
+        departmentsForFacility[0].facilities[0].name +
+        ' (' +
+        this.getBrandGroupedName(departmentsForFacility[0].facilities[0].brands) +
+        ')'
+      );
     } else if (departmentsForFacility[0]?.facilities[0]?.name) {
       return departmentsForFacility[0].facilities[0].name;
     } else {
       return '';
     }
+  }
+
+  private getBrandGroupedName(brands: BrandDTO[]): string {
+    if (brands.length > 1) {
+      return this.translateService.instant(marker('organizations.brands.multiBrands'));
+    } else {
+      return brands[0].name;
+    }
+  }
+
+  private getBrandTooltipGroupedName(departmentsForFacility: DepartmentDTO[]): string {
+    if (departmentsForFacility[0]?.facilities[0] && departmentsForFacility[0].facilities[0].brands[0]) {
+      const brands = departmentsForFacility[0].facilities[0].brands;
+      if (brands.length > 1) {
+        return brands.reduce((prev: string, curr: BrandDTO) => (prev ? (prev += `/${curr.name}`) : curr.name), '');
+      }
+    }
+    return '';
   }
 }

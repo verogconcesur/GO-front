@@ -8,14 +8,14 @@ import { DashboardLayoutComponent } from '@layout/dashboard-layout/dashboard-lay
 const routes: Routes = [
   {
     path: RouteConstants.LOGIN,
-    loadChildren: () => import('./modules/login/login.module').then((m) => m.LoginModule)
+    loadChildren: () => import('./modules/app-modules/login/login.module').then((m) => m.LoginModule)
   },
   {
     path: RouteConstants.DASHBOARD,
     component: DashboardLayoutComponent,
     canActivate: [AuthGuardService],
     data: { permissions: RoutePermissionConstants.DASHBOARD }
-    // loadChildren: () => import('./modules/login/login.module').then((m) => m.LoginModule)
+    // loadChildren: () => import('./modules/app-modules/login/login.module').then((m) => m.LoginModule)
   },
   {
     path: RouteConstants.ADMINISTRATION,
@@ -26,17 +26,19 @@ const routes: Routes = [
       {
         path: RouteConstants.USERS,
         canActivate: [AuthGuardService],
-        loadChildren: () => import('./modules/administration/users/users.module').then((m) => m.UsersModule)
+        loadChildren: () => import('./modules/app-modules/administration/users/users.module').then((m) => m.UsersModule)
       },
       {
         path: RouteConstants.ORGANIZATION,
         canActivate: [AuthGuardService],
-        loadChildren: () => import('./modules/administration/organization/organization.module').then((m) => m.OrganizationModule)
+        loadChildren: () =>
+          import('./modules/app-modules/administration/organization/organization.module').then((m) => m.OrganizationModule)
       },
       {
         path: RouteConstants.TEMPLATES,
         canActivate: [AuthGuardService],
-        loadChildren: () => import('./modules/administration/templates/templates.module').then((m) => m.TemplatesModule)
+        loadChildren: () =>
+          import('./modules/app-modules/administration/templates/templates.module').then((m) => m.TemplatesModule)
       },
       {
         path: RouteConstants.OTHER,
