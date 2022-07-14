@@ -6,6 +6,7 @@ import BrandDTO from '@data/models/brand-dto';
 import DepartmentDTO from '@data/models/department-dto';
 import FacilityDTO from '@data/models/facility-dto';
 import SpecialtyDTO from '@data/models/specialty-dto';
+import TemplatesAttachmentDTO from '@data/models/templates-attachment-dto';
 import TemplatesCommonDTO from '@data/models/templates-common-dto';
 import TemplatesFilterDTO from '@data/models/templates-filter-dto';
 import { TemplatesAttachmentService } from '@data/services/templates-attachment.service';
@@ -19,6 +20,10 @@ import { GlobalMessageService } from '@shared/services/global-message.service';
 import { ProgressSpinnerDialogService } from '@shared/services/progress-spinner-dialog.service';
 import { Observable, of } from 'rxjs';
 import { map, take, finalize } from 'rxjs/operators';
+import {
+  CreateEditAttachmentComponent,
+  CreateEditAttachmentComponentModalEnum
+} from './dialog/create-edit-attachment/create-edit-attachment.component';
 @Component({
   selector: 'app-attachments',
   templateUrl: './attachments.component.html',
@@ -56,6 +61,19 @@ export class AttachmentsComponent extends AdministrationCommonHeaderSectionClass
 
   public headerCreateAction(): void {
     this.openCreateEditAttachmentDialog();
+  }
+
+  public editAction(attachment: TemplatesCommonDTO): void {
+    const spinner = this.spinnerService.show();
+    this.attachmentService
+      .findById(attachment.id)
+      .pipe(
+        take(1),
+        finalize(() => this.spinnerService.hide(spinner))
+      )
+      .subscribe((b: TemplatesAttachmentDTO) => {
+        this.openCreateEditAttachmentDialog(b);
+      });
   }
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   public headerGetFilteredData(text: string): Observable<{ content: any[]; optionLabelFn: (option: any) => string }> {
@@ -138,8 +156,26 @@ export class AttachmentsComponent extends AdministrationCommonHeaderSectionClass
     return '';
   };
 
-  public openCreateEditAttachmentDialog = (budget?: TemplatesCommonDTO): void => {
-    console.log('openCreateEditAttachment');
+  private openCreateEditAttachmentDialog = (attachmentCommon?: TemplatesAttachmentDTO): void => {
+    // this.customDialogService
+    //   .open({
+    //     id: CreateEditAttachmentComponentModalEnum.ID,
+    //     panelClass: CreateEditAttachmentComponentModalEnum.PANEL_CLASS,
+    //     component: CreateEditAttachmentComponent,
+    //     extendedComponentData: attachmentCommon ? attachmentCommon : null,
+    //     disableClose: true,
+    //     width: '700px'
+    //   })
+    //   .pipe(take(1))
+    //   .subscribe((response) => {
+    //     if (response) {
+    //       this.globalMessageService.showSuccess({
+    //         message: this.translateService.instant(marker('common.successOperation')),
+    //         actionText: this.translateService.instant(marker('common.close'))
+    //       });
+    //       this.getData();
+    //     }
+    //   });
   };
 
   private initializeFilterListener() {
