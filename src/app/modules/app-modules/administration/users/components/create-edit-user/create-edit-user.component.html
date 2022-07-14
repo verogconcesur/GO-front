@@ -1,0 +1,161 @@
+<div class="create-edit-user-content" fxLayout="column" fxLayoutAlign="center center">
+    <div *ngIf="!isModalModeActive()">
+        <div class="create-edit-user-content__title mat-display-2">{{ labels.title | translate }}</div>
+    </div>
+    <div class="create-edit-user-content__form">
+        <form [formGroup]="userForm" *ngIf="userForm" class="smaller-mat-form-fields">
+            <!-- General Data -->
+            <div class="user-data__section">
+                <div class="user-data__section__title first-child">
+                    {{ labels.data | translate }}
+                </div>
+                <div class="user-data__section__group grid-group">
+                    <!-- Name -->
+                    <mat-form-field appearance="outline" floatLabel="always">
+                        <mat-label>{{ labels.name | translate }}</mat-label>
+                        <input matInput formControlName="name" />
+                        <mat-error
+                            class="user-data__error"
+                            *ngIf="userForm.controls.name.invalid && userForm.controls.name.touched"
+                        >
+                            {{ labels.nameRequired | translate }}
+                        </mat-error>
+                    </mat-form-field>
+                    <!-- firstName -->
+                    <mat-form-field appearance="outline" floatLabel="always">
+                        <mat-label>{{ labels.firstName | translate }}</mat-label>
+                        <input matInput formControlName="firstName" />
+                        <mat-error
+                            class="user-data__error"
+                            *ngIf="userForm.controls.firstName.invalid && userForm.controls.firstName.touched"
+                        >
+                            {{ labels.firstNameRequired | translate }}
+                        </mat-error>
+                    </mat-form-field>
+                    <!-- lastName -->
+                    <mat-form-field appearance="outline" floatLabel="always">
+                        <mat-label>{{ labels.lastName | translate }}</mat-label>
+                        <input matInput formControlName="lastName" />
+                    </mat-form-field>
+
+                    <!-- Email -->
+                    <mat-form-field appearance="outline" floatLabel="always">
+                        <mat-label>{{ labels.email | translate }}</mat-label>
+                        <input matInput formControlName="email" />
+                        <mat-error *ngIf="userForm.controls?.email.invalid && userForm.controls?.email.touched">
+                            <span *ngIf="userForm.controls.email.errors.required">{{ labels.required | translate }}</span>
+                            <span *ngIf="userForm.controls.email.errors.email">{{ labels.emailError | translate }}</span>
+                        </mat-error>
+                    </mat-form-field>
+                    <!-- userName -->
+                    <mat-form-field appearance="outline" floatLabel="always">
+                        <mat-label>{{ labels.userName | translate }}</mat-label>
+                        <input matInput formControlName="userName" />
+                        <mat-error *ngIf="userForm.controls?.userName.invalid && userForm.controls?.userName.touched">
+                            <span *ngIf="userForm.controls.userName.errors.required">{{ labels.required | translate }}</span>
+                        </mat-error>
+                    </mat-form-field>
+                    <!-- role -->
+                    <mat-form-field appearance="outline" floatLabel="always">
+                        <mat-label>{{ labels.role | translate }}</mat-label>
+                        <mat-select formControlName="role">
+                            <mat-option *ngFor="let role of rolesAsyncList | async" [value]="role">{{ role.name }}</mat-option>
+                        </mat-select>
+                        <mat-error *ngIf="userForm.controls?.role.invalid && userForm.controls?.role.touched">
+                            <span *ngIf="userForm.controls.role.errors.required">{{ labels.required | translate }}</span>
+                        </mat-error>
+                    </mat-form-field>
+
+                    <!-- newPassword -->
+                    <mat-form-field appearance="outline" floatLabel="always">
+                        <mat-label>{{ labels.password1 | translate }}</mat-label>
+                        <input matInput formControlName="newPassword" type="password" />
+                        <mat-error
+                            class="restore-password-content__error"
+                            *ngIf="form.newPassword.errors && form.newPassword.touched"
+                        >
+                            <span *ngIf="form.newPassword.errors.required">{{ labels.passwordRequired | translate }}</span>
+                            <span *ngIf="form.newPassword.errors.pattern">{{ labels.passwordPattern | translate }}</span>
+                        </mat-error>
+                    </mat-form-field>
+                    <!-- newPasswordConfirmation -->
+                    <mat-form-field appearance="outline" floatLabel="always">
+                        <mat-label>{{ labels.password2 | translate }}</mat-label>
+                        <input matInput formControlName="newPasswordConfirmation" type="password" />
+                        <mat-error
+                            class="restore-password-content__error"
+                            *ngIf="form.newPasswordConfirmation.invalid && form.newPasswordConfirmation.touched"
+                        >
+                            <span *ngIf="form.newPasswordConfirmation.errors.required">{{
+                                labels.passwordRequired | translate
+                            }}</span>
+                            <span *ngIf="form.newPasswordConfirmation.errors.matching">{{
+                                labels.passwordMatch | translate
+                            }}</span>
+                        </mat-error>
+                    </mat-form-field>
+                </div>
+            </div>
+
+            <!-- Organization -->
+            <div class="user-data__section">
+                <div class="user-data__section__title">
+                    {{ labels.organization | translate }}
+                </div>
+
+                <div class="user-data__section__group grid-group">
+                    <app-organization-levels-nested-combos
+                        #OrganizationLevelsNestedCombos
+                        [form]="userForm"
+                    ></app-organization-levels-nested-combos>
+                </div>
+            </div>
+
+            <!-- Permissions -->
+            <div class="user-data__section permissions-section">
+                <div class="user-data__section__title">
+                    {{ labels.permissions | translate }}
+                </div>
+                <div class="user-data__section__info" *ngIf="!form.role.value">
+                    <div class="inlineBlock">{{ labels.selectRoleFirst | translate }}</div>
+                </div>
+                <div class="user-data__section__info" *ngIf="form.role.value">
+                    <div
+                        class="inlineBlock"
+                        [innerHtml]="labels.permissionsInheritFromRole | translate: { role: form.role.value.name }"
+                    ></div>
+                    <button
+                        mat-button
+                        color="primary"
+                        *ngIf="permissionsListComponent.hasChangesRespectRolePermissions()"
+                        (click)="permissionsListComponent.resetRolesPermissions()"
+                    >
+                        {{ labels.reset | translate }}
+                    </button>
+                </div>
+                <app-users-permissions
+                    #permissionsListComponent
+                    [overFlowLayerLabel]="labels.selectRoleFirst"
+                    [showOverFlowLayer]="form.role.value ? false : true"
+                    [permissions]="form.role?.value?.permissions"
+                    [permissionsToSelectByDefault]="getPermissionsSelectedByDefault()"
+                ></app-users-permissions>
+            </div>
+
+            <!-- User's permissions -->
+            <div class="user-data__section permissions-section">
+                <div class="user-data__section__title">
+                    {{ labels.userPermissions | translate }}
+                </div>
+                <div *ngFor="let permissionObj of userPermissions">
+                    <mat-checkbox [checked]="permissionObj.checked" (change)="checkPermission(permissionObj, $event)">
+                        {{ permissionObj.permission.description }}
+                    </mat-checkbox>
+                </div>
+            </div>
+        </form>
+    </div>
+    <div class="create-edit-user-content__buttons">
+        <!-- TODO: buttons used when the component is not opened with customDialogService -->
+    </div>
+</div>

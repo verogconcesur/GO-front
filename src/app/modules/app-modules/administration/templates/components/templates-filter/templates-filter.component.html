@@ -1,0 +1,7 @@
+<form [formGroup]="filterForm" *ngIf="filterForm" class="templates-filter" fxLayout="column" fxLayoutAlign="center center">
+    <app-organization-levels-nested-combos
+        #OrganizationLevelsNestedCombos
+        [form]="filterForm"
+        (setDefaultValueAfterInit)="setDefaultValueAfterInit($event)"
+    ></app-organization-levels-nested-combos>
+</form>

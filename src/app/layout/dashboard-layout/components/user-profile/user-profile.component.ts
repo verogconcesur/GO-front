@@ -8,7 +8,7 @@ import UserDetailsDTO from '@data/models/user-details-dto';
 import { UserService } from '@data/services/user.service';
 import { GlobalMessageService } from '@shared/services/global-message.service';
 import { CustomDialogService } from '@jenga/custom-dialog';
-import { MyProfileComponent, MyProfileComponentModalEnum } from '@shared/components/app-user/my-profile/my-profile.component';
+import { MyProfileComponent, MyProfileComponentModalEnum } from '@modules/feature-modules/my-profile-dialog/my-profile.component';
 import { take } from 'rxjs/operators';
 import { TranslateService } from '@ngx-translate/core';
 
