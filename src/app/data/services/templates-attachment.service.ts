@@ -18,6 +18,7 @@ import { catchError } from 'rxjs/operators';
 })
 export class TemplatesAttachmentService {
   private readonly SEARCH_ATTACHMENTS_PATH = '/api/templates/search';
+  private readonly POST_BUDGETS_PATH = '/api/templateattachments';
   private readonly TEMPLATE_TYPE = 'ATTACHMENTS';
 
   constructor(@Inject(ENV) private env: Env, private http: HttpClient) {}
@@ -32,5 +33,29 @@ export class TemplatesAttachmentService {
         { ...templateFilter, templateType: this.TEMPLATE_TYPE }
       )
       .pipe(catchError((error) => throwError(error as ConcenetError)));
+  }
+
+  public findById(id: number): Observable<TemplatesAttachmentDTO> {
+    return this.http
+      .get<TemplatesAttachmentDTO>(`${this.env.apiBaseUrl}${this.POST_BUDGETS_PATH}/${id}`)
+      .pipe(catchError((error) => throwError(error as ConcenetError)));
+  }
+
+  public addOrEditAttachment(data: TemplatesAttachmentDTO): Observable<TemplatesAttachmentDTO> {
+    return this.http
+      .post<TemplatesAttachmentDTO>(`${this.env.apiBaseUrl}${this.POST_BUDGETS_PATH}`, {
+        ...data,
+        template: {
+          ...data.template,
+          templateType: this.TEMPLATE_TYPE
+        }
+      })
+      .pipe(catchError((error) => throwError(error.error as ConcenetError)));
+  }
+
+  public deleteAttachmentById(budgetId: number): Observable<void> {
+    return this.http
+      .delete<void>(`${this.env.apiBaseUrl}${this.POST_BUDGETS_PATH}/${budgetId}`)
+      .pipe(catchError((error) => throwError(error.error as ConcenetError)));
   }
 }

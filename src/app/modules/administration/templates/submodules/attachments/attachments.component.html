@@ -8,7 +8,7 @@
             <div fxLayout="row" fxLayoutAlign="space-between center">
                 <div class="mat-item-card__title">{{ item.name }}</div>
                 <div class="mat-item-card__icons">
-                    <mat-icon fontSet="concenet" (click)="openCreateEditAttachmentDialog(item)">edit</mat-icon>
+                    <mat-icon fontSet="concenet" (click)="editAction(item)">edit</mat-icon>
                     <mat-icon fontSet="concenet" (click)="deleteAttachment(item.id)">delete</mat-icon>
                 </div>
             </div>
