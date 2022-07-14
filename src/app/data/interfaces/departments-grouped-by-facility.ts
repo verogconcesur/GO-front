@@ -4,4 +4,5 @@ export default interface DepartmentsGroupedByFacility {
   facilityId: number;
   facilityName: string;
   departments: DepartmentDTO[];
+  tooltipFacilityName?: string;
 }
