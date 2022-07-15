@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { AfterViewInit, Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { marker } from '@biesbjerg/ngx-translate-extract-marker';
 import { TranslateService } from '@ngx-translate/core';
@@ -36,33 +37,43 @@ export class TextEditorWrapperComponent implements OnInit, AfterViewInit {
     if (!this.textEditorId || !document.getElementById(this.textEditorId)) {
       console.error('No id defined for text editor wrapper', this.textEditorId);
     } else {
-      const misc = ['fullscreen'];
+      const misc: any[] = ['fullscreen'];
+      let extra: any = {};
       if (this.textEditorOptionsConfig && this.textEditorOptionsConfig.addHtmlModificationOption) {
         misc.push('codeview');
       }
-      if (this.textEditorOptionsConfig && this.textEditorOptionsConfig.addVariablesInsertionOption) {
-        //TODO: DGDC crear función semejante a 'tableHeaders', 'tableBorderToggle' para crear una lista de opciones
-        misc.push('varOptions');
+      if (this.textEditorOptionsConfig && this.textEditorOptionsConfig.addMacroListOption) {
+        misc.push(['macroList']);
+        extra = {
+          ...extra,
+          macroList: {
+            blockChar: ['[', ']'],
+            tooltip: this.translateService.instant(marker('textEditor.tooltips.varOptions')),
+            items: [...this.textEditorOptionsConfig.macroListOptions]
+          }
+        };
       }
       misc.push('help');
+      const toolbar: any[] = [
+        // [groupName, [list of button]]
+        ['style', ['style', 'bold', 'italic', 'underline', 'clear']],
+        ['font', ['fontname', 'color']], //'fontsize'
+        ['para', ['ul', 'ol', 'paragraph']],
+        ['insert', ['table', 'link', 'picture', 'video']]
+      ];
+      if (misc && misc.length) {
+        toolbar.push(['misc', misc]);
+      }
 
       this.summerNoteconfig = {
         lang: this.lang,
         id: this.textEditorId,
         pluginsTooltipTranslations: {
           tableHeaders: this.translateService.instant(marker('textEditor.tooltips.tableHeaders')),
-          tableBorderToggle: this.translateService.instant(marker('textEditor.tooltips.tableBorderToggle')),
-          varOptions: this.translateService.instant(marker('textEditor.tooltips.varOptions'))
+          tableBorderToggle: this.translateService.instant(marker('textEditor.tooltips.tableBorderToggle'))
         },
         placeholder: this.placeholder,
-        toolbar: [
-          // [groupName, [list of button]]
-          ['style', ['style', 'bold', 'italic', 'underline', 'clear']],
-          ['font', ['fontname', 'color']], //'fontsize'
-          ['para', ['ul', 'ol', 'paragraph']],
-          ['insert', ['table', 'link', 'picture', 'video']],
-          ['misc', misc]
-        ],
+        toolbar,
         popover: {
           table: [
             ['add', ['addRowDown', 'addRowUp', 'addColLeft', 'addColRight']],
@@ -70,6 +81,7 @@ export class TextEditorWrapperComponent implements OnInit, AfterViewInit {
             ['custom', ['tableHeaders', 'tableBorderToggle']]
           ]
         },
+        ...extra,
         callbacks: {
           onChange: () => {
             let html = this.summernoteNode.innerHTML;

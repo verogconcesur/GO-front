@@ -48,8 +48,8 @@ export class CreateEditBrandComponent extends ComponentToExtendForCustomDialog i
   public brandToEdit: BrandDTO = null;
   public textEditorToolbarOptions: TextEditorWrapperConfigI = {
     addHtmlModificationOption: true
-    // addVariablesInsertionOption: false,
-    // variablesOpt: ['una', 'dos']
+    // addMacroListOption: true,
+    // macroListOptions: ['Nombre cliente', 'Nombre empresa']
   };
 
   constructor(
@@ -93,8 +93,6 @@ export class CreateEditBrandComponent extends ComponentToExtendForCustomDialog i
   public onSubmitCustomDialog(): Observable<boolean | BrandDTO> {
     const formValue = this.brandForm.value;
     const spinner = this.spinnerService.show();
-    console.log(formValue);
-    // return of(false);
     return this.brandService
       .addBrand({
         footer: formValue.footer ? formValue.footer : null,
