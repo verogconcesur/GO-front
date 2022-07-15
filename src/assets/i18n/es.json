@@ -5,7 +5,14 @@
         "records": "Fichas",
         "templates": {
             "attachments": {
+                "add": "Nueva plantilla de categoría de adjuntos",
                 "create": "Crear plantilla de categorías de adjuntos",
+                "delete": "Eliminar plantilla de categoría de adjuntos",
+                "deleteConfirmation": "¿Realmente quieres eliminar esta plantilla?",
+                "edit": "Editar plantilla de categoría de adjuntos",
+                "itemConcept": "Concepto del elemento",
+                "items": "Elementos",
+                "name": "Nombre",
                 "title": "Categoría de adjuntos"
             },
             "budgets": {
@@ -73,6 +80,7 @@
         "insert": "Insertar",
         "insertTextHere": "Introduzca el texto aquí.",
         "logo": "Logo",
+        "newItem": "Nuevo Elememto",
         "newLine": "Nueva línea",
         "postalCode": "Código Postal",
         "price": "Precio",

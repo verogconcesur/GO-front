@@ -29,7 +29,7 @@ import { catchError, finalize, map, take, tap } from 'rxjs/operators';
 export const enum CreateEditAttachmentComponentModalEnum {
   ID = 'create-edit-attachment-dialog-id',
   PANEL_CLASS = 'create-edit-attachment-dialog',
-  TITLE = 'administration.templates.attachment.add'
+  TITLE = 'administration.templates.attachments.add'
 }
 
 @Component({

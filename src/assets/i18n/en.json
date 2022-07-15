@@ -5,7 +5,14 @@
         "records": "Records",
         "templates": {
             "attachments": {
+                "add": "New attachment template",
                 "create": "Create attachment category template",
+                "delete": "Delete attachment template",
+                "deleteConfirmation": "Do you really want to delete this attachment template?",
+                "edit": "Edit attachment template",
+                "itemConcept": "Item concept",
+                "items": "Items",
+                "name": "Name",
                 "title": "Attachments categories"
             },
             "budgets": {
@@ -73,6 +80,7 @@
         "insert": "Insert",
         "insertTextHere": "Insert text here.",
         "logo": "Logo",
+        "newItem": "New item",
         "newLine": "New line",
         "postalCode": "Postal Code",
         "price": "Price",

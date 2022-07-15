@@ -11,7 +11,7 @@
                 </div>
                 <div class="template-data__section__group grid-group" formGroupName="template">
                     <!-- Name -->
-                    <mat-form-field appearance="outitem" floatLabel="always" class="first-item">
+                    <mat-form-field appearance="outline" floatLabel="always" class="first-item">
                         <mat-label>{{ labels.name | translate }}</mat-label>
                         <input matInput formControlName="name" />
                         <mat-error
@@ -21,156 +21,11 @@
                             {{ labels.nameRequired | translate }}
                         </mat-error>
                     </mat-form-field>
-                    <!-- brands -->
-                    <mat-form-field appearance="outitem" floatLabel="always">
-                        <mat-label>{{ labels.brand | translate }}</mat-label>
-                        <mat-select formControlName="brands" multiple (selectionChange)="getFacilitiesOptions()">
-                            <button
-                                mat-button
-                                class="mat-button-w-100-left"
-                                *ngIf="!hasAllSelected('brands', attachmentForm.get('template.brands'), brandsList)"
-                                (click)="selectAll('brands', attachmentForm.get('template.brands'), brandsList)"
-                            >
-                                {{ labels.selectAll | translate }}
-                            </button>
-                            <button
-                                mat-button
-                                class="mat-button-w-100-left"
-                                *ngIf="hasAllSelected('brands', attachmentForm.get('template.brands'), brandsList)"
-                                (click)="unselectAll('brands', attachmentForm.get('template.brands'))"
-                            >
-                                {{ labels.unselectAll | translate }}
-                            </button>
-                            <mat-option *ngFor="let brand of brandsAsyncList | async" [value]="brand">{{
-                                brand.name
-                            }}</mat-option>
-                        </mat-select>
-                        <mat-error *ngIf="attachmentForm.get('template.brands').invalid && attachmentForm.get('template.brands').touched">
-                            <span *ngIf="attachmentForm.get('template.brands').errors.required">{{
-                                labels.required | translate
-                            }}</span>
-                        </mat-error>
-                    </mat-form-field>
 
-                    <!-- facilities -->
-                    <mat-form-field appearance="outitem" floatLabel="always">
-                        <mat-label>{{ labels.facility | translate }}</mat-label>
-                        <mat-select
-                            formControlName="facilities"
-                            multiple
-                            (selectionChange)="getDepartmentsOptions()"
-                            [disabled]="!facilitiesList || !facilitiesList.length"
-                        >
-                            <button
-                                mat-button
-                                class="mat-button-w-100-left"
-                                *ngIf="!hasAllSelected('facilities', attachmentForm.get('template.facilities'), facilitiesList)"
-                                (click)="selectAll('facilities', attachmentForm.get('template.facilities'), facilitiesList)"
-                            >
-                                {{ labels.selectAll | translate }}
-                            </button>
-                            <button
-                                mat-button
-                                class="mat-button-w-100-left"
-                                *ngIf="hasAllSelected('facilities', attachmentForm.get('template.facilities'), facilitiesList)"
-                                (click)="unselectAll('facilities', attachmentForm.get('template.facilities'))"
-                            >
-                                {{ labels.unselectAll | translate }}
-                            </button>
-                            <mat-optgroup
-                                *ngFor="let group of facilitiesList"
-                                [label]="group.brandName"
-                                matTooltip="{{ group.tooltipBrandName }}"
-                                [matTooltipDisabled]="!group.tooltipBrandName"
-                                matTooltipPosition="before"
-                            >
-                                <mat-option *ngFor="let facility of group.facilities" [value]="facility">
-                                    {{ facility.name }}
-                                </mat-option>
-                            </mat-optgroup>
-                        </mat-select>
-                        <mat-error
-                            *ngIf="attachmentForm.get('template.facilities').invalid && attachmentForm.get('template.facilities').touched"
-                        >
-                            <span *ngIf="attachmentForm.get('template.facilities').errors.required">{{
-                                labels.required | translate
-                            }}</span>
-                        </mat-error>
-                    </mat-form-field>
-                    <!-- departments -->
-                    <mat-form-field appearance="outitem" floatLabel="always">
-                        <mat-label>{{ labels.department | translate }}</mat-label>
-                        <mat-select
-                            formControlName="departments"
-                            multiple
-                            (selectionChange)="getSpecialtiesOptions()"
-                            [disabled]="!departmentsList || !departmentsList.length"
-                        >
-                            <button
-                                mat-button
-                                class="mat-button-w-100-left"
-                                *ngIf="!hasAllSelected('departments', attachmentForm.get('template.departments'), departmentsList)"
-                                (click)="selectAll('departments', attachmentForm.get('template.departments'), departmentsList)"
-                            >
-                                {{ labels.selectAll | translate }}
-                            </button>
-                            <button
-                                mat-button
-                                class="mat-button-w-100-left"
-                                *ngIf="hasAllSelected('departments', attachmentForm.get('template.departments'), departmentsList)"
-                                (click)="unselectAll('departments', attachmentForm.get('template.departments'))"
-                            >
-                                {{ labels.unselectAll | translate }}
-                            </button>
-
-                            <mat-optgroup *ngFor="let group of departmentsList" [label]="group.facilityName">
-                                <mat-option *ngFor="let department of group.departments" [value]="department">
-                                    {{ department.name }}
-                                </mat-option>
-                            </mat-optgroup>
-                        </mat-select>
-                        <mat-error
-                            *ngIf="
-                                attachmentForm.get('template.departments').invalid && attachmentForm.get('template.departments').touched
-                            "
-                        >
-                            <span *ngIf="attachmentForm.get('template.departments').errors.required">{{
-                                labels.required | translate
-                            }}</span>
-                        </mat-error>
-                    </mat-form-field>
-                    <!-- specialties -->
-                    <mat-form-field appearance="outitem" floatLabel="always">
-                        <mat-label>{{ labels.specialty | translate }}</mat-label>
-                        <mat-select
-                            formControlName="specialties"
-                            multiple
-                            [disabled]="!specialtiesList || !specialtiesList.length"
-                        >
-                            <button
-                                mat-button
-                                class="mat-button-w-100-left"
-                                *ngIf="!hasAllSelected('specialties', attachmentForm.get('template.specialties'), specialtiesList)"
-                                (click)="selectAll('specialties', attachmentForm.get('template.specialties'), specialtiesList)"
-                            >
-                                {{ labels.selectAll | translate }}
-                            </button>
-                            <button
-                                mat-button
-                                class="mat-button-w-100-left"
-                                *ngIf="hasAllSelected('specialties', attachmentForm.get('template.specialties'), specialtiesList)"
-                                (click)="unselectAll('specialties', attachmentForm.get('template.specialties'))"
-                            >
-                                {{ labels.unselectAll | translate }}
-                            </button>
-
-                            <mat-optgroup *ngFor="let group of specialtiesList" [label]="group.departmentName">
-                                <mat-option *ngFor="let specialty of group.specialties" [value]="specialty">
-                                    {{ specialty.name }}
-                                </mat-option>
-                            </mat-optgroup>
-                        </mat-select>
-                    </mat-form-field>
+                    <app-organization-levels-nested-combos
+                        #OrganizationLevelsNestedCombos
+                        [form]="attachmentForm.get('template')"
+                    ></app-organization-levels-nested-combos>
                 </div>
             </div>
             <!-- Attachment items -->
@@ -192,14 +47,23 @@
                                 >
                                     <div class="attachment-item-custom-placeholder" *cdkDragPlaceholder></div>
                                     <mat-icon cdkDragHandle class="opacity-04">drag_indicator</mat-icon>
-
+                                    <!-- 
                                     <mat-form-field
-                                        appearance="outitem"
+                                        appearance="outline"
                                         class="smaller-mat-form-fields__no-margin"
                                         floatLabel="always"
                                     >
+                                    <mat-label>{{ labels.name | translate }}</mat-label>
                                         <input type="text" matInput formControlName="name" />
-                                        <!-- <input type="text" matInput [(ngModel)]="item.description" /> -->
+                                        <input type="text" matInput [(ngModel)]="item.description" /> 
+                                    </mat-form-field> -->
+                                    <mat-form-field
+                                        appearance="outline"
+                                        floatLabel="always"
+                                        class="smaller-mat-form-fields__no-margin"
+                                    >
+                                        <mat-label>{{ labels.name | translate }}</mat-label>
+                                        <input matInput formControlName="name" />
                                     </mat-form-field>
 
                                     <div class="attachment-item__actions">
@@ -212,9 +76,10 @@
                         </div>
                     </div>
                     <mat-error *ngIf="attachmentForm.get('templateAttachmentItems').invalid">
-                        <span *ngIf="attachmentForm?.get('templateAttachmentItems')?.errors?.required && attachmentForm?.touched">{{
-                            labels.required | translate
-                        }}</span>
+                        <span
+                            *ngIf="attachmentForm?.get('templateAttachmentItems')?.errors?.required && attachmentForm?.touched"
+                            >{{ labels.required | translate }}</span
+                        >
                     </mat-error>
                     <button mat-button class="v-align-bottom opacity-06 no-padding" (click)="addAttachmentItem()">
                         <mat-icon>add</mat-icon>
