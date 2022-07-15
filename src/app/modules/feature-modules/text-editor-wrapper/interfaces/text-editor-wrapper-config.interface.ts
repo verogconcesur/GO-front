@@ -1,5 +1,5 @@
 export interface TextEditorWrapperConfigI {
   addHtmlModificationOption?: boolean;
-  addVariablesInsertionOption?: boolean;
-  variablesOpt?: string[];
+  addMacroListOption?: boolean;
+  macroListOptions?: string[];
 }
