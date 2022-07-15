@@ -24,6 +24,7 @@ import {
   CreateEditAttachmentComponent,
   CreateEditAttachmentComponentModalEnum
 } from './dialog/create-edit-attachment/create-edit-attachment.component';
+import { ConfirmDialogService } from '@shared/services/confirm-dialog.service';
 @Component({
   selector: 'app-attachments',
   templateUrl: './attachments.component.html',
@@ -50,7 +51,8 @@ export class AttachmentsComponent extends AdministrationCommonHeaderSectionClass
     private spinnerService: ProgressSpinnerDialogService,
     private customDialogService: CustomDialogService,
     private globalMessageService: GlobalMessageService,
-    private translateService: TranslateService
+    private translateService: TranslateService,
+    private confirmDialogService: ConfirmDialogService
   ) {
     super();
   }
@@ -144,7 +146,33 @@ export class AttachmentsComponent extends AdministrationCommonHeaderSectionClass
   }
 
   public deleteAttachment(id: number) {
-    console.log('eliminar', id);
+    this.confirmDialogService
+      .open({
+        title: this.translateService.instant(marker('common.warning')),
+        message: this.translateService.instant(marker('administration.templates.attachments.deleteConfirmation'))
+      })
+      .subscribe((ok: boolean) => {
+        if (ok) {
+          const spinner = this.spinnerService.show();
+          this.attachmentService
+            .deleteAttachmentById(id)
+            .pipe(
+              take(1),
+              finalize(() => this.spinnerService.hide(spinner))
+            )
+            .subscribe({
+              next: (response) => {
+                setTimeout(() => this.getData());
+              },
+              error: (error) => {
+                this.globalMessageService.showError({
+                  message: error.message,
+                  actionText: this.translateService.instant(marker('common.close'))
+                });
+              }
+            });
+        }
+      });
   }
 
   public optionLabelFn = (option: TemplatesCommonDTO): string => {
@@ -157,25 +185,25 @@ export class AttachmentsComponent extends AdministrationCommonHeaderSectionClass
   };
 
   private openCreateEditAttachmentDialog = (attachmentCommon?: TemplatesAttachmentDTO): void => {
-    // this.customDialogService
-    //   .open({
-    //     id: CreateEditAttachmentComponentModalEnum.ID,
-    //     panelClass: CreateEditAttachmentComponentModalEnum.PANEL_CLASS,
-    //     component: CreateEditAttachmentComponent,
-    //     extendedComponentData: attachmentCommon ? attachmentCommon : null,
-    //     disableClose: true,
-    //     width: '700px'
-    //   })
-    //   .pipe(take(1))
-    //   .subscribe((response) => {
-    //     if (response) {
-    //       this.globalMessageService.showSuccess({
-    //         message: this.translateService.instant(marker('common.successOperation')),
-    //         actionText: this.translateService.instant(marker('common.close'))
-    //       });
-    //       this.getData();
-    //     }
-    //   });
+    this.customDialogService
+      .open({
+        id: CreateEditAttachmentComponentModalEnum.ID,
+        panelClass: CreateEditAttachmentComponentModalEnum.PANEL_CLASS,
+        component: CreateEditAttachmentComponent,
+        extendedComponentData: attachmentCommon ? attachmentCommon : null,
+        disableClose: true,
+        width: '700px'
+      })
+      .pipe(take(1))
+      .subscribe((response) => {
+        if (response) {
+          this.globalMessageService.showSuccess({
+            message: this.translateService.instant(marker('common.successOperation')),
+            actionText: this.translateService.instant(marker('common.close'))
+          });
+          this.getData();
+        }
+      });
   };
 
   private initializeFilterListener() {
