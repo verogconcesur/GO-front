@@ -48,8 +48,8 @@ export class CreateEditDepartmentComponent extends ComponentToExtendForCustomDia
   public departmentToEdit: DepartmentDTO = null;
   public textEditorToolbarOptions: TextEditorWrapperConfigI = {
     addHtmlModificationOption: true
-    // addVariablesInsertionOption: false,
-    // variablesOpt: ['una', 'dos']
+    // addMacroListOption: false,
+    // macroListOptions: ['una', 'dos']
   };
   private facilityId: number;
 

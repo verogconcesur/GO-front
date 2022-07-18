@@ -62,8 +62,8 @@ export class CreateEditFacilityComponent extends ComponentToExtendForCustomDialo
   public facilityToEdit: FacilityDTO = null;
   public textEditorToolbarOptions: TextEditorWrapperConfigI = {
     addHtmlModificationOption: true
-    // addVariablesInsertionOption: false,
-    // variablesOpt: ['una', 'dos']
+    // addMacroListOption: false,
+    // macroListOptions: ['una', 'dos']
   };
 
   constructor(
