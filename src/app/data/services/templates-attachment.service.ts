@@ -7,10 +7,9 @@ import PaginationRequestI from '@data/interfaces/pagination-request';
 import PaginationResponseI from '@data/interfaces/pagination-response';
 import TemplatesAttachmentDTO from '@data/models/templates-attachment-dto';
 import TemplatesCommonDTO from '@data/models/templates-common-dto';
-import TemplatesCommunicationDTO from '@data/models/templates-communication-dto';
 import TemplatesFilterDTO from '@data/models/templates-filter-dto';
 import { getPaginationUrlGetParams } from '@data/utils/pagination-aux';
-import { Observable, Subject, throwError } from 'rxjs';
+import { Observable, throwError } from 'rxjs';
 import { catchError } from 'rxjs/operators';
 
 @Injectable({
@@ -18,7 +17,7 @@ import { catchError } from 'rxjs/operators';
 })
 export class TemplatesAttachmentService {
   private readonly SEARCH_ATTACHMENTS_PATH = '/api/templates/search';
-  private readonly POST_BUDGETS_PATH = '/api/templateattachments';
+  private readonly POST_ATTACHMENTS_PATH = '/api/templateattachments';
   private readonly TEMPLATE_TYPE = 'ATTACHMENTS';
 
   constructor(@Inject(ENV) private env: Env, private http: HttpClient) {}
@@ -37,13 +36,13 @@ export class TemplatesAttachmentService {
 
   public findById(id: number): Observable<TemplatesAttachmentDTO> {
     return this.http
-      .get<TemplatesAttachmentDTO>(`${this.env.apiBaseUrl}${this.POST_BUDGETS_PATH}/${id}`)
+      .get<TemplatesAttachmentDTO>(`${this.env.apiBaseUrl}${this.POST_ATTACHMENTS_PATH}/${id}`)
       .pipe(catchError((error) => throwError(error as ConcenetError)));
   }
 
   public addOrEditAttachment(data: TemplatesAttachmentDTO): Observable<TemplatesAttachmentDTO> {
     return this.http
-      .post<TemplatesAttachmentDTO>(`${this.env.apiBaseUrl}${this.POST_BUDGETS_PATH}`, {
+      .post<TemplatesAttachmentDTO>(`${this.env.apiBaseUrl}${this.POST_ATTACHMENTS_PATH}`, {
         ...data,
         template: {
           ...data.template,
@@ -55,7 +54,7 @@ export class TemplatesAttachmentService {
 
   public deleteAttachmentById(budgetId: number): Observable<void> {
     return this.http
-      .delete<void>(`${this.env.apiBaseUrl}${this.POST_BUDGETS_PATH}/${budgetId}`)
+      .delete<void>(`${this.env.apiBaseUrl}${this.POST_ATTACHMENTS_PATH}/${budgetId}`)
       .pipe(catchError((error) => throwError(error.error as ConcenetError)));
   }
 }

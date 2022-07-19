@@ -12,7 +12,7 @@
                 "edit": "Edit attachment template",
                 "itemConcept": "Item concept",
                 "items": "Items",
-                "name": "Name",
+                "name": "Attachment's template name",
                 "title": "Attachments categories"
             },
             "budgets": {
@@ -35,7 +35,13 @@
                 "title": "Client timeline"
             },
             "communications": {
+                "add": "New communication template",
                 "create": "Create communication template",
+                "delete": "Delete communication template",
+                "deleteConfirmation": "Do you really want to delete this communication template?",
+                "edit": "Edit communication template",
+                "name": "Communication's template name",
+                "text": "Notes",
                 "title": "Communication"
             },
             "title": "Templates"

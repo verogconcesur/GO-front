@@ -8,6 +8,7 @@ import FacilityDTO from '@data/models/facility-dto';
 import SpecialtyDTO from '@data/models/specialty-dto';
 import TemplatesCommonDTO from '@data/models/templates-common-dto';
 import TemplatesFilterDTO from '@data/models/templates-filter-dto';
+import TemplatesCommunicationDTO from '@data/models/templates-communication-dto';
 import { TemplatesCommunicationService } from '@data/services/templates-communication.service';
 import { CustomDialogService } from '@jenga/custom-dialog';
 import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
@@ -19,6 +20,12 @@ import { GlobalMessageService } from '@shared/services/global-message.service';
 import { ProgressSpinnerDialogService } from '@shared/services/progress-spinner-dialog.service';
 import { Observable, of } from 'rxjs';
 import { map, take, finalize } from 'rxjs/operators';
+// eslint-disable-next-line max-len
+import {
+  CreateEditCommunicationComponent,
+  CreateEditCommunicationComponentModalEnum
+} from './dialog/create-edit-communication/create-edit-communication.component';
+import { ConfirmDialogService } from '@shared/services/confirm-dialog.service';
 
 @UntilDestroy()
 @Component({
@@ -43,11 +50,12 @@ export class CommunicationComponent extends AdministrationCommonHeaderSectionCla
 
   constructor(
     private filterDrawerService: FilterDrawerService,
-    private comunicationService: TemplatesCommunicationService,
+    private communicationService: TemplatesCommunicationService,
     private spinnerService: ProgressSpinnerDialogService,
     private customDialogService: CustomDialogService,
     private globalMessageService: GlobalMessageService,
-    private translateService: TranslateService
+    private translateService: TranslateService,
+    private confirmDialogService: ConfirmDialogService
   ) {
     super();
   }
@@ -59,11 +67,24 @@ export class CommunicationComponent extends AdministrationCommonHeaderSectionCla
   public headerCreateAction(): void {
     this.openCreateEditCommunicationDialog();
   }
+
+  public editAction(communication: TemplatesCommonDTO): void {
+    const spinner = this.spinnerService.show();
+    this.communicationService
+      .findById(communication.id)
+      .pipe(
+        take(1),
+        finalize(() => this.spinnerService.hide(spinner))
+      )
+      .subscribe((b: TemplatesCommunicationDTO) => {
+        this.openCreateEditCommunicationDialog(b);
+      });
+  }
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   public headerGetFilteredData(text: string): Observable<{ content: any[]; optionLabelFn: (option: any) => string }> {
     this.textSearchValue = text;
     if (text.length >= 3) {
-      return this.comunicationService
+      return this.communicationService
         .searchCommunicationsTemplates(
           {
             ...this.transformFilterValue(this.filterValue),
@@ -106,7 +127,7 @@ export class CommunicationComponent extends AdministrationCommonHeaderSectionCla
     } else {
       this.paginationConfig.page = 0;
     }
-    this.comunicationService
+    this.communicationService
       .searchCommunicationsTemplates(
         {
           ...this.transformFilterValue(this.filterValue),
@@ -128,7 +149,33 @@ export class CommunicationComponent extends AdministrationCommonHeaderSectionCla
   }
 
   public deleteCommunication(id: number) {
-    console.log('eliminar', id);
+    this.confirmDialogService
+      .open({
+        title: this.translateService.instant(marker('common.warning')),
+        message: this.translateService.instant(marker('administration.templates.communications.deleteConfirmation'))
+      })
+      .subscribe((ok: boolean) => {
+        if (ok) {
+          const spinner = this.spinnerService.show();
+          this.communicationService
+            .deleteCommunicationById(id)
+            .pipe(
+              take(1),
+              finalize(() => this.spinnerService.hide(spinner))
+            )
+            .subscribe({
+              next: (response) => {
+                setTimeout(() => this.getData());
+              },
+              error: (error) => {
+                this.globalMessageService.showError({
+                  message: error.message,
+                  actionText: this.translateService.instant(marker('common.close'))
+                });
+              }
+            });
+        }
+      });
   }
 
   public optionLabelFn = (option: TemplatesCommonDTO): string => {
@@ -140,8 +187,26 @@ export class CommunicationComponent extends AdministrationCommonHeaderSectionCla
     return '';
   };
 
-  public openCreateEditCommunicationDialog = (budget?: TemplatesCommonDTO): void => {
-    console.log('openCreateEditCommunication');
+  private openCreateEditCommunicationDialog = (communicationCommon?: TemplatesCommunicationDTO): void => {
+    this.customDialogService
+      .open({
+        id: CreateEditCommunicationComponentModalEnum.ID,
+        panelClass: CreateEditCommunicationComponentModalEnum.PANEL_CLASS,
+        component: CreateEditCommunicationComponent,
+        extendedComponentData: communicationCommon ? communicationCommon : null,
+        disableClose: true,
+        width: '700px'
+      })
+      .pipe(take(1))
+      .subscribe((response) => {
+        if (response) {
+          this.globalMessageService.showSuccess({
+            message: this.translateService.instant(marker('common.successOperation')),
+            actionText: this.translateService.instant(marker('common.close'))
+          });
+          this.getData();
+        }
+      });
   };
 
   private initializeFilterListener() {
