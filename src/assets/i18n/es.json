@@ -12,7 +12,7 @@
                 "edit": "Editar plantilla de categoría de adjuntos",
                 "itemConcept": "Concepto del elemento",
                 "items": "Elementos",
-                "name": "Nombre",
+                "name": "Nombre de plantilla de categoría de adjuntos",
                 "title": "Categoría de adjuntos"
             },
             "budgets": {
@@ -35,7 +35,13 @@
                 "title": "Timeline de cliente"
             },
             "communications": {
+                "add": "Nueva plantilla de Comunicación",
                 "create": "Crear plantilla de comunicación",
+                "delete": "Eliminar plantilla de comunicación",
+                "deleteConfirmation": "¿Realmente quieres eliminar esta plantilla?",
+                "edit": "Editar plantilla de comunicación",
+                "name": "Nombre de plantilla de comunicación",
+                "text": "Notas",
                 "title": "Comunicación"
             },
             "title": "Plantillas"
