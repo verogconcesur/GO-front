@@ -5,10 +5,14 @@ import SpecialtyDTO from './specialty-dto';
 
 export default interface TemplatesCommunicationDTO {
   id: number;
-  name: string;
-  brands: BrandDTO[];
-  departments: DepartmentDTO[];
-  facilities: FacilityDTO[];
-  specialties: SpecialtyDTO[];
-  templateType: string;
+  template: {
+    brands: BrandDTO[];
+    departments: DepartmentDTO[];
+    facilities: FacilityDTO[];
+    id: number;
+    name: string;
+    specialties: SpecialtyDTO[];
+    templateType: string;
+  };
+  text: string;
 }
