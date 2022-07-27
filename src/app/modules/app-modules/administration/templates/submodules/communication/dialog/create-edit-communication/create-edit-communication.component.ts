@@ -3,7 +3,9 @@ import { Component, OnDestroy, OnInit } from '@angular/core';
 import { FormArray, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { marker } from '@biesbjerg/ngx-translate-extract-marker';
 import TemplatesCommunicationDTO from '@data/models/templates-communication-dto';
+import VariablesDto from '@data/models/variables-dto';
 import { TemplatesCommunicationService } from '@data/services/templates-communication.service';
+import { VariablesService } from '@data/services/variables.service';
 import { ComponentToExtendForCustomDialog, CustomDialogFooterConfigI, CustomDialogService } from '@jenga/custom-dialog';
 // eslint-disable-next-line max-len
 import { TextEditorWrapperConfigI } from '@modules/feature-modules/text-editor-wrapper/interfaces/text-editor-wrapper-config.interface';
@@ -38,10 +40,11 @@ export class CreateEditCommunicationComponent extends ComponentToExtendForCustom
     required: marker('errors.required')
   };
   public textEditorToolbarOptions: TextEditorWrapperConfigI = {
-    addHtmlModificationOption: true
+    addHtmlModificationOption: true,
     // addMacroListOption: true,
     // macroListOptions: ['Nombre cliente', 'Nombre empresa']
   };
+  public listVariables: VariablesDto[];
   public communicationForm: FormGroup;
   public communicationTemplateForm: FormGroup;
   public communicationToEdit: TemplatesCommunicationDTO = null;
@@ -54,7 +57,8 @@ export class CreateEditCommunicationComponent extends ComponentToExtendForCustom
     private translateService: TranslateService,
     private communicationService: TemplatesCommunicationService,
     private globalMessageService: GlobalMessageService,
-    private customDialogService: CustomDialogService
+    private customDialogService: CustomDialogService,
+    private variablesService: VariablesService
   ) {
     super(
       CreateEditCommunicationComponentModalEnum.ID,
@@ -65,10 +69,11 @@ export class CreateEditCommunicationComponent extends ComponentToExtendForCustom
 
   ngOnInit(): void {
     this.communicationToEdit = this.extendedComponentData;
+    this.getVariable();
+    this.initializeForm();
     if (this.communicationToEdit) {
       this.MODAL_TITLE = marker('administration.templates.communications.edit');
     }
-    this.initializeForm();
   }
 
   ngOnDestroy(): void {}
@@ -86,6 +91,10 @@ export class CreateEditCommunicationComponent extends ComponentToExtendForCustom
 
   public onSubmitCustomDialog(): Observable<boolean | TemplatesCommunicationDTO> {
     const formValue = this.communicationForm.getRawValue();
+    const variablesOnText = this.listVariables.filter(
+      (variable) => formValue.text && formValue.text.indexOf(variable.name) !== -1
+    );
+    formValue.variables = variablesOnText;
     if (this.communicationToEdit) {
       formValue.id = this.communicationToEdit.id;
       formValue.template.id = this.communicationToEdit.template.id;
@@ -180,6 +189,12 @@ export class CreateEditCommunicationComponent extends ComponentToExtendForCustom
       });
   };
 
+  private getVariable(): void {
+    this.variablesService.searchVariables().subscribe((res) => {
+      this.listVariables = res;
+    });
+  }
+
   private initializeForm(): void {
     this.communicationForm = this.fb.group({
       template: this.fb.group({
@@ -190,6 +205,7 @@ export class CreateEditCommunicationComponent extends ComponentToExtendForCustom
         specialties: [this.communicationToEdit ? this.communicationToEdit.template.specialties : null]
       }),
       text: [this.communicationToEdit ? this.communicationToEdit.text : null, Validators.required],
+      variables: [this.communicationToEdit ? this.communicationToEdit.variables : []]
     });
   }
 }

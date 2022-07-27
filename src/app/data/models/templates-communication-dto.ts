@@ -2,6 +2,7 @@ import BrandDTO from './brand-dto';
 import DepartmentDTO from './department-dto';
 import FacilityDTO from './facility-dto';
 import SpecialtyDTO from './specialty-dto';
+import VariablesDto from './variables-dto';
 
 export default interface TemplatesCommunicationDTO {
   id: number;
@@ -15,4 +16,5 @@ export default interface TemplatesCommunicationDTO {
     templateType: string;
   };
   text: string;
+  variables: VariablesDto[];
 }
