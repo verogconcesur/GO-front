@@ -29,7 +29,7 @@
                     ></app-organization-levels-nested-combos>
                 </div>
             </div>
-            <div class="template-data__section">
+            <div class="template-data__section" *ngIf="listVariables">
                 <div class="template-data__section__group">
                     <div class="template-data__section__group__title">{{ labels.text | translate }}</div>
                     <app-text-editor-wrapper

@@ -31,7 +31,14 @@
                 "title": "Checklists"
             },
             "clientTimeline": {
+                "add": "Nueva plantilla de timeline de cliente",
                 "create": "Crear timeline de cliente",
+                "delete": "Eliminar plantilla de timeline de cliente",
+                "deleteConfirmation": "¿Realmente quieres eliminar esta plantilla?",
+                "edit": "Editar plantilla de timeline de cliente",
+                "itemConcept": "Concepto del elemento",
+                "items": "Elementos",
+                "name": "Nombre de plantilla de timeline de cliente",
                 "title": "Timeline de cliente"
             },
             "communications": {

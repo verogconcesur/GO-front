@@ -13,7 +13,7 @@ import { catchError, map } from 'rxjs/operators';
 })
 export class BrandService {
   private readonly GET_BRANDS_PATH = '/api/brands';
-  private readonly GET_BRANDS_LIST_PATH = '/api/brands/list';
+  private readonly GET_ALL_BRANDS_LIST_PATH = '/api/brands/findAll';
   private readonly DUPLICATE_BRAND_PATH = '/api/brands/duplicate';
   private readonly DELETE_BRAND_PATH = '/api/brands';
 
@@ -27,13 +27,13 @@ export class BrandService {
 
   public getAllBrands(): Observable<BrandDTO[]> {
     return this.http
-      .get<BrandDTO[]>(`${this.env.apiBaseUrl}${this.GET_BRANDS_PATH}`)
+      .get<BrandDTO[]>(`${this.env.apiBaseUrl}${this.GET_ALL_BRANDS_LIST_PATH}`)
       .pipe(catchError((error) => throwError(error as ConcenetError)));
   }
 
   public getAllBrandsList(): Observable<BrandDTO[]> {
     return this.http
-      .get<BrandDTO[]>(`${this.env.apiBaseUrl}${this.GET_BRANDS_LIST_PATH}`)
+      .get<BrandDTO[]>(`${this.env.apiBaseUrl}${this.GET_ALL_BRANDS_LIST_PATH}`)
       .pipe(catchError((error) => throwError(error as ConcenetError)));
   }
 
