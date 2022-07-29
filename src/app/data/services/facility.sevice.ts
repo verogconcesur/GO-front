@@ -19,7 +19,7 @@ export class FacilityService {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   private facilitiesByBrand: any = {};
   private readonly GET_FACILITY = '/api/facilities/';
-  private readonly GET_FACILITIES_PATH = '/api/facilities/findAllByBrands/';
+  private readonly GET_FACILITIES_PATH = '/api/facilities/findAll/';
   private readonly DELETE_FACILITY_PATH = '/api/facilities';
   private readonly DUPLICATE_FACILITY_PATH = '/api/facilities/duplicate';
 

@@ -2,9 +2,14 @@ import BrandDTO from './brand-dto';
 import DepartmentDTO from './department-dto';
 import FacilityDTO from './facility-dto';
 import SpecialtyDTO from './specialty-dto';
-import VariablesDto from './variables-dto';
 
-export default interface TemplatesCommunicationDTO {
+export interface TemplatesTimelineItemsDTO {
+  name: string;
+  id: number;
+  orderNumber: number;
+}
+
+export default interface TemplatesTimelineDTO {
   id: number;
   template: {
     brands: BrandDTO[];
@@ -15,6 +20,5 @@ export default interface TemplatesCommunicationDTO {
     specialties: SpecialtyDTO[];
     templateType: string;
   };
-  text: string;
-  variables: VariablesDto[];
+  templateTimelineItems: TemplatesTimelineItemsDTO[];
 }
