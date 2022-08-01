@@ -32,7 +32,7 @@ export class SpecialtiesComponent implements OnInit {
     noDataToShow: marker('errors.noDataToShow')
   };
   public hasSpecialties = false;
-  private brandId: number;
+  // private brandId: number;
   private facilityId: number;
   private departmentId: number;
 
@@ -49,7 +49,7 @@ export class SpecialtiesComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
-    this.brandId = parseInt(this.route.snapshot.paramMap.get('idBrand'), 10);
+    // this.brandId = parseInt(this.route.snapshot.paramMap.get('idBrand'), 10);
     this.facilityId = parseInt(this.route.snapshot.paramMap.get('idFacility'), 10);
     this.departmentId = parseInt(this.route.snapshot.paramMap.get('idDepartment'), 10);
     this.getSpecialties();
@@ -138,7 +138,7 @@ export class SpecialtiesComponent implements OnInit {
   public showUsersAction(item: SpecialtyDTO): void {
     this.router.navigate([`${RouteConstants.ADMINISTRATION}/${RouteConstants.USERS}`], {
       state: {
-        brands: [{ id: this.brandId }],
+        // brands: [{ id: this.brandId }],
         facilities: [{ id: this.facilityId }],
         departments: [{ id: this.departmentId }],
         specialties: [item]
