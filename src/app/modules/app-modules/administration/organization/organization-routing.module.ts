@@ -24,37 +24,34 @@ const routes: Routes = [
       {
         path: RouteConstants.BRANDS,
         canActivate: [AuthGuardService],
+        component: BrandsComponent
+      },
+      {
+        path: RouteConstants.FACILITIES,
+        canActivate: [AuthGuardService],
         component: OrganizationComponent,
         //Facility level
         children: [
           {
-            path: `${RouteConstants.ID_BRAND}/${RouteConstants.FACILITIES}`,
+            path: RouteConstants.EMPTY,
             canActivate: [AuthGuardService],
-            data: {
-              // numberOfPathsToRemoveFromTheUrl => used to tell the breadcrumb to delete de ":idBrand/facilities" from the url
-              breadcrumb: [
-                {
-                  id: RouteConstants.BRANDS,
-                  label: 'organizations.brands.title',
-                  numberOfPathsToRemoveFromTheUrl: 2
-                },
-                {
-                  id: RouteConstants.FACILITIES,
-                  label: (data: { brand: BrandDTO }) => `${data.brand.name}`
-                }
-              ]
-            },
-            resolve: { brand: BrandService },
             //Department level
             children: [
               {
                 path: `${RouteConstants.ID_FACILITY}/${RouteConstants.DEPARTMENTS}`,
                 canActivate: [AuthGuardService],
                 data: {
-                  breadcrumb: {
-                    id: RouteConstants.DEPARTMENTS,
-                    label: (data: { facility: FacilityDTO }) => `${data.facility.name}`
-                  }
+                  breadcrumb: [
+                    {
+                      id: RouteConstants.FACILITIES,
+                      label: 'organizations.facilities.title',
+                      numberOfPathsToRemoveFromTheUrl: 2
+                    },
+                    {
+                      id: RouteConstants.DEPARTMENTS,
+                      label: (data: { facility: FacilityDTO }) => `${data.facility.name}`
+                    }
+                  ]
                 },
                 resolve: { facility: FacilityService },
                 //Specialty level
@@ -84,11 +81,6 @@ const routes: Routes = [
                 component: FacilitiesComponent
               }
             ]
-          },
-          {
-            path: RouteConstants.EMPTY,
-            canActivate: [AuthGuardService],
-            component: BrandsComponent
           }
         ]
       },

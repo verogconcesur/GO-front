@@ -77,13 +77,15 @@ export class FacilityService {
     }
   }
 
-  public getFacilitiesByBrandsIds(ids: number[]): Observable<FacilityDTO[]> {
+  public getFacilitiesByBrandsIds(ids?: number[]): Observable<FacilityDTO[]> {
     if (ids && ids.length > 0) {
       return this.http
         .get<FacilityDTO[]>(`${this.env.apiBaseUrl}${this.GET_FACILITIES_PATH}${ids.join(',')}`)
         .pipe(catchError((error) => throwError(error.error as ConcenetError)));
     } else {
-      return of([]);
+      return this.http
+        .get<FacilityDTO[]>(`${this.env.apiBaseUrl}${this.GET_FACILITIES_PATH}`)
+        .pipe(catchError((error) => throwError(error.error as ConcenetError)));
     }
   }
 

@@ -32,7 +32,7 @@ export class DepartmentsComponent implements OnInit {
     noDataToShow: marker('errors.noDataToShow')
   };
   public hasDepartments = false;
-  private brandId: number;
+  // private brandId: number;
   private facilityId: number;
 
   constructor(
@@ -48,7 +48,7 @@ export class DepartmentsComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
-    this.brandId = parseInt(this.route.snapshot.paramMap.get('idBrand'), 10);
+    // this.brandId = parseInt(this.route.snapshot.paramMap.get('idBrand'), 10);
     this.facilityId = parseInt(this.route.snapshot.paramMap.get('idFacility'), 10);
     this.getDepartments();
   }
@@ -57,7 +57,7 @@ export class DepartmentsComponent implements OnInit {
     this.router.navigate(
       [
         `${RouteConstants.ADMINISTRATION}/${RouteConstants.ORGANIZATION}/` +
-          `${RouteConstants.BRANDS}/${this.brandId}/` +
+          // `${RouteConstants.BRANDS}/${this.brandId}/` +
           `${RouteConstants.FACILITIES}/${this.facilityId}/` +
           `${RouteConstants.DEPARTMENTS}/${department.id}/` +
           `${RouteConstants.SPECIALTIES}`
@@ -154,7 +154,7 @@ export class DepartmentsComponent implements OnInit {
 
   public showUsersAction(item: DepartmentDTO): void {
     this.router.navigate([`${RouteConstants.ADMINISTRATION}/${RouteConstants.USERS}`], {
-      state: { brands: [{ id: this.brandId }], facilities: [{ id: this.facilityId }], departments: [item] }
+      state: { facilities: [{ id: this.facilityId }], departments: [item] }
     });
   }
 

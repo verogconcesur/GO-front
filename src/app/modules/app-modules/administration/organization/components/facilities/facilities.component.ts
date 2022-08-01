@@ -34,7 +34,7 @@ export class FacilitiesComponent implements OnInit {
     noDataToShow: marker('errors.noDataToShow')
   };
 
-  private brandId: number;
+  // private brandId: number;
 
   constructor(
     private router: Router,
@@ -49,7 +49,7 @@ export class FacilitiesComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
-    this.brandId = parseInt(this.route.snapshot.paramMap.get('idBrand'), 10);
+    // this.brandId = parseInt(this.route.snapshot.paramMap.get('idBrand'), 10);
     this.getFacilities();
   }
 
@@ -57,7 +57,7 @@ export class FacilitiesComponent implements OnInit {
     this.router.navigate(
       [
         `${RouteConstants.ADMINISTRATION}/${RouteConstants.ORGANIZATION}/` +
-          `${RouteConstants.BRANDS}/${this.brandId}/` +
+          // `${RouteConstants.BRANDS}/${this.brandId}/` +
           `${RouteConstants.FACILITIES}/${facility.id}/` +
           `${RouteConstants.DEPARTMENTS}`
       ],
@@ -152,13 +152,14 @@ export class FacilitiesComponent implements OnInit {
 
   public showUsersAction(item: FacilityDTO): void {
     this.router.navigate([`${RouteConstants.ADMINISTRATION}/${RouteConstants.USERS}`], {
-      state: { brands: [{ id: this.brandId }], facilities: [item] }
+      // state: { brands: [{ id: this.brandId }], facilities: [item] }
+      state: { facilities: [item] }
     });
   }
 
   private getFacilities(): void {
     const spinner = this.spinnerService.show();
-    this.facilities$ = this.facilitiesService.getFacilitiesByBrandsIds([this.brandId]).pipe(
+    this.facilities$ = this.facilitiesService.getFacilitiesByBrandsIds().pipe(
       tap((data: FacilityDTO[]) => (this.hasFacilities = data && data.length > 0 ? true : false)),
       finalize(() => this.spinnerService.hide(spinner))
     );
