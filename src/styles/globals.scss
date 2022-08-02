@@ -37,6 +37,13 @@
     height: 100%;
   }
 
+  .uppercase {
+    text-transform: uppercase;
+  }
+  .capitalize {
+    text-transform: capitalize;
+  }
+
   .message-block {
     align-items: center;
     background-color: mat-color($primary, statusNeutral);

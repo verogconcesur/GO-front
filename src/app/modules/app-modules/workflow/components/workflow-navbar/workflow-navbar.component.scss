@@ -1,0 +1,59 @@
+.workflow-navbar {
+  width: 100%;
+  padding-left: 16px;
+  padding-right: 16px;
+  height: 72px;
+
+  mat-divider {
+    margin: 0 15px;
+    height: 40px;
+  }
+
+  &__searcher {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    mat-form-field {
+      width: 400px;
+    }
+    .filter {
+      width: 100%;
+    }
+    input,
+    .mat-select-placeholder,
+    mat-select {
+      font-weight: 500;
+      font-size: 1.2em;
+    }
+  }
+
+  &__filter {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    .filter-icon {
+      cursor: pointer;
+      margin: 0 10px;
+    }
+  }
+  &__view-options {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    .opt-view {
+      margin: 0 10px;
+      cursor: pointer;
+      &.board-view {
+        transform: rotate(180deg);
+      }
+      &.calendar-view {
+        width: 20px;
+        height: 20px;
+        font-size: 20px;
+      }
+      &.active {
+        cursor: auto;
+      }
+    }
+  }
+}

@@ -14,7 +14,14 @@ const routes: Routes = [
     path: RouteConstants.DASHBOARD,
     component: DashboardLayoutComponent,
     canActivate: [AuthGuardService],
-    data: { permissions: RoutePermissionConstants.DASHBOARD }
+    data: { permissions: RoutePermissionConstants.DASHBOARD },
+    children: [
+      {
+        path: RouteConstants.WORKFLOWS,
+        canActivate: [AuthGuardService],
+        loadChildren: () => import('./modules/app-modules/workflow/workflow.module').then((m) => m.WorkflowModule)
+      }
+    ]
     // loadChildren: () => import('./modules/app-modules/login/login.module').then((m) => m.LoginModule)
   },
   {

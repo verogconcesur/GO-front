@@ -15,7 +15,9 @@
         <div class="responsive__desktop-and-tablet">
             <div fxLayout="row" fxLayoutAlign="start center">
                 <mat-divider [vertical]="true"></mat-divider>
-                <button mat-button>{{ labels.workflow | translate }}</button>
+                <button mat-button [routerLink]="WORKFLOW_PATH" routerLinkActive="active">
+                    {{ labels.workflow | translate }}
+                </button>
                 <button mat-button>{{ labels.clients | translate }}</button>
                 <button mat-button>{{ labels.vehicles | translate }}</button>
                 <button mat-button>{{ labels.advanceSearch | translate }}</button>

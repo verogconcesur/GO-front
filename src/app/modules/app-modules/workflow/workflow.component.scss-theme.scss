@@ -1,0 +1,60 @@
+@import '@angular/material/theming';
+
+@mixin workflow-component-theme($theme, $main-typo) {
+  $primary: map-get($theme, primary);
+  // $foreground: map-get($theme, foreground);
+
+  .workflow-container {
+    background-color: mat-contrast($primary, 500);
+
+    // NAVBAR
+    .workflow-navbar {
+      background-color: mat-contrast($primary, 400);
+      &__searcher {
+        .mat-form-field__no-border {
+          .mat-form-field-outline-start,
+          .mat-form-field-outline-gap,
+          .mat-form-field-outline-end {
+            border: none;
+          }
+        }
+        .redPlaceholder {
+          .mat-select-placeholder {
+            color: mat-color($primary, statusError);
+            opacity: 1; /* Firefox */
+          }
+        }
+      }
+      .filter-icon {
+        color: mat-color($primary, 500);
+      }
+      &__view-options {
+        .opt-view {
+          color: mat-color($primary, 200);
+          &.active {
+            color: mat-color($primary, 500);
+          }
+        }
+      }
+    }
+  }
+
+  .workflow-panel-class {
+    .workflow-facility .mat-optgroup-label {
+      color: mat-color($primary, A700);
+      font-size: 0.9em;
+      font-weight: 500;
+    }
+    .workflow-name {
+      color: mat-color($primary, 900);
+      font-size: 0.9em;
+      font-weight: 500;
+    }
+    .workflow-navbar__selector-filter {
+      width: 100%;
+      input {
+        font-size: 1.2em;
+      }
+    }
+  }
+}

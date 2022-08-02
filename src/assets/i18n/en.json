@@ -266,5 +266,8 @@
             "selectAll": "Select all"
         },
         "title": "Users"
+    },
+    "workflows": {
+        "byFacilityGroupLabel": "{facility}'s workflows"
     }
 }
