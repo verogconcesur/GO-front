@@ -76,6 +76,7 @@
         "brands": "Marcas",
         "cancel": "Cancelar",
         "cif": "CIF",
+        "cleanFilter": "Limpiar filtros",
         "close": "Cerrar",
         "concept": "Concepto",
         "country": "País",
@@ -97,16 +98,20 @@
         "newLine": "Nueva línea",
         "postalCode": "Código Postal",
         "price": "Precio",
+        "priority": "Prioridad",
         "province": "Provincia",
         "reset": "Restaurar",
         "save": "Guardar",
         "search": "Buscar",
         "select": "Seleccionar",
         "selectImageFile": "Selecciona una imagen",
+        "state": "Estado",
+        "substate": "Subestado",
         "successOperation": "Operación realizada con éxito.",
         "town": "Ciudad",
         "unsavedChangesExit": "Hay cambios en el formulario sin guardar, ¿desea salir igualmente?",
         "unselectAll": "Deseleccionar todos",
+        "user": "Usuario",
         "users": "Usuarios",
         "warning": "Advertencia"
     },
@@ -268,6 +273,11 @@
         "title": "Usuarios"
     },
     "workflows": {
-        "byFacilityGroupLabel": "Workflows de {facility}"
+        "byFacilityGroupLabel": "Workflows de {facility}",
+        "filter": "Filtrar Workflows",
+        "filterState": "Filtrar Estados",
+        "filterSubstate": "Filtrar Subestados",
+        "filterUser": "Filtrar Usuarios",
+        "select": "Selecciona un Workflow"
     }
 }

@@ -1,0 +1,36 @@
+@import 'utils/core';
+//These styles are included in workflow.component.scss-theme.scss to avoid too many imports in styles file
+@import '@angular/material/theming';
+
+@mixin workflow-navbar-filter-component-theme($theme, $main-typo) {
+  $primary: map-get($theme, primary);
+
+  .workflow-navbar-filter {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    &__mobile {
+      cursor: pointer;
+      margin: 0 10px;
+      display: none;
+    }
+    &__others {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    @include respond-to(645px) {
+      &__mobile {
+        margin: 0 5px;
+      }
+    }
+    @include respond-to($desktop) {
+      &__mobile {
+        display: block;
+      }
+      &__others {
+        display: none;
+      }
+    }
+  }
+}

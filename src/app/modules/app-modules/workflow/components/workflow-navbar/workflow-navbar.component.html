@@ -9,7 +9,7 @@
                 <mat-select
                     formControlName="workflow"
                     disableOptionCentering
-                    placeholder="Selecciona un workflow"
+                    [placeholder]="labels.selectWorkflow | translate"
                     class="uppercase redPlaceholder"
                     [panelClass]="'workflow-panel-class bigger-selection-panel-class smaller-mat-form-fields'"
                     (selectionChange)="workflowSelectionChange($event)"
@@ -20,7 +20,13 @@
                         floatLabel="always"
                         class="smaller-mat-form-fields__no-margin workflow-navbar__selector-filter"
                     >
-                        <input matInput type="text" matInput formControlName="workflowSearch" placeholder="Filtrar workflows" />
+                        <input
+                            matInput
+                            type="text"
+                            matInput
+                            formControlName="workflowSearch"
+                            [placeholder]="labels.filterWorkflow | translate"
+                        />
                     </mat-form-field>
 
                     <mat-divider></mat-divider>
@@ -45,37 +51,9 @@
                 </mat-select>
             </mat-form-field>
         </form>
-        <!-- <form [formGroup]="workflowForm">
-            <mat-form-field appearance="outline" floatLabel="always" class="smaller-mat-form-fields__no-margin">
-                <input
-                    type="text"
-                    matInput
-                    formControlName="workflow"
-                    required
-                    class="uppercase"
-                    [matAutocomplete]="workflowGroupAutoComplete"
-                    placeholder="Selecciona un workflow"
-                    (click)="workflowForm.get('workflow').setValue('')"
-                />
-                <mat-autocomplete #workflowGroupAutoComplete="matAutocomplete">
-                    <mat-optgroup
-                        *ngFor="let group of workflowGroupOptions | async"
-                        [label]="getWorkflowGroupLabel(group) | uppercase"
-                    >
-                        <mat-option *ngFor="let workflow of group.workflows" [value]="getWorkflowValue(workflow, group)">
-                            {{ workflow.name }}
-                            <mat-divider></mat-divider>
-                        </mat-option>
-                        <mat-divider></mat-divider>
-                    </mat-optgroup>
-                </mat-autocomplete>
-            </mat-form-field>
-        </form> -->
     </div>
     <div fxLayoutAlign="space-between center">
-        <div class="workflow-navbar__filter">
-            <mat-icon class="filter-icon">filter_list</mat-icon>
-        </div>
+        <app-workflow-navbar-filter></app-workflow-navbar-filter>
         <mat-divider [vertical]="true"></mat-divider>
         <div class="workflow-navbar__view-options">
             <mat-icon class="opt-view table-view" [routerLink]="WORKFLOW_TABLE_PATH" routerLinkActive="active"> menu </mat-icon>

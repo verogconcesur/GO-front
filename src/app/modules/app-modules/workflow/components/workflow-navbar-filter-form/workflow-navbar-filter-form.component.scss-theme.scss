@@ -1,0 +1,36 @@
+@import 'utils/core';
+//These styles are included in workflow.component.scss-theme.scss to avoid too many imports in styles file
+@import '@angular/material/theming';
+
+@mixin workflow-navbar-filter-form-component-theme($theme, $main-typo) {
+  $primary: map-get($theme, primary);
+
+  .filter-form {
+    mat-form-field.dataSelected {
+      .mat-select-value,
+      .mat-select-arrow-wrapper .mat-select-arrow {
+        color: mat-contrast($primary, 400);
+      }
+
+      .mat-form-field-outline-start,
+      .mat-form-field-outline-gap,
+      .mat-form-field-outline-end {
+        background-color: mat-color($primary, 600);
+      }
+    }
+  }
+
+  .cdk-overlay-container {
+    .filter-form {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-direction: column;
+
+      mat-form-field,
+      button {
+        margin: 5px !important;
+      }
+    }
+  }
+}

@@ -1,0 +1,33 @@
+@import 'utils/core';
+
+.filter-form {
+  mat-form-field {
+    width: 130px;
+    margin: 0 5px;
+  }
+  .right-clear-filter-button {
+    cursor: pointer;
+    display: none;
+  }
+  .left-clear-filter-button {
+    cursor: pointer;
+    label {
+      cursor: pointer;
+      display: inline-block;
+    }
+    @include respond-to(calc($desktop-large + 50px)) {
+      label {
+        display: none;
+      }
+    }
+  }
+
+  @include respond-to($desktop) {
+    .right-clear-filter-button {
+      display: block;
+    }
+    .left-clear-filter-button {
+      display: none;
+    }
+  }
+}

@@ -76,6 +76,7 @@
         "brands": "Brands",
         "cancel": "Cancel",
         "cif": "CIF",
+        "cleanFilter": "Clean filter",
         "close": "Close",
         "concept": "Concept",
         "country": "Country",
@@ -97,16 +98,20 @@
         "newLine": "New line",
         "postalCode": "Postal Code",
         "price": "Price",
+        "priority": "Priority",
         "province": "Province",
         "reset": "Reset",
         "save": "Save",
         "search": "Search",
         "select": "Select",
         "selectImageFile": "Select image file",
+        "state": "State",
+        "substate": "Substate",
         "successOperation": "Success operation.",
         "town": "Town",
         "unsavedChangesExit": "There are unsaved changes, do you want to continue?",
         "unselectAll": "Unselect all",
+        "user": "User",
         "users": "Users",
         "warning": "Warning"
     },
@@ -268,6 +273,11 @@
         "title": "Users"
     },
     "workflows": {
-        "byFacilityGroupLabel": "{facility}'s workflows"
+        "byFacilityGroupLabel": "{facility}'s workflows",
+        "filter": "Filter Workflows",
+        "filterState": "Filter by State",
+        "filterSubstate": "Filter by Substate",
+        "filterUser": "Filter by User",
+        "select": "Select a Workflow"
     }
 }

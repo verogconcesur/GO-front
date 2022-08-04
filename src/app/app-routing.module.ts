@@ -20,6 +20,11 @@ const routes: Routes = [
         path: RouteConstants.WORKFLOWS,
         canActivate: [AuthGuardService],
         loadChildren: () => import('./modules/app-modules/workflow/workflow.module').then((m) => m.WorkflowModule)
+      },
+      {
+        path: RouteConstants.EMPTY,
+        canActivate: [AuthGuardService],
+        redirectTo: RouteConstants.WORKFLOWS
       }
     ]
     // loadChildren: () => import('./modules/app-modules/login/login.module').then((m) => m.LoginModule)
