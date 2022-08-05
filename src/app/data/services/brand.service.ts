@@ -6,14 +6,14 @@ import { Env } from '@app/types/env';
 import { ConcenetError } from '@app/types/error';
 import BrandDTO from '@data/models/brand-dto';
 import { Observable, of, throwError } from 'rxjs';
-import { catchError, map } from 'rxjs/operators';
+import { catchError } from 'rxjs/operators';
 
 @Injectable({
   providedIn: 'root'
 })
 export class BrandService {
   private readonly GET_BRANDS_PATH = '/api/brands';
-  private readonly GET_ALL_BRANDS_LIST_PATH = '/api/brands/findAll';
+  private readonly GET_ALL_BRANDS_LIST_PATH = '/api/brands/findAll/';
   private readonly DUPLICATE_BRAND_PATH = '/api/brands/duplicate';
   private readonly DELETE_BRAND_PATH = '/api/brands';
 
@@ -25,16 +25,16 @@ export class BrandService {
       .pipe(catchError((error) => throwError(error as ConcenetError)));
   }
 
-  public getAllBrands(): Observable<BrandDTO[]> {
-    return this.http
-      .get<BrandDTO[]>(`${this.env.apiBaseUrl}${this.GET_ALL_BRANDS_LIST_PATH}`)
-      .pipe(catchError((error) => throwError(error as ConcenetError)));
-  }
-
-  public getAllBrandsList(): Observable<BrandDTO[]> {
-    return this.http
-      .get<BrandDTO[]>(`${this.env.apiBaseUrl}${this.GET_ALL_BRANDS_LIST_PATH}`)
-      .pipe(catchError((error) => throwError(error as ConcenetError)));
+  public getAllBrands(ids?: number[]): Observable<BrandDTO[]> {
+    if (ids && ids.length > 0) {
+      return this.http
+        .get<BrandDTO[]>(`${this.env.apiBaseUrl}${this.GET_ALL_BRANDS_LIST_PATH}${ids.join(',')}`)
+        .pipe(catchError((error) => throwError(error as ConcenetError)));
+    } else {
+      return this.http
+        .get<BrandDTO[]>(`${this.env.apiBaseUrl}${this.GET_ALL_BRANDS_LIST_PATH}`)
+        .pipe(catchError((error) => throwError(error as ConcenetError)));
+    }
   }
 
   //Used to resolove :id route, if we have the data in the routerState we don't ask for it

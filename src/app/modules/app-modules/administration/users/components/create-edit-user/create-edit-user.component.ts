@@ -237,7 +237,7 @@ export class CreateEditUserComponent extends ComponentToExtendForCustomDialog im
         brands: [this.userToEdit ? this.userToEdit.brands : null, Validators.required],
         facilities: [this.userToEdit ? this.userToEdit.facilities : null, Validators.required],
         departments: [this.userToEdit ? this.userToEdit.departments : null, Validators.required],
-        specialties: [this.userToEdit ? this.userToEdit.specialties : null]
+        specialties: [this.userToEdit ? this.userToEdit.specialties : null, Validators.required]
       },
       {
         validators: ConfirmPasswordValidator.mustMatch('newPassword', 'newPasswordConfirmation')
