@@ -1,5 +1,5 @@
 import { Component, OnDestroy, OnInit, ViewEncapsulation } from '@angular/core';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { AbstractControl, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ConcenetError } from '@app/types/error';
 import { marker } from '@biesbjerg/ngx-translate-extract-marker';
 import FacilityDTO from '@data/models/facility-dto';
@@ -18,6 +18,9 @@ import CountryDto from '@data/models/country-dto';
 import { LocalityService } from '@data/services/locality.service';
 import ProvinceDto from '@data/models/province-dto';
 import TownDto from '@data/models/town-dto';
+import BrandDTO from '@data/models/brand-dto';
+import { BrandService } from '@data/services/brand.service';
+import { haveArraysSameValues } from '@shared/utils/array-comparation-function';
 
 export const enum CreateEditFacilityComponentModalEnum {
   ID = 'create-edit-facility-dialog-id',
@@ -39,6 +42,7 @@ export class CreateEditFacilityComponent extends ComponentToExtendForCustomDialo
     editFacility: marker('organizations.facilities.edit'),
     address: marker('common.address'),
     postalCode: marker('common.postalCode'),
+    brands: marker('common.brands'),
     cif: marker('common.cif'),
     email: marker('userProfile.email'),
     country: marker('common.country'),
@@ -51,10 +55,14 @@ export class CreateEditFacilityComponent extends ComponentToExtendForCustomDialo
     footer: marker('common.footer'),
     insertText: marker('common.insertTextHere'),
     required: marker('errors.required'),
+    selectAll: marker('users.roles.selectAll'),
+    unselectAll: marker('common.unselectAll'),
     emailError: marker('errors.emailPattern')
   };
   public organizationLevelsToShow = { specialties: false, departments: false, facilities: false };
   public countryAsyncList: Observable<CountryDto[]>;
+  public brandsAsyncList: Observable<BrandDTO[]>;
+  public brandsList: BrandDTO[] = [];
   public countryList: CountryDto[] = [];
   public provinceList: ProvinceDto[] = [];
   public townList: TownDto[] = [];
@@ -69,6 +77,7 @@ export class CreateEditFacilityComponent extends ComponentToExtendForCustomDialo
   constructor(
     private fb: FormBuilder,
     private facilityService: FacilityService,
+    private brandService: BrandService,
     private confirmDialogService: ConfirmDialogService,
     private translateService: TranslateService,
     private localityService: LocalityService,
@@ -219,7 +228,37 @@ export class CreateEditFacilityComponent extends ComponentToExtendForCustomDialo
     }
   }
 
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  public selectAll(control: AbstractControl, list: any[]) {
+    control.setValue(list);
+  }
+
+  public unselectAll(control: AbstractControl) {
+    control.setValue([]);
+  }
+
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  public hasAllSelected(control: AbstractControl, list: any[]): boolean {
+    const actualValue = control.value ? control.value : [];
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    return haveArraysSameValues(actualValue.map((item: any) => item.id).sort(), list.map((item: any) => item.id).sort());
+  }
+
   private getListOptions(): void {
+    this.brandsAsyncList = this.brandService.getAllBrands().pipe(
+      tap({
+        next: (brands: BrandDTO[]) => {
+          this.brandsList = brands;
+          const selectedBrands = this.facilityForm.get('brands').value;
+          if (selectedBrands) {
+            this.facilityForm.get('brands').setValue(
+              brands.filter((brand: BrandDTO) => selectedBrands.find((brandSelec: BrandDTO) => (brandSelec.id = brand.id))),
+              { emitEvent: false }
+            );
+          }
+        }
+      })
+    );
     this.countryAsyncList = this.localityService.getCountries().pipe(
       tap({
         next: (countries: CountryDto[]) => {

@@ -22,6 +22,8 @@ export class AdministrationLayoutComponent implements OnInit {
   public labels = {
     exit: marker('administration.exit'),
     organization: marker('administration.organization'),
+    brands: marker('administration.brands'),
+    facilities: marker('administration.facilities'),
     records: marker('administration.records'),
     templates: marker('administration.templates.title'),
     title: marker('administration.title'),
@@ -33,6 +35,8 @@ export class AdministrationLayoutComponent implements OnInit {
 
   public readonly USERS_TEMPLATE_PATH = RouteConstants.USERS;
   public readonly ORGANIZATION_TEMPLATE_PATH = RouteConstants.ORGANIZATION;
+  public readonly BRANDS_TEMPLATE_PATH = `${RouteConstants.ORGANIZATION}/${RouteConstants.BRANDS}`;
+  public readonly FACILITIES_TEMPLATE_PATH = `${RouteConstants.ORGANIZATION}/${RouteConstants.FACILITIES}`;
   public readonly TEMPLATES_PATH = RouteConstants.TEMPLATES;
 
   public userDetails: UserDetailsDTO;
