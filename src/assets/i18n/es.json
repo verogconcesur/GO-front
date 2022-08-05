@@ -103,6 +103,8 @@
         "reset": "Restaurar",
         "save": "Guardar",
         "search": "Buscar",
+        "seeLess": "Ver menos",
+        "seeMore": "Ver más",
         "select": "Seleccionar",
         "selectImageFile": "Selecciona una imagen",
         "state": "Estado",

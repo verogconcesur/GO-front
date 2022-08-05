@@ -1,1 +1,11 @@
-<p>workflow-board-view works!</p>
+<div class="board-view-wrapper">
+    <!-- anchor state column -->
+    <div class="board-view-wrapper__anchor-column" *ngIf="wAnchorState">
+        <app-wokflow-board-column [wState]="wAnchorState" [divider]="false"></app-wokflow-board-column>
+    </div>
+    <mat-divider *ngIf="wAnchorState" [vertical]="true" class="full-height"></mat-divider>
+    <!-- scroll states columns -->
+    <div class="board-view-wrapper__scroll-columns" *ngIf="wNormalStates?.length">
+        <app-wokflow-board-column *ngFor="let wState of wNormalStates" [wState]="wState"> </app-wokflow-board-column>
+    </div>
+</div>

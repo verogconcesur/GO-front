@@ -1,0 +1,20 @@
+.board-view-wrapper {
+  height: calc(100vh - 136px);
+  width: 100vw;
+  overflow-y: hidden;
+  overflow-x: hidden;
+  display: flex;
+  justify-content: flex-start;
+  align-items: flex-start;
+  mat-divider.full-height {
+    margin: 0;
+    height: calc(100vh - 136px);
+    border-right-width: 3px;
+  }
+  &__scroll-columns {
+    display: flex;
+    justify-content: flex-start;
+    align-items: flex-start;
+    overflow-x: auto;
+  }
+}

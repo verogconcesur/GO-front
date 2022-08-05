@@ -14,6 +14,9 @@ import { take } from 'rxjs/operators';
 })
 export class WorkflowBoardViewComponent implements OnInit {
   public workflow: WorkflowDto = null;
+  public wStatesData: WorkflowStateDto[];
+  public wAnchorState: WorkflowStateDto;
+  public wNormalStates: WorkflowStateDto[];
 
   constructor(private workflowService: WorkflowsService) {}
 
@@ -38,7 +41,12 @@ export class WorkflowBoardViewComponent implements OnInit {
         .pipe(take(1))
         .subscribe(
           (data: WorkflowStateDto[]) => {
-            console.log(data);
+            this.wStatesData = data;
+            this.wAnchorState = data.find((state: WorkflowStateDto) => state.anchor);
+            this.wNormalStates = data
+              .filter((state: WorkflowStateDto) => !state.anchor)
+              .sort((a, b) => a.orderNumber - b.orderNumber);
+            console.log(this.wAnchorState, this.wNormalStates);
           },
           (error) => {
             console.log(error);

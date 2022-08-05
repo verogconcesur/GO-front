@@ -2,6 +2,7 @@
 @import './components/workflow-navbar/workflow-navbar.component.scss-theme.scss';
 @import './components/workflow-navbar-filter/workflow-navbar-filter.component.scss-theme.scss';
 @import './components/workflow-navbar-filter-form/workflow-navbar-filter-form.component.scss-theme.scss';
+@import './submodules/workflow-board-view/subcomponents/wokflow-board-column/wokflow-board-column.component.scss-theme.scss';
 
 @mixin workflow-component-theme($theme, $main-typo) {
   $primary: map-get($theme, primary);
@@ -14,4 +15,5 @@
   @include workflow-navbar-component-theme($theme, $main-typo);
   @include workflow-navbar-filter-component-theme($theme, $main-typo);
   @include workflow-navbar-filter-form-component-theme($theme, $main-typo);
+  @include workflow-board-column-component-theme($theme, $main-typo);
 }

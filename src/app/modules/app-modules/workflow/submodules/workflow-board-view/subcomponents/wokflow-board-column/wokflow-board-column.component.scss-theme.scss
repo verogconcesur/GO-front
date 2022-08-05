@@ -1,0 +1,24 @@
+@import 'utils/core';
+//These styles are included in workflow.component.scss-theme.scss to avoid too many imports in styles file
+@import '@angular/material/theming';
+
+@mixin workflow-board-column-component-theme($theme, $main-typo) {
+  $primary: map-get($theme, primary);
+  $foreground: map-get($theme, foreground);
+
+  .workflow-board-column {
+    &__state-name {
+      color: mat-color($foreground, secondary-text);
+    }
+
+    &__expanded {
+      &__substate {
+        .title {
+          font-size: 0.8rem;
+          font-weight: 800;
+          color: darken(mat-color($primary, A700), 25%);
+        }
+      }
+    }
+  }
+}

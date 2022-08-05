@@ -1,0 +1,36 @@
+.workflow-board-column {
+  margin: 22px 0 22px 32px;
+  padding-right: 32px;
+  min-width: 110px;
+  max-width: 368px;
+  width: calc(50vw - 64px);
+  height: calc(100vh - 199px);
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: flex-start;
+  &.divider {
+    border-right: 1px solid #0000001f;
+  }
+  &__state-name {
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+    &__title {
+      margin-bottom: 0;
+      font-weight: 800;
+    }
+    &__more button {
+      font-size: 0.85rem;
+      font-weight: 200;
+      margin: 4px 0 0 15px;
+    }
+  }
+  &__expanded {
+    &__substate {
+      .title {
+        margin-top: 5px;
+      }
+    }
+  }
+}

@@ -1,0 +1,15 @@
+<div class="workflow-board-column" [ngClass]="{ divider: divider }">
+    <div class="workflow-board-column__state-name">
+        <h2 class="workflow-board-column__state-name__title">{{ wState.name }}</h2>
+        <div class="workflow-board-column__state-name__more" *ngIf="wState.front">
+            <button mat-button *ngIf="collapsed" (click)="changeCollapsed()">{{ labels.seeMore | translate }}</button>
+            <button mat-button *ngIf="!collapsed" (click)="changeCollapsed()">{{ labels.seeLess | translate }}</button>
+        </div>
+    </div>
+    <div class="workflow-board-column__collapsed" *ngIf="collapsed">collapsed</div>
+    <div class="workflow-board-column__expanded" *ngIf="!collapsed">
+        <div class="workflow-board-column__expanded__substate" *ngFor="let wSubstate of wState.workflowSubstates">
+            <h3 class="title uppercase">{{ wSubstate.name }}</h3>
+        </div>
+    </div>
+</div>
