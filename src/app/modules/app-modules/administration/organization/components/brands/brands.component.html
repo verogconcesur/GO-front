@@ -12,7 +12,6 @@
                     *ngFor="let item of brands$ | async"
                     [item]="item"
                     [title]="item.name"
-                    [subtitle]="getSubtitle(item) | async"
                     [bgImgB64]="getLogo(item)"
                     (edit)="editAction(item)"
                     (delete)="deleteAction(item)"
