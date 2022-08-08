@@ -8,7 +8,7 @@
   align-items: flex-start;
   transition: max-width 0.2s ease-in-out;
   &.divider {
-    border-right: 1px solid #0000001f;
+    border-right: 2px solid #0000001f;
   }
   &.collapsed {
     max-width: 278px;
@@ -97,9 +97,30 @@
     }
   }
   &__expanded {
-    &__substate {
-      .title {
-        margin-top: 5px;
+    display: flex;
+    justify-content: flex-start;
+    align-items: flex-start;
+    &__block {
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-start;
+      align-items: flex-start;
+      border-right: 1px solid #0000001f;
+      padding-right: 32px;
+      padding-left: 32px;
+      min-width: 180px;
+      &:first-child {
+        padding-left: 0px;
+      }
+      &:last-child {
+        border-right: 0px;
+        padding-right: 0px;
+      }
+      &__substate {
+        .title {
+          margin-top: 5px;
+          margin-bottom: 0px;
+        }
       }
     }
   }

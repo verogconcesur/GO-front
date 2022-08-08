@@ -1,5 +1,6 @@
 import WorkflowDto from './workflow-dto';
 import WorkflowSubstateDto from './workflow-substate-dto';
+import WorkflowSubstateUserDto from './workflow-substate-user-dto';
 
 export default interface WorkflowStateDto {
   id: number;
@@ -14,4 +15,5 @@ export default interface WorkflowStateDto {
   userCount: number;
   workflow: WorkflowDto;
   workflowSubstates: WorkflowSubstateDto[];
+  workflowUsers?: WorkflowSubstateUserDto[];
 }

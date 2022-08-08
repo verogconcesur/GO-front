@@ -30,8 +30,22 @@
         </div>
     </div>
     <div class="workflow-board-column__expanded" *ngIf="!collapsed">
-        <div class="workflow-board-column__expanded__substate" *ngFor="let wSubstate of wState.workflowSubstates">
-            <h3 class="title uppercase">{{ wSubstate.name }}</h3>
+        <div class="workflow-board-column__expanded__block" *ngFor="let user of wState.front ? wState.workflowUsers : []">
+            {{ user.workflowUserName }}
+            <div class="workflow-board-column__expanded__block__substate" *ngFor="let wSubstate of wState.workflowSubstates">
+                <h3 class="title uppercase">{{ wSubstate.name }}</h3>
+                <div *ngFor="let card of getCardsFiltertedByUser(user, wSubstate.cards)">
+                    {{ card.variableSlots[0].value }}
+                </div>
+            </div>
+        </div>
+        <div class="workflow-board-column__expanded__block" *ngIf="!wState.front">
+            <div class="workflow-board-column__expanded__block__substate" *ngFor="let wSubstate of wState.workflowSubstates">
+                <h3 class="title uppercase">{{ wSubstate.name }}</h3>
+                <div *ngFor="let card of wSubstate.cards">
+                    {{ card.variableSlots[0].value }}
+                </div>
+            </div>
         </div>
     </div>
 </div>

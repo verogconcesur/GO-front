@@ -12,11 +12,13 @@
     }
 
     &__expanded {
-      &__substate {
-        .title {
-          font-size: 0.8rem;
-          font-weight: 800;
-          color: darken(mat-color($primary, A700), 25%);
+      &__block {
+        &__substate {
+          .title {
+            font-size: 0.8rem;
+            font-weight: 800;
+            color: darken(mat-color($primary, A700), 25%);
+          }
         }
       }
     }

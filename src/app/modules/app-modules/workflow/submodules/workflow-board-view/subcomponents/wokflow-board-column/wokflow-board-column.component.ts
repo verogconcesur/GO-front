@@ -1,6 +1,8 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { marker } from '@biesbjerg/ngx-translate-extract-marker';
+import WorkflowCardDto from '@data/models/workflows/workflow-card-dto';
 import WorkflowStateDto from '@data/models/workflows/workflow-state-dto';
+import WorkflowSubstateUserDto from '@data/models/workflows/workflow-substate-user-dto';
 
 @Component({
   selector: 'app-wokflow-board-column',
@@ -28,5 +30,9 @@ export class WokflowBoardColumnComponent implements OnInit {
 
   public changeCollapsed() {
     this.collapsed = !this.collapsed;
+  }
+
+  public getCardsFiltertedByUser(user: WorkflowSubstateUserDto, cards: WorkflowCardDto[]): WorkflowCardDto[] {
+    return cards.filter((card: WorkflowCardDto) => card.userId === user.workflowUserId);
   }
 }
