@@ -1,4 +1,4 @@
-<div class="workflow-board-column" [ngClass]="{ divider: divider }">
+<div class="workflow-board-column" [ngClass]="{ divider: divider, collapsed: collapsed }">
     <div class="workflow-board-column__state-name">
         <h2 class="workflow-board-column__state-name__title">{{ wState.name }}</h2>
         <div class="workflow-board-column__state-name__more" *ngIf="wState.front">
@@ -6,7 +6,29 @@
             <button mat-button *ngIf="!collapsed" (click)="changeCollapsed()">{{ labels.seeLess | translate }}</button>
         </div>
     </div>
-    <div class="workflow-board-column__collapsed" *ngIf="collapsed">collapsed</div>
+    <div class="workflow-board-column__collapsed" *ngIf="collapsed">
+        <div class="collapsed-card">
+            <div class="collapsed-card__third collapsed-card__common"></div>
+            <div class="collapsed-card__second collapsed-card__common"></div>
+            <div class="collapsed-card__first collapsed-card__common">
+                <div class="collapsed-card__info-wrapper">
+                    <div class="collapsed-card__info">
+                        <mat-icon>people_outline</mat-icon>
+                        <label>{{ labels.workers | translate: { num: wState.userCount } }}</label>
+                    </div>
+                    <div class="collapsed-card__info">
+                        <mat-icon>create_new_folder</mat-icon>
+                        <label>{{ labels.nCards | translate: { num: wState.cardCount } }}</label>
+                    </div>
+                </div>
+                <div class="collapsed-card__see-more">
+                    <button mat-button class="uppercase" (click)="changeCollapsed()">
+                        {{ labels.seeCards | translate }}
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
     <div class="workflow-board-column__expanded" *ngIf="!collapsed">
         <div class="workflow-board-column__expanded__substate" *ngFor="let wSubstate of wState.workflowSubstates">
             <h3 class="title uppercase">{{ wSubstate.name }}</h3>

@@ -20,5 +20,26 @@
         }
       }
     }
+
+    &__collapsed {
+      .collapsed-card {
+        &__info {
+          mat-icon {
+            color: darken(mat-color($primary, A700), 25%);
+          }
+          label {
+            color: mat-contrast($primary, 50);
+          }
+        }
+        &__see-more {
+          button {
+            color: darken(mat-color($primary, A700), 25%);
+          }
+        }
+        &__common {
+          background-color: mat-contrast($primary, 400);
+        }
+      }
+    }
   }
 }

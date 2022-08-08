@@ -103,6 +103,7 @@
         "reset": "Restaurar",
         "save": "Guardar",
         "search": "Buscar",
+        "seeCards": "Ver fichas",
         "seeLess": "Ver menos",
         "seeMore": "Ver más",
         "select": "Seleccionar",
@@ -280,6 +281,8 @@
         "filterState": "Filtrar Estados",
         "filterSubstate": "Filtrar Subestados",
         "filterUser": "Filtrar Usuarios",
+        "numCards": "{num} {num, plural, =0{fichas} one{ficha} other{fichas}}",
+        "peopleWorking": "{num} {num, plural, =0{personas trabajando} one{persona trabajando} other{personas trabajando}}",
         "select": "Selecciona un Workflow"
     }
 }

@@ -117,7 +117,7 @@ export class WorkflowNavbarFilterFormComponent implements OnInit {
         this.usersOptions = this.filterForm.get('usersSearch')?.valueChanges.pipe(
           untilDestroyed(this),
           startWith(''),
-          map((value) => this.filter('users', 'id', value || ''))
+          map((value) => this.filter('users', 'workflowUserName', value || ''))
         );
       });
   }

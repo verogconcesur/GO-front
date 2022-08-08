@@ -1,3 +1,4 @@
+import WorkflowCardDto from './workflow-card-dto';
 import WorkflowSubstateUserDto from './workflow-substate-user-dto';
 
 export default interface WorkflowSubstateDto {
@@ -10,5 +11,6 @@ export default interface WorkflowSubstateDto {
   name: string;
   orderNumber: number;
   workflowSubstateUser: WorkflowSubstateUserDto[];
-  idsToFilter?: number[]; //Used on filter to group similar substates
+  substatesIdsToFilter?: number[]; //Used on filter to group similar substates
+  cards?: WorkflowCardDto[];
 }

@@ -10,6 +10,8 @@ export default interface WorkflowStateDto {
   hideBoard: boolean;
   locked: boolean;
   orderNumber: number;
+  cardCount: number;
+  userCount: number;
   workflow: WorkflowDto;
   workflowSubstates: WorkflowSubstateDto[];
 }

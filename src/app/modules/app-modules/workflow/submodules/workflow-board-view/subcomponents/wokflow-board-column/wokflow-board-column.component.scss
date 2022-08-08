@@ -1,21 +1,23 @@
 .workflow-board-column {
   margin: 22px 0 22px 32px;
   padding-right: 32px;
-  min-width: 110px;
-  max-width: 368px;
-  width: calc(50vw - 64px);
   height: calc(100vh - 199px);
   display: flex;
   flex-direction: column;
   justify-content: flex-start;
   align-items: flex-start;
+  transition: max-width 0.2s ease-in-out;
   &.divider {
     border-right: 1px solid #0000001f;
+  }
+  &.collapsed {
+    max-width: 278px;
   }
   &__state-name {
     display: flex;
     justify-content: flex-start;
     align-items: center;
+    height: 40px;
     &__title {
       margin-bottom: 0;
       font-weight: 800;
@@ -24,6 +26,74 @@
       font-size: 0.85rem;
       font-weight: 200;
       margin: 4px 0 0 15px;
+    }
+  }
+  &__collapsed {
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: flex-start;
+    width: calc(50vw - 64px);
+    min-width: 110px;
+    max-width: 278px;
+    .collapsed-card {
+      margin-top: 15px;
+      width: calc(100% - 32px);
+      position: relative;
+      display: flex;
+      justify-content: flex-start;
+      align-items: flex-start;
+      flex-direction: column;
+      &__info {
+        display: flex;
+        justify-content: flex-start;
+        align-items: flex-end;
+        padding-bottom: 15px;
+        mat-icon {
+          padding-right: 10px;
+        }
+        label {
+          font-size: 0.9rem;
+        }
+      }
+      &__see-more {
+        width: 100%;
+        text-align: right;
+        button {
+          font-size: 0.8rem;
+          font-weight: 600;
+          margin: 0 -10px -10px 0;
+        }
+      }
+      &__common {
+        border-radius: 8px;
+        box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.08);
+        padding: 16px;
+      }
+      &__first {
+        z-index: 10;
+        width: 100%;
+        height: 150px;
+        display: flex;
+        justify-content: space-between;
+        flex-direction: column;
+      }
+      &__second {
+        z-index: 9;
+        position: absolute;
+        width: 90%;
+        height: 50px;
+        bottom: -8px;
+        left: 5%;
+      }
+      &__third {
+        z-index: 9;
+        position: absolute;
+        width: 80%;
+        height: 50px;
+        bottom: -16px;
+        left: 10%;
+      }
     }
   }
   &__expanded {

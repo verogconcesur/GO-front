@@ -4,6 +4,7 @@ import { Inject, Injectable } from '@angular/core';
 import { ENV } from '@app/constants/global.constants';
 import { Env } from '@app/types/env';
 import { ConcenetError } from '@app/types/error';
+import WorkflowCardDto from '@data/models/workflows/workflow-card-dto';
 import WorkflowDto from '@data/models/workflows/workflow-dto';
 import WorkflowFilterDto from '@data/models/workflows/workflow-filter-dto';
 import WorkflowListByFacilityDto from '@data/models/workflows/workflow-list-by-facility-dto';
@@ -36,7 +37,10 @@ export class WorkflowsService {
 
   private readonly GET_WORKFLOWS_PATH = '/api/workflows';
   private readonly GET_WORKFLOWS_LIST_PATH = '/list';
+  private readonly GET_WORKFLOWS_FACILITY_PATH = '/facility';
   private readonly GET_WORKFLOWS_INSTANCE_PATH = '/instances';
+  private readonly GET_WORKFLOWS_VIEW_PATH = '/view';
+  private readonly GET_WORKFLOWS_CARDS_PATH = '/cards';
 
   constructor(@Inject(ENV) private env: Env, private http: HttpClient) {}
 
@@ -52,7 +56,7 @@ export class WorkflowsService {
   }
 
   /**
-   * Get all elements of a workflow
+   * Get all states and substates of a workflow
    *
    * @param workflow WorkflowDto
    * @returns
@@ -60,7 +64,8 @@ export class WorkflowsService {
   public getWorkflowInstances(workflow: WorkflowDto, extractFilterInfo?: boolean): Observable<WorkflowStateDto[]> {
     return this.http
       .get<WorkflowStateDto[]>(
-        `${this.env.apiBaseUrl}${this.GET_WORKFLOWS_PATH}/${workflow.id}${this.GET_WORKFLOWS_INSTANCE_PATH}`
+        `${this.env.apiBaseUrl}${this.GET_WORKFLOWS_PATH}/${workflow.id}${this.GET_WORKFLOWS_FACILITY_PATH}/` +
+          `${workflow.facility.facilityId}${this.GET_WORKFLOWS_INSTANCE_PATH}`
       )
       .pipe(
         map((data: WorkflowStateDto[]) => {
@@ -71,6 +76,22 @@ export class WorkflowsService {
         }),
         catchError((error) => throwError(error.error as ConcenetError))
       );
+  }
+
+  /**
+   * Get all cards of a workflow
+   *
+   * @param workflow WorkflowDto
+   * @returns
+   */
+  public getWorkflowCards(workflow: WorkflowDto, viewType: 'BOARD' | 'CALENDAR' | 'TABLE'): Observable<WorkflowCardDto[]> {
+    return this.http
+      .get<WorkflowCardDto[]>(
+        `${this.env.apiBaseUrl}${this.GET_WORKFLOWS_PATH}/${workflow.id}${this.GET_WORKFLOWS_FACILITY_PATH}/` +
+          `${workflow.facility.facilityId}${this.GET_WORKFLOWS_VIEW_PATH}/` +
+          `${viewType}${this.GET_WORKFLOWS_CARDS_PATH}`
+      )
+      .pipe(catchError((error) => throwError(error.error as ConcenetError)));
   }
 
   //Aux functions
@@ -105,14 +126,23 @@ export class WorkflowsService {
         //Substate
         const similarSubState = subStates.find((ss: WorkflowSubstateDto) => ss.name === subState.name);
         if (similarSubState) {
-          similarSubState.idsToFilter.push(subState.id);
+          similarSubState.substatesIdsToFilter.push(subState.id);
         } else {
-          subStates.push({ ...subState, idsToFilter: [...(subState.idsToFilter ? subState.idsToFilter : []), subState.id] });
+          subStates.push({
+            ...subState,
+            substatesIdsToFilter: [...(subState.substatesIdsToFilter ? subState.substatesIdsToFilter : []), subState.id]
+          });
         }
         //User
         subState.workflowSubstateUser.forEach((subStateUser: WorkflowSubstateUserDto) => {
-          if (!users.find((user: WorkflowSubstateUserDto) => user.id === subStateUser.id)) {
-            users.push(subStateUser);
+          const userFound = users.find((user: WorkflowSubstateUserDto) => user.workflowUserId === subStateUser.workflowUserId);
+          if (!userFound) {
+            users.push({
+              ...subStateUser,
+              substatesIdsToFilter: [...(subState.substatesIdsToFilter ? subState.substatesIdsToFilter : []), subState.id]
+            });
+          } else {
+            userFound.substatesIdsToFilter.push(subState.id);
           }
         });
 

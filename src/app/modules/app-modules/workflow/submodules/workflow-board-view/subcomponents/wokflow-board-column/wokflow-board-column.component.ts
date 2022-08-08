@@ -14,7 +14,10 @@ export class WokflowBoardColumnComponent implements OnInit {
 
   public labels = {
     seeMore: marker('common.seeMore'),
-    seeLess: marker('common.seeLess')
+    seeCards: marker('common.seeCards'),
+    seeLess: marker('common.seeLess'),
+    workers: marker('workflows.peopleWorking'),
+    nCards: marker('workflows.numCards')
   };
 
   constructor() {}
