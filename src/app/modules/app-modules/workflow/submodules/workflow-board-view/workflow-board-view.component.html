@@ -1,7 +1,11 @@
 <div class="board-view-wrapper">
     <!-- anchor state column -->
-    <div class="board-view-wrapper__anchor-column" *ngIf="wAnchorState">
+    <div class="board-view-wrapper__anchor-column" *ngIf="wAnchorState" [ngClass]="{ hide: !showAnchorState }">
         <app-wokflow-board-column [wState]="wAnchorState" [divider]="false"></app-wokflow-board-column>
+        <div class="hide-show-button" (click)="toggleAnchorState()">
+            <mat-icon *ngIf="showAnchorState">keyboard_arrow_left</mat-icon>
+            <mat-icon *ngIf="!showAnchorState">keyboard_arrow_right</mat-icon>
+        </div>
     </div>
     <mat-divider *ngIf="wAnchorState" [vertical]="true" class="full-height"></mat-divider>
     <!-- scroll states columns -->

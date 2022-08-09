@@ -19,7 +19,8 @@ export class WokflowBoardColumnComponent implements OnInit {
     seeCards: marker('common.seeCards'),
     seeLess: marker('common.seeLess'),
     workers: marker('workflows.peopleWorking'),
-    nCards: marker('workflows.numCards')
+    nCards: marker('workflows.numCards'),
+    emptySubstate: marker('workflows.emptySubstate')
   };
 
   constructor() {}
@@ -32,7 +33,13 @@ export class WokflowBoardColumnComponent implements OnInit {
     this.collapsed = !this.collapsed;
   }
 
+  public getUserName(wUser: WorkflowSubstateUserDto): string {
+    return `${wUser.user.name} ${wUser.user.firstName} ${wUser.user.lastName}`;
+  }
+
   public getCardsFiltertedByUser(user: WorkflowSubstateUserDto, cards: WorkflowCardDto[]): WorkflowCardDto[] {
-    return cards.filter((card: WorkflowCardDto) => card.userId === user.workflowUserId);
+    return cards.filter(
+      (card: WorkflowCardDto) => card.cardInstanceWorkflows[0].cardInstanceWorkflowUsers[0].userId === user.user.id
+    );
   }
 }

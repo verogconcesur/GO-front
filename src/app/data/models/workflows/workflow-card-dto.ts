@@ -1,4 +1,6 @@
+import WorkflowCardInstanceDto from './workflow-card-instance-dto';
 import WorkflowCardSlotDto from './workflow-card-slot-dto';
+import WorkflowMoveDto from './workflow-move-dto';
 
 export default interface WorkflowCardDto {
   cardId: number;
@@ -7,7 +9,7 @@ export default interface WorkflowCardDto {
   repairOrderId: number;
   variableSlots: WorkflowCardSlotDto[];
   vehicleId: number;
-  substateId: number;
-  userId: number;
-  dateAssignment: number;
+  colors: string[];
+  movements: WorkflowMoveDto[];
+  cardInstanceWorkflows: WorkflowCardInstanceDto[];
 }

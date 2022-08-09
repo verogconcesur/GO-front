@@ -1,6 +1,7 @@
 .workflow-board-column {
-  margin: 22px 0 22px 32px;
+  margin: 22px 0 0px 32px;
   padding-right: 32px;
+  padding-bottom: 22px;
   height: calc(100vh - 199px);
   display: flex;
   flex-direction: column;
@@ -17,7 +18,7 @@
     display: flex;
     justify-content: flex-start;
     align-items: center;
-    height: 40px;
+    min-height: 40px;
     &__title {
       margin-bottom: 0;
       font-weight: 800;
@@ -100,15 +101,18 @@
     display: flex;
     justify-content: flex-start;
     align-items: flex-start;
+    min-height: calc(100% - 20px);
     &__block {
+      height: 100%;
+      height: 100%;
+      overflow: auto;
       display: flex;
       flex-direction: column;
       justify-content: flex-start;
       align-items: flex-start;
       border-right: 1px solid #0000001f;
-      padding-right: 32px;
       padding-left: 32px;
-      min-width: 180px;
+      min-width: 300px;
       &:first-child {
         padding-left: 0px;
       }
@@ -116,11 +120,44 @@
         border-right: 0px;
         padding-right: 0px;
       }
-      &__substate {
-        .title {
-          margin-top: 5px;
-          margin-bottom: 0px;
+
+      .workflow-substate {
+        margin-right: 27px;
+        &.front {
+          .title {
+            margin-top: 20px;
+            margin-bottom: 0px;
+          }
+          &:nth-child(2) .title {
+            margin-top: 5px;
+          }
         }
+        &.no-front {
+          .title {
+            margin-top: 20px;
+            margin-bottom: 0px;
+          }
+          &:first-child .title {
+            margin-top: 5px;
+          }
+        }
+      }
+
+      .empty-substate {
+        width: 316px;
+        height: 62px;
+        background-color: #ebebf5;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        border-radius: 8px;
+        label {
+          color: #6f708b;
+        }
+      }
+      h4 {
+        margin: 10px 0 0 0;
+        letter-spacing: 2px;
       }
     }
   }

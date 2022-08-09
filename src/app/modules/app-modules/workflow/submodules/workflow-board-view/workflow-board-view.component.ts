@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, HostListener, OnInit } from '@angular/core';
 import WorkflowCardDto from '@data/models/workflows/workflow-card-dto';
 import WorkflowDto from '@data/models/workflows/workflow-dto';
 import WorkflowFilterDto from '@data/models/workflows/workflow-filter-dto';
@@ -22,8 +22,16 @@ export class WorkflowBoardViewComponent implements OnInit {
   public wStatesData: WorkflowStateDto[];
   public wAnchorState: WorkflowStateDto;
   public wNormalStates: WorkflowStateDto[];
+  public showAnchorState = true;
 
   constructor(private workflowService: WorkflowsService, private spinnerService: ProgressSpinnerDialogService) {}
+
+  @HostListener('window:resize', ['$event']) onResize = (event: { target: { innerWidth: number } }) => {
+    console.log(event.target.innerWidth, this.showAnchorState);
+    if (event.target.innerWidth >= 1300 && !this.showAnchorState) {
+      this.showAnchorState = true;
+    }
+  };
 
   ngOnInit(): void {
     this.initListeners();
@@ -39,6 +47,8 @@ export class WorkflowBoardViewComponent implements OnInit {
     });
   }
 
+  public toggleAnchorState = () => (this.showAnchorState = !this.showAnchorState);
+
   private getData(): void {
     if (this.workflow) {
       const spinner = this.spinnerService.show();
@@ -49,23 +59,22 @@ export class WorkflowBoardViewComponent implements OnInit {
         (data: [WorkflowStateDto[], WorkflowCardDto[]]) => {
           this.spinnerService.hide(spinner);
           const workflowInstances: WorkflowStateDto[] = data[0];
-          //DGDC TODO: quitar parte hardcode
-          const workflowCards: WorkflowCardDto[] = data[1].map((card, i) => ({
-            ...card,
-            substateId: 2,
-            userId: i % 2 === 0 ? 2 : 3
-          }));
+          const workflowCards: WorkflowCardDto[] = data[1];
 
           workflowInstances.forEach((wState: WorkflowStateDto) => {
             let totalCards = 0;
             // eslint-disable-next-line @typescript-eslint/no-explicit-any
             const totalUsers: any = {};
             wState.workflowSubstates.forEach((wSubstate: WorkflowSubstateDto) => {
-              wSubstate.cards = workflowCards.filter((card: WorkflowCardDto) => card.substateId === wSubstate.id);
+              wSubstate.cards = workflowCards.filter(
+                (card: WorkflowCardDto) => card.cardInstanceWorkflows[0].workflowSubstateId === wSubstate.id
+              );
               totalCards += wSubstate.cards.length;
               wSubstate.workflowSubstateUser.forEach((user: WorkflowSubstateUserDto) => {
-                totalUsers[user.workflowUserId] = user;
-                user.cards = wSubstate.cards.filter((card: WorkflowCardDto) => card.userId === user.workflowUserId);
+                totalUsers[user.user.id] = user;
+                user.cards = wSubstate.cards.filter(
+                  (card: WorkflowCardDto) => card.cardInstanceWorkflows[0].cardInstanceWorkflowUsers[0].userId === user.user.id
+                );
               });
             });
             wState.cardCount = totalCards;

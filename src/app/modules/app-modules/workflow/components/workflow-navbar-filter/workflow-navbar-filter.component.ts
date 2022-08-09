@@ -1,8 +1,6 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
-import { FormBuilder, FormGroup } from '@angular/forms';
+import { Component, HostListener, OnDestroy, OnInit } from '@angular/core';
 import { WorkflowsService } from '@data/services/workflows.service';
-import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
-import WorkflowFilterDto from '@data/models/workflows/workflow-filter-dto';
+import { UntilDestroy } from '@ngneat/until-destroy';
 
 @UntilDestroy()
 @Component({
@@ -14,9 +12,11 @@ export class WorkflowNavbarFilterComponent implements OnInit, OnDestroy {
   public mobileView = false;
   constructor(private workflowService: WorkflowsService) {}
 
-  ngOnInit(): void {
-    window.onresize = () => (this.mobileView = window.innerWidth <= 1220);
+  @HostListener('window:resize', ['$event']) onResize(event: { target: { innerWidth: number } }) {
+    this.mobileView = event.target.innerWidth <= 1220;
   }
+
+  ngOnInit(): void {}
 
   ngOnDestroy(): void {
     this.workflowService.resetWorkflowFilter();

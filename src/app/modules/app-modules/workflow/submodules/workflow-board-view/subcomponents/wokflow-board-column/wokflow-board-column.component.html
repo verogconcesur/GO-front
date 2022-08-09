@@ -31,19 +31,36 @@
     </div>
     <div class="workflow-board-column__expanded" *ngIf="!collapsed">
         <div class="workflow-board-column__expanded__block" *ngFor="let user of wState.front ? wState.workflowUsers : []">
-            {{ user.workflowUserName }}
-            <div class="workflow-board-column__expanded__block__substate" *ngFor="let wSubstate of wState.workflowSubstates">
+            <h4>{{ getUserName(user) }}</h4>
+            <div class="workflow-substate front" *ngFor="let wSubstate of wState.workflowSubstates">
                 <h3 class="title uppercase">{{ wSubstate.name }}</h3>
-                <div *ngFor="let card of getCardsFiltertedByUser(user, wSubstate.cards)">
-                    {{ card.variableSlots[0].value }}
+                <div class="card-wrapper" cdkDropList>
+                    <app-workflow-card
+                        *ngFor="let card of getCardsFiltertedByUser(user, wSubstate.cards)"
+                        [card]="card"
+                        [wState]="wState"
+                        [wSubstate]="wSubstate"
+                    ></app-workflow-card>
+                </div>
+                <div class="empty-substate" *ngIf="!getCardsFiltertedByUser(user, wSubstate.cards)?.length">
+                    <label>{{ labels.emptySubstate | translate }}</label>
                 </div>
             </div>
         </div>
         <div class="workflow-board-column__expanded__block" *ngIf="!wState.front">
-            <div class="workflow-board-column__expanded__block__substate" *ngFor="let wSubstate of wState.workflowSubstates">
+            <div class="workflow-substate no-front" *ngFor="let wSubstate of wState.workflowSubstates">
                 <h3 class="title uppercase">{{ wSubstate.name }}</h3>
-                <div *ngFor="let card of wSubstate.cards">
-                    {{ card.variableSlots[0].value }}
+                <div class="card-wrapper" cdkDropList>
+                    <app-workflow-card
+                        *ngFor="let card of wSubstate.cards"
+                        [card]="card"
+                        [wState]="wState"
+                        [wSubstate]="wSubstate"
+                    ></app-workflow-card>
+                </div>
+
+                <div class="empty-substate" *ngIf="!wSubstate.cards?.length">
+                    <label>{{ labels.emptySubstate | translate }}</label>
                 </div>
             </div>
         </div>

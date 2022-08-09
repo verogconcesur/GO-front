@@ -277,6 +277,8 @@
     },
     "workflows": {
         "byFacilityGroupLabel": "Workflows de {facility}",
+        "dueOutDateTime": "Recoge el {date} a las {time}",
+        "emptySubstate": "Subestado vacío",
         "filter": "Filtrar Workflows",
         "filterState": "Filtrar Estados",
         "filterSubstate": "Filtrar Subestados",

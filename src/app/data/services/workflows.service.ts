@@ -135,7 +135,7 @@ export class WorkflowsService {
         }
         //User
         subState.workflowSubstateUser.forEach((subStateUser: WorkflowSubstateUserDto) => {
-          const userFound = users.find((user: WorkflowSubstateUserDto) => user.workflowUserId === subStateUser.workflowUserId);
+          const userFound = users.find((user: WorkflowSubstateUserDto) => user.user.id === subStateUser.user.id);
           if (!userFound) {
             users.push({
               ...subStateUser,

@@ -66,6 +66,10 @@ export class WorkflowNavbarFilterFormComponent implements OnInit {
     return false;
   }
 
+  public getUserName(wUser: WorkflowSubstateUserDto): string {
+    return `${wUser.user.name} ${wUser.user.firstName} ${wUser.user.lastName}`;
+  }
+
   private initForms(): void {
     this.filterForm = this.formBuilder.group({
       states: [this.filterValue?.states ? this.filterValue.states : []],
@@ -136,6 +140,8 @@ export class WorkflowNavbarFilterFormComponent implements OnInit {
   private filter = (from: 'states' | 'subStates' | 'users', attr: string, value: string): any[] => {
     const filterValue = `${value}`.toLowerCase();
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    return [...this.filterOptions[from]].filter((item: any) => `${item[attr]}`.toLowerCase().includes(filterValue));
+    return [...this.filterOptions[from]].filter((item: any) =>
+      `${attr === 'workflowUserName' ? this.getUserName(item) : item[attr]}`.toLowerCase().includes(filterValue)
+    );
   };
 }
