@@ -7,7 +7,7 @@
         </div>
     </div>
     <div class="workflow-board-column__collapsed" *ngIf="collapsed">
-        <div class="collapsed-card">
+        <div class="collapsed-card" [ngClass]="getCollapsedWDroppedClasses()">
             <div class="collapsed-card__third collapsed-card__common"></div>
             <div class="collapsed-card__second collapsed-card__common"></div>
             <div class="collapsed-card__first collapsed-card__common">
@@ -34,33 +34,46 @@
             <h4>{{ getUserName(user) }}</h4>
             <div class="workflow-substate front" *ngFor="let wSubstate of wState.workflowSubstates">
                 <h3 class="title uppercase">{{ wSubstate.name }}</h3>
-                <div class="card-wrapper" cdkDropList>
+                <div
+                    class="card-wrapper"
+                    cdkDropList
+                    [id]="wSubstateKey + wSubstate.id + '-' + user.user.id"
+                    [cdkDropListData]="cardsByUserAndSubstate[user.user.id + '-' + wSubstate.id]"
+                    [cdkDropListConnectedTo]="getAssociatedWSubstates(wSubstate.cards[0])"
+                    (cdkDropListDropped)="drop($event)"
+                >
                     <app-workflow-card
-                        *ngFor="let card of getCardsFiltertedByUser(user, wSubstate.cards)"
+                        *ngFor="let card of cardsByUserAndSubstate[user.user.id + '-' + wSubstate.id]"
                         [card]="card"
                         [wState]="wState"
                         [wSubstate]="wSubstate"
                     ></app-workflow-card>
-                </div>
-                <div class="empty-substate" *ngIf="!getCardsFiltertedByUser(user, wSubstate.cards)?.length">
-                    <label>{{ labels.emptySubstate | translate }}</label>
+                    <div class="empty-substate" *ngIf="!cardsByUserAndSubstate[user.user.id + '-' + wSubstate.id]?.length">
+                        <label>{{ labels.emptySubstate | translate }}</label>
+                    </div>
                 </div>
             </div>
         </div>
         <div class="workflow-board-column__expanded__block" *ngIf="!wState.front">
             <div class="workflow-substate no-front" *ngFor="let wSubstate of wState.workflowSubstates">
                 <h3 class="title uppercase">{{ wSubstate.name }}</h3>
-                <div class="card-wrapper" cdkDropList>
+                <div
+                    class="card-wrapper"
+                    cdkDropList
+                    [id]="wSubstateKey + wSubstate.id"
+                    [cdkDropListData]="wSubstate.cards"
+                    [cdkDropListConnectedTo]="getAssociatedWSubstates(wSubstate.cards[0])"
+                    (cdkDropListDropped)="drop($event)"
+                >
                     <app-workflow-card
                         *ngFor="let card of wSubstate.cards"
                         [card]="card"
                         [wState]="wState"
                         [wSubstate]="wSubstate"
                     ></app-workflow-card>
-                </div>
-
-                <div class="empty-substate" *ngIf="!wSubstate.cards?.length">
-                    <label>{{ labels.emptySubstate | translate }}</label>
+                    <div class="empty-substate" *ngIf="!wSubstate.cards?.length">
+                        <label>{{ labels.emptySubstate | translate }}</label>
+                    </div>
                 </div>
             </div>
         </div>

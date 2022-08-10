@@ -5,6 +5,7 @@ import WorkflowCardDto from '@data/models/workflows/workflow-card-dto';
 import WorkflowCardSlotDto from '@data/models/workflows/workflow-card-slot-dto';
 import WorkflowStateDto from '@data/models/workflows/workflow-state-dto';
 import WorkflowSubstateDto from '@data/models/workflows/workflow-substate-dto';
+import { WorkflowDragAndDropService } from '@modules/app-modules/workflow/aux-service/workflow-drag-and-drop.service';
 import { TranslateService } from '@ngx-translate/core';
 
 @Component({
@@ -21,7 +22,7 @@ export class WorkflowCardComponent implements OnInit {
     dueOutDateTime: marker('workflows.dueOutDateTime')
   };
 
-  constructor(private translateService: TranslateService) {}
+  constructor(private translateService: TranslateService, private dragAndDropService: WorkflowDragAndDropService) {}
 
   ngOnInit(): void {}
 
@@ -47,5 +48,13 @@ export class WorkflowCardComponent implements OnInit {
       default:
         return slot.value;
     }
+  }
+
+  public showCardInfo(): void {
+    console.log('show info:', this.card);
+  }
+
+  public setCardDragging(dragging: boolean): void {
+    this.dragAndDropService.draggingCard$.next(dragging);
   }
 }

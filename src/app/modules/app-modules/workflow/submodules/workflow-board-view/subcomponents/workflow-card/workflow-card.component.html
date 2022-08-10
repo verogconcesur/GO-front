@@ -1,4 +1,12 @@
-<div class="workflow-card" cdkDrag cdkDragBoundary=".board-view-wrapper">
+<div
+    class="workflow-card"
+    cdkDrag
+    cdkDragBoundary=".board-view-wrapper"
+    (cdkDragStarted)="setCardDragging(true)"
+    (cdkDragReleased)="setCardDragging(false)"
+    (click)="showCardInfo()"
+>
+    <div class="workflow-card__placeholder" *cdkDragPlaceholder></div>
     <div class="workflow-card__colors">
         <div
             class="workflow-card__colors__color"
