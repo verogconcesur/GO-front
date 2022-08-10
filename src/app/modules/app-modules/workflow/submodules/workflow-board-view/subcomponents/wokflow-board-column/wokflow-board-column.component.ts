@@ -1,11 +1,18 @@
 import { CdkDragDrop, moveItemInArray, transferArrayItem } from '@angular/cdk/drag-drop';
-import { Component, Input, OnChanges, OnInit, SimpleChanges } from '@angular/core';
+import { Component, EventEmitter, Input, OnChanges, OnInit, Output, SimpleChanges } from '@angular/core';
 import { marker } from '@biesbjerg/ngx-translate-extract-marker';
 import WorkflowCardDto from '@data/models/workflows/workflow-card-dto';
 import WorkflowMoveDto from '@data/models/workflows/workflow-move-dto';
 import WorkflowStateDto from '@data/models/workflows/workflow-state-dto';
 import WorkflowSubstateDto from '@data/models/workflows/workflow-substate-dto';
 import WorkflowSubstateUserDto from '@data/models/workflows/workflow-substate-user-dto';
+import { WorkflowsService } from '@data/services/workflows.service';
+import { TranslateService } from '@ngx-translate/core';
+import { GlobalMessageService } from '@shared/services/global-message.service';
+import { timingSafeEqual } from 'crypto';
+import { NGXLogger } from 'ngx-logger';
+import { of } from 'rxjs';
+import { take } from 'rxjs/operators';
 
 @Component({
   selector: 'app-wokflow-board-column',
@@ -15,6 +22,7 @@ import WorkflowSubstateUserDto from '@data/models/workflows/workflow-substate-us
 export class WokflowBoardColumnComponent implements OnInit, OnChanges {
   @Input() wState: WorkflowStateDto = null;
   @Input() divider = true;
+  @Output() reloadCardsEvent: EventEmitter<boolean> = new EventEmitter();
   public collapsed = true;
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   public cardsByUserAndSubstate: any = {};
@@ -29,20 +37,25 @@ export class WokflowBoardColumnComponent implements OnInit, OnChanges {
     emptySubstate: marker('workflows.emptySubstate')
   };
 
-  constructor() {}
+  constructor(
+    private workflowService: WorkflowsService,
+    private globalMessageService: GlobalMessageService,
+    private logger: NGXLogger,
+    private translateService: TranslateService
+  ) {}
 
   ngOnInit(): void {
     this.collapsed = this.wState.front;
   }
 
   ngOnChanges(changes: SimpleChanges): void {
+    console.log('CHANGES', changes);
     if (changes.wState?.currentValue && this.wState.front) {
       this.wState.workflowSubstates.forEach((wSubstate: WorkflowSubstateDto) => {
         wSubstate.workflowSubstateUser.forEach((wUser: WorkflowSubstateUserDto) => {
-          this.cardsByUserAndSubstate[wUser.user.id + '-' + wSubstate.id] = [...wSubstate.cards];
+          this.cardsByUserAndSubstate[wUser.user.id + '-' + wSubstate.id] = of([...wUser.cards]);
         });
       });
-      console.log(this.cardsByUserAndSubstate);
     }
   }
 
@@ -84,12 +97,32 @@ export class WokflowBoardColumnComponent implements OnInit, OnChanges {
     return associatedWSubstates;
   }
 
-  public drop(event: CdkDragDrop<string[]>) {
+  public drop(event: CdkDragDrop<string[]>, wSubState: WorkflowSubstateDto, user: WorkflowSubstateUserDto) {
     console.log(event);
     if (event.previousContainer === event.container) {
       moveItemInArray(event.container.data, event.previousIndex, event.currentIndex);
     } else {
-      transferArrayItem(event.previousContainer.data, event.container.data, event.previousIndex, event.currentIndex);
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      const item: any = event.previousContainer.data[event.previousIndex];
+      const move: WorkflowMoveDto = item.movements.find(
+        (wMove: WorkflowMoveDto) => wMove.workflowSubstateTarget.id === wSubState.id
+      );
+      // transferArrayItem(event.previousContainer.data, event.container.data, event.previousIndex, event.currentIndex);
+      this.workflowService
+        .moveWorkflowCardToSubstate(item, move, user)
+        .pipe(take(1))
+        .subscribe(
+          (data) => {
+            this.reloadCardsEvent.emit(true);
+          },
+          (error) => {
+            this.logger.error(error);
+            this.globalMessageService.showError({
+              message: error.message,
+              actionText: this.translateService.instant(marker('common.close'))
+            });
+          }
+        );
     }
   }
 }

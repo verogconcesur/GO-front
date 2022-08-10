@@ -5,9 +5,11 @@ import { ENV } from '@app/constants/global.constants';
 import { Env } from '@app/types/env';
 import { ConcenetError } from '@app/types/error';
 import WorkflowCardDto from '@data/models/workflows/workflow-card-dto';
+import WorkflowCardInstanceDto from '@data/models/workflows/workflow-card-instance-dto';
 import WorkflowDto from '@data/models/workflows/workflow-dto';
 import WorkflowFilterDto from '@data/models/workflows/workflow-filter-dto';
 import WorkflowListByFacilityDto from '@data/models/workflows/workflow-list-by-facility-dto';
+import WorkflowMoveDto from '@data/models/workflows/workflow-move-dto';
 import WorkflowStateDto from '@data/models/workflows/workflow-state-dto';
 import WorkflowSubstateDto from '@data/models/workflows/workflow-substate-dto';
 import WorkflowSubstateUserDto from '@data/models/workflows/workflow-substate-user-dto';
@@ -41,6 +43,7 @@ export class WorkflowsService {
   private readonly GET_WORKFLOWS_INSTANCE_PATH = '/instances';
   private readonly GET_WORKFLOWS_VIEW_PATH = '/view';
   private readonly GET_WORKFLOWS_CARDS_PATH = '/cards';
+  private readonly GET_WORKFLOWS_MOVEMENT_PATH = '/movement';
 
   constructor(@Inject(ENV) private env: Env, private http: HttpClient) {}
 
@@ -90,6 +93,35 @@ export class WorkflowsService {
         `${this.env.apiBaseUrl}${this.GET_WORKFLOWS_PATH}/${workflow.id}${this.GET_WORKFLOWS_FACILITY_PATH}/` +
           `${workflow.facility.facilityId}${this.GET_WORKFLOWS_VIEW_PATH}/` +
           `${viewType}${this.GET_WORKFLOWS_CARDS_PATH}`
+      )
+      .pipe(catchError((error) => throwError(error.error as ConcenetError)));
+  }
+
+  /**
+   * Move card to another subState
+   *
+   * @param cardInstance
+   * @param move
+   * @param wUser
+   * @returns
+   */
+  public moveWorkflowCardToSubstate(
+    card: WorkflowCardDto,
+    move: WorkflowMoveDto,
+    wUser: WorkflowSubstateUserDto
+  ): Observable<WorkflowCardInstanceDto> {
+    return this.http
+      .post<WorkflowCardInstanceDto>(
+        `${this.env.apiBaseUrl}${this.GET_WORKFLOWS_PATH}/${card.cardInstanceWorkflows[0].workflowId}` +
+          `${this.GET_WORKFLOWS_MOVEMENT_PATH}/${move.id}`,
+        {
+          userId: wUser.user.id,
+          cardInstanceWorkflow: {
+            workflowId: card.cardInstanceWorkflows[0].workflowId,
+            cardInstanceId: card.cardInstanceWorkflows[0].id,
+            workflowSubstateId: move.workflowSubstateTarget.id
+          }
+        }
       )
       .pipe(catchError((error) => throwError(error.error as ConcenetError)));
   }

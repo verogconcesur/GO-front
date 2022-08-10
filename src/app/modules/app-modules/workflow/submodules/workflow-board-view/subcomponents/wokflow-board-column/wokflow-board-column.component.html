@@ -38,17 +38,20 @@
                     class="card-wrapper"
                     cdkDropList
                     [id]="wSubstateKey + wSubstate.id + '-' + user.user.id"
-                    [cdkDropListData]="cardsByUserAndSubstate[user.user.id + '-' + wSubstate.id]"
+                    [cdkDropListData]="cardsByUserAndSubstate[user.user.id + '-' + wSubstate.id] | async"
                     [cdkDropListConnectedTo]="getAssociatedWSubstates(wSubstate.cards[0])"
-                    (cdkDropListDropped)="drop($event)"
+                    (cdkDropListDropped)="drop($event, wSubstate, user)"
                 >
                     <app-workflow-card
-                        *ngFor="let card of cardsByUserAndSubstate[user.user.id + '-' + wSubstate.id]"
+                        *ngFor="let card of cardsByUserAndSubstate[user.user.id + '-' + wSubstate.id] | async"
                         [card]="card"
                         [wState]="wState"
                         [wSubstate]="wSubstate"
                     ></app-workflow-card>
-                    <div class="empty-substate" *ngIf="!cardsByUserAndSubstate[user.user.id + '-' + wSubstate.id]?.length">
+                    <div
+                        class="empty-substate"
+                        *ngIf="!(cardsByUserAndSubstate[user.user.id + '-' + wSubstate.id] | async)?.length"
+                    >
                         <label>{{ labels.emptySubstate | translate }}</label>
                     </div>
                 </div>
@@ -63,7 +66,7 @@
                     [id]="wSubstateKey + wSubstate.id"
                     [cdkDropListData]="wSubstate.cards"
                     [cdkDropListConnectedTo]="getAssociatedWSubstates(wSubstate.cards[0])"
-                    (cdkDropListDropped)="drop($event)"
+                    (cdkDropListDropped)="drop($event, wSubstate, null)"
                 >
                     <app-workflow-card
                         *ngFor="let card of wSubstate.cards"

@@ -1,7 +1,11 @@
 <div class="board-view-wrapper" (mouseover)="mouseOver($event)">
     <!-- anchor state column -->
     <div #AnchorColumn class="board-view-wrapper__anchor-column" *ngIf="wAnchorState" [ngClass]="{ hide: !showAnchorState }">
-        <app-wokflow-board-column [wState]="wAnchorState" [divider]="false"></app-wokflow-board-column>
+        <app-wokflow-board-column
+            [wState]="wAnchorState"
+            [divider]="false"
+            (reloadCardsEvent)="reloadCardData()"
+        ></app-wokflow-board-column>
         <div class="hide-show-button" (click)="toggleAnchorState()">
             <mat-icon *ngIf="showAnchorState">keyboard_arrow_left</mat-icon>
             <mat-icon *ngIf="!showAnchorState">keyboard_arrow_right</mat-icon>
@@ -10,6 +14,7 @@
     <mat-divider *ngIf="wAnchorState" [vertical]="true" class="full-height"></mat-divider>
     <!-- scroll states columns -->
     <div #ScrollColumns class="board-view-wrapper__scroll-columns" *ngIf="wNormalStates?.length">
-        <app-wokflow-board-column *ngFor="let wState of wNormalStates" [wState]="wState"> </app-wokflow-board-column>
+        <app-wokflow-board-column *ngFor="let wState of wNormalStates" [wState]="wState" (reloadCardsEvent)="reloadCardData()">
+        </app-wokflow-board-column>
     </div>
 </div>
