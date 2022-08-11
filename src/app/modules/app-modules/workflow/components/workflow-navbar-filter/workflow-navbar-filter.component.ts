@@ -13,7 +13,7 @@ export class WorkflowNavbarFilterComponent implements OnInit, OnDestroy {
   constructor(private workflowService: WorkflowsService) {}
 
   @HostListener('window:resize', ['$event']) onResize(event: { target: { innerWidth: number } }) {
-    this.mobileView = event.target.innerWidth <= 1220;
+    this.mobileView = event.target.innerWidth <= 1280;
   }
 
   ngOnInit(): void {}

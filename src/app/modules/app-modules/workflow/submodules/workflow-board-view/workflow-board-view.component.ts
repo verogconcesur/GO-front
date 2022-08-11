@@ -31,6 +31,7 @@ export class WorkflowBoardViewComponent implements OnInit {
   private horizontalScrollZoneInPx = 200;
   private draggingACard = false;
   private workflowInstances: WorkflowStateDto[] = [];
+  private filters: WorkflowFilterDto = null;
 
   constructor(
     private workflowService: WorkflowsService,
@@ -55,7 +56,8 @@ export class WorkflowBoardViewComponent implements OnInit {
       this.getData();
     });
     this.workflowService.workflowFilterSubject$.pipe(untilDestroyed(this)).subscribe((filter: WorkflowFilterDto) => {
-      console.log('Hay cambios en los filtros: ', filter);
+      this.filters = filter;
+      this.filterData();
     });
     this.dragAndDropService.draggingCard$.pipe(untilDestroyed(this)).subscribe((dragging: boolean) => {
       this.draggingACard = dragging;
@@ -137,23 +139,56 @@ export class WorkflowBoardViewComponent implements OnInit {
         );
         totalCards += wSubstate.cards.length;
         wSubstate.workflowSubstateUser.forEach((user: WorkflowSubstateUserDto) => {
-          totalUsers[user.user.id] = user;
-          user.cards = wSubstate.cards.filter(
+          const oldCards = totalUsers[user.user.id] ? totalUsers[user.user.id].cards : [];
+          const newCards = wSubstate.cards.filter(
             (card: WorkflowCardDto) => card.cardInstanceWorkflows[0].cardInstanceWorkflowUsers[0].userId === user.user.id
           );
+          user.cards = [...newCards];
+          totalUsers[user.user.id] = user;
         });
       });
       wState.cardCount = totalCards;
       wState.userCount = Object.keys(totalUsers).length;
       wState.workflowUsers = Object.keys(totalUsers).map((k) => totalUsers[k]);
-    });
 
-    this.wStatesData = this.workflowInstances;
+      this.filterData();
+    });
+  }
+
+  private filterData() {
+    this.wStatesData = JSON.parse(JSON.stringify(this.workflowInstances));
+    const filters = JSON.parse(JSON.stringify(this.filters));
+    console.log(filters);
+    //Filtro estados
+    if (filters.states?.length) {
+      const statesIds = filters.states.map((w: WorkflowStateDto) => w.id);
+      this.wStatesData = this.wStatesData.filter((ws: WorkflowStateDto) => statesIds.indexOf(ws.id) >= 0);
+    }
+    //Filtro subestados
+    if (filters.subStates?.length) {
+      let substatesIds: number[] = [];
+      filters.subStates.forEach((w: WorkflowSubstateDto) => (substatesIds = [...substatesIds, ...w.substatesIdsToFilter]));
+      this.wStatesData.map((ws: WorkflowStateDto) => {
+        ws.workflowSubstates = ws.workflowSubstates.filter((wss: WorkflowSubstateDto) => substatesIds.indexOf(wss.id) >= 0);
+        return ws;
+      });
+      this.wStatesData = this.wStatesData.filter((ws: WorkflowStateDto) => ws.workflowSubstates.length > 0);
+    }
+    //Filtro Usuarios
+
+    //Filtro Prioridad
+
+    //Filtro subestados y usuarios con tarjetas
+    //Esta parte está hecha directamente en las columnas
+    this.defineColumns();
+  }
+
+  private defineColumns() {
     this.wAnchorState = null;
     this.wNormalStates = [];
     setTimeout(() => {
-      this.wAnchorState = this.workflowInstances.find((state: WorkflowStateDto) => state.anchor);
-      this.wNormalStates = this.workflowInstances
+      this.wAnchorState = this.wStatesData.find((state: WorkflowStateDto) => state.anchor);
+      this.wNormalStates = this.wStatesData
         .filter((state: WorkflowStateDto) => !state.anchor)
         .sort((a, b) => a.orderNumber - b.orderNumber);
     });

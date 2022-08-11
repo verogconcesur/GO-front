@@ -132,6 +132,25 @@
         </mat-select>
     </mat-form-field>
     <button
+        mat-icon-button
+        class="substatesWithCards-button"
+        (click)="filterSubstatesWithCards()"
+        [disabled]="!filterOptions?.states?.length"
+    >
+        <mat-icon
+            *ngIf="filterForm.get('substatesWithCards').value"
+            matTooltipPosition="above"
+            [matTooltip]="labels.substatesWithCards | translate"
+            >work</mat-icon
+        >
+        <mat-icon
+            *ngIf="!filterForm.get('substatesWithCards').value"
+            matTooltipPosition="above"
+            [matTooltip]="labels.substatesWithAndWithoutCards | translate"
+            >work_outline</mat-icon
+        >
+    </button>
+    <button
         mat-button
         aria-label="Clear filter"
         class="right-clear-filter-button"

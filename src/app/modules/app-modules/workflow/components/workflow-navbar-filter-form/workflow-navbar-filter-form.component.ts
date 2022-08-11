@@ -28,7 +28,9 @@ export class WorkflowNavbarFilterFormComponent implements OnInit {
     filterState: marker('workflows.filterState'),
     filterSubstate: marker('workflows.filterSubstate'),
     filterUser: marker('workflows.filterUser'),
-    cleanFilter: marker('common.cleanFilter')
+    cleanFilter: marker('common.cleanFilter'),
+    substatesWithCards: marker('workflows.substatesWithCards'),
+    substatesWithAndWithoutCards: marker('workflows.substatesWithAndWithoutCards')
   };
   public statesOptions: Observable<WorkflowStateDto[] | any[]>;
   public subStatesOptions: Observable<WorkflowSubstateDto[] | any[]>;
@@ -57,10 +59,16 @@ export class WorkflowNavbarFilterFormComponent implements OnInit {
     if (this.filterForm.get('priorities').value.length) {
       this.filterForm.get('priorities').setValue([]);
     }
+    if (this.filterForm.get('substatesWithCards').value) {
+      this.filterForm.get('substatesWithCards').setValue(false);
+      this.notifyChangesInFilter();
+    }
   }
 
-  public hasDataSelected(option: 'states' | 'subStates' | 'users' | 'priorities'): boolean {
-    if (this.filterForm?.get(option)?.value?.length > 0) {
+  public hasDataSelected(option: 'states' | 'subStates' | 'users' | 'priorities' | 'substatesWithCards'): boolean {
+    if (option !== 'substatesWithCards' && this.filterForm?.get(option)?.value?.length > 0) {
+      return true;
+    } else if (option === 'substatesWithCards' && this.filterForm?.get(option).value) {
       return true;
     }
     return false;
@@ -70,12 +78,18 @@ export class WorkflowNavbarFilterFormComponent implements OnInit {
     return `${wUser.user.name} ${wUser.user.firstName} ${wUser.user.lastName}`;
   }
 
+  public filterSubstatesWithCards(): void {
+    this.filterForm.get('substatesWithCards').setValue(!this.filterForm.get('substatesWithCards').value);
+    this.notifyChangesInFilter();
+  }
+
   private initForms(): void {
     this.filterForm = this.formBuilder.group({
       states: [this.filterValue?.states ? this.filterValue.states : []],
       subStates: [this.filterValue?.subStates ? this.filterValue.subStates : []],
       users: [this.filterValue?.users ? this.filterValue.users : []],
       priorities: [this.filterValue?.priorities ? this.filterValue.priorities : []],
+      substatesWithCards: [this.filterValue?.substatesWithCards],
       statesSearch: [''],
       subStatesSearch: [''],
       usersSearch: ['']
@@ -131,7 +145,8 @@ export class WorkflowNavbarFilterFormComponent implements OnInit {
       states: this.filterForm.get('states').value,
       subStates: this.filterForm.get('subStates').value,
       users: this.filterForm.get('users').value,
-      priorities: this.filterForm.get('priorities').value
+      priorities: this.filterForm.get('priorities').value,
+      substatesWithCards: this.filterForm.get('substatesWithCards').value
     };
     this.workflowService.workflowFilterSubject$.next(filterValue);
   }

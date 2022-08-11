@@ -27,14 +27,16 @@ export class WorkflowsService {
     states: [],
     subStates: [],
     users: [],
-    priorities: []
+    priorities: [],
+    substatesWithCards: false
   });
   //Stores the filter options to show
   public workflowFilterOptionsSubject$: BehaviorSubject<WorkflowFilterDto> = new BehaviorSubject({
     states: [],
     subStates: [],
     users: [],
-    priorities: []
+    priorities: [],
+    substatesWithCards: false
   });
 
   private readonly GET_WORKFLOWS_PATH = '/api/workflows';
@@ -131,31 +133,41 @@ export class WorkflowsService {
 
   //Aux functions
   public resetWorkflowFilter(): void {
-    const filter: WorkflowFilterDto = {
+    const filterR: WorkflowFilterDto = {
       states: [],
       subStates: [],
       users: [],
-      priorities: []
+      priorities: [],
+      substatesWithCards: false
     };
-    this.workflowFilterSubject$.next(filter);
-    this.workflowFilterOptionsSubject$.next(filter);
+    this.workflowFilterSubject$.next(filterR);
+    this.workflowFilterOptionsSubject$.next(filterR);
   }
 
   public isWorkflowFilterActive(): boolean {
     const filterValue = this.workflowFilterSubject$.getValue();
     if (
       filterValue &&
-      (filterValue.states.length || filterValue.subStates.length || filterValue.users.length || filterValue.priorities.length)
+      (filterValue.states.length ||
+        filterValue.subStates.length ||
+        filterValue.users.length ||
+        filterValue.priorities.length ||
+        filterValue.substatesWithCards)
     ) {
       return true;
     }
     return false;
   }
 
+  public showOnlySubstatesWithCards(): boolean {
+    return this.workflowFilterSubject$.getValue()?.substatesWithCards;
+  }
+
   private getFilterInfo(data: WorkflowStateDto[]): void {
     const subStates: WorkflowSubstateDto[] = [];
     const users: WorkflowSubstateUserDto[] = [];
     const priorities: string[] = [];
+    const substatesWithCards = false;
     data.forEach((states: WorkflowStateDto) => {
       states.workflowSubstates.forEach((subState: WorkflowSubstateDto) => {
         //Substate
@@ -188,7 +200,8 @@ export class WorkflowsService {
       states: [...data],
       subStates: [...subStates],
       users: [...users],
-      priorities: [...priorities]
+      priorities: [...priorities],
+      substatesWithCards
     };
     this.workflowFilterOptionsSubject$.next(filterOptions);
   }

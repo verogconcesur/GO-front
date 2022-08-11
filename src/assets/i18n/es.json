@@ -287,6 +287,8 @@
         "filterUser": "Filtrar Usuarios",
         "numCards": "{num} {num, plural, =0{fichas} one{ficha} other{fichas}}",
         "peopleWorking": "{num} {num, plural, =0{personas trabajando} one{persona trabajando} other{personas trabajando}}",
-        "select": "Selecciona un Workflow"
+        "select": "Selecciona un Workflow",
+        "substatesWithAndWithoutCards": "Mostrando subestados con o sin tarjetas",
+        "substatesWithCards": "Mostrando únicamente subestados con tarjetas"
     }
 }

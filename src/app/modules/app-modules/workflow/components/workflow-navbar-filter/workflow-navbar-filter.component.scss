@@ -19,7 +19,7 @@
       margin: 0 5px;
     }
   }
-  @include respond-to(calc($desktop + 20px)) {
+  @include respond-to(calc($desktop + 80px)) {
     &__mobile {
       display: block;
     }

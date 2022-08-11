@@ -20,6 +20,17 @@
     }
   }
 
+  .substatesWithCards-button {
+    mat-icon {
+      color: mat-color($primary, 500);
+    }
+    &.mat-button-disabled {
+      mat-icon {
+        color: mat-color($primary, 200);
+      }
+    }
+  }
+
   .cdk-overlay-container {
     .filter-form {
       display: flex;

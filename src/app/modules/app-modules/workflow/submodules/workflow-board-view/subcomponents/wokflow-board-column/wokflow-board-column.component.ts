@@ -13,7 +13,6 @@ import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
 import { TranslateService } from '@ngx-translate/core';
 import { GlobalMessageService } from '@shared/services/global-message.service';
 import { NGXLogger } from 'ngx-logger';
-import { of } from 'rxjs';
 import { take } from 'rxjs/operators';
 
 @UntilDestroy()
@@ -50,7 +49,7 @@ export class WokflowBoardColumnComponent implements OnInit, OnChanges {
   };
 
   constructor(
-    private workflowService: WorkflowsService,
+    public workflowService: WorkflowsService,
     private dragAndDropService: WorkflowDragAndDropService,
     private globalMessageService: GlobalMessageService,
     private logger: NGXLogger,
@@ -70,7 +69,7 @@ export class WokflowBoardColumnComponent implements OnInit, OnChanges {
     if (changes.wState?.currentValue && this.wState.front) {
       this.wState.workflowSubstates.forEach((wSubstate: WorkflowSubstateDto) => {
         wSubstate.workflowSubstateUser.forEach((wUser: WorkflowSubstateUserDto) => {
-          this.cardsByUserAndSubstate[wUser.user.id + '-' + wSubstate.id] = of([...wUser.cards]);
+          this.cardsByUserAndSubstate[wUser.user.id + '-' + wSubstate.id] = [...wUser.cards];
         });
       });
     }
@@ -93,6 +92,26 @@ export class WokflowBoardColumnComponent implements OnInit, OnChanges {
     } else {
       this.dragAndDropService.addExpandedColumn(id);
     }
+  }
+
+  public areCardsByUserAndSubstatesEmpty(userId: number, wSubstates: WorkflowSubstateDto[]): boolean {
+    let empty = true;
+    wSubstates.forEach((wss: WorkflowSubstateDto) => {
+      if (this.cardsByUserAndSubstate[userId + '-' + wss.id].length) {
+        empty = false;
+      }
+    });
+    return empty;
+  }
+
+  public isStateEmpty(): boolean {
+    let isEmpty = true;
+    this.wState.workflowSubstates.forEach((wss: WorkflowSubstateDto) => {
+      if (wss.cards.length) {
+        isEmpty = false;
+      }
+    });
+    return isEmpty;
   }
 
   public setHideEmpty(id: string, value: boolean) {

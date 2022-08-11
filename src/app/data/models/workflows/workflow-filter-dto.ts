@@ -8,4 +8,5 @@ export default interface WorkflowFilterDto {
   subStates: WorkflowSubstateDto[] | any[];
   users: WorkflowSubstateUserDto[] | any[];
   priorities: string[];
+  substatesWithCards: boolean;
 }

@@ -1,4 +1,12 @@
-<div class="workflow-board-column" [ngClass]="{ divider: divider, collapsed: collapsed }">
+<div
+    class="workflow-board-column"
+    [ngClass]="{
+        divider: divider,
+        collapsed: collapsed,
+        'hide-empties': workflowService.showOnlySubstatesWithCards(),
+        empty: isStateEmpty()
+    }"
+>
     <div class="workflow-board-column__state-name">
         <h2 class="workflow-board-column__state-name__title">{{ wState.name }}</h2>
         <div class="workflow-board-column__state-name__more" *ngIf="wState.front">
@@ -38,16 +46,24 @@
     <!-- Usamos ngStyle en lugar de NgIf para que los cdkDropList estén renderizados y visibles en caso de que se expanda la columna haciendo el
          drag sobre la tarjeta collapsada -->
     <div class="workflow-board-column__expanded" [ngStyle]="{ display: collapsed ? 'none' : 'flex' }">
-        <div class="workflow-board-column__expanded__block" *ngFor="let user of wState.front ? wState.workflowUsers : []">
+        <div
+            class="workflow-board-column__expanded__block"
+            *ngFor="let user of wState.front ? wState.workflowUsers : []"
+            [ngClass]="{ empty: areCardsByUserAndSubstatesEmpty(user.user.id, wState.workflowSubstates) }"
+        >
             <h4>{{ getUserName(user) }}</h4>
-            <div class="workflow-substate front" *ngFor="let wSubstate of wState.workflowSubstates">
+            <div
+                class="workflow-substate front"
+                *ngFor="let wSubstate of wState.workflowSubstates"
+                [ngClass]="{ empty: areCardsByUserAndSubstatesEmpty(user.user.id, [wSubstate]) }"
+            >
                 <h3 class="title uppercase">{{ wSubstate.name }}</h3>
                 <div
                     class="card-wrapper"
                     [ngClass]="getCardWrapperClasses(wSubstateKey + wSubstate.id + '-' + user.user.id)"
                     cdkDropList
                     [id]="wSubstateKey + wSubstate.id + '-' + user.user.id"
-                    [cdkDropListData]="cardsByUserAndSubstate[user.user.id + '-' + wSubstate.id] | async"
+                    [cdkDropListData]="cardsByUserAndSubstate[user.user.id + '-' + wSubstate.id]"
                     [cdkDropListConnectedTo]="getAssociatedWSubstates(wSubstate.cards[0])"
                     (cdkDropListDropped)="
                         drop($event, wSubstate, user); setHideEmpty(wSubstateKey + wSubstate.id + '-' + user.user.id, false)
@@ -56,7 +72,7 @@
                     (cdkDropListExited)="setHideEmpty(wSubstateKey + wSubstate.id + '-' + user.user.id, false)"
                 >
                     <app-workflow-card
-                        *ngFor="let card of cardsByUserAndSubstate[user.user.id + '-' + wSubstate.id] | async"
+                        *ngFor="let card of cardsByUserAndSubstate[user.user.id + '-' + wSubstate.id]"
                         [card]="card"
                         [wState]="wState"
                         [wSubstate]="wSubstate"
@@ -65,7 +81,7 @@
                     <div
                         class="empty-substate"
                         *ngIf="
-                            !(cardsByUserAndSubstate[user.user.id + '-' + wSubstate.id] | async)?.length &&
+                            !cardsByUserAndSubstate[user.user.id + '-' + wSubstate.id]?.length &&
                             !getHideEmpty(wSubstateKey + wSubstate.id + '-' + user.user.id)
                         "
                     >
@@ -75,7 +91,11 @@
             </div>
         </div>
         <div class="workflow-board-column__expanded__block" *ngIf="!wState.front">
-            <div class="workflow-substate no-front" *ngFor="let wSubstate of wState.workflowSubstates">
+            <div
+                class="workflow-substate no-front"
+                *ngFor="let wSubstate of wState.workflowSubstates"
+                [ngClass]="{ empty: wSubstate.cards.length === 0 }"
+            >
                 <h3 class="title uppercase">{{ wSubstate.name }}</h3>
                 <div
                     class="card-wrapper"
