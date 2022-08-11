@@ -10,6 +10,7 @@ import { ProgressSpinnerDialogService } from '@shared/services/progress-spinner-
 import { NGXLogger } from 'ngx-logger';
 import { Observable } from 'rxjs';
 import { take, startWith, map } from 'rxjs/operators';
+import { WorkflowDragAndDropService } from '../../aux-service/workflow-drag-and-drop.service';
 
 @Component({
   selector: 'app-workflow-navbar',
@@ -34,7 +35,8 @@ export class WorkflowNavbarComponent implements OnInit, OnDestroy {
     private spinnerService: ProgressSpinnerDialogService,
     private logger: NGXLogger,
     private formBuilder: FormBuilder,
-    private translateService: TranslateService
+    private translateService: TranslateService,
+    private dragDropService: WorkflowDragAndDropService
   ) {}
 
   ngOnInit(): void {
@@ -63,6 +65,7 @@ export class WorkflowNavbarComponent implements OnInit, OnDestroy {
     const workflow = event.value;
     this.workflowSelected = workflow;
     this.workflowService.workflowSelectedSubject$.next(workflow);
+    this.dragDropService.resetObservables();
     this.workflowForm.get('workflow').setValue(workflow);
     this.workflowForm.get('workflowSearch').setValue('');
   }

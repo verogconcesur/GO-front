@@ -11,6 +11,12 @@ export class WorkflowDragAndDropService {
 
   constructor() {}
 
+  public resetObservables(): void {
+    this.draggingCard$.next(false);
+    this.droppableStates$.next([]);
+    this.expandedColumns$.next([]);
+  }
+
   public isDroppableState(state: string): boolean {
     return this.droppableStates$.value.indexOf(state) >= 0;
   }
