@@ -121,7 +121,7 @@ export class WorkflowsService {
           cardInstanceWorkflow: {
             facilityId,
             workflowId: card.cardInstanceWorkflows[0].workflowId,
-            cardInstanceId: card.cardInstanceWorkflows[0].id
+            cardInstanceId: card.cardInstanceWorkflows[0].cardInstanceId
             // workflowSubstateId: move.workflowSubstateTarget.id
           }
         }
