@@ -17,6 +17,7 @@ export class WorkflowCardComponent implements OnInit {
   @Input() card: WorkflowCardDto;
   @Input() wState: WorkflowStateDto;
   @Input() wSubstate: WorkflowSubstateDto;
+  @Input() droppableStates: string[];
 
   public labels = {
     dueOutDateTime: marker('workflows.dueOutDateTime')
@@ -56,5 +57,10 @@ export class WorkflowCardComponent implements OnInit {
 
   public setCardDragging(dragging: boolean): void {
     this.dragAndDropService.draggingCard$.next(dragging);
+    if (dragging) {
+      this.dragAndDropService.droppableStates$.next(this.droppableStates);
+    } else {
+      this.dragAndDropService.droppableStates$.next([]);
+    }
   }
 }

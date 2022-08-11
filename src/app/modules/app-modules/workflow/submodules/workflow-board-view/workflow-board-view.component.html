@@ -2,6 +2,7 @@
     <!-- anchor state column -->
     <div #AnchorColumn class="board-view-wrapper__anchor-column" *ngIf="wAnchorState" [ngClass]="{ hide: !showAnchorState }">
         <app-wokflow-board-column
+            [workflow]="workflow"
             [wState]="wAnchorState"
             [divider]="false"
             (reloadCardsEvent)="reloadCardData()"
@@ -14,7 +15,12 @@
     <mat-divider *ngIf="wAnchorState" [vertical]="true" class="full-height"></mat-divider>
     <!-- scroll states columns -->
     <div #ScrollColumns class="board-view-wrapper__scroll-columns" *ngIf="wNormalStates?.length">
-        <app-wokflow-board-column *ngFor="let wState of wNormalStates" [wState]="wState" (reloadCardsEvent)="reloadCardData()">
+        <app-wokflow-board-column
+            *ngFor="let wState of wNormalStates"
+            [workflow]="workflow"
+            [wState]="wState"
+            (reloadCardsEvent)="reloadCardData()"
+        >
         </app-wokflow-board-column>
     </div>
 </div>

@@ -43,5 +43,16 @@
         }
       }
     }
+
+    .card-wrapper,
+    &__collapsed {
+      padding: 5px 0;
+      border: 2px dotted rgba(255, 255, 255, 0);
+      border-radius: 8px;
+      &.droppable-zone {
+        border: 2px dotted mat-color($primary, statusSuccess);
+        background-color: rgba(mat-color($primary, statusSuccess), 20%);
+      }
+    }
   }
 }

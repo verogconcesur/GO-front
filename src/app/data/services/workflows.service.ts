@@ -100,12 +100,14 @@ export class WorkflowsService {
   /**
    * Move card to another subState
    *
+   * @param facilityId
    * @param cardInstance
    * @param move
    * @param wUser
    * @returns
    */
   public moveWorkflowCardToSubstate(
+    facilityId: number,
     card: WorkflowCardDto,
     move: WorkflowMoveDto,
     wUser: WorkflowSubstateUserDto
@@ -115,11 +117,12 @@ export class WorkflowsService {
         `${this.env.apiBaseUrl}${this.GET_WORKFLOWS_PATH}/${card.cardInstanceWorkflows[0].workflowId}` +
           `${this.GET_WORKFLOWS_MOVEMENT_PATH}/${move.id}`,
         {
-          userId: wUser.user.id,
+          userId: wUser?.user ? wUser?.user?.id : null,
           cardInstanceWorkflow: {
+            facilityId,
             workflowId: card.cardInstanceWorkflows[0].workflowId,
-            cardInstanceId: card.cardInstanceWorkflows[0].id,
-            workflowSubstateId: move.workflowSubstateTarget.id
+            cardInstanceId: card.cardInstanceWorkflows[0].id
+            // workflowSubstateId: move.workflowSubstateTarget.id
           }
         }
       )

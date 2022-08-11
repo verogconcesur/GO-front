@@ -1,4 +1,4 @@
-import { Component, ElementRef, HostListener, OnInit, ViewChild } from '@angular/core';
+import { Component, ElementRef, HostListener, NgZone, OnInit, ViewChild } from '@angular/core';
 import WorkflowCardDto from '@data/models/workflows/workflow-card-dto';
 import WorkflowDto from '@data/models/workflows/workflow-dto';
 import WorkflowFilterDto from '@data/models/workflows/workflow-filter-dto';
@@ -35,7 +35,8 @@ export class WorkflowBoardViewComponent implements OnInit {
   constructor(
     private workflowService: WorkflowsService,
     private spinnerService: ProgressSpinnerDialogService,
-    private dragAndDropService: WorkflowDragAndDropService
+    private dragAndDropService: WorkflowDragAndDropService,
+    private zone: NgZone
   ) {}
 
   @HostListener('window:resize', ['$event']) onResize = (event: { target: { innerWidth: number } }) => {
@@ -58,6 +59,14 @@ export class WorkflowBoardViewComponent implements OnInit {
     });
     this.dragAndDropService.draggingCard$.pipe(untilDestroyed(this)).subscribe((dragging: boolean) => {
       this.draggingACard = dragging;
+    });
+    this.dragAndDropService.expandedColumns$.pipe(untilDestroyed(this)).subscribe((data: string[]) => {
+      //Permite al CDKDrag recalcular y mostrar los place holder donde corresponda
+      if (this.scrollColumns?.nativeElement) {
+        setTimeout(() => {
+          this.scrollColumns.nativeElement.scrollLeft += 1;
+        }, 100);
+      }
     });
   }
 
