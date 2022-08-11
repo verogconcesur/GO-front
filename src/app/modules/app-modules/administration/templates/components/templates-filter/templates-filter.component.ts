@@ -45,7 +45,8 @@ export class TemplatesFilterComponent extends FilterDrawerClassToExnted implemen
       this.filterForm.get('departments').setValue([]);
       this.filterForm.get('specialties').setValue([]);
     }
-    this.organizationLevelsNestedCombos.getFacilitiesOptions();
+    this.organizationLevelsNestedCombos.getDepartmentsOptions();
+    this.organizationLevelsNestedCombos.getBrandsOptions();
     return of(this.filterForm.value);
   }
   public submitFilter(): Observable<TemplatesFilterDTO> {

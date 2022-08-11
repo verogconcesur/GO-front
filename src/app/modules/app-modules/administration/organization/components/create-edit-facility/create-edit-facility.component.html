@@ -21,11 +21,34 @@
                             {{ labels.nameRequired | translate }}
                         </mat-error>
                     </mat-form-field>
-                    <app-organization-levels-nested-combos
-                        #OrganizationLevelsNestedCombos
-                        [form]="facilityForm"
-                        [levelsToShow]="organizationLevelsToShow"
-                    ></app-organization-levels-nested-combos>
+                    <!-- brand -->
+                    <mat-form-field appearance="outline" floatLabel="always">
+                        <mat-label>{{ labels.brands | translate }}</mat-label>
+                        <mat-select formControlName="brands" multiple>
+                            <button
+                                mat-button
+                                class="mat-button-w-100-left"
+                                *ngIf="!hasAllSelected(facilityForm.controls.brands, brandsList)"
+                                (click)="selectAll(facilityForm.controls.brands, brandsList)"
+                            >
+                                {{ labels.selectAll | translate }}
+                            </button>
+                            <button
+                                mat-button
+                                class="mat-button-w-100-left"
+                                *ngIf="hasAllSelected(facilityForm.controls.brands, brandsList)"
+                                (click)="unselectAll(facilityForm.controls.brands)"
+                            >
+                                {{ labels.unselectAll | translate }}
+                            </button>
+                            <mat-option *ngFor="let brand of brandsAsyncList | async" [value]="brand">{{
+                                brand.name
+                            }}</mat-option>
+                        </mat-select>
+                        <mat-error *ngIf="facilityForm.controls?.brands.invalid && facilityForm.controls?.brands.touched">
+                            <span *ngIf="facilityForm.controls.brands.errors.required">{{ labels.required | translate }}</span>
+                        </mat-error>
+                    </mat-form-field>
 
                     <!-- Address -->
                     <mat-form-field appearance="outline" floatLabel="always">

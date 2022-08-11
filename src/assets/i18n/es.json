@@ -1,6 +1,8 @@
 {
     "administration": {
+        "brands": "Marcas",
         "exit": "Salir de configuración",
+        "facilities": "Instalaciones",
         "organization": "Organización",
         "records": "Fichas",
         "templates": {

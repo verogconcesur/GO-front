@@ -1,40 +1,8 @@
 <ng-container [formGroup]="form">
-    <!-- brands -->
-    <mat-form-field appearance="outline" floatLabel="always">
-        <mat-label>{{ labels.brand | translate }}</mat-label>
-        <mat-select formControlName="brands" multiple (selectionChange)="getFacilitiesOptions()">
-            <button
-                mat-button
-                class="mat-button-w-100-left"
-                *ngIf="!hasAllSelected('brands', formControls.brands, brandsList)"
-                (click)="selectAll('brands', formControls.brands, brandsList)"
-            >
-                {{ labels.selectAll | translate }}
-            </button>
-            <button
-                mat-button
-                class="mat-button-w-100-left"
-                *ngIf="hasAllSelected('brands', formControls.brands, brandsList)"
-                (click)="unselectAll('brands', formControls.brands)"
-            >
-                {{ labels.unselectAll | translate }}
-            </button>
-            <mat-option *ngFor="let brand of brandsAsyncList | async" [value]="brand">{{ brand.name }}</mat-option>
-        </mat-select>
-        <mat-error *ngIf="form.controls?.brands.invalid && form.controls?.brands.touched">
-            <span *ngIf="form.controls.brands.errors.required">{{ labels.required | translate }}</span>
-        </mat-error>
-    </mat-form-field>
-
     <!-- facilities -->
-    <mat-form-field *ngIf="levelsToShow.facilities" appearance="outline" floatLabel="always">
+    <mat-form-field appearance="outline" floatLabel="always">
         <mat-label>{{ labels.facility | translate }}</mat-label>
-        <mat-select
-            formControlName="facilities"
-            multiple
-            (selectionChange)="getDepartmentsOptions()"
-            [disabled]="!facilitiesList || !facilitiesList.length"
-        >
+        <mat-select formControlName="facilities" multiple (selectionChange)="getDepartmentsOptions(); getBrandsOptions()">
             <button
                 mat-button
                 class="mat-button-w-100-left"
@@ -51,20 +19,36 @@
             >
                 {{ labels.unselectAll | translate }}
             </button>
-            <mat-optgroup
-                *ngFor="let group of facilitiesList"
-                [label]="group.brandName"
-                matTooltip="{{ group.tooltipBrandName }}"
-                [matTooltipDisabled]="!group.tooltipBrandName"
-                matTooltipPosition="before"
-            >
-                <mat-option *ngFor="let facility of group.facilities" [value]="facility">
-                    {{ facility.name }}
-                </mat-option>
-            </mat-optgroup>
+            <mat-option *ngFor="let facility of facilitiesAsyncList | async" [value]="facility">{{ facility.name }}</mat-option>
         </mat-select>
         <mat-error *ngIf="form.controls?.facilities.invalid && form.controls?.facilities.touched">
             <span *ngIf="form.controls.facilities.errors.required">{{ labels.required | translate }}</span>
+        </mat-error>
+    </mat-form-field>
+    <!-- brands -->
+    <mat-form-field *ngIf="levelsToShow.brands" appearance="outline" floatLabel="always">
+        <mat-label>{{ labels.brand | translate }}</mat-label>
+        <mat-select formControlName="brands" multiple [disabled]="!brandsList || !brandsList.length">
+            <button
+                mat-button
+                class="mat-button-w-100-left"
+                *ngIf="!hasAllSelected('brands', formControls.brands, brandsList)"
+                (click)="selectAll('brands', formControls.brands, brandsList)"
+            >
+                {{ labels.selectAll | translate }}
+            </button>
+            <button
+                mat-button
+                class="mat-button-w-100-left"
+                *ngIf="hasAllSelected('brands', formControls.brands, brandsList)"
+                (click)="unselectAll('brands', formControls.brands)"
+            >
+                {{ labels.unselectAll | translate }}
+            </button>
+            <mat-option *ngFor="let brand of brandsList" [value]="brand">{{ brand.name }}</mat-option>
+        </mat-select>
+        <mat-error *ngIf="form.controls?.brands.invalid && form.controls?.brands.touched">
+            <span *ngIf="form.controls.brands.errors.required">{{ labels.required | translate }}</span>
         </mat-error>
     </mat-form-field>
     <!-- departments -->

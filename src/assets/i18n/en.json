@@ -1,6 +1,8 @@
 {
     "administration": {
+        "brands": "Brands",
         "exit": "Exit settings",
+        "facilities": "Facilities",
         "organization": "Organization",
         "records": "Records",
         "templates": {

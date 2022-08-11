@@ -3,7 +3,6 @@ import { Component, EventEmitter, Input, OnDestroy, OnInit, Output } from '@angu
 import { AbstractControl, FormGroup } from '@angular/forms';
 import { marker } from '@biesbjerg/ngx-translate-extract-marker';
 import DepartmentsGroupedByFacility from '@data/interfaces/departments-grouped-by-facility';
-import FacilitiesGroupedByBrand from '@data/interfaces/facilities-grouped-by-brand';
 import SpecialtiesGroupedByDepartment from '@data/interfaces/specialties-grouped-by-department';
 import BrandDTO from '@data/models/brand-dto';
 import DepartmentDTO from '@data/models/department-dto';
@@ -26,10 +25,10 @@ import { tap, take } from 'rxjs/operators';
 export class OrganizationLevelsNestedCombosComponent implements OnInit, OnDestroy {
   @Input() form: FormGroup;
   //Brands is always shown
-  @Input() levelsToShow: { specialties: boolean; departments: boolean; facilities: boolean } = {
+  @Input() levelsToShow: { specialties: boolean; departments: boolean; brands: boolean } = {
     specialties: true,
     departments: true,
-    facilities: true
+    brands: true
   };
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   @Output() setDefaultValueAfterInit: EventEmitter<any> = new EventEmitter<any>();
@@ -42,9 +41,9 @@ export class OrganizationLevelsNestedCombosComponent implements OnInit, OnDestro
     unselectAll: marker('common.unselectAll'),
     required: marker('errors.required')
   };
-  public brandsAsyncList: Observable<BrandDTO[]>;
+  public facilitiesAsyncList: Observable<FacilityDTO[]>;
+  public facilitiesList: FacilityDTO[] = [];
   public brandsList: BrandDTO[] = [];
-  public facilitiesList: FacilitiesGroupedByBrand[];
   public departmentsList: DepartmentsGroupedByFacility[];
   public specialtiesList: SpecialtiesGroupedByDepartment[];
 
@@ -71,7 +70,7 @@ export class OrganizationLevelsNestedCombosComponent implements OnInit, OnDestro
   }
 
   public selectAll(type: 'specialties' | 'departments' | 'facilities' | 'brands', control: AbstractControl, list: any[]) {
-    if (type === 'brands') {
+    if (type === 'facilities' || type === 'brands') {
       control.setValue(list);
     } else {
       control.setValue(list.reduce((prev, act) => [...prev, ...act[type]], []));
@@ -89,7 +88,7 @@ export class OrganizationLevelsNestedCombosComponent implements OnInit, OnDestro
     control: AbstractControl,
     list: any[]
   ): boolean {
-    if (type !== 'brands') {
+    if (type !== 'facilities' && type !== 'brands') {
       list = list.reduce((prev, act) => [...prev, ...act[type]], []);
     }
     const actualValue = control.value ? control.value : [];
@@ -98,14 +97,12 @@ export class OrganizationLevelsNestedCombosComponent implements OnInit, OnDestro
 
   public getOptionsAfterSelection(type: 'specialties' | 'departments' | 'facilities' | 'brands') {
     switch (type) {
-      case 'brands':
-        if (this.levelsToShow.facilities) {
-          this.getFacilitiesOptions();
-        }
-        break;
       case 'facilities':
         if (this.levelsToShow.departments) {
           this.getDepartmentsOptions();
+        }
+        if (this.levelsToShow.brands) {
+          this.getBrandsOptions();
         }
         break;
       case 'departments':
@@ -116,38 +113,18 @@ export class OrganizationLevelsNestedCombosComponent implements OnInit, OnDestro
     }
   }
 
-  public getFacilitiesOptions(init?: boolean): void {
-    this.facilitySevice
-      .getFacilitiesOptionsListByBrands(this.form.get('brands').value)
+  public getBrandsOptions(init?: boolean): void {
+    this.brandService
+      .getAllBrands(this.form.get('facilities').value.map((fac: FacilityDTO) => fac.id))
       .pipe(take(1))
       .subscribe({
         next: (response) => {
-          this.facilitiesList = response;
-          let selected = this.form.get('facilities').value ? this.form.get('facilities').value : [];
-          selected = selected.filter(
-            (facility: FacilityDTO) =>
-              this.facilitiesList.filter(
-                (fg: FacilitiesGroupedByBrand) => fg.facilities.filter((f: FacilityDTO) => f.id === facility.id).length > 0
-              ).length > 0
-          );
-
-          selected = selected.map((facility: FacilityDTO) => {
-            let itemToReturn = facility;
-            this.facilitiesList.find((fg: FacilitiesGroupedByBrand) =>
-              fg.facilities.find((f: FacilityDTO) => {
-                if (f.id === facility.id) {
-                  itemToReturn = f;
-                  return true;
-                }
-                return false;
-              })
+          this.brandsList = response;
+          this.form
+            .get('brands')
+            .setValue(
+              this.form.get('brands').value.map((brandSelec: BrandDTO) => response.find((brand) => brandSelec.id === brand.id))
             );
-            return itemToReturn;
-          });
-          this.form.get('facilities').setValue(selected);
-          if (this.levelsToShow.departments) {
-            this.getDepartmentsOptions(init);
-          }
         },
         error: (error) => {
           this.logger.error(error);
@@ -236,23 +213,28 @@ export class OrganizationLevelsNestedCombosComponent implements OnInit, OnDestro
   }
 
   private getListOptions(): void {
-    this.brandsAsyncList = this.brandService.getAllBrands().pipe(
-      tap((brands: BrandDTO[]) => {
-        this.brandsList = brands;
-        if (this.form.get('brands').value?.length) {
+    this.facilitiesAsyncList = this.facilitySevice.getFacilitiesByBrandsIds().pipe(
+      tap((facilities: FacilityDTO[]) => {
+        this.facilitiesList = facilities;
+        if (this.form.get('facilities').value?.length) {
           //Se había inicializado el formulario con datos
           this.form
-            .get('brands')
+            .get('facilities')
             .setValue(
-              this.form.get('brands').value.map((brandDefault: BrandDTO) => brands.find((brand) => brand.id === brandDefault.id))
+              this.form
+                .get('facilities')
+                .value.map((facilityDefault: BrandDTO) => facilities.find((facility) => facility.id === facilityDefault.id))
             );
-          if (this.levelsToShow.facilities) {
-            this.getFacilitiesOptions(true);
+          if (this.levelsToShow.departments) {
+            this.getDepartmentsOptions(true);
+          }
+          if (this.levelsToShow.brands) {
+            this.getBrandsOptions(true);
           }
         }
       })
     );
-    this.facilitiesList = [];
+    this.brandsList = [];
     this.departmentsList = [];
     this.specialtiesList = [];
   }

@@ -52,6 +52,10 @@
               border-radius: 8px;
               transition: font-weight 0.1s ease-in-out;
             }
+            &.secondary {
+              margin-left: 40px;
+              padding: 10px 20px;
+            }
           }
         }
       }
