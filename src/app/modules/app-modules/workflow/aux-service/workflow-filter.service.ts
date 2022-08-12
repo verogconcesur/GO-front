@@ -131,8 +131,6 @@ export class WorkflowFilterService {
       wStatesData = wStatesData.filter((ws: WorkflowStateDto) => ws.workflowSubstates.length > 0);
     }
 
-    //Filtro Usuarios
-
     //Filtro Prioridad
 
     //Filtro subestados y usuarios con tarjetas
@@ -258,7 +256,33 @@ export class WorkflowFilterService {
     // => si no hay usuarios significa que no debo mostrar el estado
     wStatesData = wStatesData.filter((ws: WorkflowStateDto) => !ws.front || ws.workflowUsers.length > 0);
 
-    console.log(wStatesData);
+    //Filtro Usuarios
+    if (filter.users?.length > 0) {
+      const usersToFilterIds = filter.users.map((wssu: WorkflowSubstateUserDto) => wssu.user.id);
+      wStatesData = wStatesData
+        .filter((ws: WorkflowStateDto) => {
+          if (ws.anchor) {
+            return true;
+          } else if (
+            ws.front &&
+            ws.workflowUsers.filter((wssu: WorkflowSubstateUserDto) => usersToFilterIds.indexOf(wssu.user.id) >= 0)
+          ) {
+            return true;
+          }
+          return false;
+        })
+        .map((ws: WorkflowStateDto) => {
+          if (ws.anchor) {
+            return ws;
+          } else if (ws.front) {
+            ws.workflowUsers = ws.workflowUsers.filter(
+              (wssu: WorkflowSubstateUserDto) => usersToFilterIds.indexOf(wssu.user.id) >= 0
+            );
+            return ws;
+          }
+        });
+    }
+
     return wStatesData;
   }
 }

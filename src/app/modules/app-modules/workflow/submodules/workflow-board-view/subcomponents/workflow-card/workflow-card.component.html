@@ -2,7 +2,6 @@
     class="workflow-card"
     [ngClass]="getCardSize()"
     cdkDrag
-    cdkDragBoundary=".board-view-wrapper"
     (cdkDragStarted)="setCardDragging(true)"
     (cdkDragReleased)="setCardDragging(false)"
     (click)="showCardInfo()"

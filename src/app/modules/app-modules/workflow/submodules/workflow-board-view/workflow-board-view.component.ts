@@ -170,8 +170,8 @@ export class WorkflowBoardViewComponent implements OnInit {
   }
 
   private defineColumns() {
-    this.wAnchorState = null;
-    this.wNormalStates = [];
+    // this.wAnchorState = null;
+    // this.wNormalStates = [];
     setTimeout(() => {
       this.wAnchorState = this.wStatesData.find((state: WorkflowStateDto) => state.anchor);
       this.wNormalStates = this.wStatesData

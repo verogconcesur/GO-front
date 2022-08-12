@@ -118,12 +118,31 @@ export class WokflowBoardColumnComponent implements OnInit {
     const associatedWSubstates: string[] = [];
     if (card?.movements?.length) {
       card.movements.forEach((move: WorkflowMoveDto) => {
-        if (move.workflowSubstateTarget.workflowState.front) {
-          move.workflowSubstateTarget.workflowSubstateUser.forEach((wUser: WorkflowSubstateUserDto) => {
-            associatedWSubstates.push(this.wSubstateKey + move.workflowSubstateTarget.id + '-' + wUser.user.id);
+        if (move.workflowSubstateSource.workflowState?.front) {
+          move.workflowSubstateSource.workflowSubstateUser.forEach((wUser: WorkflowSubstateUserDto) => {
+            const id = this.wSubstateKey + move.workflowSubstateSource.id + '-' + wUser.user.id;
+            if (associatedWSubstates.indexOf(id) === -1) {
+              associatedWSubstates.push(id);
+            }
           });
         } else {
-          associatedWSubstates.push(this.wSubstateKey + move.workflowSubstateTarget.id);
+          const id = this.wSubstateKey + move.workflowSubstateSource.id;
+          if (associatedWSubstates.indexOf(id) === -1) {
+            associatedWSubstates.push(id);
+          }
+        }
+        if (move.workflowSubstateTarget.workflowState?.front) {
+          move.workflowSubstateTarget.workflowSubstateUser.forEach((wUser: WorkflowSubstateUserDto) => {
+            const id = this.wSubstateKey + move.workflowSubstateTarget.id + '-' + wUser.user.id;
+            if (associatedWSubstates.indexOf(id) === -1) {
+              associatedWSubstates.push(id);
+            }
+          });
+        } else {
+          const id = this.wSubstateKey + move.workflowSubstateTarget.id;
+          if (associatedWSubstates.indexOf(id) === -1) {
+            associatedWSubstates.push(id);
+          }
         }
       });
     }
@@ -179,7 +198,6 @@ export class WokflowBoardColumnComponent implements OnInit {
   }
 
   public drop(event: CdkDragDrop<string[]>, wSubState: WorkflowSubstateDto, user: WorkflowSubstateUserDto) {
-    console.log(event);
     if (event.previousContainer === event.container) {
       moveItemInArray(event.container.data, event.previousIndex, event.currentIndex);
     } else {

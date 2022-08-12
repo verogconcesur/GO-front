@@ -1,7 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup } from '@angular/forms';
-import { WorkflowsService } from '@data/services/workflows.service';
 import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
 import WorkflowFilterDto from '@data/models/workflows/workflow-filter-dto';
 import { marker } from '@biesbjerg/ngx-translate-extract-marker';
@@ -128,7 +127,6 @@ export class WorkflowNavbarFilterFormComponent implements OnInit {
     this.workflowFilterService.workflowFilterOptionsSubject$
       .pipe(untilDestroyed(this))
       .subscribe((filterOptions: WorkflowFilterDto) => {
-        console.log('options', filterOptions);
         this.filterOptions = filterOptions;
 
         this.statesOptions = this.filterForm.get('statesSearch')?.valueChanges.pipe(
