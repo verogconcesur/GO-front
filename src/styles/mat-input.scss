@@ -90,5 +90,22 @@
       padding: 0 0;
       margin: 0 0;
     }
+    .mat-form-field__no-border {
+      .mat-form-field-outline-start,
+      .mat-form-field-outline-gap,
+      .mat-form-field-outline-end {
+        border: none;
+      }
+    }
+    .mat-form-field__border-more-radius,
+    &.mat-form-field__border-more-radius {
+      .mat-form-field-outline-start {
+        border-radius: 28px 0 0 28px !important;
+        min-width: 28px;
+      }
+      .mat-form-field-outline-end {
+        border-radius: 0 28px 28px 0 !important;
+      }
+    }
   }
 }

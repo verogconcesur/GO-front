@@ -20,6 +20,7 @@
 @import 'app/modules/app-modules/administration/organization/components/create-edit-department/create-edit-department.component.scss-theme.scss';
 @import 'app/modules/app-modules/administration/templates/template-common-styles.scss-theme.scss';
 @import 'app/modules/app-modules/administration/organization/components/create-edit-specialty/create-edit-specialty.component.scss-theme.scss';
+@import 'app/modules/app-modules/workflow/workflow.component.scss-theme.scss';
 
 @mixin custom-components-theme($theme, $main-typography) {
   @include app-component-theme($theme);
@@ -40,6 +41,7 @@
   @include create-edit-department-component-theme($theme, $main-typography);
   @include template-common-styles-theme($theme, $main-typography);
   @include create-edit-specialty-component-theme($theme, $main-typography);
+  @include workflow-component-theme($theme, $main-typography);
 }
 
 // Load theme and custom components styles for current theme

@@ -1,0 +1,169 @@
+<form *ngIf="filterForm" [formGroup]="filterForm" class="filter-form smaller-mat-form-fields mat-form-field__border-more-radius">
+    <button
+        mat-button
+        aria-label="Clear filter"
+        class="left-clear-filter-button"
+        *ngIf="isWorkflowFilterActive()"
+        (click)="clearFilterData()"
+    >
+        <label>{{ labels.cleanFilter | translate }}</label>
+        <mat-icon>close</mat-icon>
+    </button>
+    <mat-form-field
+        appearance="outline"
+        floatLabel="always"
+        class="smaller-mat-form-fields__no-margin"
+        [ngClass]="{ dataSelected: hasDataSelected('states') }"
+    >
+        <mat-select
+            formControlName="states"
+            multiple
+            disableOptionCentering
+            [disabled]="!filterOptions?.states?.length"
+            [placeholder]="labels.state | translate"
+            [panelClass]="'workflow-panel-class bigger-selection-panel-class smaller-mat-form-fields'"
+            (click)="$event.stopPropagation()"
+        >
+            <mat-form-field
+                class="filter"
+                appearance="outline"
+                floatLabel="always"
+                class="smaller-mat-form-fields__no-margin workflow-navbar__selector-filter"
+            >
+                <input
+                    matInput
+                    type="text"
+                    matInput
+                    formControlName="statesSearch"
+                    [placeholder]="labels.filterState | translate"
+                />
+            </mat-form-field>
+            <mat-option *ngFor="let item of statesOptions | async" [value]="item">
+                {{ item.name }}
+            </mat-option>
+        </mat-select>
+    </mat-form-field>
+    <mat-form-field
+        appearance="outline"
+        floatLabel="always"
+        class="smaller-mat-form-fields__no-margin"
+        [ngClass]="{ dataSelected: hasDataSelected('subStates') }"
+    >
+        <mat-select
+            formControlName="subStates"
+            multiple
+            disableOptionCentering
+            [disabled]="!filterOptions?.subStates?.length"
+            [placeholder]="labels.substate | translate"
+            [panelClass]="'workflow-panel-class bigger-selection-panel-class smaller-mat-form-fields'"
+            (click)="$event.stopPropagation()"
+        >
+            <mat-form-field
+                class="filter"
+                appearance="outline"
+                floatLabel="always"
+                class="smaller-mat-form-fields__no-margin workflow-navbar__selector-filter"
+            >
+                <input
+                    matInput
+                    type="text"
+                    matInput
+                    formControlName="subStatesSearch"
+                    [placeholder]="labels.filterSubstate | translate"
+                />
+            </mat-form-field>
+            <mat-option *ngFor="let item of subStatesOptions | async" [value]="item">
+                {{ item.name }}
+            </mat-option>
+        </mat-select>
+    </mat-form-field>
+    <mat-form-field
+        appearance="outline"
+        floatLabel="always"
+        class="smaller-mat-form-fields__no-margin"
+        [ngClass]="{ dataSelected: hasDataSelected('users') }"
+    >
+        <mat-select
+            formControlName="users"
+            multiple
+            disableOptionCentering
+            [disabled]="!filterOptions?.users?.length"
+            [placeholder]="labels.user | translate"
+            [panelClass]="'workflow-panel-class bigger-selection-panel-class smaller-mat-form-fields'"
+            (click)="$event.stopPropagation()"
+        >
+            <mat-form-field
+                class="filter"
+                appearance="outline"
+                floatLabel="always"
+                class="smaller-mat-form-fields__no-margin workflow-navbar__selector-filter"
+            >
+                <input
+                    matInput
+                    type="text"
+                    matInput
+                    formControlName="usersSearch"
+                    [placeholder]="labels.filterUser | translate"
+                />
+            </mat-form-field>
+            <mat-option *ngFor="let item of usersOptions | async" [value]="item">
+                {{ getUserName(item) }}
+            </mat-option>
+        </mat-select>
+    </mat-form-field>
+    <mat-form-field
+        appearance="outline"
+        floatLabel="always"
+        class="smaller-mat-form-fields__no-margin"
+        [ngClass]="{ dataSelected: hasDataSelected('priorities') }"
+    >
+        <mat-select
+            formControlName="priorities"
+            multiple
+            disableOptionCentering
+            [disabled]="!filterOptions?.priorities?.length"
+            [placeholder]="labels.priority | translate"
+            [panelClass]="'workflow-panel-class bigger-selection-panel-class smaller-mat-form-fields'"
+            (click)="$event.stopPropagation()"
+        >
+            <mat-option *ngFor="let item of filterOptions.priorities" [value]="item">
+                {{ item.id }}
+            </mat-option>
+        </mat-select>
+    </mat-form-field>
+    <button
+        mat-icon-button
+        class="substatesWithCards-button"
+        (click)="filterSubstatesWithCards()"
+        [disabled]="!filterOptions?.states?.length"
+    >
+        <mat-icon
+            *ngIf="filterForm.get('substatesWithCards').value === 'BOTH'"
+            matTooltipPosition="above"
+            [matTooltip]="labels.substatesWithAndWithoutCards | translate"
+            >work_outline</mat-icon
+        >
+        <mat-icon
+            *ngIf="filterForm.get('substatesWithCards').value === 'WITH_CARDS'"
+            matTooltipPosition="above"
+            [matTooltip]="labels.substatesWithCards | translate"
+            >work</mat-icon
+        >
+        <mat-icon
+            *ngIf="filterForm.get('substatesWithCards').value === 'WITHOUT_CARDS'"
+            matTooltipPosition="above"
+            [matTooltip]="labels.substatesWithoutCards | translate"
+            >work_off</mat-icon
+        >
+    </button>
+    <button
+        mat-button
+        aria-label="Clear filter"
+        class="right-clear-filter-button"
+        *ngIf="isWorkflowFilterActive()"
+        (click)="clearFilterData()"
+    >
+        <label>{{ labels.cleanFilter | translate }}</label>
+        <mat-icon>close</mat-icon>
+    </button>
+</form>

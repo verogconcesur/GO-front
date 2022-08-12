@@ -1,0 +1,85 @@
+.workflow-card {
+  overflow: hidden;
+  cursor: pointer;
+  width: 300px;
+  padding: 8px;
+  margin: 10px 0;
+  border-radius: 8px;
+  box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.04);
+  height: 60px;
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+  &__placeholder {
+    background: #ccc;
+    border: dotted 3px #999;
+    padding: 8px;
+    min-height: 60px;
+    width: 300px;
+    transition: transform 250ms cubic-bezier(0, 0, 0.2, 1);
+  }
+  &.size-s {
+    height: 60px;
+  }
+  &.size-m {
+    height: 94px;
+    &__placeholder {
+      min-height: 94px;
+    }
+  }
+  &.size-l {
+    height: 144px;
+    &__placeholder {
+      min-height: 144px;
+    }
+  }
+  &.size-xl {
+    height: 274px;
+    &__placeholder {
+      min-height: 274px;
+    }
+  }
+
+  &__colors {
+    width: 6px;
+    height: 100%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-direction: column;
+    &__color {
+      border-radius: 8px;
+      width: 6px;
+      &.x-1 {
+        height: 100%;
+      }
+      &.x-2 {
+        height: 46%;
+      }
+      &.x-3 {
+        height: 30%;
+      }
+      &.x-4 {
+        height: 22%;
+      }
+    }
+  }
+  &__info {
+    margin: 0 0 0 15px;
+    display: flex;
+    justify-content: flex-start;
+    align-items: flex-start;
+    flex-direction: column;
+
+    &__data {
+      font-size: 14px;
+      &:first-child {
+        font-size: 18px;
+        font-weight: bold;
+      }
+      &:nth-child(2) {
+        font-weight: 500;
+      }
+    }
+  }
+}

@@ -11,6 +11,7 @@ import { marker } from '@biesbjerg/ngx-translate-extract-marker';
   styleUrls: ['./navbar.component.scss']
 })
 export class NavbarComponent implements OnInit {
+  public readonly WORKFLOW_PATH = RouteConstants.WORKFLOWS;
   public labels = {
     title: marker('app.title'),
     workflow: marker('app.menu.workflow'),
@@ -20,7 +21,6 @@ export class NavbarComponent implements OnInit {
     administration: marker('app.menu.administration'),
     search: marker('common.search')
   };
-
   constructor(private router: Router, private authService: AuthenticationService) {}
 
   ngOnInit(): void {}
