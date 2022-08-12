@@ -138,16 +138,22 @@
         [disabled]="!filterOptions?.states?.length"
     >
         <mat-icon
-            *ngIf="filterForm.get('substatesWithCards').value"
+            *ngIf="filterForm.get('substatesWithCards').value === 'BOTH'"
+            matTooltipPosition="above"
+            [matTooltip]="labels.substatesWithAndWithoutCards | translate"
+            >work_outline</mat-icon
+        >
+        <mat-icon
+            *ngIf="filterForm.get('substatesWithCards').value === 'WITH_CARDS'"
             matTooltipPosition="above"
             [matTooltip]="labels.substatesWithCards | translate"
             >work</mat-icon
         >
         <mat-icon
-            *ngIf="!filterForm.get('substatesWithCards').value"
+            *ngIf="filterForm.get('substatesWithCards').value === 'WITHOUT_CARDS'"
             matTooltipPosition="above"
-            [matTooltip]="labels.substatesWithAndWithoutCards | translate"
-            >work_outline</mat-icon
+            [matTooltip]="labels.substatesWithoutCards | translate"
+            >work_off</mat-icon
         >
     </button>
     <button

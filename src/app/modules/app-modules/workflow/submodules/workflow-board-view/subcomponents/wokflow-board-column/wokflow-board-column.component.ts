@@ -1,5 +1,5 @@
 import { CdkDragDrop, moveItemInArray, transferArrayItem } from '@angular/cdk/drag-drop';
-import { Component, EventEmitter, Input, OnChanges, OnInit, Output, SimpleChanges } from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { marker } from '@biesbjerg/ngx-translate-extract-marker';
 import WorkflowCardDto from '@data/models/workflows/workflow-card-dto';
 import WorkflowDto from '@data/models/workflows/workflow-dto';
@@ -21,16 +21,14 @@ import { take } from 'rxjs/operators';
   templateUrl: './wokflow-board-column.component.html',
   styleUrls: ['./wokflow-board-column.component.scss']
 })
-export class WokflowBoardColumnComponent implements OnInit, OnChanges {
+export class WokflowBoardColumnComponent implements OnInit {
   @Input() workflow: WorkflowDto = null;
   @Input() wState: WorkflowStateDto = null;
   @Input() divider = true;
   @Output() reloadCardsEvent: EventEmitter<boolean> = new EventEmitter();
   public collapsed = false;
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  public hideEmpty: any = {};
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  public cardsByUserAndSubstate: any = {};
+  public hideEmptyDropZone: any = {};
   public isCardDragging = false;
   public droppableStates: string[] = [];
   public changeCollapseStatusOnOver = false;
@@ -65,16 +63,6 @@ export class WokflowBoardColumnComponent implements OnInit, OnChanges {
     this.initListeners();
   }
 
-  ngOnChanges(changes: SimpleChanges): void {
-    if (changes.wState?.currentValue && this.wState.front) {
-      this.wState.workflowSubstates.forEach((wSubstate: WorkflowSubstateDto) => {
-        wSubstate.workflowSubstateUser.forEach((wUser: WorkflowSubstateUserDto) => {
-          this.cardsByUserAndSubstate[wUser.user.id + '-' + wSubstate.id] = [...wUser.cards];
-        });
-      });
-    }
-  }
-
   public initListeners(): void {
     this.dragAndDropService.draggingCard$.pipe(untilDestroyed(this)).subscribe((dragging: boolean) => {
       this.isCardDragging = dragging;
@@ -94,16 +82,6 @@ export class WokflowBoardColumnComponent implements OnInit, OnChanges {
     }
   }
 
-  public areCardsByUserAndSubstatesEmpty(userId: number, wSubstates: WorkflowSubstateDto[]): boolean {
-    let empty = true;
-    wSubstates.forEach((wss: WorkflowSubstateDto) => {
-      if (this.cardsByUserAndSubstate[userId + '-' + wss.id].length) {
-        empty = false;
-      }
-    });
-    return empty;
-  }
-
   public isStateEmpty(): boolean {
     let isEmpty = true;
     this.wState.workflowSubstates.forEach((wss: WorkflowSubstateDto) => {
@@ -114,12 +92,12 @@ export class WokflowBoardColumnComponent implements OnInit, OnChanges {
     return isEmpty;
   }
 
-  public setHideEmpty(id: string, value: boolean) {
-    this.hideEmpty[id] = value;
+  public setHideEmptyDropZone(id: string, value: boolean) {
+    this.hideEmptyDropZone[id] = value;
   }
 
-  public getHideEmpty(id: string) {
-    return this.hideEmpty[id];
+  public getHideEmptyDropZone(id: string) {
+    return this.hideEmptyDropZone[id];
   }
 
   public getUserName(wUser: WorkflowSubstateUserDto): string {
@@ -130,6 +108,10 @@ export class WokflowBoardColumnComponent implements OnInit, OnChanges {
     return cards.filter(
       (card: WorkflowCardDto) => card.cardInstanceWorkflows[0].cardInstanceWorkflowUsers[0].userId === user.user.id
     );
+  }
+
+  public getWSubstatesToShowByUser(user: WorkflowSubstateUserDto, wState: WorkflowStateDto): WorkflowSubstateDto[] {
+    return wState.workflowSubstates.filter((wss: WorkflowSubstateDto) => user.cardsBySubstateId[wss.id]);
   }
 
   public getAssociatedWSubstates(card: WorkflowCardDto): string[] {

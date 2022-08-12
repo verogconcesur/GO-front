@@ -6,13 +6,6 @@
   $primary: map-get($theme, primary);
   $foreground: map-get($theme, foreground);
 
-  .hide-empties {
-    &.empty,
-    .empty {
-      display: none !important;
-    }
-  }
-
   .workflow-board-column {
     &__state-name {
       color: mat-color($foreground, secondary-text);

@@ -289,6 +289,7 @@
         "peopleWorking": "{num} {num, plural, =0{personas trabajando} one{persona trabajando} other{personas trabajando}}",
         "select": "Selecciona un Workflow",
         "substatesWithAndWithoutCards": "Mostrando subestados con o sin tarjetas",
-        "substatesWithCards": "Mostrando únicamente subestados con tarjetas"
+        "substatesWithCards": "Mostrando únicamente subestados con tarjetas",
+        "substatesWithoutCards": "Mostrando únicamente subestados sin tarjetas"
     }
 }

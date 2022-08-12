@@ -1,7 +1,8 @@
 <div class="board-view-wrapper" (mouseover)="mouseOver($event)">
     <!-- anchor state column -->
-    <div #AnchorColumn class="board-view-wrapper__anchor-column" *ngIf="wAnchorState" [ngClass]="{ hide: !showAnchorState }">
+    <div #AnchorColumn class="board-view-wrapper__anchor-column" *ngIf="wAnchorState" [ngClass]="{ hide: hideAnchorState() }">
         <app-wokflow-board-column
+            #AnchorStateColumn
             [workflow]="workflow"
             [wState]="wAnchorState"
             [divider]="false"

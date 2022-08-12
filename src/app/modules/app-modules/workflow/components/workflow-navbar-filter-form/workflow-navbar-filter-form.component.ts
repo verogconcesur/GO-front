@@ -10,6 +10,7 @@ import WorkflowStateDto from '@data/models/workflows/workflow-state-dto';
 import { forkJoin, Observable, of } from 'rxjs';
 import WorkflowSubstateDto from '@data/models/workflows/workflow-substate-dto';
 import WorkflowSubstateUserDto from '@data/models/workflows/workflow-substate-user-dto';
+import { WorkflowFilterService } from '../../aux-service/workflow-filter.service';
 
 @UntilDestroy()
 @Component({
@@ -30,21 +31,23 @@ export class WorkflowNavbarFilterFormComponent implements OnInit {
     filterUser: marker('workflows.filterUser'),
     cleanFilter: marker('common.cleanFilter'),
     substatesWithCards: marker('workflows.substatesWithCards'),
-    substatesWithAndWithoutCards: marker('workflows.substatesWithAndWithoutCards')
+    substatesWithAndWithoutCards: marker('workflows.substatesWithAndWithoutCards'),
+    substatesWithoutCards: marker('workflows.substatesWithoutCards')
   };
   public statesOptions: Observable<WorkflowStateDto[] | any[]>;
   public subStatesOptions: Observable<WorkflowSubstateDto[] | any[]>;
   public usersOptions: Observable<WorkflowSubstateUserDto[] | any[]>;
   private filterValue: WorkflowFilterDto = null;
-  constructor(private workflowService: WorkflowsService, private formBuilder: FormBuilder) {}
+
+  constructor(private workflowFilterService: WorkflowFilterService, private formBuilder: FormBuilder) {}
 
   ngOnInit(): void {
-    this.filterValue = this.workflowService.workflowFilterSubject$.getValue();
+    this.filterValue = this.workflowFilterService.workflowFilterSubject$.getValue();
     this.initForms();
     this.initListeners();
   }
 
-  public isWorkflowFilterActive = (): boolean => this.workflowService.isWorkflowFilterActive();
+  public isWorkflowFilterActive = (): boolean => this.workflowFilterService.isWorkflowFilterActive();
 
   public clearFilterData(): void {
     if (this.filterForm.get('states').value.length) {
@@ -60,7 +63,7 @@ export class WorkflowNavbarFilterFormComponent implements OnInit {
       this.filterForm.get('priorities').setValue([]);
     }
     if (this.filterForm.get('substatesWithCards').value) {
-      this.filterForm.get('substatesWithCards').setValue(false);
+      this.filterForm.get('substatesWithCards').setValue('BOTH');
       this.notifyChangesInFilter();
     }
   }
@@ -68,7 +71,7 @@ export class WorkflowNavbarFilterFormComponent implements OnInit {
   public hasDataSelected(option: 'states' | 'subStates' | 'users' | 'priorities' | 'substatesWithCards'): boolean {
     if (option !== 'substatesWithCards' && this.filterForm?.get(option)?.value?.length > 0) {
       return true;
-    } else if (option === 'substatesWithCards' && this.filterForm?.get(option).value) {
+    } else if (option === 'substatesWithCards' && this.filterForm?.get(option).value !== 'BOTH') {
       return true;
     }
     return false;
@@ -79,7 +82,14 @@ export class WorkflowNavbarFilterFormComponent implements OnInit {
   }
 
   public filterSubstatesWithCards(): void {
-    this.filterForm.get('substatesWithCards').setValue(!this.filterForm.get('substatesWithCards').value);
+    const actualValue = this.filterForm.get('substatesWithCards').value;
+    if (actualValue === 'BOTH') {
+      this.filterForm.get('substatesWithCards').setValue('WITH_CARDS');
+    } else if (actualValue === 'WITH_CARDS') {
+      this.filterForm.get('substatesWithCards').setValue('WITHOUT_CARDS');
+    } else {
+      this.filterForm.get('substatesWithCards').setValue('BOTH');
+    }
     this.notifyChangesInFilter();
   }
 
@@ -89,7 +99,7 @@ export class WorkflowNavbarFilterFormComponent implements OnInit {
       subStates: [this.filterValue?.subStates ? this.filterValue.subStates : []],
       users: [this.filterValue?.users ? this.filterValue.users : []],
       priorities: [this.filterValue?.priorities ? this.filterValue.priorities : []],
-      substatesWithCards: [this.filterValue?.substatesWithCards],
+      substatesWithCards: [this.filterValue?.substatesWithCards ? this.filterValue?.substatesWithCards : 'BOTH'],
       statesSearch: [''],
       subStatesSearch: [''],
       usersSearch: ['']
@@ -115,9 +125,10 @@ export class WorkflowNavbarFilterFormComponent implements OnInit {
       .subscribe((data) => {
         this.notifyChangesInFilter();
       });
-    this.workflowService.workflowFilterOptionsSubject$
+    this.workflowFilterService.workflowFilterOptionsSubject$
       .pipe(untilDestroyed(this))
       .subscribe((filterOptions: WorkflowFilterDto) => {
+        console.log('options', filterOptions);
         this.filterOptions = filterOptions;
 
         this.statesOptions = this.filterForm.get('statesSearch')?.valueChanges.pipe(
@@ -148,7 +159,7 @@ export class WorkflowNavbarFilterFormComponent implements OnInit {
       priorities: this.filterForm.get('priorities').value,
       substatesWithCards: this.filterForm.get('substatesWithCards').value
     };
-    this.workflowService.workflowFilterSubject$.next(filterValue);
+    this.workflowFilterService.workflowFilterSubject$.next(filterValue);
   }
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any

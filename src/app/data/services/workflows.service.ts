@@ -7,13 +7,12 @@ import { ConcenetError } from '@app/types/error';
 import WorkflowCardDto from '@data/models/workflows/workflow-card-dto';
 import WorkflowCardInstanceDto from '@data/models/workflows/workflow-card-instance-dto';
 import WorkflowDto from '@data/models/workflows/workflow-dto';
-import WorkflowFilterDto from '@data/models/workflows/workflow-filter-dto';
 import WorkflowListByFacilityDto from '@data/models/workflows/workflow-list-by-facility-dto';
 import WorkflowMoveDto from '@data/models/workflows/workflow-move-dto';
 import WorkflowStateDto from '@data/models/workflows/workflow-state-dto';
-import WorkflowSubstateDto from '@data/models/workflows/workflow-substate-dto';
 import WorkflowSubstateUserDto from '@data/models/workflows/workflow-substate-user-dto';
-import { BehaviorSubject, Observable, of, Subject, throwError } from 'rxjs';
+import { WorkflowFilterService } from '@modules/app-modules/workflow/aux-service/workflow-filter.service';
+import { BehaviorSubject, Observable, throwError } from 'rxjs';
 import { catchError, map } from 'rxjs/operators';
 
 @Injectable({
@@ -22,22 +21,6 @@ import { catchError, map } from 'rxjs/operators';
 export class WorkflowsService {
   //Stores the selected workflow.
   public workflowSelectedSubject$: BehaviorSubject<WorkflowDto> = new BehaviorSubject(null);
-  //Stores the filter selection.
-  public workflowFilterSubject$: BehaviorSubject<WorkflowFilterDto> = new BehaviorSubject({
-    states: [],
-    subStates: [],
-    users: [],
-    priorities: [],
-    substatesWithCards: false
-  });
-  //Stores the filter options to show
-  public workflowFilterOptionsSubject$: BehaviorSubject<WorkflowFilterDto> = new BehaviorSubject({
-    states: [],
-    subStates: [],
-    users: [],
-    priorities: [],
-    substatesWithCards: false
-  });
 
   private readonly GET_WORKFLOWS_PATH = '/api/workflows';
   private readonly GET_WORKFLOWS_LIST_PATH = '/list';
@@ -47,7 +30,7 @@ export class WorkflowsService {
   private readonly GET_WORKFLOWS_CARDS_PATH = '/cards';
   private readonly GET_WORKFLOWS_MOVEMENT_PATH = '/movement';
 
-  constructor(@Inject(ENV) private env: Env, private http: HttpClient) {}
+  constructor(@Inject(ENV) private env: Env, private http: HttpClient, private workflowFilterService: WorkflowFilterService) {}
 
   /**
    * Devuelve el listado de workflow que el usuario logado puede ver.
@@ -75,7 +58,7 @@ export class WorkflowsService {
       .pipe(
         map((data: WorkflowStateDto[]) => {
           if (extractFilterInfo) {
-            this.getFilterInfo(data);
+            this.workflowFilterService.getFilterInfo(data);
           }
           return data;
         }),
@@ -129,80 +112,5 @@ export class WorkflowsService {
         }
       )
       .pipe(catchError((error) => throwError(error.error as ConcenetError)));
-  }
-
-  //Aux functions
-  public resetWorkflowFilter(): void {
-    const filterR: WorkflowFilterDto = {
-      states: [],
-      subStates: [],
-      users: [],
-      priorities: [],
-      substatesWithCards: false
-    };
-    this.workflowFilterSubject$.next(filterR);
-    this.workflowFilterOptionsSubject$.next(filterR);
-  }
-
-  public isWorkflowFilterActive(): boolean {
-    const filterValue = this.workflowFilterSubject$.getValue();
-    if (
-      filterValue &&
-      (filterValue.states.length ||
-        filterValue.subStates.length ||
-        filterValue.users.length ||
-        filterValue.priorities.length ||
-        filterValue.substatesWithCards)
-    ) {
-      return true;
-    }
-    return false;
-  }
-
-  public showOnlySubstatesWithCards(): boolean {
-    return this.workflowFilterSubject$.getValue()?.substatesWithCards;
-  }
-
-  private getFilterInfo(data: WorkflowStateDto[]): void {
-    const subStates: WorkflowSubstateDto[] = [];
-    const users: WorkflowSubstateUserDto[] = [];
-    const priorities: string[] = [];
-    const substatesWithCards = false;
-    data.forEach((states: WorkflowStateDto) => {
-      states.workflowSubstates.forEach((subState: WorkflowSubstateDto) => {
-        //Substate
-        const similarSubState = subStates.find((ss: WorkflowSubstateDto) => ss.name === subState.name);
-        if (similarSubState) {
-          similarSubState.substatesIdsToFilter.push(subState.id);
-        } else {
-          subStates.push({
-            ...subState,
-            substatesIdsToFilter: [...(subState.substatesIdsToFilter ? subState.substatesIdsToFilter : []), subState.id]
-          });
-        }
-        //User
-        subState.workflowSubstateUser.forEach((subStateUser: WorkflowSubstateUserDto) => {
-          const userFound = users.find((user: WorkflowSubstateUserDto) => user.user.id === subStateUser.user.id);
-          if (!userFound) {
-            users.push({
-              ...subStateUser,
-              substatesIdsToFilter: [...(subState.substatesIdsToFilter ? subState.substatesIdsToFilter : []), subState.id]
-            });
-          } else {
-            userFound.substatesIdsToFilter.push(subState.id);
-          }
-        });
-
-        //TODO PRIORITIES
-      });
-    });
-    const filterOptions: WorkflowFilterDto = {
-      states: [...data],
-      subStates: [...subStates],
-      users: [...users],
-      priorities: [...priorities],
-      substatesWithCards
-    };
-    this.workflowFilterOptionsSubject$.next(filterOptions);
   }
 }

@@ -51,6 +51,14 @@ export class WorkflowCardComponent implements OnInit {
     }
   }
 
+  public getCardSize(): string {
+    let size = 'size-m';
+    if (this.card.size) {
+      size = 'size-' + this.card.size.toLowerCase();
+    }
+    return size;
+  }
+
   public showCardInfo(): void {
     console.log('show info:', this.card);
   }

@@ -11,6 +11,8 @@ import { ProgressSpinnerDialogService } from '@shared/services/progress-spinner-
 import { forkJoin } from 'rxjs';
 import { take } from 'rxjs/operators';
 import { WorkflowDragAndDropService } from '../../aux-service/workflow-drag-and-drop.service';
+import { WorkflowFilterService } from '../../aux-service/workflow-filter.service';
+import { WokflowBoardColumnComponent } from './subcomponents/wokflow-board-column/wokflow-board-column.component';
 
 @UntilDestroy()
 @Component({
@@ -21,6 +23,8 @@ import { WorkflowDragAndDropService } from '../../aux-service/workflow-drag-and-
 export class WorkflowBoardViewComponent implements OnInit {
   @ViewChild('ScrollColumns') scrollColumns: ElementRef;
   @ViewChild('AnchorColumn') anchorColumns: ElementRef;
+  @ViewChild('AnchorStateColumn') anchorStateColumn: WokflowBoardColumnComponent;
+
   public workflow: WorkflowDto = null;
   public wStatesData: WorkflowStateDto[];
   public wAnchorState: WorkflowStateDto;
@@ -35,6 +39,7 @@ export class WorkflowBoardViewComponent implements OnInit {
 
   constructor(
     private workflowService: WorkflowsService,
+    private workflowFilterService: WorkflowFilterService,
     private spinnerService: ProgressSpinnerDialogService,
     private dragAndDropService: WorkflowDragAndDropService,
     private zone: NgZone
@@ -55,7 +60,7 @@ export class WorkflowBoardViewComponent implements OnInit {
       this.workflow = workflow;
       this.getData();
     });
-    this.workflowService.workflowFilterSubject$.pipe(untilDestroyed(this)).subscribe((filter: WorkflowFilterDto) => {
+    this.workflowFilterService.workflowFilterSubject$.pipe(untilDestroyed(this)).subscribe((filter: WorkflowFilterDto) => {
       this.filters = filter;
       this.filterData();
     });
@@ -128,6 +133,8 @@ export class WorkflowBoardViewComponent implements OnInit {
       });
   }
 
+  public hideAnchorState = (): boolean => !this.showAnchorState || this.anchorStateColumn?.isStateEmpty();
+
   private mapWorkflowCardsWithInstances(workflowCards: WorkflowCardDto[]) {
     this.workflowInstances.forEach((wState: WorkflowStateDto) => {
       let totalCards = 0;
@@ -139,47 +146,26 @@ export class WorkflowBoardViewComponent implements OnInit {
         );
         totalCards += wSubstate.cards.length;
         wSubstate.workflowSubstateUser.forEach((user: WorkflowSubstateUserDto) => {
+          const cardsBySubstateId = totalUsers[user.user.id] ? totalUsers[user.user.id].cardsBySubstateId : {};
           const oldCards = totalUsers[user.user.id] ? totalUsers[user.user.id].cards : [];
           const newCards = wSubstate.cards.filter(
             (card: WorkflowCardDto) => card.cardInstanceWorkflows[0].cardInstanceWorkflowUsers[0].userId === user.user.id
           );
           user.cards = [...newCards];
+          user.cardsBySubstateId = JSON.parse(JSON.stringify(cardsBySubstateId));
+          user.cardsBySubstateId[wSubstate.id] = [...newCards];
           totalUsers[user.user.id] = user;
         });
       });
       wState.cardCount = totalCards;
       wState.userCount = Object.keys(totalUsers).length;
       wState.workflowUsers = Object.keys(totalUsers).map((k) => totalUsers[k]);
-
-      this.filterData();
     });
+    this.filterData();
   }
 
   private filterData() {
-    this.wStatesData = JSON.parse(JSON.stringify(this.workflowInstances));
-    const filters = JSON.parse(JSON.stringify(this.filters));
-    console.log(filters);
-    //Filtro estados
-    if (filters.states?.length) {
-      const statesIds = filters.states.map((w: WorkflowStateDto) => w.id);
-      this.wStatesData = this.wStatesData.filter((ws: WorkflowStateDto) => statesIds.indexOf(ws.id) >= 0);
-    }
-    //Filtro subestados
-    if (filters.subStates?.length) {
-      let substatesIds: number[] = [];
-      filters.subStates.forEach((w: WorkflowSubstateDto) => (substatesIds = [...substatesIds, ...w.substatesIdsToFilter]));
-      this.wStatesData.map((ws: WorkflowStateDto) => {
-        ws.workflowSubstates = ws.workflowSubstates.filter((wss: WorkflowSubstateDto) => substatesIds.indexOf(wss.id) >= 0);
-        return ws;
-      });
-      this.wStatesData = this.wStatesData.filter((ws: WorkflowStateDto) => ws.workflowSubstates.length > 0);
-    }
-    //Filtro Usuarios
-
-    //Filtro Prioridad
-
-    //Filtro subestados y usuarios con tarjetas
-    //Esta parte está hecha directamente en las columnas
+    this.wStatesData = this.workflowFilterService.filterData(this.workflowInstances, this.filters);
     this.defineColumns();
   }
 

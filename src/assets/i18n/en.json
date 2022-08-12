@@ -289,6 +289,7 @@
         "peopleWorking": "{num} {num, plural, =0{people working} one{person working} other{people working}}",
         "select": "Select a Workflow",
         "substatesWithAndWithoutCards": "Showing substates with or without cards",
-        "substatesWithCards": "Showing only substates with cards"
+        "substatesWithCards": "Showing only substates with cards",
+        "substatesWithoutCards": "Showing only substates whithout cards"
     }
 }
