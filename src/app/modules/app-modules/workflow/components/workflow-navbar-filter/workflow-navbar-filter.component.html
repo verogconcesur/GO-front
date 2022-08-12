@@ -1,0 +1,18 @@
+<div class="workflow-navbar-filter">
+    <button
+        mat-icon-button
+        aria-label="Workflow filter"
+        [matMenuTriggerFor]="workflowFilterMenu"
+        class="workflow-navbar-filter__mobile"
+        [ngClass]="{ active: workflowFilterService.isWorkflowFilterActive() }"
+    >
+        <mat-icon>filter_list</mat-icon>
+    </button>
+    <div class="workflow-navbar-filter__others">
+        <app-workflow-navbar-filter-form *ngIf="!mobileView"></app-workflow-navbar-filter-form>
+    </div>
+</div>
+
+<mat-menu #workflowFilterMenu="matMenu">
+    <app-workflow-navbar-filter-form *ngIf="mobileView"></app-workflow-navbar-filter-form>
+</mat-menu>

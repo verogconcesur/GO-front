@@ -1,0 +1,53 @@
+@import 'utils/core';
+
+.board-view-wrapper {
+  height: calc(100vh - 136px);
+  width: 100vw;
+  overflow-y: hidden;
+  overflow-x: hidden;
+  display: flex;
+  justify-content: flex-start;
+  align-items: flex-start;
+  mat-divider.full-height {
+    margin: 0;
+    height: calc(100vh - 136px);
+    border-right-width: 3px;
+  }
+  &__anchor-column {
+    max-width: 50vw;
+    width: 397px;
+    min-width: 397px;
+    position: relative;
+    transition: max-width 0.3s ease-in-out;
+    transition: min-width 0.3s ease-in-out;
+    &.hide {
+      max-width: 15px;
+      min-width: 15px;
+      overflow-x: hidden;
+    }
+  }
+
+  .hide-show-button {
+    z-index: 5;
+    cursor: pointer;
+    position: absolute;
+    top: calc(50vh - 88px);
+    right: 0;
+    width: 12px;
+    padding-left: 2px;
+    height: 50px;
+    display: none;
+    justify-content: center;
+    align-items: center;
+    border-radius: 10px 0 0 10px;
+    @include respond-to($desktop-large) {
+      display: flex;
+    }
+  }
+  &__scroll-columns {
+    display: flex;
+    justify-content: flex-start;
+    align-items: flex-start;
+    overflow-x: auto;
+  }
+}
