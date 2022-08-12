@@ -4,6 +4,7 @@
         aria-label="Workflow filter"
         [matMenuTriggerFor]="workflowFilterMenu"
         class="workflow-navbar-filter__mobile"
+        [ngClass]="{ active: workflowFilterService.isWorkflowFilterActive() }"
     >
         <mat-icon>filter_list</mat-icon>
     </button>

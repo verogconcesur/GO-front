@@ -10,13 +10,15 @@ import { WorkflowFilterService } from '../../aux-service/workflow-filter.service
 })
 export class WorkflowNavbarFilterComponent implements OnInit, OnDestroy {
   public mobileView = false;
-  constructor(private workflowFilterService: WorkflowFilterService) {}
+  constructor(public workflowFilterService: WorkflowFilterService) {}
 
   @HostListener('window:resize', ['$event']) onResize(event: { target: { innerWidth: number } }) {
     this.mobileView = event.target.innerWidth <= 1280;
   }
 
-  ngOnInit(): void {}
+  ngOnInit(): void {
+    this.mobileView = window.innerWidth <= 1280;
+  }
 
   ngOnDestroy(): void {
     this.workflowFilterService.resetWorkflowFilter();

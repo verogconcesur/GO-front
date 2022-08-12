@@ -22,7 +22,7 @@
     }
   }
 
-  @include respond-to($desktop) {
+  @include respond-to($desktop + 80px) {
     .right-clear-filter-button {
       display: block;
     }

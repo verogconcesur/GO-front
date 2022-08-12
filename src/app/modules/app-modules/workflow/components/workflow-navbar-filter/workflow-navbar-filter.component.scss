@@ -8,6 +8,18 @@
     cursor: pointer;
     margin: 0 10px;
     display: none;
+
+    &.active:before {
+      content: '';
+      display: block;
+      position: absolute;
+      right: 4px;
+      top: 5px;
+      width: 15px;
+      height: 15px;
+      border-radius: 50%;
+      background-color: yellowgreen;
+    }
   }
   &__others {
     display: flex;
