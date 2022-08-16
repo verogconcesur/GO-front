@@ -1,5 +1,5 @@
 import { CdkDragDrop, moveItemInArray, transferArrayItem } from '@angular/cdk/drag-drop';
-import { Component, EventEmitter, Input, NgZone, OnInit, Output } from '@angular/core';
+import { Component, ElementRef, EventEmitter, Input, NgZone, OnInit, Output } from '@angular/core';
 import { marker } from '@biesbjerg/ngx-translate-extract-marker';
 import WorkflowCardDto from '@data/models/workflows/workflow-card-dto';
 import WorkflowDto from '@data/models/workflows/workflow-dto';
@@ -175,7 +175,7 @@ export class WokflowBoardColumnComponent implements OnInit {
     return classes;
   }
 
-  public mouseOverCollapsedCard = (event: MouseEvent, action: 'over' | 'leave') => {
+  public mouseOverCollapsedCard(event: MouseEvent, action: 'over' | 'leave') {
     if (this.getCollapsedDropZoneClass() && action === 'over') {
       this.changeCollapseStatusOnOver = true;
       setTimeout(() => {
@@ -188,7 +188,7 @@ export class WokflowBoardColumnComponent implements OnInit {
     } else {
       this.changeCollapseStatusOnOver = false;
     }
-  };
+  }
 
   public drop(event: CdkDragDrop<string[]>, wSubState: WorkflowSubstateDto, user: WorkflowSubstateUserDto) {
     if (event.previousContainer === event.container) {

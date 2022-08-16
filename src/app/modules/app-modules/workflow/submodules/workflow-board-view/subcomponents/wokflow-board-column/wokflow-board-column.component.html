@@ -14,10 +14,11 @@
     </div>
     <div
         class="workflow-board-column__collapsed"
-        *ngIf="collapsed"
+        [ngStyle]="{ display: collapsed ? 'flex' : 'none' }"
         [ngClass]="getCollapsedDropZoneClass()"
         cdkDropList
         [id]="wCollapsedStateKey + wState.id"
+        [cdkDropListDisabled]="!collapsed"
         (cdkDropListEntered)="mouseOverCollapsedCard($event, 'over')"
         (cdkDropListExited)="mouseOverCollapsedCard($event, 'leave')"
     >

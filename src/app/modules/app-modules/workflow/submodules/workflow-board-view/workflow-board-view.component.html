@@ -1,4 +1,4 @@
-<div class="board-view-wrapper">
+<div class="board-view-wrapper" cdkDropListGroup>
     <!-- anchor state column -->
     <div #AnchorColumn class="board-view-wrapper__anchor-column" *ngIf="wAnchorState" [ngClass]="{ hide: hideAnchorState() }">
         <app-wokflow-board-column
