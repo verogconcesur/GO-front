@@ -1,4 +1,4 @@
-<div class="board-view-wrapper" (mouseover)="mouseOver($event)">
+<div class="board-view-wrapper">
     <!-- anchor state column -->
     <div #AnchorColumn class="board-view-wrapper__anchor-column" *ngIf="wAnchorState" [ngClass]="{ hide: hideAnchorState() }">
         <app-wokflow-board-column
@@ -15,7 +15,7 @@
     </div>
     <mat-divider *ngIf="wAnchorState" [vertical]="true" class="full-height"></mat-divider>
     <!-- scroll states columns -->
-    <div #ScrollColumns class="board-view-wrapper__scroll-columns" *ngIf="wNormalStates?.length">
+    <div #ScrollColumns class="board-view-wrapper__scroll-columns" *ngIf="wNormalStates?.length" cdkScrollable>
         <app-wokflow-board-column
             *ngFor="let wState of wNormalStates"
             [workflow]="workflow"

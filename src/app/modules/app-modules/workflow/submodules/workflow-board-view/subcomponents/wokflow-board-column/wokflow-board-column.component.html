@@ -16,8 +16,10 @@
         class="workflow-board-column__collapsed"
         *ngIf="collapsed"
         [ngClass]="getCollapsedDropZoneClass()"
-        (mouseover)="mouseOverCollapsedCard($event, 'over')"
-        (mouseleave)="mouseOverCollapsedCard($event, 'leave')"
+        cdkDropList
+        [id]="wCollapsedStateKey + wState.id"
+        (cdkDropListEntered)="mouseOverCollapsedCard($event, 'over')"
+        (cdkDropListExited)="mouseOverCollapsedCard($event, 'leave')"
     >
         <div class="collapsed-card" [ngClass]="getCollapsedWDroppedClasses()">
             <div class="collapsed-card__third collapsed-card__common"></div>
@@ -42,7 +44,7 @@
         </div>
     </div>
     <!-- Usamos ngStyle en lugar de NgIf para que los cdkDropList estén renderizados y visibles en caso de que se expanda la columna haciendo el
-         drag sobre la tarjeta collapsada -->
+         drag sobre la tarjeta colapsada -->
     <div class="workflow-board-column__expanded" [ngStyle]="{ display: collapsed ? 'none' : 'flex' }">
         <div class="workflow-board-column__expanded__block" *ngFor="let user of wState.front ? wState.workflowUsers : []">
             <h4>{{ getUserName(user) }}</h4>

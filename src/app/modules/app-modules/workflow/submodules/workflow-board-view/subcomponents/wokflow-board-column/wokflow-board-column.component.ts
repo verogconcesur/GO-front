@@ -1,5 +1,5 @@
 import { CdkDragDrop, moveItemInArray, transferArrayItem } from '@angular/cdk/drag-drop';
-import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import { Component, EventEmitter, Input, NgZone, OnInit, Output } from '@angular/core';
 import { marker } from '@biesbjerg/ngx-translate-extract-marker';
 import WorkflowCardDto from '@data/models/workflows/workflow-card-dto';
 import WorkflowDto from '@data/models/workflows/workflow-dto';
@@ -33,6 +33,7 @@ export class WokflowBoardColumnComponent implements OnInit {
   public droppableStates: string[] = [];
   public changeCollapseStatusOnOver = false;
   public readonly wStateKey = 'wState-';
+  public readonly wCollapsedStateKey = 'wCollapsedState-';
   public readonly wSubstateKey = 'wSubstate-';
   public readonly droppableZoneClass = 'droppable-zone';
   public readonly timeToWaitBeforeExpandColumnOnDragging = 1500;
@@ -51,7 +52,8 @@ export class WokflowBoardColumnComponent implements OnInit {
     private dragAndDropService: WorkflowDragAndDropService,
     private globalMessageService: GlobalMessageService,
     private logger: NGXLogger,
-    private translateService: TranslateService
+    private translateService: TranslateService,
+    private zone: NgZone
   ) {}
 
   ngOnInit(): void {
@@ -118,22 +120,13 @@ export class WokflowBoardColumnComponent implements OnInit {
     const associatedWSubstates: string[] = [];
     if (card?.movements?.length) {
       card.movements.forEach((move: WorkflowMoveDto) => {
-        // if (move.workflowSubstateSource.workflowState?.front) {
-        //   move.workflowSubstateSource.workflowSubstateUser.forEach((wUser: WorkflowSubstateUserDto) => {
-        //     const id = this.wSubstateKey + move.workflowSubstateSource.id + '-' + wUser.user.id;
-        //     if (associatedWSubstates.indexOf(id) === -1) {
-        //       associatedWSubstates.push(id);
-        //     }
-        //   });
-        // } else {
-        //   const id = this.wSubstateKey + move.workflowSubstateSource.id;
-        //   if (associatedWSubstates.indexOf(id) === -1) {
-        //     associatedWSubstates.push(id);
-        //   }
-        // }
         if (move.workflowSubstateTarget.workflowState?.front) {
           move.workflowSubstateTarget.workflowSubstateUser.forEach((wUser: WorkflowSubstateUserDto) => {
+            const idState = this.wCollapsedStateKey + move.workflowSubstateTarget.workflowState.id;
             const id = this.wSubstateKey + move.workflowSubstateTarget.id + '-' + wUser.user.id;
+            if (associatedWSubstates.indexOf(idState) === -1) {
+              associatedWSubstates.push(idState);
+            }
             if (associatedWSubstates.indexOf(id) === -1) {
               associatedWSubstates.push(id);
             }
@@ -182,7 +175,7 @@ export class WokflowBoardColumnComponent implements OnInit {
     return classes;
   }
 
-  public mouseOverCollapsedCard(event: MouseEvent, action: 'over' | 'leave') {
+  public mouseOverCollapsedCard = (event: MouseEvent, action: 'over' | 'leave') => {
     if (this.getCollapsedDropZoneClass() && action === 'over') {
       this.changeCollapseStatusOnOver = true;
       setTimeout(() => {
@@ -195,7 +188,7 @@ export class WokflowBoardColumnComponent implements OnInit {
     } else {
       this.changeCollapseStatusOnOver = false;
     }
-  }
+  };
 
   public drop(event: CdkDragDrop<string[]>, wSubState: WorkflowSubstateDto, user: WorkflowSubstateUserDto) {
     if (event.previousContainer === event.container) {

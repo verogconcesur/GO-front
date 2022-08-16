@@ -30,10 +30,6 @@ export class WorkflowBoardViewComponent implements OnInit {
   public wAnchorState: WorkflowStateDto;
   public wNormalStates: WorkflowStateDto[];
   public showAnchorState = true;
-  private moveHorizontalScrollTo: 'LEFT' | 'NEUTRAL' | 'RIGHT' = 'NEUTRAL';
-  private horizontalScrollEndLoop = false;
-  private horizontalScrollZoneInPx = 200;
-  private draggingACard = false;
   private workflowInstances: WorkflowStateDto[] = [];
   private filters: WorkflowFilterDto = null;
 
@@ -41,8 +37,7 @@ export class WorkflowBoardViewComponent implements OnInit {
     private workflowService: WorkflowsService,
     private workflowFilterService: WorkflowFilterService,
     private spinnerService: ProgressSpinnerDialogService,
-    private dragAndDropService: WorkflowDragAndDropService,
-    private zone: NgZone
+    private dragAndDropService: WorkflowDragAndDropService
   ) {}
 
   @HostListener('window:resize', ['$event']) onResize = (event: { target: { innerWidth: number } }) => {
@@ -64,9 +59,6 @@ export class WorkflowBoardViewComponent implements OnInit {
       this.filters = filter;
       this.filterData();
     });
-    this.dragAndDropService.draggingCard$.pipe(untilDestroyed(this)).subscribe((dragging: boolean) => {
-      this.draggingACard = dragging;
-    });
     this.dragAndDropService.expandedColumns$.pipe(untilDestroyed(this)).subscribe((data: string[]) => {
       //Permite al CDKDrag recalcular y mostrar los place holder donde corresponda
       if (this.scrollColumns?.nativeElement) {
@@ -78,49 +70,6 @@ export class WorkflowBoardViewComponent implements OnInit {
   }
 
   public toggleAnchorState = () => (this.showAnchorState = !this.showAnchorState);
-
-  public mouseOver = (event: MouseEvent, loop?: boolean): void => {
-    if (!this.anchorColumns || !this.scrollColumns) {
-      return;
-    }
-    if (
-      this.draggingACard &&
-      event.clientX >= this.anchorColumns.nativeElement.offsetWidth &&
-      event.clientX <= this.anchorColumns.nativeElement.offsetWidth + this.horizontalScrollZoneInPx &&
-      this.scrollColumns.nativeElement.scrollLeft !== 0
-    ) {
-      if (
-        (this.moveHorizontalScrollTo === 'NEUTRAL' && !loop) ||
-        (this.moveHorizontalScrollTo === 'LEFT' && loop && !this.horizontalScrollEndLoop)
-      ) {
-        if (this.moveHorizontalScrollTo === 'NEUTRAL') {
-          this.horizontalScrollEndLoop = false;
-        }
-        this.moveHorizontalScrollTo = 'LEFT';
-        this.scrollColumns.nativeElement.scrollLeft -= 4;
-        setTimeout(() => {
-          this.mouseOver(event, true);
-        }, 5);
-      }
-    } else if (this.draggingACard && event.clientX >= window.innerWidth - this.horizontalScrollZoneInPx) {
-      if (
-        (this.moveHorizontalScrollTo === 'NEUTRAL' && !loop) ||
-        (this.moveHorizontalScrollTo === 'RIGHT' && loop && !this.horizontalScrollEndLoop)
-      ) {
-        if (this.moveHorizontalScrollTo === 'NEUTRAL') {
-          this.horizontalScrollEndLoop = false;
-        }
-        this.moveHorizontalScrollTo = 'RIGHT';
-        this.scrollColumns.nativeElement.scrollLeft += 4;
-        setTimeout(() => {
-          this.mouseOver(event, true);
-        }, 5);
-      }
-    } else {
-      this.moveHorizontalScrollTo = 'NEUTRAL';
-      this.horizontalScrollEndLoop = true;
-    }
-  };
 
   public reloadCardData(): void {
     const spinner = this.spinnerService.show();
