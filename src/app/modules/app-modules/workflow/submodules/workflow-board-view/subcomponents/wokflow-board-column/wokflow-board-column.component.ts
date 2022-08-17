@@ -95,7 +95,9 @@ export class WokflowBoardColumnComponent implements OnInit {
   }
 
   public setHideEmptyDropZone(id: string, value: boolean) {
-    this.hideEmptyDropZone[id] = value;
+    if (this.droppableStates.indexOf(id) >= 0) {
+      this.hideEmptyDropZone[id] = value;
+    }
   }
 
   public getHideEmptyDropZone(id: string) {
@@ -116,7 +118,7 @@ export class WokflowBoardColumnComponent implements OnInit {
     return wState.workflowSubstates.filter((wss: WorkflowSubstateDto) => user.cardsBySubstateId[wss.id]);
   }
 
-  public getAssociatedWSubstates(card: WorkflowCardDto): string[] {
+  public getAssociatedWSubstates(card: WorkflowCardDto, itSelf?: string): string[] {
     const associatedWSubstates: string[] = [];
     if (card?.movements?.length) {
       card.movements.forEach((move: WorkflowMoveDto) => {
@@ -138,6 +140,9 @@ export class WokflowBoardColumnComponent implements OnInit {
           }
         }
       });
+    }
+    if (itSelf) {
+      associatedWSubstates.push(itSelf);
     }
     return associatedWSubstates;
   }
