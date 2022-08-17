@@ -18,22 +18,26 @@
     width: 300px;
     transition: transform 250ms cubic-bezier(0, 0, 0.2, 1);
   }
-  &.size-s {
+  &.size-s,
+  &__placeholder.size-s {
     height: 60px;
   }
-  &.size-m {
+  &.size-m,
+  &__placeholder.size-m {
     height: 94px;
     &__placeholder {
       min-height: 94px;
     }
   }
-  &.size-l {
+  &.size-l,
+  &__placeholder.size-l {
     height: 144px;
     &__placeholder {
       min-height: 144px;
     }
   }
-  &.size-xl {
+  &.size-xl,
+  &__placeholder.size-xl {
     height: 274px;
     &__placeholder {
       min-height: 274px;

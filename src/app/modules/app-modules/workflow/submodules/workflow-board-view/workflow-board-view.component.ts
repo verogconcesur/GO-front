@@ -96,13 +96,12 @@ export class WorkflowBoardViewComponent implements OnInit {
         totalCards += wSubstate.cards.length;
         wSubstate.workflowSubstateUser.forEach((user: WorkflowSubstateUserDto) => {
           const cardsBySubstateId = totalUsers[user.user.id] ? totalUsers[user.user.id].cardsBySubstateId : {};
-          const oldCards = totalUsers[user.user.id] ? totalUsers[user.user.id].cards : [];
-          const newCards = wSubstate.cards.filter(
+          const substateCardsByUser = wSubstate.cards.filter(
             (card: WorkflowCardDto) => card.cardInstanceWorkflows[0].cardInstanceWorkflowUsers[0].userId === user.user.id
           );
-          user.cards = [...newCards];
+          user.cards = [...substateCardsByUser];
           user.cardsBySubstateId = JSON.parse(JSON.stringify(cardsBySubstateId));
-          user.cardsBySubstateId[wSubstate.id] = [...newCards];
+          user.cardsBySubstateId[wSubstate.id] = [...substateCardsByUser];
           totalUsers[user.user.id] = user;
         });
       });
