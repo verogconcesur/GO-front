@@ -133,6 +133,7 @@
     </mat-form-field> -->
     <button
         mat-icon-button
+        *ngIf="!hideSubstatesWithCardsButton"
         class="substatesWithCards-button"
         (click)="filterSubstatesWithCards()"
         [disabled]="!filterOptions?.states?.length"

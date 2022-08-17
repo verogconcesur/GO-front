@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { Component, OnInit } from '@angular/core';
+import { Component, Input, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup } from '@angular/forms';
 import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
 import WorkflowFilterDto from '@data/models/workflows/workflow-filter-dto';
@@ -18,6 +18,7 @@ import { WorkflowFilterService } from '../../aux-service/workflow-filter.service
   styleUrls: ['./workflow-navbar-filter-form.component.scss']
 })
 export class WorkflowNavbarFilterFormComponent implements OnInit {
+  @Input() hideSubstatesWithCardsButton: boolean;
   public filterForm: FormGroup;
   public filterOptions: WorkflowFilterDto = null;
   public labels = {
