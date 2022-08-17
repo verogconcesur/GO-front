@@ -1,4 +1,5 @@
 import { Component, ElementRef, HostListener, NgZone, OnInit, ViewChild } from '@angular/core';
+import { marker } from '@biesbjerg/ngx-translate-extract-marker';
 import WorkflowCardDto from '@data/models/workflows/workflow-card-dto';
 import WorkflowDto from '@data/models/workflows/workflow-dto';
 import WorkflowFilterDto from '@data/models/workflows/workflow-filter-dto';
@@ -30,6 +31,9 @@ export class WorkflowBoardViewComponent implements OnInit {
   public wAnchorState: WorkflowStateDto;
   public wNormalStates: WorkflowStateDto[];
   public showAnchorState = true;
+  public labels = {
+    noData: marker('errors.noDataToShow')
+  };
   private workflowInstances: WorkflowStateDto[] = [];
   private filters: WorkflowFilterDto = null;
 

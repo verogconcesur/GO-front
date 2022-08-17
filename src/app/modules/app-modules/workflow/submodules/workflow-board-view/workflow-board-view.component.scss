@@ -50,4 +50,11 @@
     align-items: flex-start;
     overflow-x: auto;
   }
+  .empty-wrapper {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    min-height: 200px;
+  }
 }

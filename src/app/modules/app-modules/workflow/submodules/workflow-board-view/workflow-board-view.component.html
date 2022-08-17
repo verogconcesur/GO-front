@@ -24,4 +24,7 @@
         >
         </app-wokflow-board-column>
     </div>
+    <div class="empty-wrapper" *ngIf="!wAnchorState && !wNormalStates?.length">
+        <h2>{{ labels.noData | translate }}</h2>
+    </div>
 </div>

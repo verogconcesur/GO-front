@@ -18,6 +18,8 @@
   }
 
   .card-wrapper {
+    min-width: 300px;
+    min-height: 60px;
     // Necesario definir aquí para que tenga en cuenta el dropzone
     .workflow-card__placeholder {
       background: #ccc;
