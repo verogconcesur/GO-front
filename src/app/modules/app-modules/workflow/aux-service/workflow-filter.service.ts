@@ -252,10 +252,6 @@ export class WorkflowFilterService {
       });
     }
 
-    //Si ya he filtrados por tajetas o sin tarjetas => tengo por cada estado los usuarios a visualizar
-    // => si no hay usuarios significa que no debo mostrar el estado
-    wStatesData = wStatesData.filter((ws: WorkflowStateDto) => !ws.front || ws.workflowUsers.length > 0);
-
     //Filtro Usuarios
     if (filter.users?.length > 0) {
       const usersToFilterIds = filter.users.map((wssu: WorkflowSubstateUserDto) => wssu.user.id);
@@ -282,6 +278,10 @@ export class WorkflowFilterService {
           }
         });
     }
+
+    //Si ya he filtrados por tajetas o sin tarjetas => tengo por cada estado los usuarios a visualizar
+    // => si no hay usuarios significa que no debo mostrar el estado
+    wStatesData = wStatesData.filter((ws: WorkflowStateDto) => !ws.front || ws.workflowUsers.length > 0);
 
     return wStatesData;
   }
