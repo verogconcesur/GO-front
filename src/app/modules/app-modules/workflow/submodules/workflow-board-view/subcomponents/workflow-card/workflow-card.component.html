@@ -2,6 +2,7 @@
     class="workflow-card"
     [ngClass]="getCardSize()"
     cdkDrag
+    [cdkDragStartDelay]="dragStartDelay"
     (cdkDragStarted)="setCardDragging(true)"
     (cdkDragReleased)="setCardDragging(false)"
     (click)="showCardInfo()"

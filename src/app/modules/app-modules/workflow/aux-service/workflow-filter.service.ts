@@ -1,5 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { Injectable } from '@angular/core';
+import WorkflowCardDto from '@data/models/workflows/workflow-card-dto';
 import WorkflowFilterDto from '@data/models/workflows/workflow-filter-dto';
 import WorkflowStateDto from '@data/models/workflows/workflow-state-dto';
 import WorkflowSubstateDto from '@data/models/workflows/workflow-substate-dto';
@@ -103,6 +104,10 @@ export class WorkflowFilterService {
     this.workflowFilterOptionsSubject$.next(filterOptions);
   }
 
+  public orderCardsByOrderNumber(cards: WorkflowCardDto[]): WorkflowCardDto[] {
+    return cards.sort((a, b) => a.orderNumber - b.orderNumber);
+  }
+
   public filterData(workflowInstances: WorkflowStateDto[], filter: WorkflowFilterDto): WorkflowStateDto[] {
     let wStatesData: WorkflowStateDto[] = JSON.parse(JSON.stringify(workflowInstances));
     const filters = JSON.parse(JSON.stringify(filter));
@@ -170,7 +175,7 @@ export class WorkflowFilterService {
               });
               wssu.cardsBySubstateId = newCardsBySubstateId;
               if (dataByUser[wssu.user.id]) {
-                wssu.cards = [...wssu.cards, ...dataByUser[wssu.user.id].cards];
+                wssu.cards = this.orderCardsByOrderNumber([...wssu.cards, ...dataByUser[wssu.user.id].cards]);
                 wssu.cardsBySubstateId = { ...wssu.cardsBySubstateId, ...dataByUser[wssu.user.id].cardsBySubstateId };
                 dataByUser[wssu.user.id] = wssu;
               } else {
@@ -227,7 +232,7 @@ export class WorkflowFilterService {
               });
               wssu.cardsBySubstateId = newCardsBySubstateId;
               if (dataByUser[wssu.user.id]) {
-                wssu.cards = [...wssu.cards, ...dataByUser[wssu.user.id].cards];
+                wssu.cards = this.orderCardsByOrderNumber([...wssu.cards, ...dataByUser[wssu.user.id].cards]);
                 wssu.cardsBySubstateId = { ...wssu.cardsBySubstateId, ...dataByUser[wssu.user.id].cardsBySubstateId };
                 dataByUser[wssu.user.id] = wssu;
               } else {

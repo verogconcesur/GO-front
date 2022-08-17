@@ -94,8 +94,8 @@ export class WorkflowBoardViewComponent implements OnInit {
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       const totalUsers: any = {};
       wState.workflowSubstates.forEach((wSubstate: WorkflowSubstateDto) => {
-        wSubstate.cards = workflowCards.filter(
-          (card: WorkflowCardDto) => card.cardInstanceWorkflows[0].workflowSubstateId === wSubstate.id
+        wSubstate.cards = this.workflowFilterService.orderCardsByOrderNumber(
+          workflowCards.filter((card: WorkflowCardDto) => card.cardInstanceWorkflows[0].workflowSubstateId === wSubstate.id)
         );
         totalCards += wSubstate.cards.length;
         wSubstate.workflowSubstateUser.forEach((user: WorkflowSubstateUserDto) => {
@@ -103,7 +103,7 @@ export class WorkflowBoardViewComponent implements OnInit {
           const substateCardsByUser = wSubstate.cards.filter(
             (card: WorkflowCardDto) => card.cardInstanceWorkflows[0].cardInstanceWorkflowUsers[0].userId === user.user.id
           );
-          user.cards = [...substateCardsByUser];
+          user.cards = this.workflowFilterService.orderCardsByOrderNumber([...substateCardsByUser]);
           user.cardsBySubstateId = JSON.parse(JSON.stringify(cardsBySubstateId));
           user.cardsBySubstateId[wSubstate.id] = [...substateCardsByUser];
           totalUsers[user.user.id] = user;

@@ -13,4 +13,5 @@ export default interface WorkflowCardDto {
   movements: WorkflowMoveDto[];
   cardInstanceWorkflows: WorkflowCardInstanceDto[];
   size: 'S' | 'M' | 'L' | 'XL';
+  orderNumber: number;
 }
