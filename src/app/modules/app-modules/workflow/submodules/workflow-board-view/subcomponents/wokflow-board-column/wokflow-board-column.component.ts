@@ -200,7 +200,7 @@ export class WokflowBoardColumnComponent implements OnInit {
 
   public drop(event: CdkDragDrop<string[]>, wSubState: WorkflowSubstateDto, user: WorkflowSubstateUserDto) {
     console.log(event);
-    const spinner = this.spinnerService.show(); // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const item: any = event.previousContainer.data[event.previousIndex];
     let request: Observable<WorkflowCardInstanceDto> = null;
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -220,7 +220,6 @@ export class WokflowBoardColumnComponent implements OnInit {
         item,
         itemToReplace.orderNumber
       );
-      this.spinnerService.hide(spinner);
     } else if (event.previousContainer !== event.container) {
       const move: WorkflowMoveDto = item.movements.find(
         (wMove: WorkflowMoveDto) => wMove.workflowSubstateTarget.id === wSubState.id
@@ -236,6 +235,7 @@ export class WokflowBoardColumnComponent implements OnInit {
     }
 
     if (request) {
+      const spinner = this.spinnerService.show();
       request.pipe(take(1)).subscribe(
         (data) => {
           this.spinnerService.hide(spinner);
