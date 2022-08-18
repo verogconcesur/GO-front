@@ -1,4 +1,4 @@
-<div class="board-view-wrapper" (mouseover)="mouseOver($event)">
+<div class="board-view-wrapper" cdkDropListGroup>
     <!-- anchor state column -->
     <div #AnchorColumn class="board-view-wrapper__anchor-column" *ngIf="wAnchorState" [ngClass]="{ hide: hideAnchorState() }">
         <app-wokflow-board-column
@@ -15,7 +15,7 @@
     </div>
     <mat-divider *ngIf="wAnchorState" [vertical]="true" class="full-height"></mat-divider>
     <!-- scroll states columns -->
-    <div #ScrollColumns class="board-view-wrapper__scroll-columns" *ngIf="wNormalStates?.length">
+    <div #ScrollColumns class="board-view-wrapper__scroll-columns" *ngIf="wNormalStates?.length" cdkScrollable>
         <app-wokflow-board-column
             *ngFor="let wState of wNormalStates"
             [workflow]="workflow"
@@ -23,5 +23,8 @@
             (reloadCardsEvent)="reloadCardData()"
         >
         </app-wokflow-board-column>
+    </div>
+    <div class="empty-wrapper" *ngIf="!wAnchorState && !wNormalStates?.length">
+        <h2>{{ labels.noData | translate }}</h2>
     </div>
 </div>

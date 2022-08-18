@@ -8,11 +8,42 @@
     >
         <mat-icon>filter_list</mat-icon>
     </button>
+    <!-- Show with / without / with and without cards button (es una copia del que hay en workflowNavbarFilterForm)-->
+    <button
+        mat-icon-button
+        class="workflow-navbar-filter__mobile substatesWithCards-button"
+        aria-label="Change option view by number of cards"
+        (click)="workflowNavbarFilterForm?.filterSubstatesWithCards()"
+        [disabled]="!workflowNavbarFilterForm?.filterOptions?.states?.length"
+    >
+        <mat-icon
+            *ngIf="workflowNavbarFilterForm?.filterForm.get('substatesWithCards').value === 'BOTH'"
+            matTooltipPosition="above"
+            [matTooltip]="workflowNavbarFilterForm?.labels.substatesWithAndWithoutCards | translate"
+            >work_outline</mat-icon
+        >
+        <mat-icon
+            *ngIf="workflowNavbarFilterForm?.filterForm.get('substatesWithCards').value === 'WITH_CARDS'"
+            matTooltipPosition="above"
+            [matTooltip]="workflowNavbarFilterForm?.labels.substatesWithCards | translate"
+            >work</mat-icon
+        >
+        <mat-icon
+            *ngIf="workflowNavbarFilterForm?.filterForm.get('substatesWithCards').value === 'WITHOUT_CARDS'"
+            matTooltipPosition="above"
+            [matTooltip]="workflowNavbarFilterForm?.labels.substatesWithoutCards | translate"
+            >work_off</mat-icon
+        >
+    </button>
     <div class="workflow-navbar-filter__others">
         <app-workflow-navbar-filter-form *ngIf="!mobileView"></app-workflow-navbar-filter-form>
     </div>
 </div>
 
 <mat-menu #workflowFilterMenu="matMenu">
-    <app-workflow-navbar-filter-form *ngIf="mobileView"></app-workflow-navbar-filter-form>
+    <app-workflow-navbar-filter-form
+        *ngIf="mobileView"
+        [hideSubstatesWithCardsButton]="true"
+        #workflowNavbarFilterForm
+    ></app-workflow-navbar-filter-form>
 </mat-menu>

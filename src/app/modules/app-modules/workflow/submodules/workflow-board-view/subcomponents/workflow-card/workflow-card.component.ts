@@ -22,6 +22,7 @@ export class WorkflowCardComponent implements OnInit {
   public labels = {
     dueOutDateTime: marker('workflows.dueOutDateTime')
   };
+  public readonly dragStartDelay = 100; //To prevent drag a card on tablet when user is scrolling
 
   constructor(private translateService: TranslateService, private dragAndDropService: WorkflowDragAndDropService) {}
 

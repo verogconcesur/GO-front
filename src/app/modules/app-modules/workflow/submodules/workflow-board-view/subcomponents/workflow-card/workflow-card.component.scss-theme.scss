@@ -16,4 +16,64 @@
       }
     }
   }
+
+  .card-wrapper {
+    min-width: 300px;
+    min-height: 60px;
+    // Necesario definir aquí para que tenga en cuenta el dropzone
+    .workflow-card__placeholder {
+      background: #ccc;
+      width: 300px;
+      transition: transform 250ms cubic-bezier(0, 0, 0.2, 1);
+      height: 0;
+      min-height: 0px;
+      border: dotted 0px #999;
+      padding: 0px;
+    }
+    .workflow-card.size-s {
+      height: 60px;
+    }
+    .workflow-card__placeholder.size-s {
+      height: 0px;
+    }
+    .workflow-card.size-m {
+      height: 94px;
+    }
+    .workflow-card__placeholder.size-m {
+      height: 0px;
+    }
+    .workflow-card.size-l {
+      height: 144px;
+    }
+    .workflow-card__placeholder.size-l {
+      height: 0px;
+    }
+    .workflow-card.size-xl {
+      height: 274px;
+    }
+    .workflow-card__placeholder.size-xl {
+      height: 0px;
+    }
+
+    &.droppable-zone {
+      .workflow-card__placeholder {
+        height: auto;
+        min-height: 60px;
+        border: dotted 3px #999;
+        padding: 8px;
+      }
+      .workflow-card__placeholder.size-s {
+        height: 60px;
+      }
+      .workflow-card__placeholder.size-m {
+        height: 94px;
+      }
+      .workflow-card__placeholder.size-l {
+        height: 144px;
+      }
+      .workflow-card__placeholder.size-xl {
+        height: 274px;
+      }
+    }
+  }
 }

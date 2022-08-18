@@ -2,11 +2,12 @@
     class="workflow-card"
     [ngClass]="getCardSize()"
     cdkDrag
+    [cdkDragStartDelay]="dragStartDelay"
     (cdkDragStarted)="setCardDragging(true)"
     (cdkDragReleased)="setCardDragging(false)"
     (click)="showCardInfo()"
 >
-    <div class="workflow-card__placeholder" *cdkDragPlaceholder></div>
+    <div class="workflow-card__placeholder" [ngClass]="getCardSize()" *cdkDragPlaceholder></div>
     <div class="workflow-card__colors">
         <div
             class="workflow-card__colors__color"
@@ -16,6 +17,7 @@
         ></div>
     </div>
     <div class="workflow-card__info">
+        CardId: {{ card.id }} - OrderNumber: {{ card.orderNumber }}
         <div *ngFor="let slot of card.variableSlots" class="workflow-card__info__data">
             {{ getLabel(slot) }}
         </div>

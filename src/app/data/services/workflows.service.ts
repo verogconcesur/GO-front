@@ -29,6 +29,7 @@ export class WorkflowsService {
   private readonly GET_WORKFLOWS_VIEW_PATH = '/view';
   private readonly GET_WORKFLOWS_CARDS_PATH = '/cards';
   private readonly GET_WORKFLOWS_MOVEMENT_PATH = '/movement';
+  private readonly GET_WORKFLOWS_ORDER_PATH = '/orders';
 
   constructor(@Inject(ENV) private env: Env, private http: HttpClient, private workflowFilterService: WorkflowFilterService) {}
 
@@ -83,6 +84,30 @@ export class WorkflowsService {
   }
 
   /**
+   * Reorder card inside a substate
+   *
+   * @param facilityId
+   * @param cardInstance
+   * @return
+   */
+  public changeOrderWorkflowCardInSubstate(
+    facilityId: number,
+    card: WorkflowCardDto,
+    newOrderNumber: number
+  ): Observable<WorkflowCardInstanceDto> {
+    return this.http
+      .post<WorkflowCardInstanceDto>(
+        `${this.env.apiBaseUrl}${this.GET_WORKFLOWS_PATH}/${card.cardInstanceWorkflows[0].workflowId}` +
+          `${this.GET_WORKFLOWS_FACILITY_PATH}/${facilityId}${this.GET_WORKFLOWS_CARDS_PATH}${this.GET_WORKFLOWS_ORDER_PATH}`,
+        {
+          id: card.cardInstanceWorkflows[0].cardInstance.id,
+          orderNumber: newOrderNumber
+        }
+      )
+      .pipe(catchError((error) => throwError(error.error as ConcenetError)));
+  }
+
+  /**
    * Move card to another subState
    *
    * @param facilityId
@@ -95,7 +120,8 @@ export class WorkflowsService {
     facilityId: number,
     card: WorkflowCardDto,
     move: WorkflowMoveDto,
-    wUser: WorkflowSubstateUserDto
+    wUser: WorkflowSubstateUserDto,
+    newOrderNumber: number
   ): Observable<WorkflowCardInstanceDto> {
     return this.http
       .post<WorkflowCardInstanceDto>(
@@ -106,8 +132,11 @@ export class WorkflowsService {
           cardInstanceWorkflow: {
             facilityId,
             workflowId: card.cardInstanceWorkflows[0].workflowId,
-            cardInstanceId: card.cardInstanceWorkflows[0].cardInstanceId
             // workflowSubstateId: move.workflowSubstateTarget.id
+            cardInstance: {
+              id: card.cardInstanceWorkflows[0].cardInstance.id,
+              orderNumber: newOrderNumber
+            }
           }
         }
       )

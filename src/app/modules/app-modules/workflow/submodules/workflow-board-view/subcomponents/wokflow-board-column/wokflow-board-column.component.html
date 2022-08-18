@@ -1,3 +1,4 @@
+<!-- DGDC: todo quitar [attr.] sólo se usa para debug -->
 <div
     class="workflow-board-column"
     [ngClass]="{
@@ -14,10 +15,12 @@
     </div>
     <div
         class="workflow-board-column__collapsed"
-        *ngIf="collapsed"
+        [ngStyle]="{ display: collapsed ? 'flex' : 'none' }"
         [ngClass]="getCollapsedDropZoneClass()"
-        (mouseover)="mouseOverCollapsedCard($event, 'over')"
-        (mouseleave)="mouseOverCollapsedCard($event, 'leave')"
+        cdkDropList
+        [id]="wCollapsedStateKey + wState.id"
+        (cdkDropListEntered)="mouseOverCollapsedCard($event, 'over')"
+        (cdkDropListExited)="mouseOverCollapsedCard($event, 'leave')"
     >
         <div class="collapsed-card" [ngClass]="getCollapsedWDroppedClasses()">
             <div class="collapsed-card__third collapsed-card__common"></div>
@@ -42,7 +45,7 @@
         </div>
     </div>
     <!-- Usamos ngStyle en lugar de NgIf para que los cdkDropList estén renderizados y visibles en caso de que se expanda la columna haciendo el
-         drag sobre la tarjeta collapsada -->
+         drag sobre la tarjeta colapsada -->
     <div class="workflow-board-column__expanded" [ngStyle]="{ display: collapsed ? 'none' : 'flex' }">
         <div class="workflow-board-column__expanded__block" *ngFor="let user of wState.front ? wState.workflowUsers : []">
             <h4>{{ getUserName(user) }}</h4>
@@ -55,6 +58,7 @@
                     [id]="wSubstateKey + wSubstate.id + '-' + user.user.id"
                     [cdkDropListData]="user.cardsBySubstateId[wSubstate.id]"
                     [cdkDropListConnectedTo]="getAssociatedWSubstates(wSubstate.cards[0])"
+                    [attr.dropListConnectedTo]="getAssociatedWSubstates(wSubstate.cards[0])"
                     (cdkDropListDropped)="
                         drop($event, wSubstate, user);
                         setHideEmptyDropZone(wSubstateKey + wSubstate.id + '-' + user.user.id, false)
@@ -67,7 +71,12 @@
                         [card]="card"
                         [wState]="wState"
                         [wSubstate]="wSubstate"
-                        [droppableStates]="getAssociatedWSubstates(wSubstate.cards[0])"
+                        [droppableStates]="
+                            getAssociatedWSubstates(wSubstate.cards[0], wSubstateKey + wSubstate.id + '-' + user.user.id)
+                        "
+                        [attr.droppableStates]="
+                            getAssociatedWSubstates(wSubstate.cards[0], wSubstateKey + wSubstate.id + '-' + user.user.id)
+                        "
                     ></app-workflow-card>
                     <div
                         class="empty-substate"
@@ -91,6 +100,7 @@
                     [id]="wSubstateKey + wSubstate.id"
                     [cdkDropListData]="wSubstate.cards"
                     [cdkDropListConnectedTo]="getAssociatedWSubstates(wSubstate.cards[0])"
+                    [attr.dropListConnectedTo]="getAssociatedWSubstates(wSubstate.cards[0])"
                     (cdkDropListDropped)="drop($event, wSubstate, null); setHideEmptyDropZone(wSubstateKey + wSubstate.id, false)"
                     (cdkDropListEntered)="setHideEmptyDropZone(wSubstateKey + wSubstate.id, true)"
                     (cdkDropListExited)="setHideEmptyDropZone(wSubstateKey + wSubstate.id, false)"
@@ -100,7 +110,8 @@
                         [card]="card"
                         [wState]="wState"
                         [wSubstate]="wSubstate"
-                        [droppableStates]="getAssociatedWSubstates(wSubstate.cards[0])"
+                        [droppableStates]="getAssociatedWSubstates(wSubstate.cards[0], wSubstateKey + wSubstate.id)"
+                        [attr.droppableStates]="getAssociatedWSubstates(wSubstate.cards[0], wSubstateKey + wSubstate.id)"
                     ></app-workflow-card>
                     <div
                         class="empty-substate"

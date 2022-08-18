@@ -1,7 +1,8 @@
 import { CdkDragDrop, moveItemInArray, transferArrayItem } from '@angular/cdk/drag-drop';
-import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import { Component, ElementRef, EventEmitter, Input, NgZone, OnInit, Output } from '@angular/core';
 import { marker } from '@biesbjerg/ngx-translate-extract-marker';
 import WorkflowCardDto from '@data/models/workflows/workflow-card-dto';
+import WorkflowCardInstanceDto from '@data/models/workflows/workflow-card-instance-dto';
 import WorkflowDto from '@data/models/workflows/workflow-dto';
 import WorkflowMoveDto from '@data/models/workflows/workflow-move-dto';
 import WorkflowStateDto from '@data/models/workflows/workflow-state-dto';
@@ -12,7 +13,9 @@ import { WorkflowDragAndDropService } from '@modules/app-modules/workflow/aux-se
 import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
 import { TranslateService } from '@ngx-translate/core';
 import { GlobalMessageService } from '@shared/services/global-message.service';
+import { ProgressSpinnerDialogService } from '@shared/services/progress-spinner-dialog.service';
 import { NGXLogger } from 'ngx-logger';
+import { Observable } from 'rxjs';
 import { take } from 'rxjs/operators';
 
 @UntilDestroy()
@@ -33,6 +36,7 @@ export class WokflowBoardColumnComponent implements OnInit {
   public droppableStates: string[] = [];
   public changeCollapseStatusOnOver = false;
   public readonly wStateKey = 'wState-';
+  public readonly wCollapsedStateKey = 'wCollapsedState-';
   public readonly wSubstateKey = 'wSubstate-';
   public readonly droppableZoneClass = 'droppable-zone';
   public readonly timeToWaitBeforeExpandColumnOnDragging = 1500;
@@ -51,7 +55,8 @@ export class WokflowBoardColumnComponent implements OnInit {
     private dragAndDropService: WorkflowDragAndDropService,
     private globalMessageService: GlobalMessageService,
     private logger: NGXLogger,
-    private translateService: TranslateService
+    private translateService: TranslateService,
+    private spinnerService: ProgressSpinnerDialogService
   ) {}
 
   ngOnInit(): void {
@@ -93,7 +98,9 @@ export class WokflowBoardColumnComponent implements OnInit {
   }
 
   public setHideEmptyDropZone(id: string, value: boolean) {
-    this.hideEmptyDropZone[id] = value;
+    if (this.droppableStates.indexOf(id) >= 0) {
+      this.hideEmptyDropZone[id] = value;
+    }
   }
 
   public getHideEmptyDropZone(id: string) {
@@ -114,26 +121,17 @@ export class WokflowBoardColumnComponent implements OnInit {
     return wState.workflowSubstates.filter((wss: WorkflowSubstateDto) => user.cardsBySubstateId[wss.id]);
   }
 
-  public getAssociatedWSubstates(card: WorkflowCardDto): string[] {
+  public getAssociatedWSubstates(card: WorkflowCardDto, itSelf?: string): string[] {
     const associatedWSubstates: string[] = [];
     if (card?.movements?.length) {
       card.movements.forEach((move: WorkflowMoveDto) => {
-        // if (move.workflowSubstateSource.workflowState?.front) {
-        //   move.workflowSubstateSource.workflowSubstateUser.forEach((wUser: WorkflowSubstateUserDto) => {
-        //     const id = this.wSubstateKey + move.workflowSubstateSource.id + '-' + wUser.user.id;
-        //     if (associatedWSubstates.indexOf(id) === -1) {
-        //       associatedWSubstates.push(id);
-        //     }
-        //   });
-        // } else {
-        //   const id = this.wSubstateKey + move.workflowSubstateSource.id;
-        //   if (associatedWSubstates.indexOf(id) === -1) {
-        //     associatedWSubstates.push(id);
-        //   }
-        // }
         if (move.workflowSubstateTarget.workflowState?.front) {
           move.workflowSubstateTarget.workflowSubstateUser.forEach((wUser: WorkflowSubstateUserDto) => {
+            const idState = this.wCollapsedStateKey + move.workflowSubstateTarget.workflowState.id;
             const id = this.wSubstateKey + move.workflowSubstateTarget.id + '-' + wUser.user.id;
+            if (associatedWSubstates.indexOf(idState) === -1) {
+              associatedWSubstates.push(idState);
+            }
             if (associatedWSubstates.indexOf(id) === -1) {
               associatedWSubstates.push(id);
             }
@@ -145,6 +143,9 @@ export class WokflowBoardColumnComponent implements OnInit {
           }
         }
       });
+    }
+    if (itSelf) {
+      associatedWSubstates.push(itSelf);
     }
     return associatedWSubstates;
   }
@@ -198,30 +199,86 @@ export class WokflowBoardColumnComponent implements OnInit {
   }
 
   public drop(event: CdkDragDrop<string[]>, wSubState: WorkflowSubstateDto, user: WorkflowSubstateUserDto) {
-    if (event.previousContainer === event.container) {
-      moveItemInArray(event.container.data, event.previousIndex, event.currentIndex);
+    console.log('Evento: ', event);
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const item: any = event.previousContainer.data[event.previousIndex];
+    let request: Observable<WorkflowCardInstanceDto> = null;
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    let itemToReplace: any = null;
+    if (event.container.data[event.currentIndex]) {
+      //Se va a reemplazar el orden de un elemento
+      itemToReplace = event.container.data[event.currentIndex];
     } else {
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      const item: any = event.previousContainer.data[event.previousIndex];
+      //Se va a posicionar en la última posición
+      itemToReplace = { orderNumber: null };
+    }
+
+    if (event.previousContainer === event.container && event.previousIndex !== event.currentIndex) {
+      const orderNumber =
+        event.previousIndex < event.currentIndex && (itemToReplace.orderNumber || itemToReplace.orderNumber === 0)
+          ? itemToReplace.orderNumber + 1
+          : itemToReplace.orderNumber;
+      console.log('Reordenar:');
+      console.log(
+        'Elemento:',
+        item,
+        'PreviousIndex:',
+        event.previousIndex,
+        'CurrentIndex: ',
+        event.currentIndex,
+        'OrderNumber:',
+        item.orderNumber
+      );
+      console.log('Elemento a reemplazar:', itemToReplace, 'OrderNumber:', itemToReplace.orderNumber);
+      console.log('Posicionar en:', orderNumber);
+      // moveItemInArray(event.container.data, event.previousIndex, event.currentIndex);
+      item.orderNumber = orderNumber;
+      request = this.workflowService.changeOrderWorkflowCardInSubstate(this.workflow.facility.facilityId, item, orderNumber);
+    } else if (event.previousContainer !== event.container) {
       const move: WorkflowMoveDto = item.movements.find(
         (wMove: WorkflowMoveDto) => wMove.workflowSubstateTarget.id === wSubState.id
       );
+      console.log('Mover:');
+      console.log(
+        'Elemento:',
+        item,
+        'PreviousIndex:',
+        event.previousIndex,
+        'CurrentIndex: ',
+        event.currentIndex,
+        'OrderNumber:',
+        item.orderNumber
+      );
+      console.log('Elemento a reemplazar:', itemToReplace, 'OrderNumber:', itemToReplace.orderNumber);
+      console.log('Posicionar en:', itemToReplace.orderNumber);
       // transferArrayItem(event.previousContainer.data, event.container.data, event.previousIndex, event.currentIndex);
-      this.workflowService
-        .moveWorkflowCardToSubstate(this.workflow.facility.facilityId, item, move, user)
-        .pipe(take(1))
-        .subscribe(
-          (data) => {
-            this.reloadCardsEvent.emit(true);
-          },
-          (error) => {
-            this.logger.error(error);
-            this.globalMessageService.showError({
-              message: error.message,
-              actionText: this.translateService.instant(marker('common.close'))
-            });
-          }
-        );
+      item.orderNumber = itemToReplace.orderNumber;
+      request = this.workflowService.moveWorkflowCardToSubstate(
+        this.workflow.facility.facilityId,
+        item,
+        move,
+        user,
+        itemToReplace.orderNumber
+      );
+    }
+
+    if (request) {
+      const spinner = this.spinnerService.show();
+      request.pipe(take(1)).subscribe(
+        (data) => {
+          this.spinnerService.hide(spinner);
+          this.reloadCardsEvent.emit(true);
+        },
+        (error) => {
+          this.logger.error(error);
+          this.globalMessageService.showError({
+            message: error.message,
+            actionText: this.translateService.instant(marker('common.close'))
+          });
+          this.spinnerService.hide(spinner);
+          this.reloadCardsEvent.emit(true);
+        }
+      );
     }
   }
 }
