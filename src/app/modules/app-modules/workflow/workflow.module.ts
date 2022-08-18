@@ -10,9 +10,6 @@ import { WorkflowTableViewComponent } from './submodules/workflow-table-view/wor
 import { WorkflowNavbarFilterComponent } from './components/workflow-navbar-filter/workflow-navbar-filter.component';
 // eslint-disable-next-line max-len
 import { WorkflowNavbarFilterFormComponent } from './components/workflow-navbar-filter-form/workflow-navbar-filter-form.component';
-import { WorkflowDragAndDropService } from './aux-service/workflow-drag-and-drop.service';
-import { WorkflowFilterService } from './aux-service/workflow-filter.service';
-import { WorkflowsService } from '@data/services/workflows.service';
 
 @NgModule({
   declarations: [

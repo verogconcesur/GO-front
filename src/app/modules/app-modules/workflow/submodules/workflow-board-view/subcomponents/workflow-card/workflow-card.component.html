@@ -17,6 +17,7 @@
         ></div>
     </div>
     <div class="workflow-card__info">
+        CardId: {{ card.id }} - OrderNumber: {{ card.orderNumber }}
         <div *ngFor="let slot of card.variableSlots" class="workflow-card__info__data">
             {{ getLabel(slot) }}
         </div>
