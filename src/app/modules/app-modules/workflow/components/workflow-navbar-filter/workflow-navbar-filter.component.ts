@@ -1,6 +1,7 @@
-import { Component, HostListener, OnDestroy, OnInit } from '@angular/core';
+import { Component, ElementRef, HostListener, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { UntilDestroy } from '@ngneat/until-destroy';
 import { WorkflowFilterService } from '../../aux-service/workflow-filter.service';
+import { WorkflowNavbarFilterFormComponent } from '../workflow-navbar-filter-form/workflow-navbar-filter-form.component';
 
 @UntilDestroy()
 @Component({
@@ -9,6 +10,7 @@ import { WorkflowFilterService } from '../../aux-service/workflow-filter.service
   styleUrls: ['./workflow-navbar-filter.component.scss']
 })
 export class WorkflowNavbarFilterComponent implements OnInit, OnDestroy {
+  @ViewChild('workflowNavbarFilterForm') workflowNavbarFilterForm: WorkflowNavbarFilterFormComponent;
   public mobileView = false;
   constructor(public workflowFilterService: WorkflowFilterService) {}
 
@@ -23,4 +25,6 @@ export class WorkflowNavbarFilterComponent implements OnInit, OnDestroy {
   ngOnDestroy(): void {
     this.workflowFilterService.resetWorkflowFilter();
   }
+
+  public filterSubstatesWithCards(): void {}
 }

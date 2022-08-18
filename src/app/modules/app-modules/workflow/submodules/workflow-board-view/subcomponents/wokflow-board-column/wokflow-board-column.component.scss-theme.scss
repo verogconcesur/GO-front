@@ -42,6 +42,9 @@
           background-color: mat-contrast($primary, 400);
         }
       }
+      .workflow-card__placeholder {
+        display: none !important;
+      }
     }
 
     .card-wrapper,
