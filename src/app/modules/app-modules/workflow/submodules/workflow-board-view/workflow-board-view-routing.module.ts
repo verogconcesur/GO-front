@@ -8,7 +8,20 @@ const routes: Routes = [
   {
     path: RouteConstants.EMPTY,
     canActivate: [AuthGuardService],
-    component: WorkflowBoardViewComponent
+    component: WorkflowBoardViewComponent,
+    children: [
+      {
+        path: `${RouteConstants.WORKFLOWS_ID_CARD}/${RouteConstants.ID}`,
+        outlet: RouteConstants.WORKFLOWS_CARD,
+        loadChildren: () =>
+          import('../workflow-card-details/workflow-card-details.module').then((m) => m.WorkflowCardDetailsModule)
+      },
+      {
+        path: RouteConstants.OTHER,
+        canActivate: [AuthGuardService],
+        redirectTo: RouteConstants.EMPTY
+      }
+    ]
   }
 ];
 

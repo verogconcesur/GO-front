@@ -1,4 +1,5 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Location } from '@angular/common';
 import { FormBuilder, FormGroup } from '@angular/forms';
 import { RouteConstants } from '@app/constants/route.constants';
 import { marker } from '@biesbjerg/ngx-translate-extract-marker';
@@ -11,16 +12,19 @@ import { NGXLogger } from 'ngx-logger';
 import { Observable } from 'rxjs';
 import { take, startWith, map } from 'rxjs/operators';
 import { WorkflowDragAndDropService } from '../../aux-service/workflow-drag-and-drop.service';
+import { ActivatedRoute, Router } from '@angular/router';
+import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
 
+@UntilDestroy()
 @Component({
   selector: 'app-workflow-navbar',
   templateUrl: './workflow-navbar.component.html',
   styleUrls: ['./workflow-navbar.component.scss']
 })
 export class WorkflowNavbarComponent implements OnInit, OnDestroy {
-  public readonly WORKFLOW_TABLE_PATH = RouteConstants.WORKFLOWS_TABLE_VIEW;
-  public readonly WORKFLOW_BOARD_PATH = RouteConstants.WORKFLOWS_BOARD_VIEW;
-  public readonly WORKFLOW_CALENDAR_PATH = RouteConstants.WORKFLOWS_CALENDAR_VIEW;
+  public currentUrl = '';
+  public currentView: RouteConstants | string = null;
+  public idWorkflowRouteParam: number = null;
   public workflowList: WorkflowListByFacilityDto[] = [];
   public workflowForm: FormGroup;
   public workflowGroupOptions: Observable<WorkflowListByFacilityDto[]>;
@@ -36,16 +40,60 @@ export class WorkflowNavbarComponent implements OnInit, OnDestroy {
     private logger: NGXLogger,
     private formBuilder: FormBuilder,
     private translateService: TranslateService,
-    private dragDropService: WorkflowDragAndDropService
+    private dragDropService: WorkflowDragAndDropService,
+    private route: ActivatedRoute,
+    private router: Router
   ) {}
 
   ngOnInit(): void {
+    if (this.route?.snapshot?.params?.wId) {
+      this.idWorkflowRouteParam = parseInt(this.route.snapshot.params.wId, 10);
+    }
+    this.currentUrl = window.location.hash.split('#/').join('/');
     this.initForms();
     this.getData();
   }
 
   ngOnDestroy(): void {
     this.workflowService.workflowSelectedSubject$.next(null);
+  }
+
+  public goToView(view: 'boardView' | 'tableView' | 'calendarView'): void {
+    let lastRoute: RouteConstants = null;
+    switch (view) {
+      case 'boardView':
+        lastRoute = RouteConstants.WORKFLOWS_BOARD_VIEW;
+        break;
+      case 'tableView':
+        lastRoute = RouteConstants.WORKFLOWS_TABLE_VIEW;
+        break;
+      default:
+        lastRoute = RouteConstants.WORKFLOWS_CALENDAR_VIEW;
+    }
+
+    if (this.idWorkflowRouteParam) {
+      this.router.navigate([RouteConstants.DASHBOARD, RouteConstants.WORKFLOWS, this.idWorkflowRouteParam, lastRoute]);
+    } else {
+      this.router.navigate([RouteConstants.DASHBOARD, RouteConstants.WORKFLOWS, lastRoute]);
+    }
+  }
+
+  public isView(view: 'boardView' | 'tableView' | 'calendarView'): boolean {
+    switch (view) {
+      case 'boardView':
+        view = RouteConstants.WORKFLOWS_BOARD_VIEW;
+        break;
+      case 'tableView':
+        view = RouteConstants.WORKFLOWS_TABLE_VIEW;
+        break;
+      default:
+        view = RouteConstants.WORKFLOWS_CALENDAR_VIEW;
+    }
+    if (this.currentUrl.indexOf(`/${view}`) > 0) {
+      this.currentView = view;
+      return true;
+    }
+    return false;
   }
 
   public getWorkflowGroupLabel(group: WorkflowListByFacilityDto): string {
@@ -63,11 +111,22 @@ export class WorkflowNavbarComponent implements OnInit, OnDestroy {
 
   public workflowSelectionChange(event: { value: WorkflowDto }): void {
     const workflow = event.value;
+    if (this.idWorkflowRouteParam) {
+      this.currentUrl = this.currentUrl
+        .split(`${RouteConstants.WORKFLOWS}/${this.idWorkflowRouteParam}/`)
+        .join(`${RouteConstants.WORKFLOWS}/${workflow.id}/`);
+    } else {
+      this.currentUrl = this.currentUrl.split(`${RouteConstants.WORKFLOWS}/`).join(`${RouteConstants.WORKFLOWS}/${workflow.id}/`);
+    }
+    this.idWorkflowRouteParam = workflow.id;
     this.workflowSelected = workflow;
     this.workflowService.workflowSelectedSubject$.next(workflow);
     this.dragDropService.resetObservables();
     this.workflowForm.get('workflow').setValue(workflow);
     this.workflowForm.get('workflowSearch').setValue('');
+
+    // this.location.go(this.currentUrl);
+    this.router.navigate([RouteConstants.DASHBOARD, RouteConstants.WORKFLOWS, this.idWorkflowRouteParam, this.currentView]);
   }
 
   private initForms(): void {
@@ -84,17 +143,28 @@ export class WorkflowNavbarComponent implements OnInit, OnDestroy {
       .pipe(take(1))
       .subscribe(
         (data) => {
+          let workflowSelectedByIdParam: WorkflowDto = null;
           data.forEach((workflowGroup: WorkflowListByFacilityDto) => {
-            workflowGroup.workflows.forEach(
-              (workFlow: WorkflowDto) =>
-                (workFlow.facility = { facilityName: workflowGroup.facilityName, facilityId: workflowGroup.facilityId })
-            );
+            workflowGroup.workflows.forEach((workFlow: WorkflowDto) => {
+              workFlow.facility = { facilityName: workflowGroup.facilityName, facilityId: workflowGroup.facilityId };
+              if (workFlow.id === this.idWorkflowRouteParam) {
+                workflowSelectedByIdParam = workFlow;
+              }
+            });
           });
           this.workflowList = data;
           this.workflowGroupOptions = this.workflowForm.get('workflowSearch')?.valueChanges.pipe(
             startWith(''),
             map((value) => this.filterGroup(value || ''))
           );
+          if (workflowSelectedByIdParam) {
+            this.workflowForm.get('workflow').setValue(workflowSelectedByIdParam);
+            this.workflowForm.get('workflow').markAllAsTouched();
+            this.workflowForm.get('workflow').markAsDirty();
+            this.workflowSelected = workflowSelectedByIdParam;
+            this.workflowService.workflowSelectedSubject$.next(workflowSelectedByIdParam);
+            this.dragDropService.resetObservables();
+          }
           this.spinnerService.hide(spinner);
         },
         (error) => {

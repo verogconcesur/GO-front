@@ -25,13 +25,13 @@ export class AuthenticationService implements OnDestroy {
   private readonly USER_ROLE = 'user_role';
   private readonly USER_PERMISSIONS = 'user_permissions';
 
-  private tokenInterval: NodeJS.Timer = null;
+  private tokenTimeout: NodeJS.Timer = null;
 
   constructor(@Inject(ENV) private env: Env, @Inject(DOCUMENT) private document: Document, private http: HttpClient) {}
 
   ngOnDestroy(): void {
-    if (this.tokenInterval) {
-      clearInterval(this.tokenInterval);
+    if (this.tokenTimeout) {
+      clearTimeout(this.tokenTimeout);
     }
   }
 
@@ -43,7 +43,7 @@ export class AuthenticationService implements OnDestroy {
 
   public keepTokenAlive(): void {
     const refreshTimeBeforeTokenExpires = 10000;
-    if (!this.tokenInterval) {
+    if (!this.tokenTimeout) {
       const token = this.getToken();
       const expires_in = this.getExpiresIn();
       // const expires_in = 60000;
@@ -51,7 +51,7 @@ export class AuthenticationService implements OnDestroy {
       if (token && expires_in && token_timestamp) {
         const timeToExpire = token_timestamp + expires_in - refreshTimeBeforeTokenExpires;
         // console.log(timeToExpire, +new Date(), timeToExpire - +new Date());
-        this.tokenInterval = setInterval(() => {
+        this.tokenTimeout = setTimeout(() => {
           this.refreshToken()
             .pipe(take(1))
             .subscribe({
@@ -242,9 +242,9 @@ export class AuthenticationService implements OnDestroy {
   }
 
   setTokenData(loginData: LoginDTO): void {
-    if (this.tokenInterval) {
-      clearInterval(this.tokenInterval);
-      this.tokenInterval = null;
+    if (this.tokenTimeout) {
+      clearTimeout(this.tokenTimeout);
+      this.tokenTimeout = null;
     }
     sessionStorage.setItem(this.ACCESS_TOKEN, loginData.access_token);
     sessionStorage.setItem(this.EXPIRES_IN, loginData.expires_in.toString());
@@ -286,6 +286,6 @@ export class AuthenticationService implements OnDestroy {
     this.removeUserFullName();
     this.removeUserRole();
     this.removeUserPermissions();
-    clearInterval(this.tokenInterval);
+    clearTimeout(this.tokenTimeout);
   }
 }
