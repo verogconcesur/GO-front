@@ -136,16 +136,25 @@ export class WokflowBoardColumnComponent implements OnInit {
               associatedWSubstates.push(id);
             }
           });
+
+          if (itSelf) {
+            move.workflowSubstateSource.workflowSubstateUser.forEach((wUser: WorkflowSubstateUserDto) => {
+              const id = this.wSubstateKey + move.workflowSubstateSource.id + '-' + wUser.user.id;
+              if (associatedWSubstates.indexOf(id) === -1) {
+                associatedWSubstates.push(id);
+              }
+            });
+          }
         } else {
           const id = this.wSubstateKey + move.workflowSubstateTarget.id;
           if (associatedWSubstates.indexOf(id) === -1) {
             associatedWSubstates.push(id);
           }
+          if (itSelf) {
+            associatedWSubstates.push(itSelf);
+          }
         }
       });
-    }
-    if (itSelf) {
-      associatedWSubstates.push(itSelf);
     }
     return associatedWSubstates;
   }
@@ -199,7 +208,6 @@ export class WokflowBoardColumnComponent implements OnInit {
   }
 
   public drop(event: CdkDragDrop<string[]>, wSubState: WorkflowSubstateDto, user: WorkflowSubstateUserDto) {
-    console.log('Evento: ', event);
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const item: any = event.previousContainer.data[event.previousIndex];
     let request: Observable<WorkflowCardInstanceDto> = null;
@@ -218,19 +226,19 @@ export class WokflowBoardColumnComponent implements OnInit {
         event.previousIndex < event.currentIndex && (itemToReplace.orderNumber || itemToReplace.orderNumber === 0)
           ? itemToReplace.orderNumber + 1
           : itemToReplace.orderNumber;
-      console.log('Reordenar:');
-      console.log(
-        'Elemento:',
-        item,
-        'PreviousIndex:',
-        event.previousIndex,
-        'CurrentIndex: ',
-        event.currentIndex,
-        'OrderNumber:',
-        item.orderNumber
-      );
-      console.log('Elemento a reemplazar:', itemToReplace, 'OrderNumber:', itemToReplace.orderNumber);
-      console.log('Posicionar en:', orderNumber);
+      // console.log('Reordenar:');
+      // console.log(
+      //   'Elemento:',
+      //   item,
+      //   'PreviousIndex:',
+      //   event.previousIndex,
+      //   'CurrentIndex: ',
+      //   event.currentIndex,
+      //   'OrderNumber:',
+      //   item.orderNumber
+      // );
+      // console.log('Elemento a reemplazar:', itemToReplace, 'OrderNumber:', itemToReplace.orderNumber);
+      // console.log('Posicionar en:', orderNumber);
       // moveItemInArray(event.container.data, event.previousIndex, event.currentIndex);
       item.orderNumber = orderNumber;
       request = this.workflowService.changeOrderWorkflowCardInSubstate(this.workflow.facility.facilityId, item, orderNumber);
@@ -238,19 +246,19 @@ export class WokflowBoardColumnComponent implements OnInit {
       const move: WorkflowMoveDto = item.movements.find(
         (wMove: WorkflowMoveDto) => wMove.workflowSubstateTarget.id === wSubState.id
       );
-      console.log('Mover:');
-      console.log(
-        'Elemento:',
-        item,
-        'PreviousIndex:',
-        event.previousIndex,
-        'CurrentIndex: ',
-        event.currentIndex,
-        'OrderNumber:',
-        item.orderNumber
-      );
-      console.log('Elemento a reemplazar:', itemToReplace, 'OrderNumber:', itemToReplace.orderNumber);
-      console.log('Posicionar en:', itemToReplace.orderNumber);
+      // console.log('Mover:');
+      // console.log(
+      //   'Elemento:',
+      //   item,
+      //   'PreviousIndex:',
+      //   event.previousIndex,
+      //   'CurrentIndex: ',
+      //   event.currentIndex,
+      //   'OrderNumber:',
+      //   item.orderNumber
+      // );
+      // console.log('Elemento a reemplazar:', itemToReplace, 'OrderNumber:', itemToReplace.orderNumber);
+      // console.log('Posicionar en:', itemToReplace.orderNumber);
       // transferArrayItem(event.previousContainer.data, event.container.data, event.previousIndex, event.currentIndex);
       item.orderNumber = itemToReplace.orderNumber;
       request = this.workflowService.moveWorkflowCardToSubstate(

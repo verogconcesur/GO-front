@@ -1,5 +1,6 @@
 import { DatePipe } from '@angular/common';
 import { Component, Input, OnInit } from '@angular/core';
+import { ActivatedRoute, Router } from '@angular/router';
 import { marker } from '@biesbjerg/ngx-translate-extract-marker';
 import WorkflowCardDto from '@data/models/workflows/workflow-card-dto';
 import WorkflowCardSlotDto from '@data/models/workflows/workflow-card-slot-dto';
@@ -24,7 +25,12 @@ export class WorkflowCardComponent implements OnInit {
   };
   public readonly dragStartDelay = 100; //To prevent drag a card on tablet when user is scrolling
 
-  constructor(private translateService: TranslateService, private dragAndDropService: WorkflowDragAndDropService) {}
+  constructor(
+    private translateService: TranslateService,
+    private dragAndDropService: WorkflowDragAndDropService,
+    private route: ActivatedRoute,
+    private router: Router
+  ) {}
 
   ngOnInit(): void {}
 
@@ -62,6 +68,13 @@ export class WorkflowCardComponent implements OnInit {
 
   public showCardInfo(): void {
     console.log('show info:', this.card);
+    this.router.navigate([{ outlets: { card: ['wcId', this.card.id] } }], {
+      relativeTo: this.route,
+      state: {
+        relativeTo: JSON.stringify(this.route, this.replacerFunc),
+        card: JSON.stringify(this.card)
+      }
+    });
   }
 
   public setCardDragging(dragging: boolean): void {
@@ -72,4 +85,18 @@ export class WorkflowCardComponent implements OnInit {
       this.dragAndDropService.droppableStates$.next([]);
     }
   }
+
+  private replacerFunc = () => {
+    const visited = new WeakSet();
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any, prefer-arrow/prefer-arrow-functions
+    return (key: string, value: any) => {
+      if (typeof value === 'object' && value !== null) {
+        if (visited.has(value)) {
+          return;
+        }
+        visited.add(value);
+      }
+      return value;
+    };
+  };
 }

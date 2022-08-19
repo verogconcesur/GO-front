@@ -56,11 +56,17 @@
         <app-workflow-navbar-filter></app-workflow-navbar-filter>
         <mat-divider [vertical]="true"></mat-divider>
         <div class="workflow-navbar__view-options">
-            <mat-icon class="opt-view table-view" [routerLink]="WORKFLOW_TABLE_PATH" routerLinkActive="active"> menu </mat-icon>
-            <mat-icon class="opt-view board-view" [routerLink]="WORKFLOW_BOARD_PATH" routerLinkActive="active">
+            <mat-icon class="opt-view table-view" (click)="goToView('tableView')" [ngClass]="{ active: isView('tableView') }">
+                menu
+            </mat-icon>
+            <mat-icon class="opt-view board-view" (click)="goToView('boardView')" [ngClass]="{ active: isView('boardView') }">
                 bar_chart
             </mat-icon>
-            <mat-icon class="opt-view calendar-view" [routerLink]="WORKFLOW_CALENDAR_PATH" routerLinkActive="active">
+            <mat-icon
+                class="opt-view calendar-view"
+                (click)="goToView('calendarView')"
+                [ngClass]="{ active: isView('calendarView') }"
+            >
                 calendar_today
             </mat-icon>
         </div>
