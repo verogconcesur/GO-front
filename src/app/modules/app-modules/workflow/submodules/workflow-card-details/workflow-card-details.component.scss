@@ -57,6 +57,9 @@
     }
   }
   &__wrapper {
+    height: calc(100% - 57px);
+    width: 100%;
     background-color: lightgray;
+    border-radius: 0 30px 30px 30px;
   }
 }
