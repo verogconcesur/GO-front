@@ -115,7 +115,7 @@ export class TemplatesComponent implements OnInit {
   public changeSelectedTab(tab: MatTabChangeEvent): void {
     this.templatesHeader?.resetFilter();
     if (this.lastFilterSearch) {
-      console.log('Anything to do?', this.lastFilterSearch);
+      console.log('lastFilterSearch todo?', this.lastFilterSearch);
       // this.buttonSearchAction(null);
     }
     switch (tab.index) {

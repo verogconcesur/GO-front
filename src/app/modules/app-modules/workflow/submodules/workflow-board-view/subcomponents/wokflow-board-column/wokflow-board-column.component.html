@@ -58,7 +58,7 @@
                     [cdkDropListData]="user.cardsBySubstateId[wSubstate.id]"
                     [cdkDropListConnectedTo]="getAssociatedWSubstates(wSubstate.cards[0])"
                     (cdkDropListDropped)="
-                        drop($event, wSubstate, user);
+                        drop($event, wSubstate, user, wSubstateKey + wSubstate.id);
                         setHideEmptyDropZone(wSubstateKey + wSubstate.id + '-' + user.user.id, false)
                     "
                     (cdkDropListEntered)="setHideEmptyDropZone(wSubstateKey + wSubstate.id + '-' + user.user.id, true)"
@@ -96,7 +96,10 @@
                     [cdkDropListData]="wSubstate.cards"
                     [cdkDropListConnectedTo]="getAssociatedWSubstates(wSubstate.cards[0])"
                     [attr.dropListConnectedTo]="getAssociatedWSubstates(wSubstate.cards[0])"
-                    (cdkDropListDropped)="drop($event, wSubstate, null); setHideEmptyDropZone(wSubstateKey + wSubstate.id, false)"
+                    (cdkDropListDropped)="
+                        drop($event, wSubstate, null, wSubstateKey + wSubstate.i);
+                        setHideEmptyDropZone(wSubstateKey + wSubstate.id, false)
+                    "
                     (cdkDropListEntered)="setHideEmptyDropZone(wSubstateKey + wSubstate.id, true)"
                     (cdkDropListExited)="setHideEmptyDropZone(wSubstateKey + wSubstate.id, false)"
                 >

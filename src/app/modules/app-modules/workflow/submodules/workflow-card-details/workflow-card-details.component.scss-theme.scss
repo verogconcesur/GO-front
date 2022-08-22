@@ -1,0 +1,27 @@
+@import '@angular/material/theming';
+
+@mixin workflow-card-details-component-theme($theme, $main-typo) {
+  $primary: map-get($theme, primary);
+  // $foreground: map-get($theme, foreground);
+
+  .wcard-details {
+    background-color: mat-contrast($primary, A200);
+    &__tab {
+      &__header {
+        background-color: mat-contrast($primary, 500);
+      }
+      &__bg {
+        background-color: mat-contrast($primary, 500);
+        &::before {
+          background-color: mat-contrast($primary, A200);
+        }
+      }
+      &__close {
+        color: mat-contrast($primary, 400);
+      }
+    }
+    &__wrapper {
+      background-color: mat-contrast($primary, 500);
+    }
+  }
+}

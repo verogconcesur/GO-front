@@ -207,7 +207,7 @@ export class WokflowBoardColumnComponent implements OnInit {
     }
   }
 
-  public drop(event: CdkDragDrop<string[]>, wSubState: WorkflowSubstateDto, user: WorkflowSubstateUserDto) {
+  public drop(event: CdkDragDrop<string[]>, wSubState: WorkflowSubstateDto, user: WorkflowSubstateUserDto, dropZoneId: string) {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const item: any = event.previousContainer.data[event.previousIndex];
     let request: Observable<WorkflowCardInstanceDto> = null;
@@ -221,7 +221,14 @@ export class WokflowBoardColumnComponent implements OnInit {
       itemToReplace = { orderNumber: null };
     }
 
-    if (event.previousContainer === event.container && event.previousIndex !== event.currentIndex) {
+    // console.log(event, item, itemToReplace, wSubState, dropZoneId);
+    // console.log(
+    //   `${this.wSubstateKey}${item.cardInstanceWorkflows[0].workflowSubstateId}` === dropZoneId,
+    //   `${this.wSubstateKey}${item.cardInstanceWorkflows[0].workflowSubstateId}`,
+    //   dropZoneId
+    // );
+    const sameDropZone = `${this.wSubstateKey}${item.cardInstanceWorkflows[0].workflowSubstateId}` === dropZoneId;
+    if ((event.previousContainer === event.container && event.previousIndex !== event.currentIndex) || sameDropZone) {
       const orderNumber =
         event.previousIndex < event.currentIndex && (itemToReplace.orderNumber || itemToReplace.orderNumber === 0)
           ? itemToReplace.orderNumber + 1
@@ -241,8 +248,13 @@ export class WokflowBoardColumnComponent implements OnInit {
       // console.log('Posicionar en:', orderNumber);
       // moveItemInArray(event.container.data, event.previousIndex, event.currentIndex);
       item.orderNumber = orderNumber;
-      request = this.workflowService.changeOrderWorkflowCardInSubstate(this.workflow.facility.facilityId, item, orderNumber);
-    } else if (event.previousContainer !== event.container) {
+      request = this.workflowService.changeOrderWorkflowCardInSubstate(
+        this.workflow.facility.facilityId,
+        item,
+        user,
+        orderNumber
+      );
+    } else if (event.previousContainer !== event.container && !sameDropZone) {
       const move: WorkflowMoveDto = item.movements.find(
         (wMove: WorkflowMoveDto) => wMove.workflowSubstateTarget.id === wSubState.id
       );
