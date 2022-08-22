@@ -93,9 +93,11 @@
         "filterAction": "Filter",
         "footer": "Footer",
         "header": "Header",
+        "information": "Information",
         "insert": "Insert",
         "insertTextHere": "Insert text here.",
         "logo": "Logo",
+        "messages": "Messages",
         "newItem": "New item",
         "newLine": "New line",
         "postalCode": "Postal Code",
@@ -118,7 +120,8 @@
         "unselectAll": "Unselect all",
         "user": "User",
         "users": "Users",
-        "warning": "Warning"
+        "warning": "Warning",
+        "workOrder": "Work order"
     },
     "confirmdialog": {
         "no": "No",

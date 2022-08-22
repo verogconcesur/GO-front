@@ -8,5 +8,71 @@
             <mat-icon>close</mat-icon>
         </button>
     </div>
-    <div class="wcard-details__wrapper"></div>
+    <div class="wcard-details__wrapper">
+        <div class="wcard-details__wrapper__sections__container" [ngClass]="getContainerClass()">
+            <div class="wcard-details__wrapper__info-sections">
+                <div class="wcard-details__wrapper__info-sections__container">
+                    <div
+                        class="wcard-details__wrapper__info-sections__container__information"
+                        *ngIf="showMode === 'all' || tabSelected === 'information'"
+                    >
+                        Información
+                    </div>
+                    <div
+                        class="wcard-details__wrapper__info-sections__container__work-order"
+                        *ngIf="showMode === 'all' || tabSelected === 'workOrder'"
+                    >
+                        Órdenes de trabajo
+                    </div>
+                </div>
+                <div class="wcard-details__wrapper__info-sections__controller tab-options-wrapper" *ngIf="showMode === 'semi'">
+                    <div
+                        class="tab-option"
+                        (click)="changeSelectedTab('information')"
+                        [ngClass]="{ active: isTabSelected('information') }"
+                    >
+                        <mat-icon>info</mat-icon>
+                        <label>{{ labels.information | translate }}</label>
+                    </div>
+                    <div
+                        class="tab-option"
+                        (click)="changeSelectedTab('workOrder')"
+                        [ngClass]="{ active: isTabSelected('workOrder') }"
+                    >
+                        <mat-icon>build</mat-icon>
+                        <label>{{ labels.workOrder | translate }}</label>
+                    </div>
+                </div>
+            </div>
+            <div class="wcard-details__wrapper__messages" *ngIf="showMode !== 'individual' || tabSelected === 'messages'">
+                Mensajes
+            </div>
+            <div class="wcard-details__wrapper__actions" *ngIf="showMode !== 'individual' || tabSelected === 'actions'">
+                Acciones
+            </div>
+        </div>
+
+        <div class="wcard-details__wrapper__sections__controller tab-options-wrapper" *ngIf="showMode === 'individual'">
+            <div
+                class="tab-option"
+                (click)="changeSelectedTab('information')"
+                [ngClass]="{ active: isTabSelected('information') }"
+            >
+                <mat-icon>info</mat-icon>
+                <label>{{ labels.information | translate }}</label>
+            </div>
+            <div class="tab-option" (click)="changeSelectedTab('workOrder')" [ngClass]="{ active: isTabSelected('workOrder') }">
+                <mat-icon>build</mat-icon>
+                <label>{{ labels.workOrder | translate }}</label>
+            </div>
+            <div class="tab-option" (click)="changeSelectedTab('messages')" [ngClass]="{ active: isTabSelected('messages') }">
+                <mat-icon> textsms</mat-icon>
+                <label> {{ labels.messages | translate }}</label>
+            </div>
+            <div class="tab-option" (click)="changeSelectedTab('actions')" [ngClass]="{ active: isTabSelected('actions') }">
+                <mat-icon>more_horiz</mat-icon>
+                <label>{{ labels.actions | translate }}</label>
+            </div>
+        </div>
+    </div>
 </div>

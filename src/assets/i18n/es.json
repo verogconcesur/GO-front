@@ -93,9 +93,11 @@
         "filterAction": "Filtrar",
         "footer": "Pie",
         "header": "Cabecera",
+        "information": "Información",
         "insert": "Insertar",
         "insertTextHere": "Introduzca el texto aquí.",
         "logo": "Logo",
+        "messages": "Mensajes",
         "newItem": "Nuevo Elememto",
         "newLine": "Nueva línea",
         "postalCode": "Código Postal",
@@ -118,7 +120,8 @@
         "unselectAll": "Deseleccionar todos",
         "user": "Usuario",
         "users": "Usuarios",
-        "warning": "Advertencia"
+        "warning": "Advertencia",
+        "workOrder": "Orden de trabajo"
     },
     "confirmdialog": {
         "no": "No",

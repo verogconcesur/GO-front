@@ -55,5 +55,117 @@
     height: calc(100% - 57px);
     width: 100%;
     border-radius: 0 30px 30px 30px;
+    &__sections {
+      &__controller {
+        width: 100%;
+      }
+      &__container {
+        width: 100%;
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-start;
+
+        &.individual {
+          .wcard-details__wrapper__info-sections {
+            width: 0%;
+            &__container {
+              &__information,
+              &__work-order {
+                width: 100%;
+              }
+            }
+          }
+          .wcard-details__wrapper {
+            width: 0%;
+            &__messages,
+            &__actions {
+              width: 100%;
+            }
+          }
+          &.information,
+          &.workOrder {
+            .wcard-details__wrapper__info-sections {
+              width: 100%;
+            }
+          }
+          &.messages,
+          &.actions {
+            .wcard-details__wrapper {
+              width: 100%;
+            }
+          }
+        }
+
+        &.semi {
+          .wcard-details__wrapper__info-sections {
+            width: 50%;
+            &__container {
+              &__information,
+              &__work-order {
+                width: 100%;
+              }
+            }
+          }
+
+          .wcard-details__wrapper {
+            &__messages,
+            &__actions {
+              width: 25%;
+            }
+          }
+        }
+
+        .wcard-details__wrapper__info-sections {
+          width: 66%;
+          &__controller {
+            width: 100%;
+          }
+          &__container {
+            width: 100%;
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            &__information,
+            &__work-order {
+              width: 50%;
+            }
+          }
+
+          .tab-options-wrapper {
+            .tab-option {
+              width: 50%;
+            }
+          }
+        }
+        .wcard-details__wrapper {
+          &__messages,
+          &__actions {
+            width: 17%;
+          }
+        }
+      }
+    }
+
+    .tab-options-wrapper {
+      width: 100%;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      height: 64px;
+      .tab-option {
+        height: 64px;
+        width: 25%;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        cursor: pointer;
+        label {
+          cursor: pointer;
+        }
+        mat-icon {
+          margin-right: 5px;
+        }
+      }
+    }
   }
 }
