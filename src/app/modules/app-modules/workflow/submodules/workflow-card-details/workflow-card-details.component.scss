@@ -53,6 +53,7 @@
   }
   &__wrapper {
     height: calc(100% - 57px);
+    position: relative;
     width: 100%;
     border-radius: 0 30px 30px 30px;
     &__sections {
@@ -61,6 +62,7 @@
       }
       &__container {
         width: 100%;
+        height: 100%;
         display: flex;
         justify-content: space-between;
         align-items: flex-start;
@@ -68,49 +70,64 @@
         &.individual {
           .wcard-details__wrapper__info-sections {
             width: 0%;
+            height: calc(100% - 64px);
             &__container {
+              height: 100%;
               &__information,
               &__work-order {
                 width: 100%;
+                height: 100%;
               }
             }
           }
           .wcard-details__wrapper {
+            height: calc(100% - 64px);
             width: 0%;
             &__messages,
             &__actions {
               width: 100%;
+              height: calc(100% - 64px);
             }
           }
           &.information,
           &.workOrder {
             .wcard-details__wrapper__info-sections {
               width: 100%;
+              height: calc(100% - 64px);
             }
           }
           &.messages,
           &.actions {
             .wcard-details__wrapper {
               width: 100%;
+              height: calc(100% - 64px);
             }
           }
         }
 
         &.semi {
+          .tab-options-wrapper {
+            width: 50%;
+          }
           .wcard-details__wrapper__info-sections {
             width: 50%;
+            height: calc(100% - 64px);
             &__container {
+              height: 100%;
               &__information,
               &__work-order {
                 width: 100%;
+                height: 100%;
               }
             }
           }
 
           .wcard-details__wrapper {
+            height: 100%;
             &__messages,
             &__actions {
               width: 25%;
+              height: 100%;
             }
           }
         }
@@ -152,6 +169,10 @@
       justify-content: space-between;
       align-items: center;
       height: 64px;
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      border-radius: 0 0 30px 30px;
       .tab-option {
         height: 64px;
         width: 25%;
@@ -164,6 +185,12 @@
         }
         mat-icon {
           margin-right: 5px;
+        }
+        &:first-child {
+          border-radius: 0 0 0 30px;
+        }
+        &:nth-child(4) {
+          border-radius: 0 0 30px;
         }
       }
     }
