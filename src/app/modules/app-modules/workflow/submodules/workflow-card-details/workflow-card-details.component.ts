@@ -43,9 +43,9 @@ export class WorkflowCardDetailsComponent implements OnInit {
 
   public setShowMode(width: number) {
     let showMode: 'all' | 'semi' | 'individual' = 'all';
-    if (width <= 1300 && width > 1050) {
+    if (width <= 1400 && width > 1150) {
       showMode = 'semi';
-    } else if (width <= 1050) {
+    } else if (width <= 1150) {
       showMode = 'individual';
     }
     this.showMode = showMode;

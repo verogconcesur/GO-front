@@ -1,0 +1,16 @@
+<div class="w-column">
+    <h5 class="uppercase">{{ labels[column] | translate }}</h5>
+    <div class="w-column__container" [ngClass]="column">
+        <app-responsive-tabs
+            *ngIf="column !== 'actions'"
+            [tabs]="getTabsInfo(column)"
+            (tabSelectedEvent)="tabChange($event)"
+        ></app-responsive-tabs>
+        <div class="w-column__container__content">
+            <router-outlet name="information" *ngIf="column === 'information'"></router-outlet>
+            <router-outlet name="workOrder" *ngIf="column === 'workOrder'"></router-outlet>
+            <router-outlet name="messages" *ngIf="column === 'messages'"></router-outlet>
+            <div *ngIf="column === 'actions'">Actions content</div>
+        </div>
+    </div>
+</div>

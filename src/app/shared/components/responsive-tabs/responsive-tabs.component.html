@@ -1,0 +1,31 @@
+<div class="r-tabs" #responsiveTabsWrapper>
+    <div
+        #responsiveTab
+        class="r-tabs-tab"
+        *ngFor="let tab of visibleTabs"
+        [ngClass]="{ active: tab.id === tabSelected.id }"
+        (click)="tabSelectedChange(tab)"
+    >
+        {{ tab.labelToTranslate | translate }}
+    </div>
+    <div
+        class="r-tabs-tab"
+        *ngIf="hiddenTabs?.length"
+        [ngClass]="{ active: isHiddenTabSelected() }"
+        [matMenuTriggerFor]="moreOptionsMenu"
+    >
+        <label>{{ labels.more | translate }}</label>
+        <mat-icon>keyboard_arrow_down</mat-icon>
+    </div>
+</div>
+
+<mat-menu #moreOptionsMenu="matMenu">
+    <div
+        class="r-tabs-tab"
+        *ngFor="let tab of hiddenTabs"
+        [ngClass]="{ active: tab.id === tabSelected.id }"
+        (click)="tabSelectedChange(tab)"
+    >
+        {{ tab.labelToTranslate | translate }}
+    </div>
+</mat-menu>

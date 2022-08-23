@@ -16,13 +16,13 @@
                         class="wcard-details__wrapper__info-sections__container__information"
                         *ngIf="showMode === 'all' || tabSelected === 'information'"
                     >
-                        Información
+                        <app-workflow-card-column column="information"></app-workflow-card-column>
                     </div>
                     <div
                         class="wcard-details__wrapper__info-sections__container__work-order"
                         *ngIf="showMode === 'all' || tabSelected === 'workOrder'"
                     >
-                        Órdenes de trabajo
+                        <app-workflow-card-column column="workOrder"></app-workflow-card-column>
                     </div>
                 </div>
                 <div class="wcard-details__wrapper__info-sections__controller tab-options-wrapper" *ngIf="showMode === 'semi'">
@@ -45,10 +45,10 @@
                 </div>
             </div>
             <div class="wcard-details__wrapper__messages" *ngIf="showMode !== 'individual' || tabSelected === 'messages'">
-                Mensajes
+                <app-workflow-card-column column="messages"></app-workflow-card-column>
             </div>
             <div class="wcard-details__wrapper__actions" *ngIf="showMode !== 'individual' || tabSelected === 'actions'">
-                Acciones
+                <app-workflow-card-column column="actions"></app-workflow-card-column>
             </div>
         </div>
 

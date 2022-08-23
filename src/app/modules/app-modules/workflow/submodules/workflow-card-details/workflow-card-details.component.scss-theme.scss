@@ -29,7 +29,9 @@
       background-color: mat-color($background, background-administration);
       .tab-option {
         color: mat-color($primary, 800);
+        background-color: mat-color($background, background-administration);
         border-top: 1px solid mat-color($background, background-administration);
+        margin-bottom: 1px;
         mat-icon {
           color: mat-color($primary, A700);
         }
