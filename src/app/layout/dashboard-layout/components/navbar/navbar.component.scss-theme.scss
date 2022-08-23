@@ -7,6 +7,9 @@
       background-color: mat-contrast($primary, statusNeutral);
       opacity: 0.2;
     }
+    button.active .mat-button-wrapper {
+      border-bottom: 1px solid mat-contrast($primary, 400);
+    }
     &__search {
       color: mat-contrast($primary, statusNeutral);
       .mat-form-field-appearance-outline .mat-form-field-wrapper {

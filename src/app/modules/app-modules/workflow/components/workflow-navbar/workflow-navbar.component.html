@@ -1,0 +1,74 @@
+<div class="workflow-navbar" fxLayoutAlign="space-between center">
+    <div class="workflow-navbar__searcher smaller-mat-form-fields">
+        <form [formGroup]="workflowForm">
+            <mat-form-field
+                appearance="outline"
+                floatLabel="always"
+                class="smaller-mat-form-fields__no-margin mat-form-field__no-border"
+            >
+                <mat-select
+                    formControlName="workflow"
+                    disableOptionCentering
+                    [placeholder]="labels.selectWorkflow | translate"
+                    class="capitalize redPlaceholder"
+                    [panelClass]="'workflow-panel-class bigger-selection-panel-class smaller-mat-form-fields'"
+                    (selectionChange)="workflowSelectionChange($event)"
+                >
+                    <mat-form-field
+                        class="filter"
+                        appearance="outline"
+                        floatLabel="always"
+                        class="smaller-mat-form-fields__no-margin workflow-navbar__selector-filter"
+                    >
+                        <input
+                            matInput
+                            type="text"
+                            matInput
+                            formControlName="workflowSearch"
+                            [placeholder]="labels.filterWorkflow | translate"
+                        />
+                    </mat-form-field>
+
+                    <mat-divider></mat-divider>
+
+                    <mat-select-trigger *ngIf="workflowSelected">
+                        {{ workflowSelected?.name || "" }}
+                        <span *ngIf="workflowSelected.facility?.facilityName">
+                            - {{ workflowSelected.facility?.facilityName }}
+                        </span>
+                    </mat-select-trigger>
+                    <mat-optgroup
+                        *ngFor="let group of workflowGroupOptions | async"
+                        class="uppercase workflow-facility"
+                        [label]="getWorkflowGroupLabel(group) | uppercase"
+                    >
+                        <mat-divider></mat-divider>
+                        <mat-option *ngFor="let workflow of group.workflows" [value]="workflow" class="workflow-name capitalize">
+                            {{ workflow.name }}
+                            <!-- <mat-divider></mat-divider> -->
+                        </mat-option>
+                    </mat-optgroup>
+                </mat-select>
+            </mat-form-field>
+        </form>
+    </div>
+    <div fxLayoutAlign="space-between center">
+        <app-workflow-navbar-filter></app-workflow-navbar-filter>
+        <mat-divider [vertical]="true"></mat-divider>
+        <div class="workflow-navbar__view-options">
+            <mat-icon class="opt-view table-view" (click)="goToView('tableView')" [ngClass]="{ active: isView('tableView') }">
+                menu
+            </mat-icon>
+            <mat-icon class="opt-view board-view" (click)="goToView('boardView')" [ngClass]="{ active: isView('boardView') }">
+                bar_chart
+            </mat-icon>
+            <mat-icon
+                class="opt-view calendar-view"
+                (click)="goToView('calendarView')"
+                [ngClass]="{ active: isView('calendarView') }"
+            >
+                calendar_today
+            </mat-icon>
+        </div>
+    </div>
+</div>

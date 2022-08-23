@@ -1,0 +1,13 @@
+@import '@angular/material/theming';
+
+@mixin workflow-board-view-component-theme($theme, $main-typo) {
+  $primary: map-get($theme, primary);
+  // $foreground: map-get($theme, foreground);
+
+  .board-view-wrapper {
+    .hide-show-button {
+      background-color: #d7d7dc;
+      color: mat-contrast($primary, 50);
+    }
+  }
+}

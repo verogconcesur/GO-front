@@ -1,0 +1,62 @@
+//These styles are included in workflow.component.scss-theme.scss to avoid too many imports in styles file
+@import '@angular/material/theming';
+
+@mixin workflow-navbar-component-theme($theme, $main-typo) {
+  $primary: map-get($theme, primary);
+  $foreground: map-get($theme, foreground);
+
+  // NAVBAR
+  .workflow-navbar {
+    background-color: mat-contrast($primary, 400);
+    &__searcher {
+      input,
+      .mat-select-placeholder,
+      mat-select {
+        font-weight: 500;
+        font-size: 1.1rem;
+        color: mat-color($foreground, secondary-text);
+        .mat-select-value {
+          font-size: 1.4rem;
+          font-weight: 600;
+        }
+      }
+      .redPlaceholder {
+        .mat-select-placeholder {
+          color: mat-color($primary, statusError);
+          text-transform: uppercase;
+          opacity: 1; /* Firefox */
+        }
+      }
+    }
+    .workflow-navbar-filter__mobile {
+      color: mat-color($primary, 500);
+    }
+    &__view-options {
+      .opt-view {
+        color: mat-color($primary, 200);
+        &.active {
+          color: mat-color($primary, 500);
+        }
+      }
+    }
+  }
+
+  .workflow-panel-class {
+    .workflow-facility .mat-optgroup-label {
+      color: darken(mat-color($primary, A700), 30%);
+      font-size: 0.9em;
+      font-weight: 500;
+    }
+    .workflow-name {
+      color: darken(mat-color($primary, 900), 30%);
+      font-size: 0.9em;
+      font-weight: 500;
+    }
+    .workflow-navbar__selector-filter {
+      width: 100%;
+      input {
+        font-size: 1.2em;
+      }
+    }
+  }
+}

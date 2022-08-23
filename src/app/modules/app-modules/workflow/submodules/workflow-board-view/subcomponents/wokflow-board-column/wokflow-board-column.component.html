@@ -1,0 +1,121 @@
+<div
+    class="workflow-board-column"
+    [ngClass]="{
+        divider: divider,
+        collapsed: collapsed
+    }"
+>
+    <div class="workflow-board-column__state-name">
+        <h2 class="workflow-board-column__state-name__title">{{ wState.name }}</h2>
+        <div class="workflow-board-column__state-name__more" *ngIf="wState.front">
+            <button mat-button *ngIf="collapsed" (click)="changeCollapsed()">{{ labels.seeMore | translate }}</button>
+            <button mat-button *ngIf="!collapsed" (click)="changeCollapsed()">{{ labels.seeLess | translate }}</button>
+        </div>
+    </div>
+    <div
+        class="workflow-board-column__collapsed"
+        [ngStyle]="{ display: collapsed ? 'flex' : 'none' }"
+        [ngClass]="getCollapsedDropZoneClass()"
+        cdkDropList
+        [id]="wCollapsedStateKey + wState.id"
+        (cdkDropListEntered)="mouseOverCollapsedCard($event, 'over')"
+        (cdkDropListExited)="mouseOverCollapsedCard($event, 'leave')"
+    >
+        <div class="collapsed-card" [ngClass]="getCollapsedWDroppedClasses()">
+            <div class="collapsed-card__third collapsed-card__common"></div>
+            <div class="collapsed-card__second collapsed-card__common"></div>
+            <div class="collapsed-card__first collapsed-card__common">
+                <div class="collapsed-card__info-wrapper">
+                    <div class="collapsed-card__info">
+                        <mat-icon>people_outline</mat-icon>
+                        <label>{{ labels.workers | translate: { num: wState.userCount } }}</label>
+                    </div>
+                    <div class="collapsed-card__info">
+                        <mat-icon>create_new_folder</mat-icon>
+                        <label>{{ labels.nCards | translate: { num: wState.cardCount } }}</label>
+                    </div>
+                </div>
+                <div class="collapsed-card__see-more">
+                    <button mat-button class="uppercase" (click)="changeCollapsed()">
+                        {{ labels.seeCards | translate }}
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Usamos ngStyle en lugar de NgIf para que los cdkDropList estén renderizados y visibles en caso de que se expanda la columna haciendo el
+         drag sobre la tarjeta colapsada -->
+    <div class="workflow-board-column__expanded" [ngStyle]="{ display: collapsed ? 'none' : 'flex' }">
+        <div class="workflow-board-column__expanded__block" *ngFor="let user of wState.front ? wState.workflowUsers : []">
+            <h4>{{ getUserName(user) }}</h4>
+            <div class="workflow-substate front" *ngFor="let wSubstate of getWSubstatesToShowByUser(user, wState)">
+                <h3 class="title uppercase">{{ wSubstate.name }}</h3>
+                <div
+                    class="card-wrapper"
+                    [ngClass]="getCardWrapperClasses(wSubstateKey + wSubstate.id + '-' + user.user.id)"
+                    cdkDropList
+                    [id]="wSubstateKey + wSubstate.id + '-' + user.user.id"
+                    [cdkDropListData]="user.cardsBySubstateId[wSubstate.id]"
+                    [cdkDropListConnectedTo]="getAssociatedWSubstates(wSubstate.cards[0])"
+                    (cdkDropListDropped)="
+                        drop($event, wSubstate, user);
+                        setHideEmptyDropZone(wSubstateKey + wSubstate.id + '-' + user.user.id, false)
+                    "
+                    (cdkDropListEntered)="setHideEmptyDropZone(wSubstateKey + wSubstate.id + '-' + user.user.id, true)"
+                    (cdkDropListExited)="setHideEmptyDropZone(wSubstateKey + wSubstate.id + '-' + user.user.id, false)"
+                >
+                    <app-workflow-card
+                        *ngFor="let card of user.cardsBySubstateId[wSubstate.id]"
+                        [card]="card"
+                        [wState]="wState"
+                        [wSubstate]="wSubstate"
+                        [droppableStates]="
+                            getAssociatedWSubstates(wSubstate.cards[0], wSubstateKey + wSubstate.id + '-' + user.user.id)
+                        "
+                    ></app-workflow-card>
+                    <div
+                        class="empty-substate"
+                        *ngIf="
+                            !user.cardsBySubstateId[wSubstate.id]?.length &&
+                            !getHideEmptyDropZone(wSubstateKey + wSubstate.id + '-' + user.user.id)
+                        "
+                    >
+                        <label>{{ labels.emptySubstate | translate }}</label>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="workflow-board-column__expanded__block" *ngIf="!wState.front">
+            <div class="workflow-substate no-front" *ngFor="let wSubstate of wState.workflowSubstates">
+                <h3 class="title uppercase">{{ wSubstate.name }}</h3>
+                <div
+                    class="card-wrapper"
+                    [ngClass]="getCardWrapperClasses(wSubstateKey + wSubstate.id)"
+                    cdkDropList
+                    [id]="wSubstateKey + wSubstate.id"
+                    [cdkDropListData]="wSubstate.cards"
+                    [cdkDropListConnectedTo]="getAssociatedWSubstates(wSubstate.cards[0])"
+                    [attr.dropListConnectedTo]="getAssociatedWSubstates(wSubstate.cards[0])"
+                    (cdkDropListDropped)="drop($event, wSubstate, null); setHideEmptyDropZone(wSubstateKey + wSubstate.id, false)"
+                    (cdkDropListEntered)="setHideEmptyDropZone(wSubstateKey + wSubstate.id, true)"
+                    (cdkDropListExited)="setHideEmptyDropZone(wSubstateKey + wSubstate.id, false)"
+                >
+                    <app-workflow-card
+                        *ngFor="let card of wSubstate.cards"
+                        [card]="card"
+                        [wState]="wState"
+                        [wSubstate]="wSubstate"
+                        [droppableStates]="getAssociatedWSubstates(wSubstate.cards[0], wSubstateKey + wSubstate.id)"
+                        [attr.droppableStates]="getAssociatedWSubstates(wSubstate.cards[0], wSubstateKey + wSubstate.id)"
+                    ></app-workflow-card>
+                    <div
+                        class="empty-substate"
+                        *ngIf="!wSubstate.cards?.length && !getHideEmptyDropZone(wSubstateKey + wSubstate.id)"
+                    >
+                        <label>{{ labels.emptySubstate | translate }}</label>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

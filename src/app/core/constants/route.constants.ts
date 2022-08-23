@@ -23,10 +23,21 @@ export enum RouteConstants {
   // Dashboard
   DASHBOARD = 'dashboard',
 
+  // Workflows
+  WORKFLOWS = 'workflow',
+  WORKFLOW_ID = ':wId',
+  WORKFLOWS_TABLE_VIEW = 'tableView',
+  WORKFLOWS_BOARD_VIEW = 'boardView',
+  WORKFLOWS_CALENDAR_VIEW = 'calendarView',
+  WORKFLOWS_CARD = 'card',
+  WORKFLOWS_ID_CARD = 'wcId',
+
   //Administration
   ADMINISTRATION = 'administration',
+
   //Users
   USERS = 'users',
+
   //Organization
   ORGANIZATION = 'organization',
   BRANDS = 'brands',
@@ -36,6 +47,7 @@ export enum RouteConstants {
   DEPARTMENTS = 'departments',
   ID_DEPARTMENT = ':idDepartment',
   SPECIALTIES = 'specialties',
+
   //Templates
   TEMPLATES = 'templates',
   COMMUNICATIONS = 'communications',
