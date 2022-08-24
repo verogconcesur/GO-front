@@ -40,9 +40,17 @@ export class WorkflowCardColumnComponent implements OnInit {
     messages: ['comments', 'clientMessages']
   };
 
-  constructor() {}
+  public tabSelectedId = '';
+  constructor(private route: ActivatedRoute) {}
 
-  ngOnInit(): void {}
+  ngOnInit(): void {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const routeConfig: any = {};
+    this.route.children.forEach((d) => (routeConfig[d.routeConfig.outlet] = d.routeConfig.path));
+    if (routeConfig[this.column]) {
+      this.tabSelectedId = routeConfig[this.column];
+    }
+  }
 
   public getTabsInfo(column: 'information' | 'workOrder' | 'messages'): { id: string; labelToTranslate: string }[] {
     const tabs: { id: string; labelToTranslate: string }[] = [];
@@ -51,6 +59,7 @@ export class WorkflowCardColumnComponent implements OnInit {
   }
 
   public tabChange(event: ResponsiveTabI): void {
+    this.tabSelectedId = event.id;
     //La navegación la hago desde el padre para poder controlar todas las columnas
     this.tabChangeEvent.emit({ column: this.column, tab: event });
   }

@@ -4,6 +4,7 @@
         <app-responsive-tabs
             *ngIf="column !== 'actions'"
             [tabs]="getTabsInfo(column)"
+            [tabSelectedId]="tabSelectedId"
             (tabSelectedEvent)="tabChange($event)"
         ></app-responsive-tabs>
         <div class="w-column__container__content">

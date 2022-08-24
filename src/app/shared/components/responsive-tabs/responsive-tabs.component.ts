@@ -29,6 +29,7 @@ export class ResponsiveTabsComponent implements OnInit, AfterViewInit {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   @ViewChildren('responsiveTab', { read: ElementRef }) responsiveTab: QueryList<ElementRef>;
   @Input() tabs: ResponsiveTabI[];
+  @Input() tabSelectedId: string;
   @Output() tabSelectedEvent: EventEmitter<ResponsiveTabI> = new EventEmitter();
   public readonly tabKey = 'tab-';
   public labels = {
@@ -47,8 +48,13 @@ export class ResponsiveTabsComponent implements OnInit, AfterViewInit {
   }
 
   ngOnInit(): void {
+    console.log(this.tabSelectedId);
     if (this.tabs?.length) {
-      this.tabSelectedChange(this.tabs[0]);
+      let tab = this.tabs[0];
+      if (this.tabSelectedId) {
+        tab = this.tabs.find((t) => t.id === this.tabSelectedId);
+      }
+      this.tabSelectedChange(tab);
     }
   }
 
