@@ -3,7 +3,7 @@ import { Location } from '@angular/common';
 import { ActivatedRoute, Router } from '@angular/router';
 import WorkflowCardDto from '@data/models/workflows/workflow-card-dto';
 import { marker } from '@biesbjerg/ngx-translate-extract-marker';
-import { MatTabChangeEvent } from '@angular/material/tabs';
+import { ResponsiveTabI } from '@shared/components/responsive-tabs/responsive-tabs.component';
 
 @Component({
   selector: 'app-workflow-card-details',
@@ -21,6 +21,19 @@ export class WorkflowCardDetailsComponent implements OnInit {
     workOrder: marker('common.workOrder'),
     messages: marker('common.messages'),
     actions: marker('common.actions')
+  };
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  public relativeToWithOutlet: any = null;
+  public columnsOutlet: {
+    information: string[];
+    workOrder: string[];
+    messages: string[];
+    actions: string[];
+  } = {
+    information: null,
+    workOrder: null,
+    messages: null,
+    actions: null
   };
 
   constructor(private route: ActivatedRoute, private router: Router, private location: Location) {}
@@ -72,5 +85,28 @@ export class WorkflowCardDetailsComponent implements OnInit {
 
   public getContainerClass(): string {
     return this.showMode + ' ' + this.tabSelected;
+  }
+
+  public tabChange(data: { column: 'information' | 'workOrder' | 'messages' | 'actions'; tab: ResponsiveTabI }): void {
+    this.columnsOutlet[data.column] = [data.tab.id];
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const finalOutlet: any = {};
+    if (this.columnsOutlet.information?.length) {
+      finalOutlet.information = this.columnsOutlet.information;
+    }
+    if (this.columnsOutlet.workOrder?.length) {
+      finalOutlet.workOrder = this.columnsOutlet.workOrder;
+    }
+    if (this.columnsOutlet.messages?.length) {
+      finalOutlet.messages = this.columnsOutlet.messages;
+    }
+    if (!this.relativeToWithOutlet) {
+      this.relativeToWithOutlet = this.route;
+    } else {
+      this.relativeToWithOutlet = this.route.parent;
+    }
+    this.router.navigate([{ outlets: finalOutlet }], {
+      relativeTo: this.relativeToWithOutlet
+    });
   }
 }

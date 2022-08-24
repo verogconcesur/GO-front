@@ -1,4 +1,5 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import { ActivatedRoute, Router } from '@angular/router';
 import { marker } from '@biesbjerg/ngx-translate-extract-marker';
 import { ResponsiveTabI } from '@shared/components/responsive-tabs/responsive-tabs.component';
 
@@ -9,6 +10,8 @@ import { ResponsiveTabI } from '@shared/components/responsive-tabs/responsive-ta
 })
 export class WorkflowCardColumnComponent implements OnInit {
   @Input() column: 'information' | 'workOrder' | 'messages' | 'actions';
+  @Output() tabChangeEvent: EventEmitter<{ column: 'information' | 'workOrder' | 'messages' | 'actions'; tab: ResponsiveTabI }> =
+    new EventEmitter();
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   public labels: any = {
@@ -48,6 +51,7 @@ export class WorkflowCardColumnComponent implements OnInit {
   }
 
   public tabChange(event: ResponsiveTabI): void {
-    //TODO DGDC: navegación
+    //La navegación la hago desde el padre para poder controlar todas las columnas
+    this.tabChangeEvent.emit({ column: this.column, tab: event });
   }
 }
