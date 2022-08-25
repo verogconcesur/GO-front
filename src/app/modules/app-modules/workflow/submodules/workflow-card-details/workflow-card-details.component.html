@@ -9,67 +9,61 @@
         </button>
     </div>
     <div class="wcard-details__wrapper">
-        <div class="wcard-details__wrapper__sections__container" [ngClass]="getContainerClass()">
+        <div class="wcard-details__wrapper__sections__container" *ngIf="columnsConfig" [ngClass]="getContainerClass()">
             <div class="wcard-details__wrapper__info-sections">
                 <div class="wcard-details__wrapper__info-sections__container">
                     <div
-                        class="wcard-details__wrapper__info-sections__container__information"
-                        *ngIf="showMode === 'all' || tabSelected === 'information'"
+                        class="wcard-details__wrapper__info-sections__container__column1"
+                        *ngIf="showMode === 'all' || tabSelected === 'column1'"
                     >
-                        <app-workflow-card-column
-                            (tabChangeEvent)="tabChange($event)"
-                            column="information"
-                        ></app-workflow-card-column>
+                        <app-workflow-card-column containerClass="column1" [column]="columnsConfig[0]"></app-workflow-card-column>
                     </div>
                     <div
-                        class="wcard-details__wrapper__info-sections__container__work-order"
-                        *ngIf="showMode === 'all' || tabSelected === 'workOrder'"
+                        class="wcard-details__wrapper__info-sections__container__column2"
+                        *ngIf="showMode === 'all' || tabSelected === 'column2'"
                     >
-                        <app-workflow-card-column
-                            (tabChangeEvent)="tabChange($event)"
-                            column="workOrder"
-                        ></app-workflow-card-column>
+                        <app-workflow-card-column containerClass="column2" [column]="columnsConfig[1]"></app-workflow-card-column>
                     </div>
                 </div>
                 <div class="wcard-details__wrapper__info-sections__controller tab-options-wrapper" *ngIf="showMode === 'semi'">
                     <div
                         class="tab-option"
-                        (click)="changeSelectedTab('information')"
-                        [ngClass]="{ active: isTabSelected('information') }"
+                        (click)="changeSelectedTab('column1')"
+                        [ngClass]="{ active: isTabSelected('column1') }"
                     >
                         <mat-icon>info</mat-icon>
-                        <label>{{ labels.information | translate }}</label>
+                        <label>{{ labels.column1 | translate }}</label>
                     </div>
                     <div
                         class="tab-option"
-                        (click)="changeSelectedTab('workOrder')"
-                        [ngClass]="{ active: isTabSelected('workOrder') }"
+                        (click)="changeSelectedTab('column2')"
+                        [ngClass]="{ active: isTabSelected('column2') }"
                     >
                         <mat-icon>build</mat-icon>
-                        <label>{{ labels.workOrder | translate }}</label>
+                        <label>{{ labels.column2 | translate }}</label>
                     </div>
                 </div>
             </div>
             <div class="wcard-details__wrapper__messages" *ngIf="showMode !== 'individual' || tabSelected === 'messages'">
-                <app-workflow-card-column (tabChangeEvent)="tabChange($event)" column="messages"></app-workflow-card-column>
+                <app-workflow-card-column containerClass="messages" [column]="columnsConfig[2]"></app-workflow-card-column>
             </div>
             <div class="wcard-details__wrapper__actions" *ngIf="showMode !== 'individual' || tabSelected === 'actions'">
-                <app-workflow-card-column column="actions"></app-workflow-card-column>
+                <app-workflow-card-column
+                    containerClass="actions"
+                    [showTabs]="false"
+                    [column]="columnsConfig[3]"
+                ></app-workflow-card-column>
             </div>
         </div>
 
         <div class="wcard-details__wrapper__sections__controller tab-options-wrapper" *ngIf="showMode === 'individual'">
-            <div
-                class="tab-option"
-                (click)="changeSelectedTab('information')"
-                [ngClass]="{ active: isTabSelected('information') }"
-            >
+            <div class="tab-option" (click)="changeSelectedTab('column1')" [ngClass]="{ active: isTabSelected('column1') }">
                 <mat-icon>info</mat-icon>
-                <label>{{ labels.information | translate }}</label>
+                <label>{{ labels.column1 | translate }}</label>
             </div>
-            <div class="tab-option" (click)="changeSelectedTab('workOrder')" [ngClass]="{ active: isTabSelected('workOrder') }">
+            <div class="tab-option" (click)="changeSelectedTab('column2')" [ngClass]="{ active: isTabSelected('column2') }">
                 <mat-icon>build</mat-icon>
-                <label>{{ labels.workOrder | translate }}</label>
+                <label>{{ labels.column2 | translate }}</label>
             </div>
             <div class="tab-option" (click)="changeSelectedTab('messages')" [ngClass]="{ active: isTabSelected('messages') }">
                 <mat-icon> textsms</mat-icon>

@@ -1,9 +1,18 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { Component, HostListener, OnInit } from '@angular/core';
 import { Location } from '@angular/common';
 import { ActivatedRoute, Router } from '@angular/router';
 import WorkflowCardDto from '@data/models/workflows/workflow-card-dto';
 import { marker } from '@biesbjerg/ngx-translate-extract-marker';
 import { ResponsiveTabI } from '@shared/components/responsive-tabs/responsive-tabs.component';
+import { CardService } from '@data/services/cards.service';
+import { take } from 'rxjs/operators';
+import CardDto from '@data/models/cards/card-dto';
+import CardColumnDto from '@data/models/cards/card-column-dto';
+import { ProgressSpinnerDialogService } from '@shared/services/progress-spinner-dialog.service';
+import { GlobalMessageService } from '@shared/services/global-message.service';
+import { ConcenetError } from '@app/types/error';
+import { TranslateService } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-workflow-card-details',
@@ -14,29 +23,26 @@ export class WorkflowCardDetailsComponent implements OnInit {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   public relativeTo: any = null;
   public card: WorkflowCardDto = null;
-  public tabSelected: 'information' | 'workOrder' | 'messages' | 'actions' = 'information';
+  public idCard: number = null;
+  public tabSelected: 'column1' | 'column2' | 'messages' | 'actions' = 'column1';
   public showMode: 'all' | 'semi' | 'individual' = 'all';
   public labels = {
-    information: marker('common.information'),
-    workOrder: marker('common.workOrder'),
+    column1: '',
+    column2: '',
     messages: marker('common.messages'),
     actions: marker('common.actions')
   };
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  public relativeToWithOutlet: any = null;
-  public columnsOutlet: {
-    information: string[];
-    workOrder: string[];
-    messages: string[];
-    actions: string[];
-  } = {
-    information: null,
-    workOrder: null,
-    messages: null,
-    actions: null
-  };
+  public columnsConfig: CardColumnDto[] = null;
 
-  constructor(private route: ActivatedRoute, private router: Router, private location: Location) {}
+  constructor(
+    private route: ActivatedRoute,
+    private router: Router,
+    private location: Location,
+    private cardService: CardService,
+    private spinnerService: ProgressSpinnerDialogService,
+    private globalMessageService: GlobalMessageService,
+    private translateService: TranslateService
+  ) {}
 
   @HostListener('window:resize', ['$event']) onResize(event: { target: { innerWidth: number } }) {
     this.setShowMode(event.target.innerWidth);
@@ -50,8 +56,12 @@ export class WorkflowCardDetailsComponent implements OnInit {
     }
     if (state.card) {
       this.card = JSON.parse(state.card);
+      this.idCard = this.card.cardId;
+    } else if (this.route?.snapshot?.params?.id) {
+      this.idCard = parseInt(this.route?.snapshot?.params?.id, 10);
     }
     this.setShowMode(window.innerWidth);
+    this.getCardInfo();
   }
 
   public setShowMode(width: number) {
@@ -75,11 +85,11 @@ export class WorkflowCardDetailsComponent implements OnInit {
     }
   }
 
-  public isTabSelected(tab: 'information' | 'workOrder' | 'messages' | 'actions'): boolean {
+  public isTabSelected(tab: 'column1' | 'column2' | 'messages' | 'actions'): boolean {
     return this.tabSelected === tab;
   }
 
-  public changeSelectedTab(tab: 'information' | 'workOrder' | 'messages' | 'actions'): void {
+  public changeSelectedTab(tab: 'column1' | 'column2' | 'messages' | 'actions'): void {
     this.tabSelected = tab;
   }
 
@@ -87,26 +97,28 @@ export class WorkflowCardDetailsComponent implements OnInit {
     return this.showMode + ' ' + this.tabSelected;
   }
 
-  public tabChange(data: { column: 'information' | 'workOrder' | 'messages' | 'actions'; tab: ResponsiveTabI }): void {
-    this.columnsOutlet[data.column] = [data.tab.id];
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const finalOutlet: any = {};
-    if (this.columnsOutlet.information?.length) {
-      finalOutlet.information = this.columnsOutlet.information;
-    }
-    if (this.columnsOutlet.workOrder?.length) {
-      finalOutlet.workOrder = this.columnsOutlet.workOrder;
-    }
-    if (this.columnsOutlet.messages?.length) {
-      finalOutlet.messages = this.columnsOutlet.messages;
-    }
-    if (!this.relativeToWithOutlet) {
-      this.relativeToWithOutlet = this.route;
-    } else {
-      this.relativeToWithOutlet = this.route.parent;
-    }
-    this.router.navigate([{ outlets: finalOutlet }], {
-      relativeTo: this.relativeToWithOutlet
-    });
+  private getCardInfo(): void {
+    console.log(
+      // eslint-disable-next-line max-len
+      'TODO DGDC: invocar servicio para obtener los datos de la cabecera de la tarjeta y la estructura de columnas y pestañas, quitar hardcode'
+    );
+    const spinner = this.spinnerService.show();
+    this.cardService
+      .getCardById(this.card?.cardId ? this.card.cardId : 2)
+      .pipe(take(1))
+      .subscribe(
+        (data: CardDto) => {
+          console.log(data);
+          this.spinnerService.hide(spinner);
+          this.columnsConfig = data.cols;
+        },
+        (error: ConcenetError) => {
+          this.globalMessageService.showError({
+            message: error.message,
+            actionText: this.translateService.instant(marker('common.close'))
+          });
+          this.close();
+        }
+      );
   }
 }

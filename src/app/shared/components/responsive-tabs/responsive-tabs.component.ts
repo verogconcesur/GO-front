@@ -15,8 +15,9 @@ import {
 import { marker } from '@biesbjerg/ngx-translate-extract-marker';
 
 export interface ResponsiveTabI {
-  id: string;
-  labelToTranslate: string;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  id: any;
+  label: string;
 }
 
 @Component({
@@ -48,7 +49,6 @@ export class ResponsiveTabsComponent implements OnInit, AfterViewInit {
   }
 
   ngOnInit(): void {
-    console.log(this.tabSelectedId);
     if (this.tabs?.length) {
       let tab = this.tabs[0];
       if (this.tabSelectedId) {

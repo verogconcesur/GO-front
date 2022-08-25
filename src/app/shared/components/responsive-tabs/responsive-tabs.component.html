@@ -6,7 +6,7 @@
         [ngClass]="{ active: tab.id === tabSelected.id }"
         (click)="tabSelectedChange(tab)"
     >
-        {{ tab.labelToTranslate | translate }}
+        {{ tab.label | translate }}
     </div>
     <div
         class="r-tabs-tab"
@@ -26,6 +26,6 @@
         [ngClass]="{ active: tab.id === tabSelected.id }"
         (click)="tabSelectedChange(tab)"
     >
-        {{ tab.labelToTranslate | translate }}
+        {{ tab.label | translate }}
     </div>
 </mat-menu>
