@@ -19,7 +19,7 @@ export class WorkflowCardComponent implements OnInit {
   @Input() wState: WorkflowStateDto;
   @Input() wSubstate: WorkflowSubstateDto;
   @Input() droppableStates: string[];
-
+  public cardSize = 'size-m';
   public labels = {
     dueOutDateTime: marker('workflows.dueOutDateTime')
   };
@@ -32,7 +32,9 @@ export class WorkflowCardComponent implements OnInit {
     private router: Router
   ) {}
 
-  ngOnInit(): void {}
+  ngOnInit(): void {
+    this.getCardSize();
+  }
 
   public getColors(): string[] {
     return [
@@ -58,12 +60,10 @@ export class WorkflowCardComponent implements OnInit {
     }
   }
 
-  public getCardSize(): string {
-    let size = 'size-m';
+  public getCardSize(): void {
     if (this.card.size) {
-      size = 'size-' + this.card.size.toLowerCase();
+      this.cardSize = 'size-' + this.card.size.toLowerCase();
     }
-    return size;
   }
 
   public showCardInfo(): void {

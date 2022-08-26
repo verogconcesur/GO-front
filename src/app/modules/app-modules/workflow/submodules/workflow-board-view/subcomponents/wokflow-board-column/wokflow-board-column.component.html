@@ -95,7 +95,6 @@
                     [id]="wSubstateKey + wSubstate.id"
                     [cdkDropListData]="wSubstate.cards"
                     [cdkDropListConnectedTo]="getAssociatedWSubstates(wSubstate.cards[0])"
-                    [attr.dropListConnectedTo]="getAssociatedWSubstates(wSubstate.cards[0])"
                     (cdkDropListDropped)="
                         drop($event, wSubstate, null, wSubstateKey + wSubstate.i);
                         setHideEmptyDropZone(wSubstateKey + wSubstate.id, false)
@@ -109,7 +108,6 @@
                         [wState]="wState"
                         [wSubstate]="wSubstate"
                         [droppableStates]="getAssociatedWSubstates(wSubstate.cards[0], wSubstateKey + wSubstate.id)"
-                        [attr.droppableStates]="getAssociatedWSubstates(wSubstate.cards[0], wSubstateKey + wSubstate.id)"
                     ></app-workflow-card>
                     <div
                         class="empty-substate"
