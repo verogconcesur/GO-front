@@ -39,6 +39,7 @@ export class WokflowBoardColumnComponent implements OnInit {
   public readonly wCollapsedStateKey = 'wCollapsedState-';
   public readonly wSubstateKey = 'wSubstate-';
   public readonly droppableZoneClass = 'droppable-zone';
+  public readonly undroppableZoneClass = 'undroppable';
   public readonly timeToWaitBeforeExpandColumnOnDragging = 1500;
 
   public labels = {
@@ -171,6 +172,9 @@ export class WokflowBoardColumnComponent implements OnInit {
         classes += `${this.droppableZoneClass} `;
       }
     });
+    if (classes.indexOf(this.droppableZoneClass) === -1) {
+      classes += `${this.undroppableZoneClass} `;
+    }
     return classes;
   }
 
@@ -187,13 +191,15 @@ export class WokflowBoardColumnComponent implements OnInit {
     if (this.isCardDragging) {
       if (this.droppableStates.indexOf(id) >= 0) {
         classes += this.droppableZoneClass;
+      } else {
+        classes += this.undroppableZoneClass;
       }
     }
     return classes;
   }
 
   public mouseOverCollapsedCard(event: MouseEvent, action: 'over' | 'leave') {
-    if (this.getCollapsedDropZoneClass() && action === 'over') {
+    if (this.getCollapsedDropZoneClass().indexOf(this.droppableZoneClass) >= 0 && action === 'over') {
       this.changeCollapseStatusOnOver = true;
       setTimeout(() => {
         if (this.changeCollapseStatusOnOver && this.collapsed) {
