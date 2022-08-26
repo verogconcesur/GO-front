@@ -5,6 +5,7 @@ import { ENV } from '@app/constants/global.constants';
 import { Env } from '@app/types/env';
 import { ConcenetError } from '@app/types/error';
 import CardDto from '@data/models/cards/card-dto';
+import CardInstanceDto from '@data/models/cards/card-instance-dto';
 import { Observable, throwError } from 'rxjs';
 import { catchError } from 'rxjs/operators';
 
@@ -13,17 +14,30 @@ import { catchError } from 'rxjs/operators';
 })
 export class CardService {
   private readonly GET_CARD_PATH = '/api/cards';
+  private readonly GET_CARD_INSTANCE_PATH = '/api/cardInstanceWorkflow';
+  private readonly GET_DETAIL_PATH = '/detail';
 
   constructor(@Inject(ENV) private env: Env, private http: HttpClient) {}
 
   /**
    * Get card by id
    *
-   * @returns WorkflowListByFacilityDto[]
+   * @returns CardDto
    */
   public getCardById(id: number): Observable<CardDto> {
     return this.http
       .get<CardDto>(`${this.env.apiBaseUrl}${this.GET_CARD_PATH}/${id}`)
+      .pipe(catchError((error) => throwError(error.error as ConcenetError)));
+  }
+
+  /**
+   * Get card instance detail by id
+   *
+   * @returns any
+   */
+  public getCardInstanceDetailById(id: number): Observable<CardInstanceDto> {
+    return this.http
+      .get<CardInstanceDto>(`${this.env.apiBaseUrl}${this.GET_CARD_INSTANCE_PATH}${this.GET_DETAIL_PATH}/${id}`)
       .pipe(catchError((error) => throwError(error.error as ConcenetError)));
   }
 }

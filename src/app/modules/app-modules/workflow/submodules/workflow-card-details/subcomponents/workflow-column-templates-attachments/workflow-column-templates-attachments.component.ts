@@ -2,11 +2,11 @@ import { Component, Input, OnChanges, OnInit, SimpleChanges } from '@angular/cor
 import CardColumnTabDto from '@data/models/cards/card-column-tab-dto';
 
 @Component({
-  selector: 'app-workflow-column-customizable-entity',
-  templateUrl: './workflow-column-customizable-entity.component.html',
-  styleUrls: ['./workflow-column-customizable-entity.component.scss']
+  selector: 'app-workflow-column-templates-attachments',
+  templateUrl: './workflow-column-templates-attachments.component.html',
+  styleUrls: ['./workflow-column-templates-attachments.component.scss']
 })
-export class WorkflowColumnCustomizableEntityComponent implements OnInit, OnChanges {
+export class WorkflowColumnTemplatesAttachmentsComponent implements OnInit, OnChanges {
   @Input() tab: CardColumnTabDto = null;
 
   constructor() {}

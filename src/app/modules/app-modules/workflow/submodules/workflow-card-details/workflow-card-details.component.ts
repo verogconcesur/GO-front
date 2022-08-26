@@ -13,6 +13,7 @@ import { ProgressSpinnerDialogService } from '@shared/services/progress-spinner-
 import { GlobalMessageService } from '@shared/services/global-message.service';
 import { ConcenetError } from '@app/types/error';
 import { TranslateService } from '@ngx-translate/core';
+import CardInstanceDto from '@data/models/cards/card-instance-dto';
 
 @Component({
   selector: 'app-workflow-card-details',
@@ -33,6 +34,7 @@ export class WorkflowCardDetailsComponent implements OnInit {
     actions: marker('common.actions')
   };
   public columnsConfig: CardColumnDto[] = null;
+  public cardInstance: CardInstanceDto = null;
 
   constructor(
     private route: ActivatedRoute,
@@ -104,13 +106,14 @@ export class WorkflowCardDetailsComponent implements OnInit {
     );
     const spinner = this.spinnerService.show();
     this.cardService
-      .getCardById(this.card?.cardId ? this.card.cardId : 2)
+      .getCardInstanceDetailById(this.idCard)
       .pipe(take(1))
       .subscribe(
-        (data: CardDto) => {
-          console.log(data);
+        (data: CardInstanceDto) => {
+          console.log('CardInstanceDto', data);
           this.spinnerService.hide(spinner);
-          this.columnsConfig = data.cols;
+          this.cardInstance = data;
+          this.columnsConfig = data.card.cols;
         },
         (error: ConcenetError) => {
           this.globalMessageService.showError({
@@ -120,5 +123,22 @@ export class WorkflowCardDetailsComponent implements OnInit {
           this.close();
         }
       );
+    // this.cardService
+    //   .getCardById(this.card?.cardId ? this.card.cardId : 2)
+    //   .pipe(take(1))
+    //   .subscribe(
+    //     (data: CardDto) => {
+    //       console.log(data);
+    //       this.spinnerService.hide(spinner);
+    //       this.columnsConfig = data.cols;
+    //     },
+    //     (error: ConcenetError) => {
+    //       this.globalMessageService.showError({
+    //         message: error.message,
+    //         actionText: this.translateService.instant(marker('common.close'))
+    //       });
+    //       this.close();
+    //     }
+    //   );
   }
 }
