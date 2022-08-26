@@ -100,10 +100,6 @@ export class WorkflowCardDetailsComponent implements OnInit {
   }
 
   private getCardInfo(): void {
-    console.log(
-      // eslint-disable-next-line max-len
-      'TODO DGDC: invocar servicio para obtener los datos de la cabecera de la tarjeta y la estructura de columnas y pestañas, quitar hardcode'
-    );
     const spinner = this.spinnerService.show();
     this.cardService
       .getCardInstanceDetailById(this.idCard)
@@ -123,22 +119,5 @@ export class WorkflowCardDetailsComponent implements OnInit {
           this.close();
         }
       );
-    // this.cardService
-    //   .getCardById(this.card?.cardId ? this.card.cardId : 2)
-    //   .pipe(take(1))
-    //   .subscribe(
-    //     (data: CardDto) => {
-    //       console.log(data);
-    //       this.spinnerService.hide(spinner);
-    //       this.columnsConfig = data.cols;
-    //     },
-    //     (error: ConcenetError) => {
-    //       this.globalMessageService.showError({
-    //         message: error.message,
-    //         actionText: this.translateService.instant(marker('common.close'))
-    //       });
-    //       this.close();
-    //     }
-    //   );
   }
 }
