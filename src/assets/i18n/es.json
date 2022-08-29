@@ -1,6 +1,7 @@
 {
     "administration": {
         "brands": "Marcas",
+        "cards": "Tarjetas",
         "exit": "Salir de configuración",
         "facilities": "Instalaciones",
         "organization": "Organización",
@@ -70,6 +71,11 @@
         },
         "title": "Concenet"
     },
+    "cards": {
+        "create": "Crear tarjeta",
+        "deleteConfirmation": "¿Está seguro que desea eliminar esta tarjeta?",
+        "duplicateConfirmation": "¿Está seguro que desea duplicar esta tarjeta?"
+    },
     "common": {
         "accessDenied": "Acceso denegado. No tiene privilegios suficientes.",
         "actions": "Acciones",
@@ -110,6 +116,7 @@
         "logo": "Logo",
         "messages": "Mensajes",
         "more": "Más",
+        "name": "Nombre",
         "newItem": "Nuevo Elememto",
         "newLine": "Nueva línea",
         "payments": "Pagos",

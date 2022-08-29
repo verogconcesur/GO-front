@@ -1,0 +1,17 @@
+<div class="cards-container">
+    <div class="cards-container__header">
+        <app-administration-common-header-section
+            #usersHeader
+            [searchType]="'search'"
+            [buttonLabel]="labels.createCard"
+            [showFilterButton]="false"
+            [areFiltersSettedAndActive]="false"
+            [searchFn]="getFilteredData"
+            [title]="'administration.cards'"
+            (buttonCreateAction)="buttonCreateAction()"
+            (buttonShowFilterDrawerAction)="false"
+            (buttonSearchAction)="buttonSearchAction($event)"
+        ></app-administration-common-header-section>
+        <app-cards-list #cardsList></app-cards-list>
+    </div>
+</div>
