@@ -3,7 +3,7 @@ import { PageEvent } from '@angular/material/paginator';
 import { marker } from '@biesbjerg/ngx-translate-extract-marker';
 import PaginationResponseI from '@data/interfaces/pagination-response';
 import BasicFilterDTO from '@data/models/basic-filter-dto';
-import CardDTO from '@data/models/card-dto';
+import CardDto from '@data/models/cards/card-dto';
 import { CardService } from '@data/services/card.service';
 import { FilterDrawerService } from '@modules/feature-modules/filter-drawer/services/filter-drawer.service';
 import { untilDestroyed } from '@ngneat/until-destroy';
@@ -34,7 +34,7 @@ export class CardsListComponent implements OnInit {
     ariaLabel: 'Select page'
   };
   public displayedColumns = ['name', 'actions'];
-  public dataSource: CardDTO[] = [];
+  public dataSource: CardDto[] = [];
   private textSearchValue = '';
 
   constructor(
@@ -50,13 +50,13 @@ export class CardsListComponent implements OnInit {
     this.setSidenavFilterDrawerConfiguration();
   }
 
-  public openCreateEditCardDialog = (card?: CardDTO): void => {};
+  public openCreateEditCardDialog = (card?: CardDto): void => {};
 
   public openFilterCardDialog = (): void => {
     this.filterDrawerService.toggleFilterDrawer();
   };
 
-  public showFilterOptionSelected = (opt?: CardDTO | string): void => {
+  public showFilterOptionSelected = (opt?: CardDto | string): void => {
     if (opt && typeof opt !== 'string') {
       this.textSearchValue = opt.name.toLowerCase();
     } else {
@@ -67,19 +67,18 @@ export class CardsListComponent implements OnInit {
   };
 
   //Invoked on search input
-  public getFilteredData = (text: string): Observable<{content: CardDTO[]}> => {
+  public getFilteredData = (text: string): Observable<{ content: CardDto[] }> => {
     this.textSearchValue = text;
     if (text.length >= 3) {
-      return this.cardService
-        .searchCards(
-          {
-            search: this.textSearchValue
-          },
-          {
-            page: 0,
-            size: 20
-          }
-        );
+      return this.cardService.searchCards(
+        {
+          search: this.textSearchValue
+        },
+        {
+          page: 0,
+          size: 20
+        }
+      );
     } else {
       return of({
         content: []
@@ -108,13 +107,13 @@ export class CardsListComponent implements OnInit {
         take(1),
         finalize(() => this.spinnerService.hide(spinner))
       )
-      .subscribe((response: PaginationResponseI<CardDTO>) => {
+      .subscribe((response: PaginationResponseI<CardDto>) => {
         this.paginationConfig.length = response.totalElements;
         this.dataSource = response.content;
       });
   };
 
-  public deleteCard = (card: CardDTO): void => {
+  public deleteCard = (card: CardDto): void => {
     this.confirmationDialog
       .open({
         title: this.translateService.instant(marker('common.warning')),
@@ -145,7 +144,7 @@ export class CardsListComponent implements OnInit {
       });
   };
 
-  public duplicateCard = (card: CardDTO): void => {
+  public duplicateCard = (card: CardDto): void => {
     this.confirmationDialog
       .open({
         title: this.translateService.instant(marker('common.warning')),

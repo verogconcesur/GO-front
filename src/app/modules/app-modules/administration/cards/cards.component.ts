@@ -1,6 +1,6 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { marker } from '@biesbjerg/ngx-translate-extract-marker';
-import CardDTO from '@data/models/card-dto';
+import CardDto from '@data/models/cards/card-dto';
 import { Observable } from 'rxjs';
 import { CardsListComponent } from './components/cards-list/cards-list.component';
 
@@ -14,7 +14,7 @@ export class CardsComponent implements OnInit {
 
   public labels = {
     createCard: marker('cards.create'),
-    cardTitle: marker('administration.cards'),
+    cardTitle: marker('administration.cards')
   };
 
   constructor() {}
@@ -25,9 +25,7 @@ export class CardsComponent implements OnInit {
     this.cardsListComponent.openCreateEditCardDialog();
   }
 
-  public getFilteredData = (
-    text: string
-  ): Observable<{ content: CardDTO[] } | null> =>
+  public getFilteredData = (text: string): Observable<{ content: CardDto[] } | null> =>
     this.cardsListComponent.getFilteredData(text);
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any

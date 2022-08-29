@@ -6,7 +6,7 @@ import { ConcenetError } from '@app/types/error';
 import PaginationRequestI from '@data/interfaces/pagination-request';
 import PaginationResponseI from '@data/interfaces/pagination-response';
 import BasicFilterDTO from '@data/models/basic-filter-dto';
-import CardDTO from '@data/models/card-dto';
+import CardDto from '@data/models/cards/card-dto';
 import { getPaginationUrlGetParams } from '@data/utils/pagination-aux';
 import { Observable, throwError } from 'rxjs';
 import { catchError } from 'rxjs/operators';
@@ -21,27 +21,24 @@ export class CardService {
 
   constructor(@Inject(ENV) private env: Env, private http: HttpClient) {}
 
-  public searchCards(
-    cardFilter: BasicFilterDTO,
-    pagination?: PaginationRequestI
-  ): Observable<PaginationResponseI<CardDTO>> {
+  public searchCards(cardFilter: BasicFilterDTO, pagination?: PaginationRequestI): Observable<PaginationResponseI<CardDto>> {
     return this.http
-      .post<PaginationResponseI<CardDTO>>(
+      .post<PaginationResponseI<CardDto>>(
         `${this.env.apiBaseUrl}${this.SEARCH_CARDS_PATH}${getPaginationUrlGetParams(pagination, true)}`,
         cardFilter
       )
       .pipe(catchError((error) => throwError(error as ConcenetError)));
   }
 
-  public duplicateCard(id: number): Observable<CardDTO> {
+  public duplicateCard(id: number): Observable<CardDto> {
     return this.http
-      .get<CardDTO>(`${this.env.apiBaseUrl}${this.DUPLICATE_CARDS_PATH}/${id}`)
+      .get<CardDto>(`${this.env.apiBaseUrl}${this.DUPLICATE_CARDS_PATH}/${id}`)
       .pipe(catchError((error) => throwError(error.error as ConcenetError)));
   }
 
-  public deleteCard(id: number): Observable<CardDTO> {
+  public deleteCard(id: number): Observable<CardDto> {
     return this.http
-      .delete<CardDTO>(`${this.env.apiBaseUrl}${this.DELETE_CARDS_PATH}/${id}`)
+      .delete<CardDto>(`${this.env.apiBaseUrl}${this.DELETE_CARDS_PATH}/${id}`)
       .pipe(catchError((error) => throwError(error.error as ConcenetError)));
   }
 }
