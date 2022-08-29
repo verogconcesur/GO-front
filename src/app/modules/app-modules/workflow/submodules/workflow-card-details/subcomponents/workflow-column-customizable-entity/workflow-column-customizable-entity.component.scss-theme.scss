@@ -1,0 +1,15 @@
+@import '@angular/material/theming';
+
+@mixin workflow-customizable-entity-component-theme($theme, $main-typo) {
+  $primary: map-get($theme, primary);
+  // $foreground: map-get($theme, foreground);
+
+  .entityData {
+    &__label {
+      color: mat-contrast($primary, 100);
+    }
+    &__value {
+      color: mat-contrast($primary, 900);
+    }
+  }
+}

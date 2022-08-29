@@ -1,5 +1,4 @@
 import { Component, Input, OnInit } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
 import CardColumnDto from '@data/models/cards/card-column-dto';
 import CardColumnTabDto from '@data/models/cards/card-column-tab-dto';
 import { ResponsiveTabI } from '@shared/components/responsive-tabs/responsive-tabs.component';
@@ -14,9 +13,10 @@ export class WorkflowCardColumnComponent implements OnInit {
   @Input() showTabs = true;
   @Input() containerClass = '';
 
+  public showLoading = false;
   public tabToShow: CardColumnTabDto = null;
 
-  constructor(private route: ActivatedRoute) {}
+  constructor() {}
 
   ngOnInit(): void {}
 
@@ -27,6 +27,10 @@ export class WorkflowCardColumnComponent implements OnInit {
 
   public tabChange(event: ResponsiveTabI): void {
     this.tabToShow = this.column.tabs.find((tab) => tab.id === event.id);
+  }
+
+  public setShowLoading(loading: boolean): void {
+    this.showLoading = loading;
   }
 
   // type     	content_type_id	  content_type	  content_source_id	  content_source
