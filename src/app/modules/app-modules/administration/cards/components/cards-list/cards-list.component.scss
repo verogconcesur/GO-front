@@ -1,0 +1,18 @@
+.cards-wrapper {
+    min-width: 650px;
+    .table-cards {
+      margin-top: 36px;
+      .mat-column-fullName {
+        flex: 0 0 70%;
+      }
+      .mat-column-permissionsGroup,
+      .mat-column-department,
+      .mat-column-actions {
+        flex: 0 0 10%;
+      }
+      .mat-column-actions {
+        text-align: center;
+      }
+    }
+  }
+  
