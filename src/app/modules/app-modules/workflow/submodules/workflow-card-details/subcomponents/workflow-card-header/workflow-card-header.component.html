@@ -1,0 +1,51 @@
+<div class="wcard-header">
+    <div class="wcard-header__wrapper" *ngIf="card">
+        <div class="wcard-header__colors">
+            <div
+                class="wcard-header__colors__color"
+                *ngFor="let color of getColors()"
+                [style.background-color]="color"
+                [ngClass]="getColorsClass()"
+            ></div>
+        </div>
+        <div style="font-weight: bold; font-size: 1.1em">20005T52222</div>
+    </div>
+    <div class="wcard-header__wrapper" *ngIf="card">
+        <!-- <div class="wcard-header__chip" [style.background-color]="card.workflowStateColor">
+            {{ card?.workflowName }}
+        </div>
+        <div class="wcard-header__chip">
+            {{ card?.workflowStateName }}
+        </div>
+        <div class="wcard-header__chip">
+            {{ card?.workflowSubstateName }}
+        </div> -->
+        <div class="wcard-header__location">
+            {{ card?.workflowName }} / {{ card?.workflowStateName }} / {{ card?.workflowSubstateName }}
+        </div>
+        <button
+            class="wcard-header__follow-btn"
+            mat-raised-button
+            color="primary"
+            *ngIf="!card?.follower"
+            (click)="changeFollowingCard()"
+        >
+            <label>{{ labels.follow | translate }}</label
+            ><mat-icon>remove_red_eye</mat-icon>
+        </button>
+        <button
+            class="wcard-header__follow-btn"
+            mat-raised-button
+            color="warn"
+            *ngIf="card?.follower"
+            (click)="changeFollowingCard()"
+        >
+            <label>{{ labels.following | translate }}</label
+            ><mat-icon>remove_red_eye</mat-icon>
+        </button>
+        <button class="wcard-header__people-btn" mat-button>
+            <label>{{ card?.users.length }}</label>
+            <mat-icon>people_outline</mat-icon>
+        </button>
+    </div>
+</div>

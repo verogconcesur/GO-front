@@ -86,7 +86,7 @@ export class WorkflowBoardViewComponent implements OnInit {
       });
   }
 
-  public hideAnchorState = (): boolean => !this.showAnchorState || this.anchorStateColumn?.isStateEmpty();
+  public hideAnchorState = (): boolean => !this.showAnchorState;
 
   private mapWorkflowCardsWithInstances(workflowCards: WorkflowCardDto[]) {
     this.workflowInstances.forEach((wState: WorkflowStateDto) => {

@@ -1,0 +1,29 @@
+@import '@angular/material/theming';
+
+@mixin responsive-tabs-component-theme($theme, $main-typo) {
+  $primary: map-get($theme, primary);
+  $background: map-get($theme, background);
+
+  .r-tabs {
+    border-bottom: 1px solid rgb(121, 191, 252);
+  }
+
+  .r-tabs-tab {
+    font-size: 0.85em;
+    margin: 8px 5px 0 5px;
+    padding: 0 2px 6px 2px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    &:first-child {
+      margin-left: 8px;
+    }
+    &.active {
+      border-bottom: 2px solid blue;
+    }
+    mat-icon {
+      width: 20px;
+      height: 20px;
+    }
+  }
+}

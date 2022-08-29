@@ -6,7 +6,7 @@
 
   .board-view-wrapper {
     .hide-show-button {
-      background-color: #d7d7dc;
+      background-color: mat-contrast($primary, 300);
       color: mat-contrast($primary, 50);
     }
   }

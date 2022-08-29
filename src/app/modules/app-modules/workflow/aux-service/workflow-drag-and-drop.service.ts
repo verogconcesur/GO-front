@@ -1,18 +1,19 @@
 import { Injectable } from '@angular/core';
+import WorkflowCardDto from '@data/models/workflows/workflow-card-dto';
 import { BehaviorSubject } from 'rxjs';
 
 @Injectable({
   providedIn: 'root'
 })
 export class WorkflowDragAndDropService {
-  public draggingCard$: BehaviorSubject<boolean> = new BehaviorSubject(false);
+  public draggingCard$: BehaviorSubject<WorkflowCardDto> = new BehaviorSubject(null);
   public droppableStates$: BehaviorSubject<string[]> = new BehaviorSubject([]);
   public expandedColumns$: BehaviorSubject<string[]> = new BehaviorSubject([]);
 
   constructor() {}
 
   public resetObservables(): void {
-    this.draggingCard$.next(false);
+    this.draggingCard$.next(null);
     this.droppableStates$.next([]);
     this.expandedColumns$.next([]);
   }

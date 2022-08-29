@@ -44,10 +44,10 @@
     }
   }
 
-  @include respond-to(645px) {
+  @include respond-to(698px) {
     &__searcher {
       mat-form-field {
-        width: calc(100vw - 220px);
+        width: calc(100vw - 280px);
       }
     }
 

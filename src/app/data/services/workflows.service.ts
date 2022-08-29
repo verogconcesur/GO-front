@@ -93,6 +93,7 @@ export class WorkflowsService {
   public changeOrderWorkflowCardInSubstate(
     facilityId: number,
     card: WorkflowCardDto,
+    wUser: WorkflowSubstateUserDto,
     newOrderNumber: number
   ): Observable<WorkflowCardInstanceDto> {
     return this.http
@@ -101,6 +102,7 @@ export class WorkflowsService {
           `${this.GET_WORKFLOWS_FACILITY_PATH}/${facilityId}${this.GET_WORKFLOWS_CARDS_PATH}${this.GET_WORKFLOWS_ORDER_PATH}`,
         {
           id: card.cardInstanceWorkflows[0].cardInstance.id,
+          userId: wUser?.user ? wUser?.user?.id : null,
           orderNumber: newOrderNumber
         }
       )
