@@ -78,10 +78,11 @@ export class WorkflowCardComponent implements OnInit {
   }
 
   public setCardDragging(dragging: boolean): void {
-    this.dragAndDropService.draggingCard$.next(dragging);
     if (dragging) {
+      this.dragAndDropService.draggingCard$.next(this.card);
       this.dragAndDropService.droppableStates$.next(this.droppableStates);
     } else {
+      this.dragAndDropService.draggingCard$.next(null);
       this.dragAndDropService.droppableStates$.next([]);
     }
   }

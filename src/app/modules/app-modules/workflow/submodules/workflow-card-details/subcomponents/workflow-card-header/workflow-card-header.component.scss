@@ -45,20 +45,17 @@
     margin: 0 10px;
     padding: 5px 7px;
     text-align: center;
-    color: white;
     border-radius: 10px;
   }
 
   &__location {
     letter-spacing: 2px;
     font-weight: bold;
-    color: rgb(109, 107, 107);
   }
 
   &__follow-btn {
     min-width: 131px;
     margin: 0 10px 0 20px;
-    color: white;
     label {
       margin-right: 10px;
       cursor: pointer;
@@ -71,9 +68,6 @@
       margin-right: 10px;
       font-weight: bold;
       cursor: pointer;
-    }
-    mat-icon {
-      color: rgb(148, 148, 148);
     }
   }
 }

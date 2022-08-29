@@ -57,5 +57,20 @@
         background-color: rgba(mat-color($primary, statusSuccess), 20%);
       }
     }
+
+    .card-wrapper {
+      .empty-substate {
+        background-color: mat-contrast($primary, 600);
+        label {
+          color: mat-contrast($primary, 50);
+        }
+      }
+      .substate-drop-cover {
+        background-color: mat-contrast($primary, 600);
+        label {
+          color: mat-contrast($primary, 50);
+        }
+      }
+    }
   }
 }

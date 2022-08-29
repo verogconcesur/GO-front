@@ -32,7 +32,7 @@ export class WokflowBoardColumnComponent implements OnInit {
   public collapsed = false;
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   public hideEmptyDropZone: any = {};
-  public isCardDragging = false;
+  public cardDragging: WorkflowCardDto = null;
   public droppableStates: string[] = [];
   public changeCollapseStatusOnOver = false;
   public readonly wStateKey = 'wState-';
@@ -48,7 +48,8 @@ export class WokflowBoardColumnComponent implements OnInit {
     seeLess: marker('common.seeLess'),
     workers: marker('workflows.peopleWorking'),
     nCards: marker('workflows.numCards'),
-    emptySubstate: marker('workflows.emptySubstate')
+    emptySubstate: marker('workflows.emptySubstate'),
+    dropHere: marker('common.dropHere')
   };
 
   constructor(
@@ -70,8 +71,8 @@ export class WokflowBoardColumnComponent implements OnInit {
   }
 
   public initListeners(): void {
-    this.dragAndDropService.draggingCard$.pipe(untilDestroyed(this)).subscribe((dragging: boolean) => {
-      this.isCardDragging = dragging;
+    this.dragAndDropService.draggingCard$.pipe(untilDestroyed(this)).subscribe((dragging: WorkflowCardDto) => {
+      this.cardDragging = dragging;
     });
     this.dragAndDropService.droppableStates$.pipe(untilDestroyed(this)).subscribe((droppableStates: string[]) => {
       this.droppableStates = droppableStates;
@@ -106,6 +107,18 @@ export class WokflowBoardColumnComponent implements OnInit {
 
   public getHideEmptyDropZone(id: string) {
     return this.hideEmptyDropZone[id];
+  }
+
+  public showDropCover(id: string): boolean {
+    if (
+      this.cardDragging &&
+      this.droppableStates.indexOf(id) >= 0 &&
+      id.indexOf(`${this.wSubstateKey}${this.cardDragging.cardInstanceWorkflows[0].workflowSubstateId}`) === -1 &&
+      this.hideEmptyDropZone[id]
+    ) {
+      return true;
+    }
+    return false;
   }
 
   public getUserName(wUser: WorkflowSubstateUserDto): string {
@@ -165,7 +178,7 @@ export class WokflowBoardColumnComponent implements OnInit {
     this.wState.workflowSubstates.forEach((wSubstate: WorkflowSubstateDto) => {
       const sClass = `${this.wSubstateKey}${wSubstate.id}`;
       if (
-        this.isCardDragging &&
+        this.cardDragging &&
         classes.indexOf(this.droppableZoneClass) === -1 &&
         this.droppableStates.filter((id: string) => id.indexOf(sClass) === 0).length
       ) {
@@ -188,7 +201,7 @@ export class WokflowBoardColumnComponent implements OnInit {
 
   public getCardWrapperClasses(id: string): string {
     let classes = '';
-    if (this.isCardDragging) {
+    if (this.cardDragging) {
       if (this.droppableStates.indexOf(id) >= 0) {
         classes += this.droppableZoneClass;
       } else {
@@ -278,13 +291,20 @@ export class WokflowBoardColumnComponent implements OnInit {
       // console.log('Elemento a reemplazar:', itemToReplace, 'OrderNumber:', itemToReplace.orderNumber);
       // console.log('Posicionar en:', itemToReplace.orderNumber);
       // transferArrayItem(event.previousContainer.data, event.container.data, event.previousIndex, event.currentIndex);
-      item.orderNumber = itemToReplace.orderNumber;
+      item.orderNumber =
+        dropZoneId.indexOf(`${this.wSubstateKey}${item.cardInstanceWorkflows[0].workflowSubstateId}`) >= 0
+          ? itemToReplace.orderNumber
+          : null;
+      // item.orderNumber = itemToReplace.orderNumber;
       request = this.workflowService.moveWorkflowCardToSubstate(
         this.workflow.facility.facilityId,
         item,
         move,
         user,
-        itemToReplace.orderNumber
+        dropZoneId.indexOf(`${this.wSubstateKey}${item.cardInstanceWorkflows[0].workflowSubstateId}`) >= 0
+          ? itemToReplace.orderNumber
+          : null
+        // itemToReplace.orderNumber
       );
     }
 
