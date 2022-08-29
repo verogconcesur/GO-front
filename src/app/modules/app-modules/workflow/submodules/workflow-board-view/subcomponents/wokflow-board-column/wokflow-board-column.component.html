@@ -58,7 +58,7 @@
                     [cdkDropListData]="user.cardsBySubstateId[wSubstate.id]"
                     [cdkDropListConnectedTo]="getAssociatedWSubstates(wSubstate.cards[0])"
                     (cdkDropListDropped)="
-                        drop($event, wSubstate, user);
+                        drop($event, wSubstate, user, wSubstateKey + wSubstate.id);
                         setHideEmptyDropZone(wSubstateKey + wSubstate.id + '-' + user.user.id, false)
                     "
                     (cdkDropListEntered)="setHideEmptyDropZone(wSubstateKey + wSubstate.id + '-' + user.user.id, true)"
@@ -82,6 +82,9 @@
                     >
                         <label>{{ labels.emptySubstate | translate }}</label>
                     </div>
+                    <div class="substate-drop-cover" *ngIf="showDropCover(wSubstateKey + wSubstate.id + '-' + user.user.id)">
+                        <label>{{ labels.dropHere | translate }}</label>
+                    </div>
                 </div>
             </div>
         </div>
@@ -95,8 +98,10 @@
                     [id]="wSubstateKey + wSubstate.id"
                     [cdkDropListData]="wSubstate.cards"
                     [cdkDropListConnectedTo]="getAssociatedWSubstates(wSubstate.cards[0])"
-                    [attr.dropListConnectedTo]="getAssociatedWSubstates(wSubstate.cards[0])"
-                    (cdkDropListDropped)="drop($event, wSubstate, null); setHideEmptyDropZone(wSubstateKey + wSubstate.id, false)"
+                    (cdkDropListDropped)="
+                        drop($event, wSubstate, null, wSubstateKey + wSubstate.i);
+                        setHideEmptyDropZone(wSubstateKey + wSubstate.id, false)
+                    "
                     (cdkDropListEntered)="setHideEmptyDropZone(wSubstateKey + wSubstate.id, true)"
                     (cdkDropListExited)="setHideEmptyDropZone(wSubstateKey + wSubstate.id, false)"
                 >
@@ -106,13 +111,15 @@
                         [wState]="wState"
                         [wSubstate]="wSubstate"
                         [droppableStates]="getAssociatedWSubstates(wSubstate.cards[0], wSubstateKey + wSubstate.id)"
-                        [attr.droppableStates]="getAssociatedWSubstates(wSubstate.cards[0], wSubstateKey + wSubstate.id)"
                     ></app-workflow-card>
                     <div
                         class="empty-substate"
                         *ngIf="!wSubstate.cards?.length && !getHideEmptyDropZone(wSubstateKey + wSubstate.id)"
                     >
                         <label>{{ labels.emptySubstate | translate }}</label>
+                    </div>
+                    <div class="substate-drop-cover" *ngIf="showDropCover(wSubstateKey + wSubstate.id)">
+                        <label>{{ labels.dropHere | translate }}</label>
                     </div>
                 </div>
             </div>

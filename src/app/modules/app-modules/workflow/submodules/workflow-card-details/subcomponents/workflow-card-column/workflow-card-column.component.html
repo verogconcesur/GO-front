@@ -1,0 +1,34 @@
+<div class="w-column">
+    <h5 class="uppercase">{{ column.name }}</h5>
+    <div class="w-column__container" [ngClass]="containerClass">
+        <app-responsive-tabs *ngIf="showTabs" [tabs]="getTabsInfo()" (tabSelectedEvent)="tabChange($event)"></app-responsive-tabs>
+        <div class="w-column__container__content">
+            <app-workflow-column-customizable-entity
+                *ngIf="showColumn('CUSTOMIZABLE_ENTITY')"
+                [tab]="tabToShow"
+            ></app-workflow-column-customizable-entity>
+            <app-workflow-column-customizable-custom
+                *ngIf="showColumn('CUSTOMIZABLE_CUSTOM')"
+                [tab]="tabToShow"
+            ></app-workflow-column-customizable-custom>
+            <app-workflow-column-prefixed-information
+                *ngIf="showColumn('PREFIXED_INFORMATION')"
+                [tab]="tabToShow"
+            ></app-workflow-column-prefixed-information>
+            <app-workflow-column-prefixed-tasks
+                *ngIf="showColumn('PREFIXED_TASKS')"
+                [tab]="tabToShow"
+            ></app-workflow-column-prefixed-tasks>
+            <app-workflow-column-prefixed-history *ngIf="showColumn('PREFIXED_HISTORY')" [tab]="tabToShow">
+            </app-workflow-column-prefixed-history>
+            <app-workflow-column-templates-attachments
+                *ngIf="showColumn('TEMPLATE_ATTACHMENTS')"
+                [tab]="tabToShow"
+            ></app-workflow-column-templates-attachments>
+            <app-workflow-column-templates-budgets
+                *ngIf="showColumn('TEMPLATE_BUDGETS')"
+                [tab]="tabToShow"
+            ></app-workflow-column-templates-budgets>
+        </div>
+    </div>
+</div>

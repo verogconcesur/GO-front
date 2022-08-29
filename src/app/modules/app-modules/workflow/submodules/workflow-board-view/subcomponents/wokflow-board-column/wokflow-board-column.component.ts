@@ -32,13 +32,14 @@ export class WokflowBoardColumnComponent implements OnInit {
   public collapsed = false;
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   public hideEmptyDropZone: any = {};
-  public isCardDragging = false;
+  public cardDragging: WorkflowCardDto = null;
   public droppableStates: string[] = [];
   public changeCollapseStatusOnOver = false;
   public readonly wStateKey = 'wState-';
   public readonly wCollapsedStateKey = 'wCollapsedState-';
   public readonly wSubstateKey = 'wSubstate-';
   public readonly droppableZoneClass = 'droppable-zone';
+  public readonly undroppableZoneClass = 'undroppable';
   public readonly timeToWaitBeforeExpandColumnOnDragging = 1500;
 
   public labels = {
@@ -47,7 +48,8 @@ export class WokflowBoardColumnComponent implements OnInit {
     seeLess: marker('common.seeLess'),
     workers: marker('workflows.peopleWorking'),
     nCards: marker('workflows.numCards'),
-    emptySubstate: marker('workflows.emptySubstate')
+    emptySubstate: marker('workflows.emptySubstate'),
+    dropHere: marker('common.dropHere')
   };
 
   constructor(
@@ -69,8 +71,8 @@ export class WokflowBoardColumnComponent implements OnInit {
   }
 
   public initListeners(): void {
-    this.dragAndDropService.draggingCard$.pipe(untilDestroyed(this)).subscribe((dragging: boolean) => {
-      this.isCardDragging = dragging;
+    this.dragAndDropService.draggingCard$.pipe(untilDestroyed(this)).subscribe((dragging: WorkflowCardDto) => {
+      this.cardDragging = dragging;
     });
     this.dragAndDropService.droppableStates$.pipe(untilDestroyed(this)).subscribe((droppableStates: string[]) => {
       this.droppableStates = droppableStates;
@@ -105,6 +107,18 @@ export class WokflowBoardColumnComponent implements OnInit {
 
   public getHideEmptyDropZone(id: string) {
     return this.hideEmptyDropZone[id];
+  }
+
+  public showDropCover(id: string): boolean {
+    if (
+      this.cardDragging &&
+      this.droppableStates.indexOf(id) >= 0 &&
+      id.indexOf(`${this.wSubstateKey}${this.cardDragging.cardInstanceWorkflows[0].workflowSubstateId}`) === -1 &&
+      this.hideEmptyDropZone[id]
+    ) {
+      return true;
+    }
+    return false;
   }
 
   public getUserName(wUser: WorkflowSubstateUserDto): string {
@@ -164,13 +178,16 @@ export class WokflowBoardColumnComponent implements OnInit {
     this.wState.workflowSubstates.forEach((wSubstate: WorkflowSubstateDto) => {
       const sClass = `${this.wSubstateKey}${wSubstate.id}`;
       if (
-        this.isCardDragging &&
+        this.cardDragging &&
         classes.indexOf(this.droppableZoneClass) === -1 &&
         this.droppableStates.filter((id: string) => id.indexOf(sClass) === 0).length
       ) {
         classes += `${this.droppableZoneClass} `;
       }
     });
+    if (classes.indexOf(this.droppableZoneClass) === -1) {
+      classes += `${this.undroppableZoneClass} `;
+    }
     return classes;
   }
 
@@ -184,16 +201,18 @@ export class WokflowBoardColumnComponent implements OnInit {
 
   public getCardWrapperClasses(id: string): string {
     let classes = '';
-    if (this.isCardDragging) {
+    if (this.cardDragging) {
       if (this.droppableStates.indexOf(id) >= 0) {
         classes += this.droppableZoneClass;
+      } else {
+        classes += this.undroppableZoneClass;
       }
     }
     return classes;
   }
 
   public mouseOverCollapsedCard(event: MouseEvent, action: 'over' | 'leave') {
-    if (this.getCollapsedDropZoneClass() && action === 'over') {
+    if (this.getCollapsedDropZoneClass().indexOf(this.droppableZoneClass) >= 0 && action === 'over') {
       this.changeCollapseStatusOnOver = true;
       setTimeout(() => {
         if (this.changeCollapseStatusOnOver && this.collapsed) {
@@ -207,7 +226,7 @@ export class WokflowBoardColumnComponent implements OnInit {
     }
   }
 
-  public drop(event: CdkDragDrop<string[]>, wSubState: WorkflowSubstateDto, user: WorkflowSubstateUserDto) {
+  public drop(event: CdkDragDrop<string[]>, wSubState: WorkflowSubstateDto, user: WorkflowSubstateUserDto, dropZoneId: string) {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const item: any = event.previousContainer.data[event.previousIndex];
     let request: Observable<WorkflowCardInstanceDto> = null;
@@ -221,7 +240,14 @@ export class WokflowBoardColumnComponent implements OnInit {
       itemToReplace = { orderNumber: null };
     }
 
-    if (event.previousContainer === event.container && event.previousIndex !== event.currentIndex) {
+    // console.log(event, item, itemToReplace, wSubState, dropZoneId);
+    // console.log(
+    //   `${this.wSubstateKey}${item.cardInstanceWorkflows[0].workflowSubstateId}` === dropZoneId,
+    //   `${this.wSubstateKey}${item.cardInstanceWorkflows[0].workflowSubstateId}`,
+    //   dropZoneId
+    // );
+    const sameDropZone = `${this.wSubstateKey}${item.cardInstanceWorkflows[0].workflowSubstateId}` === dropZoneId;
+    if ((event.previousContainer === event.container && event.previousIndex !== event.currentIndex) || sameDropZone) {
       const orderNumber =
         event.previousIndex < event.currentIndex && (itemToReplace.orderNumber || itemToReplace.orderNumber === 0)
           ? itemToReplace.orderNumber + 1
@@ -241,8 +267,13 @@ export class WokflowBoardColumnComponent implements OnInit {
       // console.log('Posicionar en:', orderNumber);
       // moveItemInArray(event.container.data, event.previousIndex, event.currentIndex);
       item.orderNumber = orderNumber;
-      request = this.workflowService.changeOrderWorkflowCardInSubstate(this.workflow.facility.facilityId, item, orderNumber);
-    } else if (event.previousContainer !== event.container) {
+      request = this.workflowService.changeOrderWorkflowCardInSubstate(
+        this.workflow.facility.facilityId,
+        item,
+        user,
+        orderNumber
+      );
+    } else if (event.previousContainer !== event.container && !sameDropZone) {
       const move: WorkflowMoveDto = item.movements.find(
         (wMove: WorkflowMoveDto) => wMove.workflowSubstateTarget.id === wSubState.id
       );
@@ -260,13 +291,20 @@ export class WokflowBoardColumnComponent implements OnInit {
       // console.log('Elemento a reemplazar:', itemToReplace, 'OrderNumber:', itemToReplace.orderNumber);
       // console.log('Posicionar en:', itemToReplace.orderNumber);
       // transferArrayItem(event.previousContainer.data, event.container.data, event.previousIndex, event.currentIndex);
-      item.orderNumber = itemToReplace.orderNumber;
+      item.orderNumber =
+        dropZoneId.indexOf(`${this.wSubstateKey}${item.cardInstanceWorkflows[0].workflowSubstateId}`) >= 0
+          ? itemToReplace.orderNumber
+          : null;
+      // item.orderNumber = itemToReplace.orderNumber;
       request = this.workflowService.moveWorkflowCardToSubstate(
         this.workflow.facility.facilityId,
         item,
         move,
         user,
-        itemToReplace.orderNumber
+        dropZoneId.indexOf(`${this.wSubstateKey}${item.cardInstanceWorkflows[0].workflowSubstateId}`) >= 0
+          ? itemToReplace.orderNumber
+          : null
+        // itemToReplace.orderNumber
       );
     }
 

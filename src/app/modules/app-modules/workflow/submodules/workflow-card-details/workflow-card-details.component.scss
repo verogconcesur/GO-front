@@ -1,5 +1,4 @@
 .wcard-details {
-  background-color: rgb(66, 65, 65);
   position: absolute;
   top: 0;
   left: 0;
@@ -23,7 +22,6 @@
       width: 60%;
     }
     &__header {
-      background-color: lightgray;
       height: 100%;
       overflow: hidden;
       min-width: 300px;
@@ -31,7 +29,6 @@
       border-radius: 30px 30px 0 0;
     }
     &__bg {
-      background-color: lightgray;
       height: 100%;
       width: 60px;
       position: relative;
@@ -43,13 +40,11 @@
         left: 0;
         width: 100%;
         height: 100%;
-        background-color: rgb(66, 65, 65);
         border-radius: 0 0 0 30px;
         z-index: 100;
       }
     }
     &__close {
-      color: white;
       margin-right: 25px;
       mat-icon {
         font-size: 1.8em;
@@ -58,8 +53,151 @@
   }
   &__wrapper {
     height: calc(100% - 57px);
+    position: relative;
     width: 100%;
-    background-color: lightgray;
     border-radius: 0 30px 30px 30px;
+    &__sections {
+      &__controller {
+        width: 100%;
+      }
+      &__container {
+        width: 100%;
+        height: 100%;
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-start;
+
+        &.individual {
+          .wcard-details__wrapper__info-sections {
+            width: 0%;
+            height: calc(100% - 64px);
+            &__container {
+              height: 100%;
+              &__column1,
+              &__column2 {
+                width: 100%;
+                height: 100%;
+              }
+            }
+          }
+          .wcard-details__wrapper {
+            height: calc(100% - 64px);
+            width: 0%;
+            &__messages,
+            &__actions {
+              width: 100%;
+              height: calc(100% - 64px);
+            }
+          }
+          &.column1,
+          &.column2 {
+            .wcard-details__wrapper__info-sections {
+              width: 100%;
+              height: calc(100% - 64px);
+            }
+          }
+          &.messages,
+          &.actions {
+            .wcard-details__wrapper {
+              width: 100%;
+              height: calc(100% - 64px);
+            }
+          }
+        }
+
+        &.semi {
+          .tab-options-wrapper {
+            width: 56%;
+          }
+          .wcard-details__wrapper__info-sections {
+            width: 56%;
+            height: calc(100% - 64px);
+            &__container {
+              height: 100%;
+              &__column1,
+              &__column2 {
+                width: 100%;
+                height: 100%;
+              }
+            }
+          }
+
+          .wcard-details__wrapper {
+            height: 100%;
+            &__messages,
+            &__actions {
+              width: 22%;
+              height: 100%;
+            }
+          }
+        }
+
+        .wcard-details__wrapper__info-sections {
+          width: 66%;
+          height: 100%;
+          &__controller {
+            width: 100%;
+          }
+          &__container {
+            width: 100%;
+            height: 100%;
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            &__column1,
+            &__column2 {
+              height: 100%;
+              width: 50%;
+            }
+          }
+
+          .tab-options-wrapper {
+            .tab-option {
+              width: 50%;
+            }
+          }
+        }
+        .wcard-details__wrapper {
+          height: 100%;
+          &__messages,
+          &__actions {
+            width: 17%;
+            height: 100%;
+          }
+        }
+      }
+    }
+
+    .tab-options-wrapper {
+      width: 100%;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      height: 64px;
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      border-radius: 0 0 30px 30px;
+      .tab-option {
+        height: 64px;
+        width: 25%;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        cursor: pointer;
+        label {
+          cursor: pointer;
+        }
+        mat-icon {
+          margin-right: 5px;
+        }
+        &:first-child {
+          border-radius: 0 0 0 30px;
+        }
+        &:nth-child(4) {
+          border-radius: 0 0 30px 0;
+        }
+      }
+    }
   }
 }

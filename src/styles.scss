@@ -8,6 +8,7 @@
 @import 'app/modules/app-modules/login/components/forgot-password/forgot-password.scss-theme.scss';
 @import 'app/modules/app-modules/login/components/restore-password/restore-password.scss-theme.scss';
 @import 'app/shared/components/go-back/go-back.component.scss-theme.scss';
+@import 'app/shared/components/responsive-tabs/responsive-tabs.component.scss-theme.scss';
 @import 'app/modules/feature-modules/my-profile-dialog/my-profile.component.scss-theme.scss';
 @import 'app/layout/dashboard-layout/components/user-profile/user-profile.component.scss-theme.scss';
 @import 'app/layout/administration-layout/administration-layout.component.scss-theme.scss';
@@ -42,6 +43,7 @@
   @include template-common-styles-theme($theme, $main-typography);
   @include create-edit-specialty-component-theme($theme, $main-typography);
   @include workflow-component-theme($theme, $main-typography);
+  @include responsive-tabs-component-theme($theme, $main-typography);
 }
 
 // Load theme and custom components styles for current theme

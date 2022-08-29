@@ -1,7 +1,19 @@
-import { Component, OnInit } from '@angular/core';
+/* eslint-disable @typescript-eslint/no-explicit-any */
+import { Component, HostListener, OnInit } from '@angular/core';
 import { Location } from '@angular/common';
 import { ActivatedRoute, Router } from '@angular/router';
 import WorkflowCardDto from '@data/models/workflows/workflow-card-dto';
+import { marker } from '@biesbjerg/ngx-translate-extract-marker';
+import { ResponsiveTabI } from '@shared/components/responsive-tabs/responsive-tabs.component';
+import { CardService } from '@data/services/cards.service';
+import { take } from 'rxjs/operators';
+import CardDto from '@data/models/cards/card-dto';
+import CardColumnDto from '@data/models/cards/card-column-dto';
+import { ProgressSpinnerDialogService } from '@shared/services/progress-spinner-dialog.service';
+import { GlobalMessageService } from '@shared/services/global-message.service';
+import { ConcenetError } from '@app/types/error';
+import { TranslateService } from '@ngx-translate/core';
+import CardInstanceDto from '@data/models/cards/card-instance-dto';
 
 @Component({
   selector: 'app-workflow-card-details',
@@ -12,8 +24,31 @@ export class WorkflowCardDetailsComponent implements OnInit {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   public relativeTo: any = null;
   public card: WorkflowCardDto = null;
+  public idCard: number = null;
+  public tabSelected: 'column1' | 'column2' | 'messages' | 'actions' = 'column1';
+  public showMode: 'all' | 'semi' | 'individual' = 'all';
+  public labels = {
+    column1: '',
+    column2: '',
+    messages: marker('common.messages'),
+    actions: marker('common.actions')
+  };
+  public columnsConfig: CardColumnDto[] = null;
+  public cardInstance: CardInstanceDto = null;
 
-  constructor(private route: ActivatedRoute, private router: Router, private location: Location) {}
+  constructor(
+    private route: ActivatedRoute,
+    private router: Router,
+    private location: Location,
+    private cardService: CardService,
+    private spinnerService: ProgressSpinnerDialogService,
+    private globalMessageService: GlobalMessageService,
+    private translateService: TranslateService
+  ) {}
+
+  @HostListener('window:resize', ['$event']) onResize(event: { target: { innerWidth: number } }) {
+    this.setShowMode(event.target.innerWidth);
+  }
 
   ngOnInit(): void {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -23,11 +58,25 @@ export class WorkflowCardDetailsComponent implements OnInit {
     }
     if (state.card) {
       this.card = JSON.parse(state.card);
+      this.idCard = this.card.cardId;
+    } else if (this.route?.snapshot?.params?.id) {
+      this.idCard = parseInt(this.route?.snapshot?.params?.id, 10);
     }
+    this.setShowMode(window.innerWidth);
+    this.getCardInfo();
+  }
+
+  public setShowMode(width: number) {
+    let showMode: 'all' | 'semi' | 'individual' = 'all';
+    if (width <= 1400 && width > 1150) {
+      showMode = 'semi';
+    } else if (width <= 1150) {
+      showMode = 'individual';
+    }
+    this.showMode = showMode;
   }
 
   public close(): void {
-    console.log(this.route, this.route.parent.snapshot.params);
     if (this.relativeTo) {
       this.router.navigate([{ outlets: { card: null } }], {
         relativeTo: this.relativeTo
@@ -36,5 +85,39 @@ export class WorkflowCardDetailsComponent implements OnInit {
       const currentUrl = window.location.hash.split('#/').join('/').split('/(card:')[0];
       this.router.navigateByUrl(currentUrl);
     }
+  }
+
+  public isTabSelected(tab: 'column1' | 'column2' | 'messages' | 'actions'): boolean {
+    return this.tabSelected === tab;
+  }
+
+  public changeSelectedTab(tab: 'column1' | 'column2' | 'messages' | 'actions'): void {
+    this.tabSelected = tab;
+  }
+
+  public getContainerClass(): string {
+    return this.showMode + ' ' + this.tabSelected;
+  }
+
+  private getCardInfo(): void {
+    const spinner = this.spinnerService.show();
+    this.cardService
+      .getCardInstanceDetailById(this.idCard)
+      .pipe(take(1))
+      .subscribe(
+        (data: CardInstanceDto) => {
+          console.log('CardInstanceDto', data);
+          this.spinnerService.hide(spinner);
+          this.cardInstance = data;
+          this.columnsConfig = data.card.cols;
+        },
+        (error: ConcenetError) => {
+          this.globalMessageService.showError({
+            message: error.message,
+            actionText: this.translateService.instant(marker('common.close'))
+          });
+          this.close();
+        }
+      );
   }
 }

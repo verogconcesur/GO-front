@@ -1,0 +1,28 @@
+.w-column {
+  margin: 10px;
+  height: calc(100% - 20px);
+  position: relative;
+  h5 {
+    font-weight: bold;
+    color: gray;
+    letter-spacing: 2px;
+    height: 20px;
+    margin-bottom: 12px;
+  }
+  &__container {
+    border-radius: 20px;
+    background-color: white;
+    height: calc(100% - 32px);
+    &__content {
+      height: calc(100% - 32px);
+      width: 100%;
+    }
+    &.actions {
+      background-color: rgba(255, 255, 255, 0);
+
+      &__content {
+        height: 100%;
+      }
+    }
+  }
+}

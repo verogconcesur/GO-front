@@ -13,6 +13,7 @@ import { GlobalMessageService } from './services/global-message.service';
 import { ProgressSpinnerDialogService } from './services/progress-spinner-dialog.service';
 import { ShowToolbarIfTruncatedDirective } from './directives/showToolbarIfTruncated.directive';
 import { RemoveWrapperDirective } from './directives/removeWrapper.directive';
+import { ResponsiveTabsComponent } from './components/responsive-tabs/responsive-tabs.component';
 
 @NgModule({
   declarations: [
@@ -20,7 +21,8 @@ import { RemoveWrapperDirective } from './directives/removeWrapper.directive';
     ConfirmDialogComponent,
     GoBackComponent,
     ShowToolbarIfTruncatedDirective,
-    RemoveWrapperDirective
+    RemoveWrapperDirective,
+    ResponsiveTabsComponent
   ],
   imports: [
     TranslateModule,
@@ -39,6 +41,7 @@ import { RemoveWrapperDirective } from './directives/removeWrapper.directive';
     ReactiveFormsModule,
     FormsModule,
     GoBackComponent,
+    ResponsiveTabsComponent,
     CommonModule,
     ShowToolbarIfTruncatedDirective,
     RemoveWrapperDirective,
