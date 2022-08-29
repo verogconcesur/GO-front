@@ -1,6 +1,7 @@
 {
     "administration": {
         "brands": "Brands",
+        "cards": "Cards",
         "exit": "Exit settings",
         "facilities": "Facilities",
         "organization": "Organization",
@@ -70,6 +71,11 @@
         },
         "title": "Concenet"
     },
+    "cards": {
+        "create": "Create card",
+        "deleteConfirmation": "Do you really want to delete this card?",
+        "duplicateConfirmation": "Do you really want to duplicate this card?"
+    },
     "common": {
         "accessDenied": "Access denied.",
         "actions": "Actions",
@@ -108,6 +114,7 @@
         "insert": "Insert",
         "insertTextHere": "Insert text here.",
         "logo": "Logo",
+        "name": "Name",
         "messages": "Messages",
         "more": "More",
         "newItem": "New item",

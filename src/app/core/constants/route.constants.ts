@@ -54,7 +54,10 @@ export enum RouteConstants {
   BUDGETS = 'budgets',
   CHECKLISTS = 'checklists',
   ATTACHMENTS = 'attachments',
-  CLIENT_TIMELINE = 'client-timeline'
+  CLIENT_TIMELINE = 'client-timeline',
+
+  //Cards
+  CARDS = 'cards',
 }
 
 export const RoutePermissionConstants: Record<string, PermissionConstants[]> = {
