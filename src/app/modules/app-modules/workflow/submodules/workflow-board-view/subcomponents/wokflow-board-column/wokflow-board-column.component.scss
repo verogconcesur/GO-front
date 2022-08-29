@@ -144,16 +144,27 @@
         }
       }
 
-      .empty-substate {
-        width: 316px;
-        height: 62px;
-        background-color: #ebebf5;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        border-radius: 8px;
-        label {
-          color: #6f708b;
+      .card-wrapper {
+        position: relative;
+        .empty-substate {
+          width: 316px;
+          height: 62px;
+          display: flex;
+          justify-content: center;
+          align-items: center;
+          border-radius: 8px;
+        }
+        .substate-drop-cover {
+          position: absolute;
+          top: 0;
+          left: 0;
+          width: calc(100% - 4px);
+          height: calc(100% - 4px);
+          border-radius: 8px;
+          display: flex;
+          justify-content: center;
+          align-items: center;
+          border: 2px dotted rgba(255, 255, 255, 0);
         }
       }
       h4 {

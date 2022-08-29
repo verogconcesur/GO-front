@@ -1,13 +1,13 @@
 <div
     class="workflow-card"
-    [ngClass]="getCardSize()"
+    [ngClass]="cardSize"
     cdkDrag
     [cdkDragStartDelay]="dragStartDelay"
     (cdkDragStarted)="setCardDragging(true)"
     (cdkDragReleased)="setCardDragging(false)"
     (click)="showCardInfo()"
 >
-    <div class="workflow-card__placeholder" [ngClass]="getCardSize()" *cdkDragPlaceholder></div>
+    <div class="workflow-card__placeholder" [ngClass]="cardSize" *cdkDragPlaceholder></div>
     <div class="workflow-card__colors">
         <div
             class="workflow-card__colors__color"

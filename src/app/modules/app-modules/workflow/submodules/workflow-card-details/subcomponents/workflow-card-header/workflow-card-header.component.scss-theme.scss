@@ -1,0 +1,26 @@
+@import '@angular/material/theming';
+
+@mixin workflow-card-header-component-theme($theme, $main-typo) {
+  $primary: map-get($theme, primary);
+  // $foreground: map-get($theme, foreground);
+
+  .wcard-header {
+    &__chip {
+      color: white;
+    }
+
+    &__location {
+      color: rgb(104, 103, 103);
+    }
+
+    &__follow-btn {
+      color: white;
+    }
+
+    &__people-btn {
+      mat-icon {
+        color: rgb(148, 148, 148);
+      }
+    }
+  }
+}
