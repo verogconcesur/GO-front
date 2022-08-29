@@ -68,7 +68,7 @@ export class WorkflowCardComponent implements OnInit {
 
   public showCardInfo(): void {
     console.log('show info:', this.card);
-    this.router.navigate([{ outlets: { card: ['wcId', this.card.id] } }], {
+    this.router.navigate([{ outlets: { card: ['wcId', this.card.cardInstanceWorkflows[0].id] } }], {
       relativeTo: this.route,
       state: {
         relativeTo: JSON.stringify(this.route, this.replacerFunc),

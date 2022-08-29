@@ -58,7 +58,7 @@ export class WorkflowCardDetailsComponent implements OnInit {
     }
     if (state.card) {
       this.card = JSON.parse(state.card);
-      this.idCard = this.card.cardId;
+      this.idCard = this.card.cardInstanceWorkflows[0].id;
     } else if (this.route?.snapshot?.params?.id) {
       this.idCard = parseInt(this.route?.snapshot?.params?.id, 10);
     }
@@ -116,6 +116,7 @@ export class WorkflowCardDetailsComponent implements OnInit {
             message: error.message,
             actionText: this.translateService.instant(marker('common.close'))
           });
+          this.spinnerService.hide(spinner);
           this.close();
         }
       );

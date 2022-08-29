@@ -19,19 +19,8 @@ export class WorkflowCardHeaderComponent implements OnInit {
 
   ngOnInit(): void {}
 
-  public getColors(): string[] {
-    const colors: string[] = [];
-    if (this.card?.workflowStateColor) {
-      colors.push(this.card.workflowStateColor);
-    }
-    if (this.card?.workflowSubstateColor) {
-      colors.push(this.card.workflowSubstateColor);
-    }
-    return colors;
-  }
-
   public getColorsClass(): string {
-    return `x-${this.getColors().length}`;
+    return `x-${this.card.colors.length}`;
   }
 
   public changeFollowingCard(): void {
