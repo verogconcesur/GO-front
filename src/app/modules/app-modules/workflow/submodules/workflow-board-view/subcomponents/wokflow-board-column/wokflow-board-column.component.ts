@@ -202,6 +202,7 @@ export class WokflowBoardColumnComponent implements OnInit {
   public getCardWrapperClasses(id: string): string {
     let classes = '';
     if (this.cardDragging) {
+      // console.log(id, this.droppableStates);
       if (this.droppableStates.indexOf(id) >= 0) {
         classes += this.droppableZoneClass;
       } else {
