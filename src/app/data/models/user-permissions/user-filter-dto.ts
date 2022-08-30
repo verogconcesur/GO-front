@@ -1,8 +1,8 @@
-import BrandDTO from './brand-dto';
-import DepartmentDTO from './department-dto';
-import FacilityDTO from './facility-dto';
+import BrandDTO from '../organization/brand-dto';
+import DepartmentDTO from '../organization/department-dto';
+import FacilityDTO from '../organization/facility-dto';
+import SpecialtyDTO from '../organization/specialty-dto';
 import RoleDTO from './role-dto';
-import SpecialtyDTO from './specialty-dto';
 
 export default interface UserFilterDTO {
   brands: BrandDTO[];

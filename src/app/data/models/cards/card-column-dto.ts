@@ -1,7 +1,7 @@
-import CardColumnTabDto from './card-column-tab-dto';
+import CardColumnTabDTO from './card-column-tab-dto';
 
-export default interface CardColumnDto {
+export default interface CardColumnDTO {
   orderNumber: number;
   name: string;
-  tabs: CardColumnTabDto[];
+  tabs: CardColumnTabDTO[];
 }

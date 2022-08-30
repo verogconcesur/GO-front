@@ -1,8 +1,8 @@
-import WorkflowCardDto from './workflow-card-dto';
-import WorkflowStateDto from './workflow-state-dto';
-import WorkflowSubstateUserDto from './workflow-substate-user-dto';
+import WorkflowCardDTO from './workflow-card-dto';
+import WorkflowStateDTO from './workflow-state-dto';
+import WorkflowSubstateUserDTO from './workflow-substate-user-dto';
 
-export default interface WorkflowSubstateDto {
+export default interface WorkflowSubstateDTO {
   color: string;
   entryPoint: boolean;
   exitPoint: boolean;
@@ -11,8 +11,8 @@ export default interface WorkflowSubstateDto {
   locked: boolean;
   name: string;
   orderNumber: number;
-  workflowSubstateUser: WorkflowSubstateUserDto[];
+  workflowSubstateUser: WorkflowSubstateUserDTO[];
   substatesIdsToFilter?: number[]; //Used on filter to group similar substates
-  workflowState?: WorkflowStateDto;
-  cards?: WorkflowCardDto[];
+  workflowState?: WorkflowStateDTO;
+  cards?: WorkflowCardDTO[];
 }

@@ -2,10 +2,10 @@ import { Component, OnInit } from '@angular/core';
 import { PageEvent } from '@angular/material/paginator';
 import { marker } from '@biesbjerg/ngx-translate-extract-marker';
 import PaginationResponseI from '@data/interfaces/pagination-response';
-import BrandDTO from '@data/models/brand-dto';
-import DepartmentDTO from '@data/models/department-dto';
-import UserDetailsDTO from '@data/models/user-details-dto';
-import UserFilterDTO from '@data/models/user-filter-dto';
+import BrandDTO from '@data/models/organization/brand-dto';
+import DepartmentDTO from '@data/models/organization/department-dto';
+import UserDetailsDTO from '@data/models/user-permissions/user-details-dto';
+import UserFilterDTO from '@data/models/user-permissions/user-filter-dto';
 import { UserService } from '@data/services/user.service';
 import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
 import {
@@ -21,8 +21,8 @@ import { ConfirmDialogService } from '@shared/services/confirm-dialog.service';
 import { TranslateService } from '@ngx-translate/core';
 import { GlobalMessageService } from '@shared/services/global-message.service';
 import { RoleService } from '@data/services/role.service';
-import FacilityDTO from '@data/models/facility-dto';
-import SpecialtyDTO from '@data/models/specialty-dto';
+import FacilityDTO from '@data/models/organization/facility-dto';
+import SpecialtyDTO from '@data/models/organization/specialty-dto';
 import { ProgressSpinnerDialogService } from '@shared/services/progress-spinner-dialog.service';
 
 @UntilDestroy()

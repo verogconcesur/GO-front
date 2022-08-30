@@ -2,10 +2,10 @@ import { DatePipe } from '@angular/common';
 import { Component, Input, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { marker } from '@biesbjerg/ngx-translate-extract-marker';
-import WorkflowCardDto from '@data/models/workflows/workflow-card-dto';
-import WorkflowCardSlotDto from '@data/models/workflows/workflow-card-slot-dto';
-import WorkflowStateDto from '@data/models/workflows/workflow-state-dto';
-import WorkflowSubstateDto from '@data/models/workflows/workflow-substate-dto';
+import WorkflowCardDTO from '@data/models/workflows/workflow-card-dto';
+import WorkflowCardSlotDTO from '@data/models/workflows/workflow-card-slot-dto';
+import WorkflowStateDTO from '@data/models/workflows/workflow-state-dto';
+import WorkflowSubstateDTO from '@data/models/workflows/workflow-substate-dto';
 import { WorkflowDragAndDropService } from '@modules/app-modules/workflow/aux-service/workflow-drag-and-drop.service';
 import { TranslateService } from '@ngx-translate/core';
 
@@ -15,9 +15,9 @@ import { TranslateService } from '@ngx-translate/core';
   styleUrls: ['./workflow-card.component.scss']
 })
 export class WorkflowCardComponent implements OnInit {
-  @Input() card: WorkflowCardDto;
-  @Input() wState: WorkflowStateDto;
-  @Input() wSubstate: WorkflowSubstateDto;
+  @Input() card: WorkflowCardDTO;
+  @Input() wState: WorkflowStateDTO;
+  @Input() wSubstate: WorkflowSubstateDTO;
   @Input() droppableStates: string[];
   public cardSize = 'size-m';
   public labels = {
@@ -47,7 +47,7 @@ export class WorkflowCardComponent implements OnInit {
     return `x-${this.getColors().length}`;
   }
 
-  public getLabel(slot: WorkflowCardSlotDto): string {
+  public getLabel(slot: WorkflowCardSlotDTO): string {
     const datePipe = new DatePipe('en-EN');
     switch (slot.attributeName) {
       case 'dueOutDateTime':
@@ -68,7 +68,7 @@ export class WorkflowCardComponent implements OnInit {
 
   public showCardInfo(): void {
     console.log('show info:', this.card);
-    this.router.navigate([{ outlets: { card: ['wcId', this.card.id] } }], {
+    this.router.navigate([{ outlets: { card: ['wcId', this.card.cardInstanceWorkflows[0].id] } }], {
       relativeTo: this.route,
       state: {
         relativeTo: JSON.stringify(this.route, this.replacerFunc),

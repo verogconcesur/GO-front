@@ -3,7 +3,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { RouteConstants } from '@app/constants/route.constants';
 import { ConcenetError } from '@app/types/error';
 import { marker } from '@biesbjerg/ngx-translate-extract-marker';
-import DepartmentDTO from '@data/models/department-dto';
+import DepartmentDTO from '@data/models/organization/department-dto';
 import { DepartmentService } from '@data/services/deparment.service';
 import { CustomDialogService } from '@jenga/custom-dialog';
 import { TranslateService } from '@ngx-translate/core';

@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { ConcenetError } from '@app/types/error';
 import { marker } from '@biesbjerg/ngx-translate-extract-marker';
-import RoleDTO from '@data/models/role-dto';
+import RoleDTO from '@data/models/user-permissions/role-dto';
 import { RoleService } from '@data/services/role.service';
 import { TranslateService } from '@ngx-translate/core';
 import { CustomDialogService } from '@jenga/custom-dialog';

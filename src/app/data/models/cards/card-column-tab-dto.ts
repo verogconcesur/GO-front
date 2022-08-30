@@ -1,11 +1,11 @@
-import CardColumnTabItemDto from './card-column-tab-item-dto';
+import CardColumnTabItemDTO from './card-column-tab-item-dto';
 
-export default interface CardColumnTabDto {
+export default interface CardColumnTabDTO {
   id: number;
   orderNumber: number;
   name: string;
   type: 'CUSTOMIZABLE' | 'PREFIXED' | 'TEMPLATE';
   contentTypeId: number;
   contentSourceId?: number;
-  tabItems?: CardColumnTabItemDto[];
+  tabItems?: CardColumnTabItemDTO[];
 }

@@ -1,7 +1,7 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { FormControl } from '@angular/forms';
 import { marker } from '@biesbjerg/ngx-translate-extract-marker';
-import UserDetailsDTO from '@data/models/user-details-dto';
+import UserDetailsDTO from '@data/models/user-permissions/user-details-dto';
 import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
 import { Observable, of } from 'rxjs';
 import { map, switchMap, take } from 'rxjs/operators';

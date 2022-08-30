@@ -3,7 +3,7 @@ import { Inject, Injectable } from '@angular/core';
 import { ENV } from '@app/constants/global.constants';
 import { Env } from '@app/types/env';
 import { ConcenetError } from '@app/types/error';
-import RoleDTO from '@data/models/role-dto';
+import RoleDTO from '@data/models/user-permissions/role-dto';
 import { Observable, Subject, throwError } from 'rxjs';
 import { catchError } from 'rxjs/operators';
 

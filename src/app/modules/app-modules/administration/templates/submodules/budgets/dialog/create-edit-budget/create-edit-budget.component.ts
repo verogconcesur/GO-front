@@ -3,7 +3,7 @@ import { CdkDragDrop, moveItemInArray } from '@angular/cdk/drag-drop';
 import { Component, OnDestroy, OnInit, ViewEncapsulation } from '@angular/core';
 import { FormArray, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { marker } from '@biesbjerg/ngx-translate-extract-marker';
-import TemplatesBudgetDetailsDTO, { TemplateBudgetLinesDTO } from '@data/models/templates-budget-details-dto';
+import TemplatesBudgetDetailsDTO, { TemplateBudgetLinesDTO } from '@data/models/templates/templates-budget-details-dto';
 import { TemplatesBudgetsService } from '@data/services/templates-budgets.service';
 import { ComponentToExtendForCustomDialog, CustomDialogFooterConfigI, CustomDialogService } from '@jenga/custom-dialog';
 import { TranslateService } from '@ngx-translate/core';

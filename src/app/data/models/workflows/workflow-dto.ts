@@ -1,4 +1,4 @@
-export default interface WorkflowDto {
+export default interface WorkflowDTO {
   id: number;
   name: string;
   status: string;

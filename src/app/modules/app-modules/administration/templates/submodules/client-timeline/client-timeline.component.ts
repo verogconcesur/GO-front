@@ -2,12 +2,12 @@ import { Component, OnInit } from '@angular/core';
 import { PageEvent } from '@angular/material/paginator';
 import { marker } from '@biesbjerg/ngx-translate-extract-marker';
 import PaginationResponseI from '@data/interfaces/pagination-response';
-import BrandDTO from '@data/models/brand-dto';
-import DepartmentDTO from '@data/models/department-dto';
-import FacilityDTO from '@data/models/facility-dto';
-import SpecialtyDTO from '@data/models/specialty-dto';
-import TemplatesTimelineDTO from '@data/models/templates-timeline-dto';
-import TemplatesFilterDTO from '@data/models/templates-filter-dto';
+import BrandDTO from '@data/models/organization/brand-dto';
+import DepartmentDTO from '@data/models/organization/department-dto';
+import FacilityDTO from '@data/models/organization/facility-dto';
+import SpecialtyDTO from '@data/models/organization/specialty-dto';
+import TemplatesTimelineDTO from '@data/models/templates/templates-timeline-dto';
+import TemplatesFilterDTO from '@data/models/templates/templates-filter-dto';
 import { CustomDialogService } from '@jenga/custom-dialog';
 import { untilDestroyed } from '@ngneat/until-destroy';
 import { TranslateService } from '@ngx-translate/core';
@@ -19,7 +19,7 @@ import { GlobalMessageService } from '@shared/services/global-message.service';
 import { ProgressSpinnerDialogService } from '@shared/services/progress-spinner-dialog.service';
 import { Observable, of } from 'rxjs';
 import { map, take, finalize } from 'rxjs/operators';
-import TemplatesCommonDTO from '@data/models/templates-common-dto';
+import TemplatesCommonDTO from '@data/models/templates/templates-common-dto';
 import { TemplatesTimelineService } from '@data/services/templates-timeline.service';
 import {
   CreateEditTimelineComponent,
