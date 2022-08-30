@@ -239,7 +239,7 @@ export class WokflowBoardColumnComponent implements OnInit {
       //Se va a posicionar en la última posición
       itemToReplace = { orderNumber: null };
     }
-
+    // DGDC TODO QUITAR LINEAS COMENTADAS
     // console.log(event, item, itemToReplace, wSubState, dropZoneId);
     // console.log(
     //   `${this.wSubstateKey}${item.cardInstanceWorkflows[0].workflowSubstateId}` === dropZoneId,
@@ -252,6 +252,7 @@ export class WokflowBoardColumnComponent implements OnInit {
         event.previousIndex < event.currentIndex && (itemToReplace.orderNumber || itemToReplace.orderNumber === 0)
           ? itemToReplace.orderNumber + 1
           : itemToReplace.orderNumber;
+      // DGDC TODO QUITAR LINEAS COMENTADAS
       // console.log('Reordenar:');
       // console.log(
       //   'Elemento:',
@@ -277,6 +278,7 @@ export class WokflowBoardColumnComponent implements OnInit {
       const move: WorkflowMoveDTO = item.movements.find(
         (wMove: WorkflowMoveDTO) => wMove.workflowSubstateTarget.id === wSubState.id
       );
+      // DGDC TODO QUITAR LINEAS COMENTADAS
       // console.log('Mover:');
       // console.log(
       //   'Elemento:',

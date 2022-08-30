@@ -144,7 +144,7 @@ export class WorkflowNavbarComponent implements OnInit, OnDestroy {
       .subscribe(
         (data) => {
           let workflowSelectedByIdParam: WorkflowDTO = null;
-          data.forEach((workflowGroup: WorkflowListByFacilityDTO) => {
+          data?.forEach((workflowGroup: WorkflowListByFacilityDTO) => {
             workflowGroup.workflows.forEach((workFlow: WorkflowDTO) => {
               workFlow.facility = { facilityName: workflowGroup.facilityName, facilityId: workflowGroup.facilityId };
               if (workFlow.id === this.idWorkflowRouteParam) {

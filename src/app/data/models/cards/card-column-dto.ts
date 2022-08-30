@@ -4,4 +4,7 @@ export default interface CardColumnDTO {
   orderNumber: number;
   name: string;
   tabs: CardColumnTabDTO[];
+  cardId: number;
+  colType: string;
+  id: number;
 }
