@@ -123,7 +123,11 @@ export class OrganizationLevelsNestedCombosComponent implements OnInit, OnDestro
           this.form
             .get('brands')
             .setValue(
-              this.form.get('brands').value.map((brandSelec: BrandDTO) => response.find((brand) => brandSelec.id === brand.id))
+              this.form.get('brands').value?.length
+                ? this.form
+                    .get('brands')
+                    .value.map((brandSelec: BrandDTO) => response.find((brand) => brandSelec.id === brand.id))
+                : null
             );
         },
         error: (error) => {

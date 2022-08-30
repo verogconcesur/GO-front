@@ -11,7 +11,7 @@ import { ResponsiveTabI } from '@shared/components/responsive-tabs/responsive-ta
 export class WorkflowCardColumnComponent implements OnInit {
   @Input() column: CardColumnDTO;
   @Input() showTabs = true;
-  @Input() containerClass = '';
+  @Input() containerClass: 'column1' | 'column2' | 'messages' | 'actions' | '' = '';
 
   public showLoading = false;
   public tabToShow: CardColumnTabDTO = null;
