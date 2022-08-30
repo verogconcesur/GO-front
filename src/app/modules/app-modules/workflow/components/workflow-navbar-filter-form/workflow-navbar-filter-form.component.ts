@@ -2,13 +2,13 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup } from '@angular/forms';
 import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
-import WorkflowFilterDto from '@data/models/workflows/workflow-filter-dto';
+import WorkflowFilterDTO from '@data/models/workflows/workflow-filter-dto';
 import { marker } from '@biesbjerg/ngx-translate-extract-marker';
 import { map, startWith } from 'rxjs/operators';
-import WorkflowStateDto from '@data/models/workflows/workflow-state-dto';
+import WorkflowStateDTO from '@data/models/workflows/workflow-state-dto';
 import { forkJoin, Observable, of } from 'rxjs';
-import WorkflowSubstateDto from '@data/models/workflows/workflow-substate-dto';
-import WorkflowSubstateUserDto from '@data/models/workflows/workflow-substate-user-dto';
+import WorkflowSubstateDTO from '@data/models/workflows/workflow-substate-dto';
+import WorkflowSubstateUserDTO from '@data/models/workflows/workflow-substate-user-dto';
 import { WorkflowFilterService } from '../../aux-service/workflow-filter.service';
 
 @UntilDestroy()
@@ -20,7 +20,7 @@ import { WorkflowFilterService } from '../../aux-service/workflow-filter.service
 export class WorkflowNavbarFilterFormComponent implements OnInit {
   @Input() hideSubstatesWithCardsButton: boolean;
   public filterForm: FormGroup;
-  public filterOptions: WorkflowFilterDto = null;
+  public filterOptions: WorkflowFilterDTO = null;
   public labels = {
     state: marker('common.state'),
     substate: marker('common.substate'),
@@ -34,10 +34,10 @@ export class WorkflowNavbarFilterFormComponent implements OnInit {
     substatesWithAndWithoutCards: marker('workflows.substatesWithAndWithoutCards'),
     substatesWithoutCards: marker('workflows.substatesWithoutCards')
   };
-  public statesOptions: Observable<WorkflowStateDto[] | any[]>;
-  public subStatesOptions: Observable<WorkflowSubstateDto[] | any[]>;
-  public usersOptions: Observable<WorkflowSubstateUserDto[] | any[]>;
-  private filterValue: WorkflowFilterDto = null;
+  public statesOptions: Observable<WorkflowStateDTO[] | any[]>;
+  public subStatesOptions: Observable<WorkflowSubstateDTO[] | any[]>;
+  public usersOptions: Observable<WorkflowSubstateUserDTO[] | any[]>;
+  private filterValue: WorkflowFilterDTO = null;
 
   constructor(private workflowFilterService: WorkflowFilterService, private formBuilder: FormBuilder) {}
 
@@ -77,7 +77,7 @@ export class WorkflowNavbarFilterFormComponent implements OnInit {
     return false;
   }
 
-  public getUserName(wUser: WorkflowSubstateUserDto): string {
+  public getUserName(wUser: WorkflowSubstateUserDTO): string {
     return `${wUser.user.name} ${wUser.user.firstName} ${wUser.user.lastName}`;
   }
 
@@ -127,7 +127,7 @@ export class WorkflowNavbarFilterFormComponent implements OnInit {
       });
     this.workflowFilterService.workflowFilterOptionsSubject$
       .pipe(untilDestroyed(this))
-      .subscribe((filterOptions: WorkflowFilterDto) => {
+      .subscribe((filterOptions: WorkflowFilterDTO) => {
         this.filterOptions = filterOptions;
 
         this.statesOptions = this.filterForm.get('statesSearch')?.valueChanges.pipe(
@@ -151,7 +151,7 @@ export class WorkflowNavbarFilterFormComponent implements OnInit {
   }
 
   private notifyChangesInFilter(): void {
-    const filterValue: WorkflowFilterDto = {
+    const filterValue: WorkflowFilterDTO = {
       states: this.filterForm.get('states').value,
       subStates: this.filterForm.get('subStates').value,
       users: this.filterForm.get('users').value,

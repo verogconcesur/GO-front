@@ -2,8 +2,8 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { FormArray, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { marker } from '@biesbjerg/ngx-translate-extract-marker';
-import TemplatesCommunicationDTO from '@data/models/templates-communication-dto';
-import VariablesDto from '@data/models/variables-dto';
+import TemplatesCommunicationDTO from '@data/models/templates/templates-communication-dto';
+import VariablesDTO from '@data/models/variables-dto';
 import { TemplatesCommunicationService } from '@data/services/templates-communication.service';
 import { VariablesService } from '@data/services/variables.service';
 import { ComponentToExtendForCustomDialog, CustomDialogFooterConfigI, CustomDialogService } from '@jenga/custom-dialog';
@@ -40,11 +40,11 @@ export class CreateEditCommunicationComponent extends ComponentToExtendForCustom
     required: marker('errors.required')
   };
   public textEditorToolbarOptions: TextEditorWrapperConfigI = {
-    addHtmlModificationOption: true,
+    addHtmlModificationOption: true
     // addMacroListOption: true,
     // macroListOptions: ['Nombre cliente', 'Nombre empresa']
   };
-  public listVariables: VariablesDto[];
+  public listVariables: VariablesDTO[];
   public communicationForm: FormGroup;
   public communicationTemplateForm: FormGroup;
   public communicationToEdit: TemplatesCommunicationDTO = null;

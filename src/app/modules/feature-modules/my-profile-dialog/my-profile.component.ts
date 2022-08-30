@@ -4,7 +4,7 @@ import { ComponentToExtendForCustomDialog, CustomDialogFooterConfigI } from '@je
 import { Observable, of, throwError } from 'rxjs';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { ProgressSpinnerDialogService } from '@shared/services/progress-spinner-dialog.service';
-import UserDetailsDTO from '@data/models/user-details-dto';
+import UserDetailsDTO from '@data/models/user-permissions/user-details-dto';
 import { ConfirmDialogService } from '@shared/services/confirm-dialog.service';
 import { TranslateService } from '@ngx-translate/core';
 import ConfirmPasswordValidator from '@shared/validators/confirm-password.validator';

@@ -5,9 +5,9 @@ import { Env } from '@app/types/env';
 import { ConcenetError } from '@app/types/error';
 import PaginationRequestI from '@data/interfaces/pagination-request';
 import PaginationResponseI from '@data/interfaces/pagination-response';
-import TemplatesCommonDTO from '@data/models/templates-common-dto';
-import TemplatesCommunicationDTO from '@data/models/templates-communication-dto';
-import TemplatesFilterDTO from '@data/models/templates-filter-dto';
+import TemplatesCommonDTO from '@data/models/templates/templates-common-dto';
+import TemplatesCommunicationDTO from '@data/models/templates/templates-communication-dto';
+import TemplatesFilterDTO from '@data/models/templates/templates-filter-dto';
 import { getPaginationUrlGetParams } from '@data/utils/pagination-aux';
 import { Observable, throwError } from 'rxjs';
 import { catchError } from 'rxjs/operators';
@@ -58,4 +58,3 @@ export class TemplatesCommunicationService {
       .pipe(catchError((error) => throwError(error.error as ConcenetError)));
   }
 }
-

@@ -1,5 +1,5 @@
 import BrandDTO from './brand-dto';
-import TownDto from './town-dto';
+import TownDTO from '../location/town-dto';
 
 export default interface FacilityDTO {
   id: number;
@@ -12,5 +12,5 @@ export default interface FacilityDTO {
   name?: string;
   numDepartments?: number;
   postalCode?: string;
-  town?: TownDto;
+  town?: TownDTO;
 }

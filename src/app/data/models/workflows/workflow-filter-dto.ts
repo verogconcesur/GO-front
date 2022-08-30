@@ -1,12 +1,12 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import WorkflowStateDto from './workflow-state-dto';
-import WorkflowSubstateDto from './workflow-substate-dto';
-import WorkflowSubstateUserDto from './workflow-substate-user-dto';
+import WorkflowStateDTO from './workflow-state-dto';
+import WorkflowSubstateDTO from './workflow-substate-dto';
+import WorkflowSubstateUserDTO from './workflow-substate-user-dto';
 
-export default interface WorkflowFilterDto {
-  states: WorkflowStateDto[] | any[];
-  subStates: WorkflowSubstateDto[] | any[];
-  users: WorkflowSubstateUserDto[] | any[];
+export default interface WorkflowFilterDTO {
+  states: WorkflowStateDTO[] | any[];
+  subStates: WorkflowSubstateDTO[] | any[];
+  users: WorkflowSubstateUserDTO[] | any[];
   priorities: string[];
   substatesWithCards: 'BOTH' | 'WITH_CARDS' | 'WHITHOUT_CARDS';
 }

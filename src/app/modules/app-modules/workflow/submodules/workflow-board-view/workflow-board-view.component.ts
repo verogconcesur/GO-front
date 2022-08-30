@@ -1,11 +1,11 @@
 import { Component, ElementRef, HostListener, NgZone, OnInit, ViewChild } from '@angular/core';
 import { marker } from '@biesbjerg/ngx-translate-extract-marker';
-import WorkflowCardDto from '@data/models/workflows/workflow-card-dto';
-import WorkflowDto from '@data/models/workflows/workflow-dto';
-import WorkflowFilterDto from '@data/models/workflows/workflow-filter-dto';
-import WorkflowStateDto from '@data/models/workflows/workflow-state-dto';
-import WorkflowSubstateDto from '@data/models/workflows/workflow-substate-dto';
-import WorkflowSubstateUserDto from '@data/models/workflows/workflow-substate-user-dto';
+import WorkflowCardDTO from '@data/models/workflows/workflow-card-dto';
+import WorkflowDTO from '@data/models/workflows/workflow-dto';
+import WorkflowFilterDTO from '@data/models/workflows/workflow-filter-dto';
+import WorkflowStateDTO from '@data/models/workflows/workflow-state-dto';
+import WorkflowSubstateDTO from '@data/models/workflows/workflow-substate-dto';
+import WorkflowSubstateUserDTO from '@data/models/workflows/workflow-substate-user-dto';
 import { WorkflowsService } from '@data/services/workflows.service';
 import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
 import { ProgressSpinnerDialogService } from '@shared/services/progress-spinner-dialog.service';
@@ -26,16 +26,16 @@ export class WorkflowBoardViewComponent implements OnInit {
   @ViewChild('AnchorColumn') anchorColumns: ElementRef;
   @ViewChild('AnchorStateColumn') anchorStateColumn: WokflowBoardColumnComponent;
 
-  public workflow: WorkflowDto = null;
-  public wStatesData: WorkflowStateDto[];
-  public wAnchorState: WorkflowStateDto;
-  public wNormalStates: WorkflowStateDto[];
+  public workflow: WorkflowDTO = null;
+  public wStatesData: WorkflowStateDTO[];
+  public wAnchorState: WorkflowStateDTO;
+  public wNormalStates: WorkflowStateDTO[];
   public showAnchorState = true;
   public labels = {
     noData: marker('errors.noDataToShow')
   };
-  private workflowInstances: WorkflowStateDto[] = [];
-  private filters: WorkflowFilterDto = null;
+  private workflowInstances: WorkflowStateDTO[] = [];
+  private filters: WorkflowFilterDTO = null;
 
   constructor(
     private workflowService: WorkflowsService,
@@ -55,11 +55,11 @@ export class WorkflowBoardViewComponent implements OnInit {
   }
 
   public initListeners(): void {
-    this.workflowService.workflowSelectedSubject$.pipe(untilDestroyed(this)).subscribe((workflow: WorkflowDto) => {
+    this.workflowService.workflowSelectedSubject$.pipe(untilDestroyed(this)).subscribe((workflow: WorkflowDTO) => {
       this.workflow = workflow;
       this.getData();
     });
-    this.workflowFilterService.workflowFilterSubject$.pipe(untilDestroyed(this)).subscribe((filter: WorkflowFilterDto) => {
+    this.workflowFilterService.workflowFilterSubject$.pipe(untilDestroyed(this)).subscribe((filter: WorkflowFilterDTO) => {
       this.filters = filter;
       this.filterData();
     });
@@ -80,7 +80,7 @@ export class WorkflowBoardViewComponent implements OnInit {
     this.workflowService
       .getWorkflowCards(this.workflow, 'BOARD')
       .pipe(take(1))
-      .subscribe((data: WorkflowCardDto[]) => {
+      .subscribe((data: WorkflowCardDTO[]) => {
         this.spinnerService.hide(spinner);
         this.mapWorkflowCardsWithInstances(data);
       });
@@ -88,20 +88,20 @@ export class WorkflowBoardViewComponent implements OnInit {
 
   public hideAnchorState = (): boolean => !this.showAnchorState;
 
-  private mapWorkflowCardsWithInstances(workflowCards: WorkflowCardDto[]) {
-    this.workflowInstances.forEach((wState: WorkflowStateDto) => {
+  private mapWorkflowCardsWithInstances(workflowCards: WorkflowCardDTO[]) {
+    this.workflowInstances.forEach((wState: WorkflowStateDTO) => {
       let totalCards = 0;
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       const totalUsers: any = {};
-      wState.workflowSubstates.forEach((wSubstate: WorkflowSubstateDto) => {
+      wState.workflowSubstates.forEach((wSubstate: WorkflowSubstateDTO) => {
         wSubstate.cards = this.workflowFilterService.orderCardsByOrderNumber(
-          workflowCards.filter((card: WorkflowCardDto) => card.cardInstanceWorkflows[0].workflowSubstateId === wSubstate.id)
+          workflowCards.filter((card: WorkflowCardDTO) => card.cardInstanceWorkflows[0].workflowSubstateId === wSubstate.id)
         );
         totalCards += wSubstate.cards.length;
-        wSubstate.workflowSubstateUser.forEach((user: WorkflowSubstateUserDto) => {
+        wSubstate.workflowSubstateUser.forEach((user: WorkflowSubstateUserDTO) => {
           const cardsBySubstateId = totalUsers[user.user.id] ? totalUsers[user.user.id].cardsBySubstateId : {};
           const substateCardsByUser = wSubstate.cards.filter(
-            (card: WorkflowCardDto) => card.cardInstanceWorkflows[0].cardInstanceWorkflowUsers[0].userId === user.user.id
+            (card: WorkflowCardDTO) => card.cardInstanceWorkflows[0].cardInstanceWorkflowUsers[0].userId === user.user.id
           );
           user.cards = this.workflowFilterService.orderCardsByOrderNumber([...substateCardsByUser]);
           user.cardsBySubstateId = JSON.parse(JSON.stringify(cardsBySubstateId));
@@ -125,9 +125,9 @@ export class WorkflowBoardViewComponent implements OnInit {
     // this.wAnchorState = null;
     // this.wNormalStates = [];
     setTimeout(() => {
-      this.wAnchorState = this.wStatesData.find((state: WorkflowStateDto) => state.anchor);
+      this.wAnchorState = this.wStatesData.find((state: WorkflowStateDTO) => state.anchor);
       this.wNormalStates = this.wStatesData
-        .filter((state: WorkflowStateDto) => !state.anchor)
+        .filter((state: WorkflowStateDTO) => !state.anchor)
         .sort((a, b) => a.orderNumber - b.orderNumber);
     });
   }
@@ -139,7 +139,7 @@ export class WorkflowBoardViewComponent implements OnInit {
         this.workflowService.getWorkflowInstances(this.workflow, true).pipe(take(1)),
         this.workflowService.getWorkflowCards(this.workflow, 'BOARD').pipe(take(1))
       ]).subscribe(
-        (data: [WorkflowStateDto[], WorkflowCardDto[]]) => {
+        (data: [WorkflowStateDTO[], WorkflowCardDTO[]]) => {
           this.spinnerService.hide(spinner);
           this.workflowInstances = data[0];
           this.mapWorkflowCardsWithInstances(data[1]);

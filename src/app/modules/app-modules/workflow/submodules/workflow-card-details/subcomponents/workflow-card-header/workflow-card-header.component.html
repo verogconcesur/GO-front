@@ -3,12 +3,12 @@
         <div class="wcard-header__colors">
             <div
                 class="wcard-header__colors__color"
-                *ngFor="let color of getColors()"
+                *ngFor="let color of card.colors"
                 [style.background-color]="color"
                 [ngClass]="getColorsClass()"
             ></div>
         </div>
-        <div style="font-weight: bold; font-size: 1.1em">20005T52222</div>
+        <div class="wcard-header__reference">{{ card.reference }}</div>
     </div>
     <div class="wcard-header__wrapper" *ngIf="card">
         <!-- <div class="wcard-header__chip" [style.background-color]="card.workflowStateColor">

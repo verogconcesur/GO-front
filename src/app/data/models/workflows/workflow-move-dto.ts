@@ -1,11 +1,11 @@
-import BrandDTO from '../brand-dto';
-import DepartmentDTO from '../department-dto';
-import FacilityDTO from '../facility-dto';
-import RoleDTO from '../role-dto';
-import SpecialtyDTO from '../specialty-dto';
-import WorkflowSubstateDto from './workflow-substate-dto';
+import BrandDTO from '../organization/brand-dto';
+import DepartmentDTO from '../organization/department-dto';
+import FacilityDTO from '../organization/facility-dto';
+import SpecialtyDTO from '../organization/specialty-dto';
+import RoleDTO from '../user-permissions/role-dto';
+import WorkflowSubstateDTO from './workflow-substate-dto';
 
-export default interface WorkflowMoveDto {
+export default interface WorkflowMoveDTO {
   id: number;
   orderNumber: number;
   requiredFields: boolean;
@@ -42,6 +42,6 @@ export default interface WorkflowMoveDto {
     specialties: SpecialtyDTO[];
     templateType: string;
   };
-  workflowSubstateSource: WorkflowSubstateDto;
-  workflowSubstateTarget: WorkflowSubstateDto;
+  workflowSubstateSource: WorkflowSubstateDTO;
+  workflowSubstateTarget: WorkflowSubstateDTO;
 }

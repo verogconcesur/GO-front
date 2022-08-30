@@ -1,4 +1,4 @@
-import SpecialtyDTO from '@data/models/specialty-dto';
+import SpecialtyDTO from '@data/models/organization/specialty-dto';
 
 export default interface SpecialtiesGroupedByDepartment {
   departmentId: number;

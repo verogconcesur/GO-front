@@ -1,5 +1,4 @@
-
-export default interface VariablesDto {
+export default interface VariablesDTO {
   attributeName: string;
   entityName: string;
   id: number;

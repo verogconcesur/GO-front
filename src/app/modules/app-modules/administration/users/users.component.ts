@@ -1,7 +1,7 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { MatTabChangeEvent } from '@angular/material/tabs';
 import { marker } from '@biesbjerg/ngx-translate-extract-marker';
-import UserDetailsDTO from '@data/models/user-details-dto';
+import UserDetailsDTO from '@data/models/user-permissions/user-details-dto';
 // eslint-disable-next-line max-len
 import { AdministrationCommonHeaderSectionComponent } from '@modules/feature-modules/administration-common-header-section/administration-common-header-section.component';
 import { Observable, of } from 'rxjs';

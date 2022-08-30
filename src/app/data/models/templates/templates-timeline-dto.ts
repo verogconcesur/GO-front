@@ -1,7 +1,7 @@
-import BrandDTO from './brand-dto';
-import DepartmentDTO from './department-dto';
-import FacilityDTO from './facility-dto';
-import SpecialtyDTO from './specialty-dto';
+import BrandDTO from '../organization/brand-dto';
+import DepartmentDTO from '../organization/department-dto';
+import FacilityDTO from '../organization/facility-dto';
+import SpecialtyDTO from '../organization/specialty-dto';
 
 export interface TemplatesTimelineItemsDTO {
   name: string;

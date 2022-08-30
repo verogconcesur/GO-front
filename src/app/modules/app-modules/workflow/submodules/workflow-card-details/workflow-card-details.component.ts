@@ -2,18 +2,18 @@
 import { Component, HostListener, OnInit } from '@angular/core';
 import { Location } from '@angular/common';
 import { ActivatedRoute, Router } from '@angular/router';
-import WorkflowCardDto from '@data/models/workflows/workflow-card-dto';
+import WorkflowCardDTO from '@data/models/workflows/workflow-card-dto';
 import { marker } from '@biesbjerg/ngx-translate-extract-marker';
 import { ResponsiveTabI } from '@shared/components/responsive-tabs/responsive-tabs.component';
 import { CardService } from '@data/services/cards.service';
 import { take } from 'rxjs/operators';
-import CardDto from '@data/models/cards/card-dto';
-import CardColumnDto from '@data/models/cards/card-column-dto';
+import CardDTO from '@data/models/cards/card-dto';
+import CardColumnDTO from '@data/models/cards/card-column-dto';
 import { ProgressSpinnerDialogService } from '@shared/services/progress-spinner-dialog.service';
 import { GlobalMessageService } from '@shared/services/global-message.service';
 import { ConcenetError } from '@app/types/error';
 import { TranslateService } from '@ngx-translate/core';
-import CardInstanceDto from '@data/models/cards/card-instance-dto';
+import CardInstanceDTO from '@data/models/cards/card-instance-dto';
 
 @Component({
   selector: 'app-workflow-card-details',
@@ -23,7 +23,7 @@ import CardInstanceDto from '@data/models/cards/card-instance-dto';
 export class WorkflowCardDetailsComponent implements OnInit {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   public relativeTo: any = null;
-  public card: WorkflowCardDto = null;
+  public card: WorkflowCardDTO = null;
   public idCard: number = null;
   public tabSelected: 'column1' | 'column2' | 'messages' | 'actions' = 'column1';
   public showMode: 'all' | 'semi' | 'individual' = 'all';
@@ -33,8 +33,8 @@ export class WorkflowCardDetailsComponent implements OnInit {
     messages: marker('common.messages'),
     actions: marker('common.actions')
   };
-  public columnsConfig: CardColumnDto[] = null;
-  public cardInstance: CardInstanceDto = null;
+  public columnsConfig: CardColumnDTO[] = null;
+  public cardInstance: CardInstanceDTO = null;
 
   constructor(
     private route: ActivatedRoute,
@@ -58,7 +58,7 @@ export class WorkflowCardDetailsComponent implements OnInit {
     }
     if (state.card) {
       this.card = JSON.parse(state.card);
-      this.idCard = this.card.cardId;
+      this.idCard = this.card.cardInstanceWorkflows[0].id;
     } else if (this.route?.snapshot?.params?.id) {
       this.idCard = parseInt(this.route?.snapshot?.params?.id, 10);
     }
@@ -105,8 +105,8 @@ export class WorkflowCardDetailsComponent implements OnInit {
       .getCardInstanceDetailById(this.idCard)
       .pipe(take(1))
       .subscribe(
-        (data: CardInstanceDto) => {
-          console.log('CardInstanceDto', data);
+        (data: CardInstanceDTO) => {
+          console.log('CardInstanceDTO', data);
           this.spinnerService.hide(spinner);
           this.cardInstance = data;
           this.columnsConfig = data.card.cols;
@@ -116,6 +116,7 @@ export class WorkflowCardDetailsComponent implements OnInit {
             message: error.message,
             actionText: this.translateService.instant(marker('common.close'))
           });
+          this.spinnerService.hide(spinner);
           this.close();
         }
       );

@@ -1,0 +1,14 @@
+.entityData {
+  text-transform: uppercase;
+  margin: 30px 10px;
+  &:first-child {
+    margin-top: 20px;
+  }
+  &__label {
+    font-weight: 600;
+    font-size: 0.85em;
+  }
+  &__value {
+    margin-top: 3px;
+  }
+}

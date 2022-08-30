@@ -1,11 +1,11 @@
-import CardColumnDto from './card-column-dto';
+import CardColumnDTO from './card-column-dto';
 
-export default interface CardDto {
+export default interface CardDTO {
   id: number;
   name: string;
   newVersion: boolean;
   version: number;
   versionDate: number;
   workflowCount: number;
-  cols: CardColumnDto[];
+  cols: CardColumnDTO[];
 }

@@ -1,7 +1,7 @@
-import WorkflowCardDto from './workflow-card-dto';
+import WorkflowCardDTO from './workflow-card-dto';
 
-export default interface WorkflowCardInstanceDto {
-  cardInstance: WorkflowCardDto;
+export default interface WorkflowCardInstanceDTO {
+  cardInstance: WorkflowCardDTO;
   cardInstanceWorkflowUsers: {
     dateAssignment: string;
     id: number;

@@ -1,12 +1,12 @@
 import { Injectable } from '@angular/core';
-import WorkflowCardDto from '@data/models/workflows/workflow-card-dto';
+import WorkflowCardDTO from '@data/models/workflows/workflow-card-dto';
 import { BehaviorSubject } from 'rxjs';
 
 @Injectable({
   providedIn: 'root'
 })
 export class WorkflowDragAndDropService {
-  public draggingCard$: BehaviorSubject<WorkflowCardDto> = new BehaviorSubject(null);
+  public draggingCard$: BehaviorSubject<WorkflowCardDTO> = new BehaviorSubject(null);
   public droppableStates$: BehaviorSubject<string[]> = new BehaviorSubject([]);
   public expandedColumns$: BehaviorSubject<string[]> = new BehaviorSubject([]);
 

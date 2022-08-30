@@ -4,7 +4,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { CustomDialogService } from '@jenga/custom-dialog';
 import { RouteConstants } from '@app/constants/route.constants';
 import { marker } from '@biesbjerg/ngx-translate-extract-marker';
-import FacilityDTO from '@data/models/facility-dto';
+import FacilityDTO from '@data/models/organization/facility-dto';
 import { FacilityService } from '@data/services/facility.sevice';
 import { Observable } from 'rxjs';
 import { finalize, tap, take } from 'rxjs/operators';

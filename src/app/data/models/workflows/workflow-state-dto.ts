@@ -1,8 +1,8 @@
-import WorkflowDto from './workflow-dto';
-import WorkflowSubstateDto from './workflow-substate-dto';
-import WorkflowSubstateUserDto from './workflow-substate-user-dto';
+import WorkflowDTO from './workflow-dto';
+import WorkflowSubstateDTO from './workflow-substate-dto';
+import WorkflowSubstateUserDTO from './workflow-substate-user-dto';
 
-export default interface WorkflowStateDto {
+export default interface WorkflowStateDTO {
   id: number;
   name: string;
   anchor: boolean;
@@ -13,7 +13,7 @@ export default interface WorkflowStateDto {
   orderNumber: number;
   cardCount: number;
   userCount: number;
-  workflow: WorkflowDto;
-  workflowSubstates: WorkflowSubstateDto[];
-  workflowUsers?: WorkflowSubstateUserDto[];
+  workflow: WorkflowDTO;
+  workflowSubstates: WorkflowSubstateDTO[];
+  workflowUsers?: WorkflowSubstateUserDTO[];
 }

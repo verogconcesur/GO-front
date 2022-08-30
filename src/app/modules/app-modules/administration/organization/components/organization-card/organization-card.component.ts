@@ -1,9 +1,9 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { marker } from '@biesbjerg/ngx-translate-extract-marker';
-import BrandDTO from '@data/models/brand-dto';
-import DepartmentDTO from '@data/models/department-dto';
-import FacilityDTO from '@data/models/facility-dto';
-import SpecialtyDTO from '@data/models/specialty-dto';
+import BrandDTO from '@data/models/organization/brand-dto';
+import DepartmentDTO from '@data/models/organization/department-dto';
+import FacilityDTO from '@data/models/organization/facility-dto';
+import SpecialtyDTO from '@data/models/organization/specialty-dto';
 
 @Component({
   selector: 'app-organization-card',
