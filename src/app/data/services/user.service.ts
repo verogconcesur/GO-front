@@ -52,7 +52,7 @@ export class UserService {
   public addUser(userData: UserDetailsDTO): Observable<UserDetailsDTO> {
     return this.http
       .post<UserDetailsDTO>(`${this.env.apiBaseUrl}${this.USER_ADD_PATH}`, userData)
-      .pipe(catchError((error) => throwError(error as ConcenetError)));
+      .pipe(catchError((error) => throwError(error.error as ConcenetError)));
   }
 
   public editUserProfile(userData: {
@@ -67,7 +67,7 @@ export class UserService {
   }): Observable<UserDetailsDTO> {
     return this.http
       .put<UserDetailsDTO>(`${this.env.apiBaseUrl}${this.USER_EDIT_PROFILE_PATH}`, userData)
-      .pipe(catchError((error) => throwError(error as ConcenetError)));
+      .pipe(catchError((error) => throwError(error.error as ConcenetError)));
   }
 
   public searchUsers(
