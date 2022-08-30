@@ -1,6 +1,6 @@
 import { Component, Input, OnInit } from '@angular/core';
-import CardColumnDto from '@data/models/cards/card-column-dto';
-import CardColumnTabDto from '@data/models/cards/card-column-tab-dto';
+import CardColumnDTO from '@data/models/cards/card-column-dto';
+import CardColumnTabDTO from '@data/models/cards/card-column-tab-dto';
 import { ResponsiveTabI } from '@shared/components/responsive-tabs/responsive-tabs.component';
 
 @Component({
@@ -9,12 +9,12 @@ import { ResponsiveTabI } from '@shared/components/responsive-tabs/responsive-ta
   styleUrls: ['./workflow-card-column.component.scss']
 })
 export class WorkflowCardColumnComponent implements OnInit {
-  @Input() column: CardColumnDto;
+  @Input() column: CardColumnDTO;
   @Input() showTabs = true;
   @Input() containerClass = '';
 
   public showLoading = false;
-  public tabToShow: CardColumnTabDto = null;
+  public tabToShow: CardColumnTabDTO = null;
 
   constructor() {}
 
@@ -22,7 +22,7 @@ export class WorkflowCardColumnComponent implements OnInit {
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   public getTabsInfo(): { id: any; label: string }[] {
-    return [...this.column.tabs].map((tab: CardColumnTabDto) => ({ id: tab.id, label: tab.name }));
+    return [...this.column.tabs].map((tab: CardColumnTabDTO) => ({ id: tab.id, label: tab.name }));
   }
 
   public tabChange(event: ResponsiveTabI): void {

@@ -4,7 +4,7 @@ import { MatTabChangeEvent } from '@angular/material/tabs';
 import { ActivatedRoute, Route, Router } from '@angular/router';
 import { RouteConstants } from '@app/constants/route.constants';
 import { marker } from '@biesbjerg/ngx-translate-extract-marker';
-import TemplatesFilterDTO from '@data/models/templates-filter-dto';
+import TemplatesFilterDTO from '@data/models/templates/templates-filter-dto';
 import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
 // eslint-disable-next-line max-len
 import { AdministrationCommonHeaderSectionClassToExtend } from '@modules/feature-modules/administration-common-header-section/administration-common-header-section-class-to-extend';

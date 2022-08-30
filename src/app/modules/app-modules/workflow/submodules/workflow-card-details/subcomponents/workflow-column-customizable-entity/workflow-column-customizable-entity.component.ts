@@ -2,8 +2,8 @@ import { Component, EventEmitter, Input, OnChanges, OnInit, Output, SimpleChange
 import { ActivatedRoute } from '@angular/router';
 import { ConcenetError } from '@app/types/error';
 import { marker } from '@biesbjerg/ngx-translate-extract-marker';
-import CardColumnTabDto from '@data/models/cards/card-column-tab-dto';
-import WorkflowCardSlotDto from '@data/models/workflows/workflow-card-slot-dto';
+import CardColumnTabDTO from '@data/models/cards/card-column-tab-dto';
+import WorkflowCardSlotDTO from '@data/models/workflows/workflow-card-slot-dto';
 import { CardService } from '@data/services/cards.service';
 import { TranslateService } from '@ngx-translate/core';
 import { GlobalMessageService } from '@shared/services/global-message.service';
@@ -15,10 +15,10 @@ import { take } from 'rxjs/operators';
   styleUrls: ['./workflow-column-customizable-entity.component.scss']
 })
 export class WorkflowColumnCustomizableEntityComponent implements OnInit, OnChanges {
-  @Input() tab: CardColumnTabDto = null;
+  @Input() tab: CardColumnTabDTO = null;
   @Output() setShowLoading: EventEmitter<boolean> = new EventEmitter(false);
 
-  public entityData: WorkflowCardSlotDto[] = [];
+  public entityData: WorkflowCardSlotDTO[] = [];
 
   constructor(
     private cardService: CardService,
@@ -43,7 +43,7 @@ export class WorkflowColumnCustomizableEntityComponent implements OnInit, OnChan
         .getCardTabData(parseInt(this.route?.snapshot?.params?.id, 10), this.tab.id)
         .pipe(take(1))
         .subscribe(
-          (data: WorkflowCardSlotDto[]) => {
+          (data: WorkflowCardSlotDTO[]) => {
             this.entityData = data;
             this.setShowLoading.emit(false);
           },

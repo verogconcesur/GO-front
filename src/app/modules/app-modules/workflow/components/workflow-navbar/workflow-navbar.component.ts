@@ -3,8 +3,8 @@ import { Location } from '@angular/common';
 import { FormBuilder, FormGroup } from '@angular/forms';
 import { RouteConstants } from '@app/constants/route.constants';
 import { marker } from '@biesbjerg/ngx-translate-extract-marker';
-import WorkflowDto from '@data/models/workflows/workflow-dto';
-import WorkflowListByFacilityDto from '@data/models/workflows/workflow-list-by-facility-dto';
+import WorkflowDTO from '@data/models/workflows/workflow-dto';
+import WorkflowListByFacilityDTO from '@data/models/workflows/workflow-list-by-facility-dto';
 import { WorkflowsService } from '@data/services/workflows.service';
 import { TranslateService } from '@ngx-translate/core';
 import { ProgressSpinnerDialogService } from '@shared/services/progress-spinner-dialog.service';
@@ -25,10 +25,10 @@ export class WorkflowNavbarComponent implements OnInit, OnDestroy {
   public currentUrl = '';
   public currentView: RouteConstants | string = null;
   public idWorkflowRouteParam: number = null;
-  public workflowList: WorkflowListByFacilityDto[] = [];
+  public workflowList: WorkflowListByFacilityDTO[] = [];
   public workflowForm: FormGroup;
-  public workflowGroupOptions: Observable<WorkflowListByFacilityDto[]>;
-  public workflowSelected: WorkflowDto;
+  public workflowGroupOptions: Observable<WorkflowListByFacilityDTO[]>;
+  public workflowSelected: WorkflowDTO;
   public labels = {
     selectWorkflow: marker('workflows.select'),
     filterWorkflow: marker('workflows.filter')
@@ -96,12 +96,12 @@ export class WorkflowNavbarComponent implements OnInit, OnDestroy {
     return false;
   }
 
-  public getWorkflowGroupLabel(group: WorkflowListByFacilityDto): string {
+  public getWorkflowGroupLabel(group: WorkflowListByFacilityDTO): string {
     return this.translateService.instant('workflows.byFacilityGroupLabel', { facility: group.facilityName });
   }
 
   public getWorkflowLabel(): string {
-    const workflow: WorkflowDto = this.workflowForm.get('workflow').value();
+    const workflow: WorkflowDTO = this.workflowForm.get('workflow').value();
     if (workflow && workflow.name) {
       return `${workflow.name} - ${workflow.facility.facilityName}`;
     } else {
@@ -109,7 +109,7 @@ export class WorkflowNavbarComponent implements OnInit, OnDestroy {
     }
   }
 
-  public workflowSelectionChange(event: { value: WorkflowDto }): void {
+  public workflowSelectionChange(event: { value: WorkflowDTO }): void {
     const workflow = event.value;
     if (this.idWorkflowRouteParam) {
       this.currentUrl = this.currentUrl
@@ -143,9 +143,9 @@ export class WorkflowNavbarComponent implements OnInit, OnDestroy {
       .pipe(take(1))
       .subscribe(
         (data) => {
-          let workflowSelectedByIdParam: WorkflowDto = null;
-          data.forEach((workflowGroup: WorkflowListByFacilityDto) => {
-            workflowGroup.workflows.forEach((workFlow: WorkflowDto) => {
+          let workflowSelectedByIdParam: WorkflowDTO = null;
+          data.forEach((workflowGroup: WorkflowListByFacilityDTO) => {
+            workflowGroup.workflows.forEach((workFlow: WorkflowDTO) => {
               workFlow.facility = { facilityName: workflowGroup.facilityName, facilityId: workflowGroup.facilityId };
               if (workFlow.id === this.idWorkflowRouteParam) {
                 workflowSelectedByIdParam = workFlow;
@@ -174,7 +174,7 @@ export class WorkflowNavbarComponent implements OnInit, OnDestroy {
       );
   }
 
-  private filterGroup(value: string): WorkflowListByFacilityDto[] {
+  private filterGroup(value: string): WorkflowListByFacilityDTO[] {
     if (value) {
       return this.workflowList
         .map((group) => ({ ...group, workflows: this.filter(group.workflows, value) }))
@@ -184,8 +184,8 @@ export class WorkflowNavbarComponent implements OnInit, OnDestroy {
     return this.workflowList;
   }
 
-  private filter = (opt: WorkflowDto[], value: string): WorkflowDto[] => {
+  private filter = (opt: WorkflowDTO[], value: string): WorkflowDTO[] => {
     const filterValue = value.toLowerCase();
-    return opt.filter((item: WorkflowDto) => item.name.toLowerCase().includes(filterValue));
+    return opt.filter((item: WorkflowDTO) => item.name.toLowerCase().includes(filterValue));
   };
 }

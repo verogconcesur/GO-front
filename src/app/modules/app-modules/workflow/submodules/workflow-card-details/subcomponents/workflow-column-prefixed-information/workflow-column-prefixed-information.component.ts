@@ -1,5 +1,5 @@
 import { Component, Input, OnChanges, OnInit, SimpleChanges } from '@angular/core';
-import CardColumnTabDto from '@data/models/cards/card-column-tab-dto';
+import CardColumnTabDTO from '@data/models/cards/card-column-tab-dto';
 
 @Component({
   selector: 'app-workflow-column-prefixed-information',
@@ -7,7 +7,7 @@ import CardColumnTabDto from '@data/models/cards/card-column-tab-dto';
   styleUrls: ['./workflow-column-prefixed-information.component.scss']
 })
 export class WorkflowColumnPrefixedInformationComponent implements OnInit, OnChanges {
-  @Input() tab: CardColumnTabDto = null;
+  @Input() tab: CardColumnTabDTO = null;
 
   constructor() {}
 

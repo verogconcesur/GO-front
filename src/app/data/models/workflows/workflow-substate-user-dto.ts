@@ -1,13 +1,13 @@
-import UserDTO from '../user-dto';
-import WorkflowCardDto from './workflow-card-dto';
+import UserDTO from '../user-permissions/user-dto';
+import WorkflowCardDTO from './workflow-card-dto';
 
-export default interface WorkflowSubstateUserDto {
+export default interface WorkflowSubstateUserDTO {
   id: number;
   permissionType: string;
   workflowSubstateId: number;
   user: UserDTO;
   substatesIdsToFilter?: number[]; //Used on filter to group similar substates
-  cards?: WorkflowCardDto[];
+  cards?: WorkflowCardDTO[];
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   cardsBySubstateId?: any;
 }

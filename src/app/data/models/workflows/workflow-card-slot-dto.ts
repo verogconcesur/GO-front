@@ -1,4 +1,4 @@
-export default interface WorkflowCardSlotDto {
+export default interface WorkflowCardSlotDTO {
   attributeName: string;
   entityName: string;
   id: number;

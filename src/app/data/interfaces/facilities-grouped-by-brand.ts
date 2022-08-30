@@ -1,4 +1,4 @@
-import FacilityDTO from '@data/models/facility-dto';
+import FacilityDTO from '@data/models/organization/facility-dto';
 
 export default interface FacilitiesGroupedByBrand {
   brandId: number[];

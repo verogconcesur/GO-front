@@ -1,6 +1,6 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { marker } from '@biesbjerg/ngx-translate-extract-marker';
-import CardInstanceDto from '@data/models/cards/card-instance-dto';
+import CardInstanceDTO from '@data/models/cards/card-instance-dto';
 
 @Component({
   selector: 'app-workflow-card-header',
@@ -8,7 +8,7 @@ import CardInstanceDto from '@data/models/cards/card-instance-dto';
   styleUrls: ['./workflow-card-header.component.scss']
 })
 export class WorkflowCardHeaderComponent implements OnInit {
-  @Input() card: CardInstanceDto = null;
+  @Input() card: CardInstanceDTO = null;
 
   public labels = {
     follow: marker('common.follow'),

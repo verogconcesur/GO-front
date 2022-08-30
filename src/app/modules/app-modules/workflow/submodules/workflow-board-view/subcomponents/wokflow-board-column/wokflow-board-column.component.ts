@@ -1,13 +1,13 @@
 import { CdkDragDrop, moveItemInArray, transferArrayItem } from '@angular/cdk/drag-drop';
 import { Component, ElementRef, EventEmitter, Input, NgZone, OnInit, Output } from '@angular/core';
 import { marker } from '@biesbjerg/ngx-translate-extract-marker';
-import WorkflowCardDto from '@data/models/workflows/workflow-card-dto';
-import WorkflowCardInstanceDto from '@data/models/workflows/workflow-card-instance-dto';
-import WorkflowDto from '@data/models/workflows/workflow-dto';
-import WorkflowMoveDto from '@data/models/workflows/workflow-move-dto';
-import WorkflowStateDto from '@data/models/workflows/workflow-state-dto';
-import WorkflowSubstateDto from '@data/models/workflows/workflow-substate-dto';
-import WorkflowSubstateUserDto from '@data/models/workflows/workflow-substate-user-dto';
+import WorkflowCardDTO from '@data/models/workflows/workflow-card-dto';
+import WorkflowCardInstanceDTO from '@data/models/workflows/workflow-card-instance-dto';
+import WorkflowDTO from '@data/models/workflows/workflow-dto';
+import WorkflowMoveDTO from '@data/models/workflows/workflow-move-dto';
+import WorkflowStateDTO from '@data/models/workflows/workflow-state-dto';
+import WorkflowSubstateDTO from '@data/models/workflows/workflow-substate-dto';
+import WorkflowSubstateUserDTO from '@data/models/workflows/workflow-substate-user-dto';
 import { WorkflowsService } from '@data/services/workflows.service';
 import { WorkflowDragAndDropService } from '@modules/app-modules/workflow/aux-service/workflow-drag-and-drop.service';
 import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
@@ -25,14 +25,14 @@ import { take } from 'rxjs/operators';
   styleUrls: ['./wokflow-board-column.component.scss']
 })
 export class WokflowBoardColumnComponent implements OnInit {
-  @Input() workflow: WorkflowDto = null;
-  @Input() wState: WorkflowStateDto = null;
+  @Input() workflow: WorkflowDTO = null;
+  @Input() wState: WorkflowStateDTO = null;
   @Input() divider = true;
   @Output() reloadCardsEvent: EventEmitter<boolean> = new EventEmitter();
   public collapsed = false;
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   public hideEmptyDropZone: any = {};
-  public cardDragging: WorkflowCardDto = null;
+  public cardDragging: WorkflowCardDTO = null;
   public droppableStates: string[] = [];
   public changeCollapseStatusOnOver = false;
   public readonly wStateKey = 'wState-';
@@ -71,7 +71,7 @@ export class WokflowBoardColumnComponent implements OnInit {
   }
 
   public initListeners(): void {
-    this.dragAndDropService.draggingCard$.pipe(untilDestroyed(this)).subscribe((dragging: WorkflowCardDto) => {
+    this.dragAndDropService.draggingCard$.pipe(untilDestroyed(this)).subscribe((dragging: WorkflowCardDTO) => {
       this.cardDragging = dragging;
     });
     this.dragAndDropService.droppableStates$.pipe(untilDestroyed(this)).subscribe((droppableStates: string[]) => {
@@ -91,7 +91,7 @@ export class WokflowBoardColumnComponent implements OnInit {
 
   public isStateEmpty(): boolean {
     let isEmpty = true;
-    this.wState.workflowSubstates.forEach((wss: WorkflowSubstateDto) => {
+    this.wState.workflowSubstates.forEach((wss: WorkflowSubstateDTO) => {
       if (wss.cards.length) {
         isEmpty = false;
       }
@@ -121,26 +121,26 @@ export class WokflowBoardColumnComponent implements OnInit {
     return false;
   }
 
-  public getUserName(wUser: WorkflowSubstateUserDto): string {
+  public getUserName(wUser: WorkflowSubstateUserDTO): string {
     return `${wUser.user.name} ${wUser.user.firstName} ${wUser.user.lastName}`;
   }
 
-  public getCardsFilteredByUser(user: WorkflowSubstateUserDto, cards: WorkflowCardDto[]): WorkflowCardDto[] {
+  public getCardsFilteredByUser(user: WorkflowSubstateUserDTO, cards: WorkflowCardDTO[]): WorkflowCardDTO[] {
     return cards.filter(
-      (card: WorkflowCardDto) => card.cardInstanceWorkflows[0].cardInstanceWorkflowUsers[0].userId === user.user.id
+      (card: WorkflowCardDTO) => card.cardInstanceWorkflows[0].cardInstanceWorkflowUsers[0].userId === user.user.id
     );
   }
 
-  public getWSubstatesToShowByUser(user: WorkflowSubstateUserDto, wState: WorkflowStateDto): WorkflowSubstateDto[] {
-    return wState.workflowSubstates.filter((wss: WorkflowSubstateDto) => user.cardsBySubstateId[wss.id]);
+  public getWSubstatesToShowByUser(user: WorkflowSubstateUserDTO, wState: WorkflowStateDTO): WorkflowSubstateDTO[] {
+    return wState.workflowSubstates.filter((wss: WorkflowSubstateDTO) => user.cardsBySubstateId[wss.id]);
   }
 
-  public getAssociatedWSubstates(card: WorkflowCardDto, itSelf?: string): string[] {
+  public getAssociatedWSubstates(card: WorkflowCardDTO, itSelf?: string): string[] {
     const associatedWSubstates: string[] = [];
     if (card?.movements?.length) {
-      card.movements.forEach((move: WorkflowMoveDto) => {
+      card.movements.forEach((move: WorkflowMoveDTO) => {
         if (move.workflowSubstateTarget.workflowState?.front) {
-          move.workflowSubstateTarget.workflowSubstateUser.forEach((wUser: WorkflowSubstateUserDto) => {
+          move.workflowSubstateTarget.workflowSubstateUser.forEach((wUser: WorkflowSubstateUserDTO) => {
             const idState = this.wCollapsedStateKey + move.workflowSubstateTarget.workflowState.id;
             const id = this.wSubstateKey + move.workflowSubstateTarget.id + '-' + wUser.user.id;
             if (associatedWSubstates.indexOf(idState) === -1) {
@@ -152,7 +152,7 @@ export class WokflowBoardColumnComponent implements OnInit {
           });
 
           if (itSelf) {
-            move.workflowSubstateSource.workflowSubstateUser.forEach((wUser: WorkflowSubstateUserDto) => {
+            move.workflowSubstateSource.workflowSubstateUser.forEach((wUser: WorkflowSubstateUserDTO) => {
               const id = this.wSubstateKey + move.workflowSubstateSource.id + '-' + wUser.user.id;
               if (associatedWSubstates.indexOf(id) === -1) {
                 associatedWSubstates.push(id);
@@ -175,7 +175,7 @@ export class WokflowBoardColumnComponent implements OnInit {
 
   public getCollapsedDropZoneClass(): string {
     let classes = '';
-    this.wState.workflowSubstates.forEach((wSubstate: WorkflowSubstateDto) => {
+    this.wState.workflowSubstates.forEach((wSubstate: WorkflowSubstateDTO) => {
       const sClass = `${this.wSubstateKey}${wSubstate.id}`;
       if (
         this.cardDragging &&
@@ -193,7 +193,7 @@ export class WokflowBoardColumnComponent implements OnInit {
 
   public getCollapsedWDroppedClasses(): string {
     let classes = '';
-    this.wState.workflowSubstates.forEach((wSubstate: WorkflowSubstateDto) => {
+    this.wState.workflowSubstates.forEach((wSubstate: WorkflowSubstateDTO) => {
       classes += `${this.wSubstateKey}${wSubstate.id} `;
     });
     return classes;
@@ -226,10 +226,10 @@ export class WokflowBoardColumnComponent implements OnInit {
     }
   }
 
-  public drop(event: CdkDragDrop<string[]>, wSubState: WorkflowSubstateDto, user: WorkflowSubstateUserDto, dropZoneId: string) {
+  public drop(event: CdkDragDrop<string[]>, wSubState: WorkflowSubstateDTO, user: WorkflowSubstateUserDTO, dropZoneId: string) {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const item: any = event.previousContainer.data[event.previousIndex];
-    let request: Observable<WorkflowCardInstanceDto> = null;
+    let request: Observable<WorkflowCardInstanceDTO> = null;
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     let itemToReplace: any = null;
     if (event.container.data[event.currentIndex]) {
@@ -274,8 +274,8 @@ export class WokflowBoardColumnComponent implements OnInit {
         orderNumber
       );
     } else if (event.previousContainer !== event.container && !sameDropZone) {
-      const move: WorkflowMoveDto = item.movements.find(
-        (wMove: WorkflowMoveDto) => wMove.workflowSubstateTarget.id === wSubState.id
+      const move: WorkflowMoveDTO = item.movements.find(
+        (wMove: WorkflowMoveDTO) => wMove.workflowSubstateTarget.id === wSubState.id
       );
       // console.log('Mover:');
       // console.log(

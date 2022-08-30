@@ -4,13 +4,13 @@ import { Inject, Injectable } from '@angular/core';
 import { ENV } from '@app/constants/global.constants';
 import { Env } from '@app/types/env';
 import { ConcenetError } from '@app/types/error';
-import WorkflowCardDto from '@data/models/workflows/workflow-card-dto';
-import WorkflowCardInstanceDto from '@data/models/workflows/workflow-card-instance-dto';
-import WorkflowDto from '@data/models/workflows/workflow-dto';
-import WorkflowListByFacilityDto from '@data/models/workflows/workflow-list-by-facility-dto';
-import WorkflowMoveDto from '@data/models/workflows/workflow-move-dto';
-import WorkflowStateDto from '@data/models/workflows/workflow-state-dto';
-import WorkflowSubstateUserDto from '@data/models/workflows/workflow-substate-user-dto';
+import WorkflowCardDTO from '@data/models/workflows/workflow-card-dto';
+import WorkflowCardInstanceDTO from '@data/models/workflows/workflow-card-instance-dto';
+import WorkflowDTO from '@data/models/workflows/workflow-dto';
+import WorkflowListByFacilityDTO from '@data/models/workflows/workflow-list-by-facility-dto';
+import WorkflowMoveDTO from '@data/models/workflows/workflow-move-dto';
+import WorkflowStateDTO from '@data/models/workflows/workflow-state-dto';
+import WorkflowSubstateUserDTO from '@data/models/workflows/workflow-substate-user-dto';
 import { WorkflowFilterService } from '@modules/app-modules/workflow/aux-service/workflow-filter.service';
 import { BehaviorSubject, Observable, throwError } from 'rxjs';
 import { catchError, map } from 'rxjs/operators';
@@ -20,7 +20,7 @@ import { catchError, map } from 'rxjs/operators';
 })
 export class WorkflowsService {
   //Stores the selected workflow.
-  public workflowSelectedSubject$: BehaviorSubject<WorkflowDto> = new BehaviorSubject(null);
+  public workflowSelectedSubject$: BehaviorSubject<WorkflowDTO> = new BehaviorSubject(null);
 
   private readonly GET_WORKFLOWS_PATH = '/api/workflows';
   private readonly GET_WORKFLOWS_LIST_PATH = '/list';
@@ -36,28 +36,28 @@ export class WorkflowsService {
   /**
    * Devuelve el listado de workflow que el usuario logado puede ver.
    *
-   * @returns WorkflowListByFacilityDto[]
+   * @returns WorkflowListByFacilityDTO[]
    */
-  public getWorkflowsList(): Observable<WorkflowListByFacilityDto[]> {
+  public getWorkflowsList(): Observable<WorkflowListByFacilityDTO[]> {
     return this.http
-      .get<WorkflowListByFacilityDto[]>(`${this.env.apiBaseUrl}${this.GET_WORKFLOWS_PATH}${this.GET_WORKFLOWS_LIST_PATH}`)
+      .get<WorkflowListByFacilityDTO[]>(`${this.env.apiBaseUrl}${this.GET_WORKFLOWS_PATH}${this.GET_WORKFLOWS_LIST_PATH}`)
       .pipe(catchError((error) => throwError(error.error as ConcenetError)));
   }
 
   /**
    * Get all states and substates of a workflow
    *
-   * @param workflow WorkflowDto
+   * @param workflow WorkflowDTO
    * @returns
    */
-  public getWorkflowInstances(workflow: WorkflowDto, extractFilterInfo?: boolean): Observable<WorkflowStateDto[]> {
+  public getWorkflowInstances(workflow: WorkflowDTO, extractFilterInfo?: boolean): Observable<WorkflowStateDTO[]> {
     return this.http
-      .get<WorkflowStateDto[]>(
+      .get<WorkflowStateDTO[]>(
         `${this.env.apiBaseUrl}${this.GET_WORKFLOWS_PATH}/${workflow.id}${this.GET_WORKFLOWS_FACILITY_PATH}/` +
           `${workflow.facility.facilityId}${this.GET_WORKFLOWS_INSTANCE_PATH}`
       )
       .pipe(
-        map((data: WorkflowStateDto[]) => {
+        map((data: WorkflowStateDTO[]) => {
           if (extractFilterInfo) {
             this.workflowFilterService.getFilterInfo(data);
           }
@@ -70,12 +70,12 @@ export class WorkflowsService {
   /**
    * Get all cards of a workflow
    *
-   * @param workflow WorkflowDto
+   * @param workflow WorkflowDTO
    * @returns
    */
-  public getWorkflowCards(workflow: WorkflowDto, viewType: 'BOARD' | 'CALENDAR' | 'TABLE'): Observable<WorkflowCardDto[]> {
+  public getWorkflowCards(workflow: WorkflowDTO, viewType: 'BOARD' | 'CALENDAR' | 'TABLE'): Observable<WorkflowCardDTO[]> {
     return this.http
-      .get<WorkflowCardDto[]>(
+      .get<WorkflowCardDTO[]>(
         `${this.env.apiBaseUrl}${this.GET_WORKFLOWS_PATH}/${workflow.id}${this.GET_WORKFLOWS_FACILITY_PATH}/` +
           `${workflow.facility.facilityId}${this.GET_WORKFLOWS_VIEW_PATH}/` +
           `${viewType}${this.GET_WORKFLOWS_CARDS_PATH}`
@@ -92,12 +92,12 @@ export class WorkflowsService {
    */
   public changeOrderWorkflowCardInSubstate(
     facilityId: number,
-    card: WorkflowCardDto,
-    wUser: WorkflowSubstateUserDto,
+    card: WorkflowCardDTO,
+    wUser: WorkflowSubstateUserDTO,
     newOrderNumber: number
-  ): Observable<WorkflowCardInstanceDto> {
+  ): Observable<WorkflowCardInstanceDTO> {
     return this.http
-      .post<WorkflowCardInstanceDto>(
+      .post<WorkflowCardInstanceDTO>(
         `${this.env.apiBaseUrl}${this.GET_WORKFLOWS_PATH}/${card.cardInstanceWorkflows[0].workflowId}` +
           `${this.GET_WORKFLOWS_FACILITY_PATH}/${facilityId}${this.GET_WORKFLOWS_CARDS_PATH}${this.GET_WORKFLOWS_ORDER_PATH}`,
         {
@@ -120,13 +120,13 @@ export class WorkflowsService {
    */
   public moveWorkflowCardToSubstate(
     facilityId: number,
-    card: WorkflowCardDto,
-    move: WorkflowMoveDto,
-    wUser: WorkflowSubstateUserDto,
+    card: WorkflowCardDTO,
+    move: WorkflowMoveDTO,
+    wUser: WorkflowSubstateUserDTO,
     newOrderNumber: number
-  ): Observable<WorkflowCardInstanceDto> {
+  ): Observable<WorkflowCardInstanceDTO> {
     return this.http
-      .post<WorkflowCardInstanceDto>(
+      .post<WorkflowCardInstanceDTO>(
         `${this.env.apiBaseUrl}${this.GET_WORKFLOWS_PATH}/${card.cardInstanceWorkflows[0].workflowId}` +
           `${this.GET_WORKFLOWS_MOVEMENT_PATH}/${move.id}`,
         {

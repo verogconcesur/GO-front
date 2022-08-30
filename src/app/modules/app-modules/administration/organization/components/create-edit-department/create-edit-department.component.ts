@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ConcenetError } from '@app/types/error';
 import { marker } from '@biesbjerg/ngx-translate-extract-marker';
-import DepartmentDTO from '@data/models/department-dto';
+import DepartmentDTO from '@data/models/organization/department-dto';
 import { DepartmentService } from '@data/services/deparment.service';
 import { ComponentToExtendForCustomDialog, CustomDialogFooterConfigI, CustomDialogService } from '@jenga/custom-dialog';
 // eslint-disable-next-line max-len

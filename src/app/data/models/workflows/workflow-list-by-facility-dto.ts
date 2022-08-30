@@ -1,8 +1,8 @@
-import WorkflowDto from './workflow-dto';
+import WorkflowDTO from './workflow-dto';
 
-export default interface WorkflowListByFacilityDto {
+export default interface WorkflowListByFacilityDTO {
   id: number;
   facilityId: number;
   facilityName: string;
-  workflows: WorkflowDto[];
+  workflows: WorkflowDTO[];
 }
