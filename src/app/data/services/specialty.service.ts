@@ -119,20 +119,20 @@ export class SpecialtyService {
   }
 
   private getBrandGroupedName(brands: BrandDTO[]): string {
-    if (brands.length > 1) {
+    if (brands?.length > 1) {
       return this.translateService.instant(marker('organizations.brands.multiBrands'));
     } else {
-      return brands[0].name;
+      return brands?.length ? brands[0].name : '';
     }
   }
 
   private getBrandTooltipGroupedName(specialtiesForDepartment: SpecialtyDTO[]): string {
     if (
-      specialtiesForDepartment[0]?.departments[0].facilities[0] &&
-      specialtiesForDepartment[0].departments[0].facilities[0].brands[0]
+      specialtiesForDepartment[0]?.departments[0].facilities?.length &&
+      specialtiesForDepartment[0].departments[0].facilities[0].brands?.length
     ) {
       const brands = specialtiesForDepartment[0].departments[0].facilities[0].brands;
-      if (brands.length > 1) {
+      if (brands?.length > 1) {
         return brands.reduce((prev: string, curr: BrandDTO) => (prev ? (prev += `/${curr.name}`) : curr.name), '');
       }
     }

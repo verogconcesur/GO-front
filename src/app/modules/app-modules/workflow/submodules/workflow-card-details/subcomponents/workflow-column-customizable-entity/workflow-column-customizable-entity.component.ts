@@ -37,6 +37,7 @@ export class WorkflowColumnCustomizableEntityComponent implements OnInit, OnChan
   }
 
   public getData(): void {
+    //Cogemos el cardInstanceWorkflowId de la ruta
     if (this.route?.snapshot?.params?.id) {
       this.setShowLoading.emit(true);
       this.cardService

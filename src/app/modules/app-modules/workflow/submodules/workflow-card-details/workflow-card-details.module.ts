@@ -14,9 +14,11 @@ import { WorkflowColumnPrefixedInformationComponent } from './subcomponents/work
 import { WorkflowColumnPrefixedTasksComponent } from './subcomponents/workflow-column-prefixed-tasks/workflow-column-prefixed-tasks.component';
 import { WorkflowColumnPrefixedHistoryComponent } from './subcomponents/workflow-column-prefixed-history/workflow-column-prefixed-history.component';
 import { WorkflowCardHeaderComponent } from './subcomponents/workflow-card-header/workflow-card-header.component';
+import { WorkflowColumnCommentsComponent } from './subcomponents/workflow-column-comments/workflow-column-comments.component';
+import { WorkflowColumnClientMessagesComponent } from './subcomponents/workflow-column-client-messages/workflow-column-client-messages.component';
 
 @NgModule({
-  declarations: [WorkflowCardDetailsComponent, WorkflowCardColumnComponent, WorkflowColumnCustomizableEntityComponent, WorkflowColumnCustomizableCustomComponent, WorkflowColumnTemplatesBudgetsComponent, WorkflowColumnTemplatesAttachmentsComponent, WorkflowColumnPrefixedInformationComponent, WorkflowColumnPrefixedTasksComponent, WorkflowColumnPrefixedHistoryComponent, WorkflowCardHeaderComponent],
+  declarations: [WorkflowCardDetailsComponent, WorkflowCardColumnComponent, WorkflowColumnCustomizableEntityComponent, WorkflowColumnCustomizableCustomComponent, WorkflowColumnTemplatesBudgetsComponent, WorkflowColumnTemplatesAttachmentsComponent, WorkflowColumnPrefixedInformationComponent, WorkflowColumnPrefixedTasksComponent, WorkflowColumnPrefixedHistoryComponent, WorkflowCardHeaderComponent, WorkflowColumnCommentsComponent, WorkflowColumnClientMessagesComponent],
   imports: [CommonModule, SharedModule, WorkflowCardDetailsRoutingModule]
 })
 export class WorkflowCardDetailsModule {}
