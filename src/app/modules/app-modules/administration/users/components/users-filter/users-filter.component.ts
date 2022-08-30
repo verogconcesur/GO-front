@@ -4,8 +4,8 @@ import { FilterDrawerClassToExnted } from '@modules/feature-modules/filter-drawe
 import { marker } from '@biesbjerg/ngx-translate-extract-marker';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { RoleService } from '@data/services/role.service';
-import RoleDTO from '@data/models/role-dto';
-import UserFilterDTO from '@data/models/user-filter-dto';
+import RoleDTO from '@data/models/user-permissions/role-dto';
+import UserFilterDTO from '@data/models/user-permissions/user-filter-dto';
 import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
 import { FilterDrawerService } from '@modules/feature-modules/filter-drawer/services/filter-drawer.service';
 // eslint-disable-next-line max-len

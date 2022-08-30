@@ -2,7 +2,7 @@ import { Component, OnDestroy, OnInit, ViewEncapsulation } from '@angular/core';
 import { AbstractControl, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ConcenetError } from '@app/types/error';
 import { marker } from '@biesbjerg/ngx-translate-extract-marker';
-import FacilityDTO from '@data/models/facility-dto';
+import FacilityDTO from '@data/models/organization/facility-dto';
 import { FacilityService } from '@data/services/facility.sevice';
 import { ComponentToExtendForCustomDialog, CustomDialogFooterConfigI, CustomDialogService } from '@jenga/custom-dialog';
 // eslint-disable-next-line max-len
@@ -14,11 +14,11 @@ import { ProgressSpinnerDialogService } from '@shared/services/progress-spinner-
 import { NGXLogger } from 'ngx-logger';
 import { Observable, of } from 'rxjs';
 import { catchError, finalize, map, take, tap } from 'rxjs/operators';
-import CountryDto from '@data/models/country-dto';
+import CountryDTO from '@data/models/location/country-dto';
 import { LocalityService } from '@data/services/locality.service';
-import ProvinceDto from '@data/models/province-dto';
-import TownDto from '@data/models/town-dto';
-import BrandDTO from '@data/models/brand-dto';
+import ProvinceDTO from '@data/models/location/province-dto';
+import TownDTO from '@data/models/location/town-dto';
+import BrandDTO from '@data/models/organization/brand-dto';
 import { BrandService } from '@data/services/brand.service';
 import { haveArraysSameValues } from '@shared/utils/array-comparation-function';
 
@@ -60,12 +60,12 @@ export class CreateEditFacilityComponent extends ComponentToExtendForCustomDialo
     emailError: marker('errors.emailPattern')
   };
   public organizationLevelsToShow = { specialties: false, departments: false, facilities: false };
-  public countryAsyncList: Observable<CountryDto[]>;
+  public countryAsyncList: Observable<CountryDTO[]>;
   public brandsAsyncList: Observable<BrandDTO[]>;
   public brandsList: BrandDTO[] = [];
-  public countryList: CountryDto[] = [];
-  public provinceList: ProvinceDto[] = [];
-  public townList: TownDto[] = [];
+  public countryList: CountryDTO[] = [];
+  public provinceList: ProvinceDTO[] = [];
+  public townList: TownDTO[] = [];
   public facilityForm: FormGroup;
   public facilityToEdit: FacilityDTO = null;
   public textEditorToolbarOptions: TextEditorWrapperConfigI = {
@@ -261,12 +261,12 @@ export class CreateEditFacilityComponent extends ComponentToExtendForCustomDialo
     );
     this.countryAsyncList = this.localityService.getCountries().pipe(
       tap({
-        next: (countries: CountryDto[]) => {
+        next: (countries: CountryDTO[]) => {
           this.countryList = countries;
           const selectedCountry = this.facilityForm.get('country').value;
           if (selectedCountry) {
             this.facilityForm.get('country').setValue(
-              countries.find((country: CountryDto) => country.id === selectedCountry.id),
+              countries.find((country: CountryDTO) => country.id === selectedCountry.id),
               { emitEvent: false }
             );
           }
@@ -282,12 +282,12 @@ export class CreateEditFacilityComponent extends ComponentToExtendForCustomDialo
   }
   private getProvinceListOptions(initialLoad = false): void {
     this.provinceList = [];
-    this.localityService.getProvincesByCountryId(this.form.country.value.id).subscribe((provinces: ProvinceDto[]) => {
+    this.localityService.getProvincesByCountryId(this.form.country.value.id).subscribe((provinces: ProvinceDTO[]) => {
       this.provinceList = provinces;
       const selectedProvince = this.facilityForm.get('province').value;
       if (selectedProvince && initialLoad) {
         this.facilityForm.get('province').setValue(
-          provinces.find((province: ProvinceDto) => province.id === selectedProvince.id),
+          provinces.find((province: ProvinceDTO) => province.id === selectedProvince.id),
           { emitEvent: false }
         );
       }
@@ -295,12 +295,12 @@ export class CreateEditFacilityComponent extends ComponentToExtendForCustomDialo
   }
   private getTownListOptions(initialLoad = false): void {
     this.townList = [];
-    this.localityService.getTownsByProvinceId(this.form.province.value.id).subscribe((towns: TownDto[]) => {
+    this.localityService.getTownsByProvinceId(this.form.province.value.id).subscribe((towns: TownDTO[]) => {
       this.townList = towns;
       const selectedTown = this.facilityForm.get('town').value;
       if (selectedTown && initialLoad) {
         this.facilityForm.get('town').setValue(
-          towns.find((town: TownDto) => town.id === selectedTown.id),
+          towns.find((town: TownDTO) => town.id === selectedTown.id),
           { emitEvent: false }
         );
       }

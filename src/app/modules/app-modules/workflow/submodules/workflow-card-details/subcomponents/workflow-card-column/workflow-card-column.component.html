@@ -3,9 +3,13 @@
     <div class="w-column__container" [ngClass]="containerClass">
         <app-responsive-tabs *ngIf="showTabs" [tabs]="getTabsInfo()" (tabSelectedEvent)="tabChange($event)"></app-responsive-tabs>
         <div class="w-column__container__content">
+            <div class="loading" *ngIf="showLoading">
+                <mat-spinner diameter="30"></mat-spinner>
+            </div>
             <app-workflow-column-customizable-entity
                 *ngIf="showColumn('CUSTOMIZABLE_ENTITY')"
                 [tab]="tabToShow"
+                (setShowLoading)="setShowLoading($event)"
             ></app-workflow-column-customizable-entity>
             <app-workflow-column-customizable-custom
                 *ngIf="showColumn('CUSTOMIZABLE_CUSTOM')"

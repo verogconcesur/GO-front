@@ -13,12 +13,12 @@ import { UserService } from '@data/services/user.service';
 import { GlobalMessageService } from '@shared/services/global-message.service';
 import { catchError, finalize, map, take, tap } from 'rxjs/operators';
 import { ConcenetError } from '@app/types/error';
-import RoleDTO from '@data/models/role-dto';
+import RoleDTO from '@data/models/user-permissions/role-dto';
 import { RoleService } from '@data/services/role.service';
 import { UsersPermissionsComponent } from '../users-permissions/users-permissions.component';
-import UserDetailsDTO from '@data/models/user-details-dto';
+import UserDetailsDTO from '@data/models/user-permissions/user-details-dto';
 import { PermissionsService } from '@data/services/permissions.service';
-import PermissionsDTO from '@data/models/permissions-dto';
+import PermissionsDTO from '@data/models/user-permissions/permissions-dto';
 import { MatCheckboxChange } from '@angular/material/checkbox';
 import { haveArraysSameValues } from '@shared/utils/array-comparation-function';
 

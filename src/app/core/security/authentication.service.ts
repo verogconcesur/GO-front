@@ -4,9 +4,9 @@ import { Inject, Injectable, OnDestroy } from '@angular/core';
 import { ENV } from '@app/constants/global.constants';
 import { Env } from '@app/types/env';
 import { ConcenetError } from '@app/types/error';
-import LoginDTO from '@data/models/login-dto';
-import RoleDTO from '@data/models/role-dto';
-import PermissionsDTO from '@data/models/permissions-dto';
+import LoginDTO from '@data/models/user-permissions/login-dto';
+import RoleDTO from '@data/models/user-permissions/role-dto';
+import PermissionsDTO from '@data/models/user-permissions/permissions-dto';
 import { Observable, throwError } from 'rxjs';
 import { catchError, take } from 'rxjs/operators';
 

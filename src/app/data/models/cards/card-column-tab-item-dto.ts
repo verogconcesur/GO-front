@@ -1,4 +1,4 @@
-export default interface CardColumnTabItemDto {
+export default interface CardColumnTabItemDTO {
   typeItem: string;
   orderNumber: number;
   name: string;

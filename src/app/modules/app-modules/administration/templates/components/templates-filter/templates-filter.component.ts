@@ -8,7 +8,7 @@ import { FacilityService } from '@data/services/facility.sevice';
 import { SpecialtyService } from '@data/services/specialty.service';
 import { NGXLogger } from 'ngx-logger';
 import { FilterDrawerService } from '@modules/feature-modules/filter-drawer/services/filter-drawer.service';
-import TemplatesFilterDTO from '@data/models/templates-filter-dto';
+import TemplatesFilterDTO from '@data/models/templates/templates-filter-dto';
 // eslint-disable-next-line max-len
 import { OrganizationLevelsNestedCombosComponent } from '@modules/feature-modules/organization-levels-nested-combos/organization-levels-nested-combos.component';
 

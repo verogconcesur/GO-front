@@ -1,4 +1,4 @@
-export default interface CountryDto {
+export default interface CountryDTO {
   code: string;
   id: number;
   locale: string;

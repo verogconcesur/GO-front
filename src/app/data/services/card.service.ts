@@ -6,7 +6,7 @@ import { ConcenetError } from '@app/types/error';
 import PaginationRequestI from '@data/interfaces/pagination-request';
 import PaginationResponseI from '@data/interfaces/pagination-response';
 import BasicFilterDTO from '@data/models/basic-filter-dto';
-import CardDTO from '@data/models/card-dto';
+import CardDTO from '@data/models/cards/card-dto';
 import { getPaginationUrlGetParams } from '@data/utils/pagination-aux';
 import { Observable, throwError } from 'rxjs';
 import { catchError } from 'rxjs/operators';
@@ -21,10 +21,7 @@ export class CardService {
 
   constructor(@Inject(ENV) private env: Env, private http: HttpClient) {}
 
-  public searchCards(
-    cardFilter: BasicFilterDTO,
-    pagination?: PaginationRequestI
-  ): Observable<PaginationResponseI<CardDTO>> {
+  public searchCards(cardFilter: BasicFilterDTO, pagination?: PaginationRequestI): Observable<PaginationResponseI<CardDTO>> {
     return this.http
       .post<PaginationResponseI<CardDTO>>(
         `${this.env.apiBaseUrl}${this.SEARCH_CARDS_PATH}${getPaginationUrlGetParams(pagination, true)}`,

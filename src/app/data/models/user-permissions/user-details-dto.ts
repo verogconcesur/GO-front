@@ -1,9 +1,9 @@
-import BrandDTO from './brand-dto';
-import Department from './department-dto';
-import FacilityDTO from './facility-dto';
+import BrandDTO from '../organization/brand-dto';
+import DepartmentDTO from '../organization/department-dto';
+import FacilityDTO from '../organization/facility-dto';
+import SpecialtyDTO from '../organization/specialty-dto';
 import PermissionsDTO from './permissions-dto';
 import RoleDTO from './role-dto';
-import SpecialtyDTO from './specialty-dto';
 
 export default interface UserDetailsDTO {
   id: number;
@@ -17,6 +17,6 @@ export default interface UserDetailsDTO {
   permissions: PermissionsDTO[];
   brands: BrandDTO[];
   facilities: FacilityDTO[];
-  departments: Department[];
+  departments: DepartmentDTO[];
   specialties: SpecialtyDTO[];
 }

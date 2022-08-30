@@ -1,6 +1,6 @@
 import { Component, Input, OnChanges, OnInit, SimpleChanges } from '@angular/core';
 import { marker } from '@biesbjerg/ngx-translate-extract-marker';
-import PermissionsDTO from '@data/models/permissions-dto';
+import PermissionsDTO from '@data/models/user-permissions/permissions-dto';
 import { haveArraysSameValues } from '@shared/utils/array-comparation-function';
 
 export interface PermisssionsStructure {

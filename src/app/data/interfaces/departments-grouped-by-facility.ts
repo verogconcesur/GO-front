@@ -1,4 +1,4 @@
-import DepartmentDTO from '@data/models/department-dto';
+import DepartmentDTO from '@data/models/organization/department-dto';
 
 export default interface DepartmentsGroupedByFacility {
   facilityId: number;
