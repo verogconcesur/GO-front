@@ -163,8 +163,7 @@ export class CreateEditUserComponent extends ComponentToExtendForCustomDialog im
           label: marker('common.save'),
           design: 'raised',
           color: 'primary',
-          disabledFn: () =>
-            !(((this.userForm.touched && this.userForm.dirty) || this.changesInPermissions()) && this.userForm.valid)
+          disabledFn: () => !this.validChangesInForm()
         }
       ]
     };
@@ -174,6 +173,9 @@ export class CreateEditUserComponent extends ComponentToExtendForCustomDialog im
   get form() {
     return this.userForm.controls;
   }
+
+  public validChangesInForm = (): boolean =>
+    ((this.userForm.touched && this.userForm.dirty) || this.changesInPermissions()) && this.userForm.valid;
 
   public checkPermission = (permissionObj: { permission: PermissionsDTO; checked: boolean }, event: MatCheckboxChange): void => {
     permissionObj.checked = event.checked;
@@ -231,7 +233,10 @@ export class CreateEditUserComponent extends ComponentToExtendForCustomDialog im
         role: [this.userToEdit ? this.userToEdit.role : null, Validators.required],
         newPassword: [
           this.userToEdit ? this.userToEdit.password : null,
-          [Validators.required, Validators.pattern(passwordPattern)]
+          [
+            Validators.required,
+            ConfirmPasswordValidator.validAndDiffToOriginal('newPassword', this.userToEdit ? this.userToEdit.password : null)
+          ]
         ],
         newPasswordConfirmation: [this.userToEdit ? this.userToEdit.password : null, Validators.required],
         brands: [this.userToEdit ? this.userToEdit.brands : null, Validators.required],
@@ -271,7 +276,7 @@ export class CreateEditUserComponent extends ComponentToExtendForCustomDialog im
   }
 
   private changesInPermissions(): boolean {
-    return haveArraysSameValues(
+    return !haveArraysSameValues(
       this.userToEdit ? this.userToEdit.permissions.map((p) => p.id).sort() : [],
       [
         ...this.permissionsListComponent.getPermissionsChecked().map((p) => p.id),
