@@ -57,20 +57,23 @@ export class UserProfileComponent implements OnInit {
 
   public getUserDetails(): void {
     const userId = Number(this.authenticationService.getUserId());
+    this.userDetails = this.userService.userLogged$.value;
+    if (!this.userDetails) {
+      this.userService.getUserDetailsById(userId).subscribe({
+        next: (response) => {
+          this.userDetails = response;
+          this.userService.userLogged$.next(response);
+        },
+        error: (error: ConcenetError) => {
+          this.error = error;
 
-    this.userService.getUserDetailsById(userId).subscribe({
-      next: (response) => {
-        this.userDetails = response;
-      },
-      error: (error: ConcenetError) => {
-        this.error = error;
-
-        this.globalMessageService.showError({
-          message: this.error.message,
-          actionText: this.translateService.instant(marker('common.close'))
-        });
-      }
-    });
+          this.globalMessageService.showError({
+            message: this.error.message,
+            actionText: this.translateService.instant(marker('common.close'))
+          });
+        }
+      });
+    }
   }
 
   public get showSpinner(): boolean {
