@@ -36,7 +36,7 @@
                         id="headerEditor"
                         textEditorId="headerEditor"
                         [initialValue]="form?.header?.value"
-                        [textEditorOptionsConfig]="textEditorToolbarOptions"
+                        [textEditorConfig]="textEditorToolbarOptions"
                         [placeholder]="labels.insertText | translate"
                         (onContentChanged)="textEditorContentChanged('header', $event)"
                     ></app-text-editor-wrapper>
@@ -48,7 +48,7 @@
                         id="footerEditor"
                         textEditorId="footerEditor"
                         [initialValue]="form?.footer?.value"
-                        [textEditorOptionsConfig]="textEditorToolbarOptions"
+                        [textEditorConfig]="textEditorToolbarOptions"
                         [placeholder]="labels.insertText | translate"
                         (onContentChanged)="textEditorContentChanged('footer', $event)"
                     ></app-text-editor-wrapper>

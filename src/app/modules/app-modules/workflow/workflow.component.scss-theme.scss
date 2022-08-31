@@ -8,6 +8,7 @@
 @import './submodules/workflow-card-details/workflow-card-details.component.scss-theme.scss';
 @import './submodules/workflow-card-details/subcomponents/workflow-card-header/workflow-card-header.component.scss-theme.scss';
 @import './submodules/workflow-card-details/subcomponents/workflow-column-customizable-entity/workflow-column-customizable-entity.component.scss-theme.scss';
+@import './submodules/workflow-card-details/subcomponents/workflow-column-comments/workflow-column-comments.scss-theme.scss';
 @mixin workflow-component-theme($theme, $main-typo) {
   $primary: map-get($theme, primary);
   // $foreground: map-get($theme, foreground);
@@ -25,4 +26,5 @@
   @include workflow-card-details-component-theme($theme, $main-typo);
   @include workflow-card-header-component-theme($theme, $main-typo);
   @include workflow-customizable-entity-component-theme($theme, $main-typo);
+  @include workflow-column-comments-component-theme($theme, $main-typo);
 }

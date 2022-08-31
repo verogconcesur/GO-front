@@ -1,1 +1,15 @@
-<p>workflow-column-comments works!</p>
+<div class="card-comments">
+    <div class="card-comments__wrapper"></div>
+    <div class="card-comments__new">
+        <app-text-editor-wrapper
+            *ngIf="dataLoaded"
+            id="commentEditor"
+            textEditorId="commentEditor"
+            [textEditorConfig]="textEditorConfig"
+            [initialValue]="newComment"
+            [placeholder]="labels.insertText | translate"
+            (onContentChanged)="newCommentChange($event)"
+        ></app-text-editor-wrapper>
+        <button mat-icon-button (click)="sendComment()"><mat-icon>send</mat-icon></button>
+    </div>
+</div>

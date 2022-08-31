@@ -1,0 +1,31 @@
+.card-comments {
+  width: calc(100% - 30px);
+  height: calc(100% - 37px);
+  padding: 15px;
+  position: relative;
+  &__wrapper {
+    height: calc(100% - 100px);
+  }
+  &__new {
+    border-top: 2px solid rgb(179, 179, 179);
+    width: calc(100% - 30px);
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    position: absolute;
+    bottom: 15px;
+    left: 15px;
+    height: 90px;
+    app-text-editor-wrapper {
+      height: 90px;
+      max-height: 90px;
+      overflow: visible;
+      width: calc(100% - 40px);
+      padding: 10px 5px 0 5px;
+    }
+    button {
+      transform: rotate(-45deg);
+      color: blue;
+    }
+  }
+}

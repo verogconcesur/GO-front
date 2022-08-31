@@ -1,5 +1,5 @@
 /* eslint-disable max-len */
-import { NgModule } from '@angular/core';
+import { CUSTOM_ELEMENTS_SCHEMA, NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 
 import { WorkflowCardDetailsRoutingModule } from './workflow-card-details-routing.module';
@@ -16,9 +16,23 @@ import { WorkflowColumnPrefixedHistoryComponent } from './subcomponents/workflow
 import { WorkflowCardHeaderComponent } from './subcomponents/workflow-card-header/workflow-card-header.component';
 import { WorkflowColumnCommentsComponent } from './subcomponents/workflow-column-comments/workflow-column-comments.component';
 import { WorkflowColumnClientMessagesComponent } from './subcomponents/workflow-column-client-messages/workflow-column-client-messages.component';
+import { TextEditorWrapperModule } from '@modules/feature-modules/text-editor-wrapper/text-editor-wrapper.module';
 
 @NgModule({
-  declarations: [WorkflowCardDetailsComponent, WorkflowCardColumnComponent, WorkflowColumnCustomizableEntityComponent, WorkflowColumnCustomizableCustomComponent, WorkflowColumnTemplatesBudgetsComponent, WorkflowColumnTemplatesAttachmentsComponent, WorkflowColumnPrefixedInformationComponent, WorkflowColumnPrefixedTasksComponent, WorkflowColumnPrefixedHistoryComponent, WorkflowCardHeaderComponent, WorkflowColumnCommentsComponent, WorkflowColumnClientMessagesComponent],
-  imports: [CommonModule, SharedModule, WorkflowCardDetailsRoutingModule]
+  declarations: [
+    WorkflowCardDetailsComponent,
+    WorkflowCardColumnComponent,
+    WorkflowColumnCustomizableEntityComponent,
+    WorkflowColumnCustomizableCustomComponent,
+    WorkflowColumnTemplatesBudgetsComponent,
+    WorkflowColumnTemplatesAttachmentsComponent,
+    WorkflowColumnPrefixedInformationComponent,
+    WorkflowColumnPrefixedTasksComponent,
+    WorkflowColumnPrefixedHistoryComponent,
+    WorkflowCardHeaderComponent,
+    WorkflowColumnCommentsComponent,
+    WorkflowColumnClientMessagesComponent
+  ],
+  imports: [CommonModule, SharedModule, WorkflowCardDetailsRoutingModule, TextEditorWrapperModule]
 })
 export class WorkflowCardDetailsModule {}

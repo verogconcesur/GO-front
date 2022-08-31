@@ -1,0 +1,20 @@
+@import '@angular/material/theming';
+
+@mixin workflow-column-comments-component-theme($theme, $main-typo) {
+  $primary: map-get($theme, primary);
+
+  #commentEditor {
+    font-size: 0.85em !important;
+    .note-hint-popover {
+      left: 0 !important;
+      top: -125px !important;
+      height: 100px;
+      overflow: auto;
+      overflow-x: hidden;
+      width: 100%;
+    }
+    .note-statusbar {
+      display: none;
+    }
+  }
+}

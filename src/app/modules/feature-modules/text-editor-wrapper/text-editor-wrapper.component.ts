@@ -1,12 +1,13 @@
+/* eslint-disable space-before-function-paren */
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { AfterViewInit, Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import { AfterViewInit, Component, EventEmitter, Input, OnChanges, OnInit, Output, SimpleChanges } from '@angular/core';
 import { marker } from '@biesbjerg/ngx-translate-extract-marker';
 import { TranslateService } from '@ngx-translate/core';
-import $ from 'jquery';
 import { TextEditorWrapperConfigI } from './interfaces/text-editor-wrapper-config.interface';
+import $ from 'jquery';
 
 @Component({
-  selector: 'app-text-editor-wrapper',
+  selector: 'app-text-editor-wrapper, [appTextEditorWrapper]',
   templateUrl: './text-editor-wrapper.component.html',
   styleUrls: ['./text-editor-wrapper.component.scss']
 })
@@ -14,7 +15,7 @@ export class TextEditorWrapperComponent implements OnInit, AfterViewInit {
   @Input() textEditorId: string;
   @Input() initialValue: string;
   @Input() placeholder: string;
-  @Input() textEditorOptionsConfig: TextEditorWrapperConfigI;
+  @Input() textEditorConfig: TextEditorWrapperConfigI;
   @Output() onContentChanged = new EventEmitter();
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   public summerNoteconfig: any;
@@ -24,6 +25,7 @@ export class TextEditorWrapperComponent implements OnInit, AfterViewInit {
     '<style><!--SummernoteStyles-->table{border-collapse:collapse;width:100%}table td, table th{border:1px solid #ececec;padding:5px 3px}table.table-no-bordered td, table.table-no-bordered th{border:0px;}a{background-color:inherit;color:#337ab7;font-family:inherit;font-weight:inherit;text-decoration:inherit}a:focus, a:hover{color:#23527c;outline:0;text-decoration:underline}figure{margin:0}</style>';
   private summernoteNode: Element;
   private lang: string;
+  private sumernoteHtmlContent = '';
 
   constructor(private translateService: TranslateService) {
     if (this.translateService.currentLang === 'en') {
@@ -39,17 +41,48 @@ export class TextEditorWrapperComponent implements OnInit, AfterViewInit {
     } else {
       const misc: any[] = ['fullscreen'];
       let extra: any = {};
-      if (this.textEditorOptionsConfig && this.textEditorOptionsConfig.addHtmlModificationOption) {
+      if (this.textEditorConfig && this.textEditorConfig.addHtmlModificationOption) {
         misc.push('codeview');
       }
-      if (this.textEditorOptionsConfig && this.textEditorOptionsConfig.addMacroListOption) {
+      if (this.textEditorConfig && this.textEditorConfig.addMacroListOption) {
         misc.push(['macroList']);
         extra = {
           ...extra,
           macroList: {
             blockChar: ['[', ']'],
             tooltip: this.translateService.instant(marker('textEditor.tooltips.varOptions')),
-            items: [...this.textEditorOptionsConfig.macroListOptions]
+            items: [...this.textEditorConfig.macroListOptions]
+          }
+        };
+      }
+      if (this.textEditorConfig && this.textEditorConfig.width) {
+        extra = {
+          ...extra,
+          width: this.textEditorConfig.width
+        };
+      }
+      if (this.textEditorConfig && this.textEditorConfig.height) {
+        extra = {
+          ...extra,
+          height: this.textEditorConfig.height
+        };
+      }
+      if (this.textEditorConfig && this.textEditorConfig.hintAutomplete?.length) {
+        extra = {
+          ...extra,
+          hint: {
+            mentions: this.textEditorConfig.hintAutomplete,
+            match: /\B@(\w*)$/,
+            // eslint-disable-next-line object-shorthand
+            search: function (keyword: string, callback: any) {
+              callback(
+                // eslint-disable-next-line prefer-arrow/prefer-arrow-functions
+                $.grep(this.mentions, function (item: string) {
+                  return item.indexOf(keyword) === 0;
+                })
+              );
+            },
+            content: (item: string) => $('<span><b contenteditable="false" readonly="readonly"> @' + item + ' </b></span>')[0]
           }
         };
       }
@@ -73,7 +106,9 @@ export class TextEditorWrapperComponent implements OnInit, AfterViewInit {
           tableBorderToggle: this.translateService.instant(marker('textEditor.tooltips.tableBorderToggle'))
         },
         placeholder: this.placeholder,
-        toolbar,
+        toolbar: this.textEditorConfig.hideToolbar ? false : true,
+        disableResizeEditor: this.textEditorConfig.disableResizeEditor ? true : false,
+        airMode: this.textEditorConfig.airMode ? true : false,
         popover: {
           table: [
             ['add', ['addRowDown', 'addRowUp', 'addColLeft', 'addColRight']],
@@ -91,6 +126,7 @@ export class TextEditorWrapperComponent implements OnInit, AfterViewInit {
             ) {
               html = `${this.summernoteStyles} ${html}`;
             }
+            this.sumernoteHtmlContent = html;
             this.onContentChanged.emit(html);
           }
         }
@@ -99,6 +135,8 @@ export class TextEditorWrapperComponent implements OnInit, AfterViewInit {
   }
 
   ngAfterViewInit(): void {
-    this.summernoteNode = document.getElementById(this.textEditorId).getElementsByClassName('note-editable').item(0);
+    setTimeout(() => {
+      this.summernoteNode = document.getElementById(this.textEditorId).getElementsByClassName('note-editable').item(0);
+    }, 100);
   }
 }
