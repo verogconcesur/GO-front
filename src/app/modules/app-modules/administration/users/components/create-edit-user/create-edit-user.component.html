@@ -67,15 +67,20 @@
                     </mat-form-field>
 
                     <!-- newPassword -->
-                    <mat-form-field appearance="outline" floatLabel="always">
-                        <mat-label>{{ labels.password1 | translate }}</mat-label>
+                    <mat-form-field
+                        appearance="outline"
+                        floatLabel="always"
+                        matTooltip="{{ labels.passwordPattern | translate }}"
+                        matTooltipPosition="above"
+                    >
+                        <mat-label>{{ labels.password1 | translate }}<mat-icon>info</mat-icon></mat-label>
                         <input matInput formControlName="newPassword" type="password" />
                         <mat-error
                             class="restore-password-content__error"
                             *ngIf="form.newPassword.errors && form.newPassword.touched"
                         >
                             <span *ngIf="form.newPassword.errors.required">{{ labels.passwordRequired | translate }}</span>
-                            <span *ngIf="form.newPassword.errors.pattern">{{ labels.passwordPattern | translate }}</span>
+                            <span *ngIf="form.newPassword.errors.pattern">{{ labels.passwordPatternError | translate }}</span>
                         </mat-error>
                     </mat-form-field>
                     <!-- newPasswordConfirmation -->

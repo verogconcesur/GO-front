@@ -31,6 +31,7 @@ export class RestorePasswordComponent implements OnInit {
     userNameRequired: marker('login.restorePassword.userNameRequired'),
     passwordRequired: marker('login.restorePassword.passwordRequired'),
     passwordPattern: marker('login.restorePassword.passwordPattern'),
+    passwordPatternError: marker('login.restorePassword.passwordPatternError'),
     passwordMatch: marker('login.restorePassword.passwordMatch'),
     changedSuccesfully: marker('login.restorePassword.changedSuccesfully')
   };
