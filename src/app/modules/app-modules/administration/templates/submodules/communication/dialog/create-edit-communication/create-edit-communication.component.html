@@ -36,7 +36,7 @@
                         id="textEditor"
                         textEditorId="textEditor"
                         [initialValue]="form?.text?.value"
-                        [textEditorOptionsConfig]="textEditorToolbarOptions"
+                        [textEditorConfig]="textEditorToolbarOptions"
                         [placeholder]="labels.insertText | translate"
                         (onContentChanged)="textEditorContentChanged($event)"
                     ></app-text-editor-wrapper>

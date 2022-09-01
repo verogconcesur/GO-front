@@ -40,9 +40,12 @@
             <div class="loading" *ngIf="showLoading">
                 <mat-spinner diameter="30"></mat-spinner>
             </div>
-            <!-- TODO: en lugar de ngIf usar style.display -->
-            <app-workflow-column-comments></app-workflow-column-comments>
-            <app-workflow-column-client-messages></app-workflow-column-client-messages>
+            <app-workflow-column-comments
+                [style]="{ display: showColumn('COMMENTS') ? '' : 'none' }"
+            ></app-workflow-column-comments>
+            <app-workflow-column-client-messages
+                [style]="{ display: showColumn('CLIENT_MESSAGES') ? '' : 'none' }"
+            ></app-workflow-column-client-messages>
         </div>
     </div>
 </div>

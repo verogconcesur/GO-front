@@ -55,6 +55,8 @@ export class WorkflowCardColumnComponent implements OnInit {
       | 'PREFIXED_INFORMATION'
       | 'PREFIXED_HISTORY'
       | 'PREFIXED_TASKS'
+      | 'COMMENTS'
+      | 'CLIENT_MESSAGES'
   ): boolean {
     if (!this.tabToShow) {
       return false;
@@ -77,6 +79,10 @@ export class WorkflowCardColumnComponent implements OnInit {
     } else if (column === 'PREFIXED_HISTORY' && this.tabToShow.type === 'PREFIXED' && this.tabToShow.contentTypeId === 7) {
       show = true;
     } else if (column === 'PREFIXED_TASKS' && this.tabToShow.type === 'PREFIXED' && this.tabToShow.contentTypeId === 8) {
+      show = true;
+    } else if (column === 'COMMENTS' && this.tabToShow.type === 'COMMENTS') {
+      show = true;
+    } else if (column === 'CLIENT_MESSAGES' && this.tabToShow.type === 'CLIENT_MESSAGES') {
       show = true;
     }
     return show;
