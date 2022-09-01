@@ -1,4 +1,4 @@
-import { Component, ElementRef, EventEmitter, Input, OnChanges, OnInit, Output, SimpleChanges, ViewChild } from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { ConcenetError } from '@app/types/error';
 import { marker } from '@biesbjerg/ngx-translate-extract-marker';
@@ -9,23 +9,24 @@ import { CardCommentsService } from '@data/services/card-comments.service';
 import { TranslateService } from '@ngx-translate/core';
 import { GlobalMessageService } from '@shared/services/global-message.service';
 import { take } from 'rxjs/operators';
-import { forkJoin } from 'rxjs';
-import { UserService } from '@data/services/user.service';
+import { forkJoin, Observable } from 'rxjs';
 // eslint-disable-next-line max-len
 import { TextEditorWrapperConfigI } from '@modules/feature-modules/text-editor-wrapper/interfaces/text-editor-wrapper-config.interface';
+import { ProgressSpinnerDialogService } from '@shared/services/progress-spinner-dialog.service';
 
 @Component({
   selector: 'app-workflow-column-comments',
   templateUrl: './workflow-column-comments.component.html',
   styleUrls: ['./workflow-column-comments.component.scss']
 })
-export class WorkflowColumnCommentsComponent implements OnInit, OnChanges {
+export class WorkflowColumnCommentsComponent implements OnInit {
   @Input() tab: CardColumnTabDTO = null;
   @Output() setShowLoading: EventEmitter<boolean> = new EventEmitter(false);
   public labels = { insertText: marker('common.insertTextHere') };
   public comments: CardCommentDTO[] = [];
   public availableUsersToMention: UserDetailsDTO[] = [];
-  public availableMentions: string[] = [];
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  public availableMentions: any = {};
   public dataLoaded = false;
   public newComment = '';
   public textEditorConfig: TextEditorWrapperConfigI = {
@@ -35,54 +36,49 @@ export class WorkflowColumnCommentsComponent implements OnInit, OnChanges {
     airMode: false,
     height: 80
   };
+  private readonly timeBeforeMarkAsRead = 10000;
 
   constructor(
     private cardCommentsService: CardCommentsService,
     private route: ActivatedRoute,
     private globalMessageService: GlobalMessageService,
     private translateService: TranslateService,
-    //DGDC TODO: Quitar user service
-    private userService: UserService
+    private spinnerService: ProgressSpinnerDialogService
   ) {}
 
   ngOnInit(): void {
-    this.getData();
+    this.getData(true);
   }
 
-  ngOnChanges(changes: SimpleChanges): void {
-    if (changes.tab) {
-      this.getData();
-    }
-  }
-
-  public getData(): void {
+  public getData(usersToo?: boolean): void {
     //Cogemos el cardInstanceWorkflowId de la ruta
     if (this.route?.snapshot?.params?.id) {
       this.setShowLoading.emit(true);
       const cardInstanceWorkflowId = parseInt(this.route.snapshot.params.id, 10);
-      forkJoin([
-        this.cardCommentsService.getCardComments(cardInstanceWorkflowId).pipe(take(1)),
-        this.cardCommentsService.getCardUsersMention(cardInstanceWorkflowId).pipe(take(1))
-      ]).subscribe(
-        (data: [CardCommentDTO[], UserDetailsDTO[]]) => {
+      const requests: Observable<CardCommentDTO[] | UserDetailsDTO[]>[] = [
+        this.cardCommentsService.getCardComments(cardInstanceWorkflowId).pipe(take(1))
+      ];
+      if (usersToo) {
+        requests.push(this.cardCommentsService.getCardUsersMention(cardInstanceWorkflowId).pipe(take(1)));
+      }
+      forkJoin(requests).subscribe(
+        (data: [CardCommentDTO[], UserDetailsDTO[]]): void => {
           if (data[0]?.length) {
             this.comments = data[0];
           }
           if (data[1]?.length) {
             this.availableUsersToMention = data[1];
-            this.availableMentions = [...this.availableUsersToMention].map((user: UserDetailsDTO) => {
-              let fullName = user.name;
-              if (user.firstName) {
-                fullName += `.${user.firstName}`;
-              }
-              if (user.lastName) {
-                fullName += `.${user.lastName}`;
-              }
-              return fullName;
+            this.availableUsersToMention.forEach((user: UserDetailsDTO) => {
+              const fullName = this.getUserFullname(user, '.');
+              this.availableMentions[fullName] = user;
             });
-            this.textEditorConfig.hintAutomplete = this.availableMentions;
+            this.textEditorConfig.hintAutomplete = Object.keys(this.availableMentions);
           }
-          console.log(this.comments, this.availableUsersToMention, this.textEditorConfig);
+          const anyCommentNew = this.comments.find((comment: CardCommentDTO) => comment.isNew) ? true : false;
+          if (anyCommentNew) {
+            this.setCommentsAsRead(cardInstanceWorkflowId);
+          }
+          // console.log(this.comments, this.availableUsersToMention, this.textEditorConfig);
           this.dataLoaded = true;
           this.setShowLoading.emit(false);
         },
@@ -98,14 +94,64 @@ export class WorkflowColumnCommentsComponent implements OnInit, OnChanges {
   }
 
   public newCommentChange(comment: string): void {
-    console.log(comment);
     this.newComment = comment;
   }
 
+  public setCommentsAsRead(cardInstanceWorkflowId: number): void {
+    this.cardCommentsService.setCommentsAsRead(cardInstanceWorkflowId).subscribe((data) => {
+      setTimeout(() => {
+        this.comments.map((comment: CardCommentDTO) => {
+          comment.isNew = false;
+          return comment;
+        });
+      }, this.timeBeforeMarkAsRead);
+    });
+  }
+
   public sendComment() {
-    console.log(this.newComment);
-    this.newComment = '';
-    this.dataLoaded = false;
-    setTimeout(() => (this.dataLoaded = true));
+    const spinner = this.spinnerService.show();
+    const cardInstanceWorkflowId = parseInt(this.route.snapshot.params.id, 10);
+    const mentionedUsers: { mention: boolean; user: { id: number } }[] = [];
+    Object.keys(this.availableMentions).forEach((fullName: string) => {
+      if (this.newComment.indexOf('@' + fullName) >= 0) {
+        mentionedUsers.push({
+          mention: true,
+          user: {
+            id: this.availableMentions[fullName].id
+          }
+        });
+      }
+    });
+    const comment: CardCommentDTO = {
+      comment: this.newComment,
+      users: mentionedUsers.length ? mentionedUsers : null
+    };
+    this.cardCommentsService.addCardComment(cardInstanceWorkflowId, comment).subscribe(
+      (data: CardCommentDTO) => {
+        this.spinnerService.hide(spinner);
+        this.newComment = '';
+        this.dataLoaded = false;
+        setTimeout(() => (this.dataLoaded = true));
+        this.getData();
+      },
+      (error: ConcenetError) => {
+        this.setShowLoading.emit(false);
+        this.globalMessageService.showError({
+          message: error.message,
+          actionText: this.translateService.instant(marker('common.close'))
+        });
+      }
+    );
+  }
+
+  public getUserFullname(user: UserDetailsDTO, separator = ' '): string {
+    let fullName = user.name;
+    if (user.firstName) {
+      fullName += `${separator}${user.firstName}`;
+    }
+    if (user.lastName) {
+      fullName += `${separator}${user.lastName}`;
+    }
+    return fullName;
   }
 }

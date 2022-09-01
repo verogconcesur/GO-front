@@ -1,5 +1,16 @@
 <div class="card-comments">
-    <div class="card-comments__wrapper"></div>
+    <div class="card-comments__wrapper">
+        <div class="card-comments__wrapper__comment" *ngFor="let comment of comments">
+            <div class="new-comment" *ngIf="comment.isNew"></div>
+            <div class="fullname">
+                {{ getUserFullname(comment.user) }}
+            </div>
+            <div class="date">
+                {{ comment.dateComment | date: "dd/MM/yy, HH:mm" }}
+            </div>
+            <div class="comment" [innerHtml]="comment.comment"></div>
+        </div>
+    </div>
     <div class="card-comments__new">
         <app-text-editor-wrapper
             *ngIf="dataLoaded"

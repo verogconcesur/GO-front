@@ -3,6 +3,29 @@
 @mixin workflow-column-comments-component-theme($theme, $main-typo) {
   $primary: map-get($theme, primary);
 
+  .card-comments {
+    &__wrapper {
+      &__comment {
+        background-color: mat-contrast($primary, 500);
+        .new-comment {
+          background-color: mat-color($primary, A700);
+        }
+        .fullname {
+          color: mat-contrast($primary, 100);
+        }
+        .date {
+          color: mat-contrast($primary, 50);
+        }
+      }
+    }
+    &__new {
+      border-top: 2px solid mat-contrast($primary, 50);
+
+      button {
+        color: mat-color($primary, 700);
+      }
+    }
+  }
   #commentEditor {
     font-size: 0.85em !important;
     .note-hint-popover {

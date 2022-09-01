@@ -16,6 +16,8 @@ export class CardCommentsService {
   private readonly GET_CARD_INSTANCE_PATH = '/api/cardInstanceWorkflow';
   private readonly GET_DETAIL_PATH = '/detail';
   private readonly GET_COMMENTS_PATH = '/comments';
+  private readonly ADD_PATH = '/add';
+  private readonly READ_PATH = '/read';
   private readonly GET_USERS_MENTION_PATH = '/usersMention';
 
   constructor(@Inject(ENV) private env: Env, private http: HttpClient) {}
@@ -46,6 +48,25 @@ export class CardCommentsService {
       .get<UserDetailsDTO[]>(
         // eslint-disable-next-line max-len
         `${this.env.apiBaseUrl}${this.GET_CARD_INSTANCE_PATH}${this.GET_DETAIL_PATH}${this.GET_COMMENTS_PATH}${this.GET_USERS_MENTION_PATH}/${cardInstanceWorkflowId}`
+      )
+      .pipe(catchError((error) => throwError(error.error as ConcenetError)));
+  }
+
+  public addCardComment(cardInstanceWorkflowId: number, comment: CardCommentDTO): Observable<CardCommentDTO> {
+    return this.http
+      .post<CardCommentDTO>(
+        // eslint-disable-next-line max-len
+        `${this.env.apiBaseUrl}${this.GET_CARD_INSTANCE_PATH}${this.GET_DETAIL_PATH}${this.GET_COMMENTS_PATH}${this.ADD_PATH}/${cardInstanceWorkflowId}`,
+        comment
+      )
+      .pipe(catchError((error) => throwError(error as ConcenetError)));
+  }
+
+  public setCommentsAsRead(cardInstanceWorkflowId: number): Observable<any> {
+    return this.http
+      .get<any>(
+        // eslint-disable-next-line max-len
+        `${this.env.apiBaseUrl}${this.GET_CARD_INSTANCE_PATH}${this.GET_DETAIL_PATH}${this.GET_COMMENTS_PATH}${this.READ_PATH}/${cardInstanceWorkflowId}`
       )
       .pipe(catchError((error) => throwError(error.error as ConcenetError)));
   }
