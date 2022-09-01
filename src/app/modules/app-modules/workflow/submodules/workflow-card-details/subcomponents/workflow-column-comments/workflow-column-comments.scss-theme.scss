@@ -7,6 +7,9 @@
     &__wrapper {
       &__comment {
         background-color: mat-contrast($primary, 500);
+        &.selected {
+          border: 1px solid mat-color($primary, A700);
+        }
         .new-comment {
           background-color: mat-color($primary, A700);
         }
@@ -15,6 +18,9 @@
         }
         .date {
           color: mat-contrast($primary, 50);
+        }
+        .mention-action {
+          color: mat-color($primary, 600);
         }
       }
     }

@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output, ViewChild } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { ConcenetError } from '@app/types/error';
 import { marker } from '@biesbjerg/ngx-translate-extract-marker';
@@ -13,6 +13,7 @@ import { forkJoin, Observable } from 'rxjs';
 // eslint-disable-next-line max-len
 import { TextEditorWrapperConfigI } from '@modules/feature-modules/text-editor-wrapper/interfaces/text-editor-wrapper-config.interface';
 import { ProgressSpinnerDialogService } from '@shared/services/progress-spinner-dialog.service';
+import { TextEditorWrapperComponent } from '@modules/feature-modules/text-editor-wrapper/text-editor-wrapper.component';
 
 @Component({
   selector: 'app-workflow-column-comments',
@@ -20,10 +21,12 @@ import { ProgressSpinnerDialogService } from '@shared/services/progress-spinner-
   styleUrls: ['./workflow-column-comments.component.scss']
 })
 export class WorkflowColumnCommentsComponent implements OnInit {
+  @ViewChild('textEditorWrapper') textEditorWrapper: TextEditorWrapperComponent;
   @Input() tab: CardColumnTabDTO = null;
   @Output() setShowLoading: EventEmitter<boolean> = new EventEmitter(false);
   public labels = { insertText: marker('common.insertTextHere') };
   public comments: CardCommentDTO[] = [];
+  public commentSelected: CardCommentDTO = null;
   public availableUsersToMention: UserDetailsDTO[] = [];
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   public availableMentions: any = {};
@@ -95,6 +98,28 @@ export class WorkflowColumnCommentsComponent implements OnInit {
 
   public newCommentChange(comment: string): void {
     this.newComment = comment;
+  }
+
+  public selectComment(comment: CardCommentDTO): void {
+    if (this.commentSelected === comment) {
+      this.commentSelected = null;
+    } else {
+      this.commentSelected = comment;
+    }
+  }
+
+  public answerComment(comment: CardCommentDTO): void {
+    this.newComment =
+      '<p><span><b contenteditable="false" readonly="readonly"> @' +
+      this.getUserFullname(comment.user, '.') +
+      ' </b></span><span contenteditable="true" class="focus"></span></p>';
+    this.dataLoaded = false;
+    setTimeout(() => {
+      this.dataLoaded = true;
+      setTimeout(() => {
+        this.textEditorWrapper.placeCursorAtEnd('focus');
+      }, 500);
+    });
   }
 
   public setCommentsAsRead(cardInstanceWorkflowId: number): void {

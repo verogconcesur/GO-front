@@ -1,3 +1,4 @@
+/* eslint-disable object-shorthand */
 /* eslint-disable space-before-function-paren */
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { AfterViewInit, Component, EventEmitter, Input, OnChanges, OnInit, Output, SimpleChanges } from '@angular/core';
@@ -23,7 +24,7 @@ export class TextEditorWrapperComponent implements OnInit, AfterViewInit {
   private summernoteStyles =
     // eslint-disable-next-line max-len
     '<style><!--SummernoteStyles-->table{border-collapse:collapse;width:100%}table td, table th{border:1px solid #ececec;padding:5px 3px}table.table-no-bordered td, table.table-no-bordered th{border:0px;}a{background-color:inherit;color:#337ab7;font-family:inherit;font-weight:inherit;text-decoration:inherit}a:focus, a:hover{color:#23527c;outline:0;text-decoration:underline}figure{margin:0}</style>';
-  private summernoteNode: Element;
+  private summernoteNode: any;
   private lang: string;
   private sumernoteHtmlContent = '';
 
@@ -78,7 +79,7 @@ export class TextEditorWrapperComponent implements OnInit, AfterViewInit {
               callback(
                 // eslint-disable-next-line prefer-arrow/prefer-arrow-functions
                 $.grep(this.mentions, function (item: string) {
-                  return item.indexOf(keyword) === 0;
+                  return item.toLowerCase().indexOf(keyword.toLowerCase()) === 0;
                 })
               );
             },
@@ -137,6 +138,36 @@ export class TextEditorWrapperComponent implements OnInit, AfterViewInit {
   ngAfterViewInit(): void {
     setTimeout(() => {
       this.summernoteNode = document.getElementById(this.textEditorId).getElementsByClassName('note-editable').item(0);
+      this.addJqueryFn();
     }, 100);
+  }
+
+  public addJqueryFn(): void {
+    $.fn.extend({
+      placeCursorAtEnd: function () {
+        // Places the cursor at the end of a contenteditable container (should also work for textarea / input)
+        if (this.length === 0) {
+          throw new Error('Cannot manipulate an element if there is no element!');
+        }
+        const el = this[0];
+        const range = document.createRange();
+        const sel = window.getSelection();
+        const childLength = el.childNodes.length;
+        if (childLength > 0) {
+          const lastNode = el.childNodes[childLength - 1];
+          const lastNodeChildren = lastNode.childNodes.length;
+          range.setStart(lastNode, lastNodeChildren);
+          range.collapse(true);
+          sel.removeAllRanges();
+          sel.addRange(range);
+        }
+        return this;
+      }
+    });
+  }
+
+  public placeCursorAtEnd(subClass?: string): void {
+    const item: any = $(`#${this.textEditorId} .note-editable`);
+    item.placeCursorAtEnd();
   }
 }
