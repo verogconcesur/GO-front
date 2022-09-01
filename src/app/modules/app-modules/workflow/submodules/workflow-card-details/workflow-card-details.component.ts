@@ -109,7 +109,32 @@ export class WorkflowCardDetailsComponent implements OnInit {
           console.log('CardInstanceDTO', data);
           this.spinnerService.hide(spinner);
           this.cardInstance = data;
-          this.columnsConfig = data.card.cols;
+          this.columnsConfig = data.card.cols.map((col: CardColumnDTO) => {
+            if (col.colType === 'SOCIAL') {
+              col.tabs = [
+                {
+                  id: 1,
+                  orderNumber: 1,
+                  name: this.translateService.instant(marker('common.comments')),
+                  type: 'COMMENTS',
+                  contentTypeId: null,
+                  contentSourceId: null,
+                  tabItems: []
+                },
+                {
+                  id: 2,
+                  orderNumber: 2,
+                  name: this.translateService.instant(marker('common.clientMessages')),
+                  type: 'CLIENT_MESSAGES',
+                  contentTypeId: null,
+                  contentSourceId: null,
+                  tabItems: []
+                }
+              ];
+            }
+            return col;
+          });
+          console.log(this.columnsConfig);
         },
         (error: ConcenetError) => {
           this.globalMessageService.showError({

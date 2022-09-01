@@ -34,7 +34,7 @@
                         [ngClass]="{ active: isTabSelected('column1') }"
                     >
                         <mat-icon>info</mat-icon>
-                        <label>{{ labels.column1 | translate }}</label>
+                        <label>{{ columnsConfig?.length ? columnsConfig[0].name : "" }}</label>
                     </div>
                     <div
                         class="tab-option"
@@ -42,7 +42,7 @@
                         [ngClass]="{ active: isTabSelected('column2') }"
                     >
                         <mat-icon>build</mat-icon>
-                        <label>{{ labels.column2 | translate }}</label>
+                        <label>{{ columnsConfig?.length ? columnsConfig[1].name : "" }}</label>
                     </div>
                 </div>
             </div>
@@ -61,19 +61,23 @@
         <div class="wcard-details__wrapper__sections__controller tab-options-wrapper" *ngIf="showMode === 'individual'">
             <div class="tab-option" (click)="changeSelectedTab('column1')" [ngClass]="{ active: isTabSelected('column1') }">
                 <mat-icon>info</mat-icon>
-                <label>{{ labels.column1 | translate }}</label>
+                <!-- <label>{{ labels.column1 | translate }}</label> -->
+                <label>{{ columnsConfig?.length ? columnsConfig[0].name : "" }}</label>
             </div>
             <div class="tab-option" (click)="changeSelectedTab('column2')" [ngClass]="{ active: isTabSelected('column2') }">
                 <mat-icon>build</mat-icon>
-                <label>{{ labels.column2 | translate }}</label>
+                <!-- <label>{{ labels.column2 | translate }}</label> -->
+                <label>{{ columnsConfig?.length ? columnsConfig[1].name : "" }}</label>
             </div>
             <div class="tab-option" (click)="changeSelectedTab('messages')" [ngClass]="{ active: isTabSelected('messages') }">
                 <mat-icon> textsms</mat-icon>
-                <label> {{ labels.messages | translate }}</label>
+                <!-- <label> {{ labels.messages | translate }}</label> -->
+                <label>{{ columnsConfig?.length ? columnsConfig[2].name : "" }}</label>
             </div>
             <div class="tab-option" (click)="changeSelectedTab('actions')" [ngClass]="{ active: isTabSelected('actions') }">
                 <mat-icon>more_horiz</mat-icon>
-                <label>{{ labels.actions | translate }}</label>
+                <!-- <label>{{ labels.actions | translate }}</label> -->
+                <label>{{ columnsConfig?.length ? columnsConfig[3].name : "" }}</label>
             </div>
         </div>
     </div>

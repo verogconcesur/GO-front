@@ -1,12 +1,14 @@
+/* eslint-disable object-shorthand */
+/* eslint-disable space-before-function-paren */
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { AfterViewInit, Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import { AfterViewInit, Component, EventEmitter, Input, OnChanges, OnInit, Output, SimpleChanges } from '@angular/core';
 import { marker } from '@biesbjerg/ngx-translate-extract-marker';
 import { TranslateService } from '@ngx-translate/core';
-import $ from 'jquery';
 import { TextEditorWrapperConfigI } from './interfaces/text-editor-wrapper-config.interface';
+import $ from 'jquery';
 
 @Component({
-  selector: 'app-text-editor-wrapper',
+  selector: 'app-text-editor-wrapper, [appTextEditorWrapper]',
   templateUrl: './text-editor-wrapper.component.html',
   styleUrls: ['./text-editor-wrapper.component.scss']
 })
@@ -14,7 +16,7 @@ export class TextEditorWrapperComponent implements OnInit, AfterViewInit {
   @Input() textEditorId: string;
   @Input() initialValue: string;
   @Input() placeholder: string;
-  @Input() textEditorOptionsConfig: TextEditorWrapperConfigI;
+  @Input() textEditorConfig: TextEditorWrapperConfigI;
   @Output() onContentChanged = new EventEmitter();
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   public summerNoteconfig: any;
@@ -22,8 +24,9 @@ export class TextEditorWrapperComponent implements OnInit, AfterViewInit {
   private summernoteStyles =
     // eslint-disable-next-line max-len
     '<style><!--SummernoteStyles-->table{border-collapse:collapse;width:100%}table td, table th{border:1px solid #ececec;padding:5px 3px}table.table-no-bordered td, table.table-no-bordered th{border:0px;}a{background-color:inherit;color:#337ab7;font-family:inherit;font-weight:inherit;text-decoration:inherit}a:focus, a:hover{color:#23527c;outline:0;text-decoration:underline}figure{margin:0}</style>';
-  private summernoteNode: Element;
+  private summernoteNode: any;
   private lang: string;
+  private sumernoteHtmlContent = '';
 
   constructor(private translateService: TranslateService) {
     if (this.translateService.currentLang === 'en') {
@@ -39,17 +42,48 @@ export class TextEditorWrapperComponent implements OnInit, AfterViewInit {
     } else {
       const misc: any[] = ['fullscreen'];
       let extra: any = {};
-      if (this.textEditorOptionsConfig && this.textEditorOptionsConfig.addHtmlModificationOption) {
+      if (this.textEditorConfig && this.textEditorConfig.addHtmlModificationOption) {
         misc.push('codeview');
       }
-      if (this.textEditorOptionsConfig && this.textEditorOptionsConfig.addMacroListOption) {
+      if (this.textEditorConfig && this.textEditorConfig.addMacroListOption) {
         misc.push(['macroList']);
         extra = {
           ...extra,
           macroList: {
             blockChar: ['[', ']'],
             tooltip: this.translateService.instant(marker('textEditor.tooltips.varOptions')),
-            items: [...this.textEditorOptionsConfig.macroListOptions]
+            items: [...this.textEditorConfig.macroListOptions]
+          }
+        };
+      }
+      if (this.textEditorConfig && this.textEditorConfig.width) {
+        extra = {
+          ...extra,
+          width: this.textEditorConfig.width
+        };
+      }
+      if (this.textEditorConfig && this.textEditorConfig.height) {
+        extra = {
+          ...extra,
+          height: this.textEditorConfig.height
+        };
+      }
+      if (this.textEditorConfig && this.textEditorConfig.hintAutomplete?.length) {
+        extra = {
+          ...extra,
+          hint: {
+            mentions: this.textEditorConfig.hintAutomplete,
+            match: /\B@(\w*)$/,
+            // eslint-disable-next-line object-shorthand
+            search: function (keyword: string, callback: any) {
+              callback(
+                // eslint-disable-next-line prefer-arrow/prefer-arrow-functions
+                $.grep(this.mentions, function (item: string) {
+                  return item.toLowerCase().indexOf(keyword.toLowerCase()) === 0;
+                })
+              );
+            },
+            content: (item: string) => $('<span><b contenteditable="false" readonly="readonly"> @' + item + ' </b></span>')[0]
           }
         };
       }
@@ -73,7 +107,9 @@ export class TextEditorWrapperComponent implements OnInit, AfterViewInit {
           tableBorderToggle: this.translateService.instant(marker('textEditor.tooltips.tableBorderToggle'))
         },
         placeholder: this.placeholder,
-        toolbar,
+        toolbar: this.textEditorConfig.hideToolbar ? false : true,
+        disableResizeEditor: this.textEditorConfig.disableResizeEditor ? true : false,
+        airMode: this.textEditorConfig.airMode ? true : false,
         popover: {
           table: [
             ['add', ['addRowDown', 'addRowUp', 'addColLeft', 'addColRight']],
@@ -91,6 +127,7 @@ export class TextEditorWrapperComponent implements OnInit, AfterViewInit {
             ) {
               html = `${this.summernoteStyles} ${html}`;
             }
+            this.sumernoteHtmlContent = html;
             this.onContentChanged.emit(html);
           }
         }
@@ -99,6 +136,38 @@ export class TextEditorWrapperComponent implements OnInit, AfterViewInit {
   }
 
   ngAfterViewInit(): void {
-    this.summernoteNode = document.getElementById(this.textEditorId).getElementsByClassName('note-editable').item(0);
+    setTimeout(() => {
+      this.summernoteNode = document.getElementById(this.textEditorId).getElementsByClassName('note-editable').item(0);
+      this.addJqueryFn();
+    }, 100);
+  }
+
+  public addJqueryFn(): void {
+    $.fn.extend({
+      placeCursorAtEnd: function () {
+        // Places the cursor at the end of a contenteditable container (should also work for textarea / input)
+        if (this.length === 0) {
+          throw new Error('Cannot manipulate an element if there is no element!');
+        }
+        const el = this[0];
+        const range = document.createRange();
+        const sel = window.getSelection();
+        const childLength = el.childNodes.length;
+        if (childLength > 0) {
+          const lastNode = el.childNodes[childLength - 1];
+          const lastNodeChildren = lastNode.childNodes.length;
+          range.setStart(lastNode, lastNodeChildren);
+          range.collapse(true);
+          sel.removeAllRanges();
+          sel.addRange(range);
+        }
+        return this;
+      }
+    });
+  }
+
+  public placeCursorAtEnd(subClass?: string): void {
+    const item: any = $(`#${this.textEditorId} .note-editable`);
+    item.placeCursorAtEnd();
   }
 }

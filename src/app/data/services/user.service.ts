@@ -9,13 +9,14 @@ import UserDetailsDTO from '@data/models/user-permissions/user-details-dto';
 import UserDTO from '@data/models/user-permissions/user-dto';
 import UserFilterDTO from '@data/models/user-permissions/user-filter-dto';
 import { getPaginationUrlGetParams } from '@data/utils/pagination-aux';
-import { Observable, throwError } from 'rxjs';
+import { BehaviorSubject, Observable, throwError } from 'rxjs';
 import { catchError } from 'rxjs/operators';
 
 @Injectable({
   providedIn: 'root'
 })
 export class UserService {
+  public userLogged$: BehaviorSubject<UserDetailsDTO> = new BehaviorSubject(null);
   private readonly RESTORE_PASSWORD_PATH = '/api/users/forgotPass';
   private readonly CHANGE_PASSWORD_PATH = '/api/users/forgotPassChange';
   private readonly USER_DETAILS_PATH = '/api/users';
