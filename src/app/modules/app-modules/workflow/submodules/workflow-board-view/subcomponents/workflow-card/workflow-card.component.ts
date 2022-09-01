@@ -37,10 +37,7 @@ export class WorkflowCardComponent implements OnInit {
   }
 
   public getColors(): string[] {
-    return [
-      this.wSubstate?.color ? this.wSubstate.color : this.wState?.color ? this.wState.color : '#fff',
-      ...(this.card?.colors?.length ? this.card.colors : [])
-    ];
+    return this.card?.colors?.length ? this.card.colors : [];
   }
 
   public getColorsClass(): string {

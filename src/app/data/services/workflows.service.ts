@@ -1,3 +1,4 @@
+/* eslint-disable max-len */
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { HttpClient } from '@angular/common/http';
 import { Inject, Injectable } from '@angular/core';
@@ -96,16 +97,17 @@ export class WorkflowsService {
     wUser: WorkflowSubstateUserDTO,
     newOrderNumber: number
   ): Observable<WorkflowCardInstanceDTO> {
+    let url =
+      `${this.env.apiBaseUrl}${this.GET_WORKFLOWS_PATH}/${card.cardInstanceWorkflows[0].workflowId}` +
+      `${this.GET_WORKFLOWS_FACILITY_PATH}/${facilityId}${this.GET_WORKFLOWS_CARDS_PATH}${this.GET_WORKFLOWS_ORDER_PATH}`;
+    if (wUser?.user) {
+      url += `/${wUser.user.id}`;
+    }
     return this.http
-      .post<WorkflowCardInstanceDTO>(
-        `${this.env.apiBaseUrl}${this.GET_WORKFLOWS_PATH}/${card.cardInstanceWorkflows[0].workflowId}` +
-          `${this.GET_WORKFLOWS_FACILITY_PATH}/${facilityId}${this.GET_WORKFLOWS_CARDS_PATH}${this.GET_WORKFLOWS_ORDER_PATH}`,
-        {
-          id: card.cardInstanceWorkflows[0].cardInstance.id,
-          userId: wUser?.user ? wUser?.user?.id : null,
-          orderNumber: newOrderNumber
-        }
-      )
+      .post<WorkflowCardInstanceDTO>(url, {
+        id: card.cardInstanceWorkflows[0].cardInstance.id,
+        orderNumber: newOrderNumber
+      })
       .pipe(catchError((error) => throwError(error.error as ConcenetError)));
   }
 

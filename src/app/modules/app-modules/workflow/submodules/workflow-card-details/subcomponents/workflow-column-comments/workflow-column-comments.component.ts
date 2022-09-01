@@ -110,14 +110,12 @@ export class WorkflowColumnCommentsComponent implements OnInit {
 
   public answerComment(comment: CardCommentDTO): void {
     this.newComment =
-      '<p><span><b contenteditable="false" readonly="readonly"> @' +
-      this.getUserFullname(comment.user, '.') +
-      ' </b></span><span contenteditable="true" class="focus"></span></p>';
+      '<p><span><b contenteditable="false" readonly="readonly"> @' + this.getUserFullname(comment.user, '.') + ' </b></span></p>';
     this.dataLoaded = false;
     setTimeout(() => {
       this.dataLoaded = true;
       setTimeout(() => {
-        this.textEditorWrapper.placeCursorAtEnd('focus');
+        this.textEditorWrapper.placeCursorAtEnd();
       }, 500);
     });
   }
@@ -134,39 +132,41 @@ export class WorkflowColumnCommentsComponent implements OnInit {
   }
 
   public sendComment() {
-    const spinner = this.spinnerService.show();
-    const cardInstanceWorkflowId = parseInt(this.route.snapshot.params.id, 10);
-    const mentionedUsers: { mention: boolean; user: { id: number } }[] = [];
-    Object.keys(this.availableMentions).forEach((fullName: string) => {
-      if (this.newComment.indexOf('@' + fullName) >= 0) {
-        mentionedUsers.push({
-          mention: true,
-          user: {
-            id: this.availableMentions[fullName].id
-          }
-        });
-      }
-    });
-    const comment: CardCommentDTO = {
-      comment: this.newComment,
-      users: mentionedUsers.length ? mentionedUsers : null
-    };
-    this.cardCommentsService.addCardComment(cardInstanceWorkflowId, comment).subscribe(
-      (data: CardCommentDTO) => {
-        this.spinnerService.hide(spinner);
-        this.newComment = '';
-        this.dataLoaded = false;
-        setTimeout(() => (this.dataLoaded = true));
-        this.getData();
-      },
-      (error: ConcenetError) => {
-        this.setShowLoading.emit(false);
-        this.globalMessageService.showError({
-          message: error.message,
-          actionText: this.translateService.instant(marker('common.close'))
-        });
-      }
-    );
+    if (this.newComment && this.newComment !== '<br>' && this.newComment !== '<p></p>') {
+      const spinner = this.spinnerService.show();
+      const cardInstanceWorkflowId = parseInt(this.route.snapshot.params.id, 10);
+      const mentionedUsers: { mention: boolean; user: { id: number } }[] = [];
+      Object.keys(this.availableMentions).forEach((fullName: string) => {
+        if (this.newComment.indexOf('@' + fullName) >= 0) {
+          mentionedUsers.push({
+            mention: true,
+            user: {
+              id: this.availableMentions[fullName].id
+            }
+          });
+        }
+      });
+      const comment: CardCommentDTO = {
+        comment: this.newComment,
+        users: mentionedUsers.length ? mentionedUsers : null
+      };
+      this.cardCommentsService.addCardComment(cardInstanceWorkflowId, comment).subscribe(
+        (data: CardCommentDTO) => {
+          this.spinnerService.hide(spinner);
+          this.newComment = '';
+          this.dataLoaded = false;
+          setTimeout(() => (this.dataLoaded = true));
+          this.getData();
+        },
+        (error: ConcenetError) => {
+          this.setShowLoading.emit(false);
+          this.globalMessageService.showError({
+            message: error.message,
+            actionText: this.translateService.instant(marker('common.close'))
+          });
+        }
+      );
+    }
   }
 
   public getUserFullname(user: UserDetailsDTO, separator = ' '): string {
