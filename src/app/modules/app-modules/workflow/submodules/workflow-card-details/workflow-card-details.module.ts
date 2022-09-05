@@ -17,6 +17,7 @@ import { WorkflowCardHeaderComponent } from './subcomponents/workflow-card-heade
 import { WorkflowColumnCommentsComponent } from './subcomponents/workflow-column-comments/workflow-column-comments.component';
 import { WorkflowColumnClientMessagesComponent } from './subcomponents/workflow-column-client-messages/workflow-column-client-messages.component';
 import { TextEditorWrapperModule } from '@modules/feature-modules/text-editor-wrapper/text-editor-wrapper.module';
+import { WorkflowColumnActionsAndLinksComponent } from './subcomponents/workflow-column-actions-and-links/workflow-column-actions-and-links.component';
 
 @NgModule({
   declarations: [
@@ -31,7 +32,8 @@ import { TextEditorWrapperModule } from '@modules/feature-modules/text-editor-wr
     WorkflowColumnPrefixedHistoryComponent,
     WorkflowCardHeaderComponent,
     WorkflowColumnCommentsComponent,
-    WorkflowColumnClientMessagesComponent
+    WorkflowColumnClientMessagesComponent,
+    WorkflowColumnActionsAndLinksComponent
   ],
   imports: [CommonModule, SharedModule, WorkflowCardDetailsRoutingModule, TextEditorWrapperModule]
 })

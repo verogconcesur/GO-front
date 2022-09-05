@@ -7,6 +7,7 @@ import { ConcenetError } from '@app/types/error';
 import CardDTO from '@data/models/cards/card-dto';
 import CardInstanceDTO from '@data/models/cards/card-instance-dto';
 import WorkflowCardSlotDTO from '@data/models/workflows/workflow-card-slot-dto';
+import WorkflowCardTabItemDTO from '@data/models/workflows/workflow-card-tab-item';
 import { Observable, throwError } from 'rxjs';
 import { catchError } from 'rxjs/operators';
 
@@ -50,9 +51,12 @@ export class CardService {
    * @param tabId
    * @returns WorkflowCardSlotDTO[]
    */
-  public getCardTabData(cardInstanceWorkflowId: number, tabId: number): Observable<WorkflowCardSlotDTO[]> {
+  public getCardTabData(
+    cardInstanceWorkflowId: number,
+    tabId: number
+  ): Observable<WorkflowCardSlotDTO[] | WorkflowCardTabItemDTO[]> {
     return this.http
-      .get<WorkflowCardSlotDTO[]>(
+      .get<WorkflowCardSlotDTO[] | WorkflowCardTabItemDTO[]>(
         // eslint-disable-next-line max-len
         `${this.env.apiBaseUrl}${this.GET_CARD_INSTANCE_PATH}${this.GET_DETAIL_PATH}/${cardInstanceWorkflowId}${this.GET_TAB_PATH}/${tabId}`
       )

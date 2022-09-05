@@ -1,0 +1,28 @@
+<div class="actions-wrapper">
+    <div class="actions-wrapper__actions-and-links">
+        <div class="buttons">
+            <button mat-raised-button *ngFor="let action of actions" (click)="btnClick(action)">{{ action.name }}</button>
+        </div>
+
+        <h5 class="uppercase" *ngIf="links?.length">{{ labels.directLinks | translate }}</h5>
+        <div class="buttons">
+            <button
+                mat-raised-button
+                *ngFor="let link of links"
+                (click)="btnClick(link)"
+                [style.background-color]="getBgColor(link)"
+                [style.color]="getFontColor(link)"
+            >
+                {{ link.tabItemConfigLink.name }}
+            </button>
+        </div>
+    </div>
+    <div class="actions-wrapper__move">
+        <div class="buttons">
+            <button mat-raised-button color="primary">
+                <mat-icon>keyboard_arrow_right</mat-icon>
+                <label>{{ labels.move | translate }}</label>
+            </button>
+        </div>
+    </div>
+</div>
