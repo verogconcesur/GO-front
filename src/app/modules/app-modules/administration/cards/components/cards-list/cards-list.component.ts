@@ -1,5 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { PageEvent } from '@angular/material/paginator';
+import { Router } from '@angular/router';
+import { RouteConstants } from '@app/constants/route.constants';
 import { marker } from '@biesbjerg/ngx-translate-extract-marker';
 import PaginationResponseI from '@data/interfaces/pagination-response';
 import BasicFilterDTO from '@data/models/basic-filter-dto';
@@ -43,14 +45,17 @@ export class CardsListComponent implements OnInit {
     private confirmationDialog: ConfirmDialogService,
     private globalMessageService: GlobalMessageService,
     private translateService: TranslateService,
-    private spinnerService: ProgressSpinnerDialogService
+    private spinnerService: ProgressSpinnerDialogService,
+    private router: Router,
   ) {}
 
   ngOnInit(): void {
     this.setSidenavFilterDrawerConfiguration();
   }
 
-  public openCreateEditCardDialog = (card?: CardDTO): void => {};
+  public openCreateEditCardDialog = (card?: CardDTO): void => {
+    this.router.navigate([RouteConstants.ADMINISTRATION, RouteConstants.CARDS, RouteConstants.CREATE]);
+  };
 
   public openFilterCardDialog = (): void => {
     this.filterDrawerService.toggleFilterDrawer();
