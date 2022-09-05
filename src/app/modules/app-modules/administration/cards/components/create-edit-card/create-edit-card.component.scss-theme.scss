@@ -1,0 +1,31 @@
+@import '@angular/material/theming';
+@import 'utils/core';
+
+@mixin create-edit-card-component-theme($theme, $main-typo) {
+  $primary: map-get($theme, primary);
+  $foreground: map-get($theme, foreground);
+  $background: map-get($theme, background);
+
+  .create-cards-container {
+    &__side {
+      &__header {
+        &__section {
+          &__title {
+            color: mat-color($foreground, secondary-text);
+          }
+        }
+      }
+      &__section {
+        &__column {
+          &--selected {
+            color: mat-color($primary, 700);
+          }
+        }
+      }
+    }
+
+    &__footer {
+      background-color: mat-color($background, background);
+    }
+  }
+}

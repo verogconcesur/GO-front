@@ -58,6 +58,8 @@ export enum RouteConstants {
 
   //Cards
   CARDS = 'cards',
+  CREATE_CARD = 'create',
+  ID_CARD = ':idCard',
 }
 
 export const RoutePermissionConstants: Record<string, PermissionConstants[]> = {

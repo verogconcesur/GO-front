@@ -74,7 +74,14 @@
     "cards": {
         "create": "Crear tarjeta",
         "deleteConfirmation": "¿Está seguro que desea eliminar esta tarjeta?",
-        "duplicateConfirmation": "¿Está seguro que desea duplicar esta tarjeta?"
+        "duplicateConfirmation": "¿Está seguro que desea duplicar esta tarjeta?",
+        "modal": {
+            "cardName": "Nombre de Ficha",
+            "column": "Columna",
+            "comments": "Comentarios",
+            "create": "Crear Ficha",
+            "edit": "Editar Ficha"
+        }
     },
     "common": {
         "accessDenied": "Acceso denegado. No tiene privilegios suficientes.",
