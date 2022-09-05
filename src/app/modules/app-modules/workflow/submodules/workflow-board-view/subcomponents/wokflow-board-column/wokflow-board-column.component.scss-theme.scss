@@ -71,6 +71,12 @@
           color: mat-contrast($primary, 50);
         }
       }
+      .substate-origin-substate {
+        background-color: mat-contrast($primary, 400);
+        label {
+          color: mat-contrast($primary, 50);
+        }
+      }
     }
   }
 }

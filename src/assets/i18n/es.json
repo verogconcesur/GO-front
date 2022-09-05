@@ -314,6 +314,7 @@
         "filterSubstate": "Filtrar Subestados",
         "filterUser": "Filtrar Usuarios",
         "numCards": "{num} {num, plural, =0{fichas} one{ficha} other{fichas}}",
+        "originalSubstate": "Subestado de origen",
         "peopleWorking": "{num} {num, plural, =0{personas trabajando} one{persona trabajando} other{personas trabajando}}",
         "select": "Selecciona un Workflow",
         "substatesWithAndWithoutCards": "Mostrando subestados con o sin tarjetas",
