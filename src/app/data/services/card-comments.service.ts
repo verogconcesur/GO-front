@@ -62,11 +62,11 @@ export class CardCommentsService {
       .pipe(catchError((error) => throwError(error as ConcenetError)));
   }
 
-  public setCommentsAsRead(cardInstanceWorkflowId: number): Observable<any> {
+  public setCommentsAsRead(cardInstanceCommentId: number): Observable<any> {
     return this.http
       .get<any>(
         // eslint-disable-next-line max-len
-        `${this.env.apiBaseUrl}${this.GET_CARD_INSTANCE_PATH}${this.GET_DETAIL_PATH}${this.GET_COMMENTS_PATH}${this.READ_PATH}/${cardInstanceWorkflowId}`
+        `${this.env.apiBaseUrl}${this.GET_CARD_INSTANCE_PATH}${this.GET_DETAIL_PATH}${this.GET_COMMENTS_PATH}${this.READ_PATH}/${cardInstanceCommentId}`
       )
       .pipe(catchError((error) => throwError(error.error as ConcenetError)));
   }

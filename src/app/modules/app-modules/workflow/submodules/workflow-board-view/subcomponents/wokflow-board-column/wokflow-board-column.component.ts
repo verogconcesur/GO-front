@@ -35,6 +35,8 @@ export class WokflowBoardColumnComponent implements OnInit {
   public cardDragging: WorkflowCardDTO = null;
   public droppableStates: string[] = [];
   public changeCollapseStatusOnOver = false;
+  //  DGDC: quitar en el momento en el que se pueda ordenar dentro de un mismo subestado
+  public originCardDropZone: string = null;
   public readonly wStateKey = 'wState-';
   public readonly wCollapsedStateKey = 'wCollapsedState-';
   public readonly wSubstateKey = 'wSubstate-';
@@ -49,7 +51,8 @@ export class WokflowBoardColumnComponent implements OnInit {
     workers: marker('workflows.peopleWorking'),
     nCards: marker('workflows.numCards'),
     emptySubstate: marker('workflows.emptySubstate'),
-    dropHere: marker('common.dropHere')
+    dropHere: marker('common.dropHere'),
+    originSubstate: marker('workflows.originalSubstate')
   };
 
   constructor(
@@ -113,9 +116,26 @@ export class WokflowBoardColumnComponent implements OnInit {
     if (
       this.cardDragging &&
       this.droppableStates.indexOf(id) >= 0 &&
-      id.indexOf(`${this.wSubstateKey}${this.cardDragging.cardInstanceWorkflows[0].workflowSubstateId}`) === -1 &&
+      // DGDC: descomentar en el momento en el que se pueda ordenar dentro de un mismo subestado
+      // id.indexOf(`${this.wSubstateKey}${this.cardDragging.cardInstanceWorkflows[0].workflowSubstateId}`) === -1 &&
       this.hideEmptyDropZone[id]
     ) {
+      return true;
+    }
+    return false;
+  }
+
+  //  DGDC: quitar en el momento en el que se pueda ordenar dentro de un mismo subestado
+  public setOriginDropZone(id: string, show: boolean): void {
+    if (show) {
+      this.originCardDropZone = id;
+    } else {
+      this.originCardDropZone = null;
+    }
+  }
+  //  DGDC: quitar en el momento en el que se pueda ordenar dentro de un mismo subestado
+  public showOriginSubstateZone(id: string): boolean {
+    if (this.originCardDropZone === id) {
       return true;
     }
     return false;
@@ -151,10 +171,20 @@ export class WokflowBoardColumnComponent implements OnInit {
             }
           });
 
+          // DGDC: descomentar en el momento en el que se pueda ordenar dentro de un mismo subestado
+          // if (itSelf) {
+          //   move.workflowSubstateSource.workflowSubstateUser.forEach((wUser: WorkflowSubstateUserDTO) => {
+          //     const id = this.wSubstateKey + move.workflowSubstateSource.id + '-' + wUser.user.id;
+          //     if (associatedWSubstates.indexOf(id) === -1) {
+          //       associatedWSubstates.push(id);
+          //     }
+          //   });
+          // }
+          // DGDC: quitar en el momento en el que se pueda ordenar dentro de un mismo subestado
           if (itSelf) {
             move.workflowSubstateSource.workflowSubstateUser.forEach((wUser: WorkflowSubstateUserDTO) => {
               const id = this.wSubstateKey + move.workflowSubstateSource.id + '-' + wUser.user.id;
-              if (associatedWSubstates.indexOf(id) === -1) {
+              if (associatedWSubstates.indexOf(id) === -1 && id !== itSelf) {
                 associatedWSubstates.push(id);
               }
             });
@@ -164,9 +194,10 @@ export class WokflowBoardColumnComponent implements OnInit {
           if (associatedWSubstates.indexOf(id) === -1) {
             associatedWSubstates.push(id);
           }
-          if (itSelf) {
-            associatedWSubstates.push(itSelf);
-          }
+          // DGDC: descomentar en el momento en el que se pueda ordenar dentro de un mismo subestado
+          // if (itSelf) {
+          //   associatedWSubstates.push(itSelf);
+          // }
         }
       });
     }
@@ -240,60 +271,30 @@ export class WokflowBoardColumnComponent implements OnInit {
       //Se va a posicionar en la última posición
       itemToReplace = { orderNumber: null };
     }
-    // DGDC TODO QUITAR LINEAS COMENTADAS
-    // console.log(event, item, itemToReplace, wSubState, dropZoneId);
-    // console.log(
-    //   `${this.wSubstateKey}${item.cardInstanceWorkflows[0].workflowSubstateId}` === dropZoneId,
-    //   `${this.wSubstateKey}${item.cardInstanceWorkflows[0].workflowSubstateId}`,
-    //   dropZoneId
-    // );
     const sameDropZone = `${this.wSubstateKey}${item.cardInstanceWorkflows[0].workflowSubstateId}` === dropZoneId;
-    if ((event.previousContainer === event.container && event.previousIndex !== event.currentIndex) || sameDropZone) {
+
+    // DGDC: descomentar en el momento en el que se pueda ordenar dentro de un mismo subestado
+    // if ((event.previousContainer === event.container && event.previousIndex !== event.currentIndex) || sameDropZone) {
+    // DGDC: quitar en el momento en el que se pueda ordenar dentro de un mismo subestado
+    if (event.previousContainer !== event.container && sameDropZone) {
       const orderNumber =
         event.previousIndex < event.currentIndex && (itemToReplace.orderNumber || itemToReplace.orderNumber === 0)
           ? itemToReplace.orderNumber + 1
           : itemToReplace.orderNumber;
-      // DGDC TODO QUITAR LINEAS COMENTADAS
-      // console.log('Reordenar:');
-      // console.log(
-      //   'Elemento:',
-      //   item,
-      //   'PreviousIndex:',
-      //   event.previousIndex,
-      //   'CurrentIndex: ',
-      //   event.currentIndex,
-      //   'OrderNumber:',
-      //   item.orderNumber
-      // );
-      // console.log('Elemento a reemplazar:', itemToReplace, 'OrderNumber:', itemToReplace.orderNumber);
-      // console.log('Posicionar en:', orderNumber);
-      // moveItemInArray(event.container.data, event.previousIndex, event.currentIndex);
       item.orderNumber = orderNumber;
       request = this.workflowService.changeOrderWorkflowCardInSubstate(
         this.workflow.facility.facilityId,
         item,
         user,
-        orderNumber
+        // DGDC: descomentar en el momento en el que se pueda ordenar dentro de un mismo subestado
+        // orderNumber
+        // DGDC: quitar en el momento en el que se pueda ordenar dentro de un mismo subestado
+        null
       );
     } else if (event.previousContainer !== event.container && !sameDropZone) {
       const move: WorkflowMoveDTO = item.movements.find(
         (wMove: WorkflowMoveDTO) => wMove.workflowSubstateTarget.id === wSubState.id
       );
-      // DGDC TODO QUITAR LINEAS COMENTADAS
-      // console.log('Mover:');
-      // console.log(
-      //   'Elemento:',
-      //   item,
-      //   'PreviousIndex:',
-      //   event.previousIndex,
-      //   'CurrentIndex: ',
-      //   event.currentIndex,
-      //   'OrderNumber:',
-      //   item.orderNumber
-      // );
-      // console.log('Elemento a reemplazar:', itemToReplace, 'OrderNumber:', itemToReplace.orderNumber);
-      // console.log('Posicionar en:', itemToReplace.orderNumber);
-      // transferArrayItem(event.previousContainer.data, event.container.data, event.previousIndex, event.currentIndex);
       item.orderNumber =
         dropZoneId.indexOf(`${this.wSubstateKey}${item.cardInstanceWorkflows[0].workflowSubstateId}`) >= 0
           ? itemToReplace.orderNumber

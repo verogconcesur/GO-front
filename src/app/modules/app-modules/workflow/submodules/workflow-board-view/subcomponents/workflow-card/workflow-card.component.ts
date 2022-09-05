@@ -1,9 +1,10 @@
 import { DatePipe } from '@angular/common';
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { marker } from '@biesbjerg/ngx-translate-extract-marker';
 import WorkflowCardDTO from '@data/models/workflows/workflow-card-dto';
 import WorkflowCardSlotDTO from '@data/models/workflows/workflow-card-slot-dto';
+import WorkflowCardTabItemDTO from '@data/models/workflows/workflow-card-tab-item';
 import WorkflowStateDTO from '@data/models/workflows/workflow-state-dto';
 import WorkflowSubstateDTO from '@data/models/workflows/workflow-substate-dto';
 import { WorkflowDragAndDropService } from '@modules/app-modules/workflow/aux-service/workflow-drag-and-drop.service';
@@ -19,6 +20,7 @@ export class WorkflowCardComponent implements OnInit {
   @Input() wState: WorkflowStateDTO;
   @Input() wSubstate: WorkflowSubstateDTO;
   @Input() droppableStates: string[];
+  @Output() isDraggingEvent: EventEmitter<boolean> = new EventEmitter();
   public cardSize = 'size-m';
   public labels = {
     dueOutDateTime: marker('workflows.dueOutDateTime')
@@ -44,7 +46,37 @@ export class WorkflowCardComponent implements OnInit {
     return `x-${this.getColors().length}`;
   }
 
-  public getLabel(slot: WorkflowCardSlotDTO): string {
+  public getLabel(tabItem: WorkflowCardTabItemDTO): string {
+    let slot: WorkflowCardSlotDTO = null;
+    switch (tabItem.typeItem) {
+      case 'ACTION':
+        slot = tabItem.tabItemConfigAction.variable;
+        break;
+      case 'INPUT':
+        slot = tabItem.tabItemConfigInput.variable;
+        break;
+      case 'LINK':
+        slot = tabItem.tabItemConfigLink.variable;
+        break;
+      case 'LIST':
+        slot = tabItem.tabItemConfigList.variable;
+        break;
+      case 'OPTION':
+        slot = tabItem.tabItemConfigOption.variable;
+        break;
+      case 'TABLE':
+        slot = tabItem.tabItemConfigTable.variable;
+        break;
+      case 'TEXT':
+        slot = tabItem.tabItemConfigText.variable;
+        break;
+      case 'TITLE':
+        slot = tabItem.tabItemConfigTitle.variable;
+        break;
+      case 'VARIABLE':
+        slot = tabItem.tabItemConfigVariable.variable;
+        break;
+    }
     const datePipe = new DatePipe('en-EN');
     switch (slot.attributeName) {
       case 'dueOutDateTime':
@@ -76,9 +108,11 @@ export class WorkflowCardComponent implements OnInit {
 
   public setCardDragging(dragging: boolean): void {
     if (dragging) {
+      this.isDraggingEvent.next(true);
       this.dragAndDropService.draggingCard$.next(this.card);
       this.dragAndDropService.droppableStates$.next(this.droppableStates);
     } else {
+      this.isDraggingEvent.next(false);
       this.dragAndDropService.draggingCard$.next(null);
       this.dragAndDropService.droppableStates$.next([]);
     }

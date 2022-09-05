@@ -67,6 +67,7 @@
                     <app-workflow-card
                         *ngFor="let card of user.cardsBySubstateId[wSubstate.id]"
                         [card]="card"
+                        (isDraggingEvent)="setOriginDropZone(wSubstateKey + wSubstate.id + '-' + user.user.id, $event)"
                         [wState]="wState"
                         [wSubstate]="wSubstate"
                         [droppableStates]="
@@ -84,6 +85,14 @@
                     </div>
                     <div class="substate-drop-cover" *ngIf="showDropCover(wSubstateKey + wSubstate.id + '-' + user.user.id)">
                         <label>{{ labels.dropHere | translate }}</label>
+                    </div>
+
+                    <!-- DGDC: quitar en el momento en el que se pueda ordenar dentro de un mismo subestado -->
+                    <div
+                        class="substate-origin-substate"
+                        *ngIf="showOriginSubstateZone(wSubstateKey + wSubstate.id + '-' + user.user.id)"
+                    >
+                        <label>{{ labels.originSubstate | translate }}</label>
                     </div>
                 </div>
             </div>
@@ -108,6 +117,7 @@
                     <app-workflow-card
                         *ngFor="let card of wSubstate.cards"
                         [card]="card"
+                        (isDraggingEvent)="setOriginDropZone(wSubstateKey + wSubstate.id, $event)"
                         [wState]="wState"
                         [wSubstate]="wSubstate"
                         [droppableStates]="getAssociatedWSubstates(wSubstate.cards[0], wSubstateKey + wSubstate.id)"
@@ -120,6 +130,10 @@
                     </div>
                     <div class="substate-drop-cover" *ngIf="showDropCover(wSubstateKey + wSubstate.id)">
                         <label>{{ labels.dropHere | translate }}</label>
+                    </div>
+                    <!-- DGDC: quitar en el momento en el que se pueda ordenar dentro de un mismo subestado -->
+                    <div class="substate-origin-substate" *ngIf="showOriginSubstateZone(wSubstateKey + wSubstate.id)">
+                        <label>{{ labels.originSubstate | translate }}</label>
                     </div>
                 </div>
             </div>
