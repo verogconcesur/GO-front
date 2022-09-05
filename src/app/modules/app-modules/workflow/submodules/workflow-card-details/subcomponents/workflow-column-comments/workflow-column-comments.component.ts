@@ -77,9 +77,9 @@ export class WorkflowColumnCommentsComponent implements OnInit {
             });
             this.textEditorConfig.hintAutomplete = Object.keys(this.availableMentions);
           }
-          const anyCommentNew = this.comments.find((comment: CardCommentDTO) => comment.isNew) ? true : false;
-          if (anyCommentNew) {
-            this.setCommentsAsRead(cardInstanceWorkflowId);
+          const newComments = this.comments.filter((comment: CardCommentDTO) => comment.isNew);
+          if (newComments?.length) {
+            this.setCommentsAsRead(newComments.map((comment: CardCommentDTO) => comment.id));
           }
           // console.log(this.comments, this.availableUsersToMention, this.textEditorConfig);
           this.dataLoaded = true;
@@ -116,12 +116,16 @@ export class WorkflowColumnCommentsComponent implements OnInit {
       this.dataLoaded = true;
       setTimeout(() => {
         this.textEditorWrapper.placeCursorAtEnd();
-      }, 500);
+      }, 100);
     });
   }
 
-  public setCommentsAsRead(cardInstanceWorkflowId: number): void {
-    this.cardCommentsService.setCommentsAsRead(cardInstanceWorkflowId).subscribe((data) => {
+  public setCommentsAsRead(commentIds: number[]): void {
+    const requests: Observable<unknown>[] = [];
+    commentIds.forEach((id) => {
+      requests.push(this.cardCommentsService.setCommentsAsRead(id));
+    });
+    forkJoin(requests).subscribe((data) => {
       setTimeout(() => {
         this.comments.map((comment: CardCommentDTO) => {
           comment.isNew = false;

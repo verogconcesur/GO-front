@@ -7,7 +7,8 @@
     (cdkDragReleased)="setCardDragging(false)"
     (click)="showCardInfo()"
 >
-    <div class="workflow-card__placeholder" [ngClass]="cardSize" *cdkDragPlaceholder></div>
+    <!-- DGDC: descomentar en el momento en el que se pueda ordenar dentro de un mismo subestado -->
+    <!-- <div class="workflow-card__placeholder" [ngClass]="cardSize" *cdkDragPlaceholder></div> -->
     <div class="workflow-card__colors">
         <div
             class="workflow-card__colors__color"
@@ -18,8 +19,8 @@
     </div>
     <div class="workflow-card__info">
         <!-- CardId: {{ card.id }} - OrderNumber: {{ card.orderNumber }} -->
-        <div *ngFor="let slot of card.variableSlots" class="workflow-card__info__data">
-            {{ getLabel(slot) }}
+        <div *ngFor="let tabItem of card.tabItems" class="workflow-card__info__data">
+            {{ getLabel(tabItem) }}
         </div>
     </div>
 </div>
