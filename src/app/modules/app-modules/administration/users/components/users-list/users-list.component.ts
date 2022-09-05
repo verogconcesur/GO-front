@@ -258,8 +258,10 @@ export class UsersListComponent implements OnInit {
       specialties: this.filterValue?.specialties ? this.filterValue.specialties : []
     });
     this.filterDrawerService.filterValueSubject$.pipe(untilDestroyed(this)).subscribe((filterValue: UserFilterDTO) => {
+      if (this.filterValue !== filterValue) {
+        setTimeout(() => this.getUsers());
+      }
       this.filterValue = filterValue;
-      setTimeout(() => this.getUsers());
     });
   };
 

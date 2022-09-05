@@ -42,6 +42,11 @@
                 <div class="user-data-group__title">{{ labels.nick | translate }}</div>
                 <div class="user-data-group__content">{{ userDetails?.userName }}</div>
             </div>
+
+            <div class="user-data-group">
+                <div class="user-data-group__title">{{ labels.role | translate }}</div>
+                <div class="user-data-group__content">{{ userDetails?.role?.name }}</div>
+            </div>
         </mat-expansion-panel>
     </mat-accordion>
 

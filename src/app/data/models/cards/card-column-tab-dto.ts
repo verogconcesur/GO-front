@@ -4,7 +4,7 @@ export default interface CardColumnTabDTO {
   id: number;
   orderNumber: number;
   name: string;
-  type: 'CUSTOMIZABLE' | 'PREFIXED' | 'TEMPLATE';
+  type: 'CUSTOMIZABLE' | 'PREFIXED' | 'TEMPLATE' | 'COMMENTS' | 'CLIENT_MESSAGES';
   contentTypeId: number;
   contentSourceId?: number;
   tabItems?: CardColumnTabItemDTO[];

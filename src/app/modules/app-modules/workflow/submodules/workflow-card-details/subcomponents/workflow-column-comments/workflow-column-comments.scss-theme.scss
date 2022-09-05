@@ -1,0 +1,49 @@
+@import '@angular/material/theming';
+
+@mixin workflow-column-comments-component-theme($theme, $main-typo) {
+  $primary: map-get($theme, primary);
+
+  .card-comments {
+    &__wrapper {
+      &__comment {
+        background-color: mat-contrast($primary, 500);
+        &.selected {
+          border: 1px solid mat-color($primary, A700);
+        }
+        .new-comment {
+          background-color: mat-color($primary, A700);
+        }
+        .fullname {
+          color: mat-contrast($primary, 100);
+        }
+        .date {
+          color: mat-contrast($primary, 50);
+        }
+        .mention-action {
+          color: mat-color($primary, 600);
+        }
+      }
+    }
+    &__new {
+      border-top: 2px solid mat-contrast($primary, 50);
+
+      button {
+        color: mat-color($primary, 700);
+      }
+    }
+  }
+  #commentEditor {
+    font-size: 0.85em !important;
+    .note-hint-popover {
+      left: 0 !important;
+      top: -125px !important;
+      height: 100px;
+      overflow: auto;
+      overflow-x: hidden;
+      width: 100%;
+    }
+    .note-statusbar {
+      display: none;
+    }
+  }
+}

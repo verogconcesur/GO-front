@@ -154,7 +154,8 @@
           align-items: center;
           border-radius: 8px;
         }
-        .substate-drop-cover {
+        .substate-drop-cover,
+        .substate-origin-substate {
           position: absolute;
           top: 0;
           left: 0;
@@ -165,6 +166,12 @@
           justify-content: center;
           align-items: center;
           border: 2px dotted rgba(255, 255, 255, 0);
+        }
+        .substate-drop-cover {
+          z-index: 100;
+        }
+        .substate-origin-substate {
+          z-index: 200;
         }
       }
       h4 {

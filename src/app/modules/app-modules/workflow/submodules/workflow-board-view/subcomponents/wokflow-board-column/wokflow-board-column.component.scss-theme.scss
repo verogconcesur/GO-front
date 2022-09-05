@@ -60,13 +60,19 @@
 
     .card-wrapper {
       .empty-substate {
-        background-color: mat-contrast($primary, 600);
+        background-color: mat-contrast($primary, 400);
         label {
           color: mat-contrast($primary, 50);
         }
       }
       .substate-drop-cover {
         background-color: mat-contrast($primary, A400);
+        label {
+          color: mat-contrast($primary, 50);
+        }
+      }
+      .substate-origin-substate {
+        background-color: mat-contrast($primary, 400);
         label {
           color: mat-contrast($primary, 50);
         }
