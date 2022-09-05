@@ -55,6 +55,7 @@ export class CreateEditUserComponent extends ComponentToExtendForCustomDialog im
     password1: marker('login.restorePassword.password1'),
     password2: marker('login.restorePassword.password2'),
     passwordRequired: marker('login.restorePassword.passwordRequired'),
+    passwordPatternError: marker('login.restorePassword.passwordPatternError'),
     passwordPattern: marker('login.restorePassword.passwordPattern'),
     passwordMatch: marker('login.restorePassword.passwordMatch'),
     permissions: marker('users.permissions'),
@@ -235,6 +236,7 @@ export class CreateEditUserComponent extends ComponentToExtendForCustomDialog im
           this.userToEdit ? this.userToEdit.password : null,
           [
             Validators.required,
+            Validators.pattern(passwordPattern),
             ConfirmPasswordValidator.validAndDiffToOriginal('newPassword', this.userToEdit ? this.userToEdit.password : null)
           ]
         ],
