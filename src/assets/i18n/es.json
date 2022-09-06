@@ -72,6 +72,9 @@
         "title": "Concenet"
     },
     "cards": {
+        "column": {
+            "columnName": "Nombre de columna"
+        },
         "create": "Crear tarjeta",
         "deleteConfirmation": "¿Está seguro que desea eliminar esta tarjeta?",
         "duplicateConfirmation": "¿Está seguro que desea duplicar esta tarjeta?",
