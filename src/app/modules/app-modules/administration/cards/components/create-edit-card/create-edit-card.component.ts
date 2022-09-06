@@ -31,6 +31,9 @@ export class CreateEditCardComponent implements OnInit {
   get form() {
     return this.cardForm.controls;
   }
+  get cols() {
+    return this.cardForm.controls.cols as FormArray;
+  }
   public changeColumn(col: CardColumnDTO){
     this.selectedCol = col.orderNumber;
   }

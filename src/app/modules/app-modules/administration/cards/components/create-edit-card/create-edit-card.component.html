@@ -1,8 +1,12 @@
 <div class="create-cards-container">
-    <div fxLayout="row wrap">
+    <div fxLayout.gt-lg="row wrap" fxLayout.gt-md="col wrap">
         <div class="create-cards-container__side">
             <div class="create-cards-container__side__header">
-                <div class="create-cards-container__side__header__section" fxLayout="row wrap" fxLayoutAlign="space-between center">
+                <div
+                    class="create-cards-container__side__header__section"
+                    fxLayout="row wrap"
+                    fxLayoutAlign="space-between center"
+                >
                     <h1 class="create-cards-container__side__header__section__title mat-display-2">
                         {{ cardToEdit ? (labels.edit | translate) : (labels.create | translate) }}
                     </h1>
@@ -24,25 +28,47 @@
                         </mat-form-field>
                     </div>
                     <div *ngFor="let col of form.cols.value" class="create-cards-container__side__section__column">
-                        <mat-icon *ngIf="selectedCol === col.orderNumber" class="create-cards-container__side__section__column--selected">lens</mat-icon>
+                        <mat-icon
+                            *ngIf="selectedCol === col.orderNumber"
+                            class="create-cards-container__side__section__column--selected"
+                            >lens</mat-icon
+                        >
                         <span
                             (click)="changeColumn(col)"
-                            [ngClass]="selectedCol === col.orderNumber ? 'create-cards-container__side__section__column--selected' : ''"
+                            [ngClass]="
+                                selectedCol === col.orderNumber ? 'create-cards-container__side__section__column--selected' : ''
+                            "
                             >{{ col.name }}</span
                         >
                     </div>
                 </form>
             </div>
         </div>
-        <div class="create-cards-container__main">
-        <app-custom-column [ngStyle]="{display: selectedCol === 1 ? 'block' : 'none'}"></app-custom-column>
-        <app-custom-column [ngStyle]="{display: selectedCol === 2 ? 'block' : 'none'}"></app-custom-column>
-        <app-custom-comments [ngStyle]="{display: selectedCol === 3 ? 'block' : 'none'}"></app-custom-comments>
-        <app-custom-actions [ngStyle]="{display: selectedCol === 4 ? 'block' : 'none'}"></app-custom-actions>
+        <div class="create-cards-container__main" *ngIf="cardForm">
+            <app-custom-column
+                [ngStyle]="{ display: selectedCol === 1 ? 'block' : 'none' }"
+                [formCol]="cols.controls[0]"
+                [colEdit]="cardToEdit ? cardToEdit.cols[0] : null"
+            ></app-custom-column>
+            <app-custom-column
+                [ngStyle]="{ display: selectedCol === 2 ? 'block' : 'none' }"
+                [formCol]="cols.controls[1]"
+                [colEdit]="cardToEdit ? cardToEdit.cols[1] : null"
+            ></app-custom-column>
+            <app-custom-comments
+                [ngStyle]="{ display: selectedCol === 3 ? 'block' : 'none' }"
+                [formCol]="cols.controls[2]"
+                [colEdit]="cardToEdit ? cardToEdit.cols[2] : null"
+            ></app-custom-comments>
+            <app-custom-actions
+                [ngStyle]="{ display: selectedCol === 4 ? 'block' : 'none' }"
+                [formCol]="cols.controls[3]"
+                [colEdit]="cardToEdit ? cardToEdit.cols[3] : null"
+            ></app-custom-actions>
         </div>
     </div>
     <div class="create-cards-container__footer" fxLayoutAlign="space-between center">
-            <button  mat-stroked-button color="warn" >{{ labels.cancel | translate }}</button>
-            <button  mat-flat-button color="primary" >{{ labels.save | translate }}</button>
+        <button mat-stroked-button color="warn">{{ labels.cancel | translate }}</button>
+        <button mat-flat-button color="primary">{{ labels.save | translate }}</button>
     </div>
 </div>

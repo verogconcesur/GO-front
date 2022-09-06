@@ -26,6 +26,9 @@
 
   &__side {
     width: 300px;
+    @include respond-to($tablet-small) {
+      width: 100%;
+    }
     &__section {
       &__group {
         margin-bottom: 15px;
@@ -53,6 +56,10 @@
   }
   &__main {
     width: calc(100% - 300px);
+    @include respond-to($tablet-small) {
+      padding-top: 25px;
+      width: 100%;
+    }
   }
   &__footer {
     position: absolute;
