@@ -1,0 +1,18 @@
+@import 'utils/core';
+.custom-actions-container {
+  &__header {
+    padding: 0 30px 25px 30px;
+    @include respond-to($desktop-large) {
+      padding: 25px 5px;
+    }
+    &__group {
+      margin-bottom: 15px;
+      &.grid-group {
+        display: grid;
+        justify-items: left;
+        gap: 1rem;
+        grid-template-columns: repeat(auto-fit, minmax(10rem, 1fr));
+      }
+    }
+  }
+}
