@@ -49,6 +49,7 @@ export class MyProfileComponent extends ComponentToExtendForCustomDialog impleme
     password2: marker('login.restorePassword.password2'),
     passwordRequired: marker('login.restorePassword.passwordRequired'),
     passwordPattern: marker('login.restorePassword.passwordPattern'),
+    passwordPatternError: marker('login.restorePassword.passwordPatternError'),
     passwordMatch: marker('login.restorePassword.passwordMatch')
   };
 

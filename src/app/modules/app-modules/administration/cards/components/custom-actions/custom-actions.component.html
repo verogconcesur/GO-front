@@ -1,0 +1,19 @@
+<div class="custom-actions-container">
+    <div class="custom-actions-container__header" fxLayout="row wrap" fxLayoutAlign="start center">
+        <form [formGroup]="formCol" class="smaller-mat-form-fields">
+            <div class="custom-actions-container__header__group grid-group">
+                <!-- Name -->
+                <mat-form-field appearance="outline" floatLabel="always">
+                    <mat-label>{{ labels.name | translate }}</mat-label>
+                    <input matInput formControlName="name" />
+                    <mat-error
+                        class="custom-actions-container__header__group__error"
+                        *ngIf="form.name.invalid && form.name.touched"
+                    >
+                        {{ labels.nameRequired | translate }}
+                    </mat-error>
+                </mat-form-field>
+            </div>
+        </form>
+    </div>
+</div>

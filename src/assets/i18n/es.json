@@ -72,9 +72,19 @@
         "title": "Concenet"
     },
     "cards": {
+        "column": {
+            "columnName": "Nombre de columna"
+        },
         "create": "Crear tarjeta",
         "deleteConfirmation": "¿Está seguro que desea eliminar esta tarjeta?",
-        "duplicateConfirmation": "¿Está seguro que desea duplicar esta tarjeta?"
+        "duplicateConfirmation": "¿Está seguro que desea duplicar esta tarjeta?",
+        "modal": {
+            "cardName": "Nombre de Ficha",
+            "column": "Columna",
+            "comments": "Comentarios",
+            "create": "Crear Ficha",
+            "edit": "Editar Ficha"
+        }
     },
     "common": {
         "accessDenied": "Acceso denegado. No tiene privilegios suficientes.",
@@ -182,7 +192,8 @@
             "password1": "Nueva contraseña",
             "password2": "Repite nueva contraseña",
             "passwordMatch": "La contraseña debe coincidir",
-            "passwordPattern": "La contraseña debe contener al menos un número, una letra mayúscula, un símbolo y su longitud debe ser entre 8 y 50 caracteres.",
+            "passwordPattern": "La contraseña debe contener al menos un número, una letra mayúscula, un símbolo @#$%^&-+=()_. y su longitud debe ser entre 8 y 50 caracteres.",
+            "passwordPatternError": "La contraseña no cumple los requisitos.",
             "passwordRequired": "La contraseña es obligatoria",
             "save": "Guardar nueva contraseña",
             "title": "Nueva contraseña",
