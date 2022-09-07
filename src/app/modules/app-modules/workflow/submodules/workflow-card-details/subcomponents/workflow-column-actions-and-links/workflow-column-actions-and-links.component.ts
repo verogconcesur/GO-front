@@ -57,7 +57,29 @@ export class WorkflowColumnActionsAndLinksComponent implements OnInit {
   }
 
   public btnClick(btn: WorkflowCardTabItemDTO): void {
-    console.log(btn);
+    if (btn.typeItem === 'LINK') {
+      let link = btn.tabItemConfigLink.link;
+      if (btn.tabItemConfigLink.link.indexOf('http') === -1) {
+        link = 'http://' + btn.tabItemConfigLink.link;
+      }
+      window.open(link, '_blank');
+    } else if (btn.typeItem === 'ACTION') {
+      switch (btn.tabItemConfigAction.actionType) {
+        case 'ATTACH_DOC':
+          console.log('ATTACH_DOC');
+          break;
+        case 'SIGN_DOC':
+          console.log('SIGN_DOC');
+          break;
+        case 'MESSAGE_CLIENT':
+          console.log('MESSAGE_CLIENT');
+          break;
+      }
+    }
+  }
+
+  public moveCard(): void {
+    console.log('MOVE_CARD');
   }
 
   public getBgColor(btn: WorkflowCardTabItemDTO): string {
@@ -66,6 +88,7 @@ export class WorkflowColumnActionsAndLinksComponent implements OnInit {
     }
     return '#fff';
   }
+
   public getFontColor(btn: WorkflowCardTabItemDTO): string {
     const lightColor = '#fff';
     const darkColor = '#000';
