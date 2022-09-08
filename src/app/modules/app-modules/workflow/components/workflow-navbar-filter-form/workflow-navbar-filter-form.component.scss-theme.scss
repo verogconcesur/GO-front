@@ -8,7 +8,9 @@
   .filter-form {
     mat-form-field.dataSelected {
       .mat-select-value,
-      .mat-select-arrow-wrapper .mat-select-arrow {
+      .mat-select-arrow-wrapper .mat-select-arrow,
+      .mat-datepicker-input,
+      .mat-button-wrapper {
         color: mat-contrast($primary, 400);
       }
 
