@@ -77,8 +77,11 @@ export class WorkflowColumnPrefixedHistoryComponent implements OnInit, OnChanges
         .pipe(take(1))
         .subscribe(
           (data) => {
-            data[0].initial = true;
-            data[data.length - 1].final = true;
+            data = data ? data : [];
+            if (data.length) {
+              data[0].initial = true;
+              data[data.length - 1].final = true;
+            }
             this.historyOriginalData = data;
             this.historyData = data;
             this.getFilterOptions();
