@@ -19,9 +19,12 @@
                     multiple
                     [placeholder]="labels.eventHistoryTypes | translate"
                     [panelClass]="'workflow-panel-class  smaller-mat-form-fields'"
-                    (click)="filterChange(); $event.stopPropagation()"
                 >
-                    <mat-option *ngFor="let item of historyFilterOptions.eventHistoryTypes" [value]="item">
+                    <mat-option
+                        *ngFor="let item of historyFilterOptions.eventHistoryTypes"
+                        [value]="item"
+                        (click)="filterChange()"
+                    >
                         {{ item.label | translate }}
                     </mat-option>
                 </mat-select>
@@ -38,9 +41,8 @@
                     multiple
                     [placeholder]="labels.workflows | translate"
                     [panelClass]="'workflow-panel-class  smaller-mat-form-fields'"
-                    (click)="filterChange(); $event.stopPropagation()"
                 >
-                    <mat-option *ngFor="let item of historyFilterOptions.workflows" [value]="item">
+                    <mat-option *ngFor="let item of historyFilterOptions.workflows" [value]="item" (click)="filterChange()">
                         {{ item.name }}
                     </mat-option>
                 </mat-select>
