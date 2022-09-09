@@ -1,0 +1,11 @@
+@use '@angular/material' as mat;
+@import '@angular/material/theming';
+@import 'themes/concenet-theme.scss';
+
+$main-theme: $concenet-theme;
+$main-typography: $concenet-main-typography;
+
+$primary: map-get($main-theme, primary);
+$background: map-get($main-theme, background);
+$foreground: map-get($main-theme, foreground);
+$warn: map-get($main-theme, warn);

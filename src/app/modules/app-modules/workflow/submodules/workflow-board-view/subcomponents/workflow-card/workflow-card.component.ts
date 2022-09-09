@@ -47,16 +47,17 @@ export class WorkflowCardComponent implements OnInit {
   }
 
   public getLabel(tabItem: WorkflowCardTabItemDTO): string {
-    let slot: WorkflowCardSlotDTO = null;
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    let slot: any = null;
     switch (tabItem.typeItem) {
       case 'ACTION':
-        slot = tabItem.tabItemConfigAction.variable;
+        slot = tabItem.tabItemConfigAction;
         break;
       case 'INPUT':
         slot = tabItem.tabItemConfigInput.variable;
         break;
       case 'LINK':
-        slot = tabItem.tabItemConfigLink.variable;
+        slot = tabItem.tabItemConfigLink;
         break;
       case 'LIST':
         slot = tabItem.tabItemConfigList.variable;

@@ -3,7 +3,7 @@
     <div class="w-column__container" [ngClass]="containerClass">
         <app-responsive-tabs *ngIf="showTabs" [tabs]="getTabsInfo()" (tabSelectedEvent)="tabChange($event)"></app-responsive-tabs>
         <!-- Para todas las columnas menos para mensajes -->
-        <div class="w-column__container__content" *ngIf="containerClass !== 'messages'">
+        <div class="w-column__container__content" *ngIf="containerClass !== 'messages' && containerClass !== 'actions'">
             <div class="loading" *ngIf="showLoading">
                 <mat-spinner diameter="30"></mat-spinner>
             </div>
@@ -46,6 +46,10 @@
             <app-workflow-column-client-messages
                 [style]="{ display: showColumn('CLIENT_MESSAGES') ? '' : 'none' }"
             ></app-workflow-column-client-messages>
+        </div>
+        <!-- Columna acciones -->
+        <div class="w-column__container__content" *ngIf="containerClass === 'actions'">
+            <app-workflow-column-actions-and-links [tab]="column.tabs[0]"></app-workflow-column-actions-and-links>
         </div>
     </div>
 </div>

@@ -1,5 +1,4 @@
-@use '@angular/material' as mat;
-@import '@angular/material/theming';
+@import 'utils/theme';
 
 // Mixin to include custom components themes styles for a given Angular Material theme
 @import 'app/app.component.scss-theme.scss';
@@ -49,7 +48,6 @@
 }
 
 // Load theme and custom components styles for current theme
-@import 'themes/concenet-theme.scss';
 @include mat-core($concenet-main-typography);
 @include angular-material-theme($concenet-theme);
 @include custom-components-theme($concenet-theme, $concenet-main-typography);
