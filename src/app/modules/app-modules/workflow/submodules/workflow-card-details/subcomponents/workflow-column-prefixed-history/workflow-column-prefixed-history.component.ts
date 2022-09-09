@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, OnChanges, OnInit, Output, SimpleChanges } from '@angular/core';
+import { Component, EventEmitter, Input, OnChanges, OnInit, Output, SimpleChanges, ViewEncapsulation } from '@angular/core';
 import { FormBuilder, FormGroup } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
 import { ConcenetError } from '@app/types/error';
@@ -14,7 +14,8 @@ import { take } from 'rxjs/operators';
 @Component({
   selector: 'app-workflow-column-prefixed-history',
   templateUrl: './workflow-column-prefixed-history.component.html',
-  styleUrls: ['./workflow-column-prefixed-history.component.scss']
+  styleUrls: ['./workflow-column-prefixed-history.component.scss'],
+  encapsulation: ViewEncapsulation.None
 })
 export class WorkflowColumnPrefixedHistoryComponent implements OnInit, OnChanges {
   @Input() tab: CardColumnTabDTO = null;
@@ -171,6 +172,14 @@ export class WorkflowColumnPrefixedHistoryComponent implements OnInit, OnChanges
         return this.historyFilterOptions.dateEvent.min;
       }
     }
+  }
+
+  public getHistoryDescription(item: CardHistoryDTO): string {
+    let html = item.description;
+    if (html.indexOf('[') >= 0 && html.indexOf(']') >= 0) {
+      html = item.description.split('[').join('<span class="substate-target">').split(']').join('</span>');
+    }
+    return html;
   }
 
   private getFilterOptions(): void {

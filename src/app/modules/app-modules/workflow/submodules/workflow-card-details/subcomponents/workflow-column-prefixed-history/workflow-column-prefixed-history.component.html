@@ -108,7 +108,7 @@
                     <div class="history-info__user">{{ item.user.fullName }}</div>
                 </div>
                 <div class="history-info__line">
-                    <div class="history-info__description">{{ item.description }}</div>
+                    <div class="history-info__description" [innerHtml]="getHistoryDescription(item)"></div>
                     <div class="history-info__date">{{ item.dateEvent | date: "dd/MM/yy, HH:mm" }}</div>
                 </div>
             </div>
