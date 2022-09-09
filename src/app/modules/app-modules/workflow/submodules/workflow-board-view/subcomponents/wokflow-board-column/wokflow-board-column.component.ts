@@ -300,16 +300,18 @@ export class WokflowBoardColumnComponent implements OnInit {
           ? itemToReplace.orderNumber
           : null;
       // item.orderNumber = itemToReplace.orderNumber;
-      request = this.workflowService.moveWorkflowCardToSubstate(
-        this.workflow.facility.facilityId,
-        item,
-        move,
-        user,
-        dropZoneId.indexOf(`${this.wSubstateKey}${item.cardInstanceWorkflows[0].workflowSubstateId}`) >= 0
-          ? itemToReplace.orderNumber
-          : null
-        // itemToReplace.orderNumber
-      );
+      if (move?.id) {
+        request = this.workflowService.moveWorkflowCardToSubstate(
+          this.workflow.facility.facilityId,
+          item,
+          move,
+          user,
+          dropZoneId.indexOf(`${this.wSubstateKey}${item.cardInstanceWorkflows[0].workflowSubstateId}`) >= 0
+            ? itemToReplace.orderNumber
+            : null
+          // itemToReplace.orderNumber
+        );
+      }
     }
 
     if (request) {
