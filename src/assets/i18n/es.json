@@ -73,7 +73,15 @@
     },
     "cards": {
         "column": {
-            "columnName": "Nombre de columna"
+            "columnName": "Nombre de columna",
+            "contentSource": "Origen del contenido",
+            "contentType": "Tipo de contenido",
+            "deleteTabConfirmation": "¿Está seguro que desea eliminar esta pestaña?",
+            "nameTab": "Nombre de pestaña",
+            "newTab": "Nueva pestaña ",
+            "tabConfiguration": "Configuración de la pestaña",
+            "tabList": "Pestañas de columna",
+            "tabType": "Tipo de pestaña"
         },
         "create": "Crear tarjeta",
         "deleteConfirmation": "¿Está seguro que desea eliminar esta tarjeta?",
@@ -88,7 +96,7 @@
         },
         "modal": {
             "cardName": "Nombre de Ficha",
-            "column": "Columna",
+            "column": "Columna ",
             "comments": "Comentarios",
             "create": "Crear Ficha",
             "edit": "Editar Ficha"
@@ -159,6 +167,11 @@
         "state": "Estado",
         "substate": "Subestado",
         "successOperation": "Operación realizada con éxito.",
+        "tabTypes": {
+            "customizable": "Contenido personalizable",
+            "prefixed": "Contenido prefijado",
+            "template": "Contenido por plantilla"
+        },
         "tasks": "Tareas",
         "to": "Hasta",
         "town": "Ciudad",
