@@ -86,13 +86,22 @@
         "create": "Crear tarjeta",
         "deleteConfirmation": "¿Está seguro que desea eliminar esta tarjeta?",
         "duplicateConfirmation": "¿Está seguro que desea duplicar esta tarjeta?",
+        "eventHistoryTypes": "T. evento",
+        "eventType": {
+            "ADD_COMMENT": "Añadir comentario",
+            "ADD_DOC": "Añadir documento",
+            "ASIG_USER": "Asignar usuario",
+            "CHANGE_STATE": "Cambiar estado",
+            "EDIT_INFO": "Editar información"
+        },
         "modal": {
             "cardName": "Nombre de Ficha",
             "column": "Columna ",
             "comments": "Comentarios",
             "create": "Crear Ficha",
             "edit": "Editar Ficha"
-        }
+        },
+        "workflows": "Workflow"
     },
     "common": {
         "accessDenied": "Acceso denegado. No tiene privilegios suficientes.",
@@ -117,6 +126,7 @@
         "dateEnd": "Fecha de fin",
         "dateIni": "Fecha de inicio",
         "delete": "Eliminar",
+        "directLinks": "Accesos directos",
         "dropHere": "Suelta aquí",
         "duplicate": "Duplicar",
         "edit": "Editar",
@@ -126,6 +136,7 @@
         "follow": "Seguir",
         "following": "Siguiendo",
         "footer": "Pie",
+        "from": "Desde",
         "header": "Cabecera",
         "history": "Historial",
         "information": "Información",
@@ -134,6 +145,7 @@
         "logo": "Logo",
         "messages": "Mensajes",
         "more": "Más",
+        "move": "Mover",
         "name": "Nombre",
         "newItem": "Nuevo Elememto",
         "newLine": "Nueva línea",
@@ -161,6 +173,7 @@
             "template": "Contenido por plantilla"
         },
         "tasks": "Tareas",
+        "to": "Hasta",
         "town": "Ciudad",
         "unfollow": "Dejar de seguir",
         "unsavedChangesExit": "Hay cambios en el formulario sin guardar, ¿desea salir igualmente?",

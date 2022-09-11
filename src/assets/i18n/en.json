@@ -86,13 +86,22 @@
         "create": "Create card",
         "deleteConfirmation": "Do you really want to delete this card?",
         "duplicateConfirmation": "Do you really want to duplicate this card?",
+        "eventHistoryTypes": "Event type",
+        "eventType": {
+            "ADD_COMMENT": "Add comment",
+            "ADD_DOC": "Add document",
+            "ASIG_USER": "Assign user",
+            "CHANGE_STATE": "Change state",
+            "EDIT_INFO": "Edit info"
+        },
         "modal": {
             "cardName": "Card Name",
             "column": "Column ",
             "comments": "Comments",
             "create": "Create Card",
             "edit": "Edit Card"
-        }
+        },
+        "workflows": "Workflow"
     },
     "common": {
         "accessDenied": "Access denied.",
@@ -117,6 +126,7 @@
         "dateEnd": "Final date",
         "dateIni": "Initial date",
         "delete": "Delete",
+        "directLinks": "Direct links",
         "dropHere": "Drop here",
         "duplicate": "Duplicate",
         "edit": "Edit",
@@ -126,6 +136,7 @@
         "follow": "Follow",
         "following": "Following",
         "footer": "Footer",
+        "from": "From",
         "header": "Header",
         "history": "History",
         "information": "Information",
@@ -134,6 +145,7 @@
         "logo": "Logo",
         "messages": "Messages",
         "more": "More",
+        "move": "Move",
         "name": "Name",
         "newItem": "New item",
         "newLine": "New line",
@@ -161,6 +173,7 @@
             "template": "Content by template"
         },
         "tasks": "Tasks",
+        "to": "To",
         "town": "Town",
         "unfollow": "Unfollow",
         "unsavedChangesExit": "There are unsaved changes, do you want to continue?",

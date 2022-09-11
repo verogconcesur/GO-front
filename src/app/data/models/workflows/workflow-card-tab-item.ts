@@ -6,9 +6,20 @@ export default interface WorkflowCardTabItemDTO {
   name: string;
   orderNumber: number;
   tabId: number;
-  tabItemConfigAction: { id: number; tabItemId: number; variable: WorkflowCardSlotDTO };
+  tabItemConfigAction: {
+    actionType: string;
+    id: number;
+    tabItemId: number;
+    visible: boolean;
+  };
   tabItemConfigInput: { id: number; tabItemId: number; variable: WorkflowCardSlotDTO };
-  tabItemConfigLink: { id: number; tabItemId: number; variable: WorkflowCardSlotDTO };
+  tabItemConfigLink: {
+    color: string;
+    id: number;
+    link: string;
+    name: string;
+    tabItemId: number;
+  };
   tabItemConfigList: { id: number; tabItemId: number; variable: WorkflowCardSlotDTO };
   tabItemConfigOption: { id: number; tabItemId: number; variable: WorkflowCardSlotDTO };
   tabItemConfigTable: { id: number; tabItemId: number; variable: WorkflowCardSlotDTO };

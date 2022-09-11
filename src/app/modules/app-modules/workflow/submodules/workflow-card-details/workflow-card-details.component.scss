@@ -174,8 +174,13 @@
           height: 100%;
           &__messages,
           &__actions {
-            width: 17%;
             height: 100%;
+          }
+          &__messages {
+            width: 17%;
+          }
+          &__actions {
+            width: 17%;
           }
         }
       }

@@ -7,6 +7,7 @@ import { ConcenetError } from '@app/types/error';
 import CardDTO from '@data/models/cards/card-dto';
 import CardInstanceDTO from '@data/models/cards/card-instance-dto';
 import WorkflowCardSlotDTO from '@data/models/workflows/workflow-card-slot-dto';
+import WorkflowCardTabItemDTO from '@data/models/workflows/workflow-card-tab-item';
 import { Observable, throwError } from 'rxjs';
 import { catchError } from 'rxjs/operators';
 
@@ -18,6 +19,8 @@ export class CardService {
   private readonly GET_CARD_INSTANCE_PATH = '/api/cardInstanceWorkflow';
   private readonly GET_DETAIL_PATH = '/detail';
   private readonly GET_TAB_PATH = '/tab';
+  private readonly START_FOLLOW = '/startFollow';
+  private readonly STOP_FOLLOW = '/stopFollow';
 
   constructor(@Inject(ENV) private env: Env, private http: HttpClient) {}
 
@@ -50,12 +53,28 @@ export class CardService {
    * @param tabId
    * @returns WorkflowCardSlotDTO[]
    */
-  public getCardTabData(cardInstanceWorkflowId: number, tabId: number): Observable<WorkflowCardSlotDTO[]> {
+  public getCardTabData(
+    cardInstanceWorkflowId: number,
+    tabId: number
+  ): Observable<WorkflowCardSlotDTO[] | WorkflowCardTabItemDTO[]> {
     return this.http
-      .get<WorkflowCardSlotDTO[]>(
+      .get<WorkflowCardSlotDTO[] | WorkflowCardTabItemDTO[]>(
         // eslint-disable-next-line max-len
         `${this.env.apiBaseUrl}${this.GET_CARD_INSTANCE_PATH}${this.GET_DETAIL_PATH}/${cardInstanceWorkflowId}${this.GET_TAB_PATH}/${tabId}`
       )
+      .pipe(catchError((error) => throwError(error.error as ConcenetError)));
+  }
+
+  /**
+   * Follow card
+   *
+   * @param follow
+   * @param cardInstanceWorkflowId
+   */
+  public followCard(follow: boolean, cardInstanceWorkflowId: number): Observable<boolean> {
+    const followPath = follow ? this.START_FOLLOW : this.STOP_FOLLOW;
+    return this.http
+      .get<boolean>(`${this.env.apiBaseUrl}${this.GET_CARD_INSTANCE_PATH}${followPath}/${cardInstanceWorkflowId}`)
       .pipe(catchError((error) => throwError(error.error as ConcenetError)));
   }
 }

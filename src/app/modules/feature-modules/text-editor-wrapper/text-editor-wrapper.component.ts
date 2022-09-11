@@ -87,6 +87,12 @@ export class TextEditorWrapperComponent implements OnInit, AfterViewInit {
           }
         };
       }
+      if (this.textEditorConfig.hideToolbar) {
+        extra = {
+          ...extra,
+          toolbar: false
+        };
+      }
       misc.push('help');
       const toolbar: any[] = [
         // [groupName, [list of button]]
@@ -107,7 +113,6 @@ export class TextEditorWrapperComponent implements OnInit, AfterViewInit {
           tableBorderToggle: this.translateService.instant(marker('textEditor.tooltips.tableBorderToggle'))
         },
         placeholder: this.placeholder,
-        toolbar: this.textEditorConfig.hideToolbar ? false : true,
         disableResizeEditor: this.textEditorConfig.disableResizeEditor ? true : false,
         airMode: this.textEditorConfig.airMode ? true : false,
         popover: {

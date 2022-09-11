@@ -47,16 +47,17 @@ export class WorkflowCardComponent implements OnInit {
   }
 
   public getLabel(tabItem: WorkflowCardTabItemDTO): string {
-    let slot: WorkflowCardSlotDTO = null;
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    let slot: any = null;
     switch (tabItem.typeItem) {
       case 'ACTION':
-        slot = tabItem.tabItemConfigAction.variable;
+        slot = tabItem.tabItemConfigAction;
         break;
       case 'INPUT':
         slot = tabItem.tabItemConfigInput.variable;
         break;
       case 'LINK':
-        slot = tabItem.tabItemConfigLink.variable;
+        slot = tabItem.tabItemConfigLink;
         break;
       case 'LIST':
         slot = tabItem.tabItemConfigList.variable;
@@ -96,14 +97,16 @@ export class WorkflowCardComponent implements OnInit {
   }
 
   public showCardInfo(): void {
-    console.log('show info:', this.card);
-    this.router.navigate([{ outlets: { card: ['wcId', this.card.cardInstanceWorkflows[0].id] } }], {
-      relativeTo: this.route,
-      state: {
-        relativeTo: JSON.stringify(this.route, this.replacerFunc),
-        card: JSON.stringify(this.card)
-      }
-    });
+    //Firefox => para evitar que al arrastrar abra el detalle de la tarjeta
+    if (!this.dragAndDropService.draggingCard$.value) {
+      this.router.navigate([{ outlets: { card: ['wcId', this.card.cardInstanceWorkflows[0].id] } }], {
+        relativeTo: this.route,
+        state: {
+          relativeTo: JSON.stringify(this.route, this.replacerFunc),
+          card: JSON.stringify(this.card)
+        }
+      });
+    }
   }
 
   public setCardDragging(dragging: boolean): void {
@@ -113,8 +116,9 @@ export class WorkflowCardComponent implements OnInit {
       this.dragAndDropService.droppableStates$.next(this.droppableStates);
     } else {
       this.isDraggingEvent.next(false);
-      this.dragAndDropService.draggingCard$.next(null);
       this.dragAndDropService.droppableStates$.next([]);
+      //Firefox => para evitar que al arrastrar abra el detalle de la tarjeta
+      setTimeout(() => this.dragAndDropService.draggingCard$.next(null));
     }
   }
 

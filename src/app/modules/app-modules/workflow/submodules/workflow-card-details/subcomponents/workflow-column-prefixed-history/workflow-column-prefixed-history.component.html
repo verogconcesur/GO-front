@@ -1,1 +1,119 @@
-<p>workflow-column-prefixed-history works!</p>
+<div class="card-history">
+    <div class="card-history__filter">
+        <form
+            *ngIf="historyFilterForm"
+            [formGroup]="historyFilterForm"
+            class="filter-form smaller-mat-form-fields mat-form-field__border-more-radius"
+        >
+            <button mat-icon-button aria-label="Clear filter" *ngIf="isFilterActive()" (click)="clearFilterData()">
+                <mat-icon>close</mat-icon>
+            </button>
+            <mat-form-field
+                appearance="outline"
+                floatLabel="always"
+                class="smaller-mat-form-fields__no-margin"
+                [ngClass]="{ dataSelected: hasData('eventHistoryTypes') }"
+            >
+                <mat-select
+                    formControlName="eventHistoryTypes"
+                    multiple
+                    [placeholder]="labels.eventHistoryTypes | translate"
+                    [panelClass]="'workflow-panel-class  smaller-mat-form-fields'"
+                >
+                    <mat-option
+                        *ngFor="let item of historyFilterOptions.eventHistoryTypes"
+                        [value]="item"
+                        (click)="filterChange()"
+                    >
+                        {{ item.label | translate }}
+                    </mat-option>
+                </mat-select>
+            </mat-form-field>
+
+            <mat-form-field
+                appearance="outline"
+                floatLabel="always"
+                class="smaller-mat-form-fields__no-margin"
+                [ngClass]="{ dataSelected: hasData('workflows') }"
+            >
+                <mat-select
+                    formControlName="workflows"
+                    multiple
+                    [placeholder]="labels.workflows | translate"
+                    [panelClass]="'workflow-panel-class  smaller-mat-form-fields'"
+                >
+                    <mat-option *ngFor="let item of historyFilterOptions.workflows" [value]="item" (click)="filterChange()">
+                        {{ item.name }}
+                    </mat-option>
+                </mat-select>
+            </mat-form-field>
+
+            <mat-form-field
+                appearance="outline"
+                class="smaller-mat-form-fields__no-margin date-picker"
+                floatLabel="always"
+                [ngClass]="{ dataSelected: hasData('dateEventFrom') }"
+            >
+                <input
+                    matInput
+                    #pickerIniInput
+                    readonly
+                    [matDatepicker]="pickerIni"
+                    [placeholder]="labels.from | translate"
+                    formControlName="dateEventFrom"
+                    [min]="historyFilterOptions.dateEvent.min"
+                    [max]="getEnabledDate('max')"
+                    (dateChange)="filterChange()"
+                />
+                <mat-datepicker-toggle matSuffix [for]="pickerIni"></mat-datepicker-toggle>
+                <mat-datepicker #pickerIni></mat-datepicker>
+            </mat-form-field>
+
+            <mat-form-field
+                appearance="outline"
+                class="smaller-mat-form-fields__no-margin date-picker"
+                floatLabel="always"
+                [ngClass]="{ dataSelected: hasData('dateEventTo') }"
+            >
+                <input
+                    matInput
+                    #pickerEndInput
+                    readonly
+                    [matDatepicker]="pickerEnd"
+                    [placeholder]="labels.to | translate"
+                    formControlName="dateEventTo"
+                    [min]="getEnabledDate('min')"
+                    [max]="historyFilterOptions.dateEvent.max"
+                    (dateChange)="filterChange()"
+                />
+                <mat-datepicker-toggle matSuffix [for]="pickerEnd"></mat-datepicker-toggle>
+                <mat-datepicker #pickerEnd></mat-datepicker>
+            </mat-form-field>
+        </form>
+    </div>
+
+    <mat-divider></mat-divider>
+
+    <div class="card-history__data">
+        <h3 class="no-data" *ngIf="!historyData?.length">
+            {{ labels.noDataToShow | translate }}
+        </h3>
+        <div class="card-history__data__item" *ngFor="let item of historyData">
+            <div class="history-status">
+                <div class="history-status__prev" [ngClass]="{ active: !item?.initial }"></div>
+                <div class="history-status__circle" [ngClass]="{ active: item?.initial }"></div>
+                <div class="history-status__after" [ngClass]="{ active: !item?.final }"></div>
+            </div>
+            <div class="history-info">
+                <div class="history-info__line">
+                    <div class="history-info__workflow">{{ labels.workflows | translate }} {{ item.workflow.name }}</div>
+                    <div class="history-info__user">{{ item.user.fullName }}</div>
+                </div>
+                <div class="history-info__line">
+                    <div class="history-info__description" [innerHtml]="getHistoryDescription(item)"></div>
+                    <div class="history-info__date">{{ item.dateEvent | date: "dd/MM/yy, HH:mm" }}</div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

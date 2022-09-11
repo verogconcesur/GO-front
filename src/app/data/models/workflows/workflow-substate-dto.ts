@@ -1,4 +1,5 @@
 import WorkflowCardDTO from './workflow-card-dto';
+import WorkflowCardTabItemDTO from './workflow-card-tab-item';
 import WorkflowStateDTO from './workflow-state-dto';
 import WorkflowSubstateUserDTO from './workflow-substate-user-dto';
 
@@ -15,4 +16,7 @@ export default interface WorkflowSubstateDTO {
   substatesIdsToFilter?: number[]; //Used on filter to group similar substates
   workflowState?: WorkflowStateDTO;
   cards?: WorkflowCardDTO[];
+  cardOrderCustomDir?: string;
+  cardOrderCustomItem?: WorkflowCardTabItemDTO;
+  cardOrderType?: string;
 }
