@@ -55,7 +55,7 @@ export class CreateEditCardComponent implements OnInit {
           this.cardToEdit ? this.cardToEdit.cols[0].name : (this.translate.instant(this.labels.column) + 1),
           [Validators.required]
         ],
-        tabs: [this.fb.array([]), [Validators.required]]
+        tabs: this.fb.array([], Validators.required)
       }),
       this.fb.group({
         orderNumber: [2, [Validators.required]],
@@ -63,7 +63,7 @@ export class CreateEditCardComponent implements OnInit {
           this.cardToEdit ? this.cardToEdit.cols[1].name : (this.translate.instant(this.labels.column) + 2),
           [Validators.required]
         ],
-        tabs: [this.fb.array([]), [Validators.required]]
+        tabs: this.fb.array([], Validators.required)
       }),
       this.fb.group({
         orderNumber: [3, [Validators.required]],
@@ -71,7 +71,7 @@ export class CreateEditCardComponent implements OnInit {
           this.cardToEdit ? this.cardToEdit.cols[2].name : this.translate.instant(this.labels.comments),
           [Validators.required]
         ],
-        tabs: [this.fb.array([]), [Validators.required]]
+        tabs: this.fb.array([], Validators.required)
       }),
       this.fb.group({
         orderNumber: [4, [Validators.required]],
@@ -79,7 +79,7 @@ export class CreateEditCardComponent implements OnInit {
           this.cardToEdit ? this.cardToEdit.cols[3].name : this.translate.instant(this.labels.actions),
           [Validators.required]
         ],
-        tabs: [this.fb.array([]), [Validators.required]]
+        tabs: this.fb.array([], Validators.required)
       })
     ]);
   }

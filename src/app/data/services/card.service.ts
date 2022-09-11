@@ -6,6 +6,8 @@ import { ConcenetError } from '@app/types/error';
 import PaginationRequestI from '@data/interfaces/pagination-request';
 import PaginationResponseI from '@data/interfaces/pagination-response';
 import BasicFilterDTO from '@data/models/basic-filter-dto';
+import CardContentSourceDTO from '@data/models/cards/card-content-source-dto';
+import CardContentTypeDTO from '@data/models/cards/card-content-type-dto';
 import CardDTO from '@data/models/cards/card-dto';
 import { getPaginationUrlGetParams } from '@data/utils/pagination-aux';
 import { Observable, throwError } from 'rxjs';
@@ -16,6 +18,8 @@ import { catchError } from 'rxjs/operators';
 })
 export class CardService {
   private readonly SEARCH_CARDS_PATH = '/api/cards/search';
+  private readonly SEARCH_CONTENT_TYPES_PATH = '/api/contenttypes/findAllByTabType/';
+  private readonly SEARCH_CONTENT_SOURCES_PATH = '/api/contentsources/findAllByContentType/';
   private readonly DUPLICATE_CARDS_PATH = '/api/cards/duplicate';
   private readonly DELETE_CARDS_PATH = '/api/cards';
 
@@ -40,5 +44,17 @@ export class CardService {
     return this.http
       .delete<CardDTO>(`${this.env.apiBaseUrl}${this.DELETE_CARDS_PATH}/${id}`)
       .pipe(catchError((error) => throwError(error.error as ConcenetError)));
+  }
+
+  public getContentTypes(cardType: string): Observable<CardContentTypeDTO[]> {
+    return this.http
+      .get<CardContentTypeDTO[]>(`${this.env.apiBaseUrl}${this.SEARCH_CONTENT_TYPES_PATH}${cardType}`)
+      .pipe(catchError((error) => throwError(error as ConcenetError)));
+  }
+
+  public getContentSources(contentTypeId: number): Observable<CardContentSourceDTO[]> {
+    return this.http
+      .get<CardContentSourceDTO[]>(`${this.env.apiBaseUrl}${this.SEARCH_CONTENT_SOURCES_PATH}${contentTypeId}`)
+      .pipe(catchError((error) => throwError(error as ConcenetError)));
   }
 }
