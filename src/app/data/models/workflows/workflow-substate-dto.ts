@@ -1,5 +1,5 @@
 import WorkflowCardDTO from './workflow-card-dto';
-import WorkflowCardTabItemDTO from './workflow-card-tab-item';
+import WorkflowCardTabItemDTO from './workflow-card-tab-item-dto';
 import WorkflowStateDTO from './workflow-state-dto';
 import WorkflowSubstateUserDTO from './workflow-substate-user-dto';
 

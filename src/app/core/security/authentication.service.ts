@@ -9,6 +9,7 @@ import RoleDTO from '@data/models/user-permissions/role-dto';
 import PermissionsDTO from '@data/models/user-permissions/permissions-dto';
 import { Observable, throwError } from 'rxjs';
 import { catchError, take } from 'rxjs/operators';
+import { UserService } from '@data/services/user.service';
 
 @Injectable({
   providedIn: 'root'
@@ -27,7 +28,12 @@ export class AuthenticationService implements OnDestroy {
 
   private tokenTimeout: NodeJS.Timer = null;
 
-  constructor(@Inject(ENV) private env: Env, @Inject(DOCUMENT) private document: Document, private http: HttpClient) {}
+  constructor(
+    @Inject(ENV) private env: Env,
+    @Inject(DOCUMENT) private document: Document,
+    private http: HttpClient,
+    private userService: UserService
+  ) {}
 
   ngOnDestroy(): void {
     if (this.tokenTimeout) {
@@ -236,7 +242,7 @@ export class AuthenticationService implements OnDestroy {
   setLoggedUser(loginData: LoginDTO): void {
     this.setTokenData(loginData);
     sessionStorage.setItem(this.USER_ID, loginData.user.id.toString());
-    sessionStorage.setItem(this.USER_FULL_NAME, loginData.user.firstName + loginData.user.lastName);
+    sessionStorage.setItem(this.USER_FULL_NAME, loginData.user.fullName);
     sessionStorage.setItem(this.USER_ROLE, JSON.stringify(loginData.user.role));
     sessionStorage.setItem(this.USER_PERMISSIONS, JSON.stringify(loginData.user.permissions));
   }
@@ -286,6 +292,7 @@ export class AuthenticationService implements OnDestroy {
     this.removeUserFullName();
     this.removeUserRole();
     this.removeUserPermissions();
+    this.userService.userLogged$.next(null);
     clearTimeout(this.tokenTimeout);
   }
 }
