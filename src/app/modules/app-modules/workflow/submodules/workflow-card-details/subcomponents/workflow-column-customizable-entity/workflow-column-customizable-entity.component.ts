@@ -1,12 +1,14 @@
+import { DatePipe } from '@angular/common';
 import { Component, EventEmitter, Input, OnChanges, OnInit, Output, SimpleChanges } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { ConcenetError } from '@app/types/error';
 import { marker } from '@biesbjerg/ngx-translate-extract-marker';
 import CardColumnTabDTO from '@data/models/cards/card-column-tab-dto';
-import WorkflowCardSlotDTO from '@data/models/workflows/workflow-card-slot-dto';
+import WorkflowCardTabItemDTO from '@data/models/workflows/workflow-card-tab-item-dto';
 import { CardService } from '@data/services/cards.service';
 import { TranslateService } from '@ngx-translate/core';
 import { GlobalMessageService } from '@shared/services/global-message.service';
+import { connectableObservableDescriptor } from 'rxjs/internal/observable/ConnectableObservable';
 import { take } from 'rxjs/operators';
 
 @Component({
@@ -18,13 +20,14 @@ export class WorkflowColumnCustomizableEntityComponent implements OnInit, OnChan
   @Input() tab: CardColumnTabDTO = null;
   @Output() setShowLoading: EventEmitter<boolean> = new EventEmitter(false);
 
-  public entityData: WorkflowCardSlotDTO[] = [];
+  public entityData: WorkflowCardTabItemDTO[] = [];
 
   constructor(
     private cardService: CardService,
     private route: ActivatedRoute,
     private globalMessageService: GlobalMessageService,
-    private translateService: TranslateService
+    private translateService: TranslateService,
+    private datePipe: DatePipe
   ) {}
 
   ngOnInit(): void {}
@@ -44,7 +47,7 @@ export class WorkflowColumnCustomizableEntityComponent implements OnInit, OnChan
         .getCardTabData(parseInt(this.route?.snapshot?.params?.id, 10), this.tab.id)
         .pipe(take(1))
         .subscribe(
-          (data: WorkflowCardSlotDTO[]) => {
+          (data: WorkflowCardTabItemDTO[]) => {
             this.entityData = data;
             this.setShowLoading.emit(false);
           },
@@ -57,5 +60,16 @@ export class WorkflowColumnCustomizableEntityComponent implements OnInit, OnChan
           }
         );
     }
+  }
+
+  public getDataValue(data: WorkflowCardTabItemDTO): string | number {
+    if (data.tabItemConfigVariable.variable.type === 'Date') {
+      return this.datePipe.transform(new Date(data.tabItemConfigVariable.variable.value), 'dd-MM-yyyy');
+    } else if (data.tabItemConfigVariable.variable.type === 'DateTime') {
+      return this.datePipe.transform(new Date(data.tabItemConfigVariable.variable.value), 'dd-MM-yyyy, HH:mm');
+    } else if (data.tabItemConfigVariable.variable.type === 'Time') {
+      return this.datePipe.transform(new Date(data.tabItemConfigVariable.variable.value), 'HH:mm');
+    }
+    return data.tabItemConfigVariable.variable.value;
   }
 }

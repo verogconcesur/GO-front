@@ -25,6 +25,10 @@ export default interface WorkflowCardTabItemDTO {
   tabItemConfigTable: { id: number; tabItemId: number; variable: WorkflowCardSlotDTO };
   tabItemConfigText: { id: number; tabItemId: number; variable: WorkflowCardSlotDTO };
   tabItemConfigTitle: { id: number; tabItemId: number; variable: WorkflowCardSlotDTO };
-  tabItemConfigVariable: { id: number; tabItemId: number; variable: WorkflowCardSlotDTO };
+  tabItemConfigVariable: {
+    id: number;
+    tabItemId: number;
+    variable: WorkflowCardSlotDTO;
+  };
   typeItem: 'ACTION' | 'INPUT' | 'LINK' | 'LIST' | 'OPTION' | 'TABLE' | 'TEXT' | 'TITLE' | 'VARIABLE';
 }

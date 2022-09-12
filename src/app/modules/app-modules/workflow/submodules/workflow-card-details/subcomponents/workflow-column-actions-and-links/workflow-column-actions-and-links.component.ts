@@ -3,7 +3,7 @@ import { ActivatedRoute } from '@angular/router';
 import { ConcenetError } from '@app/types/error';
 import { marker } from '@biesbjerg/ngx-translate-extract-marker';
 import CardColumnTabDTO from '@data/models/cards/card-column-tab-dto';
-import WorkflowCardTabItemDTO from '@data/models/workflows/workflow-card-tab-item';
+import WorkflowCardTabItemDTO from '@data/models/workflows/workflow-card-tab-item-dto';
 import { CardService } from '@data/services/cards.service';
 import { TranslateService } from '@ngx-translate/core';
 import { GlobalMessageService } from '@shared/services/global-message.service';
