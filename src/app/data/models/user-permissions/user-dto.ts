@@ -6,6 +6,7 @@ export default interface UserDTO {
   name: string;
   firstName: string;
   lastName: string;
+  fullName: string;
   role: RoleDTO;
   email: string;
   userName: string;
