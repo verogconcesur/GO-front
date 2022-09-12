@@ -95,11 +95,13 @@
             "EDIT_INFO": "Editar información"
         },
         "modal": {
+            "cancelConfirmation": "¿Está seguro que desea salir de la ventana de tarjeta?",
             "cardName": "Nombre de Ficha",
             "column": "Columna ",
             "comments": "Comentarios",
             "create": "Crear Ficha",
-            "edit": "Editar Ficha"
+            "edit": "Editar Ficha",
+            "saveConfirmation": "¿Está seguro que desea guardar la tarjeta?"
         },
         "workflows": "Workflow"
     },

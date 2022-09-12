@@ -95,11 +95,13 @@
             "EDIT_INFO": "Edit info"
         },
         "modal": {
+            "cancelConfirmation": "Are you sure you want to exit the card window?",
             "cardName": "Card Name",
             "column": "Column ",
             "comments": "Comments",
             "create": "Create Card",
-            "edit": "Edit Card"
+            "edit": "Edit Card",
+            "saveConfirmation": "Are you sure you want to save the card?"
         },
         "workflows": "Workflow"
     },
