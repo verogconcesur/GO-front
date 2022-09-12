@@ -1,5 +1,5 @@
 import WorkflowCardInstanceDTO from './workflow-card-instance-dto';
-import WorkflowCardTabItemDTO from './workflow-card-tab-item';
+import WorkflowCardTabItemDTO from './workflow-card-tab-item-dto';
 import WorkflowMoveDTO from './workflow-move-dto';
 
 export default interface WorkflowCardDTO {

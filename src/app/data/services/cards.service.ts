@@ -7,7 +7,7 @@ import { ConcenetError } from '@app/types/error';
 import CardDTO from '@data/models/cards/card-dto';
 import CardInstanceDTO from '@data/models/cards/card-instance-dto';
 import WorkflowCardSlotDTO from '@data/models/workflows/workflow-card-slot-dto';
-import WorkflowCardTabItemDTO from '@data/models/workflows/workflow-card-tab-item';
+import WorkflowCardTabItemDTO from '@data/models/workflows/workflow-card-tab-item-dto';
 import { Observable, throwError } from 'rxjs';
 import { catchError } from 'rxjs/operators';
 
