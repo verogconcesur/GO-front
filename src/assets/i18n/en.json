@@ -73,7 +73,15 @@
     },
     "cards": {
         "column": {
-            "columnName": "Column Name"
+            "columnName": "Column Name",
+            "contentSource": "Content Source",
+            "contentType": "Content Type",
+            "deleteTabConfirmation": "Are you sure you want to delete this tab?",
+            "nameTab": "Tab name",
+            "newTab": "New tab ",
+            "tabConfiguration": "Tab Configuration",
+            "tabList": "Column tabs",
+            "tabType": "Tab Type"
         },
         "create": "Create card",
         "deleteConfirmation": "Do you really want to delete this card?",
@@ -88,7 +96,7 @@
         },
         "modal": {
             "cardName": "Card Name",
-            "column": "Column",
+            "column": "Column ",
             "comments": "Comments",
             "create": "Create Card",
             "edit": "Edit Card"
@@ -159,6 +167,11 @@
         "state": "State",
         "substate": "Substate",
         "successOperation": "Success operation.",
+        "tabTypes": {
+            "customizable": "Customizable content",
+            "prefixed": "Prefixed content",
+            "template": "Content by template"
+        },
         "tasks": "Tasks",
         "to": "To",
         "town": "Town",
