@@ -74,7 +74,10 @@ export class AttachmentsComponent extends AdministrationCommonHeaderSectionClass
         finalize(() => this.spinnerService.hide(spinner))
       )
       .subscribe((b: TemplatesAttachmentDTO) => {
-        this.openCreateEditAttachmentDialog(b);
+        //timeout necesario porque hay casos en los que no llega a mostrar la modal
+        setTimeout(() => {
+          this.openCreateEditAttachmentDialog(b);
+        });
       });
   }
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
