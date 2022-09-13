@@ -77,7 +77,10 @@ export class CommunicationComponent extends AdministrationCommonHeaderSectionCla
         finalize(() => this.spinnerService.hide(spinner))
       )
       .subscribe((b: TemplatesCommunicationDTO) => {
-        this.openCreateEditCommunicationDialog(b);
+        //timeout necesario porque hay casos en los que no llega a mostrar la modal
+        setTimeout(() => {
+          this.openCreateEditCommunicationDialog(b);
+        });
       });
   }
   // eslint-disable-next-line @typescript-eslint/no-explicit-any

@@ -75,7 +75,10 @@ export class ClientTimelineComponent extends AdministrationCommonHeaderSectionCl
         finalize(() => this.spinnerService.hide(spinner))
       )
       .subscribe((b: TemplatesTimelineDTO) => {
-        this.openCreateEditTimelineDialog(b);
+        //timeout necesario porque hay casos en los que no llega a mostrar la modal
+        setTimeout(() => {
+          this.openCreateEditTimelineDialog(b);
+        });
       });
   }
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
