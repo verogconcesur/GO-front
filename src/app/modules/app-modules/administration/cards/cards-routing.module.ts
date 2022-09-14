@@ -10,12 +10,16 @@ const routes: Routes = [
     path: RouteConstants.EMPTY,
     component: CardsComponent,
     canActivate: [AuthGuardService],
-    data: { permissions: RoutePermissionConstants.ADMINISTRATION },
-    children: [
-    ]
+    data: { permissions: RoutePermissionConstants.ADMINISTRATION }
   },
   {
     path: RouteConstants.CREATE_CARD,
+    component: CreateEditCardComponent,
+    canActivate: [AuthGuardService],
+    data: { permissions: RoutePermissionConstants.ADMINISTRATION },
+  },
+  {
+    path: `${RouteConstants.CREATE_CARD}/${RouteConstants.ID_CARD}`,
     component: CreateEditCardComponent,
     canActivate: [AuthGuardService],
     data: { permissions: RoutePermissionConstants.ADMINISTRATION },

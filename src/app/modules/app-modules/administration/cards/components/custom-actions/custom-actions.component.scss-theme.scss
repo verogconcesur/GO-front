@@ -1,0 +1,80 @@
+@import '@angular/material/theming';
+@import 'utils/core';
+
+@mixin custom-actions-component-theme($theme, $main-typo) {
+  $primary: map-get($theme, primary);
+  $background: map-get($theme, background);
+
+  .custom-actions-container {
+    &__header {
+      &__group {
+        &__tablist {
+          &__button {
+            border: 1px solid mat-color($primary, 100);
+          }
+        }
+      }
+      &__title {
+        color: mat-color($primary, 500);
+      }
+    }
+    &__main {
+      &__title {
+        color: mat-color($primary, 500);
+      }
+    }
+  }
+  .custom-actions-item-container {
+    width: 100%;
+    max-width: 500px;
+    padding-top: 10px;
+  }
+  .custom-actions-item {
+    background-color: mat-color($background, background);
+    border-radius: 6px;
+    width: 100%;
+    height: 37px;
+    padding: 0 10px;
+    margin-bottom: 10px;
+    cursor: pointer;
+    &.selected {
+      border: 1px solid mat-color($primary, 500);
+    }
+    .custom-actions-item-nameContainer {
+      width: 100%;
+    }
+    mat-icon {
+      position: relative;
+      width: 18px;
+      height: 18px;
+      font-size: 18px;
+      margin: 0 8px;
+      &.cross:after {
+        position: absolute;
+        transform: rotate(140deg);
+        content: "\\";
+        font-weight: 700;
+        font-size: 1.7em;
+        left: 8px;
+        top: -3px;
+      }
+    }
+    span {
+      width: calc(100% - 68px);
+      overflow: hidden;
+      white-space: nowrap;
+      text-overflow: ellipsis;
+    }
+  }
+  .custom-actions-item.cdk-drag-placeholder {
+    opacity: 0;
+  }
+  
+  .custom-actions-item.cdk-drag-animating {
+    transition: transform 250ms cubic-bezier(0, 0, 0.2, 1);
+  }
+  
+  .custom-actions-item-container.cdk-drop-list-dragging .custom-actions-item:not(.cdk-drag-placeholder) {
+    transition: transform 250ms cubic-bezier(0, 0, 0.2, 1);
+  }
+}

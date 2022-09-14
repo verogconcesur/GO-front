@@ -33,6 +33,7 @@ export class CustomColumnComponent implements OnInit {
     tabType: marker('cards.column.tabType'),
     tabContentType: marker('cards.column.contentType'),
     tabContentSource: marker('cards.column.contentSource'),
+    information: marker('cards.column.information'),
     tabCustomizable: marker('common.tabTypes.customizable'),
     tabTemplate: marker('common.tabTypes.template'),
     tabPrefixed: marker('common.tabTypes.prefixed'),
@@ -89,11 +90,13 @@ export class CustomColumnComponent implements OnInit {
   }
   public newTab(tab?: CardColumnTabDTO): FormGroup {
     return this.fb.group({
+      id: [tab ? tab.id : null],
+      colId: [this.colEdit ? this.colEdit.id : null],
       orderNumber: [tab ? tab.orderNumber : this.tabs.length + 1, [Validators.required]],
       name: [tab ? tab.name : this.translateService.instant(this.labels.newTab) + (this.tabs.length + 1), [Validators.required]],
       type: [tab ? tab.type : null, [Validators.required]],
-      contentTypeId: [tab ? tab.type : null, [Validators.required]],
-      contentSourceId: [tab ? tab.type : null],
+      contentTypeId: [tab ? tab.contentTypeId : null, [Validators.required]],
+      contentSourceId: [tab ? tab.contentSourceId : null],
       tabItems: this.fb.array([])
     });
   }

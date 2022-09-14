@@ -1,4 +1,4 @@
-<div class="create-cards-container">
+<div class="create-cards-container" *ngIf="cardForm">
     <div fxLayout="row wrap" fxLayout.gt-md="col wrap">
         <div class="create-cards-container__side">
             <div class="create-cards-container__side__header">
@@ -12,7 +12,7 @@
                     </h1>
                 </div>
             </div>
-            <div class="create-cards-container__side__section" fxLayout="row wrap" fxLayoutAlign="start center" *ngIf="cardForm">
+            <div class="create-cards-container__side__section" fxLayout="row wrap" fxLayoutAlign="start center">
                 <form [formGroup]="cardForm" class="smaller-mat-form-fields">
                     <div class="create-cards-container__side__section__group grid-group">
                         <!-- Name -->
@@ -44,7 +44,7 @@
                 </form>
             </div>
         </div>
-        <div class="create-cards-container__main" *ngIf="cardForm">
+        <div class="create-cards-container__main">
             <app-custom-column
                 [ngStyle]="{ display: selectedCol === 1 ? 'block' : 'none' }"
                 [formCol]="cols.controls[0]"
@@ -68,7 +68,7 @@
         </div>
     </div>
     <div class="create-cards-container__footer" fxLayoutAlign="space-between center">
-        <button mat-stroked-button color="warn">{{ labels.cancel | translate }}</button>
-        <button mat-flat-button color="primary">{{ labels.save | translate }}</button>
+        <button mat-stroked-button color="warn" (click)="cancel()">{{ labels.cancel | translate }}</button>
+        <button mat-flat-button color="primary" [disabled]="isSaveDisabled()" (click)="save()">{{ labels.save | translate }}</button>
     </div>
 </div>

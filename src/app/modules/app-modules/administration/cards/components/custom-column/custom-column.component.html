@@ -16,6 +16,15 @@
             </div>
             <div class="custom-column-container__header__title">{{ labels.tabList | translate | uppercase }}</div>
             <div class="custom-column-container__header__group grid-group" cdkDropListGroup fxLayout="row wrap">
+                <ng-container *ngIf="form?.orderNumber?.value && form.orderNumber.value === 2">
+                    <div class="custom-column-item-container">
+                        <div class="custom-column-item mat-elevation-z2" fxLayoutAlign="none center">
+                            <div fxLayout="row" fxLayoutAlign="center center" class="custom-column-item-nameContainer">
+                                <span>{{ labels.information | translate }}</span>
+                            </div>
+                        </div>
+                    </div>
+                </ng-container>
                 <ng-container *ngFor="let tab of tabs.controls; let i = index">
                     <div
                         class="custom-column-item-container"

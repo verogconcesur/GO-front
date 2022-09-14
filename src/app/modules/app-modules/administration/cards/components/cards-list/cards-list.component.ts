@@ -53,8 +53,12 @@ export class CardsListComponent implements OnInit {
     this.setSidenavFilterDrawerConfiguration();
   }
 
-  public openCreateEditCardDialog = (card?: CardDTO): void => {
-    this.router.navigate([RouteConstants.ADMINISTRATION, RouteConstants.CARDS, RouteConstants.CREATE]);
+  public createEditCard = (card?: CardDTO): void => {
+    if(card){
+      this.router.navigate([RouteConstants.ADMINISTRATION, RouteConstants.CARDS, RouteConstants.CREATE, card.id]);
+    } else {
+      this.router.navigate([RouteConstants.ADMINISTRATION, RouteConstants.CARDS, RouteConstants.CREATE]);
+    }
   };
 
   public openFilterCardDialog = (): void => {

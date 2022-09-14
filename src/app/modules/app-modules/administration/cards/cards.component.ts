@@ -22,7 +22,7 @@ export class CardsComponent implements OnInit {
   ngOnInit(): void {}
 
   public buttonCreateAction(): void {
-    this.cardsListComponent.openCreateEditCardDialog();
+    this.cardsListComponent.createEditCard();
   }
 
   public getFilteredData = (text: string): Observable<{ content: CardDTO[] } | null> =>
