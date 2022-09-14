@@ -73,12 +73,15 @@
     },
     "cards": {
         "column": {
+            "actionConfiguration": "Configuración de las acciones",
             "columnName": "Nombre de columna",
             "contentSource": "Origen del contenido",
             "contentType": "Tipo de contenido",
             "deleteTabConfirmation": "¿Está seguro que desea eliminar esta pestaña?",
+            "information": "Información",
             "nameTab": "Nombre de pestaña",
             "newTab": "Nueva pestaña ",
+            "shortcutConfiguration": "Configuración de accesos directos",
             "tabConfiguration": "Configuración de la pestaña",
             "tabList": "Pestañas de columna",
             "tabType": "Tipo de pestaña"
@@ -95,17 +98,24 @@
             "EDIT_INFO": "Editar información"
         },
         "modal": {
+            "cancelConfirmation": "¿Está seguro que desea salir de la ventana de tarjeta?",
             "cardName": "Nombre de Ficha",
             "column": "Columna ",
             "comments": "Comentarios",
             "create": "Crear Ficha",
-            "edit": "Editar Ficha"
+            "edit": "Editar Ficha",
+            "saveConfirmation": "¿Está seguro que desea guardar la tarjeta?"
         },
         "workflows": "Workflow"
     },
     "common": {
         "accessDenied": "Acceso denegado. No tiene privilegios suficientes.",
         "actions": "Acciones",
+        "actionsTabItems": {
+            "attachment": "Enviar adjunto",
+            "message": "Mensaje a cliente",
+            "sign": "Firmar documento"
+        },
         "address": "Dirección",
         "adviser": "Asesor",
         "apply": "Aplicar",

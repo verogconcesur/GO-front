@@ -77,4 +77,15 @@ export class CardService {
       .get<boolean>(`${this.env.apiBaseUrl}${this.GET_CARD_INSTANCE_PATH}${followPath}/${cardInstanceWorkflowId}`)
       .pipe(catchError((error) => throwError(error.error as ConcenetError)));
   }
+
+  /**
+   * Create edit card
+   *
+   * @returns CardDTO
+   */
+  public createEditCard(card: CardDTO): Observable<CardDTO> {
+    return this.http
+      .post<CardDTO>(`${this.env.apiBaseUrl}${this.GET_CARD_PATH}`, card)
+      .pipe(catchError((error) => throwError(error.error as ConcenetError)));
+  }
 }
