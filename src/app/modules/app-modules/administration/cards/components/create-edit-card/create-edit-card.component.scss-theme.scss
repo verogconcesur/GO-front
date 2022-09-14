@@ -1,6 +1,7 @@
 @import '@angular/material/theming';
 @import 'utils/core';
 @import 'app/modules/app-modules/administration/cards/components/custom-column/custom-column.component.scss-theme.scss';
+@import 'app/modules/app-modules/administration/cards/components/custom-actions/custom-actions.component.scss-theme.scss';
 
 @mixin create-edit-card-component-theme($theme, $main-typo) {
   $primary: map-get($theme, primary);
@@ -31,4 +32,5 @@
   }
   
   @include custom-column-component-theme($theme, $main-typo);
+  @include custom-actions-component-theme($theme, $main-typo);
 }
