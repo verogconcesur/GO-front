@@ -22,7 +22,7 @@ import { ConcenetError } from '@app/types/error';
 export class CreateEditCardComponent implements OnInit {
   public labels = {
     create: marker('cards.modal.create'),
-    edit: marker('cards.modal.create'),
+    edit: marker('cards.modal.edit'),
     column: marker('cards.modal.column'),
     comments: marker('cards.modal.comments'),
     messages: marker('common.messages'),

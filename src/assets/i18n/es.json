@@ -77,6 +77,7 @@
             "contentSource": "Origen del contenido",
             "contentType": "Tipo de contenido",
             "deleteTabConfirmation": "¿Está seguro que desea eliminar esta pestaña?",
+            "information": "Información",
             "nameTab": "Nombre de pestaña",
             "newTab": "Nueva pestaña ",
             "tabConfiguration": "Configuración de la pestaña",

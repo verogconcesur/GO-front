@@ -33,6 +33,7 @@ export class CustomColumnComponent implements OnInit {
     tabType: marker('cards.column.tabType'),
     tabContentType: marker('cards.column.contentType'),
     tabContentSource: marker('cards.column.contentSource'),
+    information: marker('cards.column.information'),
     tabCustomizable: marker('common.tabTypes.customizable'),
     tabTemplate: marker('common.tabTypes.template'),
     tabPrefixed: marker('common.tabTypes.prefixed'),
