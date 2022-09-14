@@ -14,4 +14,11 @@ export default interface CardInstanceDTO {
   workflowSubstateId: number;
   workflowSubstateName: string;
   colors: any[];
+  information: {
+    dateAssignmentSubstate: number;
+    instanceInformation: string;
+    orderInformation: string;
+    sourceText: string;
+    userInformation: string;
+  };
 }

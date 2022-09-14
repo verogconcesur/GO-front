@@ -1,1 +1,21 @@
-<p>workflow-column-prefixed-information works!</p>
+<div class="w-colunm-entity-data">
+    <label class="w-colunm-entity-data__label">{{ labels.workOrderInformation | translate }}</label>
+    <div class="w-colunm-entity-data__value">
+        <p>{{ cardInstance.information.orderInformation }}</p>
+        <p>{{ cardInstance.information.instanceInformation }}</p>
+    </div>
+</div>
+<div class="w-colunm-entity-data">
+    <label class="w-colunm-entity-data__label">{{ labels.createdOn | translate }}</label>
+    <div class="w-colunm-entity-data__value">
+        {{ cardInstance.information.dateAssignmentSubstate | date: "dd/MM/yyyy, HH:mm" }}
+    </div>
+</div>
+<div class="w-colunm-entity-data">
+    <label class="w-colunm-entity-data__label">{{ labels.origin | translate }}</label>
+    <div class="w-colunm-entity-data__value">{{ cardInstance.information.sourceText }}</div>
+</div>
+<div class="w-colunm-entity-data">
+    <label class="w-colunm-entity-data__label">{{ labels.taskDescription | translate }}</label>
+    <div class="w-colunm-entity-data__value">{{ cardInstance.information.userInformation }}</div>
+</div>

@@ -1,6 +1,7 @@
 import { Component, Input, OnInit } from '@angular/core';
 import CardColumnDTO from '@data/models/cards/card-column-dto';
 import CardColumnTabDTO from '@data/models/cards/card-column-tab-dto';
+import CardInstanceDTO from '@data/models/cards/card-instance-dto';
 import { ResponsiveTabI } from '@shared/components/responsive-tabs/responsive-tabs.component';
 
 @Component({
@@ -9,6 +10,7 @@ import { ResponsiveTabI } from '@shared/components/responsive-tabs/responsive-ta
   styleUrls: ['./workflow-card-column.component.scss']
 })
 export class WorkflowCardColumnComponent implements OnInit {
+  @Input() cardInstance: CardInstanceDTO;
   @Input() column: CardColumnDTO;
   @Input() showTabs = true;
   @Input() containerClass: 'column1' | 'column2' | 'messages' | 'actions' | '' = '';
