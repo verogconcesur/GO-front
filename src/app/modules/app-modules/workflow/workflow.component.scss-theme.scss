@@ -7,7 +7,6 @@
 @import './submodules/workflow-board-view/subcomponents/workflow-card/workflow-card.component.scss-theme.scss';
 @import './submodules/workflow-card-details/workflow-card-details.component.scss-theme.scss';
 @import './submodules/workflow-card-details/subcomponents/workflow-card-header/workflow-card-header.component.scss-theme.scss';
-@import './submodules/workflow-card-details/subcomponents/workflow-column-customizable-entity/workflow-column-customizable-entity.component.scss-theme.scss';
 @import './submodules/workflow-card-details/subcomponents/workflow-column-comments/workflow-column-comments.scss-theme.scss';
 @import './submodules/workflow-card-details/subcomponents/workflow-card-column/workflow-card-column.component.scss-theme.scss';
 @import './submodules/workflow-card-details/subcomponents/workflow-column-actions-and-links/workflow-column-actions-and-links.component.scss-theme.scss';
@@ -27,7 +26,6 @@
   @include workflow-card-component-theme($theme, $main-typo);
   @include workflow-card-details-component-theme($theme, $main-typo);
   @include workflow-card-header-component-theme($theme, $main-typo);
-  @include workflow-customizable-entity-component-theme($theme, $main-typo);
   @include workflow-column-comments-component-theme($theme, $main-typo);
   @include workflow-card-column-component-theme($theme, $main-typo);
   @include workflow-column-actions-and-links-component-theme($theme, $main-typo);

@@ -32,13 +32,9 @@
                             (click)="selectTab(tab)"
                         >
                             <div *cdkDragPlaceholder class="custom-column-placeholder"></div>
-                            <div
-                                fxLayout="row"
-                                fxLayoutAlign="space-between center"
-                                class="custom-column-item-nameContainer"
-                            >
+                            <div fxLayout="row" fxLayoutAlign="space-between center" class="custom-column-item-nameContainer">
                                 <mat-icon>drag_indicator</mat-icon> <span>{{ tab.value.name }}</span
-                                ><mat-icon (click)="deleteTab(tab);$event.stopPropagation();">clear</mat-icon>
+                                ><mat-icon (click)="deleteTab(tab); $event.stopPropagation()">clear</mat-icon>
                             </div>
                         </div>
                     </div>

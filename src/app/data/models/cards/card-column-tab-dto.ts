@@ -8,4 +8,6 @@ export default interface CardColumnTabDTO {
   contentTypeId: number;
   contentSourceId?: number;
   tabItems?: CardColumnTabItemDTO[];
+  templateId?: number;
+  colId?: number;
 }

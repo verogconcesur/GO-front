@@ -1,4 +1,6 @@
-.entityData {
+@import 'utils/theme';
+
+.w-colunm-entity-data {
   text-transform: uppercase;
   margin: 30px 10px;
   &:first-child {
@@ -7,8 +9,20 @@
   &__label {
     font-weight: 600;
     font-size: 0.85em;
+    color: mat-contrast($primary, 100);
+    text-transform: uppercase;
   }
   &__value {
     margin-top: 3px;
+    color: mat-contrast($primary, 900);
+  }
+
+  .no-data {
+    font-weight: bold;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin: 20px 0;
+    width: 100%;
   }
 }
