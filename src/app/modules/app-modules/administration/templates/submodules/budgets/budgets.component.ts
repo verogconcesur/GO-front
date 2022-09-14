@@ -76,7 +76,10 @@ export class BudgetsComponent extends AdministrationCommonHeaderSectionClassToEx
         finalize(() => this.spinnerService.hide(spinner))
       )
       .subscribe((b: TemplatesBudgetDetailsDTO) => {
-        this.openCreateEditBudgetDialog(b);
+        //timeout necesario porque hay casos en los que no llega a mostrar la modal
+        setTimeout(() => {
+          this.openCreateEditBudgetDialog(b);
+        });
       });
   }
 
