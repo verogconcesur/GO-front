@@ -73,6 +73,7 @@
     },
     "cards": {
         "column": {
+            "actionConfiguration": "Actions configuration",
             "columnName": "Column Name",
             "contentSource": "Content Source",
             "contentType": "Content Type",
@@ -80,6 +81,7 @@
             "information": "Information",
             "nameTab": "Tab name",
             "newTab": "New tab ",
+            "shortcutConfiguration": "Shortcut configuration",
             "tabConfiguration": "Tab Configuration",
             "tabList": "Column tabs",
             "tabType": "Tab Type"
@@ -109,6 +111,11 @@
     "common": {
         "accessDenied": "Access denied.",
         "actions": "Actions",
+        "actionsTabItems": {
+            "attachment": "Send attachment",
+            "message": "Message to client",
+            "sign": "Sign document"
+        },
         "address": "Address",
         "adviser": "Adviser",
         "apply": "Apply",

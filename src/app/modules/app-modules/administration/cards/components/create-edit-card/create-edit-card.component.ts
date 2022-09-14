@@ -126,6 +126,7 @@ export class CreateEditCardComponent implements OnInit {
     this.cardForm = this.fb.group({
       id: [this.cardToEdit ? this.cardToEdit.id : null],
       name: [this.cardToEdit ? this.cardToEdit.name : '', Validators.required],
+      newVersion: [this.cardToEdit ? false : true],
       cols: this.initializeCols()
     });
   };

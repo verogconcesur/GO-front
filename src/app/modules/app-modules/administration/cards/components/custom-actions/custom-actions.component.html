@@ -14,6 +14,26 @@
                     </mat-error>
                 </mat-form-field>
             </div>
+            <div class="custom-actions-container__header__title">{{ labels.actionConfiguration | translate | uppercase }}</div>
+            <div class="custom-actions-container__header__group" cdkDropListGroup>
+                <div
+                    class="custom-actions-item-container"
+                    cdkDropList
+                    (cdkDropListDropped)="drop($event)"
+                >
+                    <div
+                        cdkDrag
+                        class="custom-actions-item mat-elevation-z2"
+                        fxLayoutAlign="none center"
+                        *ngFor="let tabItem of tabItems.controls let i = index"
+                    >
+                        <div fxLayout="row" fxLayoutAlign="space-between center" class="custom-actions-item-nameContainer">
+                            <mat-icon>drag_indicator</mat-icon> <span>{{ tabItem.value.name }}</span
+                            ><mat-icon (click)="showTab(tabItem); $event.stopPropagation()" [ngClass]="{cross: !tabItem?.value?.tabItemConfigAction?.visible}">remove_red_eye</mat-icon>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </form>
     </div>
 </div>
