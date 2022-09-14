@@ -1,0 +1,18 @@
+@import 'utils/theme';
+
+.w-colunm-entity-data {
+  margin: 30px 10px;
+  &:first-child {
+    margin-top: 20px;
+  }
+  &__label {
+    font-weight: 600;
+    font-size: 0.85em;
+    color: mat-contrast($primary, 100);
+    text-transform: uppercase;
+  }
+  &__value {
+    margin-top: 3px;
+    color: mat-contrast($primary, 900);
+  }
+}

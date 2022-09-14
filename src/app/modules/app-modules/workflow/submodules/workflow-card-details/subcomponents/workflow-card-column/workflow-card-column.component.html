@@ -19,6 +19,7 @@
             <app-workflow-column-prefixed-information
                 *ngIf="showColumn('PREFIXED_INFORMATION')"
                 [tab]="tabToShow"
+                [cardInstance]="cardInstance"
             ></app-workflow-column-prefixed-information>
             <app-workflow-column-prefixed-tasks
                 *ngIf="showColumn('PREFIXED_TASKS')"

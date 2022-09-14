@@ -24,7 +24,11 @@
                         class="wcard-details__wrapper__info-sections__container__column2"
                         *ngIf="showMode === 'all' || tabSelected === 'column2'"
                     >
-                        <app-workflow-card-column containerClass="column2" [column]="columnsConfig[1]"></app-workflow-card-column>
+                        <app-workflow-card-column
+                            containerClass="column2"
+                            [cardInstance]="cardInstance"
+                            [column]="columnsConfig[1]"
+                        ></app-workflow-card-column>
                     </div>
                 </div>
                 <div class="wcard-details__wrapper__info-sections__controller tab-options-wrapper" *ngIf="showMode === 'semi'">

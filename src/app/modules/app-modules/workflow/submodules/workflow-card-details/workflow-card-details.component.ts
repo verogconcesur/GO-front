@@ -106,11 +106,25 @@ export class WorkflowCardDetailsComponent implements OnInit {
       .pipe(take(1))
       .subscribe(
         (data: CardInstanceDTO) => {
-          console.log('CardInstanceDTO', data);
           this.spinnerService.hide(spinner);
           this.cardInstance = data;
-          this.columnsConfig = data.card.cols.map((col: CardColumnDTO) => {
-            if (col.colType === 'SOCIAL') {
+          this.columnsConfig = data.card.cols.map((col: CardColumnDTO, index: number) => {
+            if (index === 1) {
+              col.tabs = [
+                {
+                  colId: null,
+                  contentSourceId: null,
+                  contentTypeId: 6,
+                  id: null,
+                  name: this.translateService.instant('common.information'),
+                  orderNumber: 0,
+                  tabItems: null,
+                  templateId: null,
+                  type: 'PREFIXED'
+                },
+                ...col.tabs
+              ];
+            } else if (col.colType === 'SOCIAL') {
               col.tabs = [
                 {
                   id: 1,
@@ -134,7 +148,6 @@ export class WorkflowCardDetailsComponent implements OnInit {
             }
             return col;
           });
-          console.log(this.columnsConfig);
         },
         (error: ConcenetError) => {
           this.globalMessageService.showError({

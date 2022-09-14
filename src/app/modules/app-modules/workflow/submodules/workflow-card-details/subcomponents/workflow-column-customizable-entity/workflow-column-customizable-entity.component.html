@@ -1,4 +1,8 @@
-<div class="entityData" *ngFor="let data of entityData">
-    <label class="entityData__label">{{ data.name }}</label>
-    <div class="entityData__value">{{ getDataValue(data) }}</div>
+<div class="w-colunm-entity-data" *ngFor="let data of entityData">
+    <label class="w-colunm-entity-data__label">{{ data.name }}</label>
+    <div class="w-colunm-entity-data__value">{{ getDataValue(data) }}</div>
 </div>
+
+<h3 class="no-data" *ngIf="!entityData?.length">
+    {{ labels.noDataToShow | translate }}
+</h3>
