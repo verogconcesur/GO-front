@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { Component, ElementRef, HostListener, NgZone, OnInit, ViewChild } from '@angular/core';
 import { marker } from '@biesbjerg/ngx-translate-extract-marker';
 import WorkflowCardDTO from '@data/models/workflows/workflow-card-dto';
@@ -31,6 +32,10 @@ export class WorkflowBoardViewComponent implements OnInit {
   public wAnchorState: WorkflowStateDTO;
   public wNormalStates: WorkflowStateDTO[];
   public showAnchorState = true;
+  public mouseDown = false;
+  public startX: any;
+  public scrollLeft: any;
+  public cardDragging: boolean;
   public labels = {
     noData: marker('errors.noDataToShow')
   };
@@ -71,6 +76,13 @@ export class WorkflowBoardViewComponent implements OnInit {
         }, 100);
       }
     });
+    this.dragAndDropService.draggingCard$.pipe(untilDestroyed(this)).subscribe((data: WorkflowCardDTO) => {
+      if (data) {
+        this.cardDragging = true;
+      } else {
+        this.cardDragging = false;
+      }
+    });
   }
 
   public toggleAnchorState = () => (this.showAnchorState = !this.showAnchorState);
@@ -87,6 +99,25 @@ export class WorkflowBoardViewComponent implements OnInit {
   }
 
   public hideAnchorState = (): boolean => !this.showAnchorState;
+
+  public startDragging(e: MouseEvent, flag: boolean) {
+    this.mouseDown = true;
+    this.startX = e.pageX - this.scrollColumns.nativeElement.offsetLeft;
+    this.scrollLeft = this.scrollColumns.nativeElement.scrollLeft;
+  }
+
+  public stopDragging(e: MouseEvent, flag: boolean) {
+    this.mouseDown = false;
+  }
+
+  public moveEvent(e: MouseEvent) {
+    if (!this.cardDragging && this.mouseDown) {
+      e.preventDefault();
+      const x = e.pageX - this.scrollColumns.nativeElement.offsetLeft;
+      const scroll = x - this.startX;
+      this.scrollColumns.nativeElement.scrollLeft = this.scrollLeft - scroll;
+    }
+  }
 
   private mapWorkflowCardsWithInstances(workflowCards: WorkflowCardDTO[]) {
     this.workflowInstances.forEach((wState: WorkflowStateDTO) => {
