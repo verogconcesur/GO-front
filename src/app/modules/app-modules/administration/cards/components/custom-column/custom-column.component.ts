@@ -12,8 +12,9 @@ import CardContentTypeDTO from '@data/models/cards/card-content-type-dto';
 import CardContentSourceDTO from '@data/models/cards/card-content-source-dto';
 import { ConfirmDialogService } from '@shared/services/confirm-dialog.service';
 import { GlobalMessageService } from '@shared/services/global-message.service';
-import { take } from 'rxjs/operators';
+import { map, take } from 'rxjs/operators';
 import { removeItemInFormArray } from '@shared/utils/removeItemInFormArray';
+import WorkflowCardSlotDTO from '@data/models/workflows/workflow-card-slot-dto';
 
 @Component({
   selector: 'app-custom-column',
@@ -43,6 +44,8 @@ export class CustomColumnComponent implements OnInit {
   public tabTypeList = tabTypes;
   public tabContentTypeList: CardContentTypeDTO[] = [];
   public tabContentSourceList: CardContentSourceDTO[] = [];
+  public tabContentSlotsList: WorkflowCardSlotDTO[] = [];
+  public tabId: number = null;
   constructor(
     private fb: FormBuilder,
     private translateService: TranslateService,
@@ -68,13 +71,13 @@ export class CustomColumnComponent implements OnInit {
       .pipe(take(1))
       .subscribe((ok: boolean) => {
         if (ok) {
-          if(this.formTab && this.formTab.value.orderNumber === tab.value.orderNumber){
+          if (this.formTab && this.formTab.value.orderNumber === tab.value.orderNumber) {
             this.formTab = null;
           }
-          removeItemInFormArray(this.tabs, tab.value.orderNumber -1);
+          removeItemInFormArray(this.tabs, tab.value.orderNumber - 1);
         }
       });
-    }
+  }
   public isTabSelected(tab: FormGroup): boolean {
     return this.formTab && this.formTab.value && tab.value.orderNumber === this.formTab.value.orderNumber;
   }
@@ -86,9 +89,11 @@ export class CustomColumnComponent implements OnInit {
       this.formTab = tab;
       this.getContentTypes(true);
       this.getContentSources(true);
+      this.getTabSlots(true);
     }
   }
-  public newTab(tab?: CardColumnTabDTO): FormGroup {
+  public newTab = (tab?: CardColumnTabDTO): FormGroup => {
+    this.tabId = tab ? tab.id : null;
     return this.fb.group({
       id: [tab ? tab.id : null],
       colId: [this.colEdit ? this.colEdit.id : null],
@@ -99,7 +104,7 @@ export class CustomColumnComponent implements OnInit {
       contentSourceId: [tab ? tab.contentSourceId : null],
       tabItems: this.fb.array([])
     });
-  }
+  };
   public getContentTypes(firstLoad?: boolean) {
     if (firstLoad) {
       this.tabContentTypeList = [];
@@ -126,6 +131,38 @@ export class CustomColumnComponent implements OnInit {
       });
     }
   }
+  public newTabItemForm = (type: 'VARIABLE', data?: WorkflowCardSlotDTO, index?: number): FormGroup => {
+    let formGroup: FormGroup = null;
+    if (type === 'VARIABLE') {
+      formGroup = this.fb.group({
+        data: [data],
+        name: [data ? data.attributeName : '', Validators.required],
+        orderNumber: [index, Validators.required],
+        tabId: [this.tabId],
+        tabItemConfigVariable: this.fb.group({
+          id: [data.id]
+        }),
+        typeItem: ['VARIABLE']
+      });
+    }
+    return formGroup;
+  };
+  public getTabSlots = (firstLoad?: boolean) => {
+    if (firstLoad) {
+      this.tabContentSlotsList = [];
+    }
+    // || this.formTab.value.contentTypeId === 2
+    // TIPO ENTIDAD
+    if (this.formTab && this.formTab.value.contentTypeId === 1) {
+      this.cardService.getEntityAttributes(this.formTab.value.contentSourceId).subscribe((res: WorkflowCardSlotDTO[]) => {
+        this.tabContentSlotsList = res;
+        this.tabContentSlotsList?.forEach((line, index) => {
+          (this.formTab.get('tabItems') as FormArray).push(this.newTabItemForm('VARIABLE', line, index + 1));
+        });
+      });
+    }
+  };
+
   ngOnInit(): void {
     if (this.colEdit) {
       this.colEdit.tabs.forEach((tab) => {

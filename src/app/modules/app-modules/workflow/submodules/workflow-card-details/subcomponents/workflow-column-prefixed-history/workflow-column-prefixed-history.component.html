@@ -95,7 +95,7 @@
     <mat-divider></mat-divider>
 
     <div class="card-history__data">
-        <h3 class="no-data" *ngIf="!historyData?.length">
+        <h3 class="no-data" *ngIf="!historyData?.length && dataLoaded">
             {{ labels.noDataToShow | translate }}
         </h3>
         <div class="card-history__data__item" *ngFor="let item of historyData">

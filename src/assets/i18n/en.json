@@ -330,13 +330,13 @@
         "lastName2": "Last name 2",
         "name": "Name",
         "nameRequired": "Name required",
-        "nick": "Nick",
+        "nick": "User's nick",
         "organization": "Organization",
         "role": "Role",
         "sign": "Sign",
         "specialty": "Specialty",
         "title": "Your profile",
-        "userName": "User name"
+        "userName": "User's name"
     },
     "users": {
         "create": "Create user",
