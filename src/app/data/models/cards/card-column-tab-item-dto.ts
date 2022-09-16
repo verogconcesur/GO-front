@@ -7,4 +7,5 @@ export default interface CardColumnTabItemDTO {
   description: string;
   tabItemConfigVariable?: { variable: { id: number } };
   tabItemConfigAction?: { id: number; tabItemId: number; actionType: string; visible: boolean };
+  tabItemConfigLink?: { id: number; tabItemId: number; link: string; color: string };
 }

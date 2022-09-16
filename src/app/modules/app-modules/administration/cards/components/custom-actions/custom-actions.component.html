@@ -4,7 +4,7 @@
             <div class="custom-actions-container__header__group grid-group">
                 <!-- Name -->
                 <mat-form-field appearance="outline" floatLabel="always">
-                    <mat-label>{{ labels.name | translate }}</mat-label>
+                    <mat-label>{{ labels.nameColumn | translate }}</mat-label>
                     <input matInput formControlName="name" />
                     <mat-error
                         class="custom-actions-container__header__group__error"
@@ -14,26 +14,86 @@
                     </mat-error>
                 </mat-form-field>
             </div>
-            <div class="custom-actions-container__header__title">{{ labels.actionConfiguration | translate | uppercase }}</div>
-            <div class="custom-actions-container__header__group" cdkDropListGroup>
+        </form>
+        <div class="custom-actions-container__header__title">{{ labels.actionConfiguration | translate | uppercase }}</div>
+        <div class="custom-actions-container__header__group" cdkDropListGroup>
+            <div class="custom-actions-item-container" cdkDropList (cdkDropListDropped)="drop($event)">
                 <div
-                    class="custom-actions-item-container"
-                    cdkDropList
-                    (cdkDropListDropped)="drop($event)"
+                    cdkDrag
+                    class="custom-actions-item mat-elevation-z2"
+                    fxLayoutAlign="none center"
+                    *ngFor="let tabItem of tabItems.controls | slice: 0:3; let i = index"
                 >
-                    <div
-                        cdkDrag
-                        class="custom-actions-item mat-elevation-z2"
-                        fxLayoutAlign="none center"
-                        *ngFor="let tabItem of tabItems.controls let i = index"
-                    >
-                        <div fxLayout="row" fxLayoutAlign="space-between center" class="custom-actions-item-nameContainer">
-                            <mat-icon>drag_indicator</mat-icon> <span>{{ tabItem.value.name }}</span
-                            ><mat-icon (click)="showTab(tabItem); $event.stopPropagation()" [ngClass]="{cross: !tabItem?.value?.tabItemConfigAction?.visible}">remove_red_eye</mat-icon>
-                        </div>
+                    <div fxLayout="row" fxLayoutAlign="space-between center" class="custom-actions-item-nameContainer">
+                        <mat-icon>drag_indicator</mat-icon> <span>{{ tabItem.value.name }}</span
+                        ><mat-icon
+                            (click)="showTabAction(tabItem); $event.stopPropagation()"
+                            [ngClass]="{ cross: !tabItem?.value?.tabItemConfigAction?.visible }"
+                            >remove_red_eye</mat-icon
+                        >
                     </div>
                 </div>
             </div>
-        </form>
+        </div>
+        <div class="custom-actions-container__header__title">{{ labels.shortcutConfiguration | translate | uppercase }}</div>
+        <div class="custom-actions-container__header__group" cdkDropListGroup>
+            <div class="custom-links-item-container" cdkDropList (cdkDropListDropped)="dropLink($event)">
+                <div
+                    cdkDrag
+                    class="custom-links-item mat-elevation-z2"
+                    fxLayoutAlign="none center"
+                    *ngFor="let tabItem of tabItems.controls | slice: 3; let i = index"
+                >
+                    <div
+                        fxLayout="row"
+                        fxLayoutAlign="space-between center"
+                        class="custom-links-item-nameContainer smaller-mat-form-fields"
+                    >
+                        <mat-icon>drag_indicator</mat-icon>
+                        <div class="custom-links-item-formContainer" fxLayout="row wrap" fxLayoutAlign="left center">
+                            <mat-form-field appearance="outline" class="smaller-mat-form-fields__no-margin" floatLabel="always">
+                                <mat-label>{{ labels.name | translate }}</mat-label>
+                                <input type="text" matInput [formControl]="tabItems.at(i + 3).get('name')" />
+                            </mat-form-field>
+                            <mat-form-field appearance="outline" class="smaller-mat-form-fields__no-margin" floatLabel="always">
+                                <mat-label>{{ labels.shortcut | translate }}</mat-label>
+                                <input
+                                    type="text"
+                                    matInput
+                                    [formControl]="
+                                        tabItems
+                                            .at(i + 3)
+                                            .get('tabItemConfigLink')
+                                            .get('link')
+                                    "
+                                />
+                            </mat-form-field>
+                            <input
+                                type="color"
+                                class="custom-links-item-inputColor"
+                                matInput
+                                [formControl]="
+                                    tabItems
+                                        .at(i + 3)
+                                        .get('tabItemConfigLink')
+                                        .get('color')
+                                "
+                            />
+                        </div>
+                        <mat-icon (click)="deleteTab(tabItem); $event.stopPropagation()">delete</mat-icon>
+                    </div>
+                </div>
+                <ng-container>
+                    <div
+                        class="custom-links-item-createButton"
+                        (click)="newTabItemLink()"
+                        fxLayout="row"
+                        fxLayoutAlign="space-between center"
+                    >
+                        {{ labels.newLink | translate }} <mat-icon>add</mat-icon>
+                    </div>
+                </ng-container>
+            </div>
+        </div>
     </div>
 </div>
