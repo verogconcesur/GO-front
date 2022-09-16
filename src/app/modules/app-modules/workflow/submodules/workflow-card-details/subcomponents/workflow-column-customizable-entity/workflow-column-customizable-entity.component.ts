@@ -20,6 +20,10 @@ export class WorkflowColumnCustomizableEntityComponent implements OnInit, OnChan
   @Input() tab: CardColumnTabDTO = null;
   @Output() setShowLoading: EventEmitter<boolean> = new EventEmitter(false);
 
+  public labels = {
+    noDataToShow: marker('errors.noDataToShow')
+  };
+
   public entityData: WorkflowCardTabItemDTO[] = [];
 
   constructor(
@@ -63,11 +67,11 @@ export class WorkflowColumnCustomizableEntityComponent implements OnInit, OnChan
   }
 
   public getDataValue(data: WorkflowCardTabItemDTO): string | number {
-    if (data.tabItemConfigVariable.variable.type.toUpperCase() === 'DATE') {
+    if (data.tabItemConfigVariable.variable.dataType.toUpperCase() === 'DATE') {
       return this.datePipe.transform(new Date(data.tabItemConfigVariable.variable.value), 'dd-MM-yyyy');
-    } else if (data.tabItemConfigVariable.variable.type.toUpperCase() === 'DATETIME') {
+    } else if (data.tabItemConfigVariable.variable.dataType.toUpperCase() === 'DATETIME') {
       return this.datePipe.transform(new Date(data.tabItemConfigVariable.variable.value), 'dd-MM-yyyy, HH:mm');
-    } else if (data.tabItemConfigVariable.variable.type.toUpperCase() === 'TIME') {
+    } else if (data.tabItemConfigVariable.variable.dataType.toUpperCase() === 'TIME') {
       return this.datePipe.transform(new Date(data.tabItemConfigVariable.variable.value), 'HH:mm');
     }
     return data.tabItemConfigVariable.variable.value;

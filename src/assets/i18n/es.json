@@ -135,6 +135,7 @@
         "concept": "Concepto",
         "country": "País",
         "create": "Crear",
+        "createdOn": "Creado el",
         "data": "Datos",
         "dateEnd": "Fecha de fin",
         "dateIni": "Fecha de inicio",
@@ -162,6 +163,7 @@
         "name": "Nombre",
         "newItem": "Nuevo Elememto",
         "newLine": "Nueva línea",
+        "origin": "Origen",
         "payments": "Pagos",
         "postalCode": "Código Postal",
         "price": "Precio",
@@ -370,6 +372,8 @@
         "select": "Selecciona un Workflow",
         "substatesWithAndWithoutCards": "Mostrando subestados con o sin tarjetas",
         "substatesWithCards": "Mostrando únicamente subestados con tarjetas",
-        "substatesWithoutCards": "Mostrando únicamente subestados sin tarjetas"
+        "substatesWithoutCards": "Mostrando únicamente subestados sin tarjetas",
+        "taskDescription": "Descripción de la tarea",
+        "workOrderInformation": "Información de la orden de trabajo"
     }
 }

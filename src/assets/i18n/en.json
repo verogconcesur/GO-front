@@ -135,6 +135,7 @@
         "concept": "Concept",
         "country": "Country",
         "create": "Create",
+        "createdOn": "Created on",
         "data": "Data",
         "dateEnd": "Final date",
         "dateIni": "Initial date",
@@ -162,6 +163,7 @@
         "name": "Name",
         "newItem": "New item",
         "newLine": "New line",
+        "origin": "Origin",
         "payments": "Payments",
         "postalCode": "Postal Code",
         "price": "Price",
@@ -370,6 +372,8 @@
         "select": "Select a Workflow",
         "substatesWithAndWithoutCards": "Showing substates with or without cards",
         "substatesWithCards": "Showing only substates with cards",
-        "substatesWithoutCards": "Showing only substates whithout cards"
+        "substatesWithoutCards": "Showing only substates whithout cards",
+        "taskDescription": "Task description",
+        "workOrderInformation": "Work order information"
     }
 }
