@@ -9,6 +9,8 @@ import { CardService } from '@data/services/cards.service';
 import { TranslateService } from '@ngx-translate/core';
 import { ConfirmDialogService } from '@shared/services/confirm-dialog.service';
 import { moveItemInFormArray } from '@shared/utils/moveItemInFormArray';
+import { removeItemInFormArray } from '@shared/utils/removeItemInFormArray';
+import { take } from 'rxjs/operators';
 
 @Component({
   selector: 'app-custom-actions',
@@ -19,20 +21,23 @@ export class CustomActionsComponent implements OnInit {
   @Input() formCol: FormGroup;
   @Input() colEdit: CardColumnDTO;
   public labels = {
-    name: marker('cards.column.columnName'),
+    name: marker('common.name'),
+    nameColumn: marker('cards.column.columnName'),
     nameRequired: marker('userProfile.nameRequired'),
     actionConfiguration: marker('cards.column.actionConfiguration'),
     shortcutConfiguration: marker('cards.column.shortcutConfiguration'),
+    nameLink: marker('cards.column.linkName'),
+    newLink: marker('cards.column.newLink'),
     tabSign: marker('common.actionsTabItems.sign'),
     tabMerssage: marker('common.actionsTabItems.message'),
     tabAttachment: marker('common.actionsTabItems.attachment'),
+    shortcut: marker('common.shortcut'),
     actions: marker('common.actions')
   };
 
   constructor(
     private fb: FormBuilder,
     private translateService: TranslateService,
-    private cardService: CardService,
     private confirmationDialog: ConfirmDialogService
   ) {}
   get form() {
@@ -45,13 +50,34 @@ export class CustomActionsComponent implements OnInit {
     const tabsArray = this.formCol.controls.tabs as FormArray;
     return tabsArray.at(0).get('tabItems') as FormArray;
   }
-
+  public deleteTab(tabItem: FormGroup) {
+    this.confirmationDialog
+      .open({
+        title: this.translateService.instant(marker('common.warning')),
+        message: this.translateService.instant(marker('cards.column.deleteLinkConfirmation'))
+      })
+      .pipe(take(1))
+      .subscribe((ok: boolean) => {
+        if (ok) {
+          removeItemInFormArray(this.tabItems, tabItem.value.orderNumber - 1);
+        }
+      });
+  }
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   public drop(event: CdkDragDrop<string[]>) {
     moveItemInFormArray(this.tabItems, event.previousIndex, event.currentIndex);
   }
-  public showTab(tabItem: FormGroup) {
+
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  public dropLink(event: CdkDragDrop<string[]>) {
+    moveItemInFormArray(this.tabItems, event.previousIndex + 3, event.currentIndex + 3);
+  }
+  public showTabAction(tabItem: FormGroup) {
     const visible = tabItem.get('tabItemConfigAction').get('visible');
+    visible.setValue(!visible.value);
+  }
+  public showTabLink(tabItem: FormGroup) {
+    const visible = tabItem.get('tabItemConfigLink').get('visible');
     visible.setValue(!visible.value);
   }
   public newTab(tab?: CardColumnTabDTO): FormGroup {
@@ -70,21 +96,39 @@ export class CustomActionsComponent implements OnInit {
     const arrayForm = this.fb.array([]);
     if (tab) {
       tab.tabItems.forEach((tabItem) => {
-        arrayForm.push(
-          this.fb.group({
-            id: [tabItem.id],
-            tabId: [tab.id],
-            typeItem: [tabItem.typeItem],
-            orderNumber: [tabItem.orderNumber, [Validators.required]],
-            name: [tabItem.name, [Validators.required]],
-            tabItemConfigAction: this.fb.group({
-              id: [tabItem.tabItemConfigAction.id],
-              tabItemId: [tabItem.tabItemConfigAction.tabItemId],
-              actionType: [tabItem.tabItemConfigAction.actionType],
-              visible: [tabItem.tabItemConfigAction.visible]
+        if (tabItem.typeItem === 'ACTION') {
+          arrayForm.push(
+            this.fb.group({
+              id: [tabItem.id],
+              tabId: [tab.id],
+              typeItem: [tabItem.typeItem],
+              orderNumber: [tabItem.orderNumber, [Validators.required]],
+              name: [tabItem.name, [Validators.required]],
+              tabItemConfigAction: this.fb.group({
+                id: [tabItem.tabItemConfigAction.id],
+                tabItemId: [tabItem.tabItemConfigAction.tabItemId],
+                actionType: [tabItem.tabItemConfigAction.actionType],
+                visible: [tabItem.tabItemConfigAction.visible]
+              })
             })
-          })
-        );
+          );
+        } else if (tabItem.typeItem === 'LINK') {
+          arrayForm.push(
+            this.fb.group({
+              id: [tabItem.id],
+              tabId: [tab.id],
+              typeItem: [tabItem.typeItem],
+              orderNumber: [tabItem.orderNumber, [Validators.required]],
+              name: [tabItem.name, [Validators.required]],
+              tabItemConfigLink: this.fb.group({
+                id: [tabItem.tabItemConfigLink.id],
+                tabItemId: [tabItem.tabItemConfigLink.tabItemId],
+                link: [tabItem.tabItemConfigLink.link, [Validators.required]],
+                color: [tabItem.tabItemConfigLink.color, [Validators.required]]
+              })
+            })
+          );
+        }
       });
     } else {
       actionsTabItems.forEach((tabItem, index) => {
@@ -106,6 +150,23 @@ export class CustomActionsComponent implements OnInit {
       });
     }
     return arrayForm;
+  }
+  public newTabItemLink() {
+    this.tabItems.push(
+      this.fb.group({
+        id: [null],
+        tabId: [null],
+        typeItem: ['LINK'],
+        orderNumber: [this.tabItems.length + 1, [Validators.required]],
+        name: [this.translateService.instant(this.labels.nameLink), [Validators.required]],
+        tabItemConfigLink: this.fb.group({
+          id: [null],
+          tabItemId: [null],
+          link: ['', [Validators.required]],
+          color: ['#FFFFFF']
+        })
+      })
+    );
   }
   ngOnInit(): void {
     if (this.colEdit) {
