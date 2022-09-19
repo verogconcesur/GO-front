@@ -91,6 +91,8 @@ export class WorkflowColumnPrefixedHistoryComponent implements OnInit, OnChanges
           },
           (error: ConcenetError) => {
             this.setShowLoading.emit(false);
+            console.log(error);
+            this.dataLoaded = true;
             this.globalMessageService.showError({
               message: error.message,
               actionText: this.translateService.instant(marker('common.close'))
