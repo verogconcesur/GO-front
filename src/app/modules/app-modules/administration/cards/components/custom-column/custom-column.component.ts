@@ -134,7 +134,7 @@ export class CustomColumnComponent implements OnInit {
                 attributeName: tab.tabItemConfigVariable.variable.attributeName,
                 name: tab.name,
                 variableId: tab.tabItemConfigVariable.variable.id,
-                visible: true
+                visible: tab.tabItemConfigVariable.visible
               },
               index + 1
             )
