@@ -18,7 +18,7 @@
                             class="specialty-data__error"
                             *ngIf="specialtyForm.controls.name.invalid && specialtyForm.controls.name.touched"
                         >
-                            {{ labels.nameRequired | translate }}
+                            {{ labels.nameRequired | translate }} ({{ labels.minLength | translate: { length: this.minLength } }})
                         </mat-error>
                     </mat-form-field>
                     <!-- Email -->

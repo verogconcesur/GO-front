@@ -18,7 +18,7 @@
                             class="brand-data__error"
                             *ngIf="brandForm.controls.name.invalid && brandForm.controls.name.touched"
                         >
-                            {{ labels.nameRequired | translate }}
+                            {{ labels.nameRequired | translate }} ({{ labels.minLength | translate: { length: this.minLength } }})
                         </mat-error>
                     </mat-form-field>
                 </div>

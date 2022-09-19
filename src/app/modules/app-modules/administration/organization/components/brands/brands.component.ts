@@ -163,24 +163,26 @@ export class BrandsComponent implements OnInit {
   }
 
   private openEditCreateModal(brand?: BrandDTO) {
-    this.customDialogService
-      .open({
-        id: CreateEditBrandComponentModalEnum.ID,
-        panelClass: CreateEditBrandComponentModalEnum.PANEL_CLASS,
-        component: CreateEditBrandComponent,
-        extendedComponentData: brand ? brand : null,
-        disableClose: true,
-        width: '900px'
-      })
-      .pipe(take(1))
-      .subscribe((response) => {
-        if (response) {
-          this.globalMessageService.showSuccess({
-            message: this.translateService.instant(marker('common.successOperation')),
-            actionText: this.translateService.instant(marker('common.close'))
-          });
-          this.getBrands();
-        }
-      });
+    setTimeout(() => {
+      this.customDialogService
+        .open({
+          id: CreateEditBrandComponentModalEnum.ID,
+          panelClass: CreateEditBrandComponentModalEnum.PANEL_CLASS,
+          component: CreateEditBrandComponent,
+          extendedComponentData: brand ? brand : null,
+          disableClose: true,
+          width: '900px'
+        })
+        .pipe(take(1))
+        .subscribe((response) => {
+          if (response) {
+            this.globalMessageService.showSuccess({
+              message: this.translateService.instant(marker('common.successOperation')),
+              actionText: this.translateService.instant(marker('common.close'))
+            });
+            this.getBrands();
+          }
+        });
+    });
   }
 }

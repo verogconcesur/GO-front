@@ -209,6 +209,7 @@
         "dateFormat": "The date must have this format: {format}",
         "emailPattern": "The text must be an email.",
         "maxLengthError": "The max length allowed for this field is {length} characters.",
+        "minLength": "Min length: {length}",
         "noDataToShow": "No data to show in table",
         "required": "This field is required.",
         "unknown": "Unknown error"

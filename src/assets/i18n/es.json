@@ -209,6 +209,7 @@
         "dateFormat": "La fecha debe tener este formato: {format}",
         "emailPattern": "El texto introducido debe ser un email.",
         "maxLengthError": "La longitud máxima permitida es de {length} caracteres.",
+        "minLength": "Longitud mínima: {length}",
         "noDataToShow": "No hay información disponible",
         "required": "Este campo es obligatorio.",
         "unknown": "Error desconocido"

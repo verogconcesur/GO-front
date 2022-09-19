@@ -18,7 +18,7 @@
                             class="facility-data__error"
                             *ngIf="facilityForm.controls.name.invalid && facilityForm.controls.name.touched"
                         >
-                            {{ labels.nameRequired | translate }}
+                            {{ labels.nameRequired | translate }} ({{ labels.minLength | translate: { length: this.minLength } }})
                         </mat-error>
                     </mat-form-field>
                     <!-- brand -->

@@ -165,24 +165,26 @@ export class FacilitiesComponent implements OnInit {
     );
   }
   private openEditCreateModal(facility?: FacilityDTO) {
-    this.customDialogService
-      .open({
-        id: CreateEditFacilityComponentModalEnum.ID,
-        panelClass: CreateEditFacilityComponentModalEnum.PANEL_CLASS,
-        component: CreateEditFacilityComponent,
-        extendedComponentData: facility ? facility : null,
-        disableClose: true,
-        width: '900px'
-      })
-      .pipe(take(1))
-      .subscribe((response) => {
-        if (response) {
-          this.globalMessageService.showSuccess({
-            message: this.translateService.instant(marker('common.successOperation')),
-            actionText: this.translateService.instant(marker('common.close'))
-          });
-          this.getFacilities();
-        }
-      });
+    setTimeout(() => {
+      this.customDialogService
+        .open({
+          id: CreateEditFacilityComponentModalEnum.ID,
+          panelClass: CreateEditFacilityComponentModalEnum.PANEL_CLASS,
+          component: CreateEditFacilityComponent,
+          extendedComponentData: facility ? facility : null,
+          disableClose: true,
+          width: '900px'
+        })
+        .pipe(take(1))
+        .subscribe((response) => {
+          if (response) {
+            this.globalMessageService.showSuccess({
+              message: this.translateService.instant(marker('common.successOperation')),
+              actionText: this.translateService.instant(marker('common.close'))
+            });
+            this.getFacilities();
+          }
+        });
+    });
   }
 }
