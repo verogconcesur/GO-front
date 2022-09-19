@@ -15,6 +15,7 @@ import { GlobalMessageService } from '@shared/services/global-message.service';
 import { map, take } from 'rxjs/operators';
 import { removeItemInFormArray } from '@shared/utils/removeItemInFormArray';
 import WorkflowCardSlotDTO from '@data/models/workflows/workflow-card-slot-dto';
+import CardColumnTabItemDTO from '@data/models/cards/card-column-tab-item-dto';
 
 @Component({
   selector: 'app-custom-column',
@@ -46,6 +47,8 @@ export class CustomColumnComponent implements OnInit {
   public tabContentSourceList: CardContentSourceDTO[] = [];
   public tabContentSlotsList: WorkflowCardSlotDTO[] = [];
   public tabId: number = null;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  public tabSlotsBackup: any = {};
   constructor(
     private fb: FormBuilder,
     private translateService: TranslateService,
@@ -102,7 +105,7 @@ export class CustomColumnComponent implements OnInit {
       type: [tab ? tab.type : null, [Validators.required]],
       contentTypeId: [tab ? tab.contentTypeId : null, [Validators.required]],
       contentSourceId: [tab ? tab.contentSourceId : null],
-      tabItems: this.fb.array([])
+      tabItems: this.getTabItemsConfig(tab ? tab.tabItems : null)
     });
   };
   public getContentTypes(firstLoad?: boolean) {
@@ -119,6 +122,28 @@ export class CustomColumnComponent implements OnInit {
       });
     }
   }
+  public getTabItemsConfig(tabItems?: CardColumnTabItemDTO[]): FormArray {
+    const fa = this.fb.array([]);
+    if (tabItems?.length) {
+      if (tabItems[0].typeItem === 'VARIABLE') {
+        tabItems.forEach((tab: CardColumnTabItemDTO, index: number) => {
+          (fa as FormArray).push(
+            this.newTabItemForm(
+              tab.typeItem,
+              {
+                attributeName: tab.tabItemConfigVariable.variable.attributeName,
+                name: tab.name,
+                variableId: tab.tabItemConfigVariable.variable.id,
+                visible: true
+              },
+              index + 1
+            )
+          );
+        });
+      }
+    }
+    return fa;
+  }
   public getContentSources(firstLoad?: boolean) {
     if (firstLoad) {
       this.tabContentSourceList = [];
@@ -131,18 +156,31 @@ export class CustomColumnComponent implements OnInit {
       });
     }
   }
-  public newTabItemForm = (type: 'VARIABLE', data?: WorkflowCardSlotDTO, index?: number): FormGroup => {
+  public newTabItemForm = (
+    type: 'TITLE' | 'TEXT' | 'INPUT' | 'LIST' | 'TABLE' | 'OPTION' | 'VARIABLE' | 'LINK' | 'ACTION',
+    data?: {
+      variableId?: number;
+      attributeName?: string;
+      name?: string;
+      visible?: boolean;
+    },
+    orderNumber?: number
+  ): FormGroup => {
     let formGroup: FormGroup = null;
     if (type === 'VARIABLE') {
       formGroup = this.fb.group({
-        data: [data],
-        name: [data ? data.attributeName : '', Validators.required],
-        orderNumber: [index, Validators.required],
+        attributeName: [{ value: data ? data.attributeName : '', disabled: true }],
+        name: [data ? data.name : '', Validators.required],
+        orderNumber: [orderNumber, Validators.required],
         tabId: [this.tabId],
         tabItemConfigVariable: this.fb.group({
-          id: [data.id]
+          visible: [data.visible],
+          variable: this.fb.group({
+            attributeName: [data ? data.attributeName : ''],
+            id: [data.variableId]
+          })
         }),
-        typeItem: ['VARIABLE']
+        typeItem: [type]
       });
     }
     return formGroup;
@@ -150,16 +188,52 @@ export class CustomColumnComponent implements OnInit {
   public getTabSlots = (firstLoad?: boolean) => {
     if (firstLoad) {
       this.tabContentSlotsList = [];
-    }
-    // || this.formTab.value.contentTypeId === 2
-    // TIPO ENTIDAD
-    if (this.formTab && this.formTab.value.contentTypeId === 1) {
-      this.cardService.getEntityAttributes(this.formTab.value.contentSourceId).subscribe((res: WorkflowCardSlotDTO[]) => {
-        this.tabContentSlotsList = res;
-        this.tabContentSlotsList?.forEach((line, index) => {
-          (this.formTab.get('tabItems') as FormArray).push(this.newTabItemForm('VARIABLE', line, index + 1));
+      if (
+        this.formTab &&
+        this.formTab.value.contentTypeId &&
+        this.formTab.value.contentSourceId &&
+        this.formTab.value.tabItems?.length
+      ) {
+        this.tabSlotsBackup[`${this.formTab.value.contentTypeId}-${this.formTab.value.contentSourceId}`] =
+          this.formTab.value.tabItems;
+      }
+    } else if (
+      (this.formTab && this.formTab.value.contentTypeId === 1) ||
+      (this.formTab && this.formTab.value.contentTypeId === 2)
+    ) {
+      while ((this.formTab.get('tabItems') as FormArray).length !== 0) {
+        (this.formTab.get('tabItems') as FormArray).removeAt(0);
+      }
+      if (this.tabSlotsBackup[`${this.formTab.value.contentTypeId}-${this.formTab.value.contentSourceId}`]?.length) {
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        this.tabSlotsBackup[`${this.formTab.value.contentTypeId}-${this.formTab.value.contentSourceId}`].forEach((data: any) => {
+          (this.formTab.get('tabItems') as FormArray).push(
+            this.newTabItemForm(
+              'VARIABLE',
+              {
+                attributeName: data.tabItemConfigVariable.variable.attributeName,
+                name: data.name,
+                variableId: data.tabItemConfigVariable.variable.id,
+                visible: data.tabItemConfigVariable.visible
+              },
+              data.orderNumber
+            )
+          );
         });
-      });
+      } else {
+        this.cardService.getEntityAttributes(this.formTab.value.contentSourceId).subscribe((res: WorkflowCardSlotDTO[]) => {
+          this.tabContentSlotsList = res;
+          this.tabContentSlotsList?.forEach((line, index) => {
+            (this.formTab.get('tabItems') as FormArray).push(
+              this.newTabItemForm(
+                'VARIABLE',
+                { attributeName: line.attributeName, name: line.attributeName, variableId: line.id, visible: true },
+                index + 1
+              )
+            );
+          });
+        });
+      }
     }
   };
 

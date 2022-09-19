@@ -1,1 +1,30 @@
-<p>entity-tab works!</p>
+<div class="custom-actions-container__header__title">{{ labels.entityTabConfiguration | translate | uppercase }}</div>
+<div class="entity-tab-group" cdkDropListGroup>
+    <div class="entity-tab-group__container" cdkDropList (cdkDropListDropped)="drop($event)">
+        <div
+            cdkDrag
+            class="custom-actions-item custom-links-item mat-elevation-z2"
+            fxLayoutAlign="none center"
+            *ngFor="let item of entityAttributesFormArray?.controls; let i = index"
+        >
+            <div
+                fxLayout="row"
+                fxLayoutAlign="space-between center"
+                class="custom-links-item-nameContainer smaller-mat-form-fields"
+            >
+                <mat-icon cdkDragHandle>drag_indicator</mat-icon>
+                <div class="custom-links-item-formContainer" fxLayout="row wrap" fxLayoutAlign="left center">
+                    <mat-form-field appearance="outline" class="smaller-mat-form-fields__no-margin" floatLabel="always">
+                        <mat-label>{{ entityAttributesFormArray.at(i).get("attributeName").value }}</mat-label>
+                        <input type="text" matInput [formControl]="entityAttributesFormArray.at(i).get('name')" />
+                    </mat-form-field>
+                </div>
+                <mat-icon
+                    (click)="showEntityAttr(item); $event.stopPropagation()"
+                    [ngClass]="{ cross: !item?.value?.tabItemConfigVariable?.visible }"
+                    >remove_red_eye</mat-icon
+                >
+            </div>
+        </div>
+    </div>
+</div>
