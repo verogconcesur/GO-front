@@ -74,7 +74,9 @@ export class CreateEditDepartmentComponent extends ComponentToExtendForCustomDia
     this.departmentToEdit = this.extendedComponentData?.department;
     if (this.departmentToEdit) {
       this.MODAL_TITLE = this.labels.editBrand;
-      this.facilityId = this.departmentToEdit.facility.id;
+      this.facilityId = this.departmentToEdit.facility?.id
+        ? this.departmentToEdit.facility.id
+        : this.extendedComponentData?.facilityId;
     } else {
       this.facilityId = this.extendedComponentData?.facilityId;
     }

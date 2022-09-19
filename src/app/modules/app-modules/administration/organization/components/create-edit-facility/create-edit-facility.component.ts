@@ -105,7 +105,7 @@ export class CreateEditFacilityComponent extends ComponentToExtendForCustomDialo
   ngOnDestroy(): void {}
 
   public confirmCloseCustomDialog(): Observable<boolean> {
-    if (this.facilityForm.touched && this.facilityForm.dirty) {
+    if (this.facilityForm?.touched && this.facilityForm?.dirty) {
       return this.confirmDialogService.open({
         title: this.translateService.instant(marker('common.warning')),
         message: this.translateService.instant(marker('common.unsavedChangesExit'))
@@ -318,9 +318,11 @@ export class CreateEditFacilityComponent extends ComponentToExtendForCustomDialo
       name: [this.facilityToEdit ? this.facilityToEdit.name : null, Validators.required],
       numDepartments: [this.facilityToEdit ? this.facilityToEdit.numDepartments : 0],
       postalCode: [this.facilityToEdit ? this.facilityToEdit.postalCode : null],
-      town: [this.facilityToEdit ? this.facilityToEdit.town : null],
-      province: [this.facilityToEdit && this.facilityToEdit.town ? this.facilityToEdit.town.province : null],
-      country: [this.facilityToEdit && this.facilityToEdit.town ? this.facilityToEdit.town.province.country : null]
+      town: [this.facilityToEdit?.town ? this.facilityToEdit.town : null],
+      province: [this.facilityToEdit && this.facilityToEdit.town?.province ? this.facilityToEdit.town.province : null],
+      country: [
+        this.facilityToEdit && this.facilityToEdit.town?.province?.country ? this.facilityToEdit.town.province.country : null
+      ]
     });
     this.facilityForm.controls.country.valueChanges.subscribe((x) => {
       this.form.province.setValue('');
