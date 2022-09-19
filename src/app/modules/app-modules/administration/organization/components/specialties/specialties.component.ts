@@ -155,27 +155,29 @@ export class SpecialtiesComponent implements OnInit {
     );
   }
   private openEditCreateModal(specialty?: SpecialtyDTO) {
-    this.customDialogService
-      .open({
-        id: CreateEditSpecialtyComponentModalEnum.ID,
-        panelClass: CreateEditSpecialtyComponentModalEnum.PANEL_CLASS,
-        component: CreateEditSpecialtyComponent,
-        extendedComponentData: {
-          specialty: specialty ? specialty : null,
-          department: this.departmentId
-        },
-        disableClose: true,
-        width: '900px'
-      })
-      .pipe(take(1))
-      .subscribe((response) => {
-        if (response) {
-          this.globalMessageService.showSuccess({
-            message: this.translateService.instant(marker('common.successOperation')),
-            actionText: this.translateService.instant(marker('common.close'))
-          });
-          this.getSpecialties();
-        }
-      });
+    setTimeout(() => {
+      this.customDialogService
+        .open({
+          id: CreateEditSpecialtyComponentModalEnum.ID,
+          panelClass: CreateEditSpecialtyComponentModalEnum.PANEL_CLASS,
+          component: CreateEditSpecialtyComponent,
+          extendedComponentData: {
+            specialty: specialty ? specialty : null,
+            department: this.departmentId
+          },
+          disableClose: true,
+          width: '900px'
+        })
+        .pipe(take(1))
+        .subscribe((response) => {
+          if (response) {
+            this.globalMessageService.showSuccess({
+              message: this.translateService.instant(marker('common.successOperation')),
+              actionText: this.translateService.instant(marker('common.close'))
+            });
+            this.getSpecialties();
+          }
+        });
+    });
   }
 }
