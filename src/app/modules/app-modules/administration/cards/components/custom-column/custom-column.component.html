@@ -107,7 +107,7 @@
                 *ngIf="tabContentSourceList && tabContentSourceList.length > 0"
             >
                 <mat-label>{{ labels.tabContentSource | translate }}</mat-label>
-                <mat-select formControlName="contentSourceId">
+                <mat-select formControlName="contentSourceId" (selectionChange)="getTabSlots()">
                     <mat-option *ngFor="let contentSource of tabContentSourceList" [value]="contentSource.id">{{
                         contentSource.name | translate
                     }}</mat-option>
@@ -117,5 +117,15 @@
                 </mat-error>
             </mat-form-field>
         </form>
+        <app-entity-tab
+            [entityAttributesFormArray]="formTab?.controls?.tabItems"
+            [ngStyle]="{
+                display:
+                    (formTab?.controls?.contentTypeId?.value === 1 || formTab?.controls?.contentTypeId?.value === 2) &&
+                    formTab?.controls?.contentSourceId?.value
+                        ? 'block'
+                        : 'none'
+            }"
+        ></app-entity-tab>
     </div>
 </div>

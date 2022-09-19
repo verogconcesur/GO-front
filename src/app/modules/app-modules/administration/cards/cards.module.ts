@@ -12,6 +12,7 @@ import { CreateEditCardComponent } from './components/create-edit-card/create-ed
 import { CustomColumnComponent } from './components/custom-column/custom-column.component';
 import { CustomCommentsComponent } from './components/custom-comments/custom-comments.component';
 import { CustomActionsComponent } from './components/custom-actions/custom-actions.component';
+import { EntityTabComponent } from './components/entity-tab/entity-tab.component';
 
 
 @NgModule({
@@ -21,7 +22,8 @@ import { CustomActionsComponent } from './components/custom-actions/custom-actio
     CreateEditCardComponent,
     CustomColumnComponent,
     CustomCommentsComponent,
-    CustomActionsComponent
+    CustomActionsComponent,
+    EntityTabComponent
   ],
   imports: [
     CommonModule,

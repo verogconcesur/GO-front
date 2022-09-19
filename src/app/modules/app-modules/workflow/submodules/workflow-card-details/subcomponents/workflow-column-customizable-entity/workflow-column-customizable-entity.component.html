@@ -3,6 +3,6 @@
     <div class="w-colunm-entity-data__value">{{ getDataValue(data) }}</div>
 </div>
 
-<h3 class="no-data" *ngIf="!entityData?.length">
+<h3 class="no-data" *ngIf="!entityData?.length && dataLoaded">
     {{ labels.noDataToShow | translate }}
 </h3>

@@ -2,11 +2,11 @@
     <h5 class="uppercase">{{ column.name }}</h5>
     <div class="w-column__container" [ngClass]="containerClass">
         <app-responsive-tabs *ngIf="showTabs" [tabs]="getTabsInfo()" (tabSelectedEvent)="tabChange($event)"></app-responsive-tabs>
+        <div class="loading" *ngIf="showLoading">
+            <mat-spinner diameter="30"></mat-spinner>
+        </div>
         <!-- Para todas las columnas menos para mensajes -->
         <div class="w-column__container__content" *ngIf="containerClass !== 'messages' && containerClass !== 'actions'">
-            <div class="loading" *ngIf="showLoading">
-                <mat-spinner diameter="30"></mat-spinner>
-            </div>
             <app-workflow-column-customizable-entity
                 *ngIf="showColumn('CUSTOMIZABLE_ENTITY')"
                 [tab]="tabToShow"
@@ -25,7 +25,11 @@
                 *ngIf="showColumn('PREFIXED_TASKS')"
                 [tab]="tabToShow"
             ></app-workflow-column-prefixed-tasks>
-            <app-workflow-column-prefixed-history *ngIf="showColumn('PREFIXED_HISTORY')" [tab]="tabToShow">
+            <app-workflow-column-prefixed-history
+                *ngIf="showColumn('PREFIXED_HISTORY')"
+                [tab]="tabToShow"
+                (setShowLoading)="setShowLoading($event)"
+            >
             </app-workflow-column-prefixed-history>
             <app-workflow-column-templates-attachments
                 *ngIf="showColumn('TEMPLATE_ATTACHMENTS')"
@@ -38,11 +42,9 @@
         </div>
         <!-- Columnas mensaje -->
         <div class="w-column__container__content" *ngIf="containerClass === 'messages'">
-            <div class="loading" *ngIf="showLoading">
-                <mat-spinner diameter="30"></mat-spinner>
-            </div>
             <app-workflow-column-comments
                 [style]="{ display: showColumn('COMMENTS') ? '' : 'none' }"
+                (setShowLoading)="setShowLoading($event)"
             ></app-workflow-column-comments>
             <app-workflow-column-client-messages
                 [style]="{ display: showColumn('CLIENT_MESSAGES') ? '' : 'none' }"

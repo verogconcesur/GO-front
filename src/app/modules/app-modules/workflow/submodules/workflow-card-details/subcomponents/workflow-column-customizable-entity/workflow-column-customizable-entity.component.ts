@@ -25,6 +25,7 @@ export class WorkflowColumnCustomizableEntityComponent implements OnInit, OnChan
   };
 
   public entityData: WorkflowCardTabItemDTO[] = [];
+  public dataLoaded = false;
 
   constructor(
     private cardService: CardService,
@@ -38,6 +39,7 @@ export class WorkflowColumnCustomizableEntityComponent implements OnInit, OnChan
 
   ngOnChanges(changes: SimpleChanges): void {
     if (changes.tab) {
+      this.dataLoaded = false;
       this.entityData = [];
       this.getData();
     }
@@ -53,6 +55,7 @@ export class WorkflowColumnCustomizableEntityComponent implements OnInit, OnChan
         .subscribe(
           (data: WorkflowCardTabItemDTO[]) => {
             this.entityData = data;
+            this.dataLoaded = true;
             this.setShowLoading.emit(false);
           },
           (error: ConcenetError) => {
