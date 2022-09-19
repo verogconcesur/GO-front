@@ -170,25 +170,6 @@ export class WokflowBoardColumnComponent implements OnInit {
               associatedWSubstates.push(id);
             }
           });
-
-          // DGDC: descomentar en el momento en el que se pueda ordenar dentro de un mismo subestado
-          // if (itSelf) {
-          //   move.workflowSubstateSource.workflowSubstateUser.forEach((wUser: WorkflowSubstateUserDTO) => {
-          //     const id = this.wSubstateKey + move.workflowSubstateSource.id + '-' + wUser.user.id;
-          //     if (associatedWSubstates.indexOf(id) === -1) {
-          //       associatedWSubstates.push(id);
-          //     }
-          //   });
-          // }
-          // DGDC: quitar en el momento en el que se pueda ordenar dentro de un mismo subestado
-          if (itSelf) {
-            move.workflowSubstateSource.workflowSubstateUser.forEach((wUser: WorkflowSubstateUserDTO) => {
-              const id = this.wSubstateKey + move.workflowSubstateSource.id + '-' + wUser.user.id;
-              if (associatedWSubstates.indexOf(id) === -1 && id !== itSelf) {
-                associatedWSubstates.push(id);
-              }
-            });
-          }
         } else {
           const id = this.wSubstateKey + move.workflowSubstateTarget.id;
           if (associatedWSubstates.indexOf(id) === -1) {
@@ -198,6 +179,15 @@ export class WokflowBoardColumnComponent implements OnInit {
           // if (itSelf) {
           //   associatedWSubstates.push(itSelf);
           // }
+        }
+
+        if (itSelf && move.workflowSubstateSource.workflowState.front) {
+          move.workflowSubstateSource.workflowSubstateUser.forEach((wUser: WorkflowSubstateUserDTO) => {
+            const id = this.wSubstateKey + move.workflowSubstateSource.id + '-' + wUser.user.id;
+            if (associatedWSubstates.indexOf(id) === -1 && id !== itSelf) {
+              associatedWSubstates.push(id);
+            }
+          });
         }
       });
     }

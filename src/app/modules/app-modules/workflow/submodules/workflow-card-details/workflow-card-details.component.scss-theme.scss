@@ -8,6 +8,9 @@
   .wcard-details {
     background-color: mat-contrast($primary, A200);
     &__tab {
+      &__wrapper {
+        background-color: mat-contrast($primary, A200);
+      }
       &__header {
         background-color: mat-contrast($primary, 500);
       }

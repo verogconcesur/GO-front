@@ -42,8 +42,10 @@ export class CreateEditBrandComponent extends ComponentToExtendForCustomDialog i
     nameRequired: marker('userProfile.nameRequired'),
     logo: marker('common.logo'),
     selectFile: marker('common.selectImageFile'),
-    select: marker('common.select')
+    select: marker('common.select'),
+    minLength: marker('errors.minLength')
   };
+  public minLength = 3;
   public brandForm: FormGroup;
   public brandToEdit: BrandDTO = null;
   public textEditorToolbarOptions: TextEditorWrapperConfigI = {
@@ -233,7 +235,7 @@ export class CreateEditBrandComponent extends ComponentToExtendForCustomDialog i
     this.brandForm = this.fb.group({
       id: [this.brandToEdit ? this.brandToEdit.id : null],
       numFacilities: [this.brandToEdit ? this.brandToEdit.numFacilities : null],
-      name: [this.brandToEdit ? this.brandToEdit.name : '', Validators.required],
+      name: [this.brandToEdit ? this.brandToEdit.name : '', [Validators.required, Validators.minLength(this.minLength)]],
       header: [this.brandToEdit ? this.brandToEdit.header : null],
       footer: [this.brandToEdit ? this.brandToEdit.footer : null],
       logoB64: [

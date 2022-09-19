@@ -79,12 +79,13 @@
             "contentType": "Content Type",
             "deleteLinkConfirmation": "Are you sure you want to delete this link?",
             "deleteTabConfirmation": "Are you sure you want to delete this tab?",
+            "entityTabConfiguration": "Entity data configuration",
             "information": "Information",
             "linkName": "Link name",
             "nameTab": "Tab name",
             "newLink": "New link",
             "newTab": "New tab ",
-            "shortcutConfiguration": "Shortcut configuration",
+            "shortcutConfiguration": "External links configuration",
             "tabConfiguration": "Tab Configuration",
             "tabList": "Column tabs",
             "tabType": "Tab Type"
@@ -208,6 +209,7 @@
         "dateFormat": "The date must have this format: {format}",
         "emailPattern": "The text must be an email.",
         "maxLengthError": "The max length allowed for this field is {length} characters.",
+        "minLength": "Min length: {length}",
         "noDataToShow": "No data to show in table",
         "required": "This field is required.",
         "unknown": "Unknown error"
@@ -334,13 +336,13 @@
         "lastName2": "Last name 2",
         "name": "Name",
         "nameRequired": "Name required",
-        "nick": "Nick",
+        "nick": "User's nick",
         "organization": "Organization",
         "role": "Role",
         "sign": "Sign",
         "specialty": "Specialty",
         "title": "Your profile",
-        "userName": "User name"
+        "userName": "User's name"
     },
     "users": {
         "create": "Create user",

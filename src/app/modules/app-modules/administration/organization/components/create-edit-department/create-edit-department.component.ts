@@ -42,8 +42,10 @@ export class CreateEditDepartmentComponent extends ComponentToExtendForCustomDia
     nameRequired: marker('userProfile.nameRequired'),
     logo: marker('common.logo'),
     selectFile: marker('common.selectImageFile'),
-    select: marker('common.select')
+    select: marker('common.select'),
+    minLength: marker('errors.minLength')
   };
+  public minLength = 3;
   public departmentForm: FormGroup;
   public departmentToEdit: DepartmentDTO = null;
   public textEditorToolbarOptions: TextEditorWrapperConfigI = {
@@ -74,7 +76,9 @@ export class CreateEditDepartmentComponent extends ComponentToExtendForCustomDia
     this.departmentToEdit = this.extendedComponentData?.department;
     if (this.departmentToEdit) {
       this.MODAL_TITLE = this.labels.editBrand;
-      this.facilityId = this.departmentToEdit.facility.id;
+      this.facilityId = this.departmentToEdit.facility?.id
+        ? this.departmentToEdit.facility.id
+        : this.extendedComponentData?.facilityId;
     } else {
       this.facilityId = this.extendedComponentData?.facilityId;
     }
@@ -206,7 +210,10 @@ export class CreateEditDepartmentComponent extends ComponentToExtendForCustomDia
     this.departmentForm = this.fb.group({
       id: [this.departmentToEdit ? this.departmentToEdit.id : null],
       numSpecialties: [this.departmentToEdit ? this.departmentToEdit.numSpecialties : 0],
-      name: [this.departmentToEdit ? this.departmentToEdit.name : '', Validators.required],
+      name: [
+        this.departmentToEdit ? this.departmentToEdit.name : '',
+        [Validators.required, Validators.minLength(this.minLength)]
+      ],
       email: [this.departmentToEdit ? this.departmentToEdit.email : null, Validators.email],
       header: [this.departmentToEdit ? this.departmentToEdit.header : null],
       footer: [this.departmentToEdit ? this.departmentToEdit.footer : null]

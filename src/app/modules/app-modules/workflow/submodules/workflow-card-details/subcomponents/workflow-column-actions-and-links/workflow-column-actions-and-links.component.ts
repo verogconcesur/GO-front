@@ -42,7 +42,6 @@ export class WorkflowColumnActionsAndLinksComponent implements OnInit {
         .pipe(take(1))
         .subscribe(
           (data: WorkflowCardTabItemDTO[]) => {
-            console.log(data);
             this.actions = data.filter((item: WorkflowCardTabItemDTO) => item.typeItem === 'ACTION');
             this.links = data.filter((item: WorkflowCardTabItemDTO) => item.typeItem === 'LINK');
           },

@@ -45,6 +45,7 @@ export class WorkflowColumnPrefixedHistoryComponent implements OnInit, OnChanges
     workflows: []
   };
   public historyFilterForm: FormGroup;
+  public dataLoaded = false;
 
   constructor(
     private cardHistoryService: CardHistoryService,
@@ -78,6 +79,7 @@ export class WorkflowColumnPrefixedHistoryComponent implements OnInit, OnChanges
         .subscribe(
           (data) => {
             data = data ? data : [];
+            this.dataLoaded = true;
             if (data.length) {
               data[0].initial = true;
               data[data.length - 1].final = true;
@@ -89,6 +91,8 @@ export class WorkflowColumnPrefixedHistoryComponent implements OnInit, OnChanges
           },
           (error: ConcenetError) => {
             this.setShowLoading.emit(false);
+            console.log(error);
+            this.dataLoaded = true;
             this.globalMessageService.showError({
               message: error.message,
               actionText: this.translateService.instant(marker('common.close'))

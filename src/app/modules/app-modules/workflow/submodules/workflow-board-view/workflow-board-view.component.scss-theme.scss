@@ -5,6 +5,9 @@
   // $foreground: map-get($theme, foreground);
 
   .board-view-wrapper {
+    -webkit-user-select: none; /* Safari */
+    -ms-user-select: none; /* IE 10 and IE 11 */
+    user-select: none; /* Standard syntax */
     .hide-show-button {
       background-color: mat-contrast($primary, 300);
       color: mat-contrast($primary, 50);

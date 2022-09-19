@@ -167,27 +167,29 @@ export class DepartmentsComponent implements OnInit {
     );
   }
   private openEditCreateModal(deparment?: DepartmentDTO) {
-    this.customDialogService
-      .open({
-        id: CreateEditDepartmentComponentModalEnum.ID,
-        panelClass: CreateEditDepartmentComponentModalEnum.PANEL_CLASS,
-        component: CreateEditDepartmentComponent,
-        extendedComponentData: {
-          department: deparment ? deparment : null,
-          facilityId: this.facilityId
-        },
-        disableClose: true,
-        width: '900px'
-      })
-      .pipe(take(1))
-      .subscribe((response) => {
-        if (response) {
-          this.globalMessageService.showSuccess({
-            message: this.translateService.instant(marker('common.successOperation')),
-            actionText: this.translateService.instant(marker('common.close'))
-          });
-          this.getDepartments();
-        }
-      });
+    setTimeout(() => {
+      this.customDialogService
+        .open({
+          id: CreateEditDepartmentComponentModalEnum.ID,
+          panelClass: CreateEditDepartmentComponentModalEnum.PANEL_CLASS,
+          component: CreateEditDepartmentComponent,
+          extendedComponentData: {
+            department: deparment ? deparment : null,
+            facilityId: this.facilityId
+          },
+          disableClose: true,
+          width: '900px'
+        })
+        .pipe(take(1))
+        .subscribe((response) => {
+          if (response) {
+            this.globalMessageService.showSuccess({
+              message: this.translateService.instant(marker('common.successOperation')),
+              actionText: this.translateService.instant(marker('common.close'))
+            });
+            this.getDepartments();
+          }
+        });
+    });
   }
 }
