@@ -57,8 +57,10 @@ export class CreateEditFacilityComponent extends ComponentToExtendForCustomDialo
     required: marker('errors.required'),
     selectAll: marker('users.roles.selectAll'),
     unselectAll: marker('common.unselectAll'),
-    emailError: marker('errors.emailPattern')
+    emailError: marker('errors.emailPattern'),
+    minLength: marker('errors.minLength')
   };
+  public minLength = 3;
   public organizationLevelsToShow = { specialties: false, departments: false, facilities: false };
   public countryAsyncList: Observable<CountryDTO[]>;
   public brandsAsyncList: Observable<BrandDTO[]>;
@@ -315,7 +317,7 @@ export class CreateEditFacilityComponent extends ComponentToExtendForCustomDialo
       footer: [this.facilityToEdit ? this.facilityToEdit.footer : null],
       header: [this.facilityToEdit ? this.facilityToEdit.header : null],
       id: [this.facilityToEdit ? this.facilityToEdit.id : null],
-      name: [this.facilityToEdit ? this.facilityToEdit.name : null, Validators.required],
+      name: [this.facilityToEdit ? this.facilityToEdit.name : null, [Validators.required, Validators.minLength(this.minLength)]],
       numDepartments: [this.facilityToEdit ? this.facilityToEdit.numDepartments : 0],
       postalCode: [this.facilityToEdit ? this.facilityToEdit.postalCode : null],
       town: [this.facilityToEdit?.town ? this.facilityToEdit.town : null],

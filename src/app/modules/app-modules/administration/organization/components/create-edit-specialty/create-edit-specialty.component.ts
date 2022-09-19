@@ -41,8 +41,10 @@ export class CreateEditSpecialtyComponent extends ComponentToExtendForCustomDial
     nameRequired: marker('userProfile.nameRequired'),
     logo: marker('common.logo'),
     selectFile: marker('common.selectImageFile'),
-    select: marker('common.select')
+    select: marker('common.select'),
+    minLength: marker('errors.minLength')
   };
+  public minLength = 3;
   public specialtyForm: FormGroup;
   public specialtyToEdit: DepartmentDTO = null;
   public textEditorToolbarOptions: TextEditorWrapperConfigI = {
@@ -200,7 +202,7 @@ export class CreateEditSpecialtyComponent extends ComponentToExtendForCustomDial
   private initializeForm = (): void => {
     this.specialtyForm = this.fb.group({
       id: [this.specialtyToEdit ? this.specialtyToEdit.id : null],
-      name: [this.specialtyToEdit ? this.specialtyToEdit.name : '', Validators.required],
+      name: [this.specialtyToEdit ? this.specialtyToEdit.name : '', [Validators.required, Validators.minLength(this.minLength)]],
       email: [this.specialtyToEdit ? this.specialtyToEdit.email : null, Validators.email],
       header: [this.specialtyToEdit ? this.specialtyToEdit.header : null],
       footer: [this.specialtyToEdit ? this.specialtyToEdit.footer : null]

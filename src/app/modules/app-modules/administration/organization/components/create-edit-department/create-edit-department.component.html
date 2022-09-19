@@ -18,7 +18,7 @@
                             class="department-data__error"
                             *ngIf="departmentForm.controls.name.invalid && departmentForm.controls.name.touched"
                         >
-                            {{ labels.nameRequired | translate }}
+                            {{ labels.nameRequired | translate }} ({{ labels.minLength | translate: { length: this.minLength } }})
                         </mat-error>
                     </mat-form-field>
                     <!-- Email -->
