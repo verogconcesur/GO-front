@@ -79,12 +79,13 @@
             "contentType": "Content Type",
             "deleteLinkConfirmation": "Are you sure you want to delete this link?",
             "deleteTabConfirmation": "Are you sure you want to delete this tab?",
+            "entityTabConfiguration": "Entity data configuration",
             "information": "Information",
             "linkName": "Link name",
             "nameTab": "Tab name",
             "newLink": "New link",
             "newTab": "New tab ",
-            "shortcutConfiguration": "Shortcut configuration",
+            "shortcutConfiguration": "External links configuration",
             "tabConfiguration": "Tab Configuration",
             "tabList": "Column tabs",
             "tabType": "Tab Type"
@@ -334,13 +335,13 @@
         "lastName2": "Last name 2",
         "name": "Name",
         "nameRequired": "Name required",
-        "nick": "Nick",
+        "nick": "User's nick",
         "organization": "Organization",
         "role": "Role",
         "sign": "Sign",
         "specialty": "Specialty",
         "title": "Your profile",
-        "userName": "User name"
+        "userName": "User's name"
     },
     "users": {
         "create": "Create user",
