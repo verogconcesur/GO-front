@@ -67,7 +67,7 @@ export class CreateEditCardComponent implements OnInit {
     });
   }
   public isSaveDisabled() {
-    return this.cardForm.invalid || !this.cardForm.touched;
+    return this.cardForm.invalid;
   }
   public cancel(): void {
     this.confirmationDialog
@@ -141,7 +141,7 @@ export class CreateEditCardComponent implements OnInit {
           this.cardToEdit ? this.cardToEdit.cols[0].name : this.translate.instant(this.labels.column) + 1,
           [Validators.required]
         ],
-        tabs: this.fb.array([])
+        tabs: this.fb.array([], [Validators.required])
       }),
       this.fb.group({
         id: [this.cardToEdit ? this.cardToEdit.cols[1].id : null],
