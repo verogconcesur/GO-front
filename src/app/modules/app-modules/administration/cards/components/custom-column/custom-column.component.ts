@@ -6,7 +6,7 @@ import { marker } from '@biesbjerg/ngx-translate-extract-marker';
 import CardColumnDTO from '@data/models/cards/card-column-dto';
 import CardColumnTabDTO from '@data/models/cards/card-column-tab-dto';
 import { TranslateService } from '@ngx-translate/core';
-import { CardService } from '@data/services/card.service';
+import { CardService } from '@data/services/cards.service';
 import { moveItemInFormArray } from '@shared/utils/moveItemInFormArray';
 import CardContentTypeDTO from '@data/models/cards/card-content-type-dto';
 import CardContentSourceDTO from '@data/models/cards/card-content-source-dto';
