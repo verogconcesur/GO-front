@@ -236,7 +236,6 @@ export class CreateEditUserComponent extends ComponentToExtendForCustomDialog im
           this.userToEdit ? this.userToEdit.password : null,
           [
             Validators.required,
-            Validators.pattern(passwordPattern),
             ConfirmPasswordValidator.validAndDiffToOriginal('newPassword', this.userToEdit ? this.userToEdit.password : null)
           ]
         ],
