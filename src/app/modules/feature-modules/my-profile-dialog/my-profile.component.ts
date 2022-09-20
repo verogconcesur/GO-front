@@ -190,7 +190,13 @@ export class MyProfileComponent extends ComponentToExtendForCustomDialog impleme
         userName: [{ value: this.userDetails.userName, disabled: true }, Validators.required],
         role: [{ value: this.userDetails.role.name, disabled: true }, Validators.required],
         password: [this.userDetails.password, Validators.required],
-        newPassword: [this.userDetails.password, [Validators.required, Validators.pattern(passwordPattern)]],
+        newPassword: [
+          this.userDetails.password,
+          [
+            Validators.required,
+            ConfirmPasswordValidator.validAndDiffToOriginal('newPassword', this.userDetails ? this.userDetails.password : null)
+          ]
+        ],
         newPasswordConfirmation: [this.userDetails.password, Validators.required],
         brands: [
           {
