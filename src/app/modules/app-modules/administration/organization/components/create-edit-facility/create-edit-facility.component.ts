@@ -254,7 +254,7 @@ export class CreateEditFacilityComponent extends ComponentToExtendForCustomDialo
           const selectedBrands = this.facilityForm.get('brands').value;
           if (selectedBrands) {
             this.facilityForm.get('brands').setValue(
-              brands.filter((brand: BrandDTO) => selectedBrands.find((brandSelec: BrandDTO) => (brandSelec.id = brand.id))),
+              brands.filter((brand: BrandDTO) => selectedBrands.find((brandSelec: BrandDTO) => brandSelec.id === brand.id)),
               { emitEvent: false }
             );
           }
