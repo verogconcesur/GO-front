@@ -1,3 +1,4 @@
+@import 'utils/theme';
 .card-comments {
   width: calc(100% - 30px);
   height: calc(100% - 37px);
@@ -7,13 +8,18 @@
     height: calc(100% - 100px);
     overflow-y: auto;
     &__comment {
+      background-color: mat-contrast($primary, 500);
       padding: 10px;
       border-radius: 8px;
       margin-bottom: 10px;
       font-size: 0.9em;
       position: relative;
       cursor: pointer;
+      &.selected {
+        border: 1px solid mat-color($primary, A700);
+      }
       .new-comment {
+        background-color: mat-color($primary, A700);
         position: absolute;
         width: 7px;
         height: 7px;
@@ -22,12 +28,14 @@
         right: 10px;
       }
       .fullname {
+        color: mat-contrast($primary, 100);
         font-size: 0.8em;
         font-weight: 600;
         text-transform: uppercase;
       }
       .date {
         font-size: 0.8em;
+        color: mat-contrast($primary, 50);
       }
       .comment {
         margin-top: 5px;
@@ -37,10 +45,12 @@
         display: flex;
         justify-content: flex-start;
         align-items: center;
+        color: mat-color($primary, 600);
       }
     }
   }
   &__new {
+    border-top: 2px solid mat-contrast($primary, 50);
     width: calc(100% - 30px);
     display: flex;
     justify-content: flex-end;
@@ -58,6 +68,7 @@
     }
     button {
       transform: rotate(-45deg);
+      color: mat-color($primary, 700);
     }
   }
 }
