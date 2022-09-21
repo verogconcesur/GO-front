@@ -201,6 +201,8 @@ export class CreateEditAttachmentComponent extends ComponentToExtendForCustomDia
       return item;
     });
     this.templateAttachmentItems.setValue(list);
+    this.attachmentForm.get('templateAttachmentItems').markAsDirty();
+    this.attachmentForm.get('templateAttachmentItems').markAsTouched();
   }
 
   // Convenience getter for easy access to form fields
