@@ -1,4 +1,5 @@
 @import 'utils/core';
+@import 'utils/theme';
 .wcard-header {
   width: 100%;
   height: 100%;
@@ -67,11 +68,13 @@
     padding: 5px 7px;
     text-align: center;
     border-radius: 10px;
+    color: mat-contrast($primary, 400);
   }
 
   &__location {
     letter-spacing: 2px;
     font-weight: bold;
+    color: darken(mat-color($primary, paginator), 20%);
 
     @include respond-to($tablet-small) {
       letter-spacing: 0px;
@@ -80,6 +83,7 @@
   }
 
   &__follow-btn {
+    color: mat-contrast($primary, 400);
     min-width: 131px;
     margin: 0 10px 0 20px;
     label {
@@ -104,6 +108,9 @@
       margin-right: 10px;
       font-weight: bold;
       cursor: pointer;
+    }
+    mat-icon {
+      color: mat-color($primary, paginator);
     }
 
     @include respond-to($tablet) {

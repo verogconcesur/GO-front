@@ -1,8 +1,17 @@
+@import 'utils/theme';
 .w-column {
   margin: 10px;
   height: calc(100% - 20px);
   position: relative;
+  h5 {
+    font-weight: bold;
+    color: mat-color($primary, statusNeutral);
+    letter-spacing: 2px;
+    height: 20px;
+    margin-bottom: 12px;
+  }
   &__container {
+    background-color: mat-contrast($primary, 400);
     border-radius: 20px;
     height: calc(100% - 32px);
     &__content {
@@ -13,6 +22,7 @@
       position: relative;
     }
     &.actions {
+      background-color: rgba(255, 255, 255, 0);
       &__content {
         height: 100%;
       }

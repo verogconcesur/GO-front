@@ -4,10 +4,7 @@
 @mixin workflow-navbar-component-theme($theme, $main-typo) {
   $primary: map-get($theme, primary);
   $foreground: map-get($theme, foreground);
-
-  // NAVBAR
   .workflow-navbar {
-    background-color: mat-contrast($primary, 400);
     &__searcher {
       input,
       .mat-select-placeholder,
@@ -28,19 +25,7 @@
         }
       }
     }
-    .workflow-navbar-filter__mobile {
-      color: mat-color($primary, 500);
-    }
-    &__view-options {
-      .opt-view {
-        color: mat-color($primary, 200);
-        &.active {
-          color: mat-color($primary, 500);
-        }
-      }
-    }
   }
-
   .workflow-panel-class {
     .workflow-facility .mat-optgroup-label {
       color: darken(mat-color($primary, A700), 30%);
