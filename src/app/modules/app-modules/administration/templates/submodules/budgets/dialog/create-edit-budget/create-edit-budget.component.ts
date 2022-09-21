@@ -147,7 +147,6 @@ export class CreateEditBudgetComponent extends ComponentToExtendForCustomDialog 
   }
 
   public templateBudgetLinesAt(index: number) {
-    console.log((this.budgetForm.controls.templateBudgetLines as FormArray).at(index).get('amount').invalid);
     return (this.budgetForm.controls.templateBudgetLines as FormArray).at(index);
   }
 
@@ -181,6 +180,8 @@ export class CreateEditBudgetComponent extends ComponentToExtendForCustomDialog 
       return item;
     });
     this.templateBudgetLines.setValue(list);
+    this.budgetForm.get('templateBudgetLines').markAsDirty();
+    this.budgetForm.get('templateBudgetLines').markAsTouched();
   }
 
   // Convenience getter for easy access to form fields
