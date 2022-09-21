@@ -8,7 +8,6 @@
 @import 'app/modules/app-modules/login/components/restore-password/restore-password.scss-theme.scss';
 @import 'app/shared/components/go-back/go-back.component.scss-theme.scss';
 @import 'app/shared/components/responsive-tabs/responsive-tabs.component.scss-theme.scss';
-@import 'app/modules/feature-modules/my-profile-dialog/my-profile.component.scss-theme.scss';
 @import 'app/layout/dashboard-layout/components/user-profile/user-profile.component.scss-theme.scss';
 @import 'app/layout/administration-layout/administration-layout.component.scss-theme.scss';
 @import 'app/modules/app-modules/administration/users/components/users-permissions/users-permissions.component.scss-theme.scss';
@@ -30,7 +29,6 @@
   @include forgot-password-component-theme($theme, $main-typography);
   @include restore-password-component-theme($theme, $main-typography);
   @include go-back-component-theme($theme, $main-typography);
-  @include my-profile-component-theme($theme, $main-typography);
   @include user-profile-component-theme($theme, $main-typography);
   @include administration-layout-component-theme($theme, $main-typography);
   @include users-permissions-component-theme($theme, $main-typography);
