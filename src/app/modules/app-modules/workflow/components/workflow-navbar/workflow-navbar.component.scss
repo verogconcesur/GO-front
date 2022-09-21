@@ -22,24 +22,6 @@
     .filter {
       width: 100%;
     }
-    input,
-    .mat-select-placeholder,
-    mat-select {
-      font-weight: 500;
-      font-size: 1.1rem;
-      color: mat-color($foreground, secondary-text);
-      .mat-select-value {
-        font-size: 1.4rem;
-        font-weight: 600;
-      }
-    }
-    .redPlaceholder {
-      .mat-select-placeholder {
-        color: mat-color($primary, statusError);
-        text-transform: uppercase;
-        opacity: 1; /* Firefox */
-      }
-    }
   }
 
   .workflow-navbar-filter__mobile {
