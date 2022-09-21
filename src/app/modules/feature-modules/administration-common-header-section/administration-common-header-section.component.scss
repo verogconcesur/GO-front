@@ -1,8 +1,10 @@
 @import 'utils/core';
+@import 'utils/theme';
 
 .adm-header-section {
   &__title {
     margin-bottom: 0px;
+    color: mat-color($foreground, secondary-text);
   }
 
   @include respond-to($mobile) {

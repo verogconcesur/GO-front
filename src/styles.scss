@@ -13,7 +13,6 @@
 @import 'app/modules/app-modules/administration/users/components/users-permissions/users-permissions.component.scss-theme.scss';
 @import 'app/modules/app-modules/administration/users/components/create-edit-user/create-edit-user.component.scss-theme.scss';
 @import 'app/modules/app-modules/administration/organization/components/organization-card/organization-card.component.scss-theme.scss';
-@import 'app/modules/feature-modules/administration-common-header-section/administration-common-header-section.component.scss-theme.scss';
 @import 'app/modules/app-modules/administration/organization/components/create-edit-brand/create-edit-brand.component.scss-theme.scss';
 @import 'app/modules/app-modules/administration/organization/components/create-edit-facility/create-edit-facility.component.scss-theme.scss';
 @import 'app/modules/app-modules/administration/organization/components/create-edit-department/create-edit-department.component.scss-theme.scss';
@@ -34,7 +33,6 @@
   @include users-permissions-component-theme($theme, $main-typography);
   @include create-edit-user-component-theme($theme, $main-typography);
   @include organization-card-component-theme($theme, $main-typography);
-  @include administration-common-header-section-component-theme($theme, $main-typography);
   @include create-edit-brand-component-theme($theme, $main-typography);
   @include create-edit-facility-component-theme($theme, $main-typography);
   @include create-edit-department-component-theme($theme, $main-typography);
