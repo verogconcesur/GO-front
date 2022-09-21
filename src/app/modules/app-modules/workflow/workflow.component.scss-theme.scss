@@ -6,7 +6,6 @@
 @import './submodules/workflow-board-view/workflow-board-view.component.scss-theme.scss';
 @import './submodules/workflow-board-view/subcomponents/workflow-card/workflow-card.component.scss-theme.scss';
 @import './submodules/workflow-card-details/subcomponents/workflow-column-comments/workflow-column-comments.scss-theme.scss';
-@import './submodules/workflow-card-details/subcomponents/workflow-card-column/workflow-card-column.component.scss-theme.scss';
 @import './submodules/workflow-card-details/subcomponents/workflow-column-actions-and-links/workflow-column-actions-and-links.component.scss-theme.scss';
 @mixin workflow-component-theme($theme, $main-typo) {
   $primary: map-get($theme, primary);
@@ -23,6 +22,5 @@
   @include workflow-board-view-component-theme($theme, $main-typo);
   @include workflow-card-component-theme($theme, $main-typo);
   @include workflow-column-comments-component-theme($theme, $main-typo);
-  @include workflow-card-column-component-theme($theme, $main-typo);
   @include workflow-column-actions-and-links-component-theme($theme, $main-typo);
 }
