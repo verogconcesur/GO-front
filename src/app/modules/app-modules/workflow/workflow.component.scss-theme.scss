@@ -1,6 +1,5 @@
 @import '@angular/material/theming';
 @import './components/workflow-navbar/workflow-navbar.component.scss-theme.scss';
-@import './components/workflow-navbar-filter/workflow-navbar-filter.component.scss-theme.scss';
 @import './components/workflow-navbar-filter-form/workflow-navbar-filter-form.component.scss-theme.scss';
 @import './submodules/workflow-board-view/subcomponents/workflow-card/workflow-card.component.scss-theme.scss';
 @import './submodules/workflow-card-details/subcomponents/workflow-column-comments/workflow-column-comments.scss-theme.scss';
@@ -14,7 +13,6 @@
   }
 
   @include workflow-navbar-component-theme($theme, $main-typo);
-  @include workflow-navbar-filter-component-theme($theme, $main-typo);
   @include workflow-navbar-filter-form-component-theme($theme, $main-typo);
   @include workflow-card-component-theme($theme, $main-typo);
   @include workflow-column-comments-component-theme($theme, $main-typo);

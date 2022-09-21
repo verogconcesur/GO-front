@@ -1,10 +1,11 @@
 @import 'utils/core';
-
+@import 'utils/theme';
 .workflow-navbar {
   width: 100%;
   padding-left: 16px;
   padding-right: 16px;
   height: 72px;
+  background-color: mat-contrast($primary, 400);
 
   mat-divider {
     margin: 0 15px;
@@ -21,6 +22,28 @@
     .filter {
       width: 100%;
     }
+    input,
+    .mat-select-placeholder,
+    mat-select {
+      font-weight: 500;
+      font-size: 1.1rem;
+      color: mat-color($foreground, secondary-text);
+      .mat-select-value {
+        font-size: 1.4rem;
+        font-weight: 600;
+      }
+    }
+    .redPlaceholder {
+      .mat-select-placeholder {
+        color: mat-color($primary, statusError);
+        text-transform: uppercase;
+        opacity: 1; /* Firefox */
+      }
+    }
+  }
+
+  .workflow-navbar-filter__mobile {
+    color: mat-color($primary, 500);
   }
 
   &__view-options {
@@ -30,6 +53,7 @@
     .opt-view {
       margin: 0 10px;
       cursor: pointer;
+      color: mat-color($primary, 200);
       &.board-view {
         transform: rotate(180deg);
       }
@@ -40,6 +64,7 @@
       }
       &.active {
         cursor: auto;
+        color: mat-color($primary, 500);
       }
     }
   }
