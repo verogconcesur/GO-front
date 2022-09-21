@@ -1,7 +1,0 @@
-@import 'utils/core';
-//These styles are included in workflow.component.scss-theme.scss to avoid too many imports in styles file
-@import '@angular/material/theming';
-
-@mixin workflow-navbar-filter-component-theme($theme, $main-typo) {
-  $primary: map-get($theme, primary);
-}

@@ -1,3 +1,4 @@
+@import 'utils/theme';
 .workflow-board-column {
   margin: 22px 0 0px 32px;
   padding-right: 32px;
@@ -19,6 +20,7 @@
     justify-content: flex-start;
     align-items: center;
     min-height: 40px;
+    color: mat-color($foreground, secondary-text);
     &__title {
       margin-bottom: 0;
       font-weight: 800;
@@ -53,9 +55,11 @@
         padding-bottom: 15px;
         mat-icon {
           padding-right: 10px;
+          color: darken(mat-color($primary, A700), 25%);
         }
         label {
           font-size: 0.9rem;
+          color: mat-contrast($primary, 50);
         }
       }
       &__see-more {
@@ -65,12 +69,14 @@
           font-size: 0.8rem;
           font-weight: 600;
           margin: 0 -10px -10px 0;
+          color: darken(mat-color($primary, A700), 25%);
         }
       }
       &__common {
         border-radius: 8px;
         box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.08);
         padding: 16px;
+        background-color: mat-contrast($primary, 400);
       }
       &__first {
         z-index: 10;
@@ -96,6 +102,9 @@
         bottom: -16px;
         left: 10%;
       }
+    }
+    .workflow-card__placeholder {
+      display: none !important;
     }
   }
   &__expanded {
@@ -124,6 +133,11 @@
 
       .workflow-substate {
         margin-right: 27px;
+        .title {
+          font-size: 0.8rem;
+          font-weight: 800;
+          color: darken(mat-color($primary, A700), 25%);
+        }
         &.front {
           .title {
             margin-top: 20px;
@@ -177,6 +191,38 @@
       h4 {
         margin: 10px 0 0 0;
         letter-spacing: 2px;
+      }
+    }
+  }
+
+  .card-wrapper,
+  &__collapsed {
+    padding: 5px 0;
+    border: 2px dotted rgba(255, 255, 255, 0);
+    border-radius: 8px;
+    &.droppable-zone {
+      border: 2px dotted mat-color($primary, statusSuccess);
+      background-color: rgba(mat-color($primary, statusSuccess), 20%);
+    }
+  }
+
+  .card-wrapper {
+    .empty-substate {
+      background-color: mat-contrast($primary, 400);
+      label {
+        color: mat-contrast($primary, 50);
+      }
+    }
+    .substate-drop-cover {
+      background-color: mat-contrast($primary, A400);
+      label {
+        color: mat-contrast($primary, 50);
+      }
+    }
+    .substate-origin-substate {
+      background-color: mat-contrast($primary, 400);
+      label {
+        color: mat-contrast($primary, 50);
       }
     }
   }
