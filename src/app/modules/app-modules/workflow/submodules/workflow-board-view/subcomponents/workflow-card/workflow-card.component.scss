@@ -1,4 +1,6 @@
+@import 'utils/theme';
 .workflow-card {
+  background-color: mat-contrast($primary, 400);
   overflow: hidden;
   cursor: pointer;
   width: 300px;
@@ -44,9 +46,11 @@
 
     &__data {
       font-size: 14px;
+      color: mat-contrast($primary, 50);
       &:first-child {
         font-size: 18px;
         font-weight: bold;
+        color: mat-color($foreground, secondary-text);
       }
       &:nth-child(2) {
         font-weight: 500;

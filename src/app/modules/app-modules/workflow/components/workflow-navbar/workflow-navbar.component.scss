@@ -1,10 +1,11 @@
 @import 'utils/core';
-
+@import 'utils/theme';
 .workflow-navbar {
   width: 100%;
   padding-left: 16px;
   padding-right: 16px;
   height: 72px;
+  background-color: mat-contrast($primary, 400);
 
   mat-divider {
     margin: 0 15px;
@@ -23,6 +24,10 @@
     }
   }
 
+  .workflow-navbar-filter__mobile {
+    color: mat-color($primary, 500);
+  }
+
   &__view-options {
     display: flex;
     justify-content: space-between;
@@ -30,6 +35,7 @@
     .opt-view {
       margin: 0 10px;
       cursor: pointer;
+      color: mat-color($primary, 200);
       &.board-view {
         transform: rotate(180deg);
       }
@@ -40,6 +46,7 @@
       }
       &.active {
         cursor: auto;
+        color: mat-color($primary, 500);
       }
     }
   }

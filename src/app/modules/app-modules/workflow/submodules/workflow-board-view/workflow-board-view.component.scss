@@ -1,6 +1,9 @@
 @import 'utils/core';
-
+@import 'utils/theme';
 .board-view-wrapper {
+  -webkit-user-select: none; /* Safari */
+  -ms-user-select: none; /* IE 10 and IE 11 */
+  user-select: none; /* Standard syntax */
   height: calc(100vh - 136px);
   width: 100vw;
   overflow-y: hidden;
@@ -28,6 +31,8 @@
   }
 
   .hide-show-button {
+    background-color: mat-contrast($primary, 300);
+    color: mat-contrast($primary, 50);
     z-index: 5;
     cursor: pointer;
     position: absolute;
