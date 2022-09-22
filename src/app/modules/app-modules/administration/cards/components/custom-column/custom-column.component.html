@@ -37,7 +37,7 @@
                             cdkDrag
                             class="custom-column-item mat-elevation-z2"
                             fxLayoutAlign="none center"
-                            [ngClass]="{ selected: isTabSelected(tab) }"
+                            [ngClass]="{ selected: isTabSelected(tab), invalid: tab.invalid }"
                             (click)="selectTab(tab)"
                         >
                             <div *cdkDragPlaceholder class="custom-column-placeholder"></div>

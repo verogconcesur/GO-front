@@ -39,6 +39,9 @@
     &.selected {
       border: 1px solid mat-color($primary, 500);
     }
+    &.invalid {
+      border: 1px solid mat-color($primary, statusError);
+    }
     .custom-column-item-nameContainer {
       width: 100%;
     }

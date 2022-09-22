@@ -22,6 +22,9 @@
           &--selected {
             color: mat-color($primary, 700);
           }
+          &--invalid {
+            color: mat-color($primary, statusError);
+          }
         }
       }
     }
