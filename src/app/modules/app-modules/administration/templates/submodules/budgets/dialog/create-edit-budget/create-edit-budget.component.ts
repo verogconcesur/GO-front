@@ -42,13 +42,15 @@ export class CreateEditBudgetComponent extends ComponentToExtendForCustomDialog 
     iniDate: marker('common.dateIni'),
     endDate: marker('common.dateEnd'),
     concept: marker('common.concept'),
-    price: marker('common.price')
+    price: marker('common.price'),
+    maxLengthError: marker('errors.maxLengthError')
   };
   public budgetForm: FormGroup;
   public budgetTemplateForm: FormGroup;
   public budgetToEdit: TemplatesBudgetDetailsDTO = null;
   public startDate: Date;
   public endDate: Date;
+  public maxAmount = 99999999;
   constructor(
     private fb: FormBuilder,
     private spinnerService: ProgressSpinnerDialogService,
@@ -140,8 +142,12 @@ export class CreateEditBudgetComponent extends ComponentToExtendForCustomDialog 
     };
   }
 
-  get templateBudgetLines() {
+  get templateBudgetLines(): FormArray {
     return this.budgetForm.controls.templateBudgetLines as FormArray;
+  }
+
+  public templateBudgetLinesAt(index: number) {
+    return (this.budgetForm.controls.templateBudgetLines as FormArray).at(index);
   }
 
   public dropBudgetLine(event: CdkDragDrop<TemplateBudgetLinesDTO[]>) {
@@ -158,7 +164,7 @@ export class CreateEditBudgetComponent extends ComponentToExtendForCustomDialog 
 
   public addBudgetLine() {
     const budgetLine = this.fb.group({
-      amount: [0],
+      amount: [0, Validators.max(this.maxAmount)],
       description: ['', Validators.required],
       id: [null],
       orderNumber: [this.templateBudgetLines.length]
@@ -174,6 +180,8 @@ export class CreateEditBudgetComponent extends ComponentToExtendForCustomDialog 
       return item;
     });
     this.templateBudgetLines.setValue(list);
+    this.budgetForm.get('templateBudgetLines').markAsDirty();
+    this.budgetForm.get('templateBudgetLines').markAsTouched();
   }
 
   // Convenience getter for easy access to form fields
@@ -225,7 +233,7 @@ export class CreateEditBudgetComponent extends ComponentToExtendForCustomDialog 
         .sort((a, b) => a.orderNumber - b.orderNumber)
         .forEach((line) => {
           const budgetLine = this.fb.group({
-            amount: [line.amount],
+            amount: [line.amount, Validators.max(this.maxAmount)],
             description: [line.description, Validators.required],
             id: [line.id],
             orderNumber: [line.orderNumber]

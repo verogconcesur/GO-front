@@ -199,6 +199,8 @@ export class CreateEditTimelineComponent extends ComponentToExtendForCustomDialo
       return item;
     });
     this.templateTimelineItems.setValue(list);
+    this.timelineForm.get('templateTimelineItems').markAsDirty();
+    this.timelineForm.get('templateTimelineItems').markAsTouched();
   }
 
   // Convenience getter for easy access to form fields
