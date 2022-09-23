@@ -155,6 +155,11 @@ export class CustomColumnComponent implements OnInit {
         this.tabContentSourceList = res;
       });
     }
+    if ((this.formTab && this.formTab.value.contentTypeId === 1) || (this.formTab && this.formTab.value.contentTypeId === 2)) {
+      this.formTab.get('contentSourceId').setValidators([Validators.required]);
+    } else {
+      this.formTab.get('contentSourceId').setValidators(null);
+    }
   }
   public newTabItemForm = (
     type: 'TITLE' | 'TEXT' | 'INPUT' | 'LIST' | 'TABLE' | 'OPTION' | 'VARIABLE' | 'LINK' | 'ACTION',
