@@ -87,12 +87,6 @@ export class TextEditorWrapperComponent implements OnInit, AfterViewInit {
           }
         };
       }
-      if (this.textEditorConfig.hideToolbar) {
-        extra = {
-          ...extra,
-          toolbar: false
-        };
-      }
       misc.push('help');
       const toolbar: any[] = [
         // [groupName, [list of button]]
@@ -103,6 +97,18 @@ export class TextEditorWrapperComponent implements OnInit, AfterViewInit {
       ];
       if (misc && misc.length) {
         toolbar.push(['misc', misc]);
+      }
+
+      if (this.textEditorConfig.hideToolbar) {
+        extra = {
+          ...extra,
+          toolbar: false
+        };
+      } else {
+        extra = {
+          ...extra,
+          toolbar: toolbar
+        };
       }
 
       this.summerNoteconfig = {
