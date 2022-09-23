@@ -48,8 +48,7 @@
             // add macro toolbar button
             context.memo('button.macroList', function() {
                 var list = "";
-
-                var macroButton = ui.buttonGroup([
+                return ui.buttonGroup([
                     ui.button({
                         className: 'dropdown-toggle',
                         contents: options.label,
@@ -88,7 +87,6 @@
                         }
                     })
                 ]).render();
-                return macroButton;
             });
         }
     });

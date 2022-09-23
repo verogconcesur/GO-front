@@ -40,9 +40,9 @@ export class CreateEditCommunicationComponent extends ComponentToExtendForCustom
     required: marker('errors.required')
   };
   public textEditorToolbarOptions: TextEditorWrapperConfigI = {
-    addHtmlModificationOption: true
-    // addMacroListOption: true,
-    // macroListOptions: ['Nombre cliente', 'Nombre empresa']
+    addHtmlModificationOption: true,
+    addMacroListOption: true,
+    macroListOptions: []
   };
   public listVariables: VariablesDTO[];
   public communicationForm: FormGroup;
@@ -191,6 +191,7 @@ export class CreateEditCommunicationComponent extends ComponentToExtendForCustom
 
   private getVariable(): void {
     this.variablesService.searchVariables().subscribe((res) => {
+      this.textEditorToolbarOptions.macroListOptions = res.map((item: VariablesDTO) => item.name);
       this.listVariables = res;
     });
   }
