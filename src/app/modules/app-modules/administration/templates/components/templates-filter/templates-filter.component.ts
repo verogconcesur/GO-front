@@ -25,6 +25,9 @@ export class TemplatesFilterComponent extends FilterDrawerClassToExnted implemen
   constructor(private fb: UntypedFormBuilder, private filterDrawerService: FilterDrawerService) {
     super();
   }
+  get form() {
+    return this.filterForm.controls;
+  }
 
   ngOnInit(): void {
     this.initializeForm();
@@ -60,10 +63,6 @@ export class TemplatesFilterComponent extends FilterDrawerClassToExnted implemen
   }
   public getFilterFormValue(): TemplatesFilterDTO {
     return this.filterForm?.value;
-  }
-
-  get form() {
-    return this.filterForm.controls;
   }
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any

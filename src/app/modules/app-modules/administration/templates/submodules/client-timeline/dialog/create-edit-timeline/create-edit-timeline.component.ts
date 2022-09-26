@@ -86,6 +86,14 @@ export class CreateEditTimelineComponent extends ComponentToExtendForCustomDialo
     );
   }
 
+  get templateTimelineItems() {
+    return this.timelineForm.controls.templateTimelineItems as UntypedFormArray;
+  }
+  // Convenience getter for easy access to form fields
+  get form() {
+    return this.timelineForm.controls;
+  }
+
   ngOnInit(): void {
     this.timelineToEdit = this.extendedComponentData;
     if (this.timelineToEdit) {
@@ -166,10 +174,6 @@ export class CreateEditTimelineComponent extends ComponentToExtendForCustomDialo
     };
   }
 
-  get templateTimelineItems() {
-    return this.timelineForm.controls.templateTimelineItems as UntypedFormArray;
-  }
-
   public dropTimelineItem(event: CdkDragDrop<TemplatesTimelineItemsDTO[]>) {
     const list = this.templateTimelineItems.value;
     moveItemInArray(list, event.previousIndex, event.currentIndex);
@@ -201,11 +205,6 @@ export class CreateEditTimelineComponent extends ComponentToExtendForCustomDialo
     this.templateTimelineItems.setValue(list);
     this.timelineForm.get('templateTimelineItems').markAsDirty();
     this.timelineForm.get('templateTimelineItems').markAsTouched();
-  }
-
-  // Convenience getter for easy access to form fields
-  get form() {
-    return this.timelineForm.controls;
   }
 
   public selectAll(type: 'specialties' | 'departments' | 'facilities' | 'brands', control: AbstractControl, list: any[]) {

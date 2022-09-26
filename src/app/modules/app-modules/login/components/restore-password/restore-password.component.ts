@@ -21,6 +21,7 @@ import { passwordPattern } from '@app/constants/patterns.constants';
   styleUrls: ['./restore-password.component.scss']
 })
 export class RestorePasswordComponent implements OnInit {
+  public restorePasswordForm: UntypedFormGroup;
   public labels = {
     title: marker('login.restorePassword.title'),
     description: marker('login.restorePassword.description'),
@@ -36,7 +37,6 @@ export class RestorePasswordComponent implements OnInit {
     changedSuccesfully: marker('login.restorePassword.changedSuccesfully')
   };
 
-  public restorePasswordForm: UntypedFormGroup;
   private hash = '';
 
   constructor(
@@ -49,14 +49,14 @@ export class RestorePasswordComponent implements OnInit {
     private globalMessageService: GlobalMessageService
   ) {}
 
-  ngOnInit(): void {
-    this.initializeForm();
-    this.getHashFromURL();
-  }
-
   // Convenience getter for easy access to form fields
   get form() {
     return this.restorePasswordForm.controls;
+  }
+
+  ngOnInit(): void {
+    this.initializeForm();
+    this.getHashFromURL();
   }
 
   public saveNewPassword(): void {

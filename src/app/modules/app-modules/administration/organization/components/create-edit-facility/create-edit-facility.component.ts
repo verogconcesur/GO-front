@@ -94,6 +94,10 @@ export class CreateEditFacilityComponent extends ComponentToExtendForCustomDialo
       CreateEditFacilityComponentModalEnum.TITLE
     );
   }
+  // Convenience getter for easy access to form fields
+  get form() {
+    return this.facilityForm.controls;
+  }
 
   ngOnInit(): void {
     this.facilityToEdit = this.extendedComponentData;
@@ -178,11 +182,6 @@ export class CreateEditFacilityComponent extends ComponentToExtendForCustomDialo
         }
       ]
     };
-  }
-
-  // Convenience getter for easy access to form fields
-  get form() {
-    return this.facilityForm.controls;
   }
 
   public deleteFacility = (): void => {

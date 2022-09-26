@@ -88,6 +88,14 @@ export class CreateEditAttachmentComponent extends ComponentToExtendForCustomDia
     );
   }
 
+  get templateAttachmentItems() {
+    return this.attachmentForm.controls.templateAttachmentItems as UntypedFormArray;
+  }
+  // Convenience getter for easy access to form fields
+  get form() {
+    return this.attachmentForm.controls;
+  }
+
   ngOnInit(): void {
     this.attachmentToEdit = this.extendedComponentData;
     if (this.attachmentToEdit) {
@@ -168,10 +176,6 @@ export class CreateEditAttachmentComponent extends ComponentToExtendForCustomDia
     };
   }
 
-  get templateAttachmentItems() {
-    return this.attachmentForm.controls.templateAttachmentItems as UntypedFormArray;
-  }
-
   public dropAttachmentItem(event: CdkDragDrop<TemplateAtachmentItemsDTO[]>) {
     const list = this.templateAttachmentItems.value;
     moveItemInArray(list, event.previousIndex, event.currentIndex);
@@ -203,11 +207,6 @@ export class CreateEditAttachmentComponent extends ComponentToExtendForCustomDia
     this.templateAttachmentItems.setValue(list);
     this.attachmentForm.get('templateAttachmentItems').markAsDirty();
     this.attachmentForm.get('templateAttachmentItems').markAsTouched();
-  }
-
-  // Convenience getter for easy access to form fields
-  get form() {
-    return this.attachmentForm.controls;
   }
 
   public selectAll(type: 'specialties' | 'departments' | 'facilities' | 'brands', control: AbstractControl, list: any[]) {

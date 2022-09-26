@@ -71,6 +71,11 @@ export class CreateEditBrandComponent extends ComponentToExtendForCustomDialog i
     );
   }
 
+  // Convenience getter for easy access to form fields
+  get form() {
+    return this.brandForm.controls;
+  }
+
   ngOnInit(): void {
     this.brandToEdit = this.extendedComponentData;
     if (this.brandToEdit) {
@@ -149,11 +154,6 @@ export class CreateEditBrandComponent extends ComponentToExtendForCustomDialog i
         }
       ]
     };
-  }
-
-  // Convenience getter for easy access to form fields
-  get form() {
-    return this.brandForm.controls;
   }
 
   public deleteBrand = (): void => {

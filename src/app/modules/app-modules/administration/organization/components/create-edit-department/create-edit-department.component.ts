@@ -71,6 +71,10 @@ export class CreateEditDepartmentComponent extends ComponentToExtendForCustomDia
       CreateEditDepartmentComponentModalEnum.TITLE
     );
   }
+  // Convenience getter for easy access to form fields
+  get form() {
+    return this.departmentForm.controls;
+  }
 
   ngOnInit(): void {
     this.departmentToEdit = this.extendedComponentData?.department;
@@ -155,11 +159,6 @@ export class CreateEditDepartmentComponent extends ComponentToExtendForCustomDia
         }
       ]
     };
-  }
-
-  // Convenience getter for easy access to form fields
-  get form() {
-    return this.departmentForm.controls;
   }
 
   public deleteBrand = (): void => {

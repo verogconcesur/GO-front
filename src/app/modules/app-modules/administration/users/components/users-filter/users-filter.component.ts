@@ -30,8 +30,16 @@ export class UsersFilterComponent extends FilterDrawerClassToExnted implements O
   public filterForm: UntypedFormGroup;
   public rolesAsyncList: Observable<RoleDTO[]>;
 
-  constructor(private fb: UntypedFormBuilder, private roleService: RoleService, private filterDrawerService: FilterDrawerService) {
+  constructor(
+    private fb: UntypedFormBuilder,
+    private roleService: RoleService,
+    private filterDrawerService: FilterDrawerService
+  ) {
     super();
+  }
+
+  get form() {
+    return this.filterForm.controls;
   }
 
   ngOnInit(): void {
@@ -72,10 +80,6 @@ export class UsersFilterComponent extends FilterDrawerClassToExnted implements O
   }
   public getFilterFormValue(): UserFilterDTO {
     return this.filterForm?.value;
-  }
-
-  get form() {
-    return this.filterForm.controls;
   }
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any

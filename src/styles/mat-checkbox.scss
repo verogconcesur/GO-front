@@ -1,4 +1,4 @@
-@import '~@angular/material/theming';
+@import '@angular/material/theming';
 
 @mixin custom-mat-checkbox-theme($theme, $main-typo) {
   .mat-checkbox-layout {

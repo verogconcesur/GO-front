@@ -55,6 +55,10 @@ export class OrganizationLevelsNestedCombosComponent implements OnInit, OnDestro
     private specialtyService: SpecialtyService
   ) {}
 
+  get formControls() {
+    return this.form.controls;
+  }
+
   ngOnInit(): void {
     this.getListOptions();
   }
@@ -63,10 +67,6 @@ export class OrganizationLevelsNestedCombosComponent implements OnInit, OnDestro
     this.facilitySevice.resetFacilitiesData();
     this.departmentService.resetDepartmentsData();
     this.specialtyService.resetSpecialtiesData();
-  }
-
-  get formControls() {
-    return this.form.controls;
   }
 
   public selectAll(type: 'specialties' | 'departments' | 'facilities' | 'brands', control: AbstractControl, list: any[]) {

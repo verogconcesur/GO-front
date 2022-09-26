@@ -67,6 +67,14 @@ export class CreateEditBudgetComponent extends ComponentToExtendForCustomDialog 
     );
   }
 
+  get templateBudgetLines(): UntypedFormArray {
+    return this.budgetForm.controls.templateBudgetLines as UntypedFormArray;
+  }
+  // Convenience getter for easy access to form fields
+  get form() {
+    return this.budgetForm.controls;
+  }
+
   ngOnInit(): void {
     this.budgetToEdit = this.extendedComponentData;
     if (this.budgetToEdit) {
@@ -142,10 +150,6 @@ export class CreateEditBudgetComponent extends ComponentToExtendForCustomDialog 
     };
   }
 
-  get templateBudgetLines(): UntypedFormArray {
-    return this.budgetForm.controls.templateBudgetLines as UntypedFormArray;
-  }
-
   public templateBudgetLinesAt(index: number) {
     return (this.budgetForm.controls.templateBudgetLines as UntypedFormArray).at(index);
   }
@@ -182,11 +186,6 @@ export class CreateEditBudgetComponent extends ComponentToExtendForCustomDialog 
     this.templateBudgetLines.setValue(list);
     this.budgetForm.get('templateBudgetLines').markAsDirty();
     this.budgetForm.get('templateBudgetLines').markAsTouched();
-  }
-
-  // Convenience getter for easy access to form fields
-  get form() {
-    return this.budgetForm.controls;
   }
 
   public getDateErrorMessage(value: string): string {

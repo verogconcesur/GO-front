@@ -68,6 +68,10 @@ export class CreateEditSpecialtyComponent extends ComponentToExtendForCustomDial
       CreateEditSpecialtyComponentModalEnum.TITLE
     );
   }
+  // Convenience getter for easy access to form fields
+  get form() {
+    return this.specialtyForm.controls;
+  }
   ngOnInit(): void {
     this.specialtyToEdit = this.extendedComponentData?.specialty;
     if (this.specialtyToEdit) {
@@ -148,11 +152,6 @@ export class CreateEditSpecialtyComponent extends ComponentToExtendForCustomDial
         }
       ]
     };
-  }
-
-  // Convenience getter for easy access to form fields
-  get form() {
-    return this.specialtyForm.controls;
   }
 
   public deleteSpecialty = (): void => {

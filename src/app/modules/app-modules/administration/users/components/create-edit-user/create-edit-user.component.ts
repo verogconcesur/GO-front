@@ -89,6 +89,11 @@ export class CreateEditUserComponent extends ComponentToExtendForCustomDialog im
     );
   }
 
+  // Convenience getter for easy access to form fields
+  get form() {
+    return this.userForm.controls;
+  }
+
   ngOnInit() {
     this.userToEdit = this.extendedComponentData;
     if (this.userToEdit) {
@@ -168,11 +173,6 @@ export class CreateEditUserComponent extends ComponentToExtendForCustomDialog im
         }
       ]
     };
-  }
-
-  // Convenience getter for easy access to form fields
-  get form() {
-    return this.userForm.controls;
   }
 
   public validChangesInForm = (): boolean =>

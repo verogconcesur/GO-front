@@ -66,6 +66,10 @@ export class CreateEditCommunicationComponent extends ComponentToExtendForCustom
       CreateEditCommunicationComponentModalEnum.TITLE
     );
   }
+  // Convenience getter for easy access to form fields
+  get form() {
+    return this.communicationForm.controls;
+  }
 
   ngOnInit(): void {
     this.communicationToEdit = this.extendedComponentData;
@@ -153,10 +157,6 @@ export class CreateEditCommunicationComponent extends ComponentToExtendForCustom
       this.communicationForm.get('text').markAsDirty();
       this.communicationForm.get('text').markAsTouched();
     }
-  }
-  // Convenience getter for easy access to form fields
-  get form() {
-    return this.communicationForm.controls;
   }
 
   private deleteCommunication = () => {

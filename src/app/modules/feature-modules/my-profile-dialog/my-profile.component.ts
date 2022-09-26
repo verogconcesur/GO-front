@@ -68,6 +68,11 @@ export class MyProfileComponent extends ComponentToExtendForCustomDialog impleme
     super(MyProfileComponentModalEnum.ID, MyProfileComponentModalEnum.PANEL_CLASS, marker(MyProfileComponentModalEnum.TITLE));
   }
 
+  // Convenience getter for easy access to form fields
+  get form() {
+    return this.profileForm.controls;
+  }
+
   ngOnInit() {
     this.userDetails = this.extendedComponentData;
     this.initializeForm();
@@ -159,11 +164,6 @@ export class MyProfileComponent extends ComponentToExtendForCustomDialog impleme
         }
       ]
     };
-  }
-
-  // Convenience getter for easy access to form fields
-  get form() {
-    return this.profileForm.controls;
   }
 
   public disableTooltip(value: string): boolean {
