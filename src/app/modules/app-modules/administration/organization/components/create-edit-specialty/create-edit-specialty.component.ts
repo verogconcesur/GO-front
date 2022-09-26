@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { UntypedFormBuilder, UntypedFormGroup, Validators } from '@angular/forms';
 import { ConcenetError } from '@app/types/error';
 import { marker } from '@biesbjerg/ngx-translate-extract-marker';
 import DepartmentDTO from '@data/models/organization/specialty-dto';
@@ -45,7 +45,7 @@ export class CreateEditSpecialtyComponent extends ComponentToExtendForCustomDial
     minLength: marker('errors.minLength')
   };
   public minLength = 3;
-  public specialtyForm: FormGroup;
+  public specialtyForm: UntypedFormGroup;
   public specialtyToEdit: DepartmentDTO = null;
   public textEditorToolbarOptions: TextEditorWrapperConfigI = {
     addHtmlModificationOption: true
@@ -53,7 +53,7 @@ export class CreateEditSpecialtyComponent extends ComponentToExtendForCustomDial
   private departmentId: number;
 
   constructor(
-    private fb: FormBuilder,
+    private fb: UntypedFormBuilder,
     private spinnerService: ProgressSpinnerDialogService,
     private confirmDialogService: ConfirmDialogService,
     private customDialogService: CustomDialogService,
@@ -67,6 +67,10 @@ export class CreateEditSpecialtyComponent extends ComponentToExtendForCustomDial
       CreateEditSpecialtyComponentModalEnum.PANEL_CLASS,
       CreateEditSpecialtyComponentModalEnum.TITLE
     );
+  }
+  // Convenience getter for easy access to form fields
+  get form() {
+    return this.specialtyForm.controls;
   }
   ngOnInit(): void {
     this.specialtyToEdit = this.extendedComponentData?.specialty;
@@ -148,11 +152,6 @@ export class CreateEditSpecialtyComponent extends ComponentToExtendForCustomDial
         }
       ]
     };
-  }
-
-  // Convenience getter for easy access to form fields
-  get form() {
-    return this.specialtyForm.controls;
   }
 
   public deleteSpecialty = (): void => {

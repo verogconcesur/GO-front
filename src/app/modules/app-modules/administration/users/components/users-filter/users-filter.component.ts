@@ -2,7 +2,7 @@ import { Component, OnInit, ViewChild, ViewEncapsulation } from '@angular/core';
 import { Observable, of } from 'rxjs';
 import { FilterDrawerClassToExnted } from '@modules/feature-modules/filter-drawer/models/filter-drawer-class-to-extend.component';
 import { marker } from '@biesbjerg/ngx-translate-extract-marker';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { UntypedFormBuilder, UntypedFormGroup, Validators } from '@angular/forms';
 import { RoleService } from '@data/services/role.service';
 import RoleDTO from '@data/models/user-permissions/role-dto';
 import UserFilterDTO from '@data/models/user-permissions/user-filter-dto';
@@ -27,11 +27,19 @@ export class UsersFilterComponent extends FilterDrawerClassToExnted implements O
     department: marker('userProfile.department'),
     specialty: marker('userProfile.specialty')
   };
-  public filterForm: FormGroup;
+  public filterForm: UntypedFormGroup;
   public rolesAsyncList: Observable<RoleDTO[]>;
 
-  constructor(private fb: FormBuilder, private roleService: RoleService, private filterDrawerService: FilterDrawerService) {
+  constructor(
+    private fb: UntypedFormBuilder,
+    private roleService: RoleService,
+    private filterDrawerService: FilterDrawerService
+  ) {
     super();
+  }
+
+  get form() {
+    return this.filterForm.controls;
   }
 
   ngOnInit(): void {
@@ -72,10 +80,6 @@ export class UsersFilterComponent extends FilterDrawerClassToExnted implements O
   }
   public getFilterFormValue(): UserFilterDTO {
     return this.filterForm?.value;
-  }
-
-  get form() {
-    return this.filterForm.controls;
   }
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any

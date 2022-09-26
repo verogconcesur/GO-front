@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { Component, EventEmitter, Input, OnDestroy, OnInit, Output } from '@angular/core';
-import { AbstractControl, FormGroup } from '@angular/forms';
+import { AbstractControl, UntypedFormGroup } from '@angular/forms';
 import { marker } from '@biesbjerg/ngx-translate-extract-marker';
 import DepartmentsGroupedByFacility from '@data/interfaces/departments-grouped-by-facility';
 import SpecialtiesGroupedByDepartment from '@data/interfaces/specialties-grouped-by-department';
@@ -23,7 +23,7 @@ import { tap, take } from 'rxjs/operators';
   styleUrls: ['./organization-levels-nested-combos.component.scss']
 })
 export class OrganizationLevelsNestedCombosComponent implements OnInit, OnDestroy {
-  @Input() form: FormGroup;
+  @Input() form: UntypedFormGroup;
   //Brands is always shown
   @Input() levelsToShow: { specialties: boolean; departments: boolean; brands: boolean } = {
     specialties: true,
@@ -55,6 +55,10 @@ export class OrganizationLevelsNestedCombosComponent implements OnInit, OnDestro
     private specialtyService: SpecialtyService
   ) {}
 
+  get formControls() {
+    return this.form.controls;
+  }
+
   ngOnInit(): void {
     this.getListOptions();
   }
@@ -63,10 +67,6 @@ export class OrganizationLevelsNestedCombosComponent implements OnInit, OnDestro
     this.facilitySevice.resetFacilitiesData();
     this.departmentService.resetDepartmentsData();
     this.specialtyService.resetSpecialtiesData();
-  }
-
-  get formControls() {
-    return this.form.controls;
   }
 
   public selectAll(type: 'specialties' | 'departments' | 'facilities' | 'brands', control: AbstractControl, list: any[]) {

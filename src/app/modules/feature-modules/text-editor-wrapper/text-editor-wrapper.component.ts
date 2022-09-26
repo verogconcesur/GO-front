@@ -17,7 +17,7 @@ export class TextEditorWrapperComponent implements OnInit, AfterViewInit {
   @Input() initialValue: string;
   @Input() placeholder: string;
   @Input() textEditorConfig: TextEditorWrapperConfigI;
-  @Output() onContentChanged = new EventEmitter();
+  @Output() contentChanged = new EventEmitter();
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   public summerNoteconfig: any;
   //Styles used to mantain the styles used by summernote on export
@@ -87,12 +87,6 @@ export class TextEditorWrapperComponent implements OnInit, AfterViewInit {
           }
         };
       }
-      if (this.textEditorConfig.hideToolbar) {
-        extra = {
-          ...extra,
-          toolbar: false
-        };
-      }
       misc.push('help');
       const toolbar: any[] = [
         // [groupName, [list of button]]
@@ -103,6 +97,18 @@ export class TextEditorWrapperComponent implements OnInit, AfterViewInit {
       ];
       if (misc && misc.length) {
         toolbar.push(['misc', misc]);
+      }
+
+      if (this.textEditorConfig.hideToolbar) {
+        extra = {
+          ...extra,
+          toolbar: false
+        };
+      } else {
+        extra = {
+          ...extra,
+          toolbar: toolbar
+        };
       }
 
       this.summerNoteconfig = {
@@ -133,7 +139,7 @@ export class TextEditorWrapperComponent implements OnInit, AfterViewInit {
               html = `${this.summernoteStyles} ${html}`;
             }
             this.sumernoteHtmlContent = html;
-            this.onContentChanged.emit(html);
+            this.contentChanged.emit(html);
           }
         }
       };

@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { Component, OnDestroy, OnInit } from '@angular/core';
-import { FormArray, FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { FormArray, UntypedFormBuilder, UntypedFormGroup, Validators } from '@angular/forms';
 import { marker } from '@biesbjerg/ngx-translate-extract-marker';
 import TemplatesCommunicationDTO from '@data/models/templates/templates-communication-dto';
 import VariablesDTO from '@data/models/variables-dto';
@@ -40,18 +40,18 @@ export class CreateEditCommunicationComponent extends ComponentToExtendForCustom
     required: marker('errors.required')
   };
   public textEditorToolbarOptions: TextEditorWrapperConfigI = {
-    addHtmlModificationOption: true
-    // addMacroListOption: true,
-    // macroListOptions: ['Nombre cliente', 'Nombre empresa']
+    addHtmlModificationOption: true,
+    addMacroListOption: true,
+    macroListOptions: []
   };
   public listVariables: VariablesDTO[];
-  public communicationForm: FormGroup;
-  public communicationTemplateForm: FormGroup;
+  public communicationForm: UntypedFormGroup;
+  public communicationTemplateForm: UntypedFormGroup;
   public communicationToEdit: TemplatesCommunicationDTO = null;
   public startDate: Date;
   public endDate: Date;
   constructor(
-    private fb: FormBuilder,
+    private fb: UntypedFormBuilder,
     private spinnerService: ProgressSpinnerDialogService,
     private confirmDialogService: ConfirmDialogService,
     private translateService: TranslateService,
@@ -65,6 +65,10 @@ export class CreateEditCommunicationComponent extends ComponentToExtendForCustom
       CreateEditCommunicationComponentModalEnum.PANEL_CLASS,
       CreateEditCommunicationComponentModalEnum.TITLE
     );
+  }
+  // Convenience getter for easy access to form fields
+  get form() {
+    return this.communicationForm.controls;
   }
 
   ngOnInit(): void {
@@ -154,10 +158,6 @@ export class CreateEditCommunicationComponent extends ComponentToExtendForCustom
       this.communicationForm.get('text').markAsTouched();
     }
   }
-  // Convenience getter for easy access to form fields
-  get form() {
-    return this.communicationForm.controls;
-  }
 
   private deleteCommunication = () => {
     this.confirmDialogService
@@ -191,6 +191,7 @@ export class CreateEditCommunicationComponent extends ComponentToExtendForCustom
 
   private getVariable(): void {
     this.variablesService.searchVariables().subscribe((res) => {
+      this.textEditorToolbarOptions.macroListOptions = res.map((item: VariablesDTO) => item.name);
       this.listVariables = res;
     });
   }

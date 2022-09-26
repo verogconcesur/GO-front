@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { UntypedFormBuilder, UntypedFormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { RouteConstants } from '@app/constants/route.constants';
 import { ConcenetError } from '@app/types/error';
@@ -21,6 +21,7 @@ import { passwordPattern } from '@app/constants/patterns.constants';
   styleUrls: ['./restore-password.component.scss']
 })
 export class RestorePasswordComponent implements OnInit {
+  public restorePasswordForm: UntypedFormGroup;
   public labels = {
     title: marker('login.restorePassword.title'),
     description: marker('login.restorePassword.description'),
@@ -36,11 +37,10 @@ export class RestorePasswordComponent implements OnInit {
     changedSuccesfully: marker('login.restorePassword.changedSuccesfully')
   };
 
-  public restorePasswordForm: FormGroup;
   private hash = '';
 
   constructor(
-    private fb: FormBuilder,
+    private fb: UntypedFormBuilder,
     private router: Router,
     private route: ActivatedRoute,
     private userService: UserService,
@@ -49,14 +49,14 @@ export class RestorePasswordComponent implements OnInit {
     private globalMessageService: GlobalMessageService
   ) {}
 
-  ngOnInit(): void {
-    this.initializeForm();
-    this.getHashFromURL();
-  }
-
   // Convenience getter for easy access to form fields
   get form() {
     return this.restorePasswordForm.controls;
+  }
+
+  ngOnInit(): void {
+    this.initializeForm();
+    this.getHashFromURL();
   }
 
   public saveNewPassword(): void {

@@ -1,4 +1,4 @@
-@import '~@angular/material/theming';
+@import '@angular/material/theming';
 
 @mixin login-component-theme($theme, $main-typo) {
   $primary: map-get($theme, primary);

@@ -20,6 +20,7 @@
                 "build": {
                     "builder": "@angular-devkit/build-angular:browser",
                     "options": {
+                        "allowedCommonJsDependencies": ["messageformat", "jquery"],
                         "preserveSymlinks": true,
                         "outputPath": "dist/Concenet_Front",
                         "index": "src/index.html",
@@ -147,6 +148,5 @@
                 }
             }
         }
-    },
-    "defaultProject": "Concenet_Front"
+    }
 }

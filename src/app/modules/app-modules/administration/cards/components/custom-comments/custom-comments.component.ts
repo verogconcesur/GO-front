@@ -1,5 +1,5 @@
 import { Component, Input, OnInit } from '@angular/core';
-import { FormArray, FormGroup } from '@angular/forms';
+import { UntypedFormArray, UntypedFormGroup } from '@angular/forms';
 import { marker } from '@biesbjerg/ngx-translate-extract-marker';
 import CardColumnDTO from '@data/models/cards/card-column-dto';
 
@@ -9,7 +9,7 @@ import CardColumnDTO from '@data/models/cards/card-column-dto';
   styleUrls: ['./custom-comments.component.scss']
 })
 export class CustomCommentsComponent implements OnInit {
-  @Input() formCol: FormGroup;
+  @Input() formCol: UntypedFormGroup;
   @Input() colEdit: CardColumnDTO;
   public labels = {
     name: marker('cards.column.columnName'),
@@ -21,7 +21,7 @@ export class CustomCommentsComponent implements OnInit {
     return this.formCol.controls;
   }
   get tabs() {
-    return this.formCol.controls.tabs as FormArray;
+    return this.formCol.controls.tabs as UntypedFormArray;
   }
 
   ngOnInit(): void {

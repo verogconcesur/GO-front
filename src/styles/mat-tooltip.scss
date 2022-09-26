@@ -1,4 +1,4 @@
-@import '~@angular/material/theming';
+@import '@angular/material/theming';
 
 @mixin custom-mat-tooltip-theme($theme, $main-typo) {
   .mat-tooltip {

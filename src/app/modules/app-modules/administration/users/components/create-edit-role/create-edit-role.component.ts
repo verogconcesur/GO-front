@@ -1,5 +1,5 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { UntypedFormBuilder, UntypedFormGroup, Validators } from '@angular/forms';
 import { ConcenetError } from '@app/types/error';
 import { marker } from '@biesbjerg/ngx-translate-extract-marker';
 import PermissionsDTO from '@data/models/user-permissions/permissions-dto';
@@ -36,11 +36,11 @@ export class CreateEditRoleComponent extends ComponentToExtendForCustomDialog im
     maxLengthError: marker('errors.maxLengthError')
   };
   public permissions: PermissionsDTO[] = [];
-  public roleForm: FormGroup;
+  public roleForm: UntypedFormGroup;
   public roleToEdit: RoleDTO = null;
 
   constructor(
-    private fb: FormBuilder,
+    private fb: UntypedFormBuilder,
     private confirmDialogService: ConfirmDialogService,
     private translateService: TranslateService,
     private roleService: RoleService,
