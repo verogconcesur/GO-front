@@ -49,7 +49,7 @@
                         [initialValue]="form?.header?.value"
                         [textEditorConfig]="textEditorToolbarOptions"
                         [placeholder]="labels.insertText | translate"
-                        (onContentChanged)="textEditorContentChanged('header', $event)"
+                        (contentChanged)="textEditorContentChanged('header', $event)"
                     ></app-text-editor-wrapper>
                 </div>
                 <!-- Footer -->
@@ -61,7 +61,7 @@
                         [initialValue]="form?.footer?.value"
                         [textEditorConfig]="textEditorToolbarOptions"
                         [placeholder]="labels.insertText | translate"
-                        (onContentChanged)="textEditorContentChanged('footer', $event)"
+                        (contentChanged)="textEditorContentChanged('footer', $event)"
                     ></app-text-editor-wrapper>
                 </div>
             </div>

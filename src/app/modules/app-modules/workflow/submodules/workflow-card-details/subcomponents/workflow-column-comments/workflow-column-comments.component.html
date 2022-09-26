@@ -28,7 +28,7 @@
             [textEditorConfig]="textEditorConfig"
             [initialValue]="newComment"
             [placeholder]="labels.insertText | translate"
-            (onContentChanged)="newCommentChange($event)"
+            (contentChanged)="newCommentChange($event)"
         ></app-text-editor-wrapper>
         <button mat-icon-button (click)="sendComment()"><mat-icon>send</mat-icon></button>
     </div>
