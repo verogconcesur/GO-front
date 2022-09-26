@@ -1,7 +1,7 @@
 import { Component, ElementRef, OnInit, ViewChild, ViewEncapsulation } from '@angular/core';
 import { Observable, of } from 'rxjs';
 import { FilterDrawerClassToExnted } from '@modules/feature-modules/filter-drawer/models/filter-drawer-class-to-extend.component';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { UntypedFormBuilder, UntypedFormGroup, Validators } from '@angular/forms';
 import { BrandService } from '@data/services/brand.service';
 import { DepartmentService } from '@data/services/deparment.service';
 import { FacilityService } from '@data/services/facility.sevice';
@@ -20,10 +20,13 @@ import { OrganizationLevelsNestedCombosComponent } from '@modules/feature-module
 })
 export class TemplatesFilterComponent extends FilterDrawerClassToExnted implements OnInit {
   @ViewChild('OrganizationLevelsNestedCombos') organizationLevelsNestedCombos: OrganizationLevelsNestedCombosComponent;
-  public filterForm: FormGroup;
+  public filterForm: UntypedFormGroup;
 
-  constructor(private fb: FormBuilder, private filterDrawerService: FilterDrawerService) {
+  constructor(private fb: UntypedFormBuilder, private filterDrawerService: FilterDrawerService) {
     super();
+  }
+  get form() {
+    return this.filterForm.controls;
   }
 
   ngOnInit(): void {
@@ -60,10 +63,6 @@ export class TemplatesFilterComponent extends FilterDrawerClassToExnted implemen
   }
   public getFilterFormValue(): TemplatesFilterDTO {
     return this.filterForm?.value;
-  }
-
-  get form() {
-    return this.filterForm.controls;
   }
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any

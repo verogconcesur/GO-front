@@ -1,6 +1,6 @@
-import { FormArray } from '@angular/forms';
+import { UntypedFormArray } from '@angular/forms';
 
-export const moveItemInFormArray = (formArray: FormArray, fromIndex: number, toIndex: number): void => {
+export const moveItemInFormArray = (formArray: UntypedFormArray, fromIndex: number, toIndex: number): void => {
   const dir = toIndex > fromIndex ? 1 : -1;
 
   const item = formArray.at(fromIndex);

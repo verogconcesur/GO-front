@@ -1,4 +1,4 @@
-@import '~@angular/material/theming';
+@import '@angular/material/theming';
 
 @mixin custom-mat-table-theme($theme, $main-typo) {
   $primary: map-get($theme, primary);

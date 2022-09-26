@@ -51,6 +51,10 @@ export class UserProfileComponent implements OnInit {
     private customDialogService: CustomDialogService
   ) {}
 
+  public get showSpinner(): boolean {
+    return !this.userDetails && !this.error;
+  }
+
   ngOnInit(): void {
     this.getUserDetails();
   }
@@ -75,11 +79,6 @@ export class UserProfileComponent implements OnInit {
       });
     }
   }
-
-  public get showSpinner(): boolean {
-    return !this.userDetails && !this.error;
-  }
-
   public showEditProfileDialog(): void {
     this.customDialogService
       .open({
