@@ -1,6 +1,6 @@
 import { CdkDragDrop } from '@angular/cdk/drag-drop';
 import { Component, EventEmitter, Input, OnChanges, OnInit, Output, SimpleChanges } from '@angular/core';
-import { FormArray, FormGroup } from '@angular/forms';
+import { UntypedFormArray, UntypedFormGroup } from '@angular/forms';
 import { marker } from '@biesbjerg/ngx-translate-extract-marker';
 import { moveItemInFormArray } from '@shared/utils/moveItemInFormArray';
 
@@ -10,8 +10,8 @@ import { moveItemInFormArray } from '@shared/utils/moveItemInFormArray';
   styleUrls: ['./entity-tab.component.scss']
 })
 export class EntityTabComponent implements OnInit, OnChanges {
-  @Input() entityAttributesFormArray: FormArray;
-  @Output() entityAttributesFormArrayChange = new EventEmitter<FormArray>();
+  @Input() entityAttributesFormArray: UntypedFormArray;
+  @Output() entityAttributesFormArrayChange = new EventEmitter<UntypedFormArray>();
   public labels = {
     entityTabConfiguration: marker('cards.column.entityTabConfiguration')
   };
@@ -25,7 +25,7 @@ export class EntityTabComponent implements OnInit, OnChanges {
   }
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  public showEntityAttr = (item: FormGroup) => {
+  public showEntityAttr = (item: UntypedFormGroup) => {
     item.get('tabItemConfigVariable.visible').setValue(!item.get('tabItemConfigVariable.visible').value);
   };
 

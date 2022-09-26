@@ -1,6 +1,6 @@
 import { CdkDragDrop } from '@angular/cdk/drag-drop';
 import { Component, Input, OnInit } from '@angular/core';
-import { FormArray, FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { UntypedFormArray, UntypedFormBuilder, UntypedFormGroup, Validators } from '@angular/forms';
 import { tabTypes } from '@app/constants/tabTypes.constants';
 import { marker } from '@biesbjerg/ngx-translate-extract-marker';
 import CardColumnDTO from '@data/models/cards/card-column-dto';
@@ -23,7 +23,7 @@ import CardColumnTabItemDTO from '@data/models/cards/card-column-tab-item-dto';
   styleUrls: ['./custom-column.component.scss']
 })
 export class CustomColumnComponent implements OnInit {
-  @Input() formCol: FormGroup;
+  @Input() formCol: UntypedFormGroup;
   @Input() colEdit: CardColumnDTO;
   public labels = {
     name: marker('cards.column.columnName'),
@@ -41,7 +41,7 @@ export class CustomColumnComponent implements OnInit {
     tabPrefixed: marker('common.tabTypes.prefixed'),
     required: marker('errors.required')
   };
-  public formTab: FormGroup;
+  public formTab: UntypedFormGroup;
   public tabTypeList = tabTypes;
   public tabContentTypeList: CardContentTypeDTO[] = [];
   public tabContentSourceList: CardContentSourceDTO[] = [];
@@ -50,7 +50,7 @@ export class CustomColumnComponent implements OnInit {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   public tabSlotsBackup: any = {};
   constructor(
-    private fb: FormBuilder,
+    private fb: UntypedFormBuilder,
     private translateService: TranslateService,
     private cardService: CardService,
     private confirmationDialog: ConfirmDialogService
@@ -58,14 +58,14 @@ export class CustomColumnComponent implements OnInit {
   get form() {
     return this.formCol.controls;
   }
-  get tabs(): FormArray {
-    return this.formCol.get('tabs') as FormArray;
+  get tabs(): UntypedFormArray {
+    return this.formCol.get('tabs') as UntypedFormArray;
   }
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   public drop(event: CdkDragDrop<any>) {
     moveItemInFormArray(this.tabs, event.previousContainer.data.index, event.container.data.index);
   }
-  public deleteTab(tab: FormGroup) {
+  public deleteTab(tab: UntypedFormGroup) {
     this.confirmationDialog
       .open({
         title: this.translateService.instant(marker('common.warning')),
@@ -81,13 +81,13 @@ export class CustomColumnComponent implements OnInit {
         }
       });
   }
-  public isTabSelected(tab: FormGroup): boolean {
+  public isTabSelected(tab: UntypedFormGroup): boolean {
     return this.formTab && this.formTab.value && tab.value.orderNumber === this.formTab.value.orderNumber;
   }
   public addTab(): void {
     this.tabs.push(this.newTab());
   }
-  public selectTab(tab: FormGroup): void {
+  public selectTab(tab: UntypedFormGroup): void {
     if (!this.formTab || this.formTab.value.orderNumber !== tab.value.orderNumber) {
       this.formTab = tab;
       this.getContentTypes(true);
@@ -95,7 +95,7 @@ export class CustomColumnComponent implements OnInit {
       this.getTabSlots(true);
     }
   }
-  public newTab = (tab?: CardColumnTabDTO): FormGroup => {
+  public newTab = (tab?: CardColumnTabDTO): UntypedFormGroup => {
     this.tabId = tab ? tab.id : null;
     return this.fb.group({
       id: [tab ? tab.id : null],
@@ -122,12 +122,12 @@ export class CustomColumnComponent implements OnInit {
       });
     }
   }
-  public getTabItemsConfig(tabItems?: CardColumnTabItemDTO[]): FormArray {
+  public getTabItemsConfig(tabItems?: CardColumnTabItemDTO[]): UntypedFormArray {
     const fa = this.fb.array([]);
     if (tabItems?.length) {
       if (tabItems[0].typeItem === 'VARIABLE') {
         tabItems.forEach((tab: CardColumnTabItemDTO, index: number) => {
-          (fa as FormArray).push(
+          (fa as UntypedFormArray).push(
             this.newTabItemForm(
               tab.typeItem,
               {
@@ -170,8 +170,8 @@ export class CustomColumnComponent implements OnInit {
       visible?: boolean;
     },
     orderNumber?: number
-  ): FormGroup => {
-    let formGroup: FormGroup = null;
+  ): UntypedFormGroup => {
+    let formGroup: UntypedFormGroup = null;
     if (type === 'VARIABLE') {
       formGroup = this.fb.group({
         attributeName: [{ value: data ? data.attributeName : '', disabled: true }],
@@ -206,13 +206,13 @@ export class CustomColumnComponent implements OnInit {
       (this.formTab && this.formTab.value.contentTypeId === 1) ||
       (this.formTab && this.formTab.value.contentTypeId === 2)
     ) {
-      while ((this.formTab.get('tabItems') as FormArray).length !== 0) {
-        (this.formTab.get('tabItems') as FormArray).removeAt(0);
+      while ((this.formTab.get('tabItems') as UntypedFormArray).length !== 0) {
+        (this.formTab.get('tabItems') as UntypedFormArray).removeAt(0);
       }
       if (this.tabSlotsBackup[`${this.formTab.value.contentTypeId}-${this.formTab.value.contentSourceId}`]?.length) {
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
         this.tabSlotsBackup[`${this.formTab.value.contentTypeId}-${this.formTab.value.contentSourceId}`].forEach((data: any) => {
-          (this.formTab.get('tabItems') as FormArray).push(
+          (this.formTab.get('tabItems') as UntypedFormArray).push(
             this.newTabItemForm(
               'VARIABLE',
               {
@@ -229,7 +229,7 @@ export class CustomColumnComponent implements OnInit {
         this.cardService.getEntityAttributes(this.formTab.value.contentSourceId).subscribe((res: WorkflowCardSlotDTO[]) => {
           this.tabContentSlotsList = res;
           this.tabContentSlotsList?.forEach((line, index) => {
-            (this.formTab.get('tabItems') as FormArray).push(
+            (this.formTab.get('tabItems') as UntypedFormArray).push(
               this.newTabItemForm(
                 'VARIABLE',
                 { attributeName: line.attributeName, name: line.attributeName, variableId: line.id, visible: true },

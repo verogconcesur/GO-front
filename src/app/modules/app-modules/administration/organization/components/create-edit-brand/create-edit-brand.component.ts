@@ -1,6 +1,6 @@
 /* eslint-disable max-len */
 import { Component, ElementRef, OnDestroy, OnInit, ViewChild } from '@angular/core';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { UntypedFormBuilder, UntypedFormGroup, Validators } from '@angular/forms';
 import { ConcenetError } from '@app/types/error';
 import { marker } from '@biesbjerg/ngx-translate-extract-marker';
 import BrandDTO from '@data/models/organization/brand-dto';
@@ -46,7 +46,7 @@ export class CreateEditBrandComponent extends ComponentToExtendForCustomDialog i
     minLength: marker('errors.minLength')
   };
   public minLength = 3;
-  public brandForm: FormGroup;
+  public brandForm: UntypedFormGroup;
   public brandToEdit: BrandDTO = null;
   public textEditorToolbarOptions: TextEditorWrapperConfigI = {
     addHtmlModificationOption: true
@@ -55,7 +55,7 @@ export class CreateEditBrandComponent extends ComponentToExtendForCustomDialog i
   };
 
   constructor(
-    private fb: FormBuilder,
+    private fb: UntypedFormBuilder,
     private spinnerService: ProgressSpinnerDialogService,
     private confirmDialogService: ConfirmDialogService,
     private customDialogService: CustomDialogService,
@@ -69,6 +69,11 @@ export class CreateEditBrandComponent extends ComponentToExtendForCustomDialog i
       CreateEditBrandComponentModalEnum.PANEL_CLASS,
       CreateEditBrandComponentModalEnum.TITLE
     );
+  }
+
+  // Convenience getter for easy access to form fields
+  get form() {
+    return this.brandForm.controls;
   }
 
   ngOnInit(): void {
@@ -149,11 +154,6 @@ export class CreateEditBrandComponent extends ComponentToExtendForCustomDialog i
         }
       ]
     };
-  }
-
-  // Convenience getter for easy access to form fields
-  get form() {
-    return this.brandForm.controls;
   }
 
   public deleteBrand = (): void => {

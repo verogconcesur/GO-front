@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { FormArray, FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { UntypedFormArray, UntypedFormBuilder, UntypedFormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { marker } from '@biesbjerg/ngx-translate-extract-marker';
 import CardColumnDTO from '@data/models/cards/card-column-dto';
@@ -32,12 +32,12 @@ export class CreateEditCardComponent implements OnInit {
     cancel: marker('common.cancel'),
     save: marker('common.save')
   };
-  public cardForm: FormGroup;
+  public cardForm: UntypedFormGroup;
   public cardToEdit: CardDTO = null;
   public selectedCol = 1;
   public dataLoaded = false;
   constructor(
-    private fb: FormBuilder,
+    private fb: UntypedFormBuilder,
     private translate: TranslateService,
     private route: ActivatedRoute,
     private cardService: CardService,
@@ -52,7 +52,7 @@ export class CreateEditCardComponent implements OnInit {
     return this.cardForm.controls;
   }
   get cols() {
-    return this.cardForm.controls.cols as FormArray;
+    return this.cardForm.controls.cols as UntypedFormArray;
   }
   public changeColumn(col: CardColumnDTO) {
     this.selectedCol = col.orderNumber;
@@ -130,7 +130,7 @@ export class CreateEditCardComponent implements OnInit {
       cols: this.initializeCols()
     });
   };
-  private initializeCols(): FormArray {
+  private initializeCols(): UntypedFormArray {
     return this.fb.array([
       this.fb.group({
         id: [this.cardToEdit ? this.cardToEdit.cols[0].id : null],

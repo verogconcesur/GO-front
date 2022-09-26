@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { CdkDragDrop, moveItemInArray } from '@angular/cdk/drag-drop';
 import { Component, OnDestroy, OnInit, ViewEncapsulation } from '@angular/core';
-import { FormArray, FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { UntypedFormArray, UntypedFormBuilder, UntypedFormGroup, Validators } from '@angular/forms';
 import { marker } from '@biesbjerg/ngx-translate-extract-marker';
 import TemplatesBudgetDetailsDTO, { TemplateBudgetLinesDTO } from '@data/models/templates/templates-budget-details-dto';
 import { TemplatesBudgetsService } from '@data/services/templates-budgets.service';
@@ -45,14 +45,14 @@ export class CreateEditBudgetComponent extends ComponentToExtendForCustomDialog 
     price: marker('common.price'),
     maxLengthError: marker('errors.maxLengthError')
   };
-  public budgetForm: FormGroup;
-  public budgetTemplateForm: FormGroup;
+  public budgetForm: UntypedFormGroup;
+  public budgetTemplateForm: UntypedFormGroup;
   public budgetToEdit: TemplatesBudgetDetailsDTO = null;
   public startDate: Date;
   public endDate: Date;
   public maxAmount = 99999999;
   constructor(
-    private fb: FormBuilder,
+    private fb: UntypedFormBuilder,
     private spinnerService: ProgressSpinnerDialogService,
     private confirmDialogService: ConfirmDialogService,
     private translateService: TranslateService,
@@ -65,6 +65,14 @@ export class CreateEditBudgetComponent extends ComponentToExtendForCustomDialog 
       CreateEditBudgetComponentModalEnum.PANEL_CLASS,
       CreateEditBudgetComponentModalEnum.TITLE
     );
+  }
+
+  get templateBudgetLines(): UntypedFormArray {
+    return this.budgetForm.controls.templateBudgetLines as UntypedFormArray;
+  }
+  // Convenience getter for easy access to form fields
+  get form() {
+    return this.budgetForm.controls;
   }
 
   ngOnInit(): void {
@@ -142,12 +150,8 @@ export class CreateEditBudgetComponent extends ComponentToExtendForCustomDialog 
     };
   }
 
-  get templateBudgetLines(): FormArray {
-    return this.budgetForm.controls.templateBudgetLines as FormArray;
-  }
-
   public templateBudgetLinesAt(index: number) {
-    return (this.budgetForm.controls.templateBudgetLines as FormArray).at(index);
+    return (this.budgetForm.controls.templateBudgetLines as UntypedFormArray).at(index);
   }
 
   public dropBudgetLine(event: CdkDragDrop<TemplateBudgetLinesDTO[]>) {
@@ -182,11 +186,6 @@ export class CreateEditBudgetComponent extends ComponentToExtendForCustomDialog 
     this.templateBudgetLines.setValue(list);
     this.budgetForm.get('templateBudgetLines').markAsDirty();
     this.budgetForm.get('templateBudgetLines').markAsTouched();
-  }
-
-  // Convenience getter for easy access to form fields
-  get form() {
-    return this.budgetForm.controls;
   }
 
   public getDateErrorMessage(value: string): string {
@@ -227,7 +226,7 @@ export class CreateEditBudgetComponent extends ComponentToExtendForCustomDialog 
   };
 
   private initializeForm(): void {
-    const budgetLines: FormGroup[] = [];
+    const budgetLines: UntypedFormGroup[] = [];
     if (this.budgetToEdit?.templateBudgetLines?.length > 0) {
       this.budgetToEdit.templateBudgetLines
         .sort((a, b) => a.orderNumber - b.orderNumber)

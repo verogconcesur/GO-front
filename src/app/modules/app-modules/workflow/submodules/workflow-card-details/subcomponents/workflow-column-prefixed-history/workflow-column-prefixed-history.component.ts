@@ -1,5 +1,5 @@
 import { Component, EventEmitter, Input, OnChanges, OnInit, Output, SimpleChanges, ViewEncapsulation } from '@angular/core';
-import { FormBuilder, FormGroup } from '@angular/forms';
+import { UntypedFormBuilder, UntypedFormGroup } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
 import { ConcenetError } from '@app/types/error';
 import { marker } from '@biesbjerg/ngx-translate-extract-marker';
@@ -44,7 +44,7 @@ export class WorkflowColumnPrefixedHistoryComponent implements OnInit, OnChanges
     eventHistoryTypes: [],
     workflows: []
   };
-  public historyFilterForm: FormGroup;
+  public historyFilterForm: UntypedFormGroup;
   public dataLoaded = false;
 
   constructor(
@@ -52,7 +52,7 @@ export class WorkflowColumnPrefixedHistoryComponent implements OnInit, OnChanges
     private route: ActivatedRoute,
     private globalMessageService: GlobalMessageService,
     private translateService: TranslateService,
-    private formBuilder: FormBuilder
+    private formBuilder: UntypedFormBuilder
   ) {}
 
   ngOnInit(): void {

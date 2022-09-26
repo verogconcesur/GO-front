@@ -1,5 +1,5 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
-import { FormBuilder, FormGroup } from '@angular/forms';
+import { UntypedFormBuilder, UntypedFormGroup } from '@angular/forms';
 import { RouteConstants } from '@app/constants/route.constants';
 import { marker } from '@biesbjerg/ngx-translate-extract-marker';
 import WorkflowDTO from '@data/models/workflows/workflow-dto';
@@ -25,7 +25,7 @@ export class WorkflowNavbarComponent implements OnInit, OnDestroy {
   public currentView: RouteConstants | string = null;
   public idWorkflowRouteParam: number = null;
   public workflowList: WorkflowListByFacilityDTO[] = [];
-  public workflowForm: FormGroup;
+  public workflowForm: UntypedFormGroup;
   public workflowGroupOptions: Observable<WorkflowListByFacilityDTO[]>;
   public workflowSelected: WorkflowDTO;
   public labels = {
@@ -37,7 +37,7 @@ export class WorkflowNavbarComponent implements OnInit, OnDestroy {
     private workflowService: WorkflowsService,
     private spinnerService: ProgressSpinnerDialogService,
     private logger: NGXLogger,
-    private formBuilder: FormBuilder,
+    private formBuilder: UntypedFormBuilder,
     private translateService: TranslateService,
     private dragDropService: WorkflowDragAndDropService,
     private route: ActivatedRoute,

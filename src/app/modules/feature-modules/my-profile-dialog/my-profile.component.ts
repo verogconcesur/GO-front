@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { marker } from '@biesbjerg/ngx-translate-extract-marker';
 import { ComponentToExtendForCustomDialog, CustomDialogFooterConfigI } from '@jenga/custom-dialog';
 import { Observable, of, throwError } from 'rxjs';
-import { FormGroup, FormBuilder, Validators } from '@angular/forms';
+import { UntypedFormGroup, UntypedFormBuilder, Validators } from '@angular/forms';
 import { ProgressSpinnerDialogService } from '@shared/services/progress-spinner-dialog.service';
 import UserDetailsDTO from '@data/models/user-permissions/user-details-dto';
 import { ConfirmDialogService } from '@shared/services/confirm-dialog.service';
@@ -54,11 +54,11 @@ export class MyProfileComponent extends ComponentToExtendForCustomDialog impleme
   };
 
   public showPasswordFields = false;
-  public profileForm: FormGroup;
+  public profileForm: UntypedFormGroup;
   public userDetails: UserDetailsDTO = null;
 
   constructor(
-    private fb: FormBuilder,
+    private fb: UntypedFormBuilder,
     private spinnerService: ProgressSpinnerDialogService,
     private confirmDialogService: ConfirmDialogService,
     private translateService: TranslateService,
@@ -66,6 +66,11 @@ export class MyProfileComponent extends ComponentToExtendForCustomDialog impleme
     private globalMessageService: GlobalMessageService
   ) {
     super(MyProfileComponentModalEnum.ID, MyProfileComponentModalEnum.PANEL_CLASS, marker(MyProfileComponentModalEnum.TITLE));
+  }
+
+  // Convenience getter for easy access to form fields
+  get form() {
+    return this.profileForm.controls;
   }
 
   ngOnInit() {
@@ -159,11 +164,6 @@ export class MyProfileComponent extends ComponentToExtendForCustomDialog impleme
         }
       ]
     };
-  }
-
-  // Convenience getter for easy access to form fields
-  get form() {
-    return this.profileForm.controls;
   }
 
   public disableTooltip(value: string): boolean {
