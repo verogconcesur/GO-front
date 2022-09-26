@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { CdkDragDrop, moveItemInArray } from '@angular/cdk/drag-drop';
 import { Component, OnDestroy, OnInit } from '@angular/core';
-import { AbstractControl, FormArray, FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { AbstractControl, UntypedFormArray, UntypedFormBuilder, UntypedFormGroup, Validators } from '@angular/forms';
 import { marker } from '@biesbjerg/ngx-translate-extract-marker';
 import DepartmentsGroupedByFacility from '@data/interfaces/departments-grouped-by-facility';
 import FacilitiesGroupedByBrand from '@data/interfaces/facilities-grouped-by-brand';
@@ -58,7 +58,7 @@ export class CreateEditAttachmentComponent extends ComponentToExtendForCustomDia
     iniDate: marker('common.dateIni'),
     endDate: marker('common.dateEnd')
   };
-  public attachmentForm: FormGroup;
+  public attachmentForm: UntypedFormGroup;
   public brandsAsyncList: Observable<BrandDTO[]>;
   public brandsList: BrandDTO[] = [];
   public facilitiesList: FacilitiesGroupedByBrand[] = [];
@@ -68,7 +68,7 @@ export class CreateEditAttachmentComponent extends ComponentToExtendForCustomDia
   public startDate: Date;
   public endDate: Date;
   constructor(
-    private fb: FormBuilder,
+    private fb: UntypedFormBuilder,
     private spinnerService: ProgressSpinnerDialogService,
     private confirmDialogService: ConfirmDialogService,
     private translateService: TranslateService,
@@ -169,7 +169,7 @@ export class CreateEditAttachmentComponent extends ComponentToExtendForCustomDia
   }
 
   get templateAttachmentItems() {
-    return this.attachmentForm.controls.templateAttachmentItems as FormArray;
+    return this.attachmentForm.controls.templateAttachmentItems as UntypedFormArray;
   }
 
   public dropAttachmentItem(event: CdkDragDrop<TemplateAtachmentItemsDTO[]>) {
@@ -416,7 +416,7 @@ export class CreateEditAttachmentComponent extends ComponentToExtendForCustomDia
   };
 
   private initializeForm(): void {
-    const attachmentItems: FormGroup[] = [];
+    const attachmentItems: UntypedFormGroup[] = [];
     if (this.attachmentToEdit?.templateAttachmentItems?.length > 0) {
       this.attachmentToEdit.templateAttachmentItems
         .sort((a, b) => a.orderNumber - b.orderNumber)

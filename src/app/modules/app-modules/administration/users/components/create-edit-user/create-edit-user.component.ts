@@ -3,7 +3,7 @@ import { Component, OnDestroy, OnInit, ViewChild, ViewEncapsulation } from '@ang
 import { marker } from '@biesbjerg/ngx-translate-extract-marker';
 import { ComponentToExtendForCustomDialog, CustomDialogFooterConfigI, CustomDialogService } from '@jenga/custom-dialog';
 import { Observable, of } from 'rxjs';
-import { FormGroup, FormBuilder, Validators } from '@angular/forms';
+import { UntypedFormGroup, UntypedFormBuilder, Validators } from '@angular/forms';
 import { ProgressSpinnerDialogService } from '@shared/services/progress-spinner-dialog.service';
 import { ConfirmDialogService } from '@shared/services/confirm-dialog.service';
 import { TranslateService } from '@ngx-translate/core';
@@ -67,12 +67,12 @@ export class CreateEditUserComponent extends ComponentToExtendForCustomDialog im
     emailError: marker('errors.emailPattern')
   };
   public userPermissions: { permission: PermissionsDTO; checked: boolean }[] = [];
-  public userForm: FormGroup;
+  public userForm: UntypedFormGroup;
   public rolesAsyncList: Observable<RoleDTO[]>;
   public userToEdit: UserDetailsDTO = null;
 
   constructor(
-    private fb: FormBuilder,
+    private fb: UntypedFormBuilder,
     private spinnerService: ProgressSpinnerDialogService,
     private confirmDialogService: ConfirmDialogService,
     private translateService: TranslateService,

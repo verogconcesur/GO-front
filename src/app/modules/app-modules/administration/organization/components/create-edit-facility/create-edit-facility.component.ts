@@ -1,5 +1,5 @@
 import { Component, OnDestroy, OnInit, ViewEncapsulation } from '@angular/core';
-import { AbstractControl, FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { AbstractControl, UntypedFormBuilder, UntypedFormGroup, Validators } from '@angular/forms';
 import { ConcenetError } from '@app/types/error';
 import { marker } from '@biesbjerg/ngx-translate-extract-marker';
 import FacilityDTO from '@data/models/organization/facility-dto';
@@ -68,7 +68,7 @@ export class CreateEditFacilityComponent extends ComponentToExtendForCustomDialo
   public countryList: CountryDTO[] = [];
   public provinceList: ProvinceDTO[] = [];
   public townList: TownDTO[] = [];
-  public facilityForm: FormGroup;
+  public facilityForm: UntypedFormGroup;
   public facilityToEdit: FacilityDTO = null;
   public textEditorToolbarOptions: TextEditorWrapperConfigI = {
     addHtmlModificationOption: true
@@ -77,7 +77,7 @@ export class CreateEditFacilityComponent extends ComponentToExtendForCustomDialo
   };
 
   constructor(
-    private fb: FormBuilder,
+    private fb: UntypedFormBuilder,
     private facilityService: FacilityService,
     private brandService: BrandService,
     private confirmDialogService: ConfirmDialogService,

@@ -1,5 +1,5 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
-import { FormControl } from '@angular/forms';
+import { UntypedFormControl } from '@angular/forms';
 import { marker } from '@biesbjerg/ngx-translate-extract-marker';
 import UserDetailsDTO from '@data/models/user-permissions/user-details-dto';
 import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
@@ -25,7 +25,7 @@ export class AdministrationCommonHeaderSectionComponent implements OnInit {
   @Output() buttonCreateAction: EventEmitter<void> = new EventEmitter();
   @Output() buttonShowFilterDrawerAction: EventEmitter<void> = new EventEmitter();
   @Output() buttonSearchAction: EventEmitter<void> = new EventEmitter();
-  filterTextSearchControl = new FormControl();
+  filterTextSearchControl = new UntypedFormControl();
   filteredOptions: Observable<UserDetailsDTO[]>;
   transformOptionLabel: (opt: UserDetailsDTO) => string;
 

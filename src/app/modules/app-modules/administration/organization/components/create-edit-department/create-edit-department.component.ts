@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { UntypedFormBuilder, UntypedFormGroup, Validators } from '@angular/forms';
 import { ConcenetError } from '@app/types/error';
 import { marker } from '@biesbjerg/ngx-translate-extract-marker';
 import DepartmentDTO from '@data/models/organization/department-dto';
@@ -46,7 +46,7 @@ export class CreateEditDepartmentComponent extends ComponentToExtendForCustomDia
     minLength: marker('errors.minLength')
   };
   public minLength = 3;
-  public departmentForm: FormGroup;
+  public departmentForm: UntypedFormGroup;
   public departmentToEdit: DepartmentDTO = null;
   public textEditorToolbarOptions: TextEditorWrapperConfigI = {
     addHtmlModificationOption: true
@@ -56,7 +56,7 @@ export class CreateEditDepartmentComponent extends ComponentToExtendForCustomDia
   private facilityId: number;
 
   constructor(
-    private fb: FormBuilder,
+    private fb: UntypedFormBuilder,
     private spinnerService: ProgressSpinnerDialogService,
     private confirmDialogService: ConfirmDialogService,
     private customDialogService: CustomDialogService,

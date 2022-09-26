@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { Component, OnDestroy, OnInit } from '@angular/core';
-import { FormArray, FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { FormArray, UntypedFormBuilder, UntypedFormGroup, Validators } from '@angular/forms';
 import { marker } from '@biesbjerg/ngx-translate-extract-marker';
 import TemplatesCommunicationDTO from '@data/models/templates/templates-communication-dto';
 import VariablesDTO from '@data/models/variables-dto';
@@ -45,13 +45,13 @@ export class CreateEditCommunicationComponent extends ComponentToExtendForCustom
     macroListOptions: []
   };
   public listVariables: VariablesDTO[];
-  public communicationForm: FormGroup;
-  public communicationTemplateForm: FormGroup;
+  public communicationForm: UntypedFormGroup;
+  public communicationTemplateForm: UntypedFormGroup;
   public communicationToEdit: TemplatesCommunicationDTO = null;
   public startDate: Date;
   public endDate: Date;
   constructor(
-    private fb: FormBuilder,
+    private fb: UntypedFormBuilder,
     private spinnerService: ProgressSpinnerDialogService,
     private confirmDialogService: ConfirmDialogService,
     private translateService: TranslateService,

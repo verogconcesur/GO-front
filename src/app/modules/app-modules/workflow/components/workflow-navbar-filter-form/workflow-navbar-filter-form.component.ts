@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { Component, Input, OnInit } from '@angular/core';
-import { FormBuilder, FormGroup } from '@angular/forms';
+import { UntypedFormBuilder, UntypedFormGroup } from '@angular/forms';
 import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
 import WorkflowFilterDTO from '@data/models/workflows/workflow-filter-dto';
 import { marker } from '@biesbjerg/ngx-translate-extract-marker';
@@ -19,7 +19,7 @@ import { WorkflowFilterService } from '../../aux-service/workflow-filter.service
 })
 export class WorkflowNavbarFilterFormComponent implements OnInit {
   @Input() hideSubstatesWithCardsButton: boolean;
-  public filterForm: FormGroup;
+  public filterForm: UntypedFormGroup;
   public filterOptions: WorkflowFilterDTO = null;
   public labels = {
     state: marker('common.state'),
@@ -39,7 +39,7 @@ export class WorkflowNavbarFilterFormComponent implements OnInit {
   public usersOptions: Observable<WorkflowSubstateUserDTO[] | any[]>;
   private filterValue: WorkflowFilterDTO = null;
 
-  constructor(private workflowFilterService: WorkflowFilterService, private formBuilder: FormBuilder) {}
+  constructor(private workflowFilterService: WorkflowFilterService, private formBuilder: UntypedFormBuilder) {}
 
   ngOnInit(): void {
     this.filterValue = this.workflowFilterService.workflowFilterSubject$.getValue();

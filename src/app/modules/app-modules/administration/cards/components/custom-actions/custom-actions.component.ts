@@ -1,6 +1,6 @@
 import { CdkDragDrop } from '@angular/cdk/drag-drop';
 import { Component, Input, OnInit } from '@angular/core';
-import { FormArray, FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { UntypedFormArray, UntypedFormBuilder, UntypedFormGroup, Validators } from '@angular/forms';
 import { actionsTabItems } from '@app/constants/actionsTabItems.constants';
 import { marker } from '@biesbjerg/ngx-translate-extract-marker';
 import CardColumnDTO from '@data/models/cards/card-column-dto';
@@ -18,7 +18,7 @@ import { take } from 'rxjs/operators';
   styleUrls: ['./custom-actions.component.scss']
 })
 export class CustomActionsComponent implements OnInit {
-  @Input() formCol: FormGroup;
+  @Input() formCol: UntypedFormGroup;
   @Input() colEdit: CardColumnDTO;
   public labels = {
     name: marker('common.name'),
@@ -36,21 +36,21 @@ export class CustomActionsComponent implements OnInit {
   };
 
   constructor(
-    private fb: FormBuilder,
+    private fb: UntypedFormBuilder,
     private translateService: TranslateService,
     private confirmationDialog: ConfirmDialogService
   ) {}
   get form() {
     return this.formCol.controls;
   }
-  get tabs(): FormArray {
-    return this.formCol.get('tabs') as FormArray;
+  get tabs(): UntypedFormArray {
+    return this.formCol.get('tabs') as UntypedFormArray;
   }
   get tabItems() {
-    const tabsArray = this.formCol.controls.tabs as FormArray;
-    return tabsArray.at(0).get('tabItems') as FormArray;
+    const tabsArray = this.formCol.controls.tabs as UntypedFormArray;
+    return tabsArray.at(0).get('tabItems') as UntypedFormArray;
   }
-  public deleteTab(tabItem: FormGroup) {
+  public deleteTab(tabItem: UntypedFormGroup) {
     this.confirmationDialog
       .open({
         title: this.translateService.instant(marker('common.warning')),
@@ -72,15 +72,15 @@ export class CustomActionsComponent implements OnInit {
   public dropLink(event: CdkDragDrop<string[]>) {
     moveItemInFormArray(this.tabItems, event.previousIndex + 3, event.currentIndex + 3);
   }
-  public showTabAction(tabItem: FormGroup) {
+  public showTabAction(tabItem: UntypedFormGroup) {
     const visible = tabItem.get('tabItemConfigAction').get('visible');
     visible.setValue(!visible.value);
   }
-  public showTabLink(tabItem: FormGroup) {
+  public showTabLink(tabItem: UntypedFormGroup) {
     const visible = tabItem.get('tabItemConfigLink').get('visible');
     visible.setValue(!visible.value);
   }
-  public newTab(tab?: CardColumnTabDTO): FormGroup {
+  public newTab(tab?: CardColumnTabDTO): UntypedFormGroup {
     return this.fb.group({
       id: [tab ? tab.id : null],
       colId: [this.colEdit ? this.colEdit.id : null],
@@ -92,7 +92,7 @@ export class CustomActionsComponent implements OnInit {
       tabItems: this.generateTabItems(tab)
     });
   }
-  public generateTabItems(tab?: CardColumnTabDTO): FormArray {
+  public generateTabItems(tab?: CardColumnTabDTO): UntypedFormArray {
     const arrayForm = this.fb.array([]);
     if (tab) {
       tab.tabItems.forEach((tabItem) => {

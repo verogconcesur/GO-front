@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { UntypedFormBuilder, UntypedFormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { RouteConstants } from '@app/constants/route.constants';
 import { ConcenetError } from '@app/types/error';
@@ -36,11 +36,11 @@ export class RestorePasswordComponent implements OnInit {
     changedSuccesfully: marker('login.restorePassword.changedSuccesfully')
   };
 
-  public restorePasswordForm: FormGroup;
+  public restorePasswordForm: UntypedFormGroup;
   private hash = '';
 
   constructor(
-    private fb: FormBuilder,
+    private fb: UntypedFormBuilder,
     private router: Router,
     private route: ActivatedRoute,
     private userService: UserService,

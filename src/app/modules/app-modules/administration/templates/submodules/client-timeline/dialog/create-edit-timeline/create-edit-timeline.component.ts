@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { CdkDragDrop, moveItemInArray } from '@angular/cdk/drag-drop';
 import { Component, OnDestroy, OnInit } from '@angular/core';
-import { AbstractControl, FormArray, FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { AbstractControl, UntypedFormArray, UntypedFormBuilder, UntypedFormGroup, Validators } from '@angular/forms';
 import { marker } from '@biesbjerg/ngx-translate-extract-marker';
 import DepartmentsGroupedByFacility from '@data/interfaces/departments-grouped-by-facility';
 import FacilitiesGroupedByBrand from '@data/interfaces/facilities-grouped-by-brand';
@@ -56,7 +56,7 @@ export class CreateEditTimelineComponent extends ComponentToExtendForCustomDialo
     newItem: marker('common.newItem'),
     itemConcept: marker('administration.templates.clientTimeline.itemConcept')
   };
-  public timelineForm: FormGroup;
+  public timelineForm: UntypedFormGroup;
   public brandsAsyncList: Observable<BrandDTO[]>;
   public brandsList: BrandDTO[] = [];
   public facilitiesList: FacilitiesGroupedByBrand[] = [];
@@ -66,7 +66,7 @@ export class CreateEditTimelineComponent extends ComponentToExtendForCustomDialo
   public startDate: Date;
   public endDate: Date;
   constructor(
-    private fb: FormBuilder,
+    private fb: UntypedFormBuilder,
     private spinnerService: ProgressSpinnerDialogService,
     private confirmDialogService: ConfirmDialogService,
     private translateService: TranslateService,
@@ -167,7 +167,7 @@ export class CreateEditTimelineComponent extends ComponentToExtendForCustomDialo
   }
 
   get templateTimelineItems() {
-    return this.timelineForm.controls.templateTimelineItems as FormArray;
+    return this.timelineForm.controls.templateTimelineItems as UntypedFormArray;
   }
 
   public dropTimelineItem(event: CdkDragDrop<TemplatesTimelineItemsDTO[]>) {
@@ -414,7 +414,7 @@ export class CreateEditTimelineComponent extends ComponentToExtendForCustomDialo
   };
 
   private initializeForm(): void {
-    const timelineItems: FormGroup[] = [];
+    const timelineItems: UntypedFormGroup[] = [];
     if (this.timelineToEdit?.templateTimelineItems?.length > 0) {
       this.timelineToEdit.templateTimelineItems
         .sort((a, b) => a.orderNumber - b.orderNumber)
