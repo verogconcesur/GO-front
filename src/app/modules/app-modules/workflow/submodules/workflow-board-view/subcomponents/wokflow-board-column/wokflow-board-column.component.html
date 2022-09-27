@@ -70,6 +70,7 @@
                         (isDraggingEvent)="setOriginDropZone(wSubstateKey + wSubstate.id + '-' + user.user.id, $event)"
                         [wState]="wState"
                         [wSubstate]="wSubstate"
+                        [wUserId]="user.user.id"
                         [droppableStates]="
                             getAssociatedWSubstates(wSubstate.cards[0], wSubstateKey + wSubstate.id + '-' + user.user.id)
                         "
@@ -120,6 +121,7 @@
                         (isDraggingEvent)="setOriginDropZone(wSubstateKey + wSubstate.id, $event)"
                         [wState]="wState"
                         [wSubstate]="wSubstate"
+                        [wUserId]="null"
                         [droppableStates]="getAssociatedWSubstates(wSubstate.cards[0], wSubstateKey + wSubstate.id)"
                     ></app-workflow-card>
                     <div

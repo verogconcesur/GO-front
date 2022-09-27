@@ -36,9 +36,9 @@ export class WorkflowColumnActionsAndLinksComponent implements OnInit {
 
   public getData(): void {
     //Cogemos el cardInstanceWorkflowId de la ruta
-    if (this.route?.snapshot?.params?.id) {
+    if (this.route?.snapshot?.params?.idCard) {
       this.cardService
-        .getCardTabData(parseInt(this.route?.snapshot?.params?.id, 10), this.tab.id)
+        .getCardTabData(parseInt(this.route?.snapshot?.params?.idCard, 10), this.tab.id)
         .pipe(take(1))
         .subscribe(
           (data: WorkflowCardTabItemDTO[]) => {

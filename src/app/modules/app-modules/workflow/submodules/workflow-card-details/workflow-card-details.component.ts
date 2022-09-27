@@ -25,6 +25,7 @@ export class WorkflowCardDetailsComponent implements OnInit {
   public relativeTo: any = null;
   public card: WorkflowCardDTO = null;
   public idCard: number = null;
+  public idUser: number = null;
   public tabSelected: 'column1' | 'column2' | 'messages' | 'actions' = 'column1';
   public showMode: 'all' | 'semi' | 'individual' = 'all';
   public labels = {
@@ -59,8 +60,11 @@ export class WorkflowCardDetailsComponent implements OnInit {
     if (state.card) {
       this.card = JSON.parse(state.card);
       this.idCard = this.card.cardInstanceWorkflows[0].id;
-    } else if (this.route?.snapshot?.params?.id) {
-      this.idCard = parseInt(this.route?.snapshot?.params?.id, 10);
+    } else if (this.route?.snapshot?.params?.idCard) {
+      this.idCard = parseInt(this.route?.snapshot?.params?.idCard, 10);
+    }
+    if (this.route?.snapshot?.params?.idUser && this.route?.snapshot?.params?.idUser !== 'null') {
+      this.idUser = parseInt(this.route?.snapshot?.params?.idUser, 10);
     }
     this.setShowMode(window.innerWidth);
     this.getCardInfo();
@@ -102,7 +106,7 @@ export class WorkflowCardDetailsComponent implements OnInit {
   private getCardInfo(): void {
     const spinner = this.spinnerService.show();
     this.cardService
-      .getCardInstanceDetailById(this.idCard)
+      .getCardInstanceDetailById(this.idCard, this.idUser)
       .pipe(take(1))
       .subscribe(
         (data: CardInstanceDTO) => {
