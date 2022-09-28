@@ -18,7 +18,11 @@
                         class="wcard-details__wrapper__info-sections__container__column1"
                         *ngIf="showMode === 'all' || tabSelected === 'column1'"
                     >
-                        <app-workflow-card-column containerClass="column1" [column]="columnsConfig[0]"></app-workflow-card-column>
+                        <app-workflow-card-column
+                            containerClass="column1"
+                            [cardInstance]="cardInstance"
+                            [column]="columnsConfig[0]"
+                        ></app-workflow-card-column>
                     </div>
                     <div
                         class="wcard-details__wrapper__info-sections__container__column2"
@@ -51,12 +55,17 @@
                 </div>
             </div>
             <div class="wcard-details__wrapper__messages" *ngIf="showMode !== 'individual' || tabSelected === 'messages'">
-                <app-workflow-card-column containerClass="messages" [column]="columnsConfig[2]"></app-workflow-card-column>
+                <app-workflow-card-column
+                    containerClass="messages"
+                    [cardInstance]="cardInstance"
+                    [column]="columnsConfig[2]"
+                ></app-workflow-card-column>
             </div>
             <div class="wcard-details__wrapper__actions" *ngIf="showMode !== 'individual' || tabSelected === 'actions'">
                 <app-workflow-card-column
                     containerClass="actions"
                     [showTabs]="false"
+                    [cardInstance]="cardInstance"
                     [column]="columnsConfig[3]"
                 ></app-workflow-card-column>
             </div>

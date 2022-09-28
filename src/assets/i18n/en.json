@@ -110,6 +110,8 @@
             "edit": "Edit Card",
             "saveConfirmation": "Are you sure you want to save the card?"
         },
+        "moveCard": "Move card",
+        "moveWhere": "Where do you want to move it?",
         "workflows": "Workflow"
     },
     "common": {

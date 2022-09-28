@@ -110,6 +110,8 @@
             "edit": "Editar Ficha",
             "saveConfirmation": "¿Está seguro que desea guardar la tarjeta?"
         },
+        "moveCard": "Mover ficha",
+        "moveWhere": "¿Dónde quiere moverla?",
         "workflows": "Workflow"
     },
     "common": {

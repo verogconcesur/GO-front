@@ -1,13 +1,16 @@
 import { Component, Input, OnInit } from '@angular/core';
+import { MatDialog } from '@angular/material/dialog';
 import { ActivatedRoute } from '@angular/router';
 import { ConcenetError } from '@app/types/error';
 import { marker } from '@biesbjerg/ngx-translate-extract-marker';
 import CardColumnTabDTO from '@data/models/cards/card-column-tab-dto';
+import CardInstanceDTO from '@data/models/cards/card-instance-dto';
 import WorkflowCardTabItemDTO from '@data/models/workflows/workflow-card-tab-item-dto';
 import { CardService } from '@data/services/cards.service';
 import { TranslateService } from '@ngx-translate/core';
 import { GlobalMessageService } from '@shared/services/global-message.service';
 import { take } from 'rxjs/operators';
+import { MoveCardDialogComponent } from '../move-card-dialog/move-card-dialog.component';
 
 @Component({
   selector: 'app-workflow-column-actions-and-links',
@@ -16,6 +19,7 @@ import { take } from 'rxjs/operators';
 })
 export class WorkflowColumnActionsAndLinksComponent implements OnInit {
   @Input() tab: CardColumnTabDTO = null;
+  @Input() cardInstance: CardInstanceDTO;
   public actions: WorkflowCardTabItemDTO[];
   public links: WorkflowCardTabItemDTO[];
   public labels = {
@@ -27,7 +31,8 @@ export class WorkflowColumnActionsAndLinksComponent implements OnInit {
     private cardService: CardService,
     private route: ActivatedRoute,
     private globalMessageService: GlobalMessageService,
-    private translateService: TranslateService
+    private translateService: TranslateService,
+    private dialog: MatDialog
   ) {}
 
   ngOnInit(): void {
@@ -78,7 +83,7 @@ export class WorkflowColumnActionsAndLinksComponent implements OnInit {
   }
 
   public moveCard(): void {
-    console.log('MOVE_CARD');
+    this.dialog.open(MoveCardDialogComponent, { data: { cardInstance: this.cardInstance } });
   }
 
   public getBgColor(btn: WorkflowCardTabItemDTO): string {

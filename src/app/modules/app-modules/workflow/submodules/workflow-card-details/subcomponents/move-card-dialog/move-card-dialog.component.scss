@@ -1,0 +1,16 @@
+@import 'utils/core';
+@import 'utils/theme';
+
+.move-card-dialog {
+  &__header {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 10px;
+    align-items: center;
+    h2.mat-headline {
+      cursor: default;
+      margin: 0 20px 0 0;
+      color: mat-color($foreground, secondary-text);
+    }
+  }
+}
