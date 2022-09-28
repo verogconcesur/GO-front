@@ -24,9 +24,10 @@ export class WorkflowNavbarComponent implements OnInit, OnDestroy {
   public currentUrl = '';
   public currentView: RouteConstants | string = null;
   public idWorkflowRouteParam: number = null;
-  public workflowList: WorkflowListByFacilityDTO[] = [];
+  public workflowList: WorkflowDTO[] = [];
   public workflowForm: UntypedFormGroup;
-  public workflowGroupOptions: Observable<WorkflowListByFacilityDTO[]>;
+  // public workflowGroupOptions: Observable<WorkflowListByFacilityDTO[]>;
+  public workflowOptions: Observable<WorkflowDTO[]>;
   public workflowSelected: WorkflowDTO;
   public labels = {
     selectWorkflow: marker('workflows.select'),
@@ -143,18 +144,15 @@ export class WorkflowNavbarComponent implements OnInit, OnDestroy {
       .subscribe(
         (data) => {
           let workflowSelectedByIdParam: WorkflowDTO = null;
-          data?.forEach((workflowGroup: WorkflowListByFacilityDTO) => {
-            workflowGroup.workflows.forEach((workFlow: WorkflowDTO) => {
-              workFlow.facility = { facilityName: workflowGroup.facilityName, facilityId: workflowGroup.facilityId };
-              if (workFlow.id === this.idWorkflowRouteParam) {
-                workflowSelectedByIdParam = workFlow;
-              }
-            });
+          data?.forEach((workflow: WorkflowDTO) => {
+            if (workflow.id === this.idWorkflowRouteParam) {
+              workflowSelectedByIdParam = workflow;
+            }
           });
           this.workflowList = data;
-          this.workflowGroupOptions = this.workflowForm.get('workflowSearch')?.valueChanges.pipe(
+          this.workflowOptions = this.workflowForm.get('workflowSearch')?.valueChanges.pipe(
             startWith(''),
-            map((value) => this.filterGroup(value || ''))
+            map((value) => this.filterWorkflow(value || ''))
           );
           if (workflowSelectedByIdParam) {
             this.workflowForm.get('workflow').setValue(workflowSelectedByIdParam);
@@ -173,11 +171,9 @@ export class WorkflowNavbarComponent implements OnInit, OnDestroy {
       );
   }
 
-  private filterGroup(value: string): WorkflowListByFacilityDTO[] {
+  private filterWorkflow(value: string): WorkflowDTO[] {
     if (value) {
-      return this.workflowList
-        .map((group) => ({ ...group, workflows: this.filter(group.workflows, value) }))
-        .filter((group) => group.workflows.length > 0);
+      return this.filter(this.workflowList, value);
     }
 
     return this.workflowList;
