@@ -50,10 +50,14 @@ export class WorkflowsService {
    * @param workflow WorkflowDTO
    * @returns
    */
-  public getWorkflowInstances(workflow: WorkflowDTO, extractFilterInfo?: boolean): Observable<WorkflowStateDTO[]> {
+  public getWorkflowInstances(
+    workflow: WorkflowDTO,
+    viewType: 'BOARD' | 'CALENDAR' | 'TABLE',
+    extractFilterInfo?: boolean
+  ): Observable<WorkflowStateDTO[]> {
     return this.http
       .get<WorkflowStateDTO[]>(
-        `${this.env.apiBaseUrl}${this.GET_WORKFLOWS_PATH}/${workflow.id}${this.GET_WORKFLOWS_INSTANCE_PATH}`
+        `${this.env.apiBaseUrl}${this.GET_WORKFLOWS_PATH}/${workflow.id}${this.GET_WORKFLOWS_VIEW_PATH}/${viewType}${this.GET_WORKFLOWS_INSTANCE_PATH}`
       )
       .pipe(
         map((data: WorkflowStateDTO[]) => {
@@ -102,7 +106,7 @@ export class WorkflowsService {
     }
     return this.http
       .post<WorkflowCardInstanceDTO>(url, {
-        id: card.cardInstanceWorkflows[0].cardInstance.id,
+        id: card.cardInstanceWorkflows[0].cardInstanceId,
         orderNumber: newOrderNumber
       })
       .pipe(catchError((error) => throwError(error.error as ConcenetError)));
@@ -124,22 +128,15 @@ export class WorkflowsService {
     wUser: WorkflowSubstateUserDTO,
     newOrderNumber: number
   ): Observable<WorkflowCardInstanceDTO> {
+    const cardInstanceWorkflow: WorkflowCardInstanceDTO = card.cardInstanceWorkflows[0];
+    cardInstanceWorkflow.orderNumber = newOrderNumber;
+    cardInstanceWorkflow.cardInstanceId = card.id;
+    cardInstanceWorkflow.cardInstanceWorkflowUsers[0].userId = wUser?.user ? wUser?.user?.id : null;
     return this.http
       .post<WorkflowCardInstanceDTO>(
         `${this.env.apiBaseUrl}${this.GET_WORKFLOWS_PATH}/${card.cardInstanceWorkflows[0].workflowId}` +
           `${this.GET_WORKFLOWS_MOVEMENT_PATH}/${move.id}`,
-        {
-          userId: wUser?.user ? wUser?.user?.id : null,
-          cardInstanceWorkflow: {
-            facilityId,
-            workflowId: card.cardInstanceWorkflows[0].workflowId,
-            // workflowSubstateId: move.workflowSubstateTarget.id
-            cardInstance: {
-              id: card.cardInstanceWorkflows[0].cardInstance.id,
-              orderNumber: newOrderNumber
-            }
-          }
-        }
+        cardInstanceWorkflow
       )
       .pipe(catchError((error) => throwError(error.error as ConcenetError)));
   }

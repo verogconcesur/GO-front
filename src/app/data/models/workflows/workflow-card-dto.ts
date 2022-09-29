@@ -12,6 +12,4 @@ export default interface WorkflowCardDTO {
   colors: string[];
   movements: WorkflowMoveDTO[];
   cardInstanceWorkflows: WorkflowCardInstanceDTO[];
-  size: 'S' | 'M' | 'L' | 'XL';
-  orderNumber: number;
 }
