@@ -31,6 +31,8 @@ export enum RouteConstants {
   WORKFLOWS_CALENDAR_VIEW = 'calendarView',
   WORKFLOWS_CARD = 'card',
   WORKFLOWS_ID_CARD = 'wcId',
+  WORKFLOWS_ID_USER = 'wuId',
+  ID_USER = ':idUser',
 
   //Administration
   ADMINISTRATION = 'administration',
@@ -59,7 +61,7 @@ export enum RouteConstants {
   //Cards
   CARDS = 'cards',
   CREATE_CARD = 'create',
-  ID_CARD = ':idCard',
+  ID_CARD = ':idCard'
 }
 
 export const RoutePermissionConstants: Record<string, PermissionConstants[]> = {

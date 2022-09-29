@@ -33,21 +33,15 @@
 
                     <mat-select-trigger *ngIf="workflowSelected">
                         {{ workflowSelected?.name || "" }}
-                        <span *ngIf="workflowSelected.facility?.facilityName">
-                            - {{ workflowSelected.facility?.facilityName }}
-                        </span>
                     </mat-select-trigger>
-                    <mat-optgroup
-                        *ngFor="let group of workflowGroupOptions | async"
-                        class="uppercase workflow-facility"
-                        [label]="getWorkflowGroupLabel(group) | uppercase"
+
+                    <mat-option
+                        *ngFor="let workflow of workflowOptions | async"
+                        [value]="workflow"
+                        class="workflow-name capitalize"
                     >
-                        <mat-divider></mat-divider>
-                        <mat-option *ngFor="let workflow of group.workflows" [value]="workflow" class="workflow-name capitalize">
-                            {{ workflow.name }}
-                            <!-- <mat-divider></mat-divider> -->
-                        </mat-option>
-                    </mat-optgroup>
+                        {{ workflow.name }}
+                    </mat-option>
                 </mat-select>
             </mat-form-field>
         </form>

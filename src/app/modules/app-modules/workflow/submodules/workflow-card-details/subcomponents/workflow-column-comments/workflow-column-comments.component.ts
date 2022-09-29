@@ -55,9 +55,9 @@ export class WorkflowColumnCommentsComponent implements OnInit {
 
   public getData(usersToo?: boolean): void {
     //Cogemos el cardInstanceWorkflowId de la ruta
-    if (this.route?.snapshot?.params?.id) {
+    if (this.route?.snapshot?.params?.idCard) {
       this.setShowLoading.emit(true);
-      const cardInstanceWorkflowId = parseInt(this.route.snapshot.params.id, 10);
+      const cardInstanceWorkflowId = parseInt(this.route.snapshot.params.idCard, 10);
       const requests: Observable<CardCommentDTO[] | UserDetailsDTO[]>[] = [
         this.cardCommentsService.getCardComments(cardInstanceWorkflowId).pipe(take(1))
       ];
