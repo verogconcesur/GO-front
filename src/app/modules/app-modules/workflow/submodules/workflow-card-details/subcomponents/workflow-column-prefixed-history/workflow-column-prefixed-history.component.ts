@@ -64,7 +64,7 @@ export class WorkflowColumnPrefixedHistoryComponent implements OnInit, OnChanges
       this.historyData = [];
       this.historyOriginalData = [];
       this.historyFilter = {
-        cardInstanceWorkflowId: parseInt(this.route?.snapshot?.params?.id, 10)
+        cardInstanceWorkflowId: parseInt(this.route?.snapshot?.params?.idCard, 10)
       };
       this.getData();
     }

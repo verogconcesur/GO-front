@@ -36,10 +36,10 @@ export class WorkflowCardHeaderComponent implements OnInit {
   }
 
   public changeFollowingCard(): void {
-    if (this.card && this.route?.snapshot?.params?.id) {
+    if (this.card && this.route?.snapshot?.params?.idCard) {
       const spinner = this.spinnerService.show();
       this.cardsService
-        .followCard(!this.card.follower, this.route?.snapshot?.params?.id)
+        .followCard(!this.card.follower, this.route?.snapshot?.params?.idCard)
         .pipe(take(1))
         .subscribe(
           (data) => {
