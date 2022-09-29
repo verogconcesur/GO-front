@@ -13,4 +13,10 @@
       color: mat-color($foreground, secondary-text);
     }
   }
+  &__filter {
+    padding-top: 10px;
+    .mat-title {
+      color: mat-color($foreground, secondary-text);
+    }
+  }
 }

@@ -22,6 +22,7 @@ export class WorkflowColumnActionsAndLinksComponent implements OnInit {
   @Input() cardInstance: CardInstanceDTO;
   public actions: WorkflowCardTabItemDTO[];
   public links: WorkflowCardTabItemDTO[];
+  public idCard: number = null;
   public labels = {
     move: marker('common.move'),
     directLinks: marker('common.directLinks')
@@ -36,14 +37,15 @@ export class WorkflowColumnActionsAndLinksComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
+    this.idCard = parseInt(this.route?.snapshot?.params?.idCard, 10);
     this.getData();
   }
 
   public getData(): void {
     //Cogemos el cardInstanceWorkflowId de la ruta
-    if (this.route?.snapshot?.params?.idCard) {
+    if (this.idCard) {
       this.cardService
-        .getCardTabData(parseInt(this.route?.snapshot?.params?.idCard, 10), this.tab.id)
+        .getCardTabData(this.idCard, this.tab.id)
         .pipe(take(1))
         .subscribe(
           (data: WorkflowCardTabItemDTO[]) => {
@@ -83,7 +85,7 @@ export class WorkflowColumnActionsAndLinksComponent implements OnInit {
   }
 
   public moveCard(): void {
-    this.dialog.open(MoveCardDialogComponent, { data: { cardInstance: this.cardInstance } });
+    this.dialog.open(MoveCardDialogComponent, { data: { cardInstance: this.cardInstance, idCard: this.idCard } });
   }
 
   public getBgColor(btn: WorkflowCardTabItemDTO): string {

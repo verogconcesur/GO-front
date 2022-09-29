@@ -6,6 +6,27 @@
         </button>
     </div>
     <mat-divider></mat-divider>
-    <div class="move-card-dialog__content"></div>
-    <div class="move-card-dialog__footer">Footer</div>
+    <div class="move-card-dialog__filter">
+        <h3 class="mat-title">{{ labels.moveWhere | translate }}</h3>
+        <div class="move-card-dialog__filter__form">
+            <!-- <form class="smaller-mat-form-fields" fxLayout="row" fxLayoutAlign="end center" (ngSubmit)="filterAction()">
+                <mat-form-field
+                    appearance="outline"
+                    class="smaller-mat-form-fields__no-margin"
+                    [ngClass]="{ 'smaller-mat-form-fields__button-height': searchType === 'search' }"
+                >
+                    <input
+                        type="text"
+                        matInput
+                        [placeholder]="getSearchLabel() | translate"
+                        [formControl]="filterTextSearchControl"
+                        [matAutocomplete]="auto"
+                        (keyup.enter)="searchAction()"
+                    />
+                </mat-form-field>
+            </form> -->
+        </div>
+        <div class="move-card-dialog__content"></div>
+        <div class="move-card-dialog__footer">Footer</div>
+    </div>
 </div>
