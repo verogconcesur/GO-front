@@ -262,6 +262,7 @@ export class WokflowBoardColumnComponent implements OnInit {
       itemToReplace = { orderNumber: null };
     }
     const sameDropZone = `${this.wSubstateKey}${item.cardInstanceWorkflows[0].workflowSubstateId}` === dropZoneId;
+    console.log(item, this.workflow);
 
     // DGDC: descomentar en el momento en el que se pueda ordenar dentro de un mismo subestado
     // if ((event.previousContainer === event.container && event.previousIndex !== event.currentIndex) || sameDropZone) {
@@ -273,7 +274,7 @@ export class WokflowBoardColumnComponent implements OnInit {
           : itemToReplace.orderNumber;
       item.orderNumber = orderNumber;
       request = this.workflowService.changeOrderWorkflowCardInSubstate(
-        this.workflow.facility.facilityId,
+        item.cardInstanceWorkflows[0].facilityId,
         item,
         user,
         // DGDC: descomentar en el momento en el que se pueda ordenar dentro de un mismo subestado
@@ -292,7 +293,7 @@ export class WokflowBoardColumnComponent implements OnInit {
       // item.orderNumber = itemToReplace.orderNumber;
       if (move?.id) {
         request = this.workflowService.moveWorkflowCardToSubstate(
-          this.workflow.facility.facilityId,
+          item.cardInstanceWorkflows[0].facilityId,
           item,
           move,
           user,

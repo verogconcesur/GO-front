@@ -167,7 +167,7 @@ export class WorkflowBoardViewComponent implements OnInit {
     if (this.workflow) {
       const spinner = this.spinnerService.show();
       forkJoin([
-        this.workflowService.getWorkflowInstances(this.workflow, true).pipe(take(1)),
+        this.workflowService.getWorkflowInstances(this.workflow, 'BOARD', true).pipe(take(1)),
         this.workflowService.getWorkflowCards(this.workflow, 'BOARD').pipe(take(1))
       ]).subscribe(
         (data: [WorkflowStateDTO[], WorkflowCardDTO[]]) => {

@@ -8,12 +8,11 @@ import { ConcenetError } from '@app/types/error';
 import WorkflowCardDTO from '@data/models/workflows/workflow-card-dto';
 import WorkflowCardInstanceDTO from '@data/models/workflows/workflow-card-instance-dto';
 import WorkflowDTO from '@data/models/workflows/workflow-dto';
-import WorkflowListByFacilityDTO from '@data/models/workflows/workflow-list-by-facility-dto';
 import WorkflowMoveDTO from '@data/models/workflows/workflow-move-dto';
 import WorkflowStateDTO from '@data/models/workflows/workflow-state-dto';
 import WorkflowSubstateUserDTO from '@data/models/workflows/workflow-substate-user-dto';
 import { WorkflowFilterService } from '@modules/app-modules/workflow/aux-service/workflow-filter.service';
-import { BehaviorSubject, Observable, throwError } from 'rxjs';
+import { BehaviorSubject, Observable, of, throwError } from 'rxjs';
 import { catchError, map } from 'rxjs/operators';
 
 @Injectable({
@@ -37,11 +36,11 @@ export class WorkflowsService {
   /**
    * Devuelve el listado de workflow que el usuario logado puede ver.
    *
-   * @returns WorkflowListByFacilityDTO[]
+   * @returns WorkflowDTO[]
    */
-  public getWorkflowsList(): Observable<WorkflowListByFacilityDTO[]> {
+  public getWorkflowsList(): Observable<WorkflowDTO[]> {
     return this.http
-      .get<WorkflowListByFacilityDTO[]>(`${this.env.apiBaseUrl}${this.GET_WORKFLOWS_PATH}${this.GET_WORKFLOWS_LIST_PATH}`)
+      .get<WorkflowDTO[]>(`${this.env.apiBaseUrl}${this.GET_WORKFLOWS_PATH}${this.GET_WORKFLOWS_LIST_PATH}`)
       .pipe(catchError((error) => throwError(error.error as ConcenetError)));
   }
 
@@ -51,11 +50,14 @@ export class WorkflowsService {
    * @param workflow WorkflowDTO
    * @returns
    */
-  public getWorkflowInstances(workflow: WorkflowDTO, extractFilterInfo?: boolean): Observable<WorkflowStateDTO[]> {
+  public getWorkflowInstances(
+    workflow: WorkflowDTO,
+    viewType: 'BOARD' | 'CALENDAR' | 'TABLE',
+    extractFilterInfo?: boolean
+  ): Observable<WorkflowStateDTO[]> {
     return this.http
       .get<WorkflowStateDTO[]>(
-        `${this.env.apiBaseUrl}${this.GET_WORKFLOWS_PATH}/${workflow.id}${this.GET_WORKFLOWS_FACILITY_PATH}/` +
-          `${workflow.facility.facilityId}${this.GET_WORKFLOWS_INSTANCE_PATH}`
+        `${this.env.apiBaseUrl}${this.GET_WORKFLOWS_PATH}/${workflow.id}${this.GET_WORKFLOWS_VIEW_PATH}/${viewType}${this.GET_WORKFLOWS_INSTANCE_PATH}`
       )
       .pipe(
         map((data: WorkflowStateDTO[]) => {
@@ -77,8 +79,7 @@ export class WorkflowsService {
   public getWorkflowCards(workflow: WorkflowDTO, viewType: 'BOARD' | 'CALENDAR' | 'TABLE'): Observable<WorkflowCardDTO[]> {
     return this.http
       .get<WorkflowCardDTO[]>(
-        `${this.env.apiBaseUrl}${this.GET_WORKFLOWS_PATH}/${workflow.id}${this.GET_WORKFLOWS_FACILITY_PATH}/` +
-          `${workflow.facility.facilityId}${this.GET_WORKFLOWS_VIEW_PATH}/` +
+        `${this.env.apiBaseUrl}${this.GET_WORKFLOWS_PATH}/${workflow.id}${this.GET_WORKFLOWS_VIEW_PATH}/` +
           `${viewType}${this.GET_WORKFLOWS_CARDS_PATH}`
       )
       .pipe(catchError((error) => throwError(error.error as ConcenetError)));
@@ -105,7 +106,7 @@ export class WorkflowsService {
     }
     return this.http
       .post<WorkflowCardInstanceDTO>(url, {
-        id: card.cardInstanceWorkflows[0].cardInstance.id,
+        id: card.cardInstanceWorkflows[0].cardInstanceId,
         orderNumber: newOrderNumber
       })
       .pipe(catchError((error) => throwError(error.error as ConcenetError)));
@@ -127,22 +128,15 @@ export class WorkflowsService {
     wUser: WorkflowSubstateUserDTO,
     newOrderNumber: number
   ): Observable<WorkflowCardInstanceDTO> {
+    const cardInstanceWorkflow: WorkflowCardInstanceDTO = card.cardInstanceWorkflows[0];
+    cardInstanceWorkflow.orderNumber = newOrderNumber;
+    cardInstanceWorkflow.cardInstanceId = card.id;
+    cardInstanceWorkflow.cardInstanceWorkflowUsers[0].userId = wUser?.user ? wUser?.user?.id : null;
     return this.http
       .post<WorkflowCardInstanceDTO>(
         `${this.env.apiBaseUrl}${this.GET_WORKFLOWS_PATH}/${card.cardInstanceWorkflows[0].workflowId}` +
           `${this.GET_WORKFLOWS_MOVEMENT_PATH}/${move.id}`,
-        {
-          userId: wUser?.user ? wUser?.user?.id : null,
-          cardInstanceWorkflow: {
-            facilityId,
-            workflowId: card.cardInstanceWorkflows[0].workflowId,
-            // workflowSubstateId: move.workflowSubstateTarget.id
-            cardInstance: {
-              id: card.cardInstanceWorkflows[0].cardInstance.id,
-              orderNumber: newOrderNumber
-            }
-          }
-        }
+        cardInstanceWorkflow
       )
       .pipe(catchError((error) => throwError(error.error as ConcenetError)));
   }
