@@ -105,7 +105,7 @@ export class WorkflowFilterService {
   }
 
   public orderCardsByOrderNumber(cards: WorkflowCardDTO[]): WorkflowCardDTO[] {
-    return cards.sort((a, b) => a.orderNumber - b.orderNumber);
+    return cards.sort((a, b) => a.cardInstanceWorkflows[0].orderNumber - b.cardInstanceWorkflows[0].orderNumber);
   }
 
   public filterData(workflowInstances: WorkflowStateDTO[], filter: WorkflowFilterDTO): WorkflowStateDTO[] {
