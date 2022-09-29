@@ -94,8 +94,8 @@ export class WorkflowCardComponent implements OnInit {
   }
 
   public getCardSize(): void {
-    if (this.card.size) {
-      this.cardSize = 'size-' + this.card.size.toLowerCase();
+    if (this.card.cardInstanceWorkflows[0].size) {
+      this.cardSize = 'size-' + this.card.cardInstanceWorkflows[0].size.toLowerCase();
     }
   }
 
