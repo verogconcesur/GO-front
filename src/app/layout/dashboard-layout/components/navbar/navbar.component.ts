@@ -19,6 +19,7 @@ export class NavbarComponent implements OnInit {
     vehicles: marker('app.menu.vehicles'),
     advanceSearch: marker('app.menu.advanceSearch'),
     administration: marker('app.menu.administration'),
+    createCard: marker('app.menu.createCard'),
     search: marker('common.search')
   };
   constructor(private router: Router, private authService: AuthenticationService) {}

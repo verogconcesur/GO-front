@@ -7,6 +7,12 @@
       background-color: mat-contrast($primary, statusNeutral);
       opacity: 0.2;
     }
+
+    &__right {
+      &__createCard {
+        color: mat-color($primary, 500);
+      }
+    }
     button.active .mat-button-wrapper {
       border-bottom: 1px solid mat-contrast($primary, 400);
     }

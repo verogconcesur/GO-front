@@ -67,7 +67,8 @@
             "advanceSearch": "Advanced search",
             "clients": "Clients",
             "vehicles": "Vehicles",
-            "workflow": "Workflow"
+            "workflow": "Workflow",
+            "createCard": "New Card"
         },
         "title": "Concenet"
     },
