@@ -98,6 +98,8 @@ export class WorkflowsService {
     wUser: WorkflowSubstateUserDTO,
     newOrderNumber: number
   ): Observable<WorkflowCardInstanceDTO> {
+    const cardInstanceWorkflow: WorkflowCardInstanceDTO = card.cardInstanceWorkflows[0];
+    cardInstanceWorkflow.orderNumber = newOrderNumber;
     let url =
       `${this.env.apiBaseUrl}${this.GET_WORKFLOWS_PATH}/${card.cardInstanceWorkflows[0].workflowId}` +
       `${this.GET_WORKFLOWS_FACILITY_PATH}/${facilityId}${this.GET_WORKFLOWS_CARDS_PATH}${this.GET_WORKFLOWS_ORDER_PATH}`;
@@ -105,10 +107,7 @@ export class WorkflowsService {
       url += `/${wUser.user.id}`;
     }
     return this.http
-      .post<WorkflowCardInstanceDTO>(url, {
-        id: card.cardInstanceWorkflows[0].cardInstanceId,
-        orderNumber: newOrderNumber
-      })
+      .post<WorkflowCardInstanceDTO>(url, cardInstanceWorkflow)
       .pipe(catchError((error) => throwError(error.error as ConcenetError)));
   }
 
