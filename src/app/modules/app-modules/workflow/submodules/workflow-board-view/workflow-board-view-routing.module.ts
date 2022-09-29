@@ -11,7 +11,8 @@ const routes: Routes = [
     component: WorkflowBoardViewComponent,
     children: [
       {
-        path: `${RouteConstants.WORKFLOWS_ID_CARD}/${RouteConstants.ID}`,
+        // eslint-disable-next-line max-len
+        path: `${RouteConstants.WORKFLOWS_ID_CARD}/${RouteConstants.ID_CARD}/${RouteConstants.WORKFLOWS_ID_USER}/${RouteConstants.ID_USER}`,
         outlet: RouteConstants.WORKFLOWS_CARD,
         loadChildren: () =>
           import('../workflow-card-details/workflow-card-details.module').then((m) => m.WorkflowCardDetailsModule)

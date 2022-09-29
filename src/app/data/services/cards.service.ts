@@ -52,10 +52,12 @@ export class CardService {
    *
    * @returns any
    */
-  public getCardInstanceDetailById(id: number): Observable<CardInstanceDTO> {
-    return this.http
-      .get<CardInstanceDTO>(`${this.env.apiBaseUrl}${this.GET_CARD_INSTANCE_PATH}${this.GET_DETAIL_PATH}/${id}`)
-      .pipe(catchError((error) => throwError(error.error as ConcenetError)));
+  public getCardInstanceDetailById(idCard: number, idUser?: number): Observable<CardInstanceDTO> {
+    let url = `${this.env.apiBaseUrl}${this.GET_CARD_INSTANCE_PATH}${this.GET_DETAIL_PATH}/${idCard}`;
+    if (idUser) {
+      url = `${this.env.apiBaseUrl}${this.GET_CARD_INSTANCE_PATH}${this.GET_DETAIL_PATH}/${idCard}/${idUser}`;
+    }
+    return this.http.get<CardInstanceDTO>(url).pipe(catchError((error) => throwError(error.error as ConcenetError)));
   }
 
   /**

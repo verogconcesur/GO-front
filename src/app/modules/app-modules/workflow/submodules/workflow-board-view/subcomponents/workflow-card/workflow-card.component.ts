@@ -1,12 +1,14 @@
 import { DatePipe } from '@angular/common';
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
+import { RouteConstants } from '@app/constants/route.constants';
 import { marker } from '@biesbjerg/ngx-translate-extract-marker';
 import WorkflowCardDTO from '@data/models/workflows/workflow-card-dto';
 import WorkflowCardSlotDTO from '@data/models/workflows/workflow-card-slot-dto';
 import WorkflowCardTabItemDTO from '@data/models/workflows/workflow-card-tab-item-dto';
 import WorkflowStateDTO from '@data/models/workflows/workflow-state-dto';
 import WorkflowSubstateDTO from '@data/models/workflows/workflow-substate-dto';
+import WorkflowSubstateUserDTO from '@data/models/workflows/workflow-substate-user-dto';
 import { WorkflowDragAndDropService } from '@modules/app-modules/workflow/aux-service/workflow-drag-and-drop.service';
 import { TranslateService } from '@ngx-translate/core';
 
@@ -19,6 +21,7 @@ export class WorkflowCardComponent implements OnInit {
   @Input() card: WorkflowCardDTO;
   @Input() wState: WorkflowStateDTO;
   @Input() wSubstate: WorkflowSubstateDTO;
+  @Input() wUserId: number;
   @Input() droppableStates: string[];
   @Output() isDraggingEvent: EventEmitter<boolean> = new EventEmitter();
   public cardSize = 'size-m';
@@ -99,13 +102,27 @@ export class WorkflowCardComponent implements OnInit {
   public showCardInfo(): void {
     //Firefox => para evitar que al arrastrar abra el detalle de la tarjeta
     if (!this.dragAndDropService.draggingCard$.value) {
-      this.router.navigate([{ outlets: { card: ['wcId', this.card.cardInstanceWorkflows[0].id] } }], {
-        relativeTo: this.route,
-        state: {
-          relativeTo: JSON.stringify(this.route, this.replacerFunc),
-          card: JSON.stringify(this.card)
+      this.router.navigate(
+        [
+          {
+            outlets: {
+              card: [
+                RouteConstants.WORKFLOWS_ID_CARD,
+                this.card.cardInstanceWorkflows[0].id,
+                RouteConstants.WORKFLOWS_ID_USER,
+                this.wUserId
+              ]
+            }
+          }
+        ],
+        {
+          relativeTo: this.route,
+          state: {
+            relativeTo: JSON.stringify(this.route, this.replacerFunc),
+            card: JSON.stringify(this.card)
+          }
         }
-      });
+      );
     }
   }
 
