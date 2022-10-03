@@ -56,6 +56,7 @@
                     disableOptionCentering
                     [placeholder]="getFacilitiesPlaceholder()"
                     class="capitalize"
+                    multiple
                     [panelClass]="'workflow-panel-class bigger-selection-panel-class smaller-mat-form-fields'"
                     (selectionChange)="facilitySelectionChange($event)"
                 >
@@ -75,11 +76,10 @@
 
                     <mat-divider></mat-divider>
 
-                    <mat-select-trigger *ngIf="facilitySelected">
-                        {{ facilitySelected.name }}
+                    <mat-select-trigger>
+                        {{ getFacilitiesLabel() }}
                     </mat-select-trigger>
 
-                    <mat-option [value]="null" class="workflow-name capitalize">Todas</mat-option>
                     <mat-option
                         *ngFor="let facility of facilitiesOptions | async"
                         [value]="facility"

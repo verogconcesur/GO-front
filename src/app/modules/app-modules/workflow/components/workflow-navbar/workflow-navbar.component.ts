@@ -32,7 +32,7 @@ export class WorkflowNavbarComponent implements OnInit, OnDestroy {
   public workflowSelected: WorkflowDTO;
   public facilitiesOptions: Observable<FacilityDTO[]>;
   public workflowFacilities: FacilityDTO[] = [];
-  public facilitySelected: FacilityDTO;
+  public facilitiesSelected: FacilityDTO[];
   public labels = {
     selectWorkflow: marker('workflows.select'),
     filterWorkflow: marker('workflows.filter'),
@@ -61,6 +61,7 @@ export class WorkflowNavbarComponent implements OnInit, OnDestroy {
 
   ngOnDestroy(): void {
     this.workflowService.workflowSelectedSubject$.next(null);
+    this.workflowService.facilitiesSelectedSubject$.next([]);
   }
 
   public goToView(view: 'boardView' | 'tableView' | 'calendarView'): void {
@@ -109,6 +110,18 @@ export class WorkflowNavbarComponent implements OnInit, OnDestroy {
     return `${this.workflowFacilities?.length} ${this.translateService.instant('organizations.facilities.title').toLowerCase()}`;
   }
 
+  public getFacilitiesLabel(): string {
+    if (this.facilitiesSelected?.length > 1) {
+      return `${this.facilitiesSelected?.length} ${this.translateService
+        .instant('organizations.facilities.title')
+        .toLowerCase()}`;
+    } else if (this.facilitiesSelected?.length === 1) {
+      return this.facilitiesSelected[0].name;
+    } else {
+      return this.getFacilitiesPlaceholder();
+    }
+  }
+
   public getWorkflowLabel(w?: WorkflowDTO, mainLabel?: boolean): string {
     const workflow: WorkflowDTO = w ? w : this.workflowForm.get('workflow').value();
     if (workflow && workflow.name) {
@@ -128,10 +141,10 @@ export class WorkflowNavbarComponent implements OnInit, OnDestroy {
 
   public hasMoreThanOneFacility = (): boolean => this.workflowFacilities?.length > 1;
 
-  public facilitySelectionChange(event: { value: FacilityDTO }): void {
-    const facility = event.value;
-    this.facilitySelected = facility;
-    console.log(this.facilitySelected);
+  public facilitySelectionChange(event: { value: FacilityDTO[] }): void {
+    const facilities = event.value;
+    this.facilitiesSelected = facilities;
+    this.workflowService.facilitiesSelectedSubject$.next(this.facilitiesSelected);
   }
 
   public workflowSelectionChange(event: { value: WorkflowDTO }): void {
@@ -146,6 +159,9 @@ export class WorkflowNavbarComponent implements OnInit, OnDestroy {
     this.idWorkflowRouteParam = workflow.id;
     this.workflowSelected = workflow;
     this.workflowService.workflowSelectedSubject$.next(workflow);
+    this.facilitiesSelected = [];
+    this.workflowForm.get('facility').setValue([]);
+    this.workflowService.facilitiesSelectedSubject$.next([]);
     this.dragDropService.resetObservables();
     this.workflowForm.get('workflow').setValue(workflow);
     this.workflowForm.get('workflowSearch').setValue('');
@@ -161,7 +177,7 @@ export class WorkflowNavbarComponent implements OnInit, OnDestroy {
     this.workflowForm = this.formBuilder.group({
       workflow: [null],
       workflowSearch: [''],
-      facility: [null],
+      facility: [[]],
       facilitySearch: ['']
     });
   }
@@ -194,6 +210,9 @@ export class WorkflowNavbarComponent implements OnInit, OnDestroy {
             this.workflowForm.get('workflow').markAsDirty();
             this.workflowSelected = workflowSelectedByIdParam;
             this.workflowService.workflowSelectedSubject$.next(workflowSelectedByIdParam);
+            this.facilitiesSelected = [];
+            this.workflowForm.get('facility').setValue([]);
+            this.workflowService.facilitiesSelectedSubject$.next([]);
             this.dragDropService.resetObservables();
             if (workflowSelectedByIdParam.facilities?.length) {
               this.workflowFacilities = workflowSelectedByIdParam.facilities;
