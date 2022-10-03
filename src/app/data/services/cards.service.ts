@@ -68,12 +68,14 @@ export class CardService {
    * @param idCard
    * @returns
    */
-  public getCardInstanceMovements(idCard: number): Observable<WorkflowMoveDTO[]> {
-    return this.http
-      .get<WorkflowMoveDTO[]>(
-        `${this.env.apiBaseUrl}${this.GET_CARD_INSTANCE_PATH}${this.GET_DETAIL_PATH}/${idCard}${this.GET_MOVEMENTS_PATH}`
-      )
-      .pipe(catchError((error) => throwError(error.error as ConcenetError)));
+  public getCardInstanceMovements(idCard: number, shortcut?: boolean): Observable<WorkflowMoveDTO[]> {
+    let url = `${this.env.apiBaseUrl}${this.GET_CARD_INSTANCE_PATH}${this.GET_DETAIL_PATH}/${idCard}${this.GET_MOVEMENTS_PATH}`;
+    if (shortcut) {
+      url =
+        `${this.env.apiBaseUrl}${this.GET_CARD_INSTANCE_PATH}${this.GET_DETAIL_PATH}/${idCard}` +
+        `/shortcut/true${this.GET_MOVEMENTS_PATH}`;
+    }
+    return this.http.get<WorkflowMoveDTO[]>(url).pipe(catchError((error) => throwError(error.error as ConcenetError)));
   }
 
   /**
