@@ -66,9 +66,9 @@
             "administration": "Administration",
             "advanceSearch": "Advanced search",
             "clients": "Clients",
+            "createCard": "New Card",
             "vehicles": "Vehicles",
-            "workflow": "Workflow",
-            "createCard": "New Card"
+            "workflow": "Workflow"
         },
         "title": "Concenet"
     },
@@ -249,6 +249,15 @@
     },
     "logout": {
         "logout": "Log out"
+    },
+    "newCard": {
+        "column": "Column ",
+        "newCard": "New Card",
+        "create": "Create new card",
+        "step": "Step ",
+        "workflow": {
+            "title": "Workflow and status"
+        }
     },
     "organizations": {
         "brands": {

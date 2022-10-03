@@ -1,0 +1,44 @@
+@import 'utils/core';
+@import 'utils/theme';
+.newCard {
+  width: 100%;
+  height: 100%;
+  .newCard__side {
+    height: 100%;
+    width: 20%;
+    min-width: 200px;
+    min-height: 400px;
+    padding: 15px;
+    .newCard__side__stepper {
+      max-width: 100%;
+      .newCard__side__stepper__title {
+        font-weight: 600;
+      }
+    }
+  }
+  .newCard__content {
+    width: calc(100% - 20%);
+    max-width: calc(100% - 200px);
+    height: 100%;
+    .newCard__content__title {
+      margin: 15px;
+    }
+    .newCard__content__form {
+      overflow-y: scroll;
+      height: calc(100% - 170px);
+      margin: 15px;
+    }
+    mat-divider {
+      margin: 0 15px;
+    }
+    .newCard__content__buttons {
+      height: 60px;
+      margin: 15px;
+      button {
+        margin: 0 30px;
+        width: 160px;
+        height: 50px;
+      }
+    }
+  }
+}

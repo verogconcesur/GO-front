@@ -18,6 +18,9 @@
     }
     &__search {
       color: mat-contrast($primary, statusNeutral);
+      mat-form-field{
+        width: 180px;
+      }
       .mat-form-field-appearance-outline .mat-form-field-wrapper {
         margin: 0 0;
         padding: 0 0;

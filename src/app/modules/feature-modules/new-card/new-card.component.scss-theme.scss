@@ -1,0 +1,25 @@
+@import '@angular/material/theming';
+
+@mixin new-card-component-theme($theme, $main-typo) {
+  $primary: map-get($theme, primary);
+  .newCard {
+    .newCard__side {
+      background-color: rgba(mat-color($primary, 100), 20%);
+      mat-stepper {
+        background-color: transparent;
+        pointer-events: none;
+        mat-step-header {
+          padding: 24px 0;
+          .mat-step-icon {
+            background-color: mat-color($primary, 500) !important;
+            height: 20px !important;
+            width: 20px !important;
+          }
+        }
+        .mat-vertical-content-container {
+          margin-left: 9px !important;
+        }
+      }
+    }
+  }
+}
