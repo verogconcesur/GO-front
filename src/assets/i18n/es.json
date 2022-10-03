@@ -365,6 +365,7 @@
         "dueOutDateTime": "Recoge el {date} a las {time}",
         "emptySubstate": "Subestado vacío",
         "filter": "Filtrar Workflows",
+        "filterFacilities": "Filtrar Instalaciones",
         "filterState": "Filtrar Estados",
         "filterSubstate": "Filtrar Subestados",
         "filterUser": "Filtrar Usuarios",

@@ -13,6 +13,7 @@ import { take, startWith, map } from 'rxjs/operators';
 import { WorkflowDragAndDropService } from '../../aux-service/workflow-drag-and-drop.service';
 import { ActivatedRoute, Router } from '@angular/router';
 import { UntilDestroy } from '@ngneat/until-destroy';
+import FacilityDTO from '@data/models/organization/facility-dto';
 
 @UntilDestroy()
 @Component({
@@ -29,9 +30,13 @@ export class WorkflowNavbarComponent implements OnInit, OnDestroy {
   // public workflowGroupOptions: Observable<WorkflowListByFacilityDTO[]>;
   public workflowOptions: Observable<WorkflowDTO[]>;
   public workflowSelected: WorkflowDTO;
+  public facilitiesOptions: Observable<FacilityDTO[]>;
+  public workflowFacilities: FacilityDTO[] = [];
+  public facilitySelected: FacilityDTO;
   public labels = {
     selectWorkflow: marker('workflows.select'),
-    filterWorkflow: marker('workflows.filter')
+    filterWorkflow: marker('workflows.filter'),
+    filterFacility: marker('workflows.filterFacilities')
   };
 
   constructor(
@@ -100,13 +105,33 @@ export class WorkflowNavbarComponent implements OnInit, OnDestroy {
     return this.translateService.instant('workflows.byFacilityGroupLabel', { facility: group.facilityName });
   }
 
-  public getWorkflowLabel(): string {
-    const workflow: WorkflowDTO = this.workflowForm.get('workflow').value();
+  public getFacilitiesPlaceholder(): string {
+    return `${this.workflowFacilities?.length} ${this.translateService.instant('organizations.facilities.title').toLowerCase()}`;
+  }
+
+  public getWorkflowLabel(w?: WorkflowDTO, mainLabel?: boolean): string {
+    const workflow: WorkflowDTO = w ? w : this.workflowForm.get('workflow').value();
     if (workflow && workflow.name) {
-      return `${workflow.name} - ${workflow.facility.facilityName}`;
+      if (workflow.facilities?.length === 1) {
+        return `${workflow.name} - ${workflow.facilities[0].name}`;
+      } else if (workflow.facilities?.length > 1 && !mainLabel) {
+        return `${workflow.name} - ${workflow.facilities?.length} ${this.translateService
+          .instant('organizations.facilities.title')
+          .toLowerCase()}`;
+      } else {
+        return `${workflow.name}`;
+      }
     } else {
       return '';
     }
+  }
+
+  public hasMoreThanOneFacility = (): boolean => this.workflowFacilities?.length > 1;
+
+  public facilitySelectionChange(event: { value: FacilityDTO }): void {
+    const facility = event.value;
+    this.facilitySelected = facility;
+    console.log(this.facilitySelected);
   }
 
   public workflowSelectionChange(event: { value: WorkflowDTO }): void {
@@ -124,15 +149,20 @@ export class WorkflowNavbarComponent implements OnInit, OnDestroy {
     this.dragDropService.resetObservables();
     this.workflowForm.get('workflow').setValue(workflow);
     this.workflowForm.get('workflowSearch').setValue('');
-
-    // this.location.go(this.currentUrl);
+    if (workflow.facilities?.length) {
+      this.workflowFacilities = workflow.facilities;
+    } else {
+      this.workflowFacilities = [];
+    }
     this.router.navigate([RouteConstants.DASHBOARD, RouteConstants.WORKFLOWS, this.idWorkflowRouteParam, this.currentView]);
   }
 
   private initForms(): void {
     this.workflowForm = this.formBuilder.group({
       workflow: [null],
-      workflowSearch: ['']
+      workflowSearch: [''],
+      facility: [null],
+      facilitySearch: ['']
     });
   }
 
@@ -154,6 +184,10 @@ export class WorkflowNavbarComponent implements OnInit, OnDestroy {
             startWith(''),
             map((value) => this.filterWorkflow(value || ''))
           );
+          this.facilitiesOptions = this.workflowForm.get('facilitySearch')?.valueChanges.pipe(
+            startWith(''),
+            map((value) => this.filterFacility(value || ''))
+          );
           if (workflowSelectedByIdParam) {
             this.workflowForm.get('workflow').setValue(workflowSelectedByIdParam);
             this.workflowForm.get('workflow').markAllAsTouched();
@@ -161,6 +195,11 @@ export class WorkflowNavbarComponent implements OnInit, OnDestroy {
             this.workflowSelected = workflowSelectedByIdParam;
             this.workflowService.workflowSelectedSubject$.next(workflowSelectedByIdParam);
             this.dragDropService.resetObservables();
+            if (workflowSelectedByIdParam.facilities?.length) {
+              this.workflowFacilities = workflowSelectedByIdParam.facilities;
+            } else {
+              this.workflowFacilities = [];
+            }
           }
           this.spinnerService.hide(spinner);
         },
@@ -173,14 +212,17 @@ export class WorkflowNavbarComponent implements OnInit, OnDestroy {
 
   private filterWorkflow(value: string): WorkflowDTO[] {
     if (value) {
-      return this.filter(this.workflowList, value);
+      const filterValue = value.toLowerCase();
+      return this.workflowList.filter((item: WorkflowDTO) => item.name.toLowerCase().includes(filterValue));
     }
-
     return this.workflowList;
   }
 
-  private filter = (opt: WorkflowDTO[], value: string): WorkflowDTO[] => {
-    const filterValue = value.toLowerCase();
-    return opt.filter((item: WorkflowDTO) => item.name.toLowerCase().includes(filterValue));
-  };
+  private filterFacility(value: string): FacilityDTO[] {
+    if (value) {
+      const filterValue = value.toLowerCase();
+      return this.workflowFacilities.filter((item: FacilityDTO) => item.name.toLowerCase().includes(filterValue));
+    }
+    return this.workflowFacilities;
+  }
 }
