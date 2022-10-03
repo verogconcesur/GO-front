@@ -63,10 +63,9 @@
                     formControlName="dateEventFrom"
                     [min]="historyFilterOptions.dateEvent.min"
                     [max]="getEnabledDate('max')"
-                    (dateChange)="filterChange()"
                 />
                 <mat-datepicker-toggle matSuffix [for]="pickerIni"></mat-datepicker-toggle>
-                <mat-datepicker #pickerIni></mat-datepicker>
+                <mat-datepicker #pickerIni (closed)="filterDateChange('ini')"></mat-datepicker>
             </mat-form-field>
 
             <mat-form-field
@@ -84,10 +83,9 @@
                     formControlName="dateEventTo"
                     [min]="getEnabledDate('min')"
                     [max]="historyFilterOptions.dateEvent.max"
-                    (dateChange)="filterChange()"
                 />
                 <mat-datepicker-toggle matSuffix [for]="pickerEnd"></mat-datepicker-toggle>
-                <mat-datepicker #pickerEnd></mat-datepicker>
+                <mat-datepicker #pickerEnd (closed)="filterDateChange('end')"></mat-datepicker>
             </mat-form-field>
         </form>
     </div>

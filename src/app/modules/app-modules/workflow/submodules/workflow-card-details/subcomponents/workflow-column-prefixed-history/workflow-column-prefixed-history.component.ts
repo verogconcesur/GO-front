@@ -46,6 +46,13 @@ export class WorkflowColumnPrefixedHistoryComponent implements OnInit, OnChanges
   };
   public historyFilterForm: UntypedFormGroup;
   public dataLoaded = false;
+  public lastDatesSelected: {
+    ini: Date;
+    end: Date;
+  } = {
+    ini: null,
+    end: null
+  };
 
   constructor(
     private cardHistoryService: CardHistoryService,
@@ -187,6 +194,27 @@ export class WorkflowColumnPrefixedHistoryComponent implements OnInit, OnChanges
       html = item.description.split('[').join('<span class="substate-target">').split(']').join('</span>');
     }
     return html;
+  }
+
+  public filterDateChange(type: 'ini' | 'end') {
+    if (type === 'ini') {
+      const value = this.historyFilterForm.get('dateEventFrom').value;
+      if (this.lastDatesSelected.ini && +this.lastDatesSelected.ini === +value) {
+        this.lastDatesSelected.ini = null;
+        this.historyFilterForm.get('dateEventFrom').setValue(null);
+      } else {
+        this.lastDatesSelected.ini = value;
+      }
+    } else {
+      const value = this.historyFilterForm.get('dateEventTo').value;
+      if (this.lastDatesSelected.ini && +this.lastDatesSelected.ini === +value) {
+        this.lastDatesSelected.ini = null;
+        this.historyFilterForm.get('dateEventTo').setValue(null);
+      } else {
+        this.lastDatesSelected.ini = value;
+      }
+    }
+    this.filterChange();
   }
 
   private getFilterOptions(): void {
