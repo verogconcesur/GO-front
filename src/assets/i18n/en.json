@@ -165,6 +165,7 @@
         "name": "Name",
         "newItem": "New item",
         "newLine": "New line",
+        "next": "Next",
         "origin": "Origin",
         "payments": "Payments",
         "postalCode": "Postal Code",
@@ -252,10 +253,16 @@
     },
     "newCard": {
         "column": "Column ",
-        "newCard": "New Card",
         "create": "Create new card",
+        "newCard": "New Card",
         "step": "Step ",
         "workflow": {
+            "entryState": "Entry State",
+            "facility": "Facility",
+            "header": "In which workflow do you want to create the card?",
+            "select": "Select Workflow",
+            "states": "States",
+            "subState": "Substate",
             "title": "Workflow and status"
         }
     },

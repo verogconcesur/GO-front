@@ -1,1 +1,57 @@
-<h1>Sección en construcción.</h1>
+<div class="step-workflow">
+    <div class="step-workflow__title mat-display-1">
+        {{ title }}
+    </div>
+    <form [formGroup]="formWorkflow" class="smaller-mat-form-fields step-workflow__main">
+        <div class="step-workflow__main__group">
+            <div class="step-workflow__main__group__header">
+                <h3>{{ labels.workflowHeader | translate }}</h3>
+            </div>
+            <!-- Workflow -->
+            <mat-form-field appearance="outline" floatLabel="always">
+                <mat-label>{{ labels.workflowLabel | translate }}</mat-label>
+                <mat-select formControlName="workflow" (selectionChange)="initialiceList()">
+                    <mat-option *ngFor="let workflow of workflowList" [value]="workflow">{{ workflow.name }}</mat-option>
+                </mat-select>
+                <mat-error *ngIf="formWorkflow.controls?.workflow.invalid">
+                    <span *ngIf="formWorkflow.controls.workflow.errors.required">{{ labels.required | translate }}</span>
+                </mat-error>
+            </mat-form-field>
+            <!-- Facility -->
+            <mat-form-field appearance="outline" floatLabel="always" *ngIf="formWorkflow.get('workflow').value">
+                <mat-label>{{ labels.facility | translate }}</mat-label>
+                <mat-select formControlName="facility">
+                    <mat-option *ngFor="let facility of facilityList" [value]="facility">{{ facility.name }}</mat-option>
+                </mat-select>
+                <mat-error *ngIf="formWorkflow.controls?.facility.invalid">
+                    <span *ngIf="formWorkflow.controls.facility.errors.required">{{ labels.required | translate }}</span>
+                </mat-error>
+            </mat-form-field>
+        </div>
+        <div class="step-workflow__main__group" *ngIf="formWorkflow.get('workflow').value">
+            <div class="step-workflow__main__group__header">
+                <h3>{{ labels.status | translate }}</h3>
+            </div>
+            <!-- Entry State -->
+            <mat-form-field appearance="outline" floatLabel="always">
+                <mat-label>{{ labels.entryState | translate }}</mat-label>
+                <mat-select formControlName="entryState" (selectionChange)="initialiceSubStates()">
+                    <mat-option *ngFor="let entryState of entryStateList" [value]="entryState">{{ entryState.name }}</mat-option>
+                </mat-select>
+                <mat-error *ngIf="formWorkflow.controls?.entryState.invalid">
+                    <span *ngIf="formWorkflow.controls.entryState.errors.required">{{ labels.required | translate }}</span>
+                </mat-error>
+            </mat-form-field>
+            <!-- Sub State -->
+            <mat-form-field appearance="outline" floatLabel="always" *ngIf="formWorkflow.get('entryState').value">
+                <mat-label>{{ labels.subState | translate }}</mat-label>
+                <mat-select formControlName="subState">
+                    <mat-option *ngFor="let subState of subStateList" [value]="subState">{{ subState.name }}</mat-option>
+                </mat-select>
+                <mat-error *ngIf="formWorkflow.controls?.subState.invalid">
+                    <span *ngIf="formWorkflow.controls.subState.errors.required">{{ labels.required | translate }}</span>
+                </mat-error>
+            </mat-form-field>
+        </div>
+    </form>
+</div>

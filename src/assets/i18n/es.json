@@ -165,6 +165,7 @@
         "name": "Nombre",
         "newItem": "Nuevo Elememto",
         "newLine": "Nueva línea",
+        "next": "Siguiente",
         "origin": "Origen",
         "payments": "Pagos",
         "postalCode": "Código Postal",
@@ -252,10 +253,16 @@
     },
     "newCard": {
         "column": "Columna ",
-        "newCard": "Nueva Ficha",
         "create": "Crear nueva ficha",
+        "newCard": "Nueva Ficha",
         "step": "Paso ",
         "workflow": {
+            "entryState": "Estado de entrada",
+            "facility": "Instalación",
+            "header": "¿En qué workflow quieres crear la ficha?",
+            "select": "Seleccione Workflow",
+            "states": "Estados",
+            "subState": "Subestado",
             "title": "Workflow y estados"
         }
     },

@@ -20,12 +20,9 @@
     width: calc(100% - 20%);
     max-width: calc(100% - 200px);
     height: 100%;
-    .newCard__content__title {
-      margin: 15px;
-    }
     .newCard__content__form {
       overflow-y: scroll;
-      height: calc(100% - 170px);
+      height: calc(100% - 120px);
       margin: 15px;
     }
     mat-divider {

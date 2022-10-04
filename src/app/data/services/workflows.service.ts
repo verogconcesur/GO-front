@@ -7,6 +7,7 @@ import { Env } from '@app/types/env';
 import { ConcenetError } from '@app/types/error';
 import WorkflowCardDTO from '@data/models/workflows/workflow-card-dto';
 import WorkflowCardInstanceDTO from '@data/models/workflows/workflow-card-instance-dto';
+import WorkflowCreateCardDTO from '@data/models/workflows/workflow-create-card-dto';
 import WorkflowDTO from '@data/models/workflows/workflow-dto';
 import WorkflowMoveDTO from '@data/models/workflows/workflow-move-dto';
 import WorkflowStateDTO from '@data/models/workflows/workflow-state-dto';
@@ -23,6 +24,7 @@ export class WorkflowsService {
   public workflowSelectedSubject$: BehaviorSubject<WorkflowDTO> = new BehaviorSubject(null);
 
   private readonly GET_WORKFLOWS_PATH = '/api/workflows';
+  private readonly GET_WORKFLOWS_CREATECARD_PATH = '/api/cardInstanceWorkflow/createCard/getWorkflows';
   private readonly GET_WORKFLOWS_LIST_PATH = '/list';
   private readonly GET_WORKFLOWS_FACILITY_PATH = '/facility';
   private readonly GET_WORKFLOWS_INSTANCE_PATH = '/instances';
@@ -30,7 +32,6 @@ export class WorkflowsService {
   private readonly GET_WORKFLOWS_CARDS_PATH = '/cards';
   private readonly GET_WORKFLOWS_MOVEMENT_PATH = '/movement';
   private readonly GET_WORKFLOWS_ORDER_PATH = '/orders';
-
   constructor(@Inject(ENV) private env: Env, private http: HttpClient, private workflowFilterService: WorkflowFilterService) {}
 
   /**
@@ -41,6 +42,16 @@ export class WorkflowsService {
   public getWorkflowsList(): Observable<WorkflowDTO[]> {
     return this.http
       .get<WorkflowDTO[]>(`${this.env.apiBaseUrl}${this.GET_WORKFLOWS_PATH}${this.GET_WORKFLOWS_LIST_PATH}`)
+      .pipe(catchError((error) => throwError(error.error as ConcenetError)));
+  }
+  /**
+   * Devuelve el listado de workflow que el usuario logado puede ver para la creación de una ficha.
+   *
+   * @returns WorkflowDTO[]
+   */
+  public getWorkflowsCreatecardList(): Observable<WorkflowCreateCardDTO[]> {
+    return this.http
+      .get<WorkflowCreateCardDTO[]>(`${this.env.apiBaseUrl}${this.GET_WORKFLOWS_CREATECARD_PATH}`)
       .pipe(catchError((error) => throwError(error.error as ConcenetError)));
   }
 

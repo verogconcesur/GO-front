@@ -1,0 +1,19 @@
+.step-workflow {
+  .step-workflow__title {
+    margin-bottom: 15px;
+  }
+
+  .step-workflow__main {
+    .step-workflow__main__group {
+      .step-workflow__main__group__header {
+        color: gray;
+        margin-bottom: 10px;
+      }
+      margin-bottom: 10px;
+      width: 100%;
+      mat-form-field {
+        margin-right: 20px;
+      }
+    }
+  }
+}
