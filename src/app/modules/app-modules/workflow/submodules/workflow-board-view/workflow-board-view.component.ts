@@ -1,6 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { Component, ElementRef, HostListener, NgZone, OnInit, ViewChild } from '@angular/core';
 import { marker } from '@biesbjerg/ngx-translate-extract-marker';
+import FacilityDTO from '@data/models/organization/facility-dto';
 import WorkflowCardDTO from '@data/models/workflows/workflow-card-dto';
 import WorkflowDTO from '@data/models/workflows/workflow-dto';
 import WorkflowFilterDTO from '@data/models/workflows/workflow-filter-dto';
@@ -27,6 +28,7 @@ export class WorkflowBoardViewComponent implements OnInit {
   @ViewChild('AnchorColumn') anchorColumns: ElementRef;
   @ViewChild('AnchorStateColumn') anchorStateColumn: WokflowBoardColumnComponent;
 
+  public facilities: FacilityDTO[] = [];
   public workflow: WorkflowDTO = null;
   public wStatesData: WorkflowStateDTO[];
   public wAnchorState: WorkflowStateDTO;
@@ -62,6 +64,9 @@ export class WorkflowBoardViewComponent implements OnInit {
   public initListeners(): void {
     this.workflowService.workflowSelectedSubject$.pipe(untilDestroyed(this)).subscribe((workflow: WorkflowDTO) => {
       this.workflow = workflow;
+    });
+    this.workflowService.facilitiesSelectedSubject$.pipe(untilDestroyed(this)).subscribe((facilities: FacilityDTO[]) => {
+      this.facilities = facilities;
       this.getData();
     });
     this.workflowFilterService.workflowFilterSubject$.pipe(untilDestroyed(this)).subscribe((filter: WorkflowFilterDTO) => {
@@ -90,7 +95,7 @@ export class WorkflowBoardViewComponent implements OnInit {
   public reloadCardData(): void {
     const spinner = this.spinnerService.show();
     this.workflowService
-      .getWorkflowCards(this.workflow, 'BOARD')
+      .getWorkflowCards(this.workflow, this.facilities, 'BOARD')
       .pipe(take(1))
       .subscribe((data: WorkflowCardDTO[]) => {
         this.spinnerService.hide(spinner);
@@ -167,8 +172,8 @@ export class WorkflowBoardViewComponent implements OnInit {
     if (this.workflow) {
       const spinner = this.spinnerService.show();
       forkJoin([
-        this.workflowService.getWorkflowInstances(this.workflow, 'BOARD', true).pipe(take(1)),
-        this.workflowService.getWorkflowCards(this.workflow, 'BOARD').pipe(take(1))
+        this.workflowService.getWorkflowInstances(this.workflow, this.facilities, 'BOARD', true).pipe(take(1)),
+        this.workflowService.getWorkflowCards(this.workflow, this.facilities, 'BOARD').pipe(take(1))
       ]).subscribe(
         (data: [WorkflowStateDTO[], WorkflowCardDTO[]]) => {
           this.spinnerService.hide(spinner);
