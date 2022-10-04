@@ -1,25 +1,33 @@
+import { NestedTreeControl } from '@angular/cdk/tree';
 import { Component, Inject, OnInit } from '@angular/core';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
-import { ActivatedRoute } from '@angular/router';
+import { MatTreeNestedDataSource } from '@angular/material/tree';
 import { ConcenetError } from '@app/types/error';
 import { marker } from '@biesbjerg/ngx-translate-extract-marker';
 import CardInstanceDTO from '@data/models/cards/card-instance-dto';
 import FacilityDTO from '@data/models/organization/facility-dto';
+import UserDTO from '@data/models/user-permissions/user-dto';
 import WorkflowDTO from '@data/models/workflows/workflow-dto';
 import WorkflowMoveDTO from '@data/models/workflows/workflow-move-dto';
 import WorkflowSubstateDTO from '@data/models/workflows/workflow-substate-dto';
+import WorkflowSubstateUserDTO from '@data/models/workflows/workflow-substate-user-dto';
 import { CardService } from '@data/services/cards.service';
 import { TranslateService } from '@ngx-translate/core';
 import { GlobalMessageService } from '@shared/services/global-message.service';
 import { ProgressSpinnerDialogService } from '@shared/services/progress-spinner-dialog.service';
 import { take } from 'rxjs/operators';
 
+interface TreeNode {
+  name: string;
+  children?: TreeNode[];
+}
+
 export type MoveCardDialogConfig = {
   cardInstance: CardInstanceDTO;
   idCard: number;
 };
 
-export type MovesByState = {
+export interface MovesByState extends TreeNode {
   anchor: boolean;
   color: string;
   front: boolean;
@@ -31,16 +39,17 @@ export type MovesByState = {
   workflow: WorkflowDTO;
   workflowSubstates: WorkflowSubstateDTO[];
   workflowSubstateTargets: WorkflowSubstateDTO[];
-};
+  children: WorkflowSubstateDTO[];
+}
 
-export type MovesByWorkflow = {
+export interface MovesByWorkflow extends TreeNode {
   id: number;
   name: string;
   status: string;
-  movesByState: MovesByState[];
+  children: MovesByState[];
   facilities?: FacilityDTO[];
   manualCreateCard?: boolean;
-};
+}
 
 @Component({
   selector: 'app-move-card-dialog',
@@ -62,6 +71,9 @@ export class MoveCardDialogComponent implements OnInit {
   public sameWorkflowMovements: MovesByWorkflow = null;
   public otherWorkflowMovements: MovesByWorkflow[] = [];
 
+  treeControl = new NestedTreeControl<TreeNode>((node) => node.children);
+  dataSource = new MatTreeNestedDataSource<TreeNode>();
+
   constructor(
     public dialogRef: MatDialogRef<MoveCardDialogComponent>,
     private cardService: CardService,
@@ -77,6 +89,8 @@ export class MoveCardDialogComponent implements OnInit {
     this.getMovements();
   }
 
+  public hasChild = (_: number, node: TreeNode) => !!node.children && node.children.length > 0;
+
   public close(): void {
     this.dialogRef.close();
   }
@@ -86,6 +100,15 @@ export class MoveCardDialogComponent implements OnInit {
       this.view = 'MOVES_IN_THIS_WORKFLOW';
     } else {
       this.view = 'MOVES_IN_OTHER_WORKFLOWS';
+    }
+    this.setViewData();
+  }
+
+  public setViewData(): void {
+    if (this.view === 'MOVES_IN_THIS_WORKFLOW') {
+      this.dataSource.data = this.sameWorkflowMovements.children;
+    } else {
+      this.dataSource.data = this.otherWorkflowMovements;
     }
   }
 
@@ -128,6 +151,7 @@ export class MoveCardDialogComponent implements OnInit {
       ]);
     }
     console.log(this.sameWorkflowMovements, this.otherWorkflowMovements);
+    this.setViewData();
   }
 
   private createMovesTree(moves: WorkflowMoveDTO[]): MovesByWorkflow[] {
@@ -136,26 +160,57 @@ export class MoveCardDialogComponent implements OnInit {
     const auxTreeObjByWorkflowId: any = {};
     if (moves?.length) {
       moves.forEach((move: WorkflowMoveDTO) => {
+        move.workflowSubstateTarget.workflowState.workflow.name =
+          'Workflow "' + move.workflowSubstateTarget.workflowState.workflow.name + '"';
         if (!auxTreeObjByWorkflowId[move.workflowSubstateTarget.workflowState.workflow.id]) {
-          const movesByWorkflow: MovesByWorkflow = { ...move.workflowSubstateTarget.workflowState.workflow, movesByState: [] };
-          movesByWorkflow.movesByState = [{ ...move.workflowSubstateTarget.workflowState, workflowSubstateTargets: [] }];
-          movesByWorkflow.movesByState[0].workflowSubstateTargets = [move.workflowSubstateTarget];
+          const movesByWorkflow: MovesByWorkflow = { ...move.workflowSubstateTarget.workflowState.workflow, children: [] };
+          movesByWorkflow.children = [
+            { ...move.workflowSubstateTarget.workflowState, workflowSubstateTargets: [], children: [] }
+          ];
+          movesByWorkflow.children[0].workflowSubstateTargets = [move.workflowSubstateTarget];
+          if (move.workflowSubstateTarget.workflowState.front) {
+            movesByWorkflow.children[0].workflowSubstateTargets[0].children = [
+              ...movesByWorkflow.children[0].workflowSubstateTargets[0].workflowSubstateUser
+            ].map((user: WorkflowSubstateUserDTO) => {
+              user.name = user.user.fullName;
+              return user;
+            });
+          }
+          movesByWorkflow.children[0].children = movesByWorkflow.children[0].workflowSubstateTargets;
           auxTreeObjByWorkflowId[move.workflowSubstateTarget.workflowState.workflow.id] = movesByWorkflow;
         } else {
           const movesByWorkflow: MovesByWorkflow = auxTreeObjByWorkflowId[move.workflowSubstateTarget.workflowState.workflow.id];
-          console.log(movesByWorkflow);
-          const movesByState: MovesByState = movesByWorkflow.movesByState.filter(
+          const movesByState: MovesByState = movesByWorkflow.children.filter(
             (m: MovesByState) => m.id === move.workflowSubstateTarget.workflowState.id
           )[0];
           if (movesByState) {
             movesByState.workflowSubstateTargets.push(move.workflowSubstateTarget);
+            if (move.workflowSubstateTarget.workflowState.front) {
+              movesByState.workflowSubstateTargets.forEach((wss: WorkflowSubstateDTO) => {
+                wss.children = [...wss.workflowSubstateUser].map((user: WorkflowSubstateUserDTO) => {
+                  user.name = user.user.fullName;
+                  return user;
+                });
+              });
+            }
+            movesByState.children = movesByState.workflowSubstateTargets;
           } else {
             //Otro estado diferente al que ya hemos registrado
             const newMoveByState: MovesByState = {
               ...move.workflowSubstateTarget.workflowState,
-              workflowSubstateTargets: [move.workflowSubstateTarget]
+              workflowSubstateTargets: [move.workflowSubstateTarget],
+              children: []
             };
-            movesByWorkflow.movesByState.push(newMoveByState);
+            if (move.workflowSubstateTarget.workflowState.front) {
+              newMoveByState.workflowSubstateTargets.forEach((wss: WorkflowSubstateDTO) => {
+                wss.children = [...wss.workflowSubstateUser].map((user: WorkflowSubstateUserDTO) => {
+                  user.name = this.getUserFullName(user.user);
+                  return user;
+                });
+              });
+            }
+            newMoveByState.children = newMoveByState.workflowSubstateTargets;
+            movesByWorkflow.children.push(newMoveByState);
           }
         }
       });
@@ -163,7 +218,14 @@ export class MoveCardDialogComponent implements OnInit {
     Object.keys(auxTreeObjByWorkflowId).forEach((k) => {
       tree.push(auxTreeObjByWorkflowId[k]);
     });
-    console.log(tree);
     return tree;
+  }
+
+  private getUserFullName(user: UserDTO): string {
+    let fullName = '';
+    fullName += user.name ? user.name : '';
+    fullName += user.firstName ? ' ' + user.firstName : '';
+    fullName += user.lastName ? ' ' + user.lastName : '';
+    return fullName;
   }
 }

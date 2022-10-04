@@ -10,4 +10,5 @@ export default interface WorkflowSubstateUserDTO {
   cards?: WorkflowCardDTO[];
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   cardsBySubstateId?: any;
+  name?: string;
 }
