@@ -274,38 +274,38 @@ export class CreateEditFacilityComponent extends ComponentToExtendForCustomDialo
         }
       })
     );
-    if (this.form.country.value) {
-      this.getProvinceListOptions(true);
-    }
-    if (this.form.province.value) {
-      this.getTownListOptions(true);
-    }
+    this.getProvinceListOptions(true);
+    this.getTownListOptions(true);
   }
   private getProvinceListOptions(initialLoad = false): void {
     this.provinceList = [];
-    this.localityService.getProvincesByCountryId(this.form.country.value.id).subscribe((provinces: ProvinceDTO[]) => {
-      this.provinceList = provinces;
-      const selectedProvince = this.facilityForm.get('province').value;
-      if (selectedProvince && initialLoad) {
-        this.facilityForm.get('province').setValue(
-          provinces.find((province: ProvinceDTO) => province.id === selectedProvince.id),
-          { emitEvent: false }
-        );
-      }
-    });
+    if (this.form.country.value) {
+      this.localityService.getProvincesByCountryId(this.form.country.value.id).subscribe((provinces: ProvinceDTO[]) => {
+        this.provinceList = provinces;
+        const selectedProvince = this.facilityForm.get('province').value;
+        if (selectedProvince && initialLoad) {
+          this.facilityForm.get('province').setValue(
+            provinces.find((province: ProvinceDTO) => province.id === selectedProvince.id),
+            { emitEvent: false }
+          );
+        }
+      });
+    }
   }
   private getTownListOptions(initialLoad = false): void {
     this.townList = [];
-    this.localityService.getTownsByProvinceId(this.form.province.value.id).subscribe((towns: TownDTO[]) => {
-      this.townList = towns;
-      const selectedTown = this.facilityForm.get('town').value;
-      if (selectedTown && initialLoad) {
-        this.facilityForm.get('town').setValue(
-          towns.find((town: TownDTO) => town.id === selectedTown.id),
-          { emitEvent: false }
-        );
-      }
-    });
+    if (this.form.province.value) {
+      this.localityService.getTownsByProvinceId(this.form.province.value.id).subscribe((towns: TownDTO[]) => {
+        this.townList = towns;
+        const selectedTown = this.facilityForm.get('town').value;
+        if (selectedTown && initialLoad) {
+          this.facilityForm.get('town').setValue(
+            towns.find((town: TownDTO) => town.id === selectedTown.id),
+            { emitEvent: false }
+          );
+        }
+      });
+    }
   }
   private initializeForm = (): void => {
     this.facilityForm = this.fb.group({
