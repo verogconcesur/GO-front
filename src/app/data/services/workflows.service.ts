@@ -5,6 +5,7 @@ import { Inject, Injectable } from '@angular/core';
 import { ENV } from '@app/constants/global.constants';
 import { Env } from '@app/types/env';
 import { ConcenetError } from '@app/types/error';
+import FacilityDTO from '@data/models/organization/facility-dto';
 import WorkflowCardDTO from '@data/models/workflows/workflow-card-dto';
 import WorkflowCardInstanceDTO from '@data/models/workflows/workflow-card-instance-dto';
 import WorkflowDTO from '@data/models/workflows/workflow-dto';
@@ -21,6 +22,8 @@ import { catchError, map } from 'rxjs/operators';
 export class WorkflowsService {
   //Stores the selected workflow.
   public workflowSelectedSubject$: BehaviorSubject<WorkflowDTO> = new BehaviorSubject(null);
+  //Stores the selected facility.
+  public facilitiesSelectedSubject$: BehaviorSubject<FacilityDTO[]> = new BehaviorSubject([]);
 
   private readonly GET_WORKFLOWS_PATH = '/api/workflows';
   private readonly GET_WORKFLOWS_LIST_PATH = '/list';
@@ -52,22 +55,26 @@ export class WorkflowsService {
    */
   public getWorkflowInstances(
     workflow: WorkflowDTO,
+    facilities: FacilityDTO[],
     viewType: 'BOARD' | 'CALENDAR' | 'TABLE',
     extractFilterInfo?: boolean
   ): Observable<WorkflowStateDTO[]> {
-    return this.http
-      .get<WorkflowStateDTO[]>(
-        `${this.env.apiBaseUrl}${this.GET_WORKFLOWS_PATH}/${workflow.id}${this.GET_WORKFLOWS_VIEW_PATH}/${viewType}${this.GET_WORKFLOWS_INSTANCE_PATH}`
-      )
-      .pipe(
-        map((data: WorkflowStateDTO[]) => {
-          if (extractFilterInfo) {
-            this.workflowFilterService.getFilterInfo(data);
-          }
-          return data;
-        }),
-        catchError((error) => throwError(error.error as ConcenetError))
-      );
+    let url = `${this.env.apiBaseUrl}${this.GET_WORKFLOWS_PATH}/${workflow.id}${this.GET_WORKFLOWS_VIEW_PATH}/${viewType}${this.GET_WORKFLOWS_INSTANCE_PATH}`;
+    if (facilities.length) {
+      url =
+        `${this.env.apiBaseUrl}${this.GET_WORKFLOWS_PATH}/${workflow.id}${this.GET_WORKFLOWS_VIEW_PATH}/${viewType}` +
+        `${this.GET_WORKFLOWS_FACILITY_PATH}/${facilities.map((f: FacilityDTO) => f.id).join(',')}` +
+        `${this.GET_WORKFLOWS_INSTANCE_PATH}`;
+    }
+    return this.http.get<WorkflowStateDTO[]>(url).pipe(
+      map((data: WorkflowStateDTO[]) => {
+        if (extractFilterInfo) {
+          this.workflowFilterService.getFilterInfo(data);
+        }
+        return data;
+      }),
+      catchError((error) => throwError(error.error as ConcenetError))
+    );
   }
 
   /**
@@ -76,13 +83,21 @@ export class WorkflowsService {
    * @param workflow WorkflowDTO
    * @returns
    */
-  public getWorkflowCards(workflow: WorkflowDTO, viewType: 'BOARD' | 'CALENDAR' | 'TABLE'): Observable<WorkflowCardDTO[]> {
-    return this.http
-      .get<WorkflowCardDTO[]>(
-        `${this.env.apiBaseUrl}${this.GET_WORKFLOWS_PATH}/${workflow.id}${this.GET_WORKFLOWS_VIEW_PATH}/` +
-          `${viewType}${this.GET_WORKFLOWS_CARDS_PATH}`
-      )
-      .pipe(catchError((error) => throwError(error.error as ConcenetError)));
+  public getWorkflowCards(
+    workflow: WorkflowDTO,
+    facilities: FacilityDTO[],
+    viewType: 'BOARD' | 'CALENDAR' | 'TABLE'
+  ): Observable<WorkflowCardDTO[]> {
+    let url =
+      `${this.env.apiBaseUrl}${this.GET_WORKFLOWS_PATH}/${workflow.id}${this.GET_WORKFLOWS_VIEW_PATH}/` +
+      `${viewType}${this.GET_WORKFLOWS_CARDS_PATH}`;
+    if (facilities.length) {
+      url =
+        `${this.env.apiBaseUrl}${this.GET_WORKFLOWS_PATH}/${workflow.id}${this.GET_WORKFLOWS_VIEW_PATH}/${viewType}` +
+        `${this.GET_WORKFLOWS_FACILITY_PATH}/${facilities.map((f: FacilityDTO) => f.id).join(',')}` +
+        `${this.GET_WORKFLOWS_CARDS_PATH}`;
+    }
+    return this.http.get<WorkflowCardDTO[]>(url).pipe(catchError((error) => throwError(error.error as ConcenetError)));
   }
 
   /**

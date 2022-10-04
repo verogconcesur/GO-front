@@ -1,0 +1,30 @@
+@import 'utils/core';
+@import 'utils/theme';
+
+.move-card-dialog {
+  &__header {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 10px;
+    align-items: center;
+    h2.mat-headline {
+      cursor: default;
+      margin: 0 20px 0 0;
+      color: mat-color($foreground, secondary-text);
+    }
+  }
+  &__filter {
+    padding-top: 10px;
+    .mat-title {
+      color: mat-color($foreground, secondary-text);
+    }
+  }
+  &__content {
+    margin: 5px 0 15px 0;
+  }
+  &__footer {
+    button {
+      width: 100%;
+    }
+  }
+}
