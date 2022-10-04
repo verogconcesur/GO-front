@@ -102,6 +102,7 @@ export class WorkflowColumnActionsAndLinksComponent implements OnInit {
   }
 
   public btnClickShortcut(btn: WorkflowMoveDTO): void {
+    // DGDC TODO: agregar acción de mover tarjeta a otro estado
     console.log(btn);
   }
 

@@ -112,6 +112,9 @@
         },
         "moveCard": "Mover ficha",
         "moveWhere": "¿Dónde quieres moverla?",
+        "noMovesAvailable": "No hay moviemientos disponibles",
+        "otherWorkflows": "Otros workflows",
+        "statesInThisWorkflow": "Estados del workflow actual",
         "workflows": "Workflow"
     },
     "common": {

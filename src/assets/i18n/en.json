@@ -112,6 +112,9 @@
         },
         "moveCard": "Move card",
         "moveWhere": "Where do you want to move it?",
+        "noMovesAvailable": "No moves available",
+        "otherWorkflows": "Other workflows",
+        "statesInThisWorkflow": "Actual workflow's states",
         "workflows": "Workflow"
     },
     "common": {

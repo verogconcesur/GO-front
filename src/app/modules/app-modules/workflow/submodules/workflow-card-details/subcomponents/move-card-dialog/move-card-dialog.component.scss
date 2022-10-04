@@ -19,4 +19,12 @@
       color: mat-color($foreground, secondary-text);
     }
   }
+  &__content {
+    margin: 5px 0 15px 0;
+  }
+  &__footer {
+    button {
+      width: 100%;
+    }
+  }
 }

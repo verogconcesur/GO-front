@@ -26,7 +26,15 @@
                 </mat-form-field>
             </form> -->
         </div>
-        <div class="move-card-dialog__content"></div>
-        <div class="move-card-dialog__footer">Footer</div>
+        <div class="move-card-dialog__content">
+            <ng-container *ngIf="view === 'MOVES_IN_THIS_WORKFLOW'"> En este workflow </ng-container>
+            <ng-container *ngIf="view === 'MOVES_IN_OTHER_WORKFLOWS'"> En otros workflows </ng-container>
+        </div>
+        <div class="move-card-dialog__footer">
+            <button mat-stroked-button (click)="changeView()">
+                <span *ngIf="view === 'MOVES_IN_THIS_WORKFLOW'">{{ labels.otherWorkflows | translate }}</span>
+                <span *ngIf="view === 'MOVES_IN_OTHER_WORKFLOWS'">{{ labels.statesInThisWorkflow | translate }}</span>
+            </button>
+        </div>
     </div>
 </div>
