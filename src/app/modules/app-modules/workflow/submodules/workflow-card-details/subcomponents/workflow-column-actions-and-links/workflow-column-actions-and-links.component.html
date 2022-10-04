@@ -8,6 +8,19 @@
         <div class="buttons">
             <button
                 mat-raised-button
+                *ngFor="let shortcut of shortCuts"
+                (click)="btnClickShortcut(shortcut)"
+                [style.background-color]="getBgColor(null, shortcut.shortcutColor)"
+                [style.color]="getFontColor(null, shortcut.shortcutColor)"
+            >
+                {{ shortcut.shortcutName }}
+            </button>
+        </div>
+
+        <h5 class="uppercase" *ngIf="links?.length">{{ labels.externalLinks | translate }}</h5>
+        <div class="buttons">
+            <button
+                mat-raised-button
                 *ngFor="let link of links"
                 (click)="btnClick(link)"
                 [style.background-color]="getBgColor(link)"

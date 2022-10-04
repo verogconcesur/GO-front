@@ -18,6 +18,9 @@
     align-items: center;
     mat-form-field {
       width: 400px;
+      &.workflow-and-facility-combo {
+        width: 200px;
+      }
     }
     .filter {
       width: 100%;

@@ -1,0 +1,40 @@
+<div class="move-card-dialog">
+    <div class="move-card-dialog__header">
+        <h2 class="mat-headline">{{ labels.moveCard | translate }}</h2>
+        <button mat-icon-button class="move-card-dialog__header__close" (click)="close()">
+            <mat-icon>close</mat-icon>
+        </button>
+    </div>
+    <mat-divider></mat-divider>
+    <div class="move-card-dialog__filter">
+        <h3 class="mat-title">{{ labels.moveWhere | translate }}</h3>
+        <div class="move-card-dialog__filter__form">
+            <!-- <form class="smaller-mat-form-fields" fxLayout="row" fxLayoutAlign="end center" (ngSubmit)="filterAction()">
+                <mat-form-field
+                    appearance="outline"
+                    class="smaller-mat-form-fields__no-margin"
+                    [ngClass]="{ 'smaller-mat-form-fields__button-height': searchType === 'search' }"
+                >
+                    <input
+                        type="text"
+                        matInput
+                        [placeholder]="getSearchLabel() | translate"
+                        [formControl]="filterTextSearchControl"
+                        [matAutocomplete]="auto"
+                        (keyup.enter)="searchAction()"
+                    />
+                </mat-form-field>
+            </form> -->
+        </div>
+        <div class="move-card-dialog__content">
+            <ng-container *ngIf="view === 'MOVES_IN_THIS_WORKFLOW'"> En este workflow </ng-container>
+            <ng-container *ngIf="view === 'MOVES_IN_OTHER_WORKFLOWS'"> En otros workflows </ng-container>
+        </div>
+        <div class="move-card-dialog__footer">
+            <button mat-stroked-button (click)="changeView()">
+                <span *ngIf="view === 'MOVES_IN_THIS_WORKFLOW'">{{ labels.otherWorkflows | translate }}</span>
+                <span *ngIf="view === 'MOVES_IN_OTHER_WORKFLOWS'">{{ labels.statesInThisWorkflow | translate }}</span>
+            </button>
+        </div>
+    </div>
+</div>

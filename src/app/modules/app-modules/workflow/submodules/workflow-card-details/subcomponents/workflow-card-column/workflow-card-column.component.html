@@ -52,7 +52,10 @@
         </div>
         <!-- Columna acciones -->
         <div class="w-column__container__content" *ngIf="containerClass === 'actions'">
-            <app-workflow-column-actions-and-links [tab]="column.tabs[0]"></app-workflow-column-actions-and-links>
+            <app-workflow-column-actions-and-links
+                [tab]="column.tabs[0]"
+                [cardInstance]="cardInstance"
+            ></app-workflow-column-actions-and-links>
         </div>
     </div>
 </div>

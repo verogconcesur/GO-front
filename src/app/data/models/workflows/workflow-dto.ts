@@ -1,6 +1,8 @@
+import FacilityDTO from '../organization/facility-dto';
+
 export default interface WorkflowDTO {
   id: number;
   name: string;
   status: string;
-  facility?: { facilityId: number; facilityName: string };
+  facilities?: FacilityDTO[];
 }

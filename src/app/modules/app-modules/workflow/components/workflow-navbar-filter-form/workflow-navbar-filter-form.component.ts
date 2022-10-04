@@ -10,6 +10,7 @@ import { forkJoin, Observable, of } from 'rxjs';
 import WorkflowSubstateDTO from '@data/models/workflows/workflow-substate-dto';
 import WorkflowSubstateUserDTO from '@data/models/workflows/workflow-substate-user-dto';
 import { WorkflowFilterService } from '../../aux-service/workflow-filter.service';
+import { WorkflowsService } from '@data/services/workflows.service';
 
 @UntilDestroy()
 @Component({
@@ -39,7 +40,11 @@ export class WorkflowNavbarFilterFormComponent implements OnInit {
   public usersOptions: Observable<WorkflowSubstateUserDTO[] | any[]>;
   private filterValue: WorkflowFilterDTO = null;
 
-  constructor(private workflowFilterService: WorkflowFilterService, private formBuilder: UntypedFormBuilder) {}
+  constructor(
+    private workflowService: WorkflowsService,
+    private workflowFilterService: WorkflowFilterService,
+    private formBuilder: UntypedFormBuilder
+  ) {}
 
   ngOnInit(): void {
     this.filterValue = this.workflowFilterService.workflowFilterSubject$.getValue();
@@ -107,6 +112,9 @@ export class WorkflowNavbarFilterFormComponent implements OnInit {
   }
 
   private initListeners(): void {
+    this.workflowService.workflowSelectedSubject$.pipe(untilDestroyed(this)).subscribe((data) => {
+      this.clearFilterData();
+    });
     this.filterForm
       .get('states')
       ?.valueChanges.pipe(untilDestroyed(this))
