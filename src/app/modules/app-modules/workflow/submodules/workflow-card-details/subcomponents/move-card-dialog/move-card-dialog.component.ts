@@ -104,7 +104,7 @@ export class MoveCardDialogComponent implements OnInit {
     this.getMovements();
     this.filterTextSearchControl.valueChanges.pipe(untilDestroyed(this)).subscribe((value) => {
       if (value) {
-        this.searchedWords$ = of(value.trim().split(' '));
+        this.searchedWords$ = of([value]);
       } else {
         this.searchedWords$ = of([]);
       }
