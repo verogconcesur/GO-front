@@ -17,8 +17,10 @@ import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
 import { TranslateService } from '@ngx-translate/core';
 import { GlobalMessageService } from '@shared/services/global-message.service';
 import { ProgressSpinnerDialogService } from '@shared/services/progress-spinner-dialog.service';
-import { take } from 'rxjs/operators';
+import { map, take } from 'rxjs/operators';
 import * as lodash from 'lodash';
+import { normalizaStringToLowerCase } from '@shared/utils/string-normalization-lower-case';
+import { Observable, of } from 'rxjs';
 
 interface TreeNode {
   name: string;
@@ -68,7 +70,8 @@ export class MoveCardDialogComponent implements OnInit {
     statesInThisWorkflow: marker('cards.statesInThisWorkflow'),
     otherWorkflows: marker('cards.otherWorkflows'),
     noMovesAvailable: marker('cards.noMovesAvailable'),
-    filter: marker('common.filterAction')
+    filter: marker('common.filterAction'),
+    noData: marker('errors.noDataToShow')
   };
   public view: 'MOVES_IN_THIS_WORKFLOW' | 'MOVES_IN_OTHER_WORKFLOWS' = 'MOVES_IN_THIS_WORKFLOW';
   public cardInstance: CardInstanceDTO = null;
@@ -80,8 +83,11 @@ export class MoveCardDialogComponent implements OnInit {
   public nodesIndexAndNamesSameWorkflow: { nodes: number[]; name: string }[] = [];
   public nodesIndexAndNamesOtherWorkflow: { nodes: number[]; name: string }[] = [];
 
-  treeControl = new NestedTreeControl<TreeNode>((node) => node.children);
-  dataSource = new MatTreeNestedDataSource<TreeNode>();
+  public treeControl = new NestedTreeControl<TreeNode>((node) => node.children);
+  public dataSource = new MatTreeNestedDataSource<TreeNode>();
+
+  //Used to highlight the results
+  public searchedWords$: Observable<string[]> = of([]);
 
   constructor(
     public dialogRef: MatDialogRef<MoveCardDialogComponent>,
@@ -96,7 +102,14 @@ export class MoveCardDialogComponent implements OnInit {
     this.cardInstance = this.config.cardInstance;
     this.idCard = this.config.idCard;
     this.getMovements();
-    this.filterTextSearchControl.valueChanges.pipe(untilDestroyed(this)).subscribe((value) => this.filter());
+    this.filterTextSearchControl.valueChanges.pipe(untilDestroyed(this)).subscribe((value) => {
+      if (value) {
+        this.searchedWords$ = of(value.trim().split(' '));
+      } else {
+        this.searchedWords$ = of([]);
+      }
+      this.filter();
+    });
   }
 
   public hasChild = (_: number, node: TreeNode) => !!node.children && node.children.length > 0;
@@ -132,7 +145,7 @@ export class MoveCardDialogComponent implements OnInit {
     if (this.view === 'MOVES_IN_THIS_WORKFLOW') {
       originalData = lodash.cloneDeep(this.sameWorkflowMovements.children);
     }
-    const filterValue = this.filterTextSearchControl.value ? this.filterTextSearchControl.value.toLowerCase() : '';
+    const filterValue = this.filterTextSearchControl.value ? normalizaStringToLowerCase(this.filterTextSearchControl.value) : '';
     if (filterValue) {
       this.setNodesToShow(this.filterNodes(filterValue, originalData));
       this.treeControl.expandAll();
@@ -154,7 +167,7 @@ export class MoveCardDialogComponent implements OnInit {
 
   private filterNodes(filterValue: string, data: TreeNode[]): TreeNode[] {
     return data.filter((item: TreeNode) => {
-      if (item.name.toLowerCase().indexOf(filterValue) >= 0) {
+      if (normalizaStringToLowerCase(item.name ? item.name : '').indexOf(filterValue) >= 0) {
         return item;
       } else if (item.children?.length) {
         item.children = this.filterNodes(filterValue, item.children);

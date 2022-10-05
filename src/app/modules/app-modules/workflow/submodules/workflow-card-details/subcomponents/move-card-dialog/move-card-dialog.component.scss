@@ -36,6 +36,10 @@
       margin-bottom: 0px;
     }
 
+    &__no-data {
+      color: mat-color($warn, 900);
+    }
+
     .workflow-states-tree-invisible {
       display: none;
     }
@@ -107,6 +111,10 @@
           }
         }
       }
+    }
+
+    .selected {
+      background-color: yellow;
     }
   }
   &__footer {

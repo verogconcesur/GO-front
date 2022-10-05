@@ -28,17 +28,28 @@
             <ng-container *ngIf="view === 'MOVES_IN_OTHER_WORKFLOWS'">
                 <h3>{{ labels.otherWorkflows | translate | uppercase }}</h3>
             </ng-container>
+            <p class="move-card-dialog__content__no-data" *ngIf="!dataSource.data?.length">{{ labels.noData | translate }}</p>
             <mat-tree [dataSource]="dataSource" [treeControl]="treeControl" class="workflow-states-tree">
                 <mat-tree-node *matTreeNodeDef="let node" matTreeNodeToggle (click)="moveCardTo(node)">
                     <button mat-button>
-                        <div>{{ node.name }}</div>
+                        <div
+                            appHighlight
+                            [searchedWords]="searchedWords$ | async"
+                            [text]="node.name"
+                            classToApply="selected"
+                        ></div>
                         <mat-icon>keyboard_arrow_right</mat-icon>
                     </button>
                 </mat-tree-node>
                 <mat-nested-tree-node *matTreeNodeDef="let node; when: hasChild">
                     <div class="mat-tree-node mat-tree-group-node">
                         <button mat-button matTreeNodeToggle [attr.aria-label]="'Toggle ' + node.name">
-                            <div>{{ node.name }}</div>
+                            <div
+                                appHighlight
+                                [searchedWords]="searchedWords$ | async"
+                                [text]="node.name"
+                                classToApply="selected"
+                            ></div>
                             <mat-icon class="mat-icon-rtl-mirror">
                                 {{ treeControl.isExpanded(node) ? "expand_more" : "chevron_right" }}
                             </mat-icon>
