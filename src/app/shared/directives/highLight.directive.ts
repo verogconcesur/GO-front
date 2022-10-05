@@ -12,7 +12,6 @@ export class HighlightDirective implements OnChanges {
   constructor(private el: ElementRef, private renderer: Renderer2) {}
 
   ngOnChanges(changes: SimpleChanges): void {
-    console.log(this.searchedWords, this.text);
     if (!this.searchedWords || !this.searchedWords.length || !this.classToApply) {
       this.renderer.setProperty(this.el.nativeElement, 'innerHTML', this.text);
       return;
