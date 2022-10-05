@@ -1,5 +1,6 @@
 import { NestedTreeControl } from '@angular/cdk/tree';
-import { Component, Inject, OnInit } from '@angular/core';
+import { Component, Inject, OnInit, ViewChild, ViewEncapsulation } from '@angular/core';
+import { UntypedFormControl } from '@angular/forms';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { MatTreeNestedDataSource } from '@angular/material/tree';
 import { ConcenetError } from '@app/types/error';
@@ -12,10 +13,12 @@ import WorkflowMoveDTO from '@data/models/workflows/workflow-move-dto';
 import WorkflowSubstateDTO from '@data/models/workflows/workflow-substate-dto';
 import WorkflowSubstateUserDTO from '@data/models/workflows/workflow-substate-user-dto';
 import { CardService } from '@data/services/cards.service';
+import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
 import { TranslateService } from '@ngx-translate/core';
 import { GlobalMessageService } from '@shared/services/global-message.service';
 import { ProgressSpinnerDialogService } from '@shared/services/progress-spinner-dialog.service';
 import { take } from 'rxjs/operators';
+import * as lodash from 'lodash';
 
 interface TreeNode {
   name: string;
@@ -51,10 +54,12 @@ export interface MovesByWorkflow extends TreeNode {
   manualCreateCard?: boolean;
 }
 
+@UntilDestroy()
 @Component({
   selector: 'app-move-card-dialog',
   templateUrl: './move-card-dialog.component.html',
-  styleUrls: ['./move-card-dialog.component.scss']
+  styleUrls: ['./move-card-dialog.component.scss'],
+  encapsulation: ViewEncapsulation.None
 })
 export class MoveCardDialogComponent implements OnInit {
   public labels = {
@@ -62,7 +67,8 @@ export class MoveCardDialogComponent implements OnInit {
     moveWhere: marker('cards.moveWhere'),
     statesInThisWorkflow: marker('cards.statesInThisWorkflow'),
     otherWorkflows: marker('cards.otherWorkflows'),
-    noMovesAvailable: marker('cards.noMovesAvailable')
+    noMovesAvailable: marker('cards.noMovesAvailable'),
+    filter: marker('common.filterAction')
   };
   public view: 'MOVES_IN_THIS_WORKFLOW' | 'MOVES_IN_OTHER_WORKFLOWS' = 'MOVES_IN_THIS_WORKFLOW';
   public cardInstance: CardInstanceDTO = null;
@@ -70,6 +76,9 @@ export class MoveCardDialogComponent implements OnInit {
   public allMovements: WorkflowMoveDTO[] = [];
   public sameWorkflowMovements: MovesByWorkflow = null;
   public otherWorkflowMovements: MovesByWorkflow[] = [];
+  public filterTextSearchControl = new UntypedFormControl();
+  public nodesIndexAndNamesSameWorkflow: { nodes: number[]; name: string }[] = [];
+  public nodesIndexAndNamesOtherWorkflow: { nodes: number[]; name: string }[] = [];
 
   treeControl = new NestedTreeControl<TreeNode>((node) => node.children);
   dataSource = new MatTreeNestedDataSource<TreeNode>();
@@ -87,6 +96,7 @@ export class MoveCardDialogComponent implements OnInit {
     this.cardInstance = this.config.cardInstance;
     this.idCard = this.config.idCard;
     this.getMovements();
+    this.filterTextSearchControl.valueChanges.pipe(untilDestroyed(this)).subscribe((value) => this.filter());
   }
 
   public hasChild = (_: number, node: TreeNode) => !!node.children && node.children.length > 0;
@@ -105,11 +115,55 @@ export class MoveCardDialogComponent implements OnInit {
   }
 
   public setViewData(): void {
+    this.resetFilter();
     if (this.view === 'MOVES_IN_THIS_WORKFLOW') {
-      this.dataSource.data = this.sameWorkflowMovements.children;
+      this.setNodesToShow(this.sameWorkflowMovements.children);
     } else {
-      this.dataSource.data = this.otherWorkflowMovements;
+      this.setNodesToShow(this.otherWorkflowMovements);
     }
+  }
+
+  public resetFilter(): void {
+    this.filterTextSearchControl.setValue(null);
+  }
+
+  public filter(): void {
+    let originalData: TreeNode[] = lodash.cloneDeep(this.otherWorkflowMovements);
+    if (this.view === 'MOVES_IN_THIS_WORKFLOW') {
+      originalData = lodash.cloneDeep(this.sameWorkflowMovements.children);
+    }
+    const filterValue = this.filterTextSearchControl.value ? this.filterTextSearchControl.value.toLowerCase() : '';
+    if (filterValue) {
+      this.setNodesToShow(this.filterNodes(filterValue, originalData));
+      this.treeControl.expandAll();
+    } else {
+      this.setNodesToShow(originalData);
+    }
+  }
+
+  public moveCardTo(node: TreeNode): void {
+    console.log(node);
+  }
+
+  private setNodesToShow(data: TreeNode[]): void {
+    this.dataSource.data = null;
+    this.treeControl.dataNodes = null;
+    this.dataSource.data = data;
+    this.treeControl.dataNodes = data;
+  }
+
+  private filterNodes(filterValue: string, data: TreeNode[]): TreeNode[] {
+    return data.filter((item: TreeNode) => {
+      if (item.name.toLowerCase().indexOf(filterValue) >= 0) {
+        return item;
+      } else if (item.children?.length) {
+        item.children = this.filterNodes(filterValue, item.children);
+        if (item.children.length) {
+          return item;
+        }
+      }
+      return null;
+    });
   }
 
   private getMovements(): void {
@@ -137,24 +191,33 @@ export class MoveCardDialogComponent implements OnInit {
     this.sameWorkflowMovements = null;
     this.otherWorkflowMovements = [];
     if (this.allMovements?.length) {
-      this.sameWorkflowMovements = this.createMovesTree([
-        ...this.allMovements.filter(
-          (move: WorkflowMoveDTO) =>
-            move.workflowSubstateTarget.workflowState.workflow.id === move.workflowSubstateSource.workflowState.workflow.id
-        )
-      ])[0];
-      this.otherWorkflowMovements = this.createMovesTree([
-        ...this.allMovements.filter(
-          (move: WorkflowMoveDTO) =>
-            move.workflowSubstateTarget.workflowState.workflow.id !== move.workflowSubstateSource.workflowState.workflow.id
-        )
-      ]);
+      this.sameWorkflowMovements = this.createMovesTree(
+        [
+          ...this.allMovements.filter(
+            (move: WorkflowMoveDTO) =>
+              move.workflowSubstateTarget.workflowState.workflow.id === move.workflowSubstateSource.workflowState.workflow.id
+          )
+        ],
+        'MOVES_IN_THIS_WORKFLOW'
+      )[0];
+      this.otherWorkflowMovements = this.createMovesTree(
+        [
+          ...this.allMovements.filter(
+            (move: WorkflowMoveDTO) =>
+              move.workflowSubstateTarget.workflowState.workflow.id !== move.workflowSubstateSource.workflowState.workflow.id
+          )
+        ],
+        'MOVES_IN_OTHER_WORKFLOWS'
+      );
     }
     console.log(this.sameWorkflowMovements, this.otherWorkflowMovements);
     this.setViewData();
   }
 
-  private createMovesTree(moves: WorkflowMoveDTO[]): MovesByWorkflow[] {
+  private createMovesTree(
+    moves: WorkflowMoveDTO[],
+    type: 'MOVES_IN_THIS_WORKFLOW' | 'MOVES_IN_OTHER_WORKFLOWS'
+  ): MovesByWorkflow[] {
     const tree: MovesByWorkflow[] = [];
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const auxTreeObjByWorkflowId: any = {};
@@ -173,8 +236,11 @@ export class MoveCardDialogComponent implements OnInit {
               ...movesByWorkflow.children[0].workflowSubstateTargets[0].workflowSubstateUser
             ].map((user: WorkflowSubstateUserDTO) => {
               user.name = user.user.fullName;
+              user.move = move;
               return user;
             });
+          } else {
+            movesByWorkflow.children[0].workflowSubstateTargets[0].move = move;
           }
           movesByWorkflow.children[0].children = movesByWorkflow.children[0].workflowSubstateTargets;
           auxTreeObjByWorkflowId[move.workflowSubstateTarget.workflowState.workflow.id] = movesByWorkflow;
@@ -184,17 +250,24 @@ export class MoveCardDialogComponent implements OnInit {
             (m: MovesByState) => m.id === move.workflowSubstateTarget.workflowState.id
           )[0];
           if (movesByState) {
+            if (!move.workflowSubstateTarget.workflowState.front) {
+              move.workflowSubstateTarget.move = move;
+            }
             movesByState.workflowSubstateTargets.push(move.workflowSubstateTarget);
             if (move.workflowSubstateTarget.workflowState.front) {
               movesByState.workflowSubstateTargets.forEach((wss: WorkflowSubstateDTO) => {
                 wss.children = [...wss.workflowSubstateUser].map((user: WorkflowSubstateUserDTO) => {
                   user.name = user.user.fullName;
+                  user.move = move;
                   return user;
                 });
               });
             }
             movesByState.children = movesByState.workflowSubstateTargets;
           } else {
+            if (!move.workflowSubstateTarget.workflowState.front) {
+              move.workflowSubstateTarget.move = move;
+            }
             //Otro estado diferente al que ya hemos registrado
             const newMoveByState: MovesByState = {
               ...move.workflowSubstateTarget.workflowState,
@@ -205,6 +278,7 @@ export class MoveCardDialogComponent implements OnInit {
               newMoveByState.workflowSubstateTargets.forEach((wss: WorkflowSubstateDTO) => {
                 wss.children = [...wss.workflowSubstateUser].map((user: WorkflowSubstateUserDTO) => {
                   user.name = this.getUserFullName(user.user);
+                  user.move = move;
                   return user;
                 });
               });

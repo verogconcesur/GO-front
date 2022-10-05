@@ -1,5 +1,6 @@
 import UserDTO from '../user-permissions/user-dto';
 import WorkflowCardDTO from './workflow-card-dto';
+import WorkflowMoveDTO from './workflow-move-dto';
 
 export default interface WorkflowSubstateUserDTO {
   id: number;
@@ -11,4 +12,5 @@ export default interface WorkflowSubstateUserDTO {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   cardsBySubstateId?: any;
   name?: string;
+  move?: WorkflowMoveDTO;
 }

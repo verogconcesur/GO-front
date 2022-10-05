@@ -9,34 +9,35 @@
     <div class="move-card-dialog__filter">
         <h3 class="mat-title">{{ labels.moveWhere | translate }}</h3>
         <div class="move-card-dialog__filter__form">
-            <!-- <form class="smaller-mat-form-fields" fxLayout="row" fxLayoutAlign="end center" (ngSubmit)="filterAction()">
-                <mat-form-field
-                    appearance="outline"
-                    class="smaller-mat-form-fields__no-margin"
-                    [ngClass]="{ 'smaller-mat-form-fields__button-height': searchType === 'search' }"
-                >
+            <form class="smaller-mat-form-fields" fxLayout="row" fxLayoutAlign="end center" (ngSubmit)="filter()">
+                <mat-form-field appearance="outline" class="smaller-mat-form-fields__no-margin">
                     <input
                         type="text"
                         matInput
-                        [placeholder]="getSearchLabel() | translate"
+                        [placeholder]="labels.filter | translate"
                         [formControl]="filterTextSearchControl"
-                        [matAutocomplete]="auto"
-                        (keyup.enter)="searchAction()"
+                        (keyup.enter)="filter()"
                     />
                 </mat-form-field>
-            </form> -->
+            </form>
         </div>
         <div class="move-card-dialog__content">
-            <ng-container *ngIf="view === 'MOVES_IN_THIS_WORKFLOW'"> En este workflow </ng-container>
-            <ng-container *ngIf="view === 'MOVES_IN_OTHER_WORKFLOWS'"> En otros workflows </ng-container>
+            <ng-container *ngIf="view === 'MOVES_IN_THIS_WORKFLOW'">
+                <h3>{{ labels.statesInThisWorkflow | translate | uppercase }}</h3>
+            </ng-container>
+            <ng-container *ngIf="view === 'MOVES_IN_OTHER_WORKFLOWS'">
+                <h3>{{ labels.otherWorkflows | translate | uppercase }}</h3>
+            </ng-container>
             <mat-tree [dataSource]="dataSource" [treeControl]="treeControl" class="workflow-states-tree">
-                <mat-tree-node *matTreeNodeDef="let node" matTreeNodeToggle>
-                    <div>{{ node.name }}</div>
-                    <mat-icon>keyboard_arrow_right</mat-icon>
+                <mat-tree-node *matTreeNodeDef="let node" matTreeNodeToggle (click)="moveCardTo(node)">
+                    <button mat-button>
+                        <div>{{ node.name }}</div>
+                        <mat-icon>keyboard_arrow_right</mat-icon>
+                    </button>
                 </mat-tree-node>
                 <mat-nested-tree-node *matTreeNodeDef="let node; when: hasChild">
-                    <div class="mat-tree-node">
-                        <button mat-icon-button matTreeNodeToggle [attr.aria-label]="'Toggle ' + node.name">
+                    <div class="mat-tree-node mat-tree-group-node">
+                        <button mat-button matTreeNodeToggle [attr.aria-label]="'Toggle ' + node.name">
                             <div>{{ node.name }}</div>
                             <mat-icon class="mat-icon-rtl-mirror">
                                 {{ treeControl.isExpanded(node) ? "expand_more" : "chevron_right" }}
