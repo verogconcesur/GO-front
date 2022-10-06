@@ -46,7 +46,7 @@ export class WorkflowColumnTemplatesAttachmentsComponent implements OnInit, OnCh
     this.cardInstanceAttachmentsConfig = {
       tabId: this.tab.id,
       wcId: this.idCard,
-      disableAttachmentsSelection: true
+      disableAttachmentsSelection: false //TODO DGDC poner a true
     };
     this.cardAttachmentsService
       .getCardAttachments(this.idCard, this.tab.id)
