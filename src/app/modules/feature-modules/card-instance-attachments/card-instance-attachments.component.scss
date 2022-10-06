@@ -1,0 +1,94 @@
+@import 'utils/theme';
+.attachments {
+  padding: 10px 15px;
+  &__templates {
+    margin-bottom: 20px;
+    &__header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      text-transform: uppercase;
+      label {
+        font-weight: 600;
+        font-size: 0.85em;
+        color: mat-contrast($primary, 100);
+        margin: 0px;
+      }
+    }
+    &__content {
+      display: flex;
+      justify-content: flex-start;
+      flex-wrap: wrap;
+      align-items: center;
+      &__item {
+        max-width: 248px;
+        min-width: 100px;
+        max-height: 188px;
+        //Añadir medias queries
+        width: 248px;
+        height: 188px;
+        background-color: mat-color($background, background-administration);
+        position: relative;
+        margin: 5px 10px 30px 10px;
+        border-radius: 15px;
+
+        .actions-wrapper {
+          position: absolute;
+          border-radius: 15px;
+          top: 0px;
+          left: 0px;
+          width: 100%;
+          height: 100%;
+          background-color: rgba(mat-contrast($primary, 100), 0.5);
+          opacity: 0;
+          transition: opacity 0.5s ease;
+          mat-icon {
+            color: mat-contrast($primary, 400);
+            cursor: pointer;
+            position: absolute;
+            &.top-left {
+              top: 15px;
+              left: 15px;
+            }
+            &.top-right {
+              top: 15px;
+              right: 15px;
+            }
+            &.bottom-right {
+              bottom: 15px;
+              right: 15px;
+            }
+          }
+        }
+        &:hover {
+          .actions-wrapper {
+            opacity: 1;
+          }
+        }
+
+        .file-name {
+          position: absolute;
+          bottom: -25px;
+          width: 100%;
+          text-align: center;
+          cursor: default;
+          mat-icon {
+            position: absolute;
+            display: none;
+            color: mat-color($primary, 700);
+            top: -20px;
+            left: 69%;
+          }
+          &.editable {
+            cursor: pointer;
+            &:hover {
+              mat-icon {
+                display: block;
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

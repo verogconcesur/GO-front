@@ -1,1 +1,24 @@
-<p>card-instance-attachments works!</p>
+<div class="attachments">
+    <div class="attachments__templates" *ngFor="let template of data">
+        <div class="attachments__templates__header">
+            <label>{{ template.templateAttachmentItem.name }}</label>
+            <button mat-icon-button color="primary" class="v-align-bottom no-padding" (click)="addFiles(template)">
+                <mat-icon>add</mat-icon>
+            </button>
+        </div>
+        <div class="attachments__templates__content">
+            <div class="attachments__templates__content__item" *ngFor="let item of template.attachments">
+                <div class="actions-wrapper">
+                    <mat-icon class="top-left">delete</mat-icon>
+                    <mat-icon class="top-right">check_box_outline_blank</mat-icon>
+                    <mat-icon class="top-right">check_box</mat-icon>
+                    <mat-icon class="bottom-right">vertical_align_bottom</mat-icon>
+                </div>
+                <div class="file-name" [ngClass]="{ editable: !cardInstanceAttachmentsConfig.disableEditFileName }">
+                    {{ item.name }}
+                    <mat-icon>edit</mat-icon>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
