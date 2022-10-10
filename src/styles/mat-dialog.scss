@@ -1,0 +1,11 @@
+@import '@angular/material/theming';
+
+@mixin custom-mat-dialog-theme($theme, $main-typo) {
+  $primary: map-get($theme, primary);
+  $foreground: map-get($theme, foreground);
+  .remove-padding {
+    mat-dialog-container {
+      padding: 0px;
+    }
+  }
+}

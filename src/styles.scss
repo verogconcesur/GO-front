@@ -20,6 +20,7 @@
 @import 'app/modules/app-modules/administration/organization/components/create-edit-specialty/create-edit-specialty.component.scss-theme.scss';
 @import 'app/modules/app-modules/administration/cards/components/create-edit-card/create-edit-card.component.scss-theme.scss';
 @import 'app/modules/app-modules/workflow/workflow.component.scss-theme.scss';
+@import 'app/modules/feature-modules/new-card/new-card.component.scss-theme.scss';
 
 @mixin custom-components-theme($theme, $main-typography) {
   @include app-component-theme($theme);
@@ -41,13 +42,13 @@
   @include workflow-component-theme($theme, $main-typography);
   @include responsive-tabs-component-theme($theme, $main-typography);
   @include create-edit-card-component-theme($theme, $main-typography);
+  @include new-card-component-theme($theme, $main-typography);
 }
 
 // Load theme and custom components styles for current theme
 @include mat-core($concenet-main-typography);
 @include angular-material-theme($concenet-theme);
 @include custom-components-theme($concenet-theme, $concenet-main-typography);
-
 @import 'fonts.scss';
 @import 'globals.scss';
 @import 'mat-input.scss';
@@ -58,6 +59,7 @@
 @import 'mat-table.scss';
 @import 'mat-paginator.scss';
 @import 'mat-checkbox.scss';
+@import 'mat-dialog.scss';
 @import 'mat-tooltip.scss';
 @import 'mat-menu.scss';
 @import 'global-message.scss';
@@ -76,3 +78,4 @@
 @include custom-mat-menu-theme($concenet-theme, $concenet-main-typography);
 @include global-message-theme($concenet-theme, $concenet-main-typography);
 @include custom-drag-drop-theme($concenet-theme, $concenet-main-typography);
+@include custom-mat-dialog-theme($concenet-theme, $concenet-main-typography);

@@ -27,6 +27,7 @@ import { MatPaginatorIntl, MatPaginatorModule } from '@angular/material/paginato
 import { MyCustomPaginatorIntl } from './providers/my-custom-paginator-intl';
 import { MatAutocompleteModule } from '@angular/material/autocomplete';
 import { DragDropModule } from '@angular/cdk/drag-drop';
+import { MatStepperModule } from '@angular/material/stepper';
 
 @NgModule({
   declarations: [],
@@ -57,7 +58,8 @@ import { DragDropModule } from '@angular/cdk/drag-drop';
     MatTableModule,
     MatPaginatorModule,
     MatAutocompleteModule,
-    DragDropModule
+    DragDropModule,
+    MatStepperModule
   ],
   providers: [
     { provide: MatPaginatorIntl, useClass: MyCustomPaginatorIntl },
@@ -90,7 +92,8 @@ import { DragDropModule } from '@angular/cdk/drag-drop';
     MatTableModule,
     MatPaginatorModule,
     MatAutocompleteModule,
-    DragDropModule
+    DragDropModule,
+    MatStepperModule
   ]
 })
 export class MaterialModule {}
