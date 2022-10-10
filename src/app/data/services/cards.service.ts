@@ -9,6 +9,7 @@ import PaginationResponseI from '@data/interfaces/pagination-response';
 import BasicFilterDTO from '@data/models/basic-filter-dto';
 import CardContentSourceDTO from '@data/models/cards/card-content-source-dto';
 import CardContentTypeDTO from '@data/models/cards/card-content-type-dto';
+import CardCreateDTO from '@data/models/cards/card-create-dto';
 import CardDTO from '@data/models/cards/card-dto';
 import CardInstanceDTO from '@data/models/cards/card-instance-dto';
 import WorkflowCardSlotDTO from '@data/models/workflows/workflow-card-slot-dto';
@@ -35,6 +36,10 @@ export class CardService {
   private readonly SEARCH_ATTRS_ENTITY_PATH = '/api/variables/contentSource/';
   private readonly DUPLICATE_CARDS_PATH = '/api/cards/duplicate';
   private readonly DELETE_CARDS_PATH = '/api/cards';
+  private readonly GET_CARD_INSTANCE_CREATE_PATH = '/api/cardInstanceWorkflow/createCard/';
+  private readonly GET_CARD_CREATE_PATH = '/getCard';
+  private readonly GET_DETAIL_TAB_PATH = '/getDetailTab';
+  private readonly CREATE_CARD_INSTANCE_PATH = '/api/cardInstanceWorkflow/createCard';
 
   constructor(@Inject(ENV) private env: Env, private http: HttpClient) {}
 
@@ -158,5 +163,54 @@ export class CardService {
     return this.http
       .get<WorkflowCardSlotDTO[]>(`${this.env.apiBaseUrl}${this.SEARCH_ATTRS_ENTITY_PATH}${contentSourceId}`)
       .pipe(catchError((error) => throwError(error as ConcenetError)));
+  }
+  /**
+   * Get card tab data on create
+   *
+   * @param cardInstanceWorkflowId
+   * @param tabId
+   * @returns WorkflowCardSlotDTO[]
+   */
+  public getCardCreateTabData(cardInstanceWorkflowId: number): Observable<CardDTO> {
+    return this.http
+      .get<CardDTO>(
+        // eslint-disable-next-line max-len
+        `${this.env.apiBaseUrl}${this.GET_CARD_INSTANCE_CREATE_PATH}${cardInstanceWorkflowId}${this.GET_CARD_CREATE_PATH}`
+      )
+      .pipe(catchError((error) => throwError(error.error as ConcenetError)));
+  }
+
+  /**
+   * Get entity card data
+   *
+   * @param cardInstanceWorkflowId
+   * @param tabId
+   * @returns WorkflowCardSlotDTO[]
+   */
+  public getEntityCardTabData(
+    workflowId: number,
+    tabId: number,
+    entityId?: number
+  ): Observable<WorkflowCardSlotDTO[] | WorkflowCardTabItemDTO[]> {
+    // eslint-disable-next-line max-len
+    let url = `${this.env.apiBaseUrl}${this.GET_CARD_INSTANCE_CREATE_PATH}${workflowId}${this.GET_DETAIL_TAB_PATH}/${tabId}`;
+    if (entityId) {
+      // eslint-disable-next-line max-len
+      url = `${this.env.apiBaseUrl}${this.GET_CARD_INSTANCE_CREATE_PATH}${workflowId}${this.GET_DETAIL_TAB_PATH}/${tabId}/${entityId}`;
+    }
+    return this.http
+      .get<WorkflowCardSlotDTO[] | WorkflowCardTabItemDTO[]>(url)
+      .pipe(catchError((error) => throwError(error.error as ConcenetError)));
+  }
+
+  /**
+   * Create edit card-intance
+   *
+   * @returns CardDTO
+   */
+  public createCardInstance(card: CardCreateDTO): Observable<CardDTO> {
+    return this.http
+      .post<CardDTO>(`${this.env.apiBaseUrl}${this.CREATE_CARD_INSTANCE_PATH}`, card)
+      .pipe(catchError((error) => throwError(error.error as ConcenetError)));
   }
 }

@@ -39,6 +39,11 @@
                 </mat-form-field>
             </form>
         </div>
+        <button mat-raised-button class="responsive__tablet_or_more" (click)="openNewCardDialog()">
+            <span class="navbar__right__createCard">
+                <mat-icon color="primary">create_new_folder</mat-icon>{{ labels.createCard | translate }}
+            </span>
+        </button>
         <button class="responsive__less-than-tablet" mat-icon-button aria-label="Search">
             <mat-icon>search</mat-icon>
         </button>

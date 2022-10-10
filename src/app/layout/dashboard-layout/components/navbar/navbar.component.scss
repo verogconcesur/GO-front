@@ -8,11 +8,19 @@
 
   &__right {
     button {
-      margin: 0 10px;
+      margin-left: 5px;
     }
     @include respond-to(calc(#{$mobile} + 50px)) {
       button {
-        margin: 0 0;
+        margin: 0;
+      }
+    }    
+    &__createCard {
+      display: flex;
+      justify-content: space-around;
+      align-items: center;
+      mat-icon {
+        margin-right: 5px;
       }
     }
   }

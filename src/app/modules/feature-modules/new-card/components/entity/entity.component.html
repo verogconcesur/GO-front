@@ -1,0 +1,41 @@
+<div class="entity">
+    <div class="entity__head">
+        <h2 class="entity__head__title">
+            {{ labels.search | translate }}
+        </h2>
+        <form [formGroup]="searchForm" class="entity__head__search">
+            <mat-form-field
+                appearance="outline"
+                class="smaller-mat-form-fields__no-margin smaller-mat-form-fields__button-height"
+            >
+                <input
+                    type="text"
+                    matInput
+                    [placeholder]="labels.search | translate"
+                    formControlName="search"
+                    [matAutocomplete]="auto"
+                />
+                <button mat-icon-button aria-label="Search" type="button" matSuffix>
+                    <mat-icon>search</mat-icon>
+                </button>
+                <mat-autocomplete autoActiveFirstOption="false" #auto="matAutocomplete" (optionSelected)="selectEntity()">
+                    <mat-option *ngFor="let entity of entityList" [value]="entity">
+                        {{ transformOptionLabel(entity) }}
+                    </mat-option>
+                </mat-autocomplete>
+            </mat-form-field>
+        </form>
+        <div class="entity__head__error" fxLayout="row" fxLayoutAlign="center center" *ngIf="showError()">
+            <mat-icon>error_outline</mat-icon><span>{{ getErrorMsg() }}</span>
+        </div>
+        <div class="entity__head__content" fxLayout="column" *ngIf="showContent()">
+            <div *ngFor="let tabItem of tabItems.controls" class="entity__head__content__item" fxLayout="column">
+                <span class="entity__head__content__item__label">{{ tabItem.value.label }}</span>
+                <span class="entity__head__content__item__value" *ngIf="tabItem.valid">{{
+                    tabItem.value.value ? tabItem.value.value : "---"
+                }}</span>
+                <span class="entity__head__content__item__error" *ngIf="tabItem.invalid">{{ labels.required | translate }}</span>
+            </div>
+        </div>
+    </div>
+</div>

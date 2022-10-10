@@ -1,0 +1,61 @@
+<div class="newCard" fxLayout="row">
+    <div class="newCard__side" fxLayout="column" fxLayoutAlign="start start">
+        <div class="newCard__side__title">
+            <h2 cdkFocusInitial>
+                {{ labels.newCard | translate }}
+            </h2>
+        </div>
+        <div class="newCard__side__stepper">
+            <mat-stepper orientation="vertical" linear #stepper>
+                <mat-step state="noicon" *ngFor="let step of steplist">
+                    <ng-template matStepLabel>{{ (labels.step | translate) + step.index }}</ng-template>
+                    <ng-template matStepContent>
+                        <h3 class="newCard__side__stepper__title">{{ step.title }}</h3>
+                    </ng-template>
+                </mat-step>
+                <ng-template matStepperIcon="noicon"> </ng-template
+                ><ng-template matStepperIcon="edit">
+                    <mat-icon>fiber_manual_record</mat-icon>
+                </ng-template>
+                <ng-template matStepperIcon="number"> </ng-template>
+
+                <ng-template matStepperIcon="done"> </ng-template>
+            </mat-stepper>
+        </div>
+    </div>
+    <div class="newCard__content">
+        <div class="newCard__content__title mat-display-1">
+            <span>{{ steplist[stepIndex - 1].title }}</span>
+        </div>
+        <div class="newCard__content__form" fxLayoutAlign="left">
+            <app-step1-workflow
+                *ngIf="stepIndex === 1"
+                [formWorkflow]="formWorkflow"
+                [title]="labels.createCard | translate"
+            ></app-step1-workflow>
+            <app-step-column *ngIf="stepIndex === 2" [formStep]="formStep1" [formWorkflow]="formWorkflow"></app-step-column>
+            <app-step-column *ngIf="stepIndex === 3" [formStep]="formStep2" [formWorkflow]="formWorkflow"></app-step-column>
+        </div>
+        <mat-divider></mat-divider>
+        <div class="newCard__content__buttons" fxLayoutAlign="end center">
+            <button
+                mat-flat-button
+                color="primary"
+                (click)="nextStep()"
+                *ngIf="stepIndex === 1 || stepIndex === 2"
+                [disabled]="checkNextDisabled()"
+            >
+                {{ labels.next | translate }}
+            </button>
+            <button
+                mat-flat-button
+                color="primary"
+                (click)="onSubmitCustomDialog()"
+                *ngIf="stepIndex === 3"
+                [disabled]="checkNextDisabled()"
+            >
+                {{ labels.save | translate }}
+            </button>
+        </div>
+    </div>
+</div>
