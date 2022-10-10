@@ -5,6 +5,7 @@
                 appearance="outline"
                 floatLabel="always"
                 class="smaller-mat-form-fields__no-margin mat-form-field__no-border"
+                [ngClass]="{ 'workflow-and-facility-combo': hasMoreThanOneFacility() }"
             >
                 <mat-select
                     formControlName="workflow"
@@ -15,7 +16,6 @@
                     (selectionChange)="workflowSelectionChange($event)"
                 >
                     <mat-form-field
-                        class="filter"
                         appearance="outline"
                         floatLabel="always"
                         class="smaller-mat-form-fields__no-margin workflow-navbar__selector-filter"
@@ -32,7 +32,7 @@
                     <mat-divider></mat-divider>
 
                     <mat-select-trigger *ngIf="workflowSelected">
-                        {{ workflowSelected?.name || "" }}
+                        {{ getWorkflowLabel(workflowSelected, true) || "" }}
                     </mat-select-trigger>
 
                     <mat-option
@@ -40,7 +40,52 @@
                         [value]="workflow"
                         class="workflow-name capitalize"
                     >
-                        {{ workflow.name }}
+                        {{ getWorkflowLabel(workflow) }}
+                    </mat-option>
+                </mat-select>
+            </mat-form-field>
+            <!-- Facilities -->
+            <mat-form-field
+                appearance="outline"
+                floatLabel="always"
+                class="smaller-mat-form-fields__no-margin mat-form-field__no-border workflow-and-facility-combo"
+                *ngIf="hasMoreThanOneFacility()"
+            >
+                <mat-select
+                    formControlName="facility"
+                    disableOptionCentering
+                    [placeholder]="getFacilitiesPlaceholder()"
+                    class="capitalize"
+                    multiple
+                    [panelClass]="'workflow-panel-class bigger-selection-panel-class smaller-mat-form-fields'"
+                    (selectionChange)="facilitySelectionChange($event)"
+                >
+                    <mat-form-field
+                        appearance="outline"
+                        floatLabel="always"
+                        class="smaller-mat-form-fields__no-margin workflow-navbar__selector-filter"
+                    >
+                        <input
+                            matInput
+                            type="text"
+                            matInput
+                            formControlName="facilitySearch"
+                            [placeholder]="labels.filterFacility | translate"
+                        />
+                    </mat-form-field>
+
+                    <mat-divider></mat-divider>
+
+                    <mat-select-trigger>
+                        {{ getFacilitiesLabel() }}
+                    </mat-select-trigger>
+
+                    <mat-option
+                        *ngFor="let facility of facilitiesOptions | async"
+                        [value]="facility"
+                        class="workflow-name capitalize"
+                    >
+                        {{ facility.name }}
                     </mat-option>
                 </mat-select>
             </mat-form-field>

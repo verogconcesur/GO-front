@@ -4,6 +4,8 @@ export default interface WorkflowCardInstanceDTO {
   // cardInstance: WorkflowCardDTO;
   cardInstanceId: number;
   cardInstanceWorkflowUsers: {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    cardInstanceWorkflow: any;
     dateAssignment: string;
     id: number;
     userId: number;

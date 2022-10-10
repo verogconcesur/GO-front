@@ -14,6 +14,7 @@ import CardDTO from '@data/models/cards/card-dto';
 import CardInstanceDTO from '@data/models/cards/card-instance-dto';
 import WorkflowCardSlotDTO from '@data/models/workflows/workflow-card-slot-dto';
 import WorkflowCardTabItemDTO from '@data/models/workflows/workflow-card-tab-item-dto';
+import WorkflowMoveDTO from '@data/models/workflows/workflow-move-dto';
 import { getPaginationUrlGetParams } from '@data/utils/pagination-aux';
 import { Observable, throwError } from 'rxjs';
 import { catchError } from 'rxjs/operators';
@@ -26,6 +27,7 @@ export class CardService {
   private readonly GET_CARD_INSTANCE_PATH = '/api/cardInstanceWorkflow';
   private readonly GET_DETAIL_PATH = '/detail';
   private readonly GET_TAB_PATH = '/tab';
+  private readonly GET_MOVEMENTS_PATH = '/movements';
   private readonly START_FOLLOW = '/startFollow';
   private readonly STOP_FOLLOW = '/stopFollow';
   private readonly SEARCH_CARDS_PATH = '/api/cards/search';
@@ -63,6 +65,22 @@ export class CardService {
       url = `${this.env.apiBaseUrl}${this.GET_CARD_INSTANCE_PATH}${this.GET_DETAIL_PATH}/${idCard}/${idUser}`;
     }
     return this.http.get<CardInstanceDTO>(url).pipe(catchError((error) => throwError(error.error as ConcenetError)));
+  }
+
+  /**
+   * Get card's movements
+   *
+   * @param idCard
+   * @returns
+   */
+  public getCardInstanceMovements(idCard: number, shortcut?: boolean): Observable<WorkflowMoveDTO[]> {
+    let url = `${this.env.apiBaseUrl}${this.GET_CARD_INSTANCE_PATH}${this.GET_DETAIL_PATH}/${idCard}${this.GET_MOVEMENTS_PATH}`;
+    if (shortcut) {
+      url =
+        `${this.env.apiBaseUrl}${this.GET_CARD_INSTANCE_PATH}${this.GET_DETAIL_PATH}/${idCard}` +
+        `/shortcut/true${this.GET_MOVEMENTS_PATH}`;
+    }
+    return this.http.get<WorkflowMoveDTO[]>(url).pipe(catchError((error) => throwError(error.error as ConcenetError)));
   }
 
   /**

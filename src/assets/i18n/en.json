@@ -111,6 +111,11 @@
             "edit": "Edit Card",
             "saveConfirmation": "Are you sure you want to save the card?"
         },
+        "moveCard": "Move card",
+        "moveWhere": "Where do you want to move it?",
+        "noMovesAvailable": "No moves available",
+        "otherWorkflows": "Other workflows",
+        "statesInThisWorkflow": "Actual workflow's states",
         "workflows": "Workflow"
     },
     "common": {
@@ -142,11 +147,12 @@
         "dateEnd": "Final date",
         "dateIni": "Initial date",
         "delete": "Delete",
-        "directLinks": "Direct links",
+        "directLinks": "Short cuts",
         "dropHere": "Drop here",
         "duplicate": "Duplicate",
         "edit": "Edit",
         "emails": "Emails",
+        "externalLinks": "External links",
         "filter": "Filter",
         "filterAction": "Filter",
         "follow": "Follow",
@@ -389,6 +395,7 @@
         "dueOutDateTime": "Pick up {date} at {time}",
         "emptySubstate": "Empty substate",
         "filter": "Filter Workflows",
+        "filterFacilities": "Filter by Facilities",
         "filterState": "Filter by State",
         "filterSubstate": "Filter by Substate",
         "filterUser": "Filter by User",

@@ -111,6 +111,11 @@
             "edit": "Editar Ficha",
             "saveConfirmation": "¿Está seguro que desea guardar la tarjeta?"
         },
+        "moveCard": "Mover ficha",
+        "moveWhere": "¿Dónde quieres moverla?",
+        "noMovesAvailable": "No hay moviemientos disponibles",
+        "otherWorkflows": "Otros workflows",
+        "statesInThisWorkflow": "Estados del workflow actual",
         "workflows": "Workflow"
     },
     "common": {
@@ -142,11 +147,12 @@
         "dateEnd": "Fecha de fin",
         "dateIni": "Fecha de inicio",
         "delete": "Eliminar",
-        "directLinks": "Enlaces externos",
+        "directLinks": "Accesos directos",
         "dropHere": "Suelta aquí",
         "duplicate": "Duplicar",
         "edit": "Editar",
         "emails": "Emails",
+        "externalLinks": "Enlaces externos",
         "filter": "Filtro",
         "filterAction": "Filtrar",
         "follow": "Seguir",
@@ -389,6 +395,7 @@
         "dueOutDateTime": "Recoge el {date} a las {time}",
         "emptySubstate": "Subestado vacío",
         "filter": "Filtrar Workflows",
+        "filterFacilities": "Filtrar Instalaciones",
         "filterState": "Filtrar Estados",
         "filterSubstate": "Filtrar Subestados",
         "filterUser": "Filtrar Usuarios",
