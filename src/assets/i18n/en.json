@@ -254,7 +254,14 @@
     "newCard": {
         "column": "Column ",
         "create": "Create new card",
+        "errors": {
+            "customerNotFound": "This customer does not exist in the database",
+            "dataNotFound": "It does not exist in the database",
+            "userNotFound": "This user does not exist in the database",
+            "vehicleNotFound": "This vehicle does not exist in the database."
+        },
         "newCard": "New Card",
+        "saveConfirmation": "Are you sure you want to create this card?",
         "step": "Step ",
         "workflow": {
             "entryState": "Entry State",

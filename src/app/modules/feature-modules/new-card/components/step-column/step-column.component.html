@@ -1,5 +1,16 @@
 <div class="step">
-    <div class="step__title mat-display-1">
-        {{ title }}
+    <div class="step__main">
+        <mat-tab-group>
+            <mat-tab *ngFor="let tab of tabs.controls; let i = index" [label]="tab.value.name">
+                <div class="step__main__content">
+                    <app-entity
+                        *ngIf="tab.value.contentTypeId === 1 || tab.value.contentTypeId === 2 || tab.value.contentTypeId === 3"
+                        [formTab]="tab"
+                        [formWorkflow]="formWorkflow"
+                    ></app-entity>
+                    <app-information *ngIf="!tab.value.contentTypeId" [formTab]="tab"></app-information>
+                </div>
+            </mat-tab>
+        </mat-tab-group>
     </div>
 </div>

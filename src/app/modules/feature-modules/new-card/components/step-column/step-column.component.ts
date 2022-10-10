@@ -1,5 +1,5 @@
 import { Component, Input, OnInit } from '@angular/core';
-import { FormGroup } from '@angular/forms';
+import { FormGroup, UntypedFormArray } from '@angular/forms';
 
 @Component({
   selector: 'app-step-column',
@@ -8,8 +8,11 @@ import { FormGroup } from '@angular/forms';
 })
 export class StepColumnComponent implements OnInit {
   @Input() formStep: FormGroup;
+  @Input() formWorkflow: FormGroup;
   @Input() title: string;
   constructor() {}
-
+  get tabs(): UntypedFormArray {
+    return this.formStep.get('tabs') as UntypedFormArray;
+  }
   ngOnInit(): void {}
 }

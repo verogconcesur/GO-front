@@ -1,0 +1,9 @@
+@import 'utils/core';
+@import 'utils/theme';
+.information {
+  padding: 10px 0;
+  mat-form-field {
+    width: 100%;
+    max-width: 500px;
+  }
+}

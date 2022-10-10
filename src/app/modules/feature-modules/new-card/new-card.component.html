@@ -24,18 +24,20 @@
         </div>
     </div>
     <div class="newCard__content">
+        <div class="newCard__content__title mat-display-1">
+            <span>{{ steplist[stepIndex - 1].title }}</span>
+        </div>
         <div class="newCard__content__form" fxLayoutAlign="left">
             <app-step1-workflow
                 *ngIf="stepIndex === 1"
                 [formWorkflow]="formWorkflow"
                 [title]="labels.createCard | translate"
             ></app-step1-workflow>
-            <app-step-column *ngIf="stepIndex === 2" [title]="steplist[1]?.title"></app-step-column>
-            <app-step-column *ngIf="stepIndex === 3" [title]="steplist[2]?.title"></app-step-column>
+            <app-step-column *ngIf="stepIndex === 2" [formStep]="formStep1" [formWorkflow]="formWorkflow"></app-step-column>
+            <app-step-column *ngIf="stepIndex === 3" [formStep]="formStep2" [formWorkflow]="formWorkflow"></app-step-column>
         </div>
         <mat-divider></mat-divider>
-        <div class="newCard__content__buttons" fxLayoutAlign="space-between center">
-            <button mat-stroked-button color="warn" (click)="confirmCloseCustomDialog()">{{ labels.cancel | translate }}</button>
+        <div class="newCard__content__buttons" fxLayoutAlign="end center">
             <button
                 mat-flat-button
                 color="primary"
