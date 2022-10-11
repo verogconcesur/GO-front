@@ -32,7 +32,7 @@ export class RenameAttachmentComponent implements OnInit {
     extensionChanged: marker('errors.extensionChanged'),
     close: marker('common.close')
   };
-  public maxLength = 80;
+  public maxLength = 40;
   public minLength = 3;
   public attachmentForm: UntypedFormGroup;
   public attachment: AttachmentDTO = null;
@@ -127,8 +127,8 @@ export class RenameAttachmentComponent implements OnInit {
         this.attachment ? this.attachment.name : '',
         Validators.compose([
           Validators.required,
-          Validators.maxLength(20),
-          Validators.minLength(3),
+          Validators.maxLength(this.maxLength),
+          Validators.minLength(this.minLength),
           FilenameValidator.validate('name')
         ])
       ]
