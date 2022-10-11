@@ -6,6 +6,7 @@ import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
 import { Observable, of } from 'rxjs';
 import { map, switchMap, take } from 'rxjs/operators';
 
+@UntilDestroy()
 @Component({
   selector: 'app-administration-common-header-section',
   templateUrl: './administration-common-header-section.component.html',

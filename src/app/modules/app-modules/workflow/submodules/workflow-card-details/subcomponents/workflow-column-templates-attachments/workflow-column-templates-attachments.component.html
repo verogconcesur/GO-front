@@ -1,3 +1,11 @@
-<div style="display: flex; justify-content: center; align-items: center; width: 100%; min-height: 200px">
-    <h2>Sección en construcción.</h2>
-</div>
+<app-card-instance-attachments
+    [cardInstanceAttachmentsConfig]="cardInstanceAttachmentsConfig"
+    [data]="attachmentsAndTemplatesData"
+    [tabId]="tab.id"
+    [cardInstanceWorkflowId]="idCard"
+    (reload)="fetchData()"
+></app-card-instance-attachments>
+
+<h3 class="no-data" *ngIf="!attachmentsAndTemplatesData?.length && dataLoaded">
+    {{ labels.noDataToShow | translate }}
+</h3>

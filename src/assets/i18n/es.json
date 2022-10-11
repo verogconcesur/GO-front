@@ -1,261 +1,268 @@
 {
-    "administration": {
-        "brands": "Marcas",
-        "cards": "Tarjetas",
-        "exit": "Salir de configuración",
-        "facilities": "Instalaciones",
-        "organization": "Organización",
-        "records": "Fichas",
-        "templates": {
-            "attachments": {
-                "add": "Nueva plantilla de categoría de adjuntos",
-                "create": "Crear plantilla de categorías de adjuntos",
-                "delete": "Eliminar plantilla de categoría de adjuntos",
-                "deleteConfirmation": "¿Realmente quieres eliminar esta plantilla?",
-                "edit": "Editar plantilla de categoría de adjuntos",
-                "itemConcept": "Concepto del elemento",
-                "items": "Elementos",
-                "name": "Nombre de plantilla de categoría de adjuntos",
-                "title": "Categoría de adjuntos"
-            },
-            "budgets": {
-                "add": "Nueva plantilla de presupuesto",
-                "create": "Crear plantilla de presupuestos",
-                "delete": "Eliminar plantilla de presupuesto",
-                "deleteConfirmation": "¿Realmente quieres eliminar esta plantilla?",
-                "edit": "Editar plantilla de presupuesto",
-                "lineConcept": "Concepto de la línea",
-                "lines": "Líneas",
-                "name": "Nombre plantilla presupuesto",
-                "title": "Presupuestos"
-            },
-            "checklists": {
-                "create": "Crear checklist",
-                "title": "Checklists"
-            },
-            "clientTimeline": {
-                "add": "Nueva plantilla de timeline de cliente",
-                "create": "Crear timeline de cliente",
-                "delete": "Eliminar plantilla de timeline de cliente",
-                "deleteConfirmation": "¿Realmente quieres eliminar esta plantilla?",
-                "edit": "Editar plantilla de timeline de cliente",
-                "itemConcept": "Concepto del elemento",
-                "items": "Elementos",
-                "name": "Nombre de plantilla de timeline de cliente",
-                "title": "Timeline de cliente"
-            },
-            "communications": {
-                "add": "Nueva plantilla de Comunicación",
-                "create": "Crear plantilla de comunicación",
-                "delete": "Eliminar plantilla de comunicación",
-                "deleteConfirmation": "¿Realmente quieres eliminar esta plantilla?",
-                "edit": "Editar plantilla de comunicación",
-                "name": "Nombre de plantilla de comunicación",
-                "text": "Notas",
-                "title": "Comunicación"
-            },
-            "title": "Plantillas"
-        },
-        "title": "Concenet",
-        "users": "Usuarios",
-        "viewProfile": "Ver perfil",
-        "workflows": "Workflows"
-    },
-    "app": {
-        "menu": {
-            "administration": "Administración",
-            "advanceSearch": "Búsqueda avanzada",
-            "clients": "Clientes",
+	"administration": {
+		"brands": "Marcas",
+		"cards": "Tarjetas",
+		"exit": "Salir de configuración",
+		"facilities": "Instalaciones",
+		"organization": "Organización",
+		"records": "Fichas",
+		"templates": {
+			"attachments": {
+				"add": "Nueva plantilla de categoría de adjuntos",
+				"create": "Crear plantilla de categorías de adjuntos",
+				"delete": "Eliminar plantilla de categoría de adjuntos",
+				"deleteConfirmation": "¿Realmente quieres eliminar esta plantilla?",
+				"edit": "Editar plantilla de categoría de adjuntos",
+				"itemConcept": "Concepto del elemento",
+				"items": "Elementos",
+				"name": "Nombre de plantilla de categoría de adjuntos",
+				"renameTitle": "Modifique el nombre del archivo",
+				"title": "Categoría de adjuntos"
+			},
+			"budgets": {
+				"add": "Nueva plantilla de presupuesto",
+				"create": "Crear plantilla de presupuestos",
+				"delete": "Eliminar plantilla de presupuesto",
+				"deleteConfirmation": "¿Realmente quieres eliminar esta plantilla?",
+				"edit": "Editar plantilla de presupuesto",
+				"lineConcept": "Concepto de la línea",
+				"lines": "Líneas",
+				"name": "Nombre plantilla presupuesto",
+				"title": "Presupuestos"
+			},
+			"checklists": {
+				"create": "Crear checklist",
+				"title": "Checklists"
+			},
+			"clientTimeline": {
+				"add": "Nueva plantilla de timeline de cliente",
+				"create": "Crear timeline de cliente",
+				"delete": "Eliminar plantilla de timeline de cliente",
+				"deleteConfirmation": "¿Realmente quieres eliminar esta plantilla?",
+				"edit": "Editar plantilla de timeline de cliente",
+				"itemConcept": "Concepto del elemento",
+				"items": "Elementos",
+				"name": "Nombre de plantilla de timeline de cliente",
+				"title": "Timeline de cliente"
+			},
+			"communications": {
+				"add": "Nueva plantilla de Comunicación",
+				"create": "Crear plantilla de comunicación",
+				"delete": "Eliminar plantilla de comunicación",
+				"deleteConfirmation": "¿Realmente quieres eliminar esta plantilla?",
+				"edit": "Editar plantilla de comunicación",
+				"name": "Nombre de plantilla de comunicación",
+				"text": "Notas",
+				"title": "Comunicación"
+			},
+			"title": "Plantillas"
+		},
+		"title": "Concenet",
+		"users": "Usuarios",
+		"viewProfile": "Ver perfil",
+		"workflows": "Workflows"
+	},
+	"app": {
+		"menu": {
+			"administration": "Administración",
+			"advanceSearch": "Búsqueda avanzada",
+			"clients": "Clientes",
             "createCard": "Crear Ficha",
-            "vehicles": "Vehículos",
-            "workflow": "Workflow"
-        },
-        "title": "Concenet"
-    },
-    "cards": {
-        "column": {
-            "actionConfiguration": "Configuración de las acciones",
-            "columnName": "Nombre de columna",
-            "contentSource": "Origen del contenido",
-            "contentType": "Tipo de contenido",
-            "deleteLinkConfirmation": "¿Está seguro que desea eliminar este enlace externo?",
-            "deleteTabConfirmation": "¿Está seguro que desea eliminar esta pestaña?",
-            "entityTabConfiguration": "Configuración de datos a visualizar",
-            "information": "Información",
-            "linkName": "Nombre de enlace",
-            "nameTab": "Nombre de pestaña",
-            "newLink": "Nuevo enlace externo",
-            "newTab": "Nueva pestaña ",
-            "shortcutConfiguration": "Configuración de enlaces externos",
-            "tabConfiguration": "Configuración de la pestaña",
-            "tabList": "Pestañas de columna",
-            "tabType": "Tipo de pestaña"
-        },
-        "create": "Crear tarjeta",
-        "deleteConfirmation": "¿Está seguro que desea eliminar esta tarjeta?",
-        "duplicateConfirmation": "¿Está seguro que desea duplicar esta tarjeta?",
-        "eventHistoryTypes": "T. evento",
-        "eventType": {
-            "ADD_COMMENT": "Añadir comentario",
-            "ADD_DOC": "Añadir documento",
-            "ASIG_USER": "Asignar usuario",
-            "CHANGE_STATE": "Cambiar estado",
-            "EDIT_INFO": "Editar información"
-        },
-        "modal": {
-            "cancelConfirmation": "¿Está seguro que desea salir de la ventana de tarjeta?",
-            "cardName": "Nombre de Ficha",
-            "column": "Columna ",
-            "comments": "Comentarios",
-            "create": "Crear Ficha",
-            "edit": "Editar Ficha",
-            "saveConfirmation": "¿Está seguro que desea guardar la tarjeta?"
-        },
-        "moveCard": "Mover ficha",
-        "moveWhere": "¿Dónde quieres moverla?",
-        "noMovesAvailable": "No hay moviemientos disponibles",
-        "otherWorkflows": "Otros workflows",
-        "statesInThisWorkflow": "Estados del workflow actual",
-        "workflows": "Workflow"
-    },
-    "common": {
-        "accessDenied": "Acceso denegado. No tiene privilegios suficientes.",
-        "actions": "Acciones",
-        "actionsTabItems": {
-            "attachment": "Enviar adjunto",
-            "message": "Mensaje a cliente",
-            "sign": "Firmar documento"
-        },
-        "address": "Dirección",
-        "adviser": "Asesor",
-        "apply": "Aplicar",
-        "attachments": "Adjuntos",
-        "brands": "Marcas",
-        "budget": "Presupuesto",
-        "cancel": "Cancelar",
-        "cif": "CIF",
-        "cleanFilter": "Limpiar filtros",
-        "client": "Cliente",
-        "clientMessages": "Mensajes cliente",
-        "close": "Cerrar",
-        "comments": "Comentarios",
-        "concept": "Concepto",
-        "country": "País",
-        "create": "Crear",
-        "createdOn": "Creado el",
-        "data": "Datos",
-        "dateEnd": "Fecha de fin",
-        "dateIni": "Fecha de inicio",
-        "delete": "Eliminar",
-        "directLinks": "Accesos directos",
-        "dropHere": "Suelta aquí",
-        "duplicate": "Duplicar",
-        "edit": "Editar",
-        "emails": "Emails",
-        "externalLinks": "Enlaces externos",
-        "filter": "Filtro",
-        "filterAction": "Filtrar",
-        "follow": "Seguir",
-        "following": "Siguiendo",
-        "footer": "Pie",
-        "from": "Desde",
-        "header": "Cabecera",
-        "history": "Historial",
-        "information": "Información",
-        "insert": "Insertar",
-        "insertTextHere": "Introduzca el texto aquí.",
-        "logo": "Logo",
-        "messages": "Mensajes",
-        "more": "Más",
-        "move": "Mover",
-        "name": "Nombre",
-        "newItem": "Nuevo Elememto",
-        "newLine": "Nueva línea",
+			"vehicles": "Vehículos",
+			"workflow": "Workflow"
+		},
+		"title": "Concenet"
+	},
+	"cards": {
+		"column": {
+			"actionConfiguration": "Configuración de las acciones",
+			"columnName": "Nombre de columna",
+			"contentSource": "Origen del contenido",
+			"contentType": "Tipo de contenido",
+			"deleteLinkConfirmation": "¿Está seguro que desea eliminar este enlace externo?",
+			"deleteTabConfirmation": "¿Está seguro que desea eliminar esta pestaña?",
+			"entityTabConfiguration": "Configuración de datos a visualizar",
+			"information": "Información",
+			"linkName": "Nombre de enlace",
+			"nameTab": "Nombre de pestaña",
+			"newLink": "Nuevo enlace externo",
+			"newTab": "Nueva pestaña ",
+			"shortcutConfiguration": "Configuración de enlaces externos",
+			"tabConfiguration": "Configuración de la pestaña",
+			"tabList": "Pestañas de columna",
+			"tabType": "Tipo de pestaña"
+		},
+		"create": "Crear tarjeta",
+		"deleteConfirmation": "¿Está seguro que desea eliminar esta tarjeta?",
+		"duplicateConfirmation": "¿Está seguro que desea duplicar esta tarjeta?",
+		"eventHistoryTypes": "T. evento",
+		"eventType": {
+			"ADD_COMMENT": "Añadir comentario",
+			"ADD_DOC": "Añadir documento",
+			"ASIG_USER": "Asignar usuario",
+			"CHANGE_STATE": "Cambiar estado",
+			"EDIT_INFO": "Editar información"
+		},
+		"modal": {
+			"cancelConfirmation": "¿Está seguro que desea salir de la ventana de tarjeta?",
+			"cardName": "Nombre de Ficha",
+			"column": "Columna ",
+			"comments": "Comentarios",
+			"create": "Crear Ficha",
+			"edit": "Editar Ficha",
+			"saveConfirmation": "¿Está seguro que desea guardar la tarjeta?"
+		},
+		"moveCard": "Mover ficha",
+		"moveWhere": "¿Dónde quieres moverla?",
+		"noMovesAvailable": "No hay moviemientos disponibles",
+		"otherWorkflows": "Otros workflows",
+		"statesInThisWorkflow": "Estados del workflow actual",
+		"workflows": "Workflow"
+	},
+	"common": {
+		"accessDenied": "Acceso denegado. No tiene privilegios suficientes.",
+		"actions": "Acciones",
+		"actionsTabItems": {
+			"attachment": "Enviar adjunto",
+			"message": "Mensaje a cliente",
+			"sign": "Firmar documento"
+		},
+		"address": "Dirección",
+		"adviser": "Asesor",
+		"apply": "Aplicar",
+		"askForConfirmation": "¿Desea continuar?",
+		"attachments": "Adjuntos",
+		"brands": "Marcas",
+		"budget": "Presupuesto",
+		"cancel": "Cancelar",
+		"cif": "CIF",
+		"cleanFilter": "Limpiar filtros",
+		"client": "Cliente",
+		"clientMessages": "Mensajes cliente",
+		"close": "Cerrar",
+		"comments": "Comentarios",
+		"concept": "Concepto",
+		"country": "País",
+		"create": "Crear",
+		"createdOn": "Creado el",
+		"data": "Datos",
+		"dateEnd": "Fecha de fin",
+		"dateIni": "Fecha de inicio",
+		"delete": "Eliminar",
+		"deleteConfirmation": "¿Está seguro que desea eliminar este elemento?",
+		"directLinks": "Accesos directos",
+		"dropHere": "Suelta aquí",
+		"duplicate": "Duplicar",
+		"edit": "Editar",
+		"emails": "Emails",
+		"externalLinks": "Enlaces externos",
+		"fileName": "Nombre de archivo",
+		"filter": "Filtro",
+		"filterAction": "Filtrar",
+		"follow": "Seguir",
+		"following": "Siguiendo",
+		"footer": "Pie",
+		"from": "Desde",
+		"header": "Cabecera",
+		"history": "Historial",
+		"information": "Información",
+		"insert": "Insertar",
+		"insertTextHere": "Introduzca el texto aquí.",
+		"logo": "Logo",
+		"messages": "Mensajes",
+		"more": "Más",
+		"move": "Mover",
+		"name": "Nombre",
+		"newItem": "Nuevo Elememto",
+		"newLine": "Nueva línea",
         "next": "Siguiente",
-        "origin": "Origen",
-        "payments": "Pagos",
-        "postalCode": "Código Postal",
-        "price": "Precio",
-        "priority": "Prioridad",
-        "province": "Provincia",
-        "replacementVehicle": "Vehículo de sustitución",
-        "replacements": "Recambios",
-        "reset": "Restaurar",
-        "save": "Guardar",
-        "search": "Buscar",
-        "seeCards": "Ver fichas",
-        "seeLess": "Ver menos",
-        "seeMore": "Ver más",
-        "select": "Seleccionar",
-        "selectImageFile": "Selecciona una imagen",
-        "shortcut": "Enlace externo",
-        "state": "Estado",
-        "substate": "Subestado",
-        "successOperation": "Operación realizada con éxito.",
-        "tabTypes": {
-            "customizable": "Contenido personalizable",
-            "prefixed": "Contenido prefijado",
-            "template": "Contenido por plantilla"
-        },
-        "tasks": "Tareas",
-        "to": "Hasta",
-        "town": "Ciudad",
-        "unfollow": "Dejar de seguir",
-        "unsavedChangesExit": "Hay cambios en el formulario sin guardar, ¿desea salir igualmente?",
-        "unselectAll": "Deseleccionar todos",
-        "user": "Usuario",
-        "users": "Usuarios",
-        "vehicle": "Vehículo",
-        "warning": "Advertencia",
-        "workOrder": "Orden de trabajo"
-    },
-    "confirmdialog": {
-        "no": "No",
-        "yes": "Sí"
-    },
-    "errors": {
-        "dateFormat": "La fecha debe tener este formato: {format}",
-        "emailPattern": "El texto introducido debe ser un email.",
-        "maxLengthError": "La longitud máxima permitida es de {length} caracteres.",
-        "minLength": "Longitud mínima: {length}",
-        "noDataToShow": "No hay información disponible",
-        "required": "Este campo es obligatorio.",
-        "unknown": "Error desconocido"
-    },
-    "login": {
-        "description": "Por favor, introduzca sus credenciales",
-        "email": "Nombre de usuario",
-        "forgotPassword": "¿Has olvidado tu contraseña?",
-        "password": "Contraseña",
-        "passwordRequired": "La contraseña es obligatoria",
-        "recoverpassword": {
-            "description": "Introduce tu nombre de usuario y te enviaremos las instrucciones para restablecer tu contraseña.",
-            "email": "Reestablecimiento de contraseña realizado correctamente, revise su bandeja de entrada",
-            "restore": "Restablecer contraseña",
-            "title": "¿Has olvidado tu contraseña?",
-            "userName": "Nombre de usuario",
-            "userNameRequired": "El nombre de usuario es obligatorio"
-        },
-        "restorePassword": {
-            "changedSuccesfully": "La contraseña se ha modificado correctamente",
-            "description": "Establece una nueva contraseña y recupera acceso a tu cuenta.",
-            "password1": "Nueva contraseña",
-            "password2": "Repite nueva contraseña",
-            "passwordMatch": "La contraseña debe coincidir",
-            "passwordPattern": "La contraseña debe contener al menos un número, una letra mayúscula, un símbolo @#$%^&-+=()_. y su longitud debe ser entre 8 y 50 caracteres.",
-            "passwordPatternError": "La contraseña no cumple los requisitos.",
-            "passwordRequired": "La contraseña es obligatoria",
-            "save": "Guardar nueva contraseña",
-            "title": "Nueva contraseña",
-            "userName": "Usuario",
-            "userNameRequired": "El nombre de usuario es obligatorio"
-        },
-        "signIn": "Iniciar sesión",
-        "title": "Inicia sesión",
-        "userNameRequired": "El nombre de usuario es obligatorio"
-    },
-    "logout": {
-        "logout": "Cerrar sesión"
+		"origin": "Origen",
+		"payments": "Pagos",
+		"postalCode": "Código Postal",
+		"price": "Precio",
+		"priority": "Prioridad",
+		"province": "Provincia",
+		"replacementVehicle": "Vehículo de sustitución",
+		"replacements": "Recambios",
+		"reset": "Restaurar",
+		"save": "Guardar",
+		"search": "Buscar",
+		"seeCards": "Ver fichas",
+		"seeLess": "Ver menos",
+		"seeMore": "Ver más",
+		"select": "Seleccionar",
+		"selectImageFile": "Selecciona una imagen",
+		"shortcut": "Enlace externo",
+		"state": "Estado",
+		"substate": "Subestado",
+		"successOperation": "Operación realizada con éxito.",
+		"tabTypes": {
+			"customizable": "Contenido personalizable",
+			"prefixed": "Contenido prefijado",
+			"template": "Contenido por plantilla"
+		},
+		"tasks": "Tareas",
+		"to": "Hasta",
+		"town": "Ciudad",
+		"unfollow": "Dejar de seguir",
+		"unsavedChangesExit": "Hay cambios en el formulario sin guardar, ¿desea salir igualmente?",
+		"unselectAll": "Deseleccionar todos",
+		"user": "Usuario",
+		"users": "Usuarios",
+		"vehicle": "Vehículo",
+		"warning": "Advertencia",
+		"workOrder": "Orden de trabajo"
+	},
+	"confirmdialog": {
+		"no": "No",
+		"yes": "Sí"
+	},
+	"errors": {
+		"dateFormat": "La fecha debe tener este formato: {format}",
+		"emailPattern": "El texto introducido debe ser un email.",
+		"extensionChanged": "La extensión del archivo ha cambiado.",
+		"fileNameCharacters": "Hay caracteres inválidos",
+		"fileNameExtension": "El nombre debe contener un punto y una extensión",
+		"maxLengthError": "Longitud máxima: {length}",
+		"minLength": "Longitud mínima: {length}",
+		"noDataToShow": "No hay información disponible",
+		"required": "Este campo es obligatorio.",
+		"unknown": "Error desconocido"
+	},
+	"login": {
+		"description": "Por favor, introduzca sus credenciales",
+		"email": "Nombre de usuario",
+		"forgotPassword": "¿Has olvidado tu contraseña?",
+		"password": "Contraseña",
+		"passwordRequired": "La contraseña es obligatoria",
+		"recoverpassword": {
+			"description": "Introduce tu nombre de usuario y te enviaremos las instrucciones para restablecer tu contraseña.",
+			"email": "Reestablecimiento de contraseña realizado correctamente, revise su bandeja de entrada",
+			"restore": "Restablecer contraseña",
+			"title": "¿Has olvidado tu contraseña?",
+			"userName": "Nombre de usuario",
+			"userNameRequired": "El nombre de usuario es obligatorio"
+		},
+		"restorePassword": {
+			"changedSuccesfully": "La contraseña se ha modificado correctamente",
+			"description": "Establece una nueva contraseña y recupera acceso a tu cuenta.",
+			"password1": "Nueva contraseña",
+			"password2": "Repite nueva contraseña",
+			"passwordMatch": "La contraseña debe coincidir",
+			"passwordPattern": "La contraseña debe contener al menos un número, una letra mayúscula, un símbolo @#$%^&-+=()_. y su longitud debe ser entre 8 y 50 caracteres.",
+			"passwordPatternError": "La contraseña no cumple los requisitos.",
+			"passwordRequired": "La contraseña es obligatoria",
+			"save": "Guardar nueva contraseña",
+			"title": "Nueva contraseña",
+			"userName": "Usuario",
+			"userNameRequired": "El nombre de usuario es obligatorio"
+		},
+		"signIn": "Iniciar sesión",
+		"title": "Inicia sesión",
+		"userNameRequired": "El nombre de usuario es obligatorio"
+	},
+	"logout": {
+		"logout": "Cerrar sesión"
     },
     "newCard": {
         "column": "Columna ",
@@ -278,135 +285,135 @@
             "subState": "Subestado",
             "title": "Workflow y estados"
         }
-    },
-    "organizations": {
-        "brands": {
-            "create": "Crear marca",
-            "delete": "Eliminar marca",
-            "deleteConfirmation": "¿Realmente quiere eliminar esta marca?",
-            "edit": "Editar marca",
-            "multiBrands": "Multimarca",
-            "name": "Nombre de marca",
-            "title": "Marcas"
-        },
-        "departments": {
-            "create": "Crear departamento",
-            "delete": "Eliminar departamento",
-            "deleteConfirmation": "¿Realmente quiere eliminar este departamento?",
-            "edit": "Editar departamento",
-            "numDepartments": "{numItems} {numItems, plural, =0{departamentos} one{departamento} other{departamentos}}",
-            "title": "Departamentos"
-        },
-        "facilities": {
-            "create": "Crear instalación",
-            "delete": "Eliminar instalación",
-            "deleteConfirmation": "¿Realmente quiere eliminar esta instalación?",
-            "edit": "Editar instalación",
-            "numFacilities": "{numItems} {numItems, plural, =0{instalaciones} one{instalación} other{instalaciones}}",
-            "title": "Instalaciones"
-        },
-        "specialties": {
-            "create": "Crear especialidad",
-            "delete": "Eliminar especialidad",
-            "deleteConfirmation": "¿Realmente quiere eliminar esta especialidad?",
-            "edit": "Editar especialidad",
-            "numSpecialties": "{numItems} {numItems, plural, =0{especialidades} one{especialidad} other{especialidades}}",
-            "title": "Especialidades"
-        }
-    },
-    "pagination": {
-        "firstPage": "Primera página",
-        "itemsPerPage": "Elementos por página",
-        "lastPage": "Última página",
-        "nextPage": "Siguiente página",
-        "pageOf": "Página {num1} de {num2}",
-        "prevPage": "Página previa"
-    },
-    "roles": {
-        "create": "Crear rol",
-        "deleteConfirmation": "¿Realmente quiere eliminar este rol?",
-        "title": "Roles y permisos"
-    },
-    "sample": {
-        "text": "{count, plural, =0{No hay} one{Hay una} other{Hay varias}} {count, plural, =0{nada} one{cosa} other{cosas}}"
-    },
-    "textEditor": {
-        "htmlCodeInsertion": "Inserta el código html",
-        "invalidHtmlText": "Etiquetas html inválidas, el texto no puede contener: {tags}",
-        "tooltips": {
-            "tableBorderToggle": "Ocultar/mostrar bordes",
-            "tableHeaders": "Cambiar encabezado de la tabla",
-            "varOptions": "Insertar variable"
-        }
-    },
-    "user": {
-        "add": "Añadir usuario",
-        "delete": "Eliminar usuario",
-        "deleteConfirmation": "¿Realmente quiere eliminar este usuario?",
-        "edit": "Editar usuario",
-        "myProfile": {
-            "edit": "Editar perfil",
-            "title": "Mí perfil"
-        },
-        "permissionsInheritFromRole": "Heredados de <b>{role}</b>*",
-        "selectRoleFirst": "Primero selecciona un rol",
-        "userPermissions": "Permisos de usuario"
-    },
-    "userProfile": {
-        "brand": "Marca",
-        "changePassword": "Cambiar contraseña",
-        "data": "Datos generales",
-        "department": "Departamento",
-        "edit": "Editar perfil",
-        "email": "Email",
-        "facility": "Instalaciones",
-        "firstName": "Apellido 1",
-        "firstNameRequired": "El primer apellido es obligatorio",
-        "lastName": "Apellidos",
-        "lastName2": "Apellido 2",
-        "name": "Nombre",
-        "nameRequired": "El nombre es obligatorio",
-        "nick": "Nick de usuario",
-        "organization": "Organización",
-        "role": "Rol",
-        "sign": "Firma",
-        "specialty": "Especialidad",
-        "title": "Tu perfil",
-        "userName": "Nombre de usuario"
-    },
-    "users": {
-        "create": "Crear usuario",
-        "fullName": "Nombre y apellidos",
-        "permissions": "Permisos",
-        "permissionsGroup": "Grupo permisos",
-        "roles": {
-            "create": "Crear rol",
-            "delete": "Eliminar rol",
-            "deleteConfirmation": "¿Está seguro que desea eliminar este rol?",
-            "edit": "Editar rol",
-            "roleName": "Nombre del rol",
-            "roleNameRequired": "El nombre del rol es un elemento requerido",
-            "selectAll": "Seleccionar todos"
-        },
-        "title": "Usuarios"
-    },
-    "workflows": {
-        "byFacilityGroupLabel": "Workflows de {facility}",
-        "dueOutDateTime": "Recoge el {date} a las {time}",
-        "emptySubstate": "Subestado vacío",
-        "filter": "Filtrar Workflows",
-        "filterFacilities": "Filtrar Instalaciones",
-        "filterState": "Filtrar Estados",
-        "filterSubstate": "Filtrar Subestados",
-        "filterUser": "Filtrar Usuarios",
-        "numCards": "{num} {num, plural, =0{fichas} one{ficha} other{fichas}}",
-        "originalSubstate": "Subestado de origen",
-        "peopleWorking": "{num} {num, plural, =0{personas trabajando} one{persona trabajando} other{personas trabajando}}",
-        "select": "Selecciona un Workflow",
-        "substatesWithAndWithoutCards": "Mostrando subestados con o sin tarjetas",
-        "substatesWithCards": "Mostrando únicamente subestados con tarjetas",
-        "substatesWithoutCards": "Mostrando únicamente subestados sin tarjetas",
-        "taskDescription": "Descripción de la tarea",
-        "workOrderInformation": "Información de la orden de trabajo"
-    }
+	},
+	"organizations": {
+		"brands": {
+			"create": "Crear marca",
+			"delete": "Eliminar marca",
+			"deleteConfirmation": "¿Realmente quiere eliminar esta marca?",
+			"edit": "Editar marca",
+			"multiBrands": "Multimarca",
+			"name": "Nombre de marca",
+			"title": "Marcas"
+		},
+		"departments": {
+			"create": "Crear departamento",
+			"delete": "Eliminar departamento",
+			"deleteConfirmation": "¿Realmente quiere eliminar este departamento?",
+			"edit": "Editar departamento",
+			"numDepartments": "{numItems} {numItems, plural, =0{departamentos} one{departamento} other{departamentos}}",
+			"title": "Departamentos"
+		},
+		"facilities": {
+			"create": "Crear instalación",
+			"delete": "Eliminar instalación",
+			"deleteConfirmation": "¿Realmente quiere eliminar esta instalación?",
+			"edit": "Editar instalación",
+			"numFacilities": "{numItems} {numItems, plural, =0{instalaciones} one{instalación} other{instalaciones}}",
+			"title": "Instalaciones"
+		},
+		"specialties": {
+			"create": "Crear especialidad",
+			"delete": "Eliminar especialidad",
+			"deleteConfirmation": "¿Realmente quiere eliminar esta especialidad?",
+			"edit": "Editar especialidad",
+			"numSpecialties": "{numItems} {numItems, plural, =0{especialidades} one{especialidad} other{especialidades}}",
+			"title": "Especialidades"
+		}
+	},
+	"pagination": {
+		"firstPage": "Primera página",
+		"itemsPerPage": "Elementos por página",
+		"lastPage": "Última página",
+		"nextPage": "Siguiente página",
+		"pageOf": "Página {num1} de {num2}",
+		"prevPage": "Página previa"
+	},
+	"roles": {
+		"create": "Crear rol",
+		"deleteConfirmation": "¿Realmente quiere eliminar este rol?",
+		"title": "Roles y permisos"
+	},
+	"sample": {
+		"text": "{count, plural, =0{No hay} one{Hay una} other{Hay varias}} {count, plural, =0{nada} one{cosa} other{cosas}}"
+	},
+	"textEditor": {
+		"htmlCodeInsertion": "Inserta el código html",
+		"invalidHtmlText": "Etiquetas html inválidas, el texto no puede contener: {tags}",
+		"tooltips": {
+			"tableBorderToggle": "Ocultar/mostrar bordes",
+			"tableHeaders": "Cambiar encabezado de la tabla",
+			"varOptions": "Insertar variable"
+		}
+	},
+	"user": {
+		"add": "Añadir usuario",
+		"delete": "Eliminar usuario",
+		"deleteConfirmation": "¿Realmente quiere eliminar este usuario?",
+		"edit": "Editar usuario",
+		"myProfile": {
+			"edit": "Editar perfil",
+			"title": "Mí perfil"
+		},
+		"permissionsInheritFromRole": "Heredados de <b>{role}</b>*",
+		"selectRoleFirst": "Primero selecciona un rol",
+		"userPermissions": "Permisos de usuario"
+	},
+	"userProfile": {
+		"brand": "Marca",
+		"changePassword": "Cambiar contraseña",
+		"data": "Datos generales",
+		"department": "Departamento",
+		"edit": "Editar perfil",
+		"email": "Email",
+		"facility": "Instalaciones",
+		"firstName": "Apellido 1",
+		"firstNameRequired": "El primer apellido es obligatorio",
+		"lastName": "Apellidos",
+		"lastName2": "Apellido 2",
+		"name": "Nombre",
+		"nameRequired": "El nombre es obligatorio",
+		"nick": "Nick de usuario",
+		"organization": "Organización",
+		"role": "Rol",
+		"sign": "Firma",
+		"specialty": "Especialidad",
+		"title": "Tu perfil",
+		"userName": "Nombre de usuario"
+	},
+	"users": {
+		"create": "Crear usuario",
+		"fullName": "Nombre y apellidos",
+		"permissions": "Permisos",
+		"permissionsGroup": "Grupo permisos",
+		"roles": {
+			"create": "Crear rol",
+			"delete": "Eliminar rol",
+			"deleteConfirmation": "¿Está seguro que desea eliminar este rol?",
+			"edit": "Editar rol",
+			"roleName": "Nombre del rol",
+			"roleNameRequired": "El nombre del rol es un elemento requerido",
+			"selectAll": "Seleccionar todos"
+		},
+		"title": "Usuarios"
+	},
+	"workflows": {
+		"byFacilityGroupLabel": "Workflows de {facility}",
+		"dueOutDateTime": "Recoge el {date} a las {time}",
+		"emptySubstate": "Subestado vacío",
+		"filter": "Filtrar Workflows",
+		"filterFacilities": "Filtrar Instalaciones",
+		"filterState": "Filtrar Estados",
+		"filterSubstate": "Filtrar Subestados",
+		"filterUser": "Filtrar Usuarios",
+		"numCards": "{num} {num, plural, =0{fichas} one{ficha} other{fichas}}",
+		"originalSubstate": "Subestado de origen",
+		"peopleWorking": "{num} {num, plural, =0{personas trabajando} one{persona trabajando} other{personas trabajando}}",
+		"select": "Selecciona un Workflow",
+		"substatesWithAndWithoutCards": "Mostrando subestados con o sin tarjetas",
+		"substatesWithCards": "Mostrando únicamente subestados con tarjetas",
+		"substatesWithoutCards": "Mostrando únicamente subestados sin tarjetas",
+		"taskDescription": "Descripción de la tarea",
+		"workOrderInformation": "Información de la orden de trabajo"
+	}
 }

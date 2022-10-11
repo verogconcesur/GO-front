@@ -5,6 +5,7 @@ export interface TextEditorWrapperConfigI {
   hideToolbar?: boolean;
   hintAutomplete?: string[];
   disableResizeEditor?: boolean;
+  disableDragAndDrop?: boolean;
   airMode?: boolean;
   width?: number;
   height?: number;
