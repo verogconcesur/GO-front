@@ -127,24 +127,24 @@ export class EntityComponent implements OnInit {
       case 1:
         const customer = entity as CustomerEntityDTO;
         let textOptionCustomer = customer.fullName;
-        if (customer.email.includes(this.searchForm.get('search').value)) {
+        if (customer.email.toLowerCase().trim().includes(this.searchForm.get('search').value.toLowerCase().trim())) {
           textOptionCustomer = textOptionCustomer + '/' + customer.email;
         }
-        if (customer.phone.includes(this.searchForm.get('search').value)) {
+        if (customer.phone.toLowerCase().trim().includes(this.searchForm.get('search').value.toLowerCase().trim())) {
           textOptionCustomer = textOptionCustomer + '/' + customer.phone;
         }
         return textOptionCustomer;
       case 2:
         const vehicle = entity as VehicleEntityDTO;
         let textOptionVehicle = vehicle.licensePlate;
-        if (vehicle.vin.includes(this.searchForm.get('search').value)) {
+        if (vehicle.vin.toLowerCase().trim().includes(this.searchForm.get('search').value.toLowerCase().trim())) {
           textOptionVehicle = textOptionVehicle + '/' + vehicle.vin;
         }
         return textOptionVehicle;
       case 3:
         const user = entity as UserEntityDTO;
         let textOptionUser = user.fullName;
-        if (user.email.includes(this.searchForm.get('search').value)) {
+        if (user.email.toLowerCase().trim().includes(this.searchForm.get('search').value.toLowerCase().trim())) {
           textOptionUser = textOptionUser + '/' + user.email;
         }
         return textOptionUser;

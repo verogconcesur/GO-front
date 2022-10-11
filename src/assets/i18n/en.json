@@ -132,6 +132,7 @@
         "apply": "Apply",
         "askForConfirmation": "Do you want to continue?",
         "attachments": "Attachments",
+        "back": "Back",
         "brands": "Brands",
         "budget": "Budget",
         "cancel": "Cancel",
@@ -273,6 +274,7 @@
             "userNotFound": "This user does not exist in the database",
             "vehicleNotFound": "This vehicle does not exist in the database."
         },
+        "exitConfirmation": "Are you sure you want to exit the card window?",
         "newCard": "New Card",
         "saveConfirmation": "Are you sure you want to create this card?",
         "step": "Step ",

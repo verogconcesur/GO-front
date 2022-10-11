@@ -24,8 +24,11 @@
         </div>
     </div>
     <div class="newCard__content">
-        <div class="newCard__content__title mat-display-1">
+        <div class="newCard__content__title mat-display-1" fxLayout="row" fxLayoutAlign="space-between center">
             <span>{{ steplist[stepIndex - 1].title }}</span>
+            <button mat-icon-button color="primary" (click)="closeModal()" class="close-modal-button">
+                <mat-icon>close</mat-icon>
+            </button>
         </div>
         <div class="newCard__content__form" fxLayoutAlign="left">
             <app-step1-workflow
@@ -37,7 +40,10 @@
             <app-step-column *ngIf="stepIndex === 3" [formStep]="formStep2" [formWorkflow]="formWorkflow"></app-step-column>
         </div>
         <mat-divider></mat-divider>
-        <div class="newCard__content__buttons" fxLayoutAlign="end center">
+        <div class="newCard__content__buttons" fxLayout="row" fxLayoutAlign="space-between center">
+            <button mat-flat-button color="primary" (click)="prevStep()" [disabled]="stepIndex === 1">
+                {{ labels.back | translate }}
+            </button>
             <button
                 mat-flat-button
                 color="primary"
