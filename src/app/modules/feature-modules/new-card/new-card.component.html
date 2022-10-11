@@ -35,6 +35,7 @@
                 *ngIf="stepIndex === 1"
                 [formWorkflow]="formWorkflow"
                 [title]="labels.createCard | translate"
+                [currentWorkflowId]="currentWorkflowId"
             ></app-step1-workflow>
             <app-step-column *ngIf="stepIndex === 2" [formStep]="formStep1" [formWorkflow]="formWorkflow"></app-step-column>
             <app-step-column *ngIf="stepIndex === 3" [formStep]="formStep2" [formWorkflow]="formWorkflow"></app-step-column>

@@ -15,6 +15,7 @@ import { take } from 'rxjs/operators';
 export class StepWorkflowComponent implements OnInit {
   @Input() formWorkflow: FormGroup;
   @Input() title: string;
+  @Input() currentWorkflowId: number;
   public labels = {
     workflowHeader: marker('newCard.workflow.header'),
     workflowLabel: marker('newCard.workflow.select'),
@@ -39,7 +40,8 @@ export class StepWorkflowComponent implements OnInit {
         { emitEvent: false }
       );
     } else if (this.facilityList.length === 1) {
-      this.formWorkflow.get('facility').setValue(this.facilityList[0]);
+      this.formWorkflow.get('facility').setValue(this.facilityList[0],
+        { emitEvent: false });
     }
     const selectedEntryState = this.formWorkflow.get('entryState').value;
     if (selectedEntryState) {
@@ -49,7 +51,8 @@ export class StepWorkflowComponent implements OnInit {
       );
       this.initialiceSubStates();
     } else if (this.entryStateList.length === 1) {
-      this.formWorkflow.get('entryState').setValue(this.entryStateList[0]);
+      this.formWorkflow.get('entryState').setValue(this.entryStateList[0],
+        { emitEvent: false });
       this.initialiceSubStates();
     }
   }
@@ -61,9 +64,9 @@ export class StepWorkflowComponent implements OnInit {
         this.subStateList.find((subState: WorkflowSubstateDTO) => subState.id === selectedSubState.id),
         { emitEvent: false }
       );
-      this.initialiceSubStates();
     } else if (this.subStateList.length === 1) {
-      this.formWorkflow.get('subState').setValue(this.subStateList[0]);
+      this.formWorkflow.get('subState').setValue(this.subStateList[0],
+        { emitEvent: false });
     }
   }
   ngOnInit(): void {
@@ -76,6 +79,12 @@ export class StepWorkflowComponent implements OnInit {
         if (selectedWorkflow) {
           this.formWorkflow.get('workflow').setValue(
             this.workflowList.find((workflow: WorkflowCreateCardDTO) => workflow.id === selectedWorkflow.id),
+            { emitEvent: false }
+          );
+          this.initialiceList();
+        } else if (this.currentWorkflowId) {
+          this.formWorkflow.get('workflow').setValue(
+            this.workflowList.find((workflow: WorkflowCreateCardDTO) => workflow.id === this.currentWorkflowId),
             { emitEvent: false }
           );
           this.initialiceList();
