@@ -223,7 +223,6 @@ export class MoveCardDialogComponent implements OnInit {
         'MOVES_IN_OTHER_WORKFLOWS'
       );
     }
-    console.log(this.sameWorkflowMovements, this.otherWorkflowMovements);
     this.setViewData();
   }
 
