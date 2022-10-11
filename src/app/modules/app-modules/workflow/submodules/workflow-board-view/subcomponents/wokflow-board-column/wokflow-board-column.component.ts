@@ -7,9 +7,11 @@ import WorkflowDTO from '@data/models/workflows/workflow-dto';
 import WorkflowMoveDTO from '@data/models/workflows/workflow-move-dto';
 import WorkflowStateDTO from '@data/models/workflows/workflow-state-dto';
 import WorkflowSubstateDTO from '@data/models/workflows/workflow-substate-dto';
+import WorkflowSubstateEventDTO from '@data/models/workflows/workflow-substate-event-dto';
 import WorkflowSubstateUserDTO from '@data/models/workflows/workflow-substate-user-dto';
 import { WorkflowsService } from '@data/services/workflows.service';
 import { WorkflowDragAndDropService } from '@modules/app-modules/workflow/aux-service/workflow-drag-and-drop.service';
+import { WorkflowPrepareAndMoveService } from '@modules/app-modules/workflow/aux-service/workflow-prepare-and-move-aux.service';
 import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
 import { TranslateService } from '@ngx-translate/core';
 import { GlobalMessageService } from '@shared/services/global-message.service';
@@ -61,7 +63,8 @@ export class WokflowBoardColumnComponent implements OnInit {
     private globalMessageService: GlobalMessageService,
     private logger: NGXLogger,
     private translateService: TranslateService,
-    private spinnerService: ProgressSpinnerDialogService
+    private spinnerService: ProgressSpinnerDialogService,
+    private prepareAndMoveService: WorkflowPrepareAndMoveService
   ) {}
 
   ngOnInit(): void {
@@ -262,7 +265,6 @@ export class WokflowBoardColumnComponent implements OnInit {
       itemToReplace = { orderNumber: null };
     }
     const sameDropZone = `${this.wSubstateKey}${item.cardInstanceWorkflows[0].workflowSubstateId}` === dropZoneId;
-    console.log(item, this.workflow);
 
     // DGDC: descomentar en el momento en el que se pueda ordenar dentro de un mismo subestado
     // if ((event.previousContainer === event.container && event.previousIndex !== event.currentIndex) || sameDropZone) {
@@ -292,16 +294,7 @@ export class WokflowBoardColumnComponent implements OnInit {
           : null;
       // item.orderNumber = itemToReplace.orderNumber;
       if (move?.id) {
-        request = this.workflowService.moveWorkflowCardToSubstate(
-          item.cardInstanceWorkflows[0].facilityId,
-          item,
-          move,
-          user,
-          dropZoneId.indexOf(`${this.wSubstateKey}${item.cardInstanceWorkflows[0].workflowSubstateId}`) >= 0
-            ? itemToReplace.orderNumber
-            : null
-          // itemToReplace.orderNumber
-        );
+        this.prepareAndMoveService.prepareAndMove(item, move, user, dropZoneId, itemToReplace);
       }
     }
 

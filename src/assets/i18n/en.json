@@ -329,6 +329,17 @@
         "pageOf": "Page {num1} of {num2}",
         "prevPage": "Previous page"
     },
+    "prepareMovement": {
+        "inTab": "Enter events",
+        "outTab": "Exit events",
+        "size": "Choose a card size",
+        "sizePlaceholder": "Card size",
+        "template": "Check the template to send",
+        "templatePlaceholder": "Template to send",
+        "title": "You must complete the following information before proceeding to make the movement",
+        "user": "Select a user",
+        "userPlaceholder": "User"
+    },
     "roles": {
         "create": "Create Role",
         "deleteConfirmation": "Do you really want to delete this role?",

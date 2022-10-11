@@ -1,0 +1,32 @@
+.wc-movement-preparation {
+  &__header {
+    position: relative;
+    margin-top: 25px;
+    button {
+      position: absolute;
+      top: -42px;
+      right: -20px;
+    }
+  }
+
+  &__warnings {
+    margin-top: 20px;
+    form {
+      .preparation__section {
+        &__title {
+          margin-bottom: 5px;
+        }
+        mat-form-field {
+          width: 100%;
+        }
+      }
+    }
+  }
+
+  &__footer {
+    width: 100%;
+    margin-top: 10px;
+    display: flex;
+    justify-content: flex-end;
+  }
+}

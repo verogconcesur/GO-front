@@ -9,6 +9,7 @@ import FacilityDTO from '@data/models/organization/facility-dto';
 import WorkflowCardDTO from '@data/models/workflows/workflow-card-dto';
 import WorkflowCardInstanceDTO from '@data/models/workflows/workflow-card-instance-dto';
 import WorkflowCreateCardDTO from '@data/models/workflows/workflow-create-card-dto';
+import WorkflowSubstateEventDTO from '@data/models/workflows/workflow-substate-event-dto';
 import WorkflowDTO from '@data/models/workflows/workflow-dto';
 import WorkflowMoveDTO from '@data/models/workflows/workflow-move-dto';
 import WorkflowStateDTO from '@data/models/workflows/workflow-state-dto';
@@ -34,6 +35,8 @@ export class WorkflowsService {
   private readonly GET_WORKFLOWS_VIEW_PATH = '/view';
   private readonly GET_WORKFLOWS_CARDS_PATH = '/cards';
   private readonly GET_WORKFLOWS_MOVEMENT_PATH = '/movement';
+  private readonly GET_WORKFLOW_MOVEMENT_PATH = '/workflowMovement';
+  private readonly GET_CARD_INSTANCE_WORKFLOW = '/cardInstanceWorkflow';
   private readonly GET_WORKFLOWS_ORDER_PATH = '/orders';
   constructor(@Inject(ENV) private env: Env, private http: HttpClient, private workflowFilterService: WorkflowFilterService) {}
 
@@ -162,6 +165,16 @@ export class WorkflowsService {
         `${this.env.apiBaseUrl}${this.GET_WORKFLOWS_PATH}/${card.cardInstanceWorkflows[0].workflowId}` +
           `${this.GET_WORKFLOWS_MOVEMENT_PATH}/${move.id}`,
         cardInstanceWorkflow
+      )
+      .pipe(catchError((error) => throwError(error.error as ConcenetError)));
+  }
+
+  public prepareMovement(card: WorkflowCardDTO, move: WorkflowMoveDTO): Observable<WorkflowSubstateEventDTO[]> {
+    console.log(card, move);
+    return this.http
+      .get<WorkflowSubstateEventDTO[]>(
+        `${this.env.apiBaseUrl}${this.GET_WORKFLOWS_PATH}${this.GET_CARD_INSTANCE_WORKFLOW}/${card.cardInstanceWorkflows[0].id}` +
+          `${this.GET_WORKFLOW_MOVEMENT_PATH}/${move.id}`
       )
       .pipe(catchError((error) => throwError(error.error as ConcenetError)));
   }
