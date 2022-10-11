@@ -1,7 +1,9 @@
+import CardColumnTabItemDTO from '../cards/card-column-tab-item-dto';
 import WorkflowCardDTO from './workflow-card-dto';
 import WorkflowCardTabItemDTO from './workflow-card-tab-item-dto';
 import WorkflowMoveDTO from './workflow-move-dto';
 import WorkflowStateDTO from './workflow-state-dto';
+import WorkflowSubstateEventDTO from './workflow-substate-event-dto';
 import WorkflowSubstateUserDTO from './workflow-substate-user-dto';
 
 export default interface WorkflowSubstateDTO {
@@ -20,6 +22,7 @@ export default interface WorkflowSubstateDTO {
   cardOrderCustomDir?: string;
   cardOrderCustomItem?: WorkflowCardTabItemDTO;
   cardOrderType?: string;
+  workflowSubstateEvents?: WorkflowSubstateEventDTO[];
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   children?: any[];
   move?: WorkflowMoveDTO;

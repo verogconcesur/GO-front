@@ -7,11 +7,20 @@
       background-color: mat-contrast($primary, statusNeutral);
       opacity: 0.2;
     }
+
+    &__right {
+      &__createCard {
+        color: mat-color($primary, 500);
+      }
+    }
     button.active .mat-button-wrapper {
       border-bottom: 1px solid mat-contrast($primary, 400);
     }
     &__search {
       color: mat-contrast($primary, statusNeutral);
+      mat-form-field{
+        width: 180px;
+      }
       .mat-form-field-appearance-outline .mat-form-field-wrapper {
         margin: 0 0;
         padding: 0 0;

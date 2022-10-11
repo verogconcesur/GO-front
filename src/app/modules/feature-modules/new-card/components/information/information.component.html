@@ -1,0 +1,17 @@
+<div class="information">
+    <form [formGroup]="formTab" *ngIf="formTab">
+        <mat-form-field appearance="outline" floatLabel="always">
+            <mat-label>{{ formTab?.value?.name }}</mat-label>
+            <textarea
+                matInput
+                formControlName="information"
+                cdkTextareaAutosize
+                cdkAutosizeMinRows="5"
+                cdkAutosizeMaxRows="5"
+            ></textarea>
+            <mat-error *ngIf="formTab?.invalid">
+                <span>{{ labels?.required | translate }}</span>
+            </mat-error>
+        </mat-form-field>
+    </form>
+</div>

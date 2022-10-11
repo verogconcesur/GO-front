@@ -67,6 +67,7 @@
 			"administration": "Administración",
 			"advanceSearch": "Búsqueda avanzada",
 			"clients": "Clientes",
+            "createCard": "Crear Ficha",
 			"vehicles": "Vehículos",
 			"workflow": "Workflow"
 		},
@@ -174,6 +175,7 @@
 		"name": "Nombre",
 		"newItem": "Nuevo Elememto",
 		"newLine": "Nueva línea",
+        "next": "Siguiente",
 		"origin": "Origen",
 		"payments": "Pagos",
 		"postalCode": "Código Postal",
@@ -261,6 +263,28 @@
 	},
 	"logout": {
 		"logout": "Cerrar sesión"
+    },
+    "newCard": {
+        "column": "Columna ",
+        "create": "Crear nueva ficha",
+        "errors": {
+            "customerNotFound": "Este cliente no existe en la base de datos",
+            "dataNotFound": "No existe en la base de datos",
+            "userNotFound": "Este usuario no existe en la base de datos",
+            "vehicleNotFound": "Este vehículo no existe en la base de datos"
+        },
+        "newCard": "Nueva Ficha",
+        "saveConfirmation": "¿Está seguro que desea crear la ficha?",
+        "step": "Paso ",
+        "workflow": {
+            "entryState": "Estado de entrada",
+            "facility": "Instalación",
+            "header": "¿En qué workflow quieres crear la ficha?",
+            "select": "Seleccione Workflow",
+            "states": "Estados",
+            "subState": "Subestado",
+            "title": "Workflow y estados"
+        }
 	},
 	"organizations": {
 		"brands": {
