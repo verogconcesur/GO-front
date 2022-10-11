@@ -36,6 +36,7 @@ export class WorkflowColumnCommentsComponent implements OnInit {
     hideToolbar: true,
     hintAutomplete: [],
     disableResizeEditor: true,
+    disableDragAndDrop: true,
     airMode: false,
     height: 80
   };

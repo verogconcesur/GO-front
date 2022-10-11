@@ -120,6 +120,7 @@ export class TextEditorWrapperComponent implements OnInit, AfterViewInit {
         },
         placeholder: this.placeholder,
         disableResizeEditor: this.textEditorConfig.disableResizeEditor ? true : false,
+        disableDragAndDrop: this.textEditorConfig.disableDragAndDrop ? true : false,
         airMode: this.textEditorConfig.airMode ? true : false,
         popover: {
           table: [

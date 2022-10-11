@@ -24,6 +24,8 @@ import { RoleService } from '@data/services/role.service';
 import FacilityDTO from '@data/models/organization/facility-dto';
 import SpecialtyDTO from '@data/models/organization/specialty-dto';
 import { ProgressSpinnerDialogService } from '@shared/services/progress-spinner-dialog.service';
+import WorkflowSubstateUserDTO from '@data/models/workflows/workflow-substate-user-dto';
+import UserDTO from '@data/models/user-permissions/user-dto';
 
 @UntilDestroy()
 @Component({
