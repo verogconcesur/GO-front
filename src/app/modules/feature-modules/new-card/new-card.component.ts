@@ -10,6 +10,7 @@ import CardColumnTabDTO from '@data/models/cards/card-column-tab-dto';
 import CardColumnTabItemDTO from '@data/models/cards/card-column-tab-item-dto';
 import CardCreateDTO from '@data/models/cards/card-create-dto';
 import CardDTO from '@data/models/cards/card-dto';
+import WorkflowSubstateDTO from '@data/models/workflows/workflow-substate-dto';
 import WorkflowSubstateEventDTO from '@data/models/workflows/workflow-substate-event-dto';
 import { CardService } from '@data/services/cards.service';
 import { TranslateService } from '@ngx-translate/core';
@@ -43,12 +44,14 @@ export class NewCardComponent implements OnInit {
     step: marker('newCard.step'),
     cancel: marker('common.cancel'),
     next: marker('common.next'),
+    back: marker('common.back'),
     save: marker('common.save'),
     information: marker('cards.column.information')
   };
   public contentTypeAvailable = [1, 2];
   public contentSourceAvailable = [1, 2, 3];
   public cardDetailSelected: CardDTO;
+  public subStateSelected: WorkflowSubstateDTO;
   public steplist: { title: string; index: number }[] = [];
   public stepIndex = 1;
   public formWorkflow: FormGroup;
@@ -115,8 +118,29 @@ export class NewCardComponent implements OnInit {
         }
       });
   }
+  public closeModal(): void {
+    this.confirmationDialog
+      .open({
+        title: this.translateService.instant(marker('common.warning')),
+        message: this.translateService.instant(marker('newCard.exitConfirmation'))
+      })
+      .pipe(take(1))
+      .subscribe((ok: boolean) => {
+        if (ok) {
+          this.dialogRef.close();
+        }
+      });
+  }
+  public prevStep(): void {
+    this.stepIndex = this.stepIndex - 1;
+    this.stepper.previous();
+  }
   public nextStep(): void {
-    if (this.stepIndex === 1) {
+    if (
+      this.stepIndex === 1 &&
+      (!this.subStateSelected || this.subStateSelected.id !== this.formWorkflow.get('subState').value.id)
+    ) {
+      this.subStateSelected = this.formWorkflow.get('subState').getRawValue();
       this.cardsService.getCardCreateTabData(this.formWorkflow.get('workflow').value.id).subscribe((res) => {
         this.cardDetailSelected = res;
         this.initializeStep1Form();

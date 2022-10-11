@@ -47,7 +47,8 @@ export class NavbarComponent implements OnInit {
     this.dialog.open(NewCardComponent, {
       width: '80%',
       height: '80%',
-      panelClass: NewCardComponentModalEnum.PANEL_CLASS
+      panelClass: NewCardComponentModalEnum.PANEL_CLASS,
+      disableClose: true
     });
   }
 }
