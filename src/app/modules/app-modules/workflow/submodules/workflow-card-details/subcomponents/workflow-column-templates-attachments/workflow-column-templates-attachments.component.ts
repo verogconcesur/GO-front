@@ -40,7 +40,7 @@ export class WorkflowColumnTemplatesAttachmentsComponent implements OnInit, OnCh
 
   ngOnChanges(changes: SimpleChanges): void {
     if (changes.tab) {
-      this.getData();
+      this.getDataAndSetConfig();
     }
   }
 
@@ -70,13 +70,16 @@ export class WorkflowColumnTemplatesAttachmentsComponent implements OnInit, OnCh
       );
   }
 
-  private getData(): void {
+  private getDataAndSetConfig(): void {
     this.idCard = parseInt(this.route?.snapshot?.params?.idCard, 10);
     this.cardInstanceAttachmentsConfig = {
       tabId: this.tab.id,
       wcId: this.idCard,
       permission: this.tab.permissionType,
-      disableAttachmentsSelection: true
+      disableAttachmentsSelection: true,
+      disableEditFileName: this.tab.permissionType !== 'EDIT' ? true : false,
+      disableIndividualDeleteAction: this.tab.permissionType !== 'EDIT' ? true : false,
+      disableAttachmentsAddition: this.tab.permissionType !== 'EDIT' ? true : false
     };
     this.fetchData();
   }

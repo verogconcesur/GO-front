@@ -8,6 +8,7 @@ import { CardAttachmentsService } from '@data/services/card-attachments.service'
 import { TranslateService } from '@ngx-translate/core';
 import { ConfirmDialogService } from '@shared/services/confirm-dialog.service';
 import { GlobalMessageService } from '@shared/services/global-message.service';
+import { ProgressSpinnerDialogService } from '@shared/services/progress-spinner-dialog.service';
 import { NGXLogger } from 'ngx-logger';
 import { take } from 'rxjs/operators';
 import CardInstanceAttachmentsConfig from './card-instance-attachments-config-interface';
@@ -39,7 +40,8 @@ export class CardInstanceAttachmentsComponent implements OnInit, OnChanges {
     private logger: NGXLogger,
     private translateService: TranslateService,
     private confirmationDialog: ConfirmDialogService,
-    private globalMessageService: GlobalMessageService
+    private globalMessageService: GlobalMessageService,
+    private spinnerService: ProgressSpinnerDialogService
   ) {}
 
   ngOnInit(): void {}
@@ -76,25 +78,28 @@ export class CardInstanceAttachmentsComponent implements OnInit, OnChanges {
   }
 
   public downloadAttachment(item: AttachmentDTO): void {
-    window.open(this.attachmentService.getDownloadAttachmentUrl(this.cardInstanceWorkflowId, this.tabId, item.id), '_blank');
-    // this.attachmentService
-    //   .downloadAttachment(this.cardInstanceWorkflowId, this.tabId, item.id)
-    //   .pipe(take(1))
-    //   .subscribe(
-    //     (data) => {
-    //       const blob = new Blob([data], { type: item.type });
-    //       const url = window.URL.createObjectURL(blob);
-    //       window.open(url);
-    //     },
-    //     (error: ConcenetError) => {
-    //       this.logger.error(error);
+    const spinner = this.spinnerService.show();
+    //window.open(this.attachmentService.getDownloadAttachmentUrl(this.cardInstanceWorkflowId, this.tabId, item.id), '_blank');
+    this.attachmentService
+      .downloadAttachment(this.cardInstanceWorkflowId, this.tabId, item.id)
+      .pipe(take(1))
+      .subscribe(
+        (data) => {
+          this.spinnerService.hide(spinner);
+          const blob = new Blob([data], { type: item.type });
+          const url = window.URL.createObjectURL(blob);
+          window.open(url);
+        },
+        (error: ConcenetError) => {
+          this.spinnerService.hide(spinner);
+          this.logger.error(error);
 
-    //       this.globalMessageService.showError({
-    //         message: error.message,
-    //         actionText: this.translateService.instant(marker('common.close'))
-    //       });
-    //     }
-    //   );
+          this.globalMessageService.showError({
+            message: error.message,
+            actionText: this.translateService.instant(marker('common.close'))
+          });
+        }
+      );
   }
 
   public deleteAttachment(item: AttachmentDTO): void {
@@ -106,14 +111,17 @@ export class CardInstanceAttachmentsComponent implements OnInit, OnChanges {
       .pipe(take(1))
       .subscribe((ok: boolean) => {
         if (ok) {
+          const spinner = this.spinnerService.show();
           this.attachmentService
             .deleteAttachment(this.cardInstanceWorkflowId, this.tabId, item.id)
             .pipe(take(1))
             .subscribe(
               (data) => {
                 this.reload.emit(true);
+                this.spinnerService.hide(spinner);
               },
               (error: ConcenetError) => {
+                this.spinnerService.hide(spinner);
                 this.logger.error(error);
 
                 this.globalMessageService.showError({
@@ -157,7 +165,31 @@ export class CardInstanceAttachmentsComponent implements OnInit, OnChanges {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   public fileMoved(event: CdkDragDrop<any>, template: CardAttachmentsDTO) {
     if (event.container !== event.previousContainer) {
-      console.log(this.draggingAttachment, template);
+      const spinner = this.spinnerService.show();
+      this.attachmentService
+        .editAttachment(
+          this.cardInstanceWorkflowId,
+          this.tabId,
+          this.draggingAttachment.id,
+          this.draggingAttachment.name,
+          template.templateAttachmentItem.id
+        )
+        .pipe(take(1))
+        .subscribe(
+          (data) => {
+            this.spinnerService.hide(spinner);
+            this.reload.emit(true);
+          },
+          (error: ConcenetError) => {
+            this.spinnerService.hide(spinner);
+            this.logger.error(error);
+
+            this.globalMessageService.showError({
+              message: error.message,
+              actionText: this.translateService.instant(marker('common.close'))
+            });
+          }
+        );
     }
   }
 
@@ -207,14 +239,17 @@ export class CardInstanceAttachmentsComponent implements OnInit, OnChanges {
       };
       filesToSend.push(fileInfo);
     });
+    const spinner = this.spinnerService.show();
     this.attachmentService
       .addAttachments(this.cardInstanceWorkflowId, this.tabId, template.templateAttachmentItem.id, filesToSend)
       .pipe(take(1))
       .subscribe(
         (data) => {
           this.reload.emit(true);
+          this.spinnerService.hide(spinner);
         },
         (error: ConcenetError) => {
+          this.spinnerService.hide(spinner);
           this.logger.error(error);
 
           this.globalMessageService.showError({

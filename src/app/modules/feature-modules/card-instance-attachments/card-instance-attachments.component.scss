@@ -40,8 +40,27 @@
         justify-content: center;
         align-items: center;
       }
-      &.fileover2 {
+      .drop-here-label {
+        display: none;
+      }
+      &.fileover {
         min-height: 190px;
+        border: 2px dotted mat-color($primary, statusSuccess);
+        background-color: lighten(mat-color($primary, statusSuccess), 40%);
+        border-radius: 10px;
+        .attachments__templates__content__item {
+          opacity: 0;
+        }
+        .drop-here-label {
+          position: absolute;
+          top: calc(50% - 10px);
+          left: 0;
+          width: 100%;
+          text-align: center;
+          display: block;
+        }
+      }
+      &.fileoverCdk {
         .fileover-placeholder {
           display: flex;
         }

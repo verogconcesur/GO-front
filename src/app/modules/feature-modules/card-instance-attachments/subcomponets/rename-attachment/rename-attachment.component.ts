@@ -8,6 +8,7 @@ import { CardAttachmentsService } from '@data/services/card-attachments.service'
 import { TranslateService } from '@ngx-translate/core';
 import { ConfirmDialogService } from '@shared/services/confirm-dialog.service';
 import { GlobalMessageService } from '@shared/services/global-message.service';
+import { ProgressSpinnerDialogService } from '@shared/services/progress-spinner-dialog.service';
 import FilenameValidator from '@shared/validators/filename.validator';
 import { NGXLogger } from 'ngx-logger';
 import { take } from 'rxjs/operators';
@@ -48,6 +49,7 @@ export class RenameAttachmentComponent implements OnInit {
     private globalMessageService: GlobalMessageService,
     private confirmationDialog: ConfirmDialogService,
     private attachmentService: CardAttachmentsService,
+    private spinnerService: ProgressSpinnerDialogService,
     @Inject(MAT_DIALOG_DATA)
     public data: { attachment: AttachmentDTO; cardInstanceWorkflowId: number; tabId: number; templateAttachmentItemId: number },
     private fb: FormBuilder
@@ -92,6 +94,7 @@ export class RenameAttachmentComponent implements OnInit {
   }
 
   private setAttachmentName() {
+    const spinner = this.spinnerService.show();
     this.attachmentService
       .editAttachment(
         this.cardInstanceWorkflowId,
@@ -103,11 +106,12 @@ export class RenameAttachmentComponent implements OnInit {
       .pipe(take(1))
       .subscribe(
         (data) => {
+          this.spinnerService.hide(spinner);
           this.dialogRef.close(true);
         },
         (error: ConcenetError) => {
+          this.spinnerService.hide(spinner);
           this.logger.error(error);
-
           this.globalMessageService.showError({
             message: error.message,
             actionText: this.translateService.instant(marker('common.close'))

@@ -14,11 +14,10 @@
         </div>
         <div
             class="attachments__templates__content"
-            [ngClass]="{ fileover2: hoverTemplate === template }"
+            [ngClass]="{ fileoverCdk: hoverTemplate === template }"
             appDropZone
             [disableDropZone]="cardInstanceAttachmentsConfig.disableAttachmentsAddition"
             (fileDropped)="fileDropped($event, template)"
-            (fileIsHover)="setHoverTemplate($event, template, 'appDropZone')"
             cdkDropList
             [cdkDropListData]="{ template: template }"
             (cdkDropListDropped)="fileMoved($event, template); setHoverTemplate(false, template, 'cdk')"
@@ -36,6 +35,7 @@
             <div class="fileover-placeholder">
                 <label>{{ labels.dropHere | translate }}</label>
             </div>
+            <label class="drop-here-label">{{ labels.dropHere | translate }}</label>
             <div
                 class="attachments__templates__content__item"
                 *ngFor="let item of template.attachments"

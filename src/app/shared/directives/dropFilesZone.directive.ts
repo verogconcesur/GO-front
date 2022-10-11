@@ -24,7 +24,6 @@ export class DropFilesZonetDirective {
     evt.preventDefault();
     evt.stopPropagation();
     this.fileOver = false;
-    console.log('leaving');
     this.fileIsHover.emit(false);
   }
 
