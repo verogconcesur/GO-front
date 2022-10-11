@@ -15,6 +15,9 @@ export class CardAttachmentsService {
   private readonly GET_CARD_INSTANCE_PATH = '/api/cardInstanceWorkflow';
   private readonly DETAIL_PATH = '/detail';
   private readonly ATTACHMETS_PATH = '/attachments';
+  private readonly EDIT_PATH = '/edit';
+  private readonly DELETE_PATH = '/delete';
+  private readonly DOWNLOAD_PATH = '/download';
 
   constructor(@Inject(ENV) private env: Env, private http: HttpClient) {}
 
@@ -30,6 +33,75 @@ export class CardAttachmentsService {
       .get<CardAttachmentsDTO[]>(
         // eslint-disable-next-line max-len
         `${this.env.apiBaseUrl}${this.GET_CARD_INSTANCE_PATH}${this.DETAIL_PATH}/${cardInstanceWorkflowId}${this.ATTACHMETS_PATH}/${tabId}`
+      )
+      .pipe(catchError((error) => throwError(error.error as ConcenetError)));
+  }
+
+  public editAttachment(
+    cardInstanceWorkflowId: number,
+    tabId: number,
+    fileId: number,
+    newName: string,
+    templateAttachmentItemId: number
+  ): Observable<any> {
+    return this.http
+      .post<any>(
+        `${this.env.apiBaseUrl}${this.GET_CARD_INSTANCE_PATH}${this.DETAIL_PATH}/` +
+          `${cardInstanceWorkflowId}${this.ATTACHMETS_PATH}/${tabId}${this.EDIT_PATH}`,
+        {
+          templateAttachmentItem: {
+            id: templateAttachmentItemId
+          },
+          file: {
+            id: fileId,
+            name: newName
+          }
+        }
+      )
+      .pipe(catchError((error) => throwError(error.error as ConcenetError)));
+  }
+
+  public addAttachments(
+    cardInstanceWorkflowId: number,
+    tabId: number,
+    templateAttachmentItemId: number,
+    files: { name: string; type: string; size: number; content: string }[]
+  ): Observable<any> {
+    return this.http
+      .post<any>(
+        `${this.env.apiBaseUrl}${this.GET_CARD_INSTANCE_PATH}${this.DETAIL_PATH}/` +
+          `${cardInstanceWorkflowId}${this.ATTACHMETS_PATH}/${tabId}`,
+        {
+          templateAttachmentItem: {
+            id: templateAttachmentItemId
+          },
+          attachments: files
+        }
+      )
+      .pipe(catchError((error) => throwError(error.error as ConcenetError)));
+  }
+
+  public deleteAttachment(cardInstanceWorkflowId: number, tabId: number, fileId: number): Observable<any> {
+    return this.http
+      .delete<any>(
+        `${this.env.apiBaseUrl}${this.GET_CARD_INSTANCE_PATH}${this.DETAIL_PATH}/` +
+          `${cardInstanceWorkflowId}${this.ATTACHMETS_PATH}/${tabId}${this.DELETE_PATH}/${fileId}`
+      )
+      .pipe(catchError((error) => throwError(error.error as ConcenetError)));
+  }
+
+  public getDownloadAttachmentUrl(cardInstanceWorkflowId: number, tabId: number, fileId: number): string {
+    return (
+      `${this.env.apiBaseUrl}${this.GET_CARD_INSTANCE_PATH}${this.DETAIL_PATH}/` +
+      `${cardInstanceWorkflowId}${this.ATTACHMETS_PATH}/${tabId}${this.DOWNLOAD_PATH}/${fileId}`
+    );
+  }
+
+  public downloadAttachment(cardInstanceWorkflowId: number, tabId: number, fileId: number): Observable<Blob> {
+    return this.http
+      .get<Blob>(
+        `${this.env.apiBaseUrl}${this.GET_CARD_INSTANCE_PATH}${this.DETAIL_PATH}/` +
+          `${cardInstanceWorkflowId}${this.ATTACHMETS_PATH}/${tabId}${this.DOWNLOAD_PATH}/${fileId}`
       )
       .pipe(catchError((error) => throwError(error.error as ConcenetError)));
   }

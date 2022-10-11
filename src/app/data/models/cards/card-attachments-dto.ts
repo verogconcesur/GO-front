@@ -9,7 +9,6 @@ export interface AttachmentDTO {
 
 export interface CardAttachmentsDTO {
   attachments: AttachmentDTO[];
-  permissionType: string;
   templateAttachmentItem: {
     id: number;
     name: string;

@@ -6,6 +6,7 @@ export default interface CardColumnTabDTO {
   name: string;
   type: 'CUSTOMIZABLE' | 'PREFIXED' | 'TEMPLATE' | 'COMMENTS' | 'CLIENT_MESSAGES';
   contentTypeId: number;
+  permissionType?: string;
   contentSourceId?: number;
   tabItems?: CardColumnTabItemDTO[];
   templateId?: number;

@@ -1,0 +1,41 @@
+<h3>{{ labels.title | translate }}</h3>
+
+<form [formGroup]="attachmentForm" class="attachmentForm smaller-mat-form-fields">
+    <div class="create-cards-container__side__section__group grid-group">
+        <!-- Name -->
+        <mat-form-field appearance="outline" floatLabel="always">
+            <mat-label>{{ labels.name | translate }}</mat-label>
+            <input matInput formControlName="name" />
+            <mat-error class="create-cards-container__side__section__group__error" *ngIf="form.name.invalid && form.name.touched">
+                <div [hidden]="!form.name.errors.required">
+                    {{ labels.required | translate }}
+                </div>
+                <div [hidden]="!form.name.errors.maxlength">
+                    {{ labels.errorMaxLength | translate: { length: maxLength } }}
+                </div>
+                <div [hidden]="!form.name.errors.minlength">
+                    {{ labels.errorMinLength | translate: { length: minLength } }}
+                </div>
+                <div [hidden]="!form.name.errors.filename">
+                    {{ labels.errorFilenameName | translate }}
+                </div>
+                <div [hidden]="!form.name.errors.extension">
+                    {{ labels.errorFilenameExtension | translate }}
+                </div>
+            </mat-error>
+        </mat-form-field>
+        <div class="action-wrapper">
+            <button mat-raised-button (click)="close()">
+                {{ labels.close | translate }}
+            </button>
+            <button
+                mat-raised-button
+                color="primary"
+                [disabled]="!attachmentForm.valid || form.name.value === originalName"
+                (click)="save()"
+            >
+                {{ labels.save | translate }}
+            </button>
+        </div>
+    </div>
+</form>

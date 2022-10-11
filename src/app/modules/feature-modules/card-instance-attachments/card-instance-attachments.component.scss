@@ -13,6 +13,9 @@
         font-size: 0.85em;
         color: mat-contrast($primary, 100);
         margin: 0px;
+        max-width: calc(100% - 30px);
+        overflow: hidden;
+        text-overflow: ellipsis;
       }
     }
     &__content {
@@ -20,6 +23,29 @@
       justify-content: flex-start;
       flex-wrap: wrap;
       align-items: center;
+      width: 100%;
+      min-height: 50px;
+      position: relative;
+      .fileover-placeholder {
+        display: none;
+        z-index: 100;
+        width: 100%;
+        height: 100%;
+        position: absolute;
+        top: 0;
+        left: 0;
+        border: 2px dotted mat-color($primary, statusSuccess);
+        background-color: lighten(mat-color($primary, statusSuccess), 40%);
+        border-radius: 10px;
+        justify-content: center;
+        align-items: center;
+      }
+      &.fileover2 {
+        min-height: 190px;
+        .fileover-placeholder {
+          display: flex;
+        }
+      }
       &__item {
         max-width: 248px;
         min-width: 100px;
@@ -31,6 +57,9 @@
         position: relative;
         margin: 5px 10px 30px 10px;
         border-radius: 15px;
+        background-position: center;
+        background-size: contain;
+        background-repeat: no-repeat;
 
         .actions-wrapper {
           position: absolute;
@@ -39,7 +68,7 @@
           left: 0px;
           width: 100%;
           height: 100%;
-          background-color: rgba(mat-contrast($primary, 100), 0.5);
+          background-color: rgba(mat-contrast($primary, 100), 0.7);
           opacity: 0;
           transition: opacity 0.5s ease;
           mat-icon {
@@ -71,18 +100,22 @@
           position: absolute;
           bottom: -25px;
           width: 100%;
+          overflow: hidden;
+          text-overflow: ellipsis;
           text-align: center;
           cursor: default;
           mat-icon {
             position: absolute;
             display: none;
             color: mat-color($primary, 700);
-            top: -20px;
-            left: 69%;
+            top: -2px;
+            right: 0px;
           }
           &.editable {
             cursor: pointer;
             &:hover {
+              border: 1px solid mat-color($primary, 200);
+              border-radius: 5px;
               mat-icon {
                 display: block;
               }

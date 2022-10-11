@@ -15,6 +15,7 @@ import { ShowToolbarIfTruncatedDirective } from './directives/showToolbarIfTrunc
 import { RemoveWrapperDirective } from './directives/removeWrapper.directive';
 import { ResponsiveTabsComponent } from './components/responsive-tabs/responsive-tabs.component';
 import { HighlightDirective } from './directives/highLight.directive';
+import { DropFilesZonetDirective } from './directives/dropFilesZone.directive';
 
 @NgModule({
   declarations: [
@@ -24,6 +25,7 @@ import { HighlightDirective } from './directives/highLight.directive';
     ShowToolbarIfTruncatedDirective,
     RemoveWrapperDirective,
     HighlightDirective,
+    DropFilesZonetDirective,
     ResponsiveTabsComponent
   ],
   imports: [
@@ -48,6 +50,7 @@ import { HighlightDirective } from './directives/highLight.directive';
     ShowToolbarIfTruncatedDirective,
     RemoveWrapperDirective,
     HighlightDirective,
+    DropFilesZonetDirective,
     CustomDialogModule
   ]
 })

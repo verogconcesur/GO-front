@@ -20,9 +20,13 @@ import { take } from 'rxjs/operators';
 export class WorkflowColumnTemplatesAttachmentsComponent implements OnInit, OnChanges {
   @Input() tab: CardColumnTabDTO = null;
   @Output() setShowLoading: EventEmitter<boolean> = new EventEmitter(false);
+  public labels = {
+    noDataToShow: marker('errors.noDataToShow')
+  };
   public idCard: number;
   public attachmentsAndTemplatesData: CardAttachmentsDTO[];
   public cardInstanceAttachmentsConfig: CardInstanceAttachmentsConfig;
+  public dataLoaded = false;
 
   constructor(
     private cardAttachmentsService: CardAttachmentsService,
@@ -40,14 +44,10 @@ export class WorkflowColumnTemplatesAttachmentsComponent implements OnInit, OnCh
     }
   }
 
-  private getData(): void {
+  public fetchData(): void {
+    this.attachmentsAndTemplatesData = [];
+    this.dataLoaded = false;
     this.setShowLoading.emit(true);
-    this.idCard = parseInt(this.route?.snapshot?.params?.idCard, 10);
-    this.cardInstanceAttachmentsConfig = {
-      tabId: this.tab.id,
-      wcId: this.idCard,
-      disableAttachmentsSelection: false //TODO DGDC poner a true
-    };
     this.cardAttachmentsService
       .getCardAttachments(this.idCard, this.tab.id)
       .pipe(take(1))
@@ -55,6 +55,7 @@ export class WorkflowColumnTemplatesAttachmentsComponent implements OnInit, OnCh
         (data: CardAttachmentsDTO[]) => {
           this.setShowLoading.emit(false);
           this.attachmentsAndTemplatesData = data;
+          this.dataLoaded = true;
         },
         (error: ConcenetError) => {
           this.setShowLoading.emit(false);
@@ -63,62 +64,20 @@ export class WorkflowColumnTemplatesAttachmentsComponent implements OnInit, OnCh
             message: error.message,
             actionText: this.translateService.instant(marker('common.close'))
           });
-          console.log('TODO QUITAR: nos inventamos los datos');
-          this.attachmentsAndTemplatesData = [
-            {
-              attachments: [
-                {
-                  content: 'string',
-                  id: 2,
-                  name: 'archivo.pdf',
-                  size: 500,
-                  thumbnail: '',
-                  type: 'pdf'
-                }
-              ],
-              permissionType: 'HIDE',
-              templateAttachmentItem: {
-                id: 2,
-                name: 'Categoria 1',
-                orderNumber: 0
-              }
-            },
-            {
-              attachments: [
-                {
-                  content: 'string',
-                  id: 2,
-                  name: 'archivo2.pdf',
-                  size: 500,
-                  thumbnail: '',
-                  type: 'pdf'
-                },
-                {
-                  content: 'string',
-                  id: 2,
-                  name: 'archivo3.pdf',
-                  size: 500,
-                  thumbnail: '',
-                  type: 'pdf'
-                },
-                {
-                  content: 'string',
-                  id: 2,
-                  name: 'archivo4.pdf',
-                  size: 500,
-                  thumbnail: '',
-                  type: 'pdf'
-                }
-              ],
-              permissionType: 'HIDE',
-              templateAttachmentItem: {
-                id: 3,
-                name: 'Categoria 2',
-                orderNumber: 1
-              }
-            }
-          ];
+          this.attachmentsAndTemplatesData = [];
+          this.dataLoaded = true;
         }
       );
+  }
+
+  private getData(): void {
+    this.idCard = parseInt(this.route?.snapshot?.params?.idCard, 10);
+    this.cardInstanceAttachmentsConfig = {
+      tabId: this.tab.id,
+      wcId: this.idCard,
+      permission: this.tab.permissionType,
+      disableAttachmentsSelection: true
+    };
+    this.fetchData();
   }
 }
