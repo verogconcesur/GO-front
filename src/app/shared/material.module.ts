@@ -26,6 +26,7 @@ import { MatTableModule } from '@angular/material/table';
 import { MatPaginatorIntl, MatPaginatorModule } from '@angular/material/paginator';
 import { MyCustomPaginatorIntl } from './providers/my-custom-paginator-intl';
 import { MatAutocompleteModule } from '@angular/material/autocomplete';
+import { MatTreeModule } from '@angular/material/tree';
 import { DragDropModule } from '@angular/cdk/drag-drop';
 import { MatStepperModule } from '@angular/material/stepper';
 
@@ -58,6 +59,7 @@ import { MatStepperModule } from '@angular/material/stepper';
     MatTableModule,
     MatPaginatorModule,
     MatAutocompleteModule,
+    MatTreeModule,
     DragDropModule,
     MatStepperModule
   ],
@@ -92,6 +94,7 @@ import { MatStepperModule } from '@angular/material/stepper';
     MatTableModule,
     MatPaginatorModule,
     MatAutocompleteModule,
+    MatTreeModule,
     DragDropModule,
     MatStepperModule
   ]

@@ -14,6 +14,8 @@ import { ProgressSpinnerDialogService } from './services/progress-spinner-dialog
 import { ShowToolbarIfTruncatedDirective } from './directives/showToolbarIfTruncated.directive';
 import { RemoveWrapperDirective } from './directives/removeWrapper.directive';
 import { ResponsiveTabsComponent } from './components/responsive-tabs/responsive-tabs.component';
+import { HighlightDirective } from './directives/highLight.directive';
+import { DropFilesZonetDirective } from './directives/dropFilesZone.directive';
 
 @NgModule({
   declarations: [
@@ -22,6 +24,8 @@ import { ResponsiveTabsComponent } from './components/responsive-tabs/responsive
     GoBackComponent,
     ShowToolbarIfTruncatedDirective,
     RemoveWrapperDirective,
+    HighlightDirective,
+    DropFilesZonetDirective,
     ResponsiveTabsComponent
   ],
   imports: [
@@ -45,6 +49,8 @@ import { ResponsiveTabsComponent } from './components/responsive-tabs/responsive
     CommonModule,
     ShowToolbarIfTruncatedDirective,
     RemoveWrapperDirective,
+    HighlightDirective,
+    DropFilesZonetDirective,
     CustomDialogModule
   ]
 })

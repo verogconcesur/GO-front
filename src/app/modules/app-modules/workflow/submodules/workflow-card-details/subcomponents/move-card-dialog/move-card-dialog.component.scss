@@ -17,14 +17,110 @@
     padding-top: 10px;
     .mat-title {
       color: mat-color($foreground, secondary-text);
+      margin-bottom: 4px;
+    }
+    mat-form-field {
+      width: 100%;
     }
   }
   &__content {
     margin: 5px 0 15px 0;
+    max-height: calc(100vh - 250px);
+    overflow-y: auto;
+    overflow-x: hidden;
+
+    h3 {
+      font-weight: 600;
+      font-size: 0.9em;
+      color: mat-color($primary, 900);
+      margin-bottom: 0px;
+    }
+
+    &__no-data {
+      color: mat-color($warn, 900);
+    }
+
+    .workflow-states-tree-invisible {
+      display: none;
+    }
+
+    .workflow-states-tree ul,
+    .workflow-states-tree li {
+      margin-top: 0;
+      margin-bottom: 0;
+      list-style-type: none;
+    }
+
+    /*
+     * This padding sets alignment of the nested nodes.
+     */
+    .workflow-states-tree .mat-nested-tree-node div[role='group'] {
+      padding-left: 15px;
+    }
+
+    .workflow-states-tree .mat-tree-node.mat-tree-group-node {
+      button {
+        width: 100%;
+        border-bottom: 1px solid lighten(mat-color($primary, statusNeutral), 20%);
+        border-radius: 0px;
+        padding: 2px;
+        .mat-button-wrapper {
+          display: flex;
+          justify-content: space-between;
+          align-items: center;
+        }
+      }
+    }
+
+    /*
+     * Padding for leaf nodes.
+     * Leaf nodes need to have padding so as to align with other non-leaf nodes
+     * under the same parent.
+     */
+    .workflow-states-tree div[role='group'] > .mat-tree-node {
+      padding-left: 15px;
+      button {
+        width: 100%;
+        color: mat-color($primary, A400);
+        border-bottom: 1px solid lighten(mat-color($primary, statusNeutral), 20%);
+        border-radius: 0px;
+        padding: 2px;
+        .mat-button-wrapper {
+          display: flex;
+          justify-content: space-between;
+          align-items: center;
+          mat-icon {
+            position: relative;
+            color: mat-color($primary, A400);
+            font-size: 1.3em;
+            width: 15px;
+            height: 15px;
+            margin-top: -3px;
+            margin-right: 5px;
+            margin-left: 5px;
+            &::before {
+              content: '';
+              background-color: mat-color($primary, A400);
+              position: absolute;
+              top: 8px;
+              left: 3px;
+              width: 3px;
+              height: 3px;
+              border-radius: 7px;
+            }
+          }
+        }
+      }
+    }
+
+    .selected {
+      background-color: yellow;
+    }
   }
   &__footer {
     button {
       width: 100%;
+      font-size: 1.1em;
     }
   }
 }

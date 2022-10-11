@@ -4,7 +4,7 @@
             <button mat-raised-button *ngFor="let action of actions" (click)="btnClick(action)">{{ action.name }}</button>
         </div>
 
-        <h5 class="uppercase" *ngIf="links?.length">{{ labels.directLinks | translate }}</h5>
+        <h5 class="uppercase" *ngIf="shortCuts?.length">{{ labels.directLinks | translate }}</h5>
         <div class="buttons">
             <button
                 mat-raised-button
