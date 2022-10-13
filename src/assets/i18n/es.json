@@ -330,8 +330,8 @@
         "prevPage": "Página previa"
     },
     "prepareMovement": {
-        "inTab": "Eventos de entrada",
-        "outTab": "Eventos de salida",
+        "inTab": "Eventos de entrada al nuevo estado",
+        "outTab": "Eventos de salida del estado actual",
         "size": "Indique el tamaño de tarjeta",
         "sizePlaceholder": "Tamaño de tarjerta",
         "template": "Verifique la plantilla de email a enviar",

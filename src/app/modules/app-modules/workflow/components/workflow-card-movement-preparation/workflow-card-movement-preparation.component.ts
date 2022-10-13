@@ -47,9 +47,7 @@ export class WorkflowCardMovementPreparationComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
-    //TODO DGDC QUITAR
     // this.data.preparation = [...this.data.preparation, { ...this.data.preparation[0], substateEventType: 'OUT' }];
-    // console.log(this.data.preparation);
     this.data.preparation.forEach((p: WorkflowSubstateEventDTO) => {
       if (p.substateEventType === 'IN') {
         this.tabsToShow.push('IN');
@@ -58,7 +56,7 @@ export class WorkflowCardMovementPreparationComponent implements OnInit {
         this.tabsToShow.push('OUT');
         this.preparationOut = p;
       }
-      this.tabToShow = this.tabsToShow[0];
+      this.tabToShow = this.tabsToShow.length === 2 ? 'OUT' : this.tabsToShow[0];
     });
     this.users = this.data.users;
     this.initForm();
@@ -66,10 +64,14 @@ export class WorkflowCardMovementPreparationComponent implements OnInit {
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   public tabSelected(event: any) {
-    if (event.index === 0) {
-      this.tabToShow = 'IN';
-    } else {
-      this.tabToShow = 'OUT';
+    if (this.tabsToShow.length === 1) {
+      this.tabToShow = this.tabsToShow[0];
+    } else if (this.tabsToShow.length === 2) {
+      if (event.index === 1) {
+        this.tabToShow = 'IN';
+      } else {
+        this.tabToShow = 'OUT';
+      }
     }
   }
 

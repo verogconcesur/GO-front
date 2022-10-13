@@ -1,10 +1,16 @@
 import { Injectable } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
+import { ConcenetError } from '@app/types/error';
+import { marker } from '@biesbjerg/ngx-translate-extract-marker';
 import WorkflowCardDTO from '@data/models/workflows/workflow-card-dto';
+import WorkflowCardInstanceDTO from '@data/models/workflows/workflow-card-instance-dto';
 import WorkflowMoveDTO from '@data/models/workflows/workflow-move-dto';
 import WorkflowSubstateEventDTO from '@data/models/workflows/workflow-substate-event-dto';
 import WorkflowSubstateUserDTO from '@data/models/workflows/workflow-substate-user-dto';
 import { WorkflowsService } from '@data/services/workflows.service';
+import { TranslateService } from '@ngx-translate/core';
+import { GlobalMessageService } from '@shared/services/global-message.service';
+import { NGXLogger } from 'ngx-logger';
 import { take } from 'rxjs/operators';
 // eslint-disable-next-line max-len
 import { WorkflowCardMovementPreparationComponent } from '../components/workflow-card-movement-preparation/workflow-card-movement-preparation.component';
@@ -13,10 +19,16 @@ import { WorkflowCardMovementPreparationComponent } from '../components/workflow
   providedIn: 'root'
 })
 export class WorkflowPrepareAndMoveService {
-  constructor(private workflowService: WorkflowsService, private dialog: MatDialog) {}
+  private readonly wSubstateKey = 'wSubstate-';
+  constructor(
+    private workflowService: WorkflowsService,
+    private dialog: MatDialog,
+    private logger: NGXLogger,
+    private translateService: TranslateService,
+    private globalMessageService: GlobalMessageService
+  ) {}
 
   public prepareAndMove(
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     item: WorkflowCardDTO,
     move: WorkflowMoveDTO,
     user: WorkflowSubstateUserDTO,
@@ -37,7 +49,6 @@ export class WorkflowPrepareAndMoveService {
             data[1]?.requiredUser ||
             data[1]?.sendMail)
         ) {
-          console.log(move);
           this.dialog
             .open(WorkflowCardMovementPreparationComponent, {
               maxWidth: '650px',
@@ -45,20 +56,80 @@ export class WorkflowPrepareAndMoveService {
             })
             .afterClosed()
             // eslint-disable-next-line @typescript-eslint/no-explicit-any
-            .subscribe((res: any) => {
-              console.log(res);
-            });
+            .subscribe(
+              (res: {
+                in: { size: 'S' | 'M' | 'L' | 'XL'; user: WorkflowSubstateUserDTO; template: string };
+                out: { size: 'S' | 'M' | 'L' | 'XL'; user: WorkflowSubstateUserDTO; template: string };
+              }) => {
+                const events = {
+                  in: data.find((event: WorkflowSubstateEventDTO) => event.substateEventType === 'IN'),
+                  out: data.find((event: WorkflowSubstateEventDTO) => event.substateEventType === 'OUT')
+                };
+                const newData: WorkflowSubstateEventDTO[] = [];
+                if (res.out && events.out) {
+                  if (res.out.size) {
+                    item.cardInstanceWorkflows[0].size = res.out.size;
+                  }
+                  if (res.out.template) {
+                    events.out.templateComunication.processedTemplate = res.out.template;
+                  }
+                  if (res.out.user?.user?.id) {
+                    events.out.requiredUserId = res.out.user.user.id;
+                  }
+                  newData.push(events.out);
+                }
+                if (res.in && events.in) {
+                  if (res.in.size) {
+                    item.cardInstanceWorkflows[0].size = res.in.size;
+                  }
+                  if (res.in.template) {
+                    events.in.templateComunication.processedTemplate = res.in.template;
+                  }
+                  if (res.in.user?.user?.id) {
+                    events.in.requiredUserId = res.in.user.user.id;
+                  }
+                  newData.push(events.in);
+                }
+                item.cardInstanceWorkflows[0].workflowSubstateEvents = newData;
+
+                this.moveCard(item, move, user, dropZoneId, itemToReplace);
+              }
+            );
+        } else {
+          this.moveCard(item, move, user, dropZoneId, itemToReplace);
         }
       });
-    // this.workflowService.moveWorkflowCardToSubstate(
-    //   item.cardInstanceWorkflows[0].facilityId,
-    //   item,
-    //   move,
-    //   user,
-    //   dropZoneId.indexOf(`${this.wSubstateKey}${item.cardInstanceWorkflows[0].workflowSubstateId}`) >= 0
-    //     ? itemToReplace.orderNumber
-    //     : null
-    //   // itemToReplace.orderNumber
-    // );
+  }
+
+  private moveCard(
+    item: WorkflowCardDTO,
+    move: WorkflowMoveDTO,
+    user: WorkflowSubstateUserDTO,
+    dropZoneId: string,
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    itemToReplace: any
+  ): void {
+    this.workflowService
+      .moveWorkflowCardToSubstate(
+        item,
+        move,
+        user,
+        dropZoneId.indexOf(`${this.wSubstateKey}${item.cardInstanceWorkflows[0].workflowSubstateId}`) >= 0
+          ? itemToReplace.orderNumber
+          : null
+      )
+      .pipe(take(1))
+      .subscribe(
+        (resp: WorkflowCardInstanceDTO) => {
+          console.log('HERE', resp, ' => reload data');
+        },
+        (error: ConcenetError) => {
+          this.logger.error(error);
+          this.globalMessageService.showError({
+            message: error.message,
+            actionText: this.translateService.instant(marker('common.close'))
+          });
+        }
+      );
   }
 }

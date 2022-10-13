@@ -4,6 +4,7 @@ import { ActivatedRoute } from '@angular/router';
 import { ConcenetError } from '@app/types/error';
 import { marker } from '@biesbjerg/ngx-translate-extract-marker';
 import CardColumnTabDTO from '@data/models/cards/card-column-tab-dto';
+import CardDTO from '@data/models/cards/card-dto';
 import CardInstanceDTO from '@data/models/cards/card-instance-dto';
 import WorkflowCardTabItemDTO from '@data/models/workflows/workflow-card-tab-item-dto';
 import WorkflowMoveDTO from '@data/models/workflows/workflow-move-dto';
@@ -21,6 +22,7 @@ import { MoveCardDialogComponent } from '../move-card-dialog/move-card-dialog.co
 export class WorkflowColumnActionsAndLinksComponent implements OnInit {
   @Input() tab: CardColumnTabDTO = null;
   @Input() cardInstance: CardInstanceDTO;
+  @Input() card: CardDTO;
   public actions: WorkflowCardTabItemDTO[];
   public links: WorkflowCardTabItemDTO[];
   public shortCuts: WorkflowMoveDTO[];
@@ -107,7 +109,9 @@ export class WorkflowColumnActionsAndLinksComponent implements OnInit {
   }
 
   public moveCard(): void {
-    this.dialog.open(MoveCardDialogComponent, { data: { cardInstance: this.cardInstance, idCard: this.idCard } });
+    this.dialog.open(MoveCardDialogComponent, {
+      data: { cardInstance: this.cardInstance, idCard: this.idCard, card: this.card }
+    });
   }
 
   public getBgColor(btn: WorkflowCardTabItemDTO, color?: string): string {

@@ -5,14 +5,17 @@
             <mat-icon>close</mat-icon>
         </button>
     </div>
-    <mat-tab-group
-        animationDuration="0ms"
-        *ngIf="tabsToShow?.length === 2"
-        mat-align-tabs="center"
-        (selectedTabChange)="tabSelected($event)"
-    >
-        <mat-tab [label]="getTabLabel('IN')" [labelClass]="{ 'text-red': preparationInForm?.invalid }"></mat-tab>
-        <mat-tab [label]="getTabLabel('OUT')" [labelClass]="{ 'text-red': preparationOutForm?.invalid }"></mat-tab>
+    <mat-tab-group animationDuration="0ms" mat-align-tabs="center" (selectedTabChange)="tabSelected($event)">
+        <mat-tab
+            *ngIf="preparationOutForm"
+            [label]="getTabLabel('OUT')"
+            [labelClass]="{ 'text-red': preparationOutForm?.invalid }"
+        ></mat-tab>
+        <mat-tab
+            *ngIf="preparationInForm"
+            [label]="getTabLabel('IN')"
+            [labelClass]="{ 'text-red': preparationInForm?.invalid }"
+        ></mat-tab>
     </mat-tab-group>
     <div class="wc-movement-preparation__warnings" [hidden]="tabToShow !== 'IN'">
         <form [formGroup]="preparationInForm" *ngIf="preparationInForm" class="smaller-mat-form-fields">

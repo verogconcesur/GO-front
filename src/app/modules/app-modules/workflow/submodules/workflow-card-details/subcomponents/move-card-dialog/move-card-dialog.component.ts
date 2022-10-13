@@ -21,6 +21,8 @@ import { map, take } from 'rxjs/operators';
 import * as lodash from 'lodash';
 import { normalizaStringToLowerCase } from '@shared/utils/string-normalization-lower-case';
 import { Observable, of } from 'rxjs';
+import { WorkflowPrepareAndMoveService } from '@modules/app-modules/workflow/aux-service/workflow-prepare-and-move-aux.service';
+import CardDTO from '@data/models/cards/card-dto';
 
 interface TreeNode {
   name: string;
@@ -29,6 +31,7 @@ interface TreeNode {
 
 export type MoveCardDialogConfig = {
   cardInstance: CardInstanceDTO;
+  card: CardDTO;
   idCard: number;
 };
 
@@ -95,6 +98,7 @@ export class MoveCardDialogComponent implements OnInit {
     private spinnerService: ProgressSpinnerDialogService,
     private globalMessageService: GlobalMessageService,
     private translateService: TranslateService,
+    private prepareAndMoveService: WorkflowPrepareAndMoveService,
     @Inject(MAT_DIALOG_DATA) public config: MoveCardDialogConfig
   ) {}
 
@@ -155,7 +159,8 @@ export class MoveCardDialogComponent implements OnInit {
   }
 
   public moveCardTo(node: TreeNode): void {
-    console.log(node);
+    console.log(node, this.cardInstance);
+    // this.prepareAndMoveService.prepareAndMove();
   }
 
   private setNodesToShow(data: TreeNode[]): void {

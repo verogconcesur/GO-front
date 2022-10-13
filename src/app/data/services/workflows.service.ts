@@ -143,14 +143,12 @@ export class WorkflowsService {
   /**
    * Move card to another subState
    *
-   * @param facilityId
    * @param cardInstance
    * @param move
    * @param wUser
    * @returns
    */
   public moveWorkflowCardToSubstate(
-    facilityId: number,
     card: WorkflowCardDTO,
     move: WorkflowMoveDTO,
     wUser: WorkflowSubstateUserDTO,

@@ -1,4 +1,5 @@
 import WorkflowCardDTO from './workflow-card-dto';
+import WorkflowSubstateEventDTO from './workflow-substate-event-dto';
 
 export default interface WorkflowCardInstanceDTO {
   // cardInstance: WorkflowCardDTO;
@@ -16,4 +17,5 @@ export default interface WorkflowCardInstanceDTO {
   orderNumber: number;
   workflowId: number;
   workflowSubstateId: number;
+  workflowSubstateEvents: WorkflowSubstateEventDTO[];
 }
