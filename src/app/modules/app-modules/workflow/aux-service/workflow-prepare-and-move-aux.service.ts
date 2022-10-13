@@ -10,7 +10,9 @@ import WorkflowSubstateUserDTO from '@data/models/workflows/workflow-substate-us
 import { WorkflowsService } from '@data/services/workflows.service';
 import { TranslateService } from '@ngx-translate/core';
 import { GlobalMessageService } from '@shared/services/global-message.service';
+import { ProgressSpinnerDialogService } from '@shared/services/progress-spinner-dialog.service';
 import { NGXLogger } from 'ngx-logger';
+import { BehaviorSubject } from 'rxjs';
 import { take } from 'rxjs/operators';
 // eslint-disable-next-line max-len
 import { WorkflowCardMovementPreparationComponent } from '../components/workflow-card-movement-preparation/workflow-card-movement-preparation.component';
@@ -19,13 +21,17 @@ import { WorkflowCardMovementPreparationComponent } from '../components/workflow
   providedIn: 'root'
 })
 export class WorkflowPrepareAndMoveService {
+  public reloadData$: BehaviorSubject<number> = new BehaviorSubject(null);
   private readonly wSubstateKey = 'wSubstate-';
+  private spinner: string;
+
   constructor(
     private workflowService: WorkflowsService,
     private dialog: MatDialog,
     private logger: NGXLogger,
     private translateService: TranslateService,
-    private globalMessageService: GlobalMessageService
+    private globalMessageService: GlobalMessageService,
+    private spinnerService: ProgressSpinnerDialogService
   ) {}
 
   public prepareAndMove(
@@ -36,6 +42,7 @@ export class WorkflowPrepareAndMoveService {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     itemToReplace: any
   ): void {
+    this.spinner = this.spinnerService.show();
     this.workflowService
       .prepareMovement(item, move)
       .pipe(take(1))
@@ -93,6 +100,10 @@ export class WorkflowPrepareAndMoveService {
                 item.cardInstanceWorkflows[0].workflowSubstateEvents = newData;
 
                 this.moveCard(item, move, user, dropZoneId, itemToReplace);
+              },
+              (error) => {
+                console.log(error);
+                this.spinnerService.hide(this.spinner);
               }
             );
         } else {
@@ -121,9 +132,13 @@ export class WorkflowPrepareAndMoveService {
       .pipe(take(1))
       .subscribe(
         (resp: WorkflowCardInstanceDTO) => {
-          console.log('HERE', resp, ' => reload data');
+          this.spinnerService.hide(this.spinner);
+          if (resp) {
+            this.reloadData$.next(+new Date());
+          }
         },
         (error: ConcenetError) => {
+          this.spinnerService.hide(this.spinner);
           this.logger.error(error);
           this.globalMessageService.showError({
             message: error.message,

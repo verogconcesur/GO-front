@@ -168,7 +168,7 @@ export class WorkflowsService {
   }
 
   public prepareMovement(card: WorkflowCardDTO, move: WorkflowMoveDTO): Observable<WorkflowSubstateEventDTO[]> {
-    console.log(card, move);
+    // console.log(card, move);
     return this.http
       .get<WorkflowSubstateEventDTO[]>(
         `${this.env.apiBaseUrl}${this.GET_WORKFLOWS_PATH}${this.GET_CARD_INSTANCE_WORKFLOW}/${card.cardInstanceWorkflows[0].id}` +
