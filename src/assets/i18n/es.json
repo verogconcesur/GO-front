@@ -90,7 +90,8 @@
             "shortcutConfiguration": "Configuración de enlaces externos",
             "tabConfiguration": "Configuración de la pestaña",
             "tabList": "Pestañas de columna",
-            "tabType": "Tipo de pestaña"
+            "tabType": "Tipo de pestaña",
+            "template": "Plantilla"
         },
         "create": "Crear tarjeta",
         "deleteConfirmation": "¿Está seguro que desea eliminar esta tarjeta?",

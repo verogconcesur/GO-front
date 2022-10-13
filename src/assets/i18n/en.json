@@ -90,7 +90,8 @@
             "shortcutConfiguration": "External links configuration",
             "tabConfiguration": "Tab Configuration",
             "tabList": "Column tabs",
-            "tabType": "Tab Type"
+            "tabType": "Tab Type",
+            "template": "Template"
         },
         "create": "Create card",
         "deleteConfirmation": "Do you really want to delete this card?",

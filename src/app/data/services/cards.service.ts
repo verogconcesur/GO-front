@@ -12,6 +12,7 @@ import CardContentTypeDTO from '@data/models/cards/card-content-type-dto';
 import CardCreateDTO from '@data/models/cards/card-create-dto';
 import CardDTO from '@data/models/cards/card-dto';
 import CardInstanceDTO from '@data/models/cards/card-instance-dto';
+import TemplatesCommonDTO from '@data/models/templates/templates-common-dto';
 import WorkflowCardSlotDTO from '@data/models/workflows/workflow-card-slot-dto';
 import WorkflowCardTabItemDTO from '@data/models/workflows/workflow-card-tab-item-dto';
 import WorkflowMoveDTO from '@data/models/workflows/workflow-move-dto';
@@ -40,6 +41,7 @@ export class CardService {
   private readonly GET_CARD_CREATE_PATH = '/getCard';
   private readonly GET_DETAIL_TAB_PATH = '/getDetailTab';
   private readonly CREATE_CARD_INSTANCE_PATH = '/api/cardInstanceWorkflow/createCard';
+  private readonly GET_TEMPLATE_LIST_PATH = '/api/templates/listByFilter';
 
   constructor(@Inject(ENV) private env: Env, private http: HttpClient) {}
 
@@ -211,6 +213,17 @@ export class CardService {
   public createCardInstance(card: CardCreateDTO): Observable<CardDTO> {
     return this.http
       .post<CardDTO>(`${this.env.apiBaseUrl}${this.CREATE_CARD_INSTANCE_PATH}`, card)
+      .pipe(catchError((error) => throwError(error.error as ConcenetError)));
+  }
+
+  /**
+   * Get list of templates
+   *
+   * @returns TemplatesCommonDTO
+   */
+  public listTemplates(templateType: string): Observable<TemplatesCommonDTO[]> {
+    return this.http
+      .post<TemplatesCommonDTO[]>(`${this.env.apiBaseUrl}${this.GET_TEMPLATE_LIST_PATH}`, {templateType})
       .pipe(catchError((error) => throwError(error.error as ConcenetError)));
   }
 }
