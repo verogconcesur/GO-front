@@ -134,6 +134,7 @@ export class CustomColumnComponent implements OnInit {
             this.newTabItemForm(
               tab.typeItem,
               {
+                id: tab.id,
                 attributeName: tab.tabItemConfigVariable.variable.attributeName,
                 name: tab.name,
                 variableId: tab.tabItemConfigVariable.variable.id,
@@ -201,6 +202,7 @@ export class CustomColumnComponent implements OnInit {
   public newTabItemForm = (
     type: 'TITLE' | 'TEXT' | 'INPUT' | 'LIST' | 'TABLE' | 'OPTION' | 'VARIABLE' | 'LINK' | 'ACTION',
     data?: {
+      id?: number;
       variableId?: number;
       attributeName?: string;
       name?: string;
@@ -211,6 +213,7 @@ export class CustomColumnComponent implements OnInit {
     let formGroup: UntypedFormGroup = null;
     if (type === 'VARIABLE') {
       formGroup = this.fb.group({
+        id: [data ? data.id : null],
         attributeName: [{ value: data ? data.attributeName : '', disabled: true }],
         name: [data ? data.name : '', Validators.required],
         orderNumber: [orderNumber, Validators.required],
@@ -253,6 +256,7 @@ export class CustomColumnComponent implements OnInit {
             this.newTabItemForm(
               'VARIABLE',
               {
+                id: data.id,
                 attributeName: data.tabItemConfigVariable.variable.attributeName,
                 name: data.name,
                 variableId: data.tabItemConfigVariable.variable.id,
