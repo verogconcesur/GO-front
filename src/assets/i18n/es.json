@@ -336,6 +336,8 @@
         "outTab": "Eventos de salida del estado actual",
         "size": "Indique el tamaño de tarjeta",
         "sizePlaceholder": "Tamaño de tarjerta",
+        "taskLabel": "Descipción tarea",
+        "taskPlaceholder": "Al mover la tarea a otro Workflow está creando una tarea. Añada una descrpción.",
         "template": "Verifique la plantilla de email a enviar",
         "templatePlaceholder": "Plantilla a enviar",
         "title": "Complete la siguiente información antes de realizar el movimiento",

@@ -114,9 +114,18 @@ export class MoveCardDialogComponent implements OnInit {
       }
       this.filter();
     });
+    this.initListeners();
   }
 
   public hasChild = (_: number, node: TreeNode) => !!node.children && node.children.length > 0;
+
+  public initListeners(): void {
+    this.prepareAndMoveService.reloadData$.pipe(untilDestroyed(this)).subscribe((data: number) => {
+      if (data) {
+        this.dialogRef.close(true);
+      }
+    });
+  }
 
   public close(): void {
     this.dialogRef.close();
@@ -158,9 +167,26 @@ export class MoveCardDialogComponent implements OnInit {
     }
   }
 
-  public moveCardTo(node: TreeNode): void {
-    console.log(node, this.cardInstance);
-    // this.prepareAndMoveService.prepareAndMove();
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  public moveCardTo(node: any): void {
+    this.prepareAndMoveService.prepareAndMove(
+      {
+        cardId: null,
+        customerId: null,
+        id: null,
+        repairOrderId: null,
+        tabItems: [],
+        vehicleId: null,
+        colors: [],
+        movements: [],
+        cardInstanceWorkflows: [this.cardInstance.cardInstanceWorkflow]
+      },
+      node.move,
+      node.user ? node.user : null,
+      '',
+      null,
+      this.view
+    );
   }
 
   private setNodesToShow(data: TreeNode[]): void {

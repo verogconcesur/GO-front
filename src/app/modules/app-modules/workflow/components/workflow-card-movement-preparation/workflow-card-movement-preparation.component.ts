@@ -14,6 +14,7 @@ import { TranslateService } from '@ngx-translate/core';
   styleUrls: ['./workflow-card-movement-preparation.component.scss']
 })
 export class WorkflowCardMovementPreparationComponent implements OnInit {
+  public taskForm: UntypedFormGroup = null;
   public preparationIn: WorkflowSubstateEventDTO = null;
   public preparationInForm: UntypedFormGroup = null;
   public preparationOut: WorkflowSubstateEventDTO = null;
@@ -34,14 +35,22 @@ export class WorkflowCardMovementPreparationComponent implements OnInit {
     templatePlaceholder: marker('prepareMovement.templatePlaceholder'),
     required: marker('errors.required'),
     save: marker('common.save'),
-    insertText: marker('common.insertTextHere')
+    insertText: marker('common.insertTextHere'),
+    taskLabel: marker('prepareMovement.taskLabel'),
+    taskPlaceholder: marker('prepareMovement.taskPlaceholder')
   };
   public tabsToShow: ('IN' | 'OUT')[] = [];
   public tabToShow: 'IN' | 'OUT';
+  public sendToOtherWorkflow = false;
 
   constructor(
     public dialogRef: MatDialogRef<WorkflowCardMovementPreparationComponent>,
-    @Inject(MAT_DIALOG_DATA) public data: { preparation: WorkflowSubstateEventDTO[]; users: WorkflowSubstateUserDTO[] },
+    @Inject(MAT_DIALOG_DATA)
+    public data: {
+      preparation: WorkflowSubstateEventDTO[];
+      users: WorkflowSubstateUserDTO[];
+      view: 'MOVES_IN_THIS_WORKFLOW' | 'MOVES_IN_OTHER_WORKFLOWS';
+    },
     private fb: FormBuilder,
     private translateService: TranslateService
   ) {}
@@ -58,6 +67,9 @@ export class WorkflowCardMovementPreparationComponent implements OnInit {
       }
       this.tabToShow = this.tabsToShow.length === 2 ? 'OUT' : this.tabsToShow[0];
     });
+    if (this.data.view === 'MOVES_IN_OTHER_WORKFLOWS') {
+      this.sendToOtherWorkflow = true;
+    }
     this.users = this.data.users;
     this.initForm();
   }
@@ -76,6 +88,11 @@ export class WorkflowCardMovementPreparationComponent implements OnInit {
   }
 
   public initForm(): void {
+    if (this.sendToOtherWorkflow) {
+      this.taskForm = this.fb.group({
+        description: [null, Validators.required]
+      });
+    }
     if (this.preparationIn) {
       this.preparationInForm = this.fb.group({
         size: [null, [this.preparationIn.requiredSize ? Validators.required : null]],
@@ -123,12 +140,13 @@ export class WorkflowCardMovementPreparationComponent implements OnInit {
 
   public save(): void {
     this.dialogRef.close({
+      task: this.taskForm ? this.taskForm.value : null,
       in: this.preparationInForm ? this.preparationInForm.value : null,
       out: this.preparationOutForm ? this.preparationOutForm.value : null
     });
   }
 
   public disableSaveButton(): boolean {
-    return this.preparationInForm?.invalid || this.preparationOutForm?.invalid;
+    return this.taskForm?.invalid || this.preparationInForm?.invalid || this.preparationOutForm?.invalid;
   }
 }

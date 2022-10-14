@@ -40,34 +40,42 @@ export class WorkflowPrepareAndMoveService {
     user: WorkflowSubstateUserDTO,
     dropZoneId: string,
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    itemToReplace: any
+    itemToReplace: any,
+    view?: 'MOVES_IN_THIS_WORKFLOW' | 'MOVES_IN_OTHER_WORKFLOWS'
   ): void {
     this.spinner = this.spinnerService.show();
+    view = view ? view : 'MOVES_IN_THIS_WORKFLOW';
     this.workflowService
       .prepareMovement(item, move)
       .pipe(take(1))
       .subscribe((data: WorkflowSubstateEventDTO[]) => {
         if (
-          data?.length &&
-          (data[0]?.requiredSize ||
-            data[0]?.requiredUser ||
-            data[0]?.sendMail ||
-            data[1]?.requiredSize ||
-            data[1]?.requiredUser ||
-            data[1]?.sendMail)
+          (data?.length &&
+            (data[0]?.requiredSize ||
+              data[0]?.requiredUser ||
+              data[0]?.sendMail ||
+              data[1]?.requiredSize ||
+              data[1]?.requiredUser ||
+              data[1]?.sendMail)) ||
+          view === 'MOVES_IN_OTHER_WORKFLOWS'
         ) {
           this.dialog
             .open(WorkflowCardMovementPreparationComponent, {
               maxWidth: '650px',
-              data: { preparation: data, users: move.workflowSubstateTarget.workflowSubstateUser }
+              data: { preparation: data, users: move.workflowSubstateTarget.workflowSubstateUser, view }
             })
             .afterClosed()
             // eslint-disable-next-line @typescript-eslint/no-explicit-any
             .subscribe(
               (res: {
+                task: { description: string };
                 in: { size: 'S' | 'M' | 'L' | 'XL'; user: WorkflowSubstateUserDTO; template: string };
                 out: { size: 'S' | 'M' | 'L' | 'XL'; user: WorkflowSubstateUserDTO; template: string };
               }) => {
+                if (!res) {
+                  this.spinnerService.hide(this.spinner);
+                  return;
+                }
                 const events = {
                   in: data.find((event: WorkflowSubstateEventDTO) => event.substateEventType === 'IN'),
                   out: data.find((event: WorkflowSubstateEventDTO) => event.substateEventType === 'OUT')
@@ -97,8 +105,10 @@ export class WorkflowPrepareAndMoveService {
                   }
                   newData.push(events.in);
                 }
+                if (res.task?.description) {
+                  item.cardInstanceWorkflows[0].information = res.task.description;
+                }
                 item.cardInstanceWorkflows[0].workflowSubstateEvents = newData;
-
                 this.moveCard(item, move, user, dropZoneId, itemToReplace);
               },
               (error) => {

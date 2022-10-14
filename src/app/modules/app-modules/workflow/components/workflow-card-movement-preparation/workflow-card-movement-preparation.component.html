@@ -5,7 +5,28 @@
             <mat-icon>close</mat-icon>
         </button>
     </div>
-    <mat-tab-group animationDuration="0ms" mat-align-tabs="center" (selectedTabChange)="tabSelected($event)">
+    <div class="wc-movement-preparation__task" *ngIf="sendToOtherWorkflow">
+        <form [formGroup]="taskForm">
+            <mat-form-field appearance="outline" floatLabel="always">
+                <mat-label>{{ labels.taskLabel | translate }}</mat-label>
+                <textarea
+                    matInput
+                    formControlName="description"
+                    [placeholder]="labels.taskPlaceholder | translate"
+                    cdkTextareaAutosize
+                ></textarea>
+                <mat-error *ngIf="taskForm.invalid">
+                    <span>{{ labels.required | translate }}</span>
+                </mat-error>
+            </mat-form-field>
+        </form>
+    </div>
+    <mat-tab-group
+        animationDuration="0ms"
+        mat-align-tabs="center"
+        (selectedTabChange)="tabSelected($event)"
+        *ngIf="tabsToShow?.length"
+    >
         <mat-tab
             *ngIf="preparationOutForm"
             [label]="getTabLabel('OUT')"
