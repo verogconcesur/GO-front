@@ -168,7 +168,7 @@ export class CreateEditBudgetComponent extends ComponentToExtendForCustomDialog 
 
   public addBudgetLine() {
     const budgetLine = this.fb.group({
-      amount: [0, Validators.max(this.maxAmount)],
+      amount: [0, [Validators.max(this.maxAmount), Validators.required]],
       description: ['', Validators.required],
       id: [null],
       orderNumber: [this.templateBudgetLines.length]
@@ -232,7 +232,7 @@ export class CreateEditBudgetComponent extends ComponentToExtendForCustomDialog 
         .sort((a, b) => a.orderNumber - b.orderNumber)
         .forEach((line) => {
           const budgetLine = this.fb.group({
-            amount: [line.amount, Validators.max(this.maxAmount)],
+            amount: [line.amount, [Validators.max(this.maxAmount), Validators.required]],
             description: [line.description, Validators.required],
             id: [line.id],
             orderNumber: [line.orderNumber]

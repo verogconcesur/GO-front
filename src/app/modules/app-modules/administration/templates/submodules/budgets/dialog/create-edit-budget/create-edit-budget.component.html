@@ -113,7 +113,7 @@
                                         floatLabel="always"
                                     >
                                         <mat-label>{{ labels.price | translate }}</mat-label>
-                                        <input type="number" min="0" matInput formControlName="amount" />
+                                        <input appTwoDigitDecimal matInput formControlName="amount" />
                                         <span matSuffix>€</span>
 
                                         <mat-error *ngIf="templateBudgetLinesAt(i).get('amount').invalid">
