@@ -51,6 +51,8 @@ export class WorkflowPrepareAndMoveService {
       .subscribe((data: WorkflowSubstateEventDTO[]) => {
         if (
           (data?.length &&
+            !data[0]?.requiredFields &&
+            !data[1].requiredFields &&
             (data[0]?.requiredSize ||
               data[0]?.requiredUser ||
               data[0]?.sendMail ||
@@ -116,6 +118,9 @@ export class WorkflowPrepareAndMoveService {
                 this.spinnerService.hide(this.spinner);
               }
             );
+        } else if (data?.length && (data[0]?.requiredFields || data[1].requiredFields)) {
+          item.cardInstanceWorkflows[0].workflowSubstateEvents = data;
+          this.moveCard(item, move, user, dropZoneId, itemToReplace);
         } else {
           this.moveCard(item, move, user, dropZoneId, itemToReplace);
         }
