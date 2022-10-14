@@ -21,5 +21,13 @@
         <div *ngFor="let tabItem of card.tabItems" class="workflow-card__info__data">
             {{ getLabel(tabItem) }}
         </div>
+        <div
+            class="workflow-card__info__tasks"
+            [ngClass]="{ completed: card.countCompletedTasks === card.countTotalTasks }"
+            (click)="showTasks(); $event.stopPropagation()"
+        >
+            {{ card.countCompletedTasks }}/{{ card.countTotalTasks }}
+            <mat-icon>check_box</mat-icon>
+        </div>
     </div>
 </div>

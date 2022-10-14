@@ -1,4 +1,5 @@
-import { Component, EventEmitter, Input, OnChanges, OnInit, Output, SimpleChanges } from '@angular/core';
+import { Component, EventEmitter, Inject, Input, OnChanges, OnInit, Output, SimpleChanges } from '@angular/core';
+import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { ConcenetError } from '@app/types/error';
 import { marker } from '@biesbjerg/ngx-translate-extract-marker';
 import CardColumnTabDTO from '@data/models/cards/card-column-tab-dto';
@@ -22,19 +23,30 @@ export class WorkflowCardTasksComponent implements OnInit, OnChanges {
   public task: CardTaskDTO = null;
 
   constructor(
+    private dialogRef: MatDialogRef<WorkflowCardTasksComponent>,
     private cardTasksService: CardTasksService,
     private translateService: TranslateService,
     private globalMessageService: GlobalMessageService,
     private spinnerService: ProgressSpinnerDialogService,
-    private logger: NGXLogger
+    private logger: NGXLogger,
+    @Inject(MAT_DIALOG_DATA) public dialogData: { cardId: number }
   ) {}
 
-  ngOnInit(): void {}
+  ngOnInit(): void {
+    if (this.dialogData?.cardId) {
+      this.cardId = this.dialogData.cardId;
+      this.getData();
+    }
+  }
 
   ngOnChanges(changes: SimpleChanges): void {
     if (changes && this.cardId) {
       this.getData();
     }
+  }
+
+  public close(): void {
+    this.dialogRef.close();
   }
 
   private getData(): void {
