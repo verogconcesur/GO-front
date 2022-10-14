@@ -10,6 +10,9 @@ import { WorkflowTableViewComponent } from './submodules/workflow-table-view/wor
 import { WorkflowNavbarFilterComponent } from './components/workflow-navbar-filter/workflow-navbar-filter.component';
 // eslint-disable-next-line max-len
 import { WorkflowNavbarFilterFormComponent } from './components/workflow-navbar-filter-form/workflow-navbar-filter-form.component';
+// eslint-disable-next-line max-len
+import { WorkflowCardMovementPreparationComponent } from './components/workflow-card-movement-preparation/workflow-card-movement-preparation.component';
+import { TextEditorWrapperModule } from '@modules/feature-modules/text-editor-wrapper/text-editor-wrapper.module';
 
 @NgModule({
   declarations: [
@@ -18,8 +21,9 @@ import { WorkflowNavbarFilterFormComponent } from './components/workflow-navbar-
     WorkflowCalendarViewComponent,
     WorkflowTableViewComponent,
     WorkflowNavbarFilterComponent,
-    WorkflowNavbarFilterFormComponent
+    WorkflowNavbarFilterFormComponent,
+    WorkflowCardMovementPreparationComponent
   ],
-  imports: [CommonModule, SharedModule, WorkflowRoutingModule]
+  imports: [CommonModule, SharedModule, WorkflowRoutingModule, TextEditorWrapperModule]
 })
 export class WorkflowModule {}

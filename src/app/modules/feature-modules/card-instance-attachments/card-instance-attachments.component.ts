@@ -9,6 +9,7 @@ import { TranslateService } from '@ngx-translate/core';
 import { ConfirmDialogService } from '@shared/services/confirm-dialog.service';
 import { GlobalMessageService } from '@shared/services/global-message.service';
 import { ProgressSpinnerDialogService } from '@shared/services/progress-spinner-dialog.service';
+import { saveAs } from 'file-saver';
 import { NGXLogger } from 'ngx-logger';
 import { take } from 'rxjs/operators';
 import CardInstanceAttachmentsConfig from './card-instance-attachments-config-interface';
@@ -84,11 +85,9 @@ export class CardInstanceAttachmentsComponent implements OnInit, OnChanges {
       .downloadAttachment(this.cardInstanceWorkflowId, this.tabId, item.id)
       .pipe(take(1))
       .subscribe(
-        (data) => {
+        (data: AttachmentDTO) => {
           this.spinnerService.hide(spinner);
-          const blob = new Blob([data], { type: item.type });
-          const url = window.URL.createObjectURL(blob);
-          window.open(url);
+          saveAs(`data:${data.type};base64,${data.content}`, data.name);
         },
         (error: ConcenetError) => {
           this.spinnerService.hide(spinner);
@@ -195,11 +194,9 @@ export class CardInstanceAttachmentsComponent implements OnInit, OnChanges {
 
   public setHoverTemplate(hover: boolean, template: CardAttachmentsDTO, from: 'cdk' | 'appDropZone') {
     if (hover && (!this.hoverTemplateFrom || this.hoverTemplateFrom === from)) {
-      console.log('hoverTemplate on', template, from);
       this.hoverTemplate = template;
       this.hoverTemplateFrom = from;
     } else if (!hover && this.hoverTemplateFrom === from) {
-      console.log('hoverTemplate of', template, from);
       this.hoverTemplate = null;
       this.hoverTemplateFrom = null;
     }

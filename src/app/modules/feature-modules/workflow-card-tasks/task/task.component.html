@@ -1,0 +1,24 @@
+<div class="tasks-wapper">
+    <div class="tasks-wapper__task" *ngIf="task">
+        <div class="task-status" [ngClass]="getTaskStatusClass()"></div>
+        <div class="task-info">
+            <div class="task-info__title">
+                <div>{{ labels.workflow | translate }} {{ task.workflow.name }} ({{ task.facility.name }})</div>
+                <div class="task-info__title__state">{{ labels.state | translate }}: {{ task.workflowSubstate.name }}</div>
+            </div>
+            <div class="task-info__info">{{ task.information }}</div>
+            <div class="task-info__status">
+                <div class="task-info__status__name" [ngClass]="getTaskStatusClass()">
+                    {{ getStatusLabel() | translate }}
+                </div>
+                <div class="task-info__status__extra" *ngIf="task?.completedUser">
+                    {{ task.completedUser.fullName }}
+                    <span *ngIf="task?.completedDate">{{ task.completedDate | date: "dd/MM/yy, HH:mm" }}</span>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="tasks-wapper__children" *ngIf="task?.cardInstanceWorkflowTasks?.length">
+        <app-task *ngFor="let childTask of task.cardInstanceWorkflowTasks" [task]="childTask"></app-task>
+    </div>
+</div>

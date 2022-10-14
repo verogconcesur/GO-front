@@ -21,4 +21,5 @@ export default interface TemplatesAttachmentDTO {
     templateType: string;
   };
   templateAttachmentItems: TemplateAtachmentItemsDTO[];
+  processedTemplate?: string;
 }
