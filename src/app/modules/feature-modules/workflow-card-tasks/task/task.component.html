@@ -1,5 +1,5 @@
-<div class="tasks-wapper">
-    <div class="tasks-wapper__task" *ngIf="task">
+<div class="tasks-wrapper">
+    <div class="tasks-wrapper__task" *ngIf="task">
         <div class="task-status" [ngClass]="getTaskStatusClass()"></div>
         <div class="task-info">
             <div class="task-info__title">
@@ -18,7 +18,7 @@
             </div>
         </div>
     </div>
-    <div class="tasks-wapper__children" *ngIf="task?.cardInstanceWorkflowTasks?.length">
+    <div class="tasks-wrapper__children" *ngIf="task?.cardInstanceWorkflowTasks?.length">
         <app-task *ngFor="let childTask of task.cardInstanceWorkflowTasks" [task]="childTask"></app-task>
     </div>
 </div>

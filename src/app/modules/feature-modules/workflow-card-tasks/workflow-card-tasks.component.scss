@@ -1,3 +1,9 @@
-.tasks-wapper {
+.tasks-wrapper {
   padding: 10px;
+  position: relative;
+  .close-button {
+    position: absolute;
+    top: -20px;
+    right: -20px;
+  }
 }
