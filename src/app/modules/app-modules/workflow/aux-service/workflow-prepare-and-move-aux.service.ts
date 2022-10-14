@@ -75,6 +75,7 @@ export class WorkflowPrepareAndMoveService {
                 out: { size: 'S' | 'M' | 'L' | 'XL'; user: WorkflowSubstateUserDTO; template: string };
               }) => {
                 if (!res) {
+                  this.reloadData$.next(null);
                   this.spinnerService.hide(this.spinner);
                   return;
                 }
@@ -114,7 +115,8 @@ export class WorkflowPrepareAndMoveService {
                 this.moveCard(item, move, user, dropZoneId, itemToReplace);
               },
               (error) => {
-                console.log(error);
+                console.error(error);
+                this.reloadData$.next(null);
                 this.spinnerService.hide(this.spinner);
               }
             );
@@ -147,9 +149,12 @@ export class WorkflowPrepareAndMoveService {
       .pipe(take(1))
       .subscribe(
         (resp: WorkflowCardInstanceDTO) => {
-          this.spinnerService.hide(this.spinner);
           if (resp) {
+            //DGDC TODO: mirar por qué no se puede abrir de nuevo la modal
             this.reloadData$.next(+new Date());
+          } else {
+            this.reloadData$.next(null);
+            this.spinnerService.hide(this.spinner);
           }
         },
         (error: ConcenetError) => {

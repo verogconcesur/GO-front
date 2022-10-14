@@ -1,3 +1,8 @@
-<div class="tasks-wapper">
+<div class="tasks-wrapper">
+    &nbsp;
+    <button mat-button class="close-button" (click)="close()" *ngIf="dialogData">
+        <mat-icon>close</mat-icon>
+    </button>
+
     <app-task [task]="task"></app-task>
 </div>
