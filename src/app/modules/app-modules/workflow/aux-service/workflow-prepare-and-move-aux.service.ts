@@ -52,7 +52,7 @@ export class WorkflowPrepareAndMoveService {
         if (
           (data?.length &&
             !data[0]?.requiredFields &&
-            !data[1].requiredFields &&
+            !data[1]?.requiredFields &&
             (data[0]?.requiredSize ||
               data[0]?.requiredUser ||
               data[0]?.sendMail ||
