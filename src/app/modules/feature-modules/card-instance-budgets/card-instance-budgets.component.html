@@ -1,0 +1,71 @@
+<div class="budgets" fxFill>
+    <div class="budgets__main">
+        <div class="budgets__main__header">
+            <div class="budgets__main__header__item" fxLayout="row">
+                <div fxFlex="20" fxLayoutAlign="center center" fxFill>{{ labels.okClient | translate }}</div>
+                <div fxFlex="30" fxLayoutAlign="center center" fxFill>{{ labels.line | translate }}</div>
+                <div fxFlex="30" fxLayoutAlign="center center" fxFill>{{ labels.amount | translate }}</div>
+                <div fxFlex="20" fxLayoutAlign="center center" fxFill>{{ labels.actions | translate }}</div>
+            </div>
+        </div>
+        <div class="budgets__main__container" fxLayout="column">
+            <div
+                class="budgets__main__container__item smaller-mat-form-fields"
+                *ngFor="let budget of formBudgets.controls; let i = index"
+                fxLayout="row"
+                [formGroup]="budget"
+            >
+                <div fxFlex="20" fxLayoutAlign="center center">
+                    <mat-checkbox formControlName="accepted" [disabled]="budgetDisabled(budget)"></mat-checkbox>
+                </div>
+                <div fxFlex="30" fxLayoutAlign="center center">
+                    <mat-form-field appearance="outline" floatLabel="always">
+                        <input type="text" matInput formControlName="description" [readonly]="budgetDisabled(budget)" />
+                    </mat-form-field>
+                </div>
+                <div fxFlex="30" fxLayoutAlign="center center">
+                    <mat-form-field appearance="outline" floatLabel="always">
+                        <input appTwoDigitDecimal matInput formControlName="amount" [readonly]="budgetDisabled(budget)" />
+                        <span matSuffix>€</span>
+                        <mat-error *ngIf="budget.get('amount').invalid">
+                            <span>{{ labels.maxLengthError | translate: { length: maxAmount.toString().length } }}</span>
+                        </mat-error>
+                    </mat-form-field>
+                </div>
+                <div fxFlex="20" fxLayoutAlign="center center">
+                    <button mat-icon-button color="primary" (click)="cancelBudget(budget, i)" *ngIf="!budgetDisabled(budget)">
+                        <mat-icon style="cursor: pointer">close</mat-icon>
+                    </button>
+                    <button
+                        mat-icon-button
+                        color="primary"
+                        (click)="saveBudget(budget)"
+                        *ngIf="!budgetDisabled(budget)"
+                        [disabled]="budget.invalid"
+                    >
+                        <mat-icon style="cursor: pointer">check</mat-icon></button
+                    ><button
+                        mat-icon-button
+                        color="primary"
+                        (click)="editBudget(budget)"
+                        [disabled]="editing"
+                        *ngIf="budgetDisabled(budget) && !cardInstanceBudgetsConfig.disableIndividualDeleteAction"
+                    >
+                        <mat-icon style="cursor: pointer">edit</mat-icon></button
+                    ><button
+                        mat-icon-button
+                        color="primary"
+                        (click)="deleteBudget(budget)"
+                        [disabled]="editing"
+                        *ngIf="budgetDisabled(budget) && !cardInstanceBudgetsConfig.disableIndividualDeleteAction"
+                    >
+                        <mat-icon style="cursor: pointer">delete</mat-icon>
+                    </button>
+                </div>
+            </div>
+        </div>
+        <div class="budgets__main__create" fxLayout="row" fxLayoutAlign="end none" *ngIf="!editing && !cardInstanceBudgetsConfig.disableBudgetsAdditionAction">
+            <span class="budgets__main__create__item" (click)="newLine()">+ {{ labels.newLine | translate }}</span>
+        </div>
+    </div>
+</div>

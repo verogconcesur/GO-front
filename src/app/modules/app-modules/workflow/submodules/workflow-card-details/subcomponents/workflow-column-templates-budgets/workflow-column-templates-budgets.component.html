@@ -1,3 +1,8 @@
-<div style="display: flex; justify-content: center; align-items: center; width: 100%; min-height: 200px">
-    <h2>Sección en construcción.</h2>
-</div>
+<app-card-instance-budgets
+    [cardInstanceBudgetsConfig]="cardInstanceBudgetsConfig"
+    [data]="budgetsAndTemplatesData"
+    [tabId]="tab.id"
+    [cardInstanceWorkflowId]="idCard"
+    (reload)="fetchData()"
+    *ngIf="dataLoaded"
+></app-card-instance-budgets>

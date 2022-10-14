@@ -73,6 +73,13 @@
         },
         "title": "Concenet"
     },
+    "cardDetail": {
+        "budgets": {
+            "addLines": "Add budget lines",
+            "deleteConfirmation": "Are you sure you want to delete this budget line?",
+            "saveConfirmation": "Are you sure you want to save this budget line?"
+        }
+    },
     "cards": {
         "column": {
             "actionConfiguration": "Actions configuration",
@@ -90,7 +97,8 @@
             "shortcutConfiguration": "External links configuration",
             "tabConfiguration": "Tab Configuration",
             "tabList": "Column tabs",
-            "tabType": "Tab Type"
+            "tabType": "Tab Type",
+            "template": "Template"
         },
         "create": "Create card",
         "deleteConfirmation": "Do you really want to delete this card?",
@@ -129,6 +137,7 @@
         },
         "address": "Address",
         "adviser": "Adviser",
+        "amount": "Amount",
         "apply": "Apply",
         "askForConfirmation": "Do you want to continue?",
         "attachments": "Attachments",
@@ -169,6 +178,7 @@
         "information": "Information",
         "insert": "Insert",
         "insertTextHere": "Insert text here.",
+        "line": "Line",
         "logo": "Logo",
         "messages": "Messages",
         "more": "More",
@@ -177,6 +187,7 @@
         "newItem": "New item",
         "newLine": "New line",
         "next": "Next",
+        "okClient": "OK Client",
         "origin": "Origin",
         "payments": "Payments",
         "postalCode": "Postal Code",

@@ -16,6 +16,7 @@ import { RemoveWrapperDirective } from './directives/removeWrapper.directive';
 import { ResponsiveTabsComponent } from './components/responsive-tabs/responsive-tabs.component';
 import { HighlightDirective } from './directives/highLight.directive';
 import { DropFilesZonetDirective } from './directives/dropFilesZone.directive';
+import { TwoDigitDecimalDirective } from './utils/two-digit-decimal.directive';
 
 @NgModule({
   declarations: [
@@ -26,7 +27,8 @@ import { DropFilesZonetDirective } from './directives/dropFilesZone.directive';
     RemoveWrapperDirective,
     HighlightDirective,
     DropFilesZonetDirective,
-    ResponsiveTabsComponent
+    ResponsiveTabsComponent,
+    TwoDigitDecimalDirective
   ],
   imports: [
     TranslateModule,
@@ -51,7 +53,8 @@ import { DropFilesZonetDirective } from './directives/dropFilesZone.directive';
     RemoveWrapperDirective,
     HighlightDirective,
     DropFilesZonetDirective,
-    CustomDialogModule
+    CustomDialogModule,
+    TwoDigitDecimalDirective
   ]
 })
 export class SharedModule {}
