@@ -151,6 +151,7 @@
         "clientMessages": "Client messages",
         "close": "Close",
         "comments": "Comments",
+        "completed": "Completed",
         "concept": "Concept",
         "country": "Country",
         "create": "Create",
@@ -190,6 +191,7 @@
         "okClient": "OK Client",
         "origin": "Origin",
         "payments": "Payments",
+        "pending": "Pending",
         "postalCode": "Postal Code",
         "price": "Price",
         "priority": "Priority",
@@ -341,6 +343,19 @@
         "nextPage": "Next Page",
         "pageOf": "Page {num1} of {num2}",
         "prevPage": "Previous page"
+    },
+    "prepareMovement": {
+        "inTab": "Enter events",
+        "outTab": "Exit events",
+        "size": "Choose a card size",
+        "sizePlaceholder": "Card size",
+        "taskLabel": "Task description",
+        "taskPlaceholder": "By moving the task to another Workflow you are creating a task. Add a description.",
+        "template": "Check the template to send",
+        "templatePlaceholder": "Template to send",
+        "title": "You must complete the following information before proceeding to make the movement",
+        "user": "Select a user",
+        "userPlaceholder": "User"
     },
     "roles": {
         "create": "Create Role",

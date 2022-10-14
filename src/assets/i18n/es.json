@@ -151,6 +151,7 @@
         "clientMessages": "Mensajes cliente",
         "close": "Cerrar",
         "comments": "Comentarios",
+        "completed": "Completada",
         "concept": "Concepto",
         "country": "País",
         "create": "Crear",
@@ -190,6 +191,7 @@
         "okClient": "OK Cliente",
         "origin": "Origen",
         "payments": "Pagos",
+        "pending": "Pendiente",
         "postalCode": "Código Postal",
         "price": "Precio",
         "priority": "Prioridad",
@@ -341,6 +343,19 @@
         "nextPage": "Siguiente página",
         "pageOf": "Página {num1} de {num2}",
         "prevPage": "Página previa"
+    },
+    "prepareMovement": {
+        "inTab": "Eventos de entrada al nuevo estado",
+        "outTab": "Eventos de salida del estado actual",
+        "size": "Indique el tamaño de tarjeta",
+        "sizePlaceholder": "Tamaño de tarjerta",
+        "taskLabel": "Descipción tarea",
+        "taskPlaceholder": "Al mover la tarea a otro Workflow está creando una tarea. Añada una descrpción.",
+        "template": "Verifique la plantilla de email a enviar",
+        "templatePlaceholder": "Plantilla a enviar",
+        "title": "Complete la siguiente información antes de realizar el movimiento",
+        "user": "Seleccione un usuario",
+        "userPlaceholder": "Usuario"
     },
     "roles": {
         "create": "Crear rol",

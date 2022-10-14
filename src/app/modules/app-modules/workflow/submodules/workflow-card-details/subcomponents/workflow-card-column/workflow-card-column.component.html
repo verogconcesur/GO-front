@@ -24,6 +24,7 @@
             <app-workflow-column-prefixed-tasks
                 *ngIf="showColumn('PREFIXED_TASKS')"
                 [tab]="tabToShow"
+                (setShowLoading)="setShowLoading($event)"
             ></app-workflow-column-prefixed-tasks>
             <app-workflow-column-prefixed-history
                 *ngIf="showColumn('PREFIXED_HISTORY')"

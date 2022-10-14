@@ -1,8 +1,10 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
+import WorkflowCardInstanceDTO from '../workflows/workflow-card-instance-dto';
 import CardDTO from './card-dto';
 
 export default interface CardInstanceDTO {
   card: CardDTO;
+  cardInstanceWorkflow: WorkflowCardInstanceDTO;
   follower: boolean;
   reference: string;
   repairOrderId: string;

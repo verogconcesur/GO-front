@@ -1,12 +1,12 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpResponse } from '@angular/common/http';
 import { Inject, Injectable } from '@angular/core';
 import { ENV } from '@app/constants/global.constants';
 import { Env } from '@app/types/env';
 import { ConcenetError } from '@app/types/error';
-import { CardAttachmentsDTO } from '@data/models/cards/card-attachments-dto';
+import { AttachmentDTO, CardAttachmentsDTO } from '@data/models/cards/card-attachments-dto';
 import { Observable, throwError } from 'rxjs';
-import { catchError } from 'rxjs/operators';
+import { catchError, map } from 'rxjs/operators';
 
 @Injectable({
   providedIn: 'root'
@@ -97,9 +97,9 @@ export class CardAttachmentsService {
     );
   }
 
-  public downloadAttachment(cardInstanceWorkflowId: number, tabId: number, fileId: number): Observable<Blob> {
+  public downloadAttachment(cardInstanceWorkflowId: number, tabId: number, fileId: number): Observable<AttachmentDTO> {
     return this.http
-      .get<Blob>(
+      .get<AttachmentDTO>(
         `${this.env.apiBaseUrl}${this.GET_CARD_INSTANCE_PATH}${this.DETAIL_PATH}/` +
           `${cardInstanceWorkflowId}${this.ATTACHMETS_PATH}/${tabId}${this.DOWNLOAD_PATH}/${fileId}`
       )
