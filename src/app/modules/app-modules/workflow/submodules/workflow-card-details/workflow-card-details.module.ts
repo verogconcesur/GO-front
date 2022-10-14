@@ -21,6 +21,7 @@ import { WorkflowColumnActionsAndLinksComponent } from './subcomponents/workflow
 import { MoveCardDialogComponent } from './subcomponents/move-card-dialog/move-card-dialog.component';
 import { CardInstanceAttachmentsModule } from '@modules/feature-modules/card-instance-attachments/card-instance-attachments.module';
 import { WorkflowCardTasksModule } from '@modules/feature-modules/workflow-card-tasks/workflow-card-tasks.module';
+import { CardInstanceBudgetsModule } from '@modules/feature-modules/card-instance-budgets/card-instance-budgets.module';
 
 @NgModule({
   declarations: [
@@ -43,6 +44,7 @@ import { WorkflowCardTasksModule } from '@modules/feature-modules/workflow-card-
     CommonModule,
     SharedModule,
     CardInstanceAttachmentsModule,
+    CardInstanceBudgetsModule,
     WorkflowCardDetailsRoutingModule,
     TextEditorWrapperModule,
     WorkflowCardTasksModule

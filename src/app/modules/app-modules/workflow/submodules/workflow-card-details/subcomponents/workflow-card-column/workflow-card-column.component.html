@@ -40,6 +40,8 @@
             <app-workflow-column-templates-budgets
                 *ngIf="showColumn('TEMPLATE_BUDGETS')"
                 [tab]="tabToShow"
+                (setShowLoading)="setShowLoading($event)"
+                [cardInstance]="cardInstance"
             ></app-workflow-column-templates-budgets>
         </div>
         <!-- Columnas mensaje -->

@@ -73,6 +73,13 @@
         },
         "title": "Concenet"
     },
+    "cardDetail": {
+        "budgets": {
+            "addLines": "Añadir lineas de presupuesto",
+            "deleteConfirmation": "¿Está seguro que desea eliminar esta linea de presupuesto?",
+            "saveConfirmation": "¿Está seguro que desea guardar esta linea de presupuesto?"
+        }
+    },
     "cards": {
         "column": {
             "actionConfiguration": "Configuración de las acciones",
@@ -90,7 +97,8 @@
             "shortcutConfiguration": "Configuración de enlaces externos",
             "tabConfiguration": "Configuración de la pestaña",
             "tabList": "Pestañas de columna",
-            "tabType": "Tipo de pestaña"
+            "tabType": "Tipo de pestaña",
+            "template": "Plantilla"
         },
         "create": "Crear tarjeta",
         "deleteConfirmation": "¿Está seguro que desea eliminar esta tarjeta?",
@@ -129,9 +137,11 @@
         },
         "address": "Dirección",
         "adviser": "Asesor",
+        "amount": "Importe",
         "apply": "Aplicar",
         "askForConfirmation": "¿Desea continuar?",
         "attachments": "Adjuntos",
+        "back": "Atrás",
         "brands": "Marcas",
         "budget": "Presupuesto",
         "cancel": "Cancelar",
@@ -169,6 +179,7 @@
         "information": "Información",
         "insert": "Insertar",
         "insertTextHere": "Introduzca el texto aquí.",
+        "line": "Línea",
         "logo": "Logo",
         "messages": "Mensajes",
         "more": "Más",
@@ -177,6 +188,7 @@
         "newItem": "Nuevo Elememto",
         "newLine": "Nueva línea",
         "next": "Siguiente",
+        "okClient": "OK Cliente",
         "origin": "Origen",
         "payments": "Pagos",
         "pending": "Pendiente",
@@ -275,6 +287,7 @@
             "userNotFound": "Este usuario no existe en la base de datos",
             "vehicleNotFound": "Este vehículo no existe en la base de datos"
         },
+        "exitConfirmation": "¿Está seguro que desea salir de la ventana de ficha?",
         "newCard": "Nueva Ficha",
         "saveConfirmation": "¿Está seguro que desea crear la ficha?",
         "step": "Paso ",
