@@ -5,13 +5,11 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { RouteConstants } from '@app/constants/route.constants';
 import { marker } from '@biesbjerg/ngx-translate-extract-marker';
 import WorkflowCardDTO from '@data/models/workflows/workflow-card-dto';
-import WorkflowCardSlotDTO from '@data/models/workflows/workflow-card-slot-dto';
 import WorkflowCardTabItemDTO from '@data/models/workflows/workflow-card-tab-item-dto';
 import WorkflowStateDTO from '@data/models/workflows/workflow-state-dto';
 import WorkflowSubstateDTO from '@data/models/workflows/workflow-substate-dto';
-import WorkflowSubstateUserDTO from '@data/models/workflows/workflow-substate-user-dto';
 import { WorkflowDragAndDropService } from '@modules/app-modules/workflow/aux-service/workflow-drag-and-drop.service';
-import { WorkflowCardTasksComponent } from '@modules/feature-modules/workflow-card-tasks/workflow-card-tasks.component';
+import { TasksModalComponent } from '@modules/feature-modules/workflow-card-tasks/tasks-modal/tasks-modal.component';
 import { TranslateService } from '@ngx-translate/core';
 
 @Component({
@@ -104,7 +102,7 @@ export class WorkflowCardComponent implements OnInit {
   }
 
   public showTasks(): void {
-    this.dialog.open(WorkflowCardTasksComponent, { data: { cardId: this.card.cardInstanceWorkflows[0].id } });
+    this.dialog.open(TasksModalComponent, { data: { cardId: this.card.cardInstanceWorkflows[0].id } });
   }
 
   public showCardInfo(): void {
