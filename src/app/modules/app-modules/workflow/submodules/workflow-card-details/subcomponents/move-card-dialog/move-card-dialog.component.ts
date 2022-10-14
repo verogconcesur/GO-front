@@ -123,6 +123,7 @@ export class MoveCardDialogComponent implements OnInit {
     this.prepareAndMoveService.reloadData$.pipe(untilDestroyed(this)).subscribe((data: number) => {
       if (data) {
         this.dialogRef.close(true);
+        window.location.reload();
       }
     });
   }

@@ -12,7 +12,6 @@ import { GlobalMessageService } from '@shared/services/global-message.service';
 import { ConcenetError } from '@app/types/error';
 import { TranslateService } from '@ngx-translate/core';
 import CardInstanceDTO from '@data/models/cards/card-instance-dto';
-import { WorkflowPrepareAndMoveService } from '../../aux-service/workflow-prepare-and-move-aux.service';
 import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
 
 @UntilDestroy()
@@ -45,8 +44,7 @@ export class WorkflowCardDetailsComponent implements OnInit {
     private cardService: CardService,
     private spinnerService: ProgressSpinnerDialogService,
     private globalMessageService: GlobalMessageService,
-    private translateService: TranslateService,
-    private prepareAndMoveService: WorkflowPrepareAndMoveService
+    private translateService: TranslateService
   ) {}
 
   @HostListener('window:resize', ['$event']) onResize(event: { target: { innerWidth: number } }) {
@@ -70,15 +68,6 @@ export class WorkflowCardDetailsComponent implements OnInit {
     }
     this.setShowMode(window.innerWidth);
     this.getCardInfo();
-    this.initListeners();
-  }
-
-  public initListeners(): void {
-    this.prepareAndMoveService.reloadData$.pipe(untilDestroyed(this)).subscribe((data: number) => {
-      if (data) {
-        this.getCardInfo();
-      }
-    });
   }
 
   public setShowMode(width: number) {

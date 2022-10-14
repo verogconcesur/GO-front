@@ -90,11 +90,6 @@ export class WorkflowBoardViewComponent implements OnInit {
         this.cardDragging = false;
       }
     });
-    this.prepareAndMoveService.reloadData$.pipe(untilDestroyed(this)).subscribe((data: number) => {
-      if (data) {
-        this.reloadCardData();
-      }
-    });
   }
 
   public toggleAnchorState = () => (this.showAnchorState = !this.showAnchorState);
