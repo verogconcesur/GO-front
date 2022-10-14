@@ -1,6 +1,6 @@
 import { CdkDragDrop } from '@angular/cdk/drag-drop';
 import { Component, Input, OnInit } from '@angular/core';
-import { UntypedFormArray, UntypedFormBuilder, UntypedFormGroup, Validators } from '@angular/forms';
+import { FormArray, UntypedFormArray, UntypedFormBuilder, UntypedFormGroup, Validators } from '@angular/forms';
 import { tabTypes } from '@app/constants/tabTypes.constants';
 import { marker } from '@biesbjerg/ngx-translate-extract-marker';
 import CardColumnDTO from '@data/models/cards/card-column-dto';
@@ -16,6 +16,7 @@ import { map, take } from 'rxjs/operators';
 import { removeItemInFormArray } from '@shared/utils/removeItemInFormArray';
 import WorkflowCardSlotDTO from '@data/models/workflows/workflow-card-slot-dto';
 import CardColumnTabItemDTO from '@data/models/cards/card-column-tab-item-dto';
+import TemplatesCommonDTO from '@data/models/templates/templates-common-dto';
 
 @Component({
   selector: 'app-custom-column',
@@ -35,6 +36,7 @@ export class CustomColumnComponent implements OnInit {
     tabType: marker('cards.column.tabType'),
     tabContentType: marker('cards.column.contentType'),
     tabContentSource: marker('cards.column.contentSource'),
+    template: marker('cards.column.template'),
     information: marker('cards.column.information'),
     tabCustomizable: marker('common.tabTypes.customizable'),
     tabTemplate: marker('common.tabTypes.template'),
@@ -46,6 +48,7 @@ export class CustomColumnComponent implements OnInit {
   public tabContentTypeList: CardContentTypeDTO[] = [];
   public tabContentSourceList: CardContentSourceDTO[] = [];
   public tabContentSlotsList: WorkflowCardSlotDTO[] = [];
+  public tabTemplateList: TemplatesCommonDTO[] = [];
   public tabId: number = null;
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   public tabSlotsBackup: any = {};
@@ -91,7 +94,7 @@ export class CustomColumnComponent implements OnInit {
     if (!this.formTab || this.formTab.value.orderNumber !== tab.value.orderNumber) {
       this.formTab = tab;
       this.getContentTypes(true);
-      this.getContentSources(true);
+      this.changeContentType(true);
       this.getTabSlots(true);
     }
   }
@@ -105,7 +108,8 @@ export class CustomColumnComponent implements OnInit {
       type: [tab ? tab.type : null, [Validators.required]],
       contentTypeId: [tab ? tab.contentTypeId : null, [Validators.required]],
       contentSourceId: [tab ? tab.contentSourceId : null],
-      tabItems: this.getTabItemsConfig(tab ? tab.tabItems : null)
+      tabItems: this.getTabItemsConfig(tab ? tab.tabItems : null),
+      templateId: [tab ? tab.templateId : null]
     });
   };
   public getContentTypes(firstLoad?: boolean) {
@@ -113,8 +117,7 @@ export class CustomColumnComponent implements OnInit {
       this.tabContentTypeList = [];
     } else {
       this.formTab.get('contentTypeId').setValue(null);
-      this.formTab.get('contentSourceId').setValue(null);
-      this.tabContentSourceList = [];
+      this.changeContentType();
     }
     if (this.formTab && this.formTab.value.type) {
       this.cardService.getContentTypes(this.formTab.value.type).subscribe((res) => {
@@ -131,6 +134,7 @@ export class CustomColumnComponent implements OnInit {
             this.newTabItemForm(
               tab.typeItem,
               {
+                id: tab.id,
                 attributeName: tab.tabItemConfigVariable.variable.attributeName,
                 name: tab.name,
                 variableId: tab.tabItemConfigVariable.variable.id,
@@ -144,26 +148,61 @@ export class CustomColumnComponent implements OnInit {
     }
     return fa;
   }
-  public getContentSources(firstLoad?: boolean) {
-    if (firstLoad) {
-      this.tabContentSourceList = [];
-    } else {
+  public changeContentType(firstLoad?: boolean): void {
+    if (!firstLoad) {
+      this.formTab.get('templateId').setValue(null);
       this.formTab.get('contentSourceId').setValue(null);
     }
+    this.tabContentSourceList = [];
+    this.formTab.get('contentSourceId').setValidators(null);
+    this.tabTemplateList = [];
+    this.formTab.get('templateId').setValidators(null);
+    if (this.formTab && this.formTab.value.contentTypeId) {
+      switch (this.formTab.get('contentTypeId').value) {
+        case 1:
+          this.getContentSources();
+          this.formTab.get('contentSourceId').setValidators([Validators.required]);
+          break;
+        case 2:
+          this.getContentSources();
+          this.formTab.get('contentSourceId').setValidators([Validators.required]);
+          break;
+        case 3:
+          this.getContentSources();
+          break;
+        case 4:
+          this.getTemplates('BUDGET');
+          this.formTab.get('templateId').setValidators([Validators.required]);
+          let tabItemsForm4 = this.formTab.get('tabItems') as FormArray;
+          tabItemsForm4 = this.fb.array([]);
+          break;
+        case 5:
+          this.getTemplates('ATTACHMENTS');
+          this.formTab.get('templateId').setValidators([Validators.required]);
+          let tabItemsForm5 = this.formTab.get('tabItems') as FormArray;
+          tabItemsForm5 = this.fb.array([]);
+          break;
+      }
+    }
+  }
+  public getContentSources() {
     if (this.formTab && this.formTab.value.contentTypeId) {
       this.cardService.getContentSources(this.formTab.value.contentTypeId).subscribe((res) => {
         this.tabContentSourceList = res;
       });
     }
-    if ((this.formTab && this.formTab.value.contentTypeId === 1) || (this.formTab && this.formTab.value.contentTypeId === 2)) {
-      this.formTab.get('contentSourceId').setValidators([Validators.required]);
-    } else {
-      this.formTab.get('contentSourceId').setValidators(null);
+  }
+  public getTemplates(templateType: string) {
+    if (this.formTab && this.formTab.value.contentTypeId) {
+      this.cardService.listTemplates(templateType).subscribe((res) => {
+        this.tabTemplateList = res;
+      });
     }
   }
   public newTabItemForm = (
     type: 'TITLE' | 'TEXT' | 'INPUT' | 'LIST' | 'TABLE' | 'OPTION' | 'VARIABLE' | 'LINK' | 'ACTION',
     data?: {
+      id?: number;
       variableId?: number;
       attributeName?: string;
       name?: string;
@@ -174,6 +213,7 @@ export class CustomColumnComponent implements OnInit {
     let formGroup: UntypedFormGroup = null;
     if (type === 'VARIABLE') {
       formGroup = this.fb.group({
+        id: [data ? data.id : null],
         attributeName: [{ value: data ? data.attributeName : '', disabled: true }],
         name: [data ? data.name : '', Validators.required],
         orderNumber: [orderNumber, Validators.required],
@@ -216,6 +256,7 @@ export class CustomColumnComponent implements OnInit {
             this.newTabItemForm(
               'VARIABLE',
               {
+                id: data.id,
                 attributeName: data.tabItemConfigVariable.variable.attributeName,
                 name: data.name,
                 variableId: data.tabItemConfigVariable.variable.id,

@@ -91,7 +91,7 @@
             <!-- ContentType -->
             <mat-form-field appearance="outline" floatLabel="always" *ngIf="tabContentTypeList && tabContentTypeList.length > 0">
                 <mat-label>{{ labels.tabContentType | translate }}</mat-label>
-                <mat-select formControlName="contentTypeId" (selectionChange)="getContentSources()">
+                <mat-select formControlName="contentTypeId" (selectionChange)="changeContentType()">
                     <mat-option *ngFor="let contentType of tabContentTypeList" [value]="contentType.id">{{
                         contentType.name | translate
                     }}</mat-option>
@@ -114,6 +114,18 @@
                 </mat-select>
                 <mat-error *ngIf="formTab.controls?.contentSourceId.invalid">
                     <span *ngIf="formTab.controls.contentSourceId.errors.required">{{ labels.required | translate }}</span>
+                </mat-error>
+            </mat-form-field>
+            <!-- Template -->
+            <mat-form-field appearance="outline" floatLabel="always" *ngIf="tabTemplateList && tabTemplateList.length > 0">
+                <mat-label>{{ labels.tabTemplate | translate }}</mat-label>
+                <mat-select formControlName="templateId">
+                    <mat-option *ngFor="let tabTemplate of tabTemplateList" [value]="tabTemplate.id">{{
+                        tabTemplate.name | translate
+                    }}</mat-option>
+                </mat-select>
+                <mat-error *ngIf="formTab.controls?.templateId.invalid">
+                    <span *ngIf="formTab.controls.templateId.errors.required">{{ labels.required | translate }}</span>
                 </mat-error>
             </mat-form-field>
         </form>
