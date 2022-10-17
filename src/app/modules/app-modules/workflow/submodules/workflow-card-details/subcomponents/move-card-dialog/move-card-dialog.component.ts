@@ -145,7 +145,7 @@ export class MoveCardDialogComponent implements OnInit {
   public setViewData(): void {
     this.resetFilter();
     if (this.view === 'MOVES_IN_THIS_WORKFLOW') {
-      this.setNodesToShow(this.sameWorkflowMovements.children);
+      this.setNodesToShow(this.sameWorkflowMovements?.children ? this.sameWorkflowMovements.children : []);
     } else {
       this.setNodesToShow(this.otherWorkflowMovements);
     }
@@ -158,7 +158,7 @@ export class MoveCardDialogComponent implements OnInit {
   public filter(): void {
     let originalData: TreeNode[] = lodash.cloneDeep(this.otherWorkflowMovements);
     if (this.view === 'MOVES_IN_THIS_WORKFLOW') {
-      originalData = lodash.cloneDeep(this.sameWorkflowMovements.children);
+      originalData = lodash.cloneDeep(this.sameWorkflowMovements?.children ? this.sameWorkflowMovements.children : []);
     }
     const filterValue = this.filterTextSearchControl.value ? normalizaStringToLowerCase(this.filterTextSearchControl.value) : '';
     if (filterValue) {
