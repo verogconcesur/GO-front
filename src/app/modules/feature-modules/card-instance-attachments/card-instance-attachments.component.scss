@@ -1,6 +1,8 @@
 @import 'utils/theme';
 .attachments {
   padding: 10px 15px;
+  max-height: 93%;
+  overflow-y: auto;
   &__templates {
     margin-bottom: 20px;
     &__header {
