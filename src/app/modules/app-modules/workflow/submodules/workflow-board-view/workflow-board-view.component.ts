@@ -15,7 +15,6 @@ import { forkJoin } from 'rxjs';
 import { take } from 'rxjs/operators';
 import { WorkflowDragAndDropService } from '../../aux-service/workflow-drag-and-drop.service';
 import { WorkflowFilterService } from '../../aux-service/workflow-filter.service';
-import { WorkflowPrepareAndMoveService } from '../../aux-service/workflow-prepare-and-move-aux.service';
 import { WokflowBoardColumnComponent } from './subcomponents/wokflow-board-column/wokflow-board-column.component';
 
 @UntilDestroy()
@@ -49,8 +48,7 @@ export class WorkflowBoardViewComponent implements OnInit {
     private workflowService: WorkflowsService,
     private workflowFilterService: WorkflowFilterService,
     private spinnerService: ProgressSpinnerDialogService,
-    private dragAndDropService: WorkflowDragAndDropService,
-    private prepareAndMoveService: WorkflowPrepareAndMoveService
+    private dragAndDropService: WorkflowDragAndDropService
   ) {}
 
   @HostListener('window:resize', ['$event']) onResize = (event: { target: { innerWidth: number } }) => {
