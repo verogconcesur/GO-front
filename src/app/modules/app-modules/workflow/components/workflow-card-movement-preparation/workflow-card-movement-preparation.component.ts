@@ -23,6 +23,8 @@ export class WorkflowCardMovementPreparationComponent implements OnInit {
   public preparationOutForm: UntypedFormGroup = null;
   public usersIn: WorkflowSubstateUserDTO[] = [];
   public usersOut: WorkflowSubstateUserDTO[] = [];
+  public userInDisabled = false;
+  public userOutDisabled = false;
   public textEditorToolbarOptions: TextEditorWrapperConfigI = {
     addHtmlModificationOption: false
   };
@@ -77,6 +79,18 @@ export class WorkflowCardMovementPreparationComponent implements OnInit {
     }
     this.usersIn = this.data.usersIn;
     this.usersOut = this.data.usersOut;
+    if (
+      this.data.selectedUser?.user?.id &&
+      this.usersIn.find((user: WorkflowSubstateUserDTO) => user.user.id === this.data.selectedUser?.user?.id)
+    ) {
+      this.userInDisabled = true;
+    }
+    if (
+      this.data.selectedUser?.user?.id &&
+      this.usersOut.find((user: WorkflowSubstateUserDTO) => user.user.id === this.data.selectedUser?.user?.id)
+    ) {
+      this.userOutDisabled = true;
+    }
     this.initForm();
   }
 
