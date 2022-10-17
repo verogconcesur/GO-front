@@ -2,6 +2,7 @@ import { Component, Inject, OnInit } from '@angular/core';
 import { FormBuilder, UntypedFormGroup, Validators } from '@angular/forms';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { marker } from '@biesbjerg/ngx-translate-extract-marker';
+import UserDTO from '@data/models/user-permissions/user-dto';
 import WorkflowSubstateEventDTO from '@data/models/workflows/workflow-substate-event-dto';
 import WorkflowSubstateUserDTO from '@data/models/workflows/workflow-substate-user-dto';
 // eslint-disable-next-line max-len
@@ -15,11 +16,13 @@ import { TranslateService } from '@ngx-translate/core';
 })
 export class WorkflowCardMovementPreparationComponent implements OnInit {
   public taskForm: UntypedFormGroup = null;
+  public formsCreated = false;
   public preparationIn: WorkflowSubstateEventDTO = null;
   public preparationInForm: UntypedFormGroup = null;
   public preparationOut: WorkflowSubstateEventDTO = null;
   public preparationOutForm: UntypedFormGroup = null;
-  public users: WorkflowSubstateUserDTO[] = [];
+  public usersIn: WorkflowSubstateUserDTO[] = [];
+  public usersOut: WorkflowSubstateUserDTO[] = [];
   public textEditorToolbarOptions: TextEditorWrapperConfigI = {
     addHtmlModificationOption: false
   };
@@ -48,8 +51,10 @@ export class WorkflowCardMovementPreparationComponent implements OnInit {
     @Inject(MAT_DIALOG_DATA)
     public data: {
       preparation: WorkflowSubstateEventDTO[];
-      users: WorkflowSubstateUserDTO[];
+      usersIn: WorkflowSubstateUserDTO[];
+      usersOut: WorkflowSubstateUserDTO[];
       view: 'MOVES_IN_THIS_WORKFLOW' | 'MOVES_IN_OTHER_WORKFLOWS';
+      selectedUser: WorkflowSubstateUserDTO;
     },
     private fb: FormBuilder,
     private translateService: TranslateService
@@ -70,7 +75,8 @@ export class WorkflowCardMovementPreparationComponent implements OnInit {
     if (this.data.view === 'MOVES_IN_OTHER_WORKFLOWS') {
       this.sendToOtherWorkflow = true;
     }
-    this.users = this.data.users;
+    this.usersIn = this.data.usersIn;
+    this.usersOut = this.data.usersOut;
     this.initForm();
   }
 
@@ -93,30 +99,64 @@ export class WorkflowCardMovementPreparationComponent implements OnInit {
         description: [null, Validators.required]
       });
     }
+    console.log(this.data);
     if (this.preparationIn) {
-      this.preparationInForm = this.fb.group({
-        size: [null, [this.preparationIn.requiredSize ? Validators.required : null]],
-        user: [null, [this.preparationIn.requiredUser ? Validators.required : null]],
-        template: [
-          this.preparationIn.templateComunication?.processedTemplate
-            ? this.preparationIn.templateComunication.processedTemplate
-            : '',
-          [this.preparationIn.sendMail ? Validators.required : null]
-        ]
-      });
+      this.preparationInForm = this.fb.group({});
+      if (this.preparationIn.requiredSize) {
+        this.preparationInForm.addControl('size', this.fb.control(null, [Validators.required]));
+      }
+      if (this.preparationIn.requiredUser) {
+        this.preparationInForm.addControl(
+          'user',
+          this.fb.control(
+            this.data.selectedUser
+              ? this.usersIn.find((user: WorkflowSubstateUserDTO) => user.user.id === this.data.selectedUser?.user?.id)
+              : null,
+            [Validators.required]
+          )
+        );
+      }
+      if (this.preparationIn.sendMail) {
+        this.preparationInForm.addControl(
+          'template',
+          this.fb.control(
+            this.preparationIn.templateComunication?.processedTemplate
+              ? this.preparationIn.templateComunication.processedTemplate
+              : '',
+            [Validators.required]
+          )
+        );
+      }
     }
     if (this.preparationOut) {
-      this.preparationOutForm = this.fb.group({
-        size: [null, [this.preparationOut.requiredSize ? Validators.required : null]],
-        user: [null, [this.preparationOut.requiredUser ? Validators.required : null]],
-        template: [
-          this.preparationOut.templateComunication?.processedTemplate
-            ? this.preparationOut.templateComunication.processedTemplate
-            : '',
-          [this.preparationOut.sendMail ? Validators.required : null]
-        ]
-      });
+      this.preparationOutForm = this.fb.group({});
+      if (this.preparationOut.requiredSize) {
+        this.preparationOutForm.addControl('size', this.fb.control(null, [Validators.required]));
+      }
+      if (this.preparationOut.requiredUser) {
+        this.preparationOutForm.addControl(
+          'user',
+          this.fb.control(
+            this.data.selectedUser
+              ? this.usersOut.find((user: WorkflowSubstateUserDTO) => user.user.id === this.data.selectedUser?.user?.id)
+              : null,
+            [Validators.required]
+          )
+        );
+      }
+      if (this.preparationOut.sendMail) {
+        this.preparationOutForm.addControl(
+          'template',
+          this.fb.control(
+            this.preparationOut.templateComunication?.processedTemplate
+              ? this.preparationOut.templateComunication.processedTemplate
+              : '',
+            [Validators.required]
+          )
+        );
+      }
     }
+    this.formsCreated = true;
   }
 
   public textEditorContentChanged(html: string, form: UntypedFormGroup) {

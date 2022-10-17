@@ -64,7 +64,13 @@ export class WorkflowPrepareAndMoveService {
           this.dialog
             .open(WorkflowCardMovementPreparationComponent, {
               maxWidth: '650px',
-              data: { preparation: data, users: move.workflowSubstateTarget.workflowSubstateUser, view }
+              data: {
+                preparation: data,
+                usersOut: move.workflowSubstateTarget.workflowSubstateUser,
+                usersIn: move.workflowSubstateSource.workflowSubstateUser,
+                view,
+                selectedUser: user
+              }
             })
             .afterClosed()
             // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -75,7 +81,8 @@ export class WorkflowPrepareAndMoveService {
                 out: { size: 'S' | 'M' | 'L' | 'XL'; user: WorkflowSubstateUserDTO; template: string };
               }) => {
                 if (!res) {
-                  this.reloadData$.next(null);
+                  //Recargamos para que al mover tarjeta en vista board no se quede pillado el hover de cdk drag and drop
+                  this.reloadData$.next(+new Date());
                   this.spinnerService.hide(this.spinner);
                   return;
                 }
@@ -156,7 +163,6 @@ export class WorkflowPrepareAndMoveService {
             this.spinnerService.hide(this.spinner);
           }
           if (resp) {
-            //DGDC TODO: mirar por qué no se puede abrir de nuevo la modal
             this.reloadData$.next(+new Date());
           } else {
             this.reloadData$.next(null);
