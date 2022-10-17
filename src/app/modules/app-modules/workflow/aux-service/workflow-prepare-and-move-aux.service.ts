@@ -115,9 +115,12 @@ export class WorkflowPrepareAndMoveService {
                 this.moveCard(item, move, user, dropZoneId, itemToReplace);
               },
               (error) => {
-                console.error(error);
                 this.reloadData$.next(null);
                 this.spinnerService.hide(this.spinner);
+                this.globalMessageService.showError({
+                  message: error?.message ? error.message : this.translateService.instant(marker('errors.unknown')),
+                  actionText: this.translateService.instant(marker('common.close'))
+                });
               }
             );
         } else if (data?.length && (data[0]?.requiredFields || data[1].requiredFields)) {
@@ -164,7 +167,7 @@ export class WorkflowPrepareAndMoveService {
           this.spinnerService.hide(this.spinner);
           this.logger.error(error);
           this.globalMessageService.showError({
-            message: error.message,
+            message: error?.message ? error.message : this.translateService.instant(marker('errors.unknown')),
             actionText: this.translateService.instant(marker('common.close'))
           });
           this.spinner = null;
