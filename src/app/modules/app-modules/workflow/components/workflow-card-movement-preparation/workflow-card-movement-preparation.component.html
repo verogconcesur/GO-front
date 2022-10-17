@@ -60,13 +60,13 @@
                     </mat-error>
                 </mat-form-field>
             </div>
-            <div class="preparation__section" *ngIf="preparationIn.requiredUser">
+            <div class="preparation__section" *ngIf="preparationIn.requiredUser && !userInDisabled">
                 <div class="preparation__section__title">
                     {{ labels.user | translate }}
                 </div>
                 <mat-form-field appearance="outline" floatLabel="always">
                     <mat-label>{{ labels.userPlaceholder | translate }}</mat-label>
-                    <mat-select formControlName="user">
+                    <mat-select formControlName="user" [disabled]="userInDisabled">
                         <mat-option *ngFor="let user of usersIn" [value]="user">{{ user.user.fullName }}</mat-option>
                     </mat-select>
                     <mat-error
@@ -120,13 +120,13 @@
                     </mat-error>
                 </mat-form-field>
             </div>
-            <div class="preparation__section" *ngIf="preparationOut.requiredUser">
+            <div class="preparation__section" *ngIf="preparationOut.requiredUser && !userOutDisabled">
                 <div class="preparation__section__title">
                     {{ labels.user | translate }}
                 </div>
                 <mat-form-field appearance="outline" floatLabel="always">
                     <mat-label>{{ labels.userPlaceholder | translate }}</mat-label>
-                    <mat-select formControlName="user">
+                    <mat-select formControlName="user" [disabled]="userOutDisabled">
                         <mat-option *ngFor="let user of usersOut" [value]="user">{{ user.user.fullName }}</mat-option>
                     </mat-select>
                     <mat-error
