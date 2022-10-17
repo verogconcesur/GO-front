@@ -30,7 +30,6 @@ export class WokflowBoardColumnComponent implements OnInit {
   @Input() workflow: WorkflowDTO = null;
   @Input() wState: WorkflowStateDTO = null;
   @Input() divider = true;
-  @Output() reloadCardsEvent: EventEmitter<boolean> = new EventEmitter();
   public collapsed = false;
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   public hideEmptyDropZone: any = {};
@@ -295,11 +294,6 @@ export class WokflowBoardColumnComponent implements OnInit {
       // item.orderNumber = itemToReplace.orderNumber;
       if (move?.id) {
         this.prepareAndMoveService.prepareAndMove(item, move, user, dropZoneId, itemToReplace);
-        this.prepareAndMoveService.reloadData$.pipe(take(2)).subscribe((resp) => {
-          if (resp) {
-            this.reloadCardsEvent.emit(true);
-          }
-        });
       }
     }
 
@@ -308,7 +302,7 @@ export class WokflowBoardColumnComponent implements OnInit {
       request.pipe(take(1)).subscribe(
         (data) => {
           this.spinnerService.hide(spinner);
-          this.reloadCardsEvent.emit(true);
+          this.prepareAndMoveService.reloadData$.next(+new Date());
         },
         (error) => {
           this.logger.error(error);
@@ -317,7 +311,7 @@ export class WokflowBoardColumnComponent implements OnInit {
             actionText: this.translateService.instant(marker('common.close'))
           });
           this.spinnerService.hide(spinner);
-          this.reloadCardsEvent.emit(true);
+          this.prepareAndMoveService.reloadData$.next(+new Date());
         }
       );
     }

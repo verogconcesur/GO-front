@@ -7,7 +7,6 @@
             [workflow]="workflow"
             [wState]="wAnchorState"
             [divider]="false"
-            (reloadCardsEvent)="reloadCardData()"
         ></app-wokflow-board-column>
         <div class="hide-show-button" (click)="toggleAnchorState()">
             <mat-icon *ngIf="showAnchorState">keyboard_arrow_left</mat-icon>
@@ -26,12 +25,7 @@
         (mouseleave)="stopDragging($event, false)"
         (mousemove)="moveEvent($event)"
     >
-        <app-wokflow-board-column
-            *ngFor="let wState of wNormalStates"
-            [workflow]="workflow"
-            [wState]="wState"
-            (reloadCardsEvent)="reloadCardData()"
-        >
+        <app-wokflow-board-column *ngFor="let wState of wNormalStates" [workflow]="workflow" [wState]="wState">
         </app-wokflow-board-column>
     </div>
     <div class="empty-wrapper" *ngIf="!wAnchorState && !wNormalStates?.length">

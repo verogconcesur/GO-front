@@ -184,7 +184,7 @@ export class MoveCardDialogComponent implements OnInit {
         cardInstanceWorkflows: [this.cardInstance.cardInstanceWorkflow]
       },
       node.move,
-      node.user ? node.user : null,
+      node.user ? { id: null, name: '', user: node.user, permissionType: '', workflowSubstateId: null } : null,
       '',
       null,
       this.view
