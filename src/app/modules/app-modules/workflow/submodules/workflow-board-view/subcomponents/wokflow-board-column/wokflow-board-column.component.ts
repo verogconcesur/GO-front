@@ -295,6 +295,11 @@ export class WokflowBoardColumnComponent implements OnInit {
       // item.orderNumber = itemToReplace.orderNumber;
       if (move?.id) {
         this.prepareAndMoveService.prepareAndMove(item, move, user, dropZoneId, itemToReplace);
+        this.prepareAndMoveService.reloadData$.pipe(take(2)).subscribe((resp) => {
+          if (resp) {
+            this.reloadCardsEvent.emit(true);
+          }
+        });
       }
     }
 
