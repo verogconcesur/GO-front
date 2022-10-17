@@ -149,13 +149,16 @@ export class WorkflowPrepareAndMoveService {
       .pipe(take(1))
       .subscribe(
         (resp: WorkflowCardInstanceDTO) => {
+          if (this.spinner) {
+            this.spinnerService.hide(this.spinner);
+          }
           if (resp) {
             //DGDC TODO: mirar por qué no se puede abrir de nuevo la modal
             this.reloadData$.next(+new Date());
           } else {
             this.reloadData$.next(null);
-            this.spinnerService.hide(this.spinner);
           }
+          this.spinner = null;
         },
         (error: ConcenetError) => {
           this.spinnerService.hide(this.spinner);
@@ -164,6 +167,7 @@ export class WorkflowPrepareAndMoveService {
             message: error.message,
             actionText: this.translateService.instant(marker('common.close'))
           });
+          this.spinner = null;
         }
       );
   }
