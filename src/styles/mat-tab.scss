@@ -15,12 +15,6 @@
         font-weight: 400;
         padding: 0 15px;
       }
-
-      .mat-tab-label.mat-tab-label-active {
-        color: mat-color($foreground, secondary-text);
-        font-size: 1.5rem;
-        font-weight: 900;
-      }
     }
   }
 
@@ -28,5 +22,10 @@
   .mat-tab-nav-bar.mat-primary .mat-ink-bar {
     height: 3px;
     background-color: mat-color($primary, 500);
+  }
+
+  .mat-tab-label.text-red,
+  .mat-tab-label.mat-tab-label-active.text-red {
+    color: darken(mat-color($primary, statusError), 20%);
   }
 }

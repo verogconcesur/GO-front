@@ -4,10 +4,12 @@ import { ActivatedRoute } from '@angular/router';
 import { ConcenetError } from '@app/types/error';
 import { marker } from '@biesbjerg/ngx-translate-extract-marker';
 import CardColumnTabDTO from '@data/models/cards/card-column-tab-dto';
+import CardDTO from '@data/models/cards/card-dto';
 import CardInstanceDTO from '@data/models/cards/card-instance-dto';
 import WorkflowCardTabItemDTO from '@data/models/workflows/workflow-card-tab-item-dto';
 import WorkflowMoveDTO from '@data/models/workflows/workflow-move-dto';
 import { CardService } from '@data/services/cards.service';
+import { WorkflowPrepareAndMoveService } from '@modules/app-modules/workflow/aux-service/workflow-prepare-and-move-aux.service';
 import { TranslateService } from '@ngx-translate/core';
 import { GlobalMessageService } from '@shared/services/global-message.service';
 import { take } from 'rxjs/operators';
@@ -21,6 +23,7 @@ import { MoveCardDialogComponent } from '../move-card-dialog/move-card-dialog.co
 export class WorkflowColumnActionsAndLinksComponent implements OnInit {
   @Input() tab: CardColumnTabDTO = null;
   @Input() cardInstance: CardInstanceDTO;
+  @Input() card: CardDTO;
   public actions: WorkflowCardTabItemDTO[];
   public links: WorkflowCardTabItemDTO[];
   public shortCuts: WorkflowMoveDTO[];
@@ -36,7 +39,8 @@ export class WorkflowColumnActionsAndLinksComponent implements OnInit {
     private route: ActivatedRoute,
     private globalMessageService: GlobalMessageService,
     private translateService: TranslateService,
-    private dialog: MatDialog
+    private dialog: MatDialog,
+    private prepareAndMoveService: WorkflowPrepareAndMoveService
   ) {}
 
   ngOnInit(): void {
@@ -101,13 +105,35 @@ export class WorkflowColumnActionsAndLinksComponent implements OnInit {
     }
   }
 
-  public btnClickShortcut(btn: WorkflowMoveDTO): void {
-    // DGDC TODO: agregar acción de mover tarjeta a otro estado
-    console.log(btn);
+  public btnClickShortcut(move: WorkflowMoveDTO): void {
+    this.prepareAndMoveService.prepareAndMove(
+      {
+        cardId: null,
+        customerId: null,
+        id: null,
+        repairOrderId: null,
+        tabItems: [],
+        vehicleId: null,
+        colors: [],
+        movements: [],
+        cardInstanceWorkflows: [this.cardInstance.cardInstanceWorkflow]
+      },
+      move,
+      null,
+      '',
+      null
+    );
+    this.prepareAndMoveService.reloadData$.pipe(take(2)).subscribe((resp) => {
+      if (resp) {
+        window.location.reload();
+      }
+    });
   }
 
   public moveCard(): void {
-    this.dialog.open(MoveCardDialogComponent, { data: { cardInstance: this.cardInstance, idCard: this.idCard } });
+    this.dialog.open(MoveCardDialogComponent, {
+      data: { cardInstance: this.cardInstance, idCard: this.idCard, card: this.card }
+    });
   }
 
   public getBgColor(btn: WorkflowCardTabItemDTO, color?: string): string {

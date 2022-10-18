@@ -12,7 +12,9 @@ import { GlobalMessageService } from '@shared/services/global-message.service';
 import { ConcenetError } from '@app/types/error';
 import { TranslateService } from '@ngx-translate/core';
 import CardInstanceDTO from '@data/models/cards/card-instance-dto';
+import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
 
+@UntilDestroy()
 @Component({
   selector: 'app-workflow-card-details',
   templateUrl: './workflow-card-details.component.html',

@@ -21,6 +21,8 @@ import { map, take } from 'rxjs/operators';
 import * as lodash from 'lodash';
 import { normalizaStringToLowerCase } from '@shared/utils/string-normalization-lower-case';
 import { Observable, of } from 'rxjs';
+import { WorkflowPrepareAndMoveService } from '@modules/app-modules/workflow/aux-service/workflow-prepare-and-move-aux.service';
+import CardDTO from '@data/models/cards/card-dto';
 
 interface TreeNode {
   name: string;
@@ -29,6 +31,7 @@ interface TreeNode {
 
 export type MoveCardDialogConfig = {
   cardInstance: CardInstanceDTO;
+  card: CardDTO;
   idCard: number;
 };
 
@@ -95,6 +98,7 @@ export class MoveCardDialogComponent implements OnInit {
     private spinnerService: ProgressSpinnerDialogService,
     private globalMessageService: GlobalMessageService,
     private translateService: TranslateService,
+    private prepareAndMoveService: WorkflowPrepareAndMoveService,
     @Inject(MAT_DIALOG_DATA) public config: MoveCardDialogConfig
   ) {}
 
@@ -110,9 +114,20 @@ export class MoveCardDialogComponent implements OnInit {
       }
       this.filter();
     });
+    this.initListeners();
   }
 
   public hasChild = (_: number, node: TreeNode) => !!node.children && node.children.length > 0;
+
+  public initListeners(): void {
+    this.prepareAndMoveService.reloadData$.pipe(untilDestroyed(this)).subscribe((data: number) => {
+      if (data) {
+        this.dialogRef.close(true);
+        //DGDC TODO: mirar por qué no se puede abrir de nuevo la modal
+        window.location.reload();
+      }
+    });
+  }
 
   public close(): void {
     this.dialogRef.close();
@@ -130,7 +145,7 @@ export class MoveCardDialogComponent implements OnInit {
   public setViewData(): void {
     this.resetFilter();
     if (this.view === 'MOVES_IN_THIS_WORKFLOW') {
-      this.setNodesToShow(this.sameWorkflowMovements.children);
+      this.setNodesToShow(this.sameWorkflowMovements?.children ? this.sameWorkflowMovements.children : []);
     } else {
       this.setNodesToShow(this.otherWorkflowMovements);
     }
@@ -143,7 +158,7 @@ export class MoveCardDialogComponent implements OnInit {
   public filter(): void {
     let originalData: TreeNode[] = lodash.cloneDeep(this.otherWorkflowMovements);
     if (this.view === 'MOVES_IN_THIS_WORKFLOW') {
-      originalData = lodash.cloneDeep(this.sameWorkflowMovements.children);
+      originalData = lodash.cloneDeep(this.sameWorkflowMovements?.children ? this.sameWorkflowMovements.children : []);
     }
     const filterValue = this.filterTextSearchControl.value ? normalizaStringToLowerCase(this.filterTextSearchControl.value) : '';
     if (filterValue) {
@@ -154,8 +169,26 @@ export class MoveCardDialogComponent implements OnInit {
     }
   }
 
-  public moveCardTo(node: TreeNode): void {
-    console.log(node);
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  public moveCardTo(node: any): void {
+    this.prepareAndMoveService.prepareAndMove(
+      {
+        cardId: null,
+        customerId: null,
+        id: null,
+        repairOrderId: null,
+        tabItems: [],
+        vehicleId: null,
+        colors: [],
+        movements: [],
+        cardInstanceWorkflows: [this.cardInstance.cardInstanceWorkflow]
+      },
+      node.move,
+      node.user ? { id: null, name: '', user: node.user, permissionType: '', workflowSubstateId: null } : null,
+      '',
+      null,
+      this.view
+    );
   }
 
   private setNodesToShow(data: TreeNode[]): void {
@@ -223,7 +256,6 @@ export class MoveCardDialogComponent implements OnInit {
         'MOVES_IN_OTHER_WORKFLOWS'
       );
     }
-    console.log(this.sameWorkflowMovements, this.otherWorkflowMovements);
     this.setViewData();
   }
 

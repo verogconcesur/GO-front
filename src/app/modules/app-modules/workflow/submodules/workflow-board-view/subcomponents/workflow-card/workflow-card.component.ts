@@ -1,15 +1,15 @@
 import { DatePipe } from '@angular/common';
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import { MatDialog } from '@angular/material/dialog';
 import { ActivatedRoute, Router } from '@angular/router';
 import { RouteConstants } from '@app/constants/route.constants';
 import { marker } from '@biesbjerg/ngx-translate-extract-marker';
 import WorkflowCardDTO from '@data/models/workflows/workflow-card-dto';
-import WorkflowCardSlotDTO from '@data/models/workflows/workflow-card-slot-dto';
 import WorkflowCardTabItemDTO from '@data/models/workflows/workflow-card-tab-item-dto';
 import WorkflowStateDTO from '@data/models/workflows/workflow-state-dto';
 import WorkflowSubstateDTO from '@data/models/workflows/workflow-substate-dto';
-import WorkflowSubstateUserDTO from '@data/models/workflows/workflow-substate-user-dto';
 import { WorkflowDragAndDropService } from '@modules/app-modules/workflow/aux-service/workflow-drag-and-drop.service';
+import { TasksModalComponent } from '@modules/feature-modules/workflow-card-tasks/tasks-modal/tasks-modal.component';
 import { TranslateService } from '@ngx-translate/core';
 
 @Component({
@@ -25,6 +25,7 @@ export class WorkflowCardComponent implements OnInit {
   @Input() droppableStates: string[];
   @Output() isDraggingEvent: EventEmitter<boolean> = new EventEmitter();
   public cardSize = 'size-m';
+  public cardId: number;
   public labels = {
     dueOutDateTime: marker('workflows.dueOutDateTime')
   };
@@ -34,6 +35,7 @@ export class WorkflowCardComponent implements OnInit {
     private translateService: TranslateService,
     private dragAndDropService: WorkflowDragAndDropService,
     private route: ActivatedRoute,
+    private dialog: MatDialog,
     private router: Router
   ) {}
 
@@ -97,6 +99,10 @@ export class WorkflowCardComponent implements OnInit {
     if (this.card.cardInstanceWorkflows[0].size) {
       this.cardSize = 'size-' + this.card.cardInstanceWorkflows[0].size.toLowerCase();
     }
+  }
+
+  public showTasks(): void {
+    this.dialog.open(TasksModalComponent, { data: { cardId: this.card.cardInstanceWorkflows[0].id } });
   }
 
   public showCardInfo(): void {
