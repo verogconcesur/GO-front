@@ -90,11 +90,15 @@ export class WorkflowBoardViewComponent implements OnInit {
         this.cardDragging = false;
       }
     });
-    this.prepareAndMoveService.reloadData$.pipe(untilDestroyed(this)).subscribe((data: number) => {
-      if (data) {
-        this.reloadCardData(+new Date());
-      }
-    });
+    this.prepareAndMoveService.reloadData$
+      .pipe(untilDestroyed(this))
+      .subscribe((data: 'MOVES_IN_THIS_WORKFLOW' | 'MOVES_IN_OTHER_WORKFLOWS') => {
+        if (data === 'MOVES_IN_THIS_WORKFLOW') {
+          //En caso de que sea en este mismo workflow recargo la pantalla
+          this.reloadCardData(+new Date());
+          this.prepareAndMoveService.reloadData$.next(null);
+        }
+      });
   }
 
   public toggleAnchorState = () => (this.showAnchorState = !this.showAnchorState);
