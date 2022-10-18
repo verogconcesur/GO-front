@@ -113,7 +113,6 @@ export class WorkflowCardMovementPreparationComponent implements OnInit {
         description: [null, Validators.required]
       });
     }
-    console.log(this.data);
     if (this.preparationIn) {
       this.preparationInForm = this.fb.group({});
       if (this.preparationIn.requiredSize) {

@@ -21,7 +21,7 @@ import { WorkflowCardMovementPreparationComponent } from '../components/workflow
   providedIn: 'root'
 })
 export class WorkflowPrepareAndMoveService {
-  public reloadData$: BehaviorSubject<number> = new BehaviorSubject(null);
+  public reloadData$: BehaviorSubject<'MOVES_IN_THIS_WORKFLOW' | 'MOVES_IN_OTHER_WORKFLOWS'> = new BehaviorSubject(null);
   private readonly wSubstateKey = 'wSubstate-';
   private spinner: string;
 
@@ -82,7 +82,7 @@ export class WorkflowPrepareAndMoveService {
               }) => {
                 if (!res) {
                   //Recargamos para que al mover tarjeta en vista board no se quede pillado el hover de cdk drag and drop
-                  this.reloadData$.next(+new Date());
+                  this.reloadData$.next(view);
                   this.spinnerService.hide(this.spinner);
                   return;
                 }
@@ -119,7 +119,7 @@ export class WorkflowPrepareAndMoveService {
                   item.cardInstanceWorkflows[0].information = res.task.description;
                 }
                 item.cardInstanceWorkflows[0].workflowSubstateEvents = newData;
-                this.moveCard(item, move, user, dropZoneId, itemToReplace);
+                this.moveCard(item, move, user, dropZoneId, itemToReplace, view);
               },
               (error) => {
                 this.reloadData$.next(null);
@@ -132,9 +132,9 @@ export class WorkflowPrepareAndMoveService {
             );
         } else if (data?.length && (data[0]?.requiredFields || data[1].requiredFields)) {
           item.cardInstanceWorkflows[0].workflowSubstateEvents = data;
-          this.moveCard(item, move, user, dropZoneId, itemToReplace);
+          this.moveCard(item, move, user, dropZoneId, itemToReplace, view);
         } else {
-          this.moveCard(item, move, user, dropZoneId, itemToReplace);
+          this.moveCard(item, move, user, dropZoneId, itemToReplace, view);
         }
       });
   }
@@ -145,7 +145,8 @@ export class WorkflowPrepareAndMoveService {
     user: WorkflowSubstateUserDTO,
     dropZoneId: string,
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    itemToReplace: any
+    itemToReplace: any,
+    view: 'MOVES_IN_THIS_WORKFLOW' | 'MOVES_IN_OTHER_WORKFLOWS'
   ): void {
     this.workflowService
       .moveWorkflowCardToSubstate(
@@ -163,7 +164,7 @@ export class WorkflowPrepareAndMoveService {
             this.spinnerService.hide(this.spinner);
           }
           if (resp) {
-            this.reloadData$.next(+new Date());
+            this.reloadData$.next(view);
           } else {
             this.reloadData$.next(null);
           }

@@ -120,10 +120,11 @@
             "edit": "Editar Ficha",
             "saveConfirmation": "¿Está seguro que desea guardar la tarjeta?"
         },
-        "moveCard": "Mover ficha",
+        "moveCard": "Mover ficha dentro de este workflow",
         "moveWhere": "¿Dónde quieres moverla?",
         "noMovesAvailable": "No hay moviemientos disponibles",
         "otherWorkflows": "Otros workflows",
+        "sendCard": "Enviar tarjeta a otro workflow",
         "statesInThisWorkflow": "Estados del workflow actual",
         "workflows": "Workflow"
     },
@@ -206,6 +207,7 @@
         "seeMore": "Ver más",
         "select": "Seleccionar",
         "selectImageFile": "Selecciona una imagen",
+        "send": "Enviar",
         "shortcut": "Enlace externo",
         "state": "Estado",
         "substate": "Subestado",

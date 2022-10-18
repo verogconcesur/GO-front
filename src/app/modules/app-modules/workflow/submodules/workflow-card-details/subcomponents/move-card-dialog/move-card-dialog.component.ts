@@ -33,6 +33,7 @@ export type MoveCardDialogConfig = {
   cardInstance: CardInstanceDTO;
   card: CardDTO;
   idCard: number;
+  view: 'MOVES_IN_THIS_WORKFLOW' | 'MOVES_IN_OTHER_WORKFLOWS';
 };
 
 export interface MovesByState extends TreeNode {
@@ -69,6 +70,7 @@ export interface MovesByWorkflow extends TreeNode {
 export class MoveCardDialogComponent implements OnInit {
   public labels = {
     moveCard: marker('cards.moveCard'),
+    sendCard: marker('cards.sendCard'),
     moveWhere: marker('cards.moveWhere'),
     statesInThisWorkflow: marker('cards.statesInThisWorkflow'),
     otherWorkflows: marker('cards.otherWorkflows'),
@@ -105,6 +107,7 @@ export class MoveCardDialogComponent implements OnInit {
   ngOnInit(): void {
     this.cardInstance = this.config.cardInstance;
     this.idCard = this.config.idCard;
+    this.view = this.config.view;
     this.getMovements();
     this.filterTextSearchControl.valueChanges.pipe(untilDestroyed(this)).subscribe((value) => {
       if (value) {
@@ -119,28 +122,35 @@ export class MoveCardDialogComponent implements OnInit {
 
   public hasChild = (_: number, node: TreeNode) => !!node.children && node.children.length > 0;
 
+  public getTitle(): string {
+    if (this.view === 'MOVES_IN_THIS_WORKFLOW') {
+      return this.labels.moveCard;
+    }
+    return this.labels.sendCard;
+  }
+
   public initListeners(): void {
-    this.prepareAndMoveService.reloadData$.pipe(untilDestroyed(this)).subscribe((data: number) => {
-      if (data) {
-        this.dialogRef.close(true);
-        //DGDC TODO: mirar por qué no se puede abrir de nuevo la modal
-        window.location.reload();
-      }
-    });
+    this.prepareAndMoveService.reloadData$
+      .pipe(untilDestroyed(this))
+      .subscribe((data: 'MOVES_IN_THIS_WORKFLOW' | 'MOVES_IN_OTHER_WORKFLOWS') => {
+        if (data) {
+          this.dialogRef.close(true);
+        }
+      });
   }
 
   public close(): void {
     this.dialogRef.close();
   }
 
-  public changeView(): void {
-    if (this.view === 'MOVES_IN_OTHER_WORKFLOWS') {
-      this.view = 'MOVES_IN_THIS_WORKFLOW';
-    } else {
-      this.view = 'MOVES_IN_OTHER_WORKFLOWS';
-    }
-    this.setViewData();
-  }
+  // public changeView(): void {
+  //   if (this.view === 'MOVES_IN_OTHER_WORKFLOWS') {
+  //     this.view = 'MOVES_IN_THIS_WORKFLOW';
+  //   } else {
+  //     this.view = 'MOVES_IN_OTHER_WORKFLOWS';
+  //   }
+  //   this.setViewData();
+  // }
 
   public setViewData(): void {
     this.resetFilter();
