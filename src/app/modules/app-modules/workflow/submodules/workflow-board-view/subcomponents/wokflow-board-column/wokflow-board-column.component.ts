@@ -302,7 +302,7 @@ export class WokflowBoardColumnComponent implements OnInit {
       request.pipe(take(1)).subscribe(
         (data) => {
           this.spinnerService.hide(spinner);
-          this.prepareAndMoveService.reloadData$.next(+new Date());
+          this.prepareAndMoveService.reloadData$.next('MOVES_IN_THIS_WORKFLOW');
         },
         (error) => {
           this.logger.error(error);
@@ -311,7 +311,7 @@ export class WokflowBoardColumnComponent implements OnInit {
             actionText: this.translateService.instant(marker('common.close'))
           });
           this.spinnerService.hide(spinner);
-          this.prepareAndMoveService.reloadData$.next(+new Date());
+          this.prepareAndMoveService.reloadData$.next('MOVES_IN_THIS_WORKFLOW');
         }
       );
     }

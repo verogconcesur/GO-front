@@ -1,6 +1,6 @@
 <div class="move-card-dialog">
     <div class="move-card-dialog__header">
-        <h2 class="mat-headline">{{ labels.moveCard | translate }}</h2>
+        <h2 class="mat-headline">{{ getTitle() | translate }}</h2>
         <button mat-icon-button class="move-card-dialog__header__close" (click)="close()">
             <mat-icon>close</mat-icon>
         </button>
@@ -61,11 +61,11 @@
                 </mat-nested-tree-node>
             </mat-tree>
         </div>
-        <div class="move-card-dialog__footer">
+        <!-- <div class="move-card-dialog__footer">
             <button mat-stroked-button (click)="changeView()">
                 <span *ngIf="view === 'MOVES_IN_THIS_WORKFLOW'">{{ labels.otherWorkflows | translate }}</span>
                 <span *ngIf="view === 'MOVES_IN_OTHER_WORKFLOWS'">{{ labels.statesInThisWorkflow | translate }}</span>
             </button>
-        </div>
+        </div> -->
     </div>
 </div>

@@ -124,6 +124,7 @@
         "moveWhere": "Where do you want to move it?",
         "noMovesAvailable": "No moves available",
         "otherWorkflows": "Other workflows",
+        "sendCard": "Send card to other workflow",
         "statesInThisWorkflow": "Actual workflow's states",
         "workflows": "Workflow"
     },
@@ -206,6 +207,7 @@
         "seeMore": "See more",
         "select": "Select",
         "selectImageFile": "Select image file",
+        "send": "Send",
         "shortcut": "Link",
         "state": "State",
         "substate": "Substate",
