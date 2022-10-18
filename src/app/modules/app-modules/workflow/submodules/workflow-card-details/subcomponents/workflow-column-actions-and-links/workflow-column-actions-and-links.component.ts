@@ -124,11 +124,6 @@ export class WorkflowColumnActionsAndLinksComponent implements OnInit {
       '',
       null
     );
-    this.prepareAndMoveService.reloadData$.pipe(take(2)).subscribe((resp) => {
-      if (resp) {
-        window.location.reload();
-      }
-    });
   }
 
   public moveCard(): void {

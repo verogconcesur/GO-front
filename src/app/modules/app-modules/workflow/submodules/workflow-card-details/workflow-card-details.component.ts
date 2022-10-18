@@ -13,6 +13,7 @@ import { ConcenetError } from '@app/types/error';
 import { TranslateService } from '@ngx-translate/core';
 import CardInstanceDTO from '@data/models/cards/card-instance-dto';
 import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
+import { WorkflowPrepareAndMoveService } from '../../aux-service/workflow-prepare-and-move-aux.service';
 
 @UntilDestroy()
 @Component({
@@ -44,7 +45,8 @@ export class WorkflowCardDetailsComponent implements OnInit {
     private cardService: CardService,
     private spinnerService: ProgressSpinnerDialogService,
     private globalMessageService: GlobalMessageService,
-    private translateService: TranslateService
+    private translateService: TranslateService,
+    private prepareAndMoveService: WorkflowPrepareAndMoveService
   ) {}
 
   @HostListener('window:resize', ['$event']) onResize(event: { target: { innerWidth: number } }) {
@@ -67,6 +69,7 @@ export class WorkflowCardDetailsComponent implements OnInit {
       this.idUser = parseInt(this.route?.snapshot?.params?.idUser, 10);
     }
     this.setShowMode(window.innerWidth);
+    this.initListeners();
     this.getCardInfo();
   }
 
@@ -78,6 +81,18 @@ export class WorkflowCardDetailsComponent implements OnInit {
       showMode = 'individual';
     }
     this.showMode = showMode;
+  }
+
+  public initListeners(): void {
+    this.prepareAndMoveService.reloadData$.pipe(untilDestroyed(this)).subscribe((resp) => {
+      if (resp === 'MOVES_IN_THIS_WORKFLOW') {
+        //Si el movimiento ha sido en este workflow cierro el detalle de tarjeta
+        this.close();
+      } else if (resp === 'MOVES_IN_OTHER_WORKFLOWS') {
+        //Si el movimiento ha sido a otro workflow recargo todo.
+        window.location.reload();
+      }
+    });
   }
 
   public close(): void {

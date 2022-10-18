@@ -130,13 +130,13 @@ export class MoveCardDialogComponent implements OnInit {
   }
 
   public initListeners(): void {
-    this.prepareAndMoveService.reloadData$.pipe(untilDestroyed(this)).subscribe((data: number) => {
-      if (data) {
-        this.dialogRef.close(true);
-        //DGDC TODO: mirar por qué no se puede abrir de nuevo la modal
-        window.location.reload();
-      }
-    });
+    this.prepareAndMoveService.reloadData$
+      .pipe(untilDestroyed(this))
+      .subscribe((data: 'MOVES_IN_THIS_WORKFLOW' | 'MOVES_IN_OTHER_WORKFLOWS') => {
+        if (data) {
+          this.dialogRef.close(true);
+        }
+      });
   }
 
   public close(): void {
