@@ -3,6 +3,8 @@ import { Component, OnInit, ViewChild } from '@angular/core';
 import { FormArray, FormBuilder, FormGroup, UntypedFormArray, Validators } from '@angular/forms';
 import { MatDialogRef } from '@angular/material/dialog';
 import { MatStepper } from '@angular/material/stepper';
+import { ActivatedRoute, Router } from '@angular/router';
+import { RouteConstants } from '@app/constants/route.constants';
 import { ConcenetError } from '@app/types/error';
 import { marker } from '@biesbjerg/ngx-translate-extract-marker';
 import CardColumnDTO from '@data/models/cards/card-column-dto';
@@ -70,7 +72,9 @@ export class NewCardComponent implements OnInit {
     private globalMessageService: GlobalMessageService,
     private cardsService: CardService,
     private logger: NGXLogger,
-    private workflowService: WorkflowsService
+    private workflowService: WorkflowsService,
+    private route: ActivatedRoute,
+    private router: Router
   ) {}
 
   ngOnInit() {
@@ -113,6 +117,12 @@ export class NewCardComponent implements OnInit {
             )
             .subscribe({
               next: () => {
+                this.redirectTo([
+                  RouteConstants.DASHBOARD,
+                  RouteConstants.WORKFLOWS,
+                  cardBody.workflowId,
+                  RouteConstants.WORKFLOWS_BOARD_VIEW
+                ]);
                 this.dialogRef.close();
               },
               error: (error: ConcenetError) => {
@@ -125,6 +135,9 @@ export class NewCardComponent implements OnInit {
             });
         }
       });
+  }
+  public redirectTo(uri: unknown[]) {
+    this.router.navigate([RouteConstants.DASHBOARD], { skipLocationChange: true }).then(() => this.router.navigate(uri));
   }
   public closeModal(): void {
     this.confirmationDialog
