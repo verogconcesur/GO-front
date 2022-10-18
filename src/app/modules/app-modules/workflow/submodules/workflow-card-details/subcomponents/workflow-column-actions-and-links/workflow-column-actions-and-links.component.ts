@@ -30,6 +30,7 @@ export class WorkflowColumnActionsAndLinksComponent implements OnInit {
   public idCard: number = null;
   public labels = {
     move: marker('common.move'),
+    send: marker('common.send'),
     externalLinks: marker('common.externalLinks'),
     directLinks: marker('common.directLinks')
   };
@@ -132,7 +133,13 @@ export class WorkflowColumnActionsAndLinksComponent implements OnInit {
 
   public moveCard(): void {
     this.dialog.open(MoveCardDialogComponent, {
-      data: { cardInstance: this.cardInstance, idCard: this.idCard, card: this.card }
+      data: { cardInstance: this.cardInstance, idCard: this.idCard, card: this.card, view: 'MOVES_IN_THIS_WORKFLOW' }
+    });
+  }
+
+  public sendCardToOtherWorkflow(): void {
+    this.dialog.open(MoveCardDialogComponent, {
+      data: { cardInstance: this.cardInstance, idCard: this.idCard, card: this.card, view: 'MOVES_IN_OTHER_WORKFLOWS' }
     });
   }
 

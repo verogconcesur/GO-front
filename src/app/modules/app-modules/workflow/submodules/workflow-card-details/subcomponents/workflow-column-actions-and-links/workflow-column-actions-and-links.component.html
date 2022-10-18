@@ -32,9 +32,13 @@
     </div>
     <div class="actions-wrapper__move">
         <div class="buttons">
-            <button mat-raised-button color="primary" (click)="moveCard()">
+            <button mat-raised-button class="move" color="primary" (click)="moveCard()">
                 <mat-icon>keyboard_arrow_right</mat-icon>
                 <label>{{ labels.move | translate }}</label>
+            </button>
+            <button mat-raised-button class="send" color="accent" (click)="sendCardToOtherWorkflow()">
+                <mat-icon>call_split</mat-icon>
+                <label>{{ labels.send | translate }}</label>
             </button>
         </div>
     </div>
