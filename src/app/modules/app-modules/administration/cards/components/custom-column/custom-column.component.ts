@@ -108,7 +108,7 @@ export class CustomColumnComponent implements OnInit {
       type: [tab ? tab.type : null, [Validators.required]],
       contentTypeId: [tab ? tab.contentTypeId : null, [Validators.required]],
       contentSourceId: [tab ? tab.contentSourceId : null],
-      tabItems: this.getTabItemsConfig(tab ? tab.tabItems : null),
+      tabItems: this.getTabItems(tab ? tab.tabItems : null),
       templateId: [tab ? tab.templateId : null]
     });
   };
@@ -125,29 +125,31 @@ export class CustomColumnComponent implements OnInit {
       });
     }
   }
-  public getTabItemsConfig(tabItems?: CardColumnTabItemDTO[]): UntypedFormArray {
+  public getTabItems(tabItems?: CardColumnTabItemDTO[]): UntypedFormArray {
     const fa = this.fb.array([]);
     if (tabItems?.length) {
-      if (tabItems[0].typeItem === 'VARIABLE') {
-        tabItems.forEach((tab: CardColumnTabItemDTO, index: number) => {
-          (fa as UntypedFormArray).push(
-            this.newTabItemForm(
-              tab.typeItem,
-              {
-                id: tab.id,
-                attributeName: tab.tabItemConfigVariable.variable.attributeName,
-                name: tab.name,
-                variableId: tab.tabItemConfigVariable.variable.id,
-                visible: tab.tabItemConfigVariable.visible,
-                itemConfigvariableId: tab.tabItemConfigVariable.id
-              },
-              index + 1
-            )
-          );
-        });
-      }
+      tabItems.forEach((tab: CardColumnTabItemDTO, index: number) => {
+        switch (tab.typeItem) {
+          case 'VARIABLE':
+            fa.push(this.generateTabItemVariable(tab, index));
+        }
+      });
     }
     return fa;
+  }
+  public generateTabItemVariable(tabItem: CardColumnTabItemDTO, index: number): UntypedFormGroup {
+    return this.newTabItemVariable(
+      {
+        id: tabItem.id,
+        attributeName: tabItem.tabItemConfigVariable.variable.attributeName,
+        name: tabItem.name,
+        variableId: tabItem.tabItemConfigVariable.variable.id,
+        visible: tabItem.tabItemConfigVariable.visible,
+        itemConfigvariableId: tabItem.tabItemConfigVariable.id,
+        tabId: tabItem.tabId
+      },
+      index + 1
+    );
   }
   public changeContentType(firstLoad?: boolean): void {
     if (!firstLoad) {
@@ -200,8 +202,7 @@ export class CustomColumnComponent implements OnInit {
       });
     }
   }
-  public newTabItemForm = (
-    type: 'TITLE' | 'TEXT' | 'INPUT' | 'LIST' | 'TABLE' | 'OPTION' | 'VARIABLE' | 'LINK' | 'ACTION',
+  public newTabItemVariable = (
     data?: {
       id?: number;
       variableId?: number;
@@ -209,41 +210,39 @@ export class CustomColumnComponent implements OnInit {
       name?: string;
       visible?: boolean;
       itemConfigvariableId?: number;
+      tabId?: number;
     },
     orderNumber?: number
-  ): UntypedFormGroup => {
-    let formGroup: UntypedFormGroup = null;
-    if (type === 'VARIABLE') {
-      formGroup = this.fb.group({
-        id: [data ? data.id : null],
-        attributeName: [{ value: data ? data.attributeName : '', disabled: true }],
-        name: [data ? data.name : '', Validators.required],
-        orderNumber: [orderNumber, Validators.required],
-        tabId: [this.tabId],
-        tabItemConfigVariable: this.fb.group({
-          visible: [data.visible],
-          variable: this.fb.group({
-            attributeName: [data ? data.attributeName : ''],
-            id: [data.variableId]
-          }),
-          id: [data.itemConfigvariableId ? data.itemConfigvariableId : null]
+  ): UntypedFormGroup =>
+    this.fb.group({
+      id: [data ? data.id : null],
+      attributeName: [{ value: data ? data.attributeName : '', disabled: true }],
+      name: [data ? data.name : '', Validators.required],
+      orderNumber: [orderNumber, Validators.required],
+      tabId: [data ? data.tabId : null],
+      tabItemConfigVariable: this.fb.group({
+        visible: [data.visible],
+        variable: this.fb.group({
+          attributeName: [data ? data.attributeName : ''],
+          id: [data.variableId]
         }),
-        typeItem: [type]
-      });
-    }
-    return formGroup;
-  };
+        id: [data.itemConfigvariableId ? data.itemConfigvariableId : null]
+      }),
+      typeItem: ['VARIABLE']
+    });
   public getTabSlots = (firstLoad?: boolean) => {
     if (firstLoad) {
       this.tabContentSlotsList = [];
       if (
         this.formTab &&
+        this.formTab.value.id &&
         this.formTab.value.contentTypeId &&
         this.formTab.value.contentSourceId &&
         this.formTab.value.tabItems?.length
       ) {
-        this.tabSlotsBackup[`${this.formTab.value.contentTypeId}-${this.formTab.value.contentSourceId}`] =
-          this.formTab.value.tabItems;
+        this.tabSlotsBackup[
+          `${this.formTab.value.id}-${this.formTab.value.contentTypeId}-${this.formTab.value.contentSourceId}`
+        ] = this.formTab.value.tabItems;
       }
     } else if (
       (this.formTab && this.formTab.value.contentTypeId === 1) ||
@@ -252,18 +251,24 @@ export class CustomColumnComponent implements OnInit {
       while ((this.formTab.get('tabItems') as UntypedFormArray).length !== 0) {
         (this.formTab.get('tabItems') as UntypedFormArray).removeAt(0);
       }
-      if (this.tabSlotsBackup[`${this.formTab.value.contentTypeId}-${this.formTab.value.contentSourceId}`]?.length) {
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        this.tabSlotsBackup[`${this.formTab.value.contentTypeId}-${this.formTab.value.contentSourceId}`].forEach((data: any) => {
+      if (
+        this.tabSlotsBackup[`${this.formTab.value.id}-${this.formTab.value.contentTypeId}-${this.formTab.value.contentSourceId}`]
+          ?.length
+      ) {
+        this.tabSlotsBackup[
+          `${this.formTab.value.id}-${this.formTab.value.contentTypeId}-${this.formTab.value.contentSourceId}`
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        ].forEach((data: any) => {
           (this.formTab.get('tabItems') as UntypedFormArray).push(
-            this.newTabItemForm(
-              'VARIABLE',
+            this.newTabItemVariable(
               {
                 id: data.id,
                 attributeName: data.tabItemConfigVariable.variable.attributeName,
                 name: data.name,
                 variableId: data.tabItemConfigVariable.variable.id,
-                visible: data.tabItemConfigVariable.visible
+                visible: data.tabItemConfigVariable.visible,
+                itemConfigvariableId: data.tabItemConfigVariable.id,
+                tabId: data.tabId
               },
               data.orderNumber
             )
@@ -274,9 +279,14 @@ export class CustomColumnComponent implements OnInit {
           this.tabContentSlotsList = res;
           this.tabContentSlotsList?.forEach((line, index) => {
             (this.formTab.get('tabItems') as UntypedFormArray).push(
-              this.newTabItemForm(
-                'VARIABLE',
-                { attributeName: line.attributeName, name: line.attributeName, variableId: line.id, visible: true },
+              this.newTabItemVariable(
+                {
+                  attributeName: line.attributeName,
+                  name: line.attributeName,
+                  variableId: line.id,
+                  visible: true,
+                  tabId: this.formTab.value.id
+                },
                 index + 1
               )
             );
