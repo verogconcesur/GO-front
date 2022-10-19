@@ -90,7 +90,11 @@ export class WorkflowCardDetailsComponent implements OnInit {
         this.close();
       } else if (resp === 'MOVES_IN_OTHER_WORKFLOWS') {
         //Si el movimiento ha sido a otro workflow recargo todo.
-        window.location.reload();
+        // window.location.reload();
+        this.card = null;
+        this.cardInstance = null;
+        this.columnsConfig = null;
+        this.getCardInfo();
       }
     });
   }
