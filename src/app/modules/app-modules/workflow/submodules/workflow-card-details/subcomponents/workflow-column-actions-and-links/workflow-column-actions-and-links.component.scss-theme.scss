@@ -35,6 +35,7 @@
             }
           }
           &.send {
+            background-color: mat-color($primary, A200);
             label {
               color: mat-contrast($primary, 400);
             }

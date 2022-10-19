@@ -17,6 +17,6 @@ export default interface WorkflowSubstateEventDTO {
   sendMailTemplate?: TemplatesCommunicationDTO;
   signDocument?: boolean;
   signDocumentTemplate?: TemplatesCommunicationDTO;
-  substateEventType?: 'IN' | 'OUT';
+  substateEventType?: 'IN' | 'OUT' | 'MOV';
   templateComunication?: TemplatesCommunicationDTO;
 }
