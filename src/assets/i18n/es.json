@@ -348,6 +348,7 @@
     },
     "prepareMovement": {
         "inTab": "Eventos de entrada al nuevo estado",
+        "moveTab": "Eventos del movimiento",
         "outTab": "Eventos de salida del estado actual",
         "size": "Indique el tamaño de tarjeta",
         "sizePlaceholder": "Tamaño de tarjerta",
