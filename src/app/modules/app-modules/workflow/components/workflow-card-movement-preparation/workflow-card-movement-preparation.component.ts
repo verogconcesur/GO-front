@@ -2,7 +2,6 @@ import { Component, Inject, OnInit } from '@angular/core';
 import { FormBuilder, UntypedFormGroup, Validators } from '@angular/forms';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { marker } from '@biesbjerg/ngx-translate-extract-marker';
-import UserDTO from '@data/models/user-permissions/user-dto';
 import WorkflowSubstateEventDTO from '@data/models/workflows/workflow-substate-event-dto';
 import WorkflowSubstateUserDTO from '@data/models/workflows/workflow-substate-user-dto';
 // eslint-disable-next-line max-len
@@ -21,16 +20,21 @@ export class WorkflowCardMovementPreparationComponent implements OnInit {
   public preparationInForm: UntypedFormGroup = null;
   public preparationOut: WorkflowSubstateEventDTO = null;
   public preparationOutForm: UntypedFormGroup = null;
+  public preparationMov: WorkflowSubstateEventDTO = null;
+  public preparationMovForm: UntypedFormGroup = null;
   public usersIn: WorkflowSubstateUserDTO[] = [];
   public usersOut: WorkflowSubstateUserDTO[] = [];
+  public usersMov: WorkflowSubstateUserDTO[] = [];
   public userInDisabled = false;
   public userOutDisabled = false;
+  public userMovDisabled = false;
   public textEditorToolbarOptions: TextEditorWrapperConfigI = {
     addHtmlModificationOption: false
   };
   public labels = {
     in: marker('prepareMovement.inTab'),
     out: marker('prepareMovement.outTab'),
+    mov: marker('prepareMovement.moveTab'),
     title: marker('prepareMovement.title'),
     size: marker('prepareMovement.size'),
     sizePlaceholder: marker('prepareMovement.sizePlaceholder'),
@@ -44,8 +48,8 @@ export class WorkflowCardMovementPreparationComponent implements OnInit {
     taskLabel: marker('prepareMovement.taskLabel'),
     taskPlaceholder: marker('prepareMovement.taskPlaceholder')
   };
-  public tabsToShow: ('IN' | 'OUT')[] = [];
-  public tabToShow: 'IN' | 'OUT';
+  public tabsToShow: ('IN' | 'OUT' | 'MOV')[] = [];
+  public tabToShow: 'IN' | 'OUT' | 'MOV';
   public sendToOtherWorkflow = false;
 
   constructor(
@@ -63,51 +67,53 @@ export class WorkflowCardMovementPreparationComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
-    // this.data.preparation = [...this.data.preparation, { ...this.data.preparation[0], substateEventType: 'OUT' }];
+    this.usersIn = this.data.usersIn;
+    this.usersOut = this.data.usersOut;
+    this.usersMov = this.data.usersOut;
     this.data.preparation.forEach((p: WorkflowSubstateEventDTO) => {
-      if (p.substateEventType === 'IN') {
+      if (
+        p.substateEventType === 'IN' &&
+        (p.requiredSize || (p.requiredUser && !this.findUserIn(this.data.selectedUser, this.usersIn)) || p.sendMail)
+      ) {
         this.tabsToShow.push('IN');
         this.preparationIn = p;
-      } else {
+      } else if (
+        p.substateEventType === 'OUT' &&
+        (p.requiredSize || (p.requiredUser && !this.findUserIn(this.data.selectedUser, this.usersOut)) || p.sendMail)
+      ) {
         this.tabsToShow.push('OUT');
         this.preparationOut = p;
+      } else if (
+        p.substateEventType === 'MOV' &&
+        (p.requiredSize || (p.requiredUser && !this.findUserIn(this.data.selectedUser, this.usersMov)) || p.sendMail)
+      ) {
+        this.tabsToShow.push('MOV');
+        this.preparationMov = p;
       }
-      this.tabToShow = this.tabsToShow.length === 2 ? 'OUT' : this.tabsToShow[0];
     });
+    this.tabToShow = this.tabsToShow[0];
     if (this.data.view === 'MOVES_IN_OTHER_WORKFLOWS') {
       this.sendToOtherWorkflow = true;
     }
-    this.usersIn = this.data.usersIn;
-    this.usersOut = this.data.usersOut;
-    if (
-      this.data.selectedUser?.user?.id &&
-      this.usersIn.find((user: WorkflowSubstateUserDTO) => user.user.id === this.data.selectedUser?.user?.id)
-    ) {
+    if (this.data.selectedUser?.user?.id && this.findUserIn(this.data.selectedUser, this.usersIn)) {
       this.userInDisabled = true;
     }
-    if (
-      this.data.selectedUser?.user?.id &&
-      this.usersOut.find((user: WorkflowSubstateUserDTO) => user.user.id === this.data.selectedUser?.user?.id)
-    ) {
+    if (this.data.selectedUser?.user?.id && this.findUserIn(this.data.selectedUser, this.usersOut)) {
       this.userOutDisabled = true;
+      this.userMovDisabled = true;
     }
     this.initForm();
   }
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   public tabSelected(event: any) {
-    if (this.tabsToShow.length === 1) {
-      this.tabToShow = this.tabsToShow[0];
-    } else if (this.tabsToShow.length === 2) {
-      if (event.index === 1) {
-        this.tabToShow = 'IN';
-      } else {
-        this.tabToShow = 'OUT';
-      }
-    }
+    this.tabToShow = this.tabsToShow[event.index];
   }
 
   public initForm(): void {
+    console.log('In', this.preparationIn);
+    console.log('Out', this.preparationOut);
+    console.log('Mov', this.preparationMov);
     if (this.sendToOtherWorkflow) {
       this.taskForm = this.fb.group({
         description: [null, Validators.required]
@@ -121,12 +127,9 @@ export class WorkflowCardMovementPreparationComponent implements OnInit {
       if (this.preparationIn.requiredUser) {
         this.preparationInForm.addControl(
           'user',
-          this.fb.control(
-            this.data.selectedUser
-              ? this.usersIn.find((user: WorkflowSubstateUserDTO) => user.user.id === this.data.selectedUser?.user?.id)
-              : null,
-            [Validators.required]
-          )
+          this.fb.control(this.data.selectedUser ? this.findUserIn(this.data.selectedUser, this.usersIn) : null, [
+            Validators.required
+          ])
         );
       }
       if (this.preparationIn.sendMail) {
@@ -149,12 +152,9 @@ export class WorkflowCardMovementPreparationComponent implements OnInit {
       if (this.preparationOut.requiredUser) {
         this.preparationOutForm.addControl(
           'user',
-          this.fb.control(
-            this.data.selectedUser
-              ? this.usersOut.find((user: WorkflowSubstateUserDTO) => user.user.id === this.data.selectedUser?.user?.id)
-              : null,
-            [Validators.required]
-          )
+          this.fb.control(this.data.selectedUser ? this.findUserIn(this.data.selectedUser, this.usersOut) : null, [
+            Validators.required
+          ])
         );
       }
       if (this.preparationOut.sendMail) {
@@ -169,7 +169,36 @@ export class WorkflowCardMovementPreparationComponent implements OnInit {
         );
       }
     }
+    if (this.preparationMov) {
+      this.preparationMovForm = this.fb.group({});
+      if (this.preparationMov.requiredSize) {
+        this.preparationMovForm.addControl('size', this.fb.control(null, [Validators.required]));
+      }
+      if (this.preparationMov.requiredUser) {
+        this.preparationMovForm.addControl(
+          'user',
+          this.fb.control(this.data.selectedUser ? this.findUserIn(this.data.selectedUser, this.usersMov) : null, [
+            Validators.required
+          ])
+        );
+      }
+      if (this.preparationMov.sendMail) {
+        this.preparationMovForm.addControl(
+          'template',
+          this.fb.control(
+            this.preparationMov.templateComunication?.processedTemplate
+              ? this.preparationMov.templateComunication.processedTemplate
+              : '',
+            [Validators.required]
+          )
+        );
+      }
+    }
     this.formsCreated = true;
+  }
+
+  public findUserIn(user: WorkflowSubstateUserDTO, users: WorkflowSubstateUserDTO[]): WorkflowSubstateUserDTO {
+    return users.find((item: WorkflowSubstateUserDTO) => item.user.id === user?.user?.id);
   }
 
   public textEditorContentChanged(html: string, form: UntypedFormGroup) {
@@ -180,11 +209,14 @@ export class WorkflowCardMovementPreparationComponent implements OnInit {
     }
   }
 
-  public getTabLabel(tab: 'IN' | 'OUT'): string {
+  public getTabLabel(tab: 'IN' | 'OUT' | 'MOV'): string {
     if (tab === 'IN') {
       return this.translateService.instant(this.labels.in);
+    } else if (tab === 'OUT') {
+      return this.translateService.instant(this.labels.out);
+    } else {
+      return this.translateService.instant(this.labels.mov);
     }
-    return this.translateService.instant(this.labels.out);
   }
 
   public close(): void {
@@ -195,11 +227,17 @@ export class WorkflowCardMovementPreparationComponent implements OnInit {
     this.dialogRef.close({
       task: this.taskForm ? this.taskForm.value : null,
       in: this.preparationInForm ? this.preparationInForm.value : null,
-      out: this.preparationOutForm ? this.preparationOutForm.value : null
+      out: this.preparationOutForm ? this.preparationOutForm.value : null,
+      mov: this.preparationMovForm ? this.preparationMovForm.value : null
     });
   }
 
   public disableSaveButton(): boolean {
-    return this.taskForm?.invalid || this.preparationInForm?.invalid || this.preparationOutForm?.invalid;
+    return (
+      this.taskForm?.invalid ||
+      this.preparationInForm?.invalid ||
+      this.preparationOutForm?.invalid ||
+      this.preparationMovForm?.invalid
+    );
   }
 }
