@@ -51,14 +51,18 @@ export class WorkflowPrepareAndMoveService {
       .subscribe((data: WorkflowSubstateEventDTO[]) => {
         if (
           (data?.length &&
-            !data[0]?.requiredFields &&
-            !data[1]?.requiredFields &&
+            // !data[0]?.requiredFields &&
+            // !data[1]?.requiredFields &&
+            // !data[2]?.requiredFields &&
             (data[0]?.requiredSize ||
               data[0]?.requiredUser ||
               data[0]?.sendMail ||
               data[1]?.requiredSize ||
               data[1]?.requiredUser ||
-              data[1]?.sendMail)) ||
+              data[1]?.sendMail ||
+              data[2]?.requiredSize ||
+              data[2]?.requiredUser ||
+              data[2]?.sendMail)) ||
           view === 'MOVES_IN_OTHER_WORKFLOWS'
         ) {
           this.dialog
@@ -79,6 +83,7 @@ export class WorkflowPrepareAndMoveService {
                 task: { description: string };
                 in: { size: 'S' | 'M' | 'L' | 'XL'; user: WorkflowSubstateUserDTO; template: string };
                 out: { size: 'S' | 'M' | 'L' | 'XL'; user: WorkflowSubstateUserDTO; template: string };
+                mov: { size: 'S' | 'M' | 'L' | 'XL'; user: WorkflowSubstateUserDTO; template: string };
               }) => {
                 if (!res) {
                   //Recargamos para que al mover tarjeta en vista board no se quede pillado el hover de cdk drag and drop
@@ -88,7 +93,8 @@ export class WorkflowPrepareAndMoveService {
                 }
                 const events = {
                   in: data.find((event: WorkflowSubstateEventDTO) => event.substateEventType === 'IN'),
-                  out: data.find((event: WorkflowSubstateEventDTO) => event.substateEventType === 'OUT')
+                  out: data.find((event: WorkflowSubstateEventDTO) => event.substateEventType === 'OUT'),
+                  mov: data.find((event: WorkflowSubstateEventDTO) => event.substateEventType === 'MOV')
                 };
                 const newData: WorkflowSubstateEventDTO[] = [];
                 if (res.out && events.out) {
@@ -115,6 +121,18 @@ export class WorkflowPrepareAndMoveService {
                   }
                   newData.push(events.in);
                 }
+                if (res.mov && events.mov) {
+                  if (res.mov.size) {
+                    item.cardInstanceWorkflows[0].size = res.mov.size;
+                  }
+                  if (res.mov.template) {
+                    events.mov.templateComunication.processedTemplate = res.mov.template;
+                  }
+                  if (res.mov.user?.user?.id) {
+                    events.mov.requiredUserId = res.mov.user.user.id;
+                  }
+                  newData.push(events.mov);
+                }
                 if (res.task?.description) {
                   item.cardInstanceWorkflows[0].information = res.task.description;
                 }
@@ -130,7 +148,7 @@ export class WorkflowPrepareAndMoveService {
                 });
               }
             );
-        } else if (data?.length && (data[0]?.requiredFields || data[1].requiredFields)) {
+        } else if (data?.length) {
           item.cardInstanceWorkflows[0].workflowSubstateEvents = data;
           this.moveCard(item, move, user, dropZoneId, itemToReplace, view);
         } else {

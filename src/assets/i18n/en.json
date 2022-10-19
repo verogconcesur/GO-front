@@ -348,6 +348,7 @@
     },
     "prepareMovement": {
         "inTab": "Enter events",
+        "moveTab": "Movement events",
         "outTab": "Exit events",
         "size": "Choose a card size",
         "sizePlaceholder": "Card size",
