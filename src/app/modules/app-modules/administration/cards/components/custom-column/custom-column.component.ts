@@ -138,7 +138,8 @@ export class CustomColumnComponent implements OnInit {
                 attributeName: tab.tabItemConfigVariable.variable.attributeName,
                 name: tab.name,
                 variableId: tab.tabItemConfigVariable.variable.id,
-                visible: tab.tabItemConfigVariable.visible
+                visible: tab.tabItemConfigVariable.visible,
+                itemConfigvariableId: tab.tabItemConfigVariable.id
               },
               index + 1
             )
@@ -207,6 +208,7 @@ export class CustomColumnComponent implements OnInit {
       attributeName?: string;
       name?: string;
       visible?: boolean;
+      itemConfigvariableId?: number;
     },
     orderNumber?: number
   ): UntypedFormGroup => {
@@ -223,7 +225,8 @@ export class CustomColumnComponent implements OnInit {
           variable: this.fb.group({
             attributeName: [data ? data.attributeName : ''],
             id: [data.variableId]
-          })
+          }),
+          id: [data.itemConfigvariableId ? data.itemConfigvariableId : null]
         }),
         typeItem: [type]
       });
