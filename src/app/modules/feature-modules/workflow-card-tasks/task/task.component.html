@@ -4,7 +4,7 @@
         <div class="task-info">
             <div class="task-info__title">
                 <div>{{ labels.workflow | translate }} {{ task.workflow.name }} ({{ task.facility.name }})</div>
-                <div class="task-info__title__state">{{ labels.state | translate }}: {{ task.workflowSubstate.name }}</div>
+                <div class="task-info__title__state">{{ labels.state | translate }}: {{ getTaskState() }}</div>
             </div>
             <div class="task-info__info">{{ task.information }}</div>
             <div class="task-info__status">
