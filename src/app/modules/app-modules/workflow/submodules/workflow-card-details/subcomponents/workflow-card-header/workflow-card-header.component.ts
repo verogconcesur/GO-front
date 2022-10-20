@@ -38,7 +38,7 @@ export class WorkflowCardHeaderComponent implements OnInit {
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   public getUsers(): any[] {
-    if (this.card?.cardInstanceWorkflow?.cardInstanceWorkflowUsers) {
+    if (this.card?.cardInstanceWorkflow?.cardInstanceWorkflowUsers?.length) {
       return this.card.cardInstanceWorkflow.cardInstanceWorkflowUsers;
     }
     return [];
