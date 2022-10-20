@@ -51,6 +51,6 @@
 </div>
 <mat-menu #users="matMenu">
     <div mat-menu-item *ngFor="let user of getUsers()">
-        {{ user.user.fullName }}
+        {{ user?.user?.fullName }}
     </div>
 </mat-menu>
