@@ -181,6 +181,7 @@ export class MoveCardDialogComponent implements OnInit {
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   public moveCardTo(node: any): void {
+    console.log(node.move);
     this.prepareAndMoveService.prepareAndMove(
       {
         cardId: null,
@@ -290,8 +291,10 @@ export class MoveCardDialogComponent implements OnInit {
             movesByWorkflow.children[0].workflowSubstateTargets[0].children = [
               ...movesByWorkflow.children[0].workflowSubstateTargets[0].workflowSubstateUser
             ].map((user: WorkflowSubstateUserDTO) => {
-              user.name = user.user.fullName;
-              user.move = move;
+              if (!user.move) {
+                user.name = this.getUserFullName(user.user);
+                user.move = move;
+              }
               return user;
             });
           } else {
@@ -312,8 +315,10 @@ export class MoveCardDialogComponent implements OnInit {
             if (move.workflowSubstateTarget.workflowState.front) {
               movesByState.workflowSubstateTargets.forEach((wss: WorkflowSubstateDTO) => {
                 wss.children = [...wss.workflowSubstateUser].map((user: WorkflowSubstateUserDTO) => {
-                  user.name = user.user.fullName;
-                  user.move = move;
+                  if (!user.move) {
+                    user.name = this.getUserFullName(user.user);
+                    user.move = move;
+                  }
                   return user;
                 });
               });
@@ -332,8 +337,10 @@ export class MoveCardDialogComponent implements OnInit {
             if (move.workflowSubstateTarget.workflowState.front) {
               newMoveByState.workflowSubstateTargets.forEach((wss: WorkflowSubstateDTO) => {
                 wss.children = [...wss.workflowSubstateUser].map((user: WorkflowSubstateUserDTO) => {
-                  user.name = this.getUserFullName(user.user);
-                  user.move = move;
+                  if (!user.move) {
+                    user.name = this.getUserFullName(user.user);
+                    user.move = move;
+                  }
                   return user;
                 });
               });
