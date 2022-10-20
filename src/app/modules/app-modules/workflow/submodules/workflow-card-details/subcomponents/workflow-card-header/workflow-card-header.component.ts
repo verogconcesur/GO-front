@@ -2,6 +2,7 @@ import { Component, Input, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { marker } from '@biesbjerg/ngx-translate-extract-marker';
 import CardInstanceDTO from '@data/models/cards/card-instance-dto';
+import WorkflowSubstateUserDTO from '@data/models/workflows/workflow-substate-user-dto';
 import { CardService } from '@data/services/cards.service';
 import { TranslateService } from '@ngx-translate/core';
 import { GlobalMessageService } from '@shared/services/global-message.service';
@@ -33,6 +34,14 @@ export class WorkflowCardHeaderComponent implements OnInit {
 
   public getColorsClass(): string {
     return `x-${this.card.colors.length}`;
+  }
+
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  public getUsers(): any[] {
+    if (this.card?.cardInstanceWorkflow?.cardInstanceWorkflowUsers) {
+      return this.card.cardInstanceWorkflow.cardInstanceWorkflowUsers;
+    }
+    return [];
   }
 
   public changeFollowingCard(): void {
