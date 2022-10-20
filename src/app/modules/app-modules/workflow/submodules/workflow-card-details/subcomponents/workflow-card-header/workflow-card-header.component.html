@@ -43,9 +43,14 @@
             <label>{{ labels.following | translate }}</label
             ><mat-icon>remove_red_eye</mat-icon>
         </button>
-        <button class="wcard-header__people-btn" mat-button>
+        <button class="wcard-header__people-btn" [matMenuTriggerFor]="users" mat-button>
             <label>{{ card?.users.length }}</label>
             <mat-icon>people_outline</mat-icon>
         </button>
     </div>
 </div>
+<mat-menu #users="matMenu">
+    <div mat-menu-item *ngFor="let user of getUsers()">
+        {{ user.user.fullName }}
+    </div>
+</mat-menu>

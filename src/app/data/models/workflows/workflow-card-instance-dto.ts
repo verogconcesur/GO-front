@@ -1,3 +1,4 @@
+import UserDTO from '../user-permissions/user-dto';
 import WorkflowCardDTO from './workflow-card-dto';
 import WorkflowSubstateEventDTO from './workflow-substate-event-dto';
 
@@ -10,6 +11,7 @@ export default interface WorkflowCardInstanceDTO {
     dateAssignment: string;
     id: number;
     userId: number;
+    user?: UserDTO;
   }[];
   id: number;
   facilityId: number;
