@@ -111,9 +111,6 @@ export class WorkflowCardMovementPreparationComponent implements OnInit {
   }
 
   public initForm(): void {
-    console.log('In', this.preparationIn);
-    console.log('Out', this.preparationOut);
-    console.log('Mov', this.preparationMov);
     if (this.sendToOtherWorkflow) {
       this.taskForm = this.fb.group({
         description: [null, Validators.required]
