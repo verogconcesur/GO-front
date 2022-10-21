@@ -15,7 +15,10 @@ import { GlobalMessageService } from '@shared/services/global-message.service';
 import { map, take } from 'rxjs/operators';
 import { removeItemInFormArray } from '@shared/utils/removeItemInFormArray';
 import WorkflowCardSlotDTO from '@data/models/workflows/workflow-card-slot-dto';
-import CardColumnTabItemDTO from '@data/models/cards/card-column-tab-item-dto';
+import CardColumnTabItemDTO, {
+  TabItemConfigListItemDTO,
+  TabItemConfigTableColDTO
+} from '@data/models/cards/card-column-tab-item-dto';
 import TemplatesCommonDTO from '@data/models/templates/templates-common-dto';
 
 @Component({
@@ -130,12 +133,149 @@ export class CustomColumnComponent implements OnInit {
     if (tabItems?.length) {
       tabItems.forEach((tab: CardColumnTabItemDTO, index: number) => {
         switch (tab.typeItem) {
+          case 'TITLE':
+            fa.push(this.generateTabItemTitle(tab, index));
+            break;
+          case 'TEXT':
+            fa.push(this.generateTabItemText(tab, index));
+            break;
+          case 'INPUT':
+            fa.push(this.generateTabItemInput(tab, index));
+            break;
+          case 'LIST':
+            fa.push(this.generateTabItemList(tab, index));
+            break;
+          case 'TABLE':
+            fa.push(this.generateTabItemTable(tab, index));
+            break;
+          case 'OPTION':
+            fa.push(this.generateTabItemOption(tab, index));
+            break;
           case 'VARIABLE':
             fa.push(this.generateTabItemVariable(tab, index));
+            break;
         }
       });
     }
     return fa;
+  }
+  public generateTabItemTitle(tabItem: CardColumnTabItemDTO, index: number): UntypedFormGroup {
+    return this.fb.group({
+      id: [tabItem ? tabItem.id : null],
+      tabId: [tabItem ? tabItem.tabId : null],
+      typeItem: ['TITLE'],
+      orderNumber: [index + 1, Validators.required],
+      name: [tabItem ? tabItem.name : null],
+      tabItemConfigTitle: this.fb.group({
+        id: [tabItem?.tabItemConfigTitle?.id ? tabItem.tabItemConfigTitle.id : null],
+        value: [tabItem?.tabItemConfigTitle?.value ? tabItem.tabItemConfigTitle.value : null]
+      })
+    });
+  }
+  public generateTabItemText(tabItem: CardColumnTabItemDTO, index: number): UntypedFormGroup {
+    return this.fb.group({
+      id: [tabItem ? tabItem.id : null],
+      tabId: [tabItem ? tabItem.tabId : null],
+      typeItem: ['TEXT'],
+      orderNumber: [index + 1, Validators.required],
+      name: [tabItem ? tabItem.name : null],
+      tabItemConfigText: this.fb.group({
+        id: [tabItem?.tabItemConfigText?.id ? tabItem.tabItemConfigText.id : null],
+        value: [tabItem?.tabItemConfigText?.value ? tabItem.tabItemConfigText.value : null]
+      })
+    });
+  }
+  public generateTabItemInput(tabItem: CardColumnTabItemDTO, index: number): UntypedFormGroup {
+    return this.fb.group({
+      id: [tabItem ? tabItem.id : null],
+      tabId: [tabItem ? tabItem.tabId : null],
+      typeItem: ['INPUT'],
+      orderNumber: [index + 1, Validators.required],
+      name: [tabItem ? tabItem.name : null],
+      tabItemConfigInput: this.fb.group({
+        id: [tabItem?.tabItemConfigInput?.id ? tabItem.tabItemConfigInput.id : null],
+        dataType: [tabItem?.tabItemConfigInput?.dataType ? tabItem.tabItemConfigInput.dataType : null],
+        dateApplyColor: [tabItem?.tabItemConfigInput?.dateApplyColor ? tabItem.tabItemConfigInput.dateApplyColor : null],
+        dateColor: [tabItem?.tabItemConfigInput?.dateColor ? true : false],
+        dateLimit: [tabItem?.tabItemConfigInput?.dateLimit ? true : false],
+        dateType: [tabItem?.tabItemConfigInput?.dateType ? tabItem.tabItemConfigInput.dateType : null],
+        mandatory: [tabItem?.tabItemConfigInput?.mandatory ? true : false],
+        numDecimals: [tabItem?.tabItemConfigInput?.numDecimals ? tabItem.tabItemConfigInput.numDecimals : 2]
+      })
+    });
+  }
+  public generateTabItemList(tabItem: CardColumnTabItemDTO, index: number): UntypedFormGroup {
+    return this.fb.group({
+      id: [tabItem ? tabItem.id : null],
+      tabId: [tabItem ? tabItem.tabId : null],
+      typeItem: ['LIST'],
+      orderNumber: [index + 1, Validators.required],
+      name: [tabItem ? tabItem.name : null],
+      tabItemConfigList: this.fb.group({
+        id: [tabItem?.tabItemConfigList?.id ? tabItem.tabItemConfigList.id : null],
+        mandatory: [tabItem?.tabItemConfigList?.mandatory ? true : false],
+        selectionType: [tabItem?.tabItemConfigList?.selectionType ? tabItem?.tabItemConfigList?.selectionType : 'SIMPLE'],
+        listItems: this.generateTabItemListItems(tabItem)
+      })
+    });
+  }
+  public generateTabItemListItems(tabItem: CardColumnTabItemDTO): FormArray {
+    const fa = this.fb.array([]);
+    tabItem.tabItemConfigList.listItems.forEach((listItem: TabItemConfigListItemDTO) => {
+      fa.push(
+        this.fb.group({
+          id: [listItem?.id ? listItem?.id : null],
+          tabItemConfigListId: [listItem?.tabItemConfigListId ? listItem?.tabItemConfigListId : null],
+          value: [listItem?.value ? listItem?.value : null],
+          code: [listItem?.code ? listItem?.code : null]
+        })
+      );
+    });
+    return fa;
+  }
+  public generateTabItemTable(tabItem: CardColumnTabItemDTO, index: number): UntypedFormGroup {
+    return this.fb.group({
+      id: [tabItem ? tabItem.id : null],
+      tabId: [tabItem ? tabItem.tabId : null],
+      typeItem: ['TABLE'],
+      orderNumber: [index + 1, Validators.required],
+      name: [tabItem ? tabItem.name : null],
+      tabItemConfigTable: this.fb.group({
+        id: [tabItem?.tabItemConfigTable?.id ? tabItem.tabItemConfigTable.id : null],
+        readOption: [tabItem?.tabItemConfigTable?.readOption ? tabItem?.tabItemConfigTable?.readOption : 'READWRITE'],
+        tabItemConfigTableCols: this.generateTabItemConfigTableCols(tabItem)
+      })
+    });
+  }
+  public generateTabItemConfigTableCols(tabItem: CardColumnTabItemDTO): FormArray {
+    const fa = this.fb.array([]);
+    tabItem.tabItemConfigTable.tabItemConfigTableCols.forEach((col: TabItemConfigTableColDTO, index: number) => {
+      fa.push(
+        this.fb.group({
+          id: [col?.id ? col?.id : null],
+          dataType: [col?.dataType ? col?.dataType : 'STRING'],
+          header: [col?.header ? col?.header : null],
+          mandatory: [col?.mandatory ? true : false],
+          orderNumber: [index + 1]
+        })
+      );
+    });
+    return fa;
+  }
+  public generateTabItemOption(tabItem: CardColumnTabItemDTO, index: number): UntypedFormGroup {
+    return this.fb.group({
+      id: [tabItem ? tabItem.id : null],
+      tabId: [tabItem ? tabItem.tabId : null],
+      typeItem: ['OPTION'],
+      orderNumber: [index + 1, Validators.required],
+      name: [tabItem ? tabItem.name : null],
+      tabItemConfigOption: this.fb.group({
+        id: [tabItem?.tabItemConfigOption?.id ? tabItem.tabItemConfigOption.id : null],
+        applyColor: [tabItem?.tabItemConfigOption?.applyColor ? tabItem.tabItemConfigOption.applyColor : null],
+        color: [tabItem?.tabItemConfigOption?.color ? tabItem.tabItemConfigOption.color : null],
+        overridePriority: [tabItem?.tabItemConfigOption?.overridePriority ? true : false]
+      })
+    });
   }
   public generateTabItemVariable(tabItem: CardColumnTabItemDTO, index: number): UntypedFormGroup {
     return this.newTabItemVariable(
@@ -151,6 +291,34 @@ export class CustomColumnComponent implements OnInit {
       index + 1
     );
   }
+  public newTabItemVariable = (
+    data?: {
+      id?: number;
+      variableId?: number;
+      attributeName?: string;
+      name?: string;
+      visible?: boolean;
+      itemConfigvariableId?: number;
+      tabId?: number;
+    },
+    orderNumber?: number
+  ): UntypedFormGroup =>
+    this.fb.group({
+      id: [data ? data.id : null],
+      attributeName: [{ value: data ? data.attributeName : '', disabled: true }],
+      name: [data ? data.name : '', Validators.required],
+      orderNumber: [orderNumber, Validators.required],
+      tabId: [data ? data.tabId : null],
+      tabItemConfigVariable: this.fb.group({
+        visible: [data.visible],
+        variable: this.fb.group({
+          attributeName: [data ? data.attributeName : ''],
+          id: [data.variableId]
+        }),
+        id: [data.itemConfigvariableId ? data.itemConfigvariableId : null]
+      }),
+      typeItem: ['VARIABLE']
+    });
   public changeContentType(firstLoad?: boolean): void {
     if (!firstLoad) {
       this.formTab.get('templateId').setValue(null);
@@ -202,34 +370,7 @@ export class CustomColumnComponent implements OnInit {
       });
     }
   }
-  public newTabItemVariable = (
-    data?: {
-      id?: number;
-      variableId?: number;
-      attributeName?: string;
-      name?: string;
-      visible?: boolean;
-      itemConfigvariableId?: number;
-      tabId?: number;
-    },
-    orderNumber?: number
-  ): UntypedFormGroup =>
-    this.fb.group({
-      id: [data ? data.id : null],
-      attributeName: [{ value: data ? data.attributeName : '', disabled: true }],
-      name: [data ? data.name : '', Validators.required],
-      orderNumber: [orderNumber, Validators.required],
-      tabId: [data ? data.tabId : null],
-      tabItemConfigVariable: this.fb.group({
-        visible: [data.visible],
-        variable: this.fb.group({
-          attributeName: [data ? data.attributeName : ''],
-          id: [data.variableId]
-        }),
-        id: [data.itemConfigvariableId ? data.itemConfigvariableId : null]
-      }),
-      typeItem: ['VARIABLE']
-    });
+
   public getTabSlots = (firstLoad?: boolean) => {
     if (firstLoad) {
       this.tabContentSlotsList = [];
