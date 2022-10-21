@@ -1,5 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { Component, ElementRef, HostListener, NgZone, OnInit, ViewChild } from '@angular/core';
+import { ConcenetError } from '@app/types/error';
 import { marker } from '@biesbjerg/ngx-translate-extract-marker';
 import FacilityDTO from '@data/models/organization/facility-dto';
 import WorkflowCardDTO from '@data/models/workflows/workflow-card-dto';
@@ -10,7 +11,10 @@ import WorkflowSubstateDTO from '@data/models/workflows/workflow-substate-dto';
 import WorkflowSubstateUserDTO from '@data/models/workflows/workflow-substate-user-dto';
 import { WorkflowsService } from '@data/services/workflows.service';
 import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
+import { TranslateService } from '@ngx-translate/core';
+import { GlobalMessageService } from '@shared/services/global-message.service';
 import { ProgressSpinnerDialogService } from '@shared/services/progress-spinner-dialog.service';
+import { NGXLogger } from 'ngx-logger';
 import { forkJoin } from 'rxjs';
 import { take } from 'rxjs/operators';
 import { WorkflowDragAndDropService } from '../../aux-service/workflow-drag-and-drop.service';
@@ -49,6 +53,9 @@ export class WorkflowBoardViewComponent implements OnInit {
     private workflowService: WorkflowsService,
     private workflowFilterService: WorkflowFilterService,
     private spinnerService: ProgressSpinnerDialogService,
+    private globalMessageService: GlobalMessageService,
+    private logger: NGXLogger,
+    private translateService: TranslateService,
     private dragAndDropService: WorkflowDragAndDropService,
     private prepareAndMoveService: WorkflowPrepareAndMoveService
   ) {}
@@ -169,8 +176,6 @@ export class WorkflowBoardViewComponent implements OnInit {
   }
 
   private defineColumns() {
-    // this.wAnchorState = null;
-    // this.wNormalStates = [];
     setTimeout(() => {
       this.wAnchorState = this.wStatesData.find((state: WorkflowStateDTO) => state.anchor);
       this.wNormalStates = this.wStatesData
@@ -191,9 +196,15 @@ export class WorkflowBoardViewComponent implements OnInit {
           this.workflowInstances = data[0];
           this.mapWorkflowCardsWithInstances(data[1]);
         },
-        (errors) => {
+        (error: ConcenetError) => {
           this.spinnerService.hide(spinner);
-          console.log(errors);
+          this.workflowInstances = [];
+          this.mapWorkflowCardsWithInstances([]);
+          this.logger.error(error);
+          this.globalMessageService.showError({
+            message: error.message,
+            actionText: this.translateService.instant(marker('common.close'))
+          });
         }
       );
     }
