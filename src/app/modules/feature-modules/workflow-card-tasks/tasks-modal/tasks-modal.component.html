@@ -4,5 +4,8 @@
         <mat-icon>close</mat-icon>
     </button>
 
-    <app-task [task]="task"></app-task>
+    <app-task [task]="task" *ngIf="task"></app-task>
+    <div class="empty-wrapper" *ngIf="!task">
+        <h2>{{ labels.noData | translate }}</h2>
+    </div>
 </div>
