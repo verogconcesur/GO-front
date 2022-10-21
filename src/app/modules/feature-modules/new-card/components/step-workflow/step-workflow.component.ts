@@ -31,8 +31,8 @@ export class StepWorkflowComponent implements OnInit {
   public subStateList: WorkflowSubstateDTO[] = [];
   constructor(private workflowsService: WorkflowsService) {}
   public initialiceList() {
-    this.facilityList = this.formWorkflow.get('workflow').value.facilities;
-    this.entryStateList = this.formWorkflow.get('workflow').value.workflowStates;
+    this.facilityList = this.formWorkflow.get('workflow').value ? this.formWorkflow.get('workflow').value.facilities : [];
+    this.entryStateList = this.formWorkflow.get('workflow').value ? this.formWorkflow.get('workflow').value.workflowStates : [];
     const selectedFacility = this.formWorkflow.get('facility').value;
     if (selectedFacility) {
       this.formWorkflow.get('facility').setValue(
@@ -40,8 +40,7 @@ export class StepWorkflowComponent implements OnInit {
         { emitEvent: false }
       );
     } else if (this.facilityList.length === 1) {
-      this.formWorkflow.get('facility').setValue(this.facilityList[0],
-        { emitEvent: false });
+      this.formWorkflow.get('facility').setValue(this.facilityList[0], { emitEvent: false });
     }
     const selectedEntryState = this.formWorkflow.get('entryState').value;
     if (selectedEntryState) {
@@ -51,8 +50,7 @@ export class StepWorkflowComponent implements OnInit {
       );
       this.initialiceSubStates();
     } else if (this.entryStateList.length === 1) {
-      this.formWorkflow.get('entryState').setValue(this.entryStateList[0],
-        { emitEvent: false });
+      this.formWorkflow.get('entryState').setValue(this.entryStateList[0], { emitEvent: false });
       this.initialiceSubStates();
     }
   }
@@ -65,8 +63,7 @@ export class StepWorkflowComponent implements OnInit {
         { emitEvent: false }
       );
     } else if (this.subStateList.length === 1) {
-      this.formWorkflow.get('subState').setValue(this.subStateList[0],
-        { emitEvent: false });
+      this.formWorkflow.get('subState').setValue(this.subStateList[0], { emitEvent: false });
     }
   }
   ngOnInit(): void {
@@ -87,7 +84,9 @@ export class StepWorkflowComponent implements OnInit {
             this.workflowList.find((workflow: WorkflowCreateCardDTO) => workflow.id === this.currentWorkflowId),
             { emitEvent: false }
           );
-          this.initialiceList();
+          if (this.formWorkflow.get('workflow').value) {
+            this.initialiceList();
+          }
         }
       });
   }

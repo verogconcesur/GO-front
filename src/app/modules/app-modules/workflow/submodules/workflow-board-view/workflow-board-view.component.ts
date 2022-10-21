@@ -104,6 +104,8 @@ export class WorkflowBoardViewComponent implements OnInit {
           //En caso de que sea en este mismo workflow recargo la pantalla
           this.reloadCardData(+new Date());
           this.prepareAndMoveService.reloadData$.next(null);
+        } else if (data === 'MOVES_IN_OTHER_WORKFLOWS') {
+          this.prepareAndMoveService.reloadData$.next(null);
         }
       });
   }
