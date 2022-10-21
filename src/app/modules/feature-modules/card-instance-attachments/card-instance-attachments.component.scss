@@ -125,6 +125,7 @@
           text-overflow: ellipsis;
           text-align: center;
           cursor: default;
+          white-space: nowrap;
           mat-icon {
             position: absolute;
             display: none;

@@ -221,6 +221,9 @@ export class WorkflowNavbarComponent implements OnInit, OnDestroy {
             }
           }
           this.spinnerService.hide(spinner);
+          if (this.workflowList?.length === 1) {
+            this.workflowSelectionChange({ value: this.workflowList[0] });
+          }
         },
         (error) => {
           this.logger.error(error);
