@@ -27,4 +27,15 @@ export class TaskComponent implements OnInit {
   public getStatusLabel(): string {
     return this.task.taskStatus === 'COMPLETED' ? this.labels.completed : this.labels.pending;
   }
+
+  public getTaskState(): string {
+    let state = '';
+    if (this.task.workflowSubstate?.workflowState?.name) {
+      state = this.task.workflowSubstate?.workflowState?.name;
+    }
+    if (this.task.workflowSubstate?.name) {
+      state += ` (${this.task.workflowSubstate?.name})`;
+    }
+    return state;
+  }
 }
