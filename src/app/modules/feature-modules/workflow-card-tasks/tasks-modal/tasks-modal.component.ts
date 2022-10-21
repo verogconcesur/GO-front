@@ -18,6 +18,9 @@ import { take } from 'rxjs/operators';
 export class TasksModalComponent implements OnInit {
   public cardId: number = null;
   public task: CardTaskDTO = null;
+  public labels = {
+    noData: marker('errors.noDataToShow')
+  };
 
   constructor(
     private dialogRef: MatDialogRef<TasksModalComponent>,
