@@ -157,6 +157,14 @@
         "country": "Country",
         "create": "Create",
         "createdOn": "Created on",
+        "customTabItem": {
+            "INPUT": "Data input field",
+            "LIST": "Checklist",
+            "OPTION": "Checkbox",
+            "TABLE": "Table",
+            "TEXT": "Paragraph text",
+            "TITLE": "Headline"
+        },
         "data": "Data",
         "dateEnd": "Final date",
         "dateIni": "Initial date",

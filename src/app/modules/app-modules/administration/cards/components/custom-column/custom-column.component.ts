@@ -128,6 +128,12 @@ export class CustomColumnComponent implements OnInit {
       });
     }
   }
+  public editTabItem(tabItem: CardColumnTabItemDTO): void {
+    console.log(tabItem);
+  }
+  public newTabItem(tabItemType: string): void {
+    console.log(tabItemType);
+  }
   public getTabItems(tabItems?: CardColumnTabItemDTO[]): UntypedFormArray {
     const fa = this.fb.array([]);
     if (tabItems?.length) {
@@ -323,6 +329,9 @@ export class CustomColumnComponent implements OnInit {
     if (!firstLoad) {
       this.formTab.get('templateId').setValue(null);
       this.formTab.get('contentSourceId').setValue(null);
+      while ((this.formTab.get('tabItems') as UntypedFormArray).length !== 0) {
+        (this.formTab.get('tabItems') as UntypedFormArray).removeAt(0);
+      }
     }
     this.tabContentSourceList = [];
     this.formTab.get('contentSourceId').setValidators(null);
@@ -339,7 +348,6 @@ export class CustomColumnComponent implements OnInit {
           this.formTab.get('contentSourceId').setValidators([Validators.required]);
           break;
         case 3:
-          this.getContentSources();
           break;
         case 4:
           this.getTemplates('BUDGET');
