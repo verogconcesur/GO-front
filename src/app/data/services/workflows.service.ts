@@ -28,6 +28,7 @@ export class WorkflowsService {
   public facilitiesSelectedSubject$: BehaviorSubject<FacilityDTO[]> = new BehaviorSubject([]);
 
   private readonly GET_WORKFLOWS_PATH = '/api/workflows';
+  private readonly GET_MOCK_WORKFLOWS_PATH = '/api/mock/workflow';
   private readonly GET_WORKFLOWS_CREATECARD_PATH = '/api/cardInstanceWorkflow/createCard/getWorkflows';
   private readonly GET_WORKFLOWS_LIST_PATH = '/list';
   private readonly GET_WORKFLOWS_FACILITY_PATH = '/facility';
@@ -38,6 +39,7 @@ export class WorkflowsService {
   private readonly GET_WORKFLOW_MOVEMENT_PATH = '/workflowMovement';
   private readonly GET_CARD_INSTANCE_WORKFLOW = '/cardInstanceWorkflow';
   private readonly GET_WORKFLOWS_ORDER_PATH = '/orders';
+  private readonly SYNCRONIZE_PATH = '/synchronize';
   constructor(@Inject(ENV) private env: Env, private http: HttpClient, private workflowFilterService: WorkflowFilterService) {}
 
   /**
@@ -175,5 +177,13 @@ export class WorkflowsService {
           `${this.GET_WORKFLOW_MOVEMENT_PATH}/${move.id}`
       )
       .pipe(catchError((error) => throwError(error.error as ConcenetError)));
+  }
+
+  public syncData(workflowId: number, facilityId: number): Observable<any> {
+    return this.http.post<any>(
+      `${this.env.apiBaseUrl}${this.GET_MOCK_WORKFLOWS_PATH}/${workflowId}` +
+        `${this.GET_WORKFLOWS_FACILITY_PATH}/${facilityId}${this.SYNCRONIZE_PATH}`,
+      {}
+    );
   }
 }
