@@ -13,6 +13,7 @@ import { CustomColumnComponent } from './components/custom-column/custom-column.
 import { CustomCommentsComponent } from './components/custom-comments/custom-comments.component';
 import { CustomActionsComponent } from './components/custom-actions/custom-actions.component';
 import { EntityTabComponent } from './components/entity-tab/entity-tab.component';
+import { CustomTabComponent } from './components/custom-tab/custom-tab.component';
 
 
 @NgModule({
@@ -23,7 +24,8 @@ import { EntityTabComponent } from './components/entity-tab/entity-tab.component
     CustomColumnComponent,
     CustomCommentsComponent,
     CustomActionsComponent,
-    EntityTabComponent
+    EntityTabComponent,
+    CustomTabComponent
   ],
   imports: [
     CommonModule,
