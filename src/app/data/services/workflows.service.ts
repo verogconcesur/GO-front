@@ -162,19 +162,18 @@ export class WorkflowsService {
     cardInstanceWorkflow.cardInstanceWorkflowUsers[0].userId = wUser?.user ? wUser?.user?.id : null;
     return this.http
       .post<WorkflowCardInstanceDTO>(
-        `${this.env.apiBaseUrl}${this.GET_WORKFLOWS_PATH}/${card.cardInstanceWorkflows[0].workflowId}` +
-          `${this.GET_WORKFLOWS_MOVEMENT_PATH}/${move.id}`,
+        `${this.env.apiBaseUrl}${this.GET_WORKFLOWS_PATH}/${card?.cardInstanceWorkflows[0]?.workflowId}` +
+          `${this.GET_WORKFLOWS_MOVEMENT_PATH}/${move?.id}`,
         cardInstanceWorkflow
       )
       .pipe(catchError((error) => throwError(error.error as ConcenetError)));
   }
 
   public prepareMovement(card: WorkflowCardDTO, move: WorkflowMoveDTO): Observable<WorkflowSubstateEventDTO[]> {
-    // console.log(card, move);
     return this.http
       .get<WorkflowSubstateEventDTO[]>(
-        `${this.env.apiBaseUrl}${this.GET_WORKFLOWS_PATH}${this.GET_CARD_INSTANCE_WORKFLOW}/${card.cardInstanceWorkflows[0].id}` +
-          `${this.GET_WORKFLOW_MOVEMENT_PATH}/${move.id}`
+        `${this.env.apiBaseUrl}${this.GET_WORKFLOWS_PATH}${this.GET_CARD_INSTANCE_WORKFLOW}/${card?.cardInstanceWorkflows[0]?.id}` +
+          `${this.GET_WORKFLOW_MOVEMENT_PATH}/${move?.id}`
       )
       .pipe(catchError((error) => throwError(error.error as ConcenetError)));
   }
