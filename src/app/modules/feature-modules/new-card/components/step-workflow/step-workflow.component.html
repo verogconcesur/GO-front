@@ -42,11 +42,25 @@
             <!-- Sub State -->
             <mat-form-field appearance="outline" floatLabel="always" *ngIf="formWorkflow.get('entryState').value">
                 <mat-label>{{ labels.subState | translate }}</mat-label>
-                <mat-select formControlName="subState">
+                <mat-select formControlName="subState" (selectionChange)="initialiceSubStateUsers()">
                     <mat-option *ngFor="let subState of subStateList" [value]="subState">{{ subState.name }}</mat-option>
                 </mat-select>
                 <mat-error *ngIf="formWorkflow.controls?.subState.invalid">
                     <span *ngIf="formWorkflow.controls.subState.errors.required">{{ labels.required | translate }}</span>
+                </mat-error>
+            </mat-form-field>
+            <!-- Sub State User -->
+            <mat-form-field
+                appearance="outline"
+                floatLabel="always"
+                *ngIf="formWorkflow.get('subState').value && formWorkflow.get('entryState').value.front"
+            >
+                <mat-label>{{ labels.subStateUser | translate }}</mat-label>
+                <mat-select formControlName="subStateUser">
+                    <mat-option *ngFor="let user of subStateUsersList" [value]="user">{{ user.fullName }}</mat-option>
+                </mat-select>
+                <mat-error *ngIf="formWorkflow.controls?.subStateUser.invalid">
+                    <span *ngIf="formWorkflow.controls.subStateUser.errors.required">{{ labels.required | translate }}</span>
                 </mat-error>
             </mat-form-field>
         </div>
