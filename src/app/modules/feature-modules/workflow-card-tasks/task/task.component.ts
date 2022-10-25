@@ -28,6 +28,10 @@ export class TaskComponent implements OnInit {
     return this.task.taskStatus === 'COMPLETED' ? this.labels.completed : this.labels.pending;
   }
 
+  public getTaskColor(): string {
+    return this.task?.workflowSubstate?.color ? this.task.workflowSubstate.color : null;
+  }
+
   public getTaskState(): string {
     let state = '';
     if (this.task.workflowSubstate?.workflowState?.name) {

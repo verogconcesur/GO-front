@@ -7,19 +7,19 @@ import { BehaviorSubject } from 'rxjs';
 })
 export class WorkflowDragAndDropService {
   public draggingCard$: BehaviorSubject<WorkflowCardDTO> = new BehaviorSubject(null);
-  public droppableStates$: BehaviorSubject<string[]> = new BehaviorSubject([]);
+  public droppableStates$: BehaviorSubject<string[]> = new BehaviorSubject(null);
   public expandedColumns$: BehaviorSubject<string[]> = new BehaviorSubject([]);
 
   constructor() {}
 
   public resetObservables(): void {
     this.draggingCard$.next(null);
-    this.droppableStates$.next([]);
+    this.droppableStates$.next(null);
     this.expandedColumns$.next([]);
   }
 
   public isDroppableState(state: string): boolean {
-    return this.droppableStates$.value.indexOf(state) >= 0;
+    return this.droppableStates$.value?.indexOf(state) >= 0;
   }
 
   public removeExpandedColumn(id: string): void {
