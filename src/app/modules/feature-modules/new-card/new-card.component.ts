@@ -103,8 +103,12 @@ export class NewCardComponent implements OnInit {
               customerId: null,
               information: null,
               userId: null
-            }
+            },
+            cardInstanceWorkflowUsers: []
           };
+          if (this.formWorkflow.get('subStateUser').value) {
+            cardBody.cardInstanceWorkflowUsers.push({ user: { id: this.formWorkflow.get('subStateUser').value.id } });
+          }
           cardBody = this.completeDataCardIntance(cardBody, this.formStep1);
           cardBody = this.completeDataCardIntance(cardBody, this.formStep2);
           const spinner = this.spinnerService.show();
@@ -161,6 +165,7 @@ export class NewCardComponent implements OnInit {
       this.stepIndex === 1 &&
       (!this.subStateSelected || this.subStateSelected.id !== this.formWorkflow.get('subState').value.id)
     ) {
+      const spinner = this.spinnerService.show();
       this.subStateSelected = this.formWorkflow.get('subState').getRawValue();
       this.cardsService.getCardCreateTabData(this.formWorkflow.get('workflow').value.id).subscribe((res) => {
         this.cardDetailSelected = res;
@@ -168,6 +173,7 @@ export class NewCardComponent implements OnInit {
         this.initializeStep2Form();
         this.stepIndex = this.stepIndex + 1;
         this.stepper.next();
+        this.spinnerService.hide(spinner);
       });
     } else {
       this.stepIndex = this.stepIndex + 1;
@@ -293,7 +299,8 @@ export class NewCardComponent implements OnInit {
       workflow: ['', Validators.required],
       facility: ['', Validators.required],
       entryState: ['', Validators.required],
-      subState: ['', Validators.required]
+      subState: ['', Validators.required],
+      subStateUser: ['']
     });
   }
   private initializeSteps(): void {

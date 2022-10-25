@@ -300,6 +300,7 @@
             "select": "Select Workflow",
             "states": "States",
             "subState": "Substate",
+            "subStateUser": "User",
             "title": "Workflow and status"
         }
     },
