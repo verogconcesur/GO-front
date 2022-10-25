@@ -100,11 +100,8 @@ export class WorkflowBoardViewComponent implements OnInit {
     this.prepareAndMoveService.reloadData$
       .pipe(untilDestroyed(this))
       .subscribe((data: 'MOVES_IN_THIS_WORKFLOW' | 'MOVES_IN_OTHER_WORKFLOWS') => {
-        if (data === 'MOVES_IN_THIS_WORKFLOW') {
-          //En caso de que sea en este mismo workflow recargo la pantalla
+        if (data === 'MOVES_IN_THIS_WORKFLOW' || data === 'MOVES_IN_OTHER_WORKFLOWS') {
           this.reloadCardData(+new Date());
-          this.prepareAndMoveService.reloadData$.next(null);
-        } else if (data === 'MOVES_IN_OTHER_WORKFLOWS') {
           this.prepareAndMoveService.reloadData$.next(null);
         }
       });
