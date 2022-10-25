@@ -40,6 +40,8 @@ export class WorkflowsService {
   private readonly GET_CARD_INSTANCE_WORKFLOW = '/cardInstanceWorkflow';
   private readonly GET_WORKFLOWS_ORDER_PATH = '/orders';
   private readonly SYNCRONIZE_PATH = '/synchronize';
+  private readonly GET_WORKFLOW_SUBSTATE_USERS_PATH = '/api/cardInstanceWorkflow/createCard/';
+  private readonly GET_USERS_PATH = '/getUsers';
   constructor(@Inject(ENV) private env: Env, private http: HttpClient, private workflowFilterService: WorkflowFilterService) {}
 
   /**
@@ -162,19 +164,18 @@ export class WorkflowsService {
     cardInstanceWorkflow.cardInstanceWorkflowUsers[0].userId = wUser?.user ? wUser?.user?.id : null;
     return this.http
       .post<WorkflowCardInstanceDTO>(
-        `${this.env.apiBaseUrl}${this.GET_WORKFLOWS_PATH}/${card.cardInstanceWorkflows[0].workflowId}` +
-          `${this.GET_WORKFLOWS_MOVEMENT_PATH}/${move.id}`,
+        `${this.env.apiBaseUrl}${this.GET_WORKFLOWS_PATH}/${card?.cardInstanceWorkflows[0]?.workflowId}` +
+          `${this.GET_WORKFLOWS_MOVEMENT_PATH}/${move?.id}`,
         cardInstanceWorkflow
       )
       .pipe(catchError((error) => throwError(error.error as ConcenetError)));
   }
 
   public prepareMovement(card: WorkflowCardDTO, move: WorkflowMoveDTO): Observable<WorkflowSubstateEventDTO[]> {
-    // console.log(card, move);
     return this.http
       .get<WorkflowSubstateEventDTO[]>(
-        `${this.env.apiBaseUrl}${this.GET_WORKFLOWS_PATH}${this.GET_CARD_INSTANCE_WORKFLOW}/${card.cardInstanceWorkflows[0].id}` +
-          `${this.GET_WORKFLOW_MOVEMENT_PATH}/${move.id}`
+        `${this.env.apiBaseUrl}${this.GET_WORKFLOWS_PATH}${this.GET_CARD_INSTANCE_WORKFLOW}/${card?.cardInstanceWorkflows[0]?.id}` +
+          `${this.GET_WORKFLOW_MOVEMENT_PATH}/${move?.id}`
       )
       .pipe(catchError((error) => throwError(error.error as ConcenetError)));
   }
@@ -185,5 +186,18 @@ export class WorkflowsService {
         `${this.GET_WORKFLOWS_FACILITY_PATH}/${facilityId}${this.SYNCRONIZE_PATH}`,
       {}
     );
+  }
+
+  public getSubStateUsers(
+    workflowId: number,
+    workflowFacilityId: number,
+    workflowSubStateId: number
+  ): Observable<WorkflowSubstateUserDTO[]> {
+    // console.log(card, move);
+    return this.http
+      .get<WorkflowSubstateUserDTO[]>(
+        `${this.env.apiBaseUrl}${this.GET_WORKFLOW_SUBSTATE_USERS_PATH}${workflowId}/${workflowSubStateId}/${workflowFacilityId}${this.GET_USERS_PATH}`
+      )
+      .pipe(catchError((error) => throwError(error.error as ConcenetError)));
   }
 }

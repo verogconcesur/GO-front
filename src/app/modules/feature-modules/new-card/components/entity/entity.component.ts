@@ -8,6 +8,7 @@ import VehicleEntityDTO from '@data/models/entities/vehicle-entity-dto';
 import { CardService } from '@data/services/cards.service';
 import { EntitiesService } from '@data/services/entities.service';
 import { TranslateService } from '@ngx-translate/core';
+import { ProgressSpinnerDialogService } from '@shared/services/progress-spinner-dialog.service';
 
 @Component({
   selector: 'app-entity',
@@ -32,7 +33,8 @@ export class EntityComponent implements OnInit {
     private fb: FormBuilder,
     private cardsService: CardService,
     private entitiesService: EntitiesService,
-    private translateService: TranslateService
+    private translateService: TranslateService,
+    private spinnerService: ProgressSpinnerDialogService
   ) {}
   get tabItems(): FormArray {
     return this.formTab.get('tabItems') as FormArray;
@@ -74,6 +76,8 @@ export class EntityComponent implements OnInit {
   public selectEntity(): void {
     const entity: VehicleEntityDTO | UserEntityDTO | CustomerEntityDTO = this.searchForm.get('search').value;
     this.searchForm.get('search').setValue('');
+    this.searching = true;
+    const spinner = this.spinnerService.show();
     this.cardsService
       .getEntityCardTabData(this.formWorkflow.get('workflow').value.id, this.formTab.get('id').value, entity.id)
       .subscribe((res) => {
@@ -96,6 +100,8 @@ export class EntityComponent implements OnInit {
             this.formTab.get('userId').setValue(entity.id);
             break;
         }
+        this.searching = false;
+        this.spinnerService.hide(spinner);
       });
   }
   public showContent(): boolean {
