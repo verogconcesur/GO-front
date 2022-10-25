@@ -1,6 +1,7 @@
 <div class="tasks-wrapper">
     <div class="tasks-wrapper__task" *ngIf="task">
-        <div class="task-status" [ngClass]="getTaskStatusClass()"></div>
+        <div class="task-status" *ngIf="getTaskColor()" [style.background-color]="getTaskColor()"></div>
+        <div class="task-status" *ngIf="!getTaskColor()" [ngClass]="getTaskStatusClass()"></div>
         <div class="task-info">
             <div class="task-info__title">
                 <div>{{ labels.workflow | translate }} {{ task.workflow.name }} ({{ task.facility.name }})</div>
