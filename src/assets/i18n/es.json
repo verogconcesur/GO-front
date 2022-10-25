@@ -308,6 +308,7 @@
             "select": "Seleccione Workflow",
             "states": "Estados",
             "subState": "Subestado",
+            "subStateUser": "Usuario",
             "title": "Workflow y estados"
         }
     },

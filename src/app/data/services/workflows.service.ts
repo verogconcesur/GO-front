@@ -40,6 +40,8 @@ export class WorkflowsService {
   private readonly GET_CARD_INSTANCE_WORKFLOW = '/cardInstanceWorkflow';
   private readonly GET_WORKFLOWS_ORDER_PATH = '/orders';
   private readonly SYNCRONIZE_PATH = '/synchronize';
+  private readonly GET_WORKFLOW_SUBSTATE_USERS_PATH = '/api/cardInstanceWorkflow/createCard/';
+  private readonly GET_USERS_PATH = '/getUsers';
   constructor(@Inject(ENV) private env: Env, private http: HttpClient, private workflowFilterService: WorkflowFilterService) {}
 
   /**
@@ -184,5 +186,18 @@ export class WorkflowsService {
         `${this.GET_WORKFLOWS_FACILITY_PATH}/${facilityId}${this.SYNCRONIZE_PATH}`,
       {}
     );
+  }
+
+  public getSubStateUsers(
+    workflowId: number,
+    workflowFacilityId: number,
+    workflowSubStateId: number
+  ): Observable<WorkflowSubstateUserDTO[]> {
+    // console.log(card, move);
+    return this.http
+      .get<WorkflowSubstateUserDTO[]>(
+        `${this.env.apiBaseUrl}${this.GET_WORKFLOW_SUBSTATE_USERS_PATH}${workflowId}/${workflowSubStateId}/${workflowFacilityId}${this.GET_USERS_PATH}`
+      )
+      .pipe(catchError((error) => throwError(error.error as ConcenetError)));
   }
 }
