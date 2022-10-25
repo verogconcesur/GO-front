@@ -1,0 +1,38 @@
+<div class="custom-actions-container__header__title">{{ labels.customTabConfiguration | translate | uppercase }}</div>
+<div class="custom-tab-group" fxLayout="row">
+    <div class="custom-tab-group__itemList" cdkDropListGroup>
+        <div class="custom-tab-group__itemList__container" cdkDropList (cdkDropListDropped)="drop($event)">
+            <div
+                cdkDrag
+                class="custom-tab-item mat-elevation-z2"
+                fxLayoutAlign="none center"
+                *ngFor="let tabItem of tabItems.controls; let i = index"
+            >
+                <div fxLayout="row" fxLayoutAlign="space-between center" class="custom-tab-drag">
+                    <div class="custom-tab-drag__name" fxLayout="row" fxLayoutAlign="start center">
+                        <mat-icon>drag_indicator</mat-icon>
+                        <span>{{ tabItem?.value?.name }}</span>
+                    </div>
+                    <div class="custom-tab-drag__type" fxLayout="row" fxLayoutAlign="end center">
+                        <span class="custom-tab-drag__type__name">{{ tabItem?.value?.typeItem | cardTabItemTypePipe }}</span>
+                        <!-- <mat-icon>filter_none</mat-icon> -->
+                        <mat-icon (click)="editTabItem(tabItem)">edit</mat-icon>
+                        <mat-icon (click)="deleteTabitem(tabItem)">delete</mat-icon>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="custom-tab-group__typeList">
+        <div
+            class="custom-tab-group__typeList__item mat-elevation-z2"
+            *ngFor="let type of itemTypes"
+            fxLayout="row"
+            fxLayoutAlign="start center"
+            (click)="newTabitem(type)"
+        >
+            <mat-icon>add</mat-icon>
+            <span>{{ type | cardTabItemTypePipe }}</span>
+        </div>
+    </div>
+</div>

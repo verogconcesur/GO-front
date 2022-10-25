@@ -4,5 +4,6 @@ export default interface WorkflowDTO {
   id: number;
   name: string;
   status: string;
+  manualCreateCard?: boolean;
   facilities?: FacilityDTO[];
 }
