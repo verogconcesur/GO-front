@@ -2,6 +2,8 @@ import { Injectable } from '@angular/core';
 import { ComponentToExtendForCustomDialog, CustomDialogService } from '@jenga/custom-dialog';
 import { Observable } from 'rxjs';
 import { ComponentType } from '@angular/cdk/portal';
+import { TabItemConfigInputComponent } from '../components/tab-items/tab-item-config-input/tab-item-config-input.component';
+import CardColumnTabItemDTO from '@data/models/cards/card-column-tab-item-dto';
 
 export const enum CustomizableInputSelectorModalEnum {
   ID = 'my-profile-dialog-id',
@@ -15,17 +17,15 @@ export const enum CustomizableInputSelectorModalEnum {
 export class CustomizableInputSelectorAuxService {
   constructor(private customDialogService: CustomDialogService) {}
 
-  public openCustomizableInputModal(
-    type: 'TITLE' | 'TEXT' | 'INPUT' | 'LIST' | 'TABLE' | 'OPTION' | 'VARIABLE' | 'LINK' | 'ACTION'
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  ): Observable<any> {
-    const component: ComponentType<ComponentToExtendForCustomDialog> = null;
-    switch (type) {
+  public openCustomizableInputModal(tabItem: CardColumnTabItemDTO): Observable<CardColumnTabItemDTO> {
+    let component: ComponentType<ComponentToExtendForCustomDialog>;
+    switch (tabItem.typeItem) {
       case 'TITLE':
         break;
       case 'TEXT':
         break;
       case 'INPUT':
+        component = TabItemConfigInputComponent;
         break;
       case 'LIST':
         break;
@@ -42,7 +42,7 @@ export class CustomizableInputSelectorAuxService {
     }
     return this.customDialogService.open({
       component,
-      extendedComponentData: type,
+      extendedComponentData: tabItem,
       id: CustomizableInputSelectorModalEnum.ID,
       panelClass: CustomizableInputSelectorModalEnum.PANEL_CLASS,
       disableClose: true,

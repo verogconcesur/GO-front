@@ -14,7 +14,16 @@ import { CustomCommentsComponent } from './components/custom-comments/custom-com
 import { CustomActionsComponent } from './components/custom-actions/custom-actions.component';
 import { EntityTabComponent } from './components/entity-tab/entity-tab.component';
 import { CustomTabComponent } from './components/custom-tab/custom-tab.component';
-
+import { TabItemConfigInputComponent } from './components/tab-items/tab-item-config-input/tab-item-config-input.component';
+import { TabItemConfigActionComponent } from './components/tab-items/tab-item-config-action/tab-item-config-action.component';
+import { TabItemConfigLinkComponent } from './components/tab-items/tab-item-config-link/tab-item-config-link.component';
+import { TabItemConfigListComponent } from './components/tab-items/tab-item-config-list/tab-item-config-list.component';
+import { TabItemConfigOptionComponent } from './components/tab-items/tab-item-config-option/tab-item-config-option.component';
+import { TabItemConfigTableComponent } from './components/tab-items/tab-item-config-table/tab-item-config-table.component';
+import { TabItemConfigTextComponent } from './components/tab-items/tab-item-config-text/tab-item-config-text.component';
+import { TabItemConfigTitleComponent } from './components/tab-items/tab-item-config-title/tab-item-config-title.component';
+// eslint-disable-next-line max-len
+import { TabItemConfigVariableComponent } from './components/tab-items/tab-item-config-variable/tab-item-config-variable.component';
 
 @NgModule({
   declarations: [
@@ -25,14 +34,17 @@ import { CustomTabComponent } from './components/custom-tab/custom-tab.component
     CustomCommentsComponent,
     CustomActionsComponent,
     EntityTabComponent,
-    CustomTabComponent
+    CustomTabComponent,
+    TabItemConfigInputComponent,
+    TabItemConfigActionComponent,
+    TabItemConfigLinkComponent,
+    TabItemConfigListComponent,
+    TabItemConfigOptionComponent,
+    TabItemConfigTableComponent,
+    TabItemConfigTextComponent,
+    TabItemConfigTitleComponent,
+    TabItemConfigVariableComponent
   ],
-  imports: [
-    CommonModule,
-    CardsRoutingModule,
-    SharedModule,
-    FilterDrawerModule,
-    AdministrationCommonHeaderSectionModule
-  ]
+  imports: [CommonModule, CardsRoutingModule, SharedModule, FilterDrawerModule, AdministrationCommonHeaderSectionModule]
 })
-export class CardsModule { }
+export class CardsModule {}
