@@ -35,8 +35,8 @@ export class WorkflowsService {
   private readonly GET_WORKFLOWS_INSTANCE_PATH = '/instances';
   private readonly GET_WORKFLOWS_VIEW_PATH = '/view';
   private readonly GET_WORKFLOWS_CARDS_PATH = '/cards';
-  private readonly GET_WORKFLOWS_MOVEMENT_PATH = '/movement';
-  private readonly GET_WORKFLOW_MOVEMENT_PATH = '/workflowMovement';
+  private readonly GET_WORKFLOWS_MOVEMENT_PATH = '/movementByTarget';
+  private readonly GET_WORKFLOW_MOVEMENT_PATH = '/workflowMovementByTarget';
   private readonly GET_CARD_INSTANCE_WORKFLOW = '/cardInstanceWorkflow';
   private readonly GET_WORKFLOWS_ORDER_PATH = '/orders';
   private readonly SYNCRONIZE_PATH = '/synchronize';
@@ -154,7 +154,7 @@ export class WorkflowsService {
    */
   public moveWorkflowCardToSubstate(
     card: WorkflowCardDTO,
-    move: WorkflowMoveDTO,
+    targetId: number,
     wUser: WorkflowSubstateUserDTO,
     newOrderNumber: number
   ): Observable<WorkflowCardInstanceDTO> {
@@ -165,17 +165,17 @@ export class WorkflowsService {
     return this.http
       .post<WorkflowCardInstanceDTO>(
         `${this.env.apiBaseUrl}${this.GET_WORKFLOWS_PATH}/${card?.cardInstanceWorkflows[0]?.workflowId}` +
-          `${this.GET_WORKFLOWS_MOVEMENT_PATH}/${move?.id}`,
+          `${this.GET_WORKFLOWS_MOVEMENT_PATH}/${targetId}`,
         cardInstanceWorkflow
       )
       .pipe(catchError((error) => throwError(error.error as ConcenetError)));
   }
 
-  public prepareMovement(card: WorkflowCardDTO, move: WorkflowMoveDTO): Observable<WorkflowSubstateEventDTO[]> {
+  public prepareMovement(card: WorkflowCardDTO, targetId: number): Observable<WorkflowSubstateEventDTO[]> {
     return this.http
       .get<WorkflowSubstateEventDTO[]>(
         `${this.env.apiBaseUrl}${this.GET_WORKFLOWS_PATH}${this.GET_CARD_INSTANCE_WORKFLOW}/${card?.cardInstanceWorkflows[0]?.id}` +
-          `${this.GET_WORKFLOW_MOVEMENT_PATH}/${move?.id}`
+          `${this.GET_WORKFLOW_MOVEMENT_PATH}/${targetId}`
       )
       .pipe(catchError((error) => throwError(error.error as ConcenetError)));
   }

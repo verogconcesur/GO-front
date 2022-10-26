@@ -14,6 +14,7 @@ import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
 import { TranslateService } from '@ngx-translate/core';
 import { GlobalMessageService } from '@shared/services/global-message.service';
 import { ProgressSpinnerDialogService } from '@shared/services/progress-spinner-dialog.service';
+import lodash from 'lodash';
 import { NGXLogger } from 'ngx-logger';
 import { forkJoin } from 'rxjs';
 import { take } from 'rxjs/operators';
@@ -150,6 +151,13 @@ export class WorkflowBoardViewComponent implements OnInit {
         wSubstate.cards = this.workflowFilterService.orderCardsByOrderNumber(
           workflowCards.filter((card: WorkflowCardDTO) => card.cardInstanceWorkflows[0].workflowSubstateId === wSubstate.id)
         );
+        wSubstate.cards = wSubstate.cards.map((card) => {
+          const subStateCopy = lodash.cloneDeep(wSubstate);
+          //Rompo la recursividad
+          subStateCopy.cards = [];
+          card.workflowSubstate = subStateCopy;
+          return card;
+        });
         totalCards += wSubstate.cards.length;
         wSubstate.workflowSubstateUser.forEach((user: WorkflowSubstateUserDTO) => {
           const cardsBySubstateId = totalUsers[user.user.id] ? totalUsers[user.user.id].cardsBySubstateId : {};
@@ -157,7 +165,7 @@ export class WorkflowBoardViewComponent implements OnInit {
             (card: WorkflowCardDTO) => card.cardInstanceWorkflows[0].cardInstanceWorkflowUsers[0].userId === user.user.id
           );
           user.cards = this.workflowFilterService.orderCardsByOrderNumber([...substateCardsByUser]);
-          user.cardsBySubstateId = JSON.parse(JSON.stringify(cardsBySubstateId));
+          user.cardsBySubstateId = lodash.cloneDeep(cardsBySubstateId);
           user.cardsBySubstateId[wSubstate.id] = [...substateCardsByUser];
           totalUsers[user.user.id] = user;
         });
