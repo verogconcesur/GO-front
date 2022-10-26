@@ -195,6 +195,7 @@ export class MoveCardDialogComponent implements OnInit {
         cardInstanceWorkflows: [this.cardInstance.cardInstanceWorkflow]
       },
       node.move,
+      null,
       node.user ? { id: null, name: '', user: node.user, permissionType: '', workflowSubstateId: null } : null,
       '',
       null,
@@ -226,7 +227,7 @@ export class MoveCardDialogComponent implements OnInit {
   private getMovements(): void {
     const spinner = this.spinnerService.show();
     this.cardService
-      .getCardInstanceMovements(this.idCard)
+      .getCardInstanceMovements(this.idCard, this.view === 'MOVES_IN_OTHER_WORKFLOWS' ? 'OTHERWF' : 'SAMEWF')
       .pipe(take(1))
       .subscribe(
         (movements: WorkflowMoveDTO[]) => {

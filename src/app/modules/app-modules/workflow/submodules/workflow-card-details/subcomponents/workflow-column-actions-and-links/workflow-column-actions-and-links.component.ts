@@ -68,7 +68,7 @@ export class WorkflowColumnActionsAndLinksComponent implements OnInit {
           }
         );
       this.cardService
-        .getCardInstanceMovements(this.idCard, true)
+        .getCardInstanceMovements(this.idCard, 'SHORTCUT')
         .pipe(take(1))
         .subscribe(
           (data: WorkflowMoveDTO[]) => {
@@ -120,6 +120,7 @@ export class WorkflowColumnActionsAndLinksComponent implements OnInit {
         cardInstanceWorkflows: [this.cardInstance.cardInstanceWorkflow]
       },
       move,
+      null,
       null,
       '',
       null
