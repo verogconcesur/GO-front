@@ -5,7 +5,7 @@
             <mat-icon>close</mat-icon>
         </button>
     </div>
-    <div class="wc-movement-preparation__task" *ngIf="sendToOtherWorkflow">
+    <div class="wc-movement-preparation__task" *ngIf="sendToOtherWorkflow && taskForm">
         <form [formGroup]="taskForm">
             <mat-form-field appearance="outline" floatLabel="always">
                 <mat-label>{{ labels.taskLabel | translate }}</mat-label>
