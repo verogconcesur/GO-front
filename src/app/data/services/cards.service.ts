@@ -75,12 +75,17 @@ export class CardService {
    * @param idCard
    * @returns
    */
-  public getCardInstanceMovements(idCard: number, shortcut?: boolean): Observable<WorkflowMoveDTO[]> {
+  public getCardInstanceMovements(
+    idCard: number,
+    type: 'SHORTCUT' | 'SAMEWF' | 'OTHERWF' = 'SAMEWF'
+  ): Observable<WorkflowMoveDTO[]> {
     let url = `${this.env.apiBaseUrl}${this.GET_CARD_INSTANCE_PATH}${this.GET_DETAIL_PATH}/${idCard}${this.GET_MOVEMENTS_PATH}`;
-    if (shortcut) {
-      url =
-        `${this.env.apiBaseUrl}${this.GET_CARD_INSTANCE_PATH}${this.GET_DETAIL_PATH}/${idCard}` +
-        `/shortcut/true${this.GET_MOVEMENTS_PATH}`;
+    if (type === 'SHORTCUT') {
+      url += `/shortcut`;
+    } else if (type === 'OTHERWF') {
+      url += `/others/1`;
+    } else {
+      url += '/others/0';
     }
     return this.http.get<WorkflowMoveDTO[]>(url).pipe(catchError((error) => throwError(error.error as ConcenetError)));
   }
@@ -223,7 +228,7 @@ export class CardService {
    */
   public listTemplates(templateType: string): Observable<TemplatesCommonDTO[]> {
     return this.http
-      .post<TemplatesCommonDTO[]>(`${this.env.apiBaseUrl}${this.GET_TEMPLATE_LIST_PATH}`, {templateType})
+      .post<TemplatesCommonDTO[]>(`${this.env.apiBaseUrl}${this.GET_TEMPLATE_LIST_PATH}`, { templateType })
       .pipe(catchError((error) => throwError(error.error as ConcenetError)));
   }
 }
