@@ -28,12 +28,17 @@
         <div class="entity__head__error" fxLayout="row" fxLayoutAlign="center center" *ngIf="showError()">
             <mat-icon>error_outline</mat-icon><span>{{ getErrorMsg() }}</span>
         </div>
-        <div class="entity__head__error" fxLayout="row" fxLayoutAlign="center center" *ngIf="!searchForm.value.search && this.formTab.invalid && !this.searching">
+        <div
+            class="entity__head__error"
+            fxLayout="row"
+            fxLayoutAlign="center center"
+            *ngIf="!searchForm.value.search && this.formTab.invalid && !this.searching"
+        >
             <mat-icon>error_outline</mat-icon><span>{{ labels.required | translate }}</span>
         </div>
         <div class="entity__head__content" fxLayout="column" *ngIf="showContent()">
             <div *ngFor="let tabItem of tabItems.controls" class="entity__head__content__item" fxLayout="column">
-                <span class="entity__head__content__item__label">{{ tabItem.value.label }}</span>
+                <span class="entity__head__content__item__label capitalize">{{ tabItem.value.label }}</span>
                 <span class="entity__head__content__item__value" *ngIf="tabItem.valid">{{
                     tabItem.value.value ? tabItem.value.value : "---"
                 }}</span>
