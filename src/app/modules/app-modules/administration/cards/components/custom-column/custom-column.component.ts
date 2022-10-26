@@ -20,6 +20,7 @@ import CardColumnTabItemDTO, {
   TabItemConfigTableColDTO
 } from '@data/models/cards/card-column-tab-item-dto';
 import TemplatesCommonDTO from '@data/models/templates/templates-common-dto';
+import { CustomizableInputSelectorAuxService } from '../../aux-service/customizable-input-selector-aux.service';
 
 @Component({
   selector: 'app-custom-column',
@@ -59,7 +60,8 @@ export class CustomColumnComponent implements OnInit {
     private fb: UntypedFormBuilder,
     private translateService: TranslateService,
     private cardService: CardService,
-    private confirmationDialog: ConfirmDialogService
+    private confirmationDialog: ConfirmDialogService,
+    private customTabItemService: CustomizableInputSelectorAuxService
   ) {}
   get form() {
     return this.formCol.controls;
@@ -129,10 +131,48 @@ export class CustomColumnComponent implements OnInit {
     }
   }
   public editTabItem(tabItem: CardColumnTabItemDTO): void {
-    console.log(tabItem);
+    this.customTabItemService.openCustomizableInputModal(tabItem).subscribe((res) => {
+      if (res && res.typeItem) {
+        const formTabItem = (this.formTab.get('tabItems') as FormArray).controls[res.orderNumber - 1];
+        formTabItem.patchValue(res);
+      }
+    });
   }
   public newTabItem(tabItemType: string): void {
-    console.log(tabItemType);
+    const tabItem: CardColumnTabItemDTO = {
+      typeItem: tabItemType,
+      orderNumber: (this.formTab.get('tabItems') as FormArray).length + 1,
+      name: '',
+      description: '',
+      tabId: this.formTab.value.id
+    };
+    this.customTabItemService.openCustomizableInputModal(tabItem).subscribe((res) => {
+      if (res && res.typeItem) {
+        switch (res.typeItem) {
+          case 'TITLE':
+            (this.formTab.get('tabItems') as FormArray).push(this.generateTabItemTitle(res, this.tabs.length - 1));
+            break;
+          case 'TEXT':
+            (this.formTab.get('tabItems') as FormArray).push(this.generateTabItemText(res, this.tabs.length - 1));
+            break;
+          case 'INPUT':
+            (this.formTab.get('tabItems') as FormArray).push(this.generateTabItemInput(res, this.tabs.length - 1));
+            break;
+          case 'LIST':
+            (this.formTab.get('tabItems') as FormArray).push(this.generateTabItemList(res, this.tabs.length - 1));
+            break;
+          case 'TABLE':
+            (this.formTab.get('tabItems') as FormArray).push(this.generateTabItemTable(res, this.tabs.length - 1));
+            break;
+          case 'OPTION':
+            (this.formTab.get('tabItems') as FormArray).push(this.generateTabItemOption(res, this.tabs.length - 1));
+            break;
+          case 'VARIABLE':
+            (this.formTab.get('tabItems') as FormArray).push(this.generateTabItemVariable(res, this.tabs.length - 1));
+            break;
+        }
+      }
+    });
   }
   public getTabItems(tabItems?: CardColumnTabItemDTO[]): UntypedFormArray {
     const fa = this.fb.array([]);
