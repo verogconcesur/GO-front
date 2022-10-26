@@ -308,34 +308,36 @@ export class WokflowBoardColumnComponent implements OnInit {
     // }
 
     //DGDC: busco siempre el movimiento ya que por lo pronto no se invocará el servicio de ordenar.
-    const move: WorkflowMoveDTO = item.movements.find(
-      (wMove: WorkflowMoveDTO) => wMove.workflowSubstateTarget.id === wSubState.id
-    );
+    const move: WorkflowMoveDTO = item.movements
+      ? item.movements.find((wMove: WorkflowMoveDTO) => wMove.workflowSubstateTarget.id === wSubState.id)
+      : null;
     item.orderNumber =
       dropZoneId.indexOf(`${this.wSubstateKey}${item.cardInstanceWorkflows[0].workflowSubstateId}`) >= 0
         ? itemToReplace.orderNumber
         : null;
     if (move?.id || move?.id === 0) {
-      this.prepareAndMoveService.prepareAndMove(item, move, user, dropZoneId, itemToReplace);
+      this.prepareAndMoveService.prepareAndMove(item, move, wSubState, user, dropZoneId, itemToReplace);
+    } else if (item.workflowSubstate && wSubState) {
+      this.prepareAndMoveService.prepareAndMove(item, move, wSubState, user, dropZoneId, itemToReplace);
     }
 
-    if (request) {
-      const spinner = this.spinnerService.show();
-      request.pipe(take(1)).subscribe(
-        (data) => {
-          this.spinnerService.hide(spinner);
-          this.prepareAndMoveService.reloadData$.next('MOVES_IN_THIS_WORKFLOW');
-        },
-        (error) => {
-          this.logger.error(error);
-          this.globalMessageService.showError({
-            message: error.message,
-            actionText: this.translateService.instant(marker('common.close'))
-          });
-          this.spinnerService.hide(spinner);
-          this.prepareAndMoveService.reloadData$.next('MOVES_IN_THIS_WORKFLOW');
-        }
-      );
-    }
+    // if (request) {
+    //   const spinner = this.spinnerService.show();
+    //   request.pipe(take(1)).subscribe(
+    //     (data) => {
+    //       this.spinnerService.hide(spinner);
+    //       this.prepareAndMoveService.reloadData$.next('MOVES_IN_THIS_WORKFLOW');
+    //     },
+    //     (error) => {
+    //       this.logger.error(error);
+    //       this.globalMessageService.showError({
+    //         message: error.message,
+    //         actionText: this.translateService.instant(marker('common.close'))
+    //       });
+    //       this.spinnerService.hide(spinner);
+    //       this.prepareAndMoveService.reloadData$.next('MOVES_IN_THIS_WORKFLOW');
+    //     }
+    //   );
+    // }
   }
 }

@@ -5,6 +5,7 @@ import { marker } from '@biesbjerg/ngx-translate-extract-marker';
 import WorkflowCardDTO from '@data/models/workflows/workflow-card-dto';
 import WorkflowCardInstanceDTO from '@data/models/workflows/workflow-card-instance-dto';
 import WorkflowMoveDTO from '@data/models/workflows/workflow-move-dto';
+import WorkflowSubstateDTO from '@data/models/workflows/workflow-substate-dto';
 import WorkflowSubstateEventDTO from '@data/models/workflows/workflow-substate-event-dto';
 import WorkflowSubstateUserDTO from '@data/models/workflows/workflow-substate-user-dto';
 import { WorkflowsService } from '@data/services/workflows.service';
@@ -37,6 +38,7 @@ export class WorkflowPrepareAndMoveService {
   public prepareAndMove(
     item: WorkflowCardDTO,
     move: WorkflowMoveDTO,
+    substateTarget: WorkflowSubstateDTO,
     user: WorkflowSubstateUserDTO,
     dropZoneId: string,
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -45,8 +47,19 @@ export class WorkflowPrepareAndMoveService {
   ): void {
     this.spinner = this.spinnerService.show();
     view = view ? view : 'MOVES_IN_THIS_WORKFLOW';
+    const targetId = move ? move.workflowSubstateTarget.id : substateTarget ? substateTarget.id : null;
+    const usersOut = move
+      ? move.workflowSubstateSource.workflowSubstateUser
+      : item?.workflowSubstate?.workflowSubstateUser
+      ? item?.workflowSubstate?.workflowSubstateUser
+      : [];
+    const usersIn = move
+      ? move.workflowSubstateTarget.workflowSubstateUser
+      : substateTarget?.workflowSubstateUser
+      ? substateTarget?.workflowSubstateUser
+      : [];
     this.workflowService
-      .prepareMovement(item, move)
+      .prepareMovement(item, targetId)
       .pipe(take(1))
       .subscribe(
         (data: WorkflowSubstateEventDTO[]) => {
@@ -71,8 +84,8 @@ export class WorkflowPrepareAndMoveService {
                 maxWidth: '650px',
                 data: {
                   preparation: data,
-                  usersOut: move.workflowSubstateTarget.workflowSubstateUser,
-                  usersIn: move.workflowSubstateSource.workflowSubstateUser,
+                  usersOut,
+                  usersIn,
                   view,
                   selectedUser: user
                 }
@@ -138,7 +151,7 @@ export class WorkflowPrepareAndMoveService {
                     item.cardInstanceWorkflows[0].information = res.task.description;
                   }
                   item.cardInstanceWorkflows[0].workflowSubstateEvents = newData;
-                  this.moveCard(item, move, user, dropZoneId, itemToReplace, view);
+                  this.moveCard(item, targetId, user, dropZoneId, itemToReplace, view);
                 },
                 (error) => {
                   this.reloadData$.next(null);
@@ -151,9 +164,9 @@ export class WorkflowPrepareAndMoveService {
               );
           } else if (data?.length) {
             item.cardInstanceWorkflows[0].workflowSubstateEvents = data;
-            this.moveCard(item, move, user, dropZoneId, itemToReplace, view);
+            this.moveCard(item, targetId, user, dropZoneId, itemToReplace, view);
           } else {
-            this.moveCard(item, move, user, dropZoneId, itemToReplace, view);
+            this.moveCard(item, targetId, user, dropZoneId, itemToReplace, view);
           }
         },
         (error) => {
@@ -169,7 +182,7 @@ export class WorkflowPrepareAndMoveService {
 
   private moveCard(
     item: WorkflowCardDTO,
-    move: WorkflowMoveDTO,
+    targetId: number,
     user: WorkflowSubstateUserDTO,
     dropZoneId: string,
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -179,7 +192,7 @@ export class WorkflowPrepareAndMoveService {
     this.workflowService
       .moveWorkflowCardToSubstate(
         item,
-        move,
+        targetId,
         user,
         dropZoneId.indexOf(`${this.wSubstateKey}${item.cardInstanceWorkflows[0].workflowSubstateId}`) >= 0
           ? itemToReplace.orderNumber

@@ -5,6 +5,7 @@ import WorkflowFilterDTO from '@data/models/workflows/workflow-filter-dto';
 import WorkflowStateDTO from '@data/models/workflows/workflow-state-dto';
 import WorkflowSubstateDTO from '@data/models/workflows/workflow-substate-dto';
 import WorkflowSubstateUserDTO from '@data/models/workflows/workflow-substate-user-dto';
+import lodash from 'lodash';
 import { BehaviorSubject } from 'rxjs';
 
 @Injectable({
@@ -109,7 +110,7 @@ export class WorkflowFilterService {
   }
 
   public filterData(workflowInstances: WorkflowStateDTO[], filter: WorkflowFilterDTO): WorkflowStateDTO[] {
-    let wStatesData: WorkflowStateDTO[] = JSON.parse(JSON.stringify(workflowInstances));
+    let wStatesData: WorkflowStateDTO[] = lodash.cloneDeep(workflowInstances);
     const filters = JSON.parse(JSON.stringify(filter));
 
     //Filtro estados
