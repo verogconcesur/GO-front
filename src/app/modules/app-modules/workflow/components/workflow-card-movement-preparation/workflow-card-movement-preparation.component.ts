@@ -195,7 +195,7 @@ export class WorkflowCardMovementPreparationComponent implements OnInit {
   }
 
   public findUserIn(user: WorkflowSubstateUserDTO, users: WorkflowSubstateUserDTO[]): WorkflowSubstateUserDTO {
-    return users.find((item: WorkflowSubstateUserDTO) => item.user.id === user?.user?.id);
+    return users?.find((item: WorkflowSubstateUserDTO) => item.user.id === user?.user?.id);
   }
 
   public textEditorContentChanged(html: string, form: UntypedFormGroup) {
