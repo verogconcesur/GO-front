@@ -28,15 +28,6 @@
                         </mat-form-field>
                     </div>
                     <div *ngFor="let col of cols.controls" class="create-cards-container__side__section__column">
-                        <mat-icon
-                            *ngIf="selectedCol === col.value.orderNumber"
-                            [ngClass]="{
-                                'create-cards-container__side__section__column--selected':
-                                    selectedCol === col.value.orderNumber ? true : false,
-                                'create-cards-container__side__section__column--invalid': col.invalid ? true : false
-                            }"
-                            >lens</mat-icon
-                        >
                         <span
                             (click)="changeColumn(col.value)"
                             [ngClass]="{
@@ -44,6 +35,15 @@
                                     selectedCol === col.value.orderNumber ? true : false,
                                 'create-cards-container__side__section__column--invalid': col.invalid ? true : false
                             }"
+                        >
+                            <mat-icon
+                                *ngIf="selectedCol === col.value.orderNumber"
+                                [ngClass]="{
+                                    'create-cards-container__side__section__column--selected':
+                                        selectedCol === col.value.orderNumber ? true : false,
+                                    'create-cards-container__side__section__column--invalid': col.invalid ? true : false
+                                }"
+                                >lens</mat-icon
                             >{{ col.value.name ? col.value.name : "---" }}</span
                         >
                     </div>

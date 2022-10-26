@@ -1,5 +1,5 @@
-export const TabItemsCustomTypes = ['TITLE', 'TEXT', 'INPUT', 'LIST', 'TABLE', 'OPTION'];
-
+// export const TabItemsCustomTypes = ['TITLE', 'TEXT', 'INPUT', 'LIST', 'TABLE', 'OPTION'];
+export const TabItemsCustomTypes = ['TITLE', 'TEXT', 'INPUT'];
 export default interface CardColumnTabItemDTO {
   id?: number;
   tabId?: number;

@@ -20,6 +20,7 @@ import CardColumnTabItemDTO, {
   TabItemConfigTableColDTO
 } from '@data/models/cards/card-column-tab-item-dto';
 import TemplatesCommonDTO from '@data/models/templates/templates-common-dto';
+import { CustomizableInputSelectorAuxService } from '../../aux-service/customizable-input-selector-aux.service';
 
 @Component({
   selector: 'app-custom-column',
@@ -59,7 +60,8 @@ export class CustomColumnComponent implements OnInit {
     private fb: UntypedFormBuilder,
     private translateService: TranslateService,
     private cardService: CardService,
-    private confirmationDialog: ConfirmDialogService
+    private confirmationDialog: ConfirmDialogService,
+    private customTabItemService: CustomizableInputSelectorAuxService
   ) {}
   get form() {
     return this.formCol.controls;
