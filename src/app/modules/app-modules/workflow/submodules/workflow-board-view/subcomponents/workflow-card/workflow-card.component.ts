@@ -139,7 +139,7 @@ export class WorkflowCardComponent implements OnInit {
       this.dragAndDropService.droppableStates$.next(this.droppableStates);
     } else {
       this.isDraggingEvent.next(false);
-      this.dragAndDropService.droppableStates$.next([]);
+      this.dragAndDropService.droppableStates$.next(null);
       //Firefox => para evitar que al arrastrar abra el detalle de la tarjeta
       setTimeout(() => this.dragAndDropService.draggingCard$.next(null));
     }

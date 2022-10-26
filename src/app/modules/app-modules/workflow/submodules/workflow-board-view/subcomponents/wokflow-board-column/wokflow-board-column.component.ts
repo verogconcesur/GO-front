@@ -34,7 +34,7 @@ export class WokflowBoardColumnComponent implements OnInit {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   public hideEmptyDropZone: any = {};
   public cardDragging: WorkflowCardDTO = null;
-  public droppableStates: string[] = [];
+  public droppableStates: string[] = null;
   public changeCollapseStatusOnOver = false;
   //  DGDC: quitar en el momento en el que se pueda ordenar dentro de un mismo subestado
   public originCardDropZone: string = null;
@@ -105,7 +105,7 @@ export class WokflowBoardColumnComponent implements OnInit {
   }
 
   public setHideEmptyDropZone(id: string, value: boolean) {
-    if (this.droppableStates.indexOf(id) >= 0) {
+    if (this.droppableStates?.indexOf(id) >= 0 || this.droppableStates?.length === 0) {
       this.hideEmptyDropZone[id] = value;
     }
   }
@@ -117,7 +117,7 @@ export class WokflowBoardColumnComponent implements OnInit {
   public showDropCover(id: string): boolean {
     if (
       this.cardDragging &&
-      this.droppableStates.indexOf(id) >= 0 &&
+      (this.droppableStates?.indexOf(id) >= 0 || this.droppableStates?.length === 0) &&
       // DGDC: descomentar en el momento en el que se pueda ordenar dentro de un mismo subestado
       // id.indexOf(`${this.wSubstateKey}${this.cardDragging.cardInstanceWorkflows[0].workflowSubstateId}`) === -1 &&
       this.hideEmptyDropZone[id]
@@ -158,8 +158,9 @@ export class WokflowBoardColumnComponent implements OnInit {
   }
 
   public getAssociatedWSubstates(card: WorkflowCardDTO, itSelf?: string): string[] {
-    const associatedWSubstates: string[] = [];
+    let associatedWSubstates: string[] = null;
     if (card?.movements?.length) {
+      associatedWSubstates = [];
       card.movements.forEach((move: WorkflowMoveDTO) => {
         if (move.workflowSubstateTarget.workflowState?.front) {
           move.workflowSubstateTarget.workflowSubstateUser.forEach((wUser: WorkflowSubstateUserDTO) => {
@@ -193,22 +194,29 @@ export class WokflowBoardColumnComponent implements OnInit {
         //   });
         // }
       });
+    } else if (card?.movements && card.movements.length === 0) {
+      associatedWSubstates = [];
     }
     return associatedWSubstates;
   }
 
   public getCollapsedDropZoneClass(): string {
     let classes = '';
-    this.wState.workflowSubstates.forEach((wSubstate: WorkflowSubstateDTO) => {
-      const sClass = `${this.wSubstateKey}${wSubstate.id}`;
-      if (
-        this.cardDragging &&
-        classes.indexOf(this.droppableZoneClass) === -1 &&
-        this.droppableStates.filter((id: string) => id.indexOf(sClass) === 0).length
-      ) {
-        classes += `${this.droppableZoneClass} `;
-      }
-    });
+    //Si recibo un array vacío en droppable states es porque se permiten todos los movimientos
+    if (this.droppableStates?.length === 0) {
+      classes += `${this.droppableZoneClass} `;
+    } else {
+      this.wState.workflowSubstates.forEach((wSubstate: WorkflowSubstateDTO) => {
+        const sClass = `${this.wSubstateKey}${wSubstate.id}`;
+        if (
+          this.cardDragging &&
+          classes.indexOf(this.droppableZoneClass) === -1 &&
+          this.droppableStates?.filter((id: string) => id.indexOf(sClass) === 0).length
+        ) {
+          classes += `${this.droppableZoneClass} `;
+        }
+      });
+    }
     if (classes.indexOf(this.droppableZoneClass) === -1) {
       classes += `${this.undroppableZoneClass} `;
     }
@@ -227,7 +235,7 @@ export class WokflowBoardColumnComponent implements OnInit {
     let classes = '';
     if (this.cardDragging) {
       // console.log(id, this.droppableStates);
-      if (this.droppableStates.indexOf(id) >= 0) {
+      if (this.droppableStates?.indexOf(id) >= 0 || this.droppableStates?.length === 0) {
         classes += this.droppableZoneClass;
       } else {
         classes += this.undroppableZoneClass;
