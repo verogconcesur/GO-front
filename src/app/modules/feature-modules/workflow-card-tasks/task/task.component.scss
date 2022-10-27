@@ -1,6 +1,7 @@
 @import 'utils/theme';
 .tasks-wrapper {
   width: 100%;
+  overflow: hidden;
   &__task {
     border-radius: 10px;
     background-color: mat-color($background, disabled-button);
@@ -44,6 +45,8 @@
       }
       &__info {
         font-size: 0.9em;
+        word-break: break-word;
+        white-space: break-spaces;
         color: mat-contrast($primary, 50);
       }
       &__status {
