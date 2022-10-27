@@ -327,7 +327,7 @@ export class CustomColumnComponent implements OnInit {
     return this.newTabItemVariable(
       {
         id: tabItem.id,
-        attributeName: tabItem.tabItemConfigVariable.variable.attributeName,
+        attributeName: tabItem.tabItemConfigVariable.variable.name,
         name: tabItem.name,
         variableId: tabItem.tabItemConfigVariable.variable.id,
         visible: tabItem.tabItemConfigVariable.visible,
@@ -358,6 +358,7 @@ export class CustomColumnComponent implements OnInit {
       tabItemConfigVariable: this.fb.group({
         visible: [data.visible],
         variable: this.fb.group({
+          name: [data ? data.attributeName : ''],
           attributeName: [data ? data.attributeName : ''],
           id: [data.variableId]
         }),
@@ -452,7 +453,7 @@ export class CustomColumnComponent implements OnInit {
             this.newTabItemVariable(
               {
                 id: data.id,
-                attributeName: data.tabItemConfigVariable.variable.attributeName,
+                attributeName: data.tabItemConfigVariable.variable.name,
                 name: data.name,
                 variableId: data.tabItemConfigVariable.variable.id,
                 visible: data.tabItemConfigVariable.visible,
@@ -470,10 +471,10 @@ export class CustomColumnComponent implements OnInit {
             (this.formTab.get('tabItems') as UntypedFormArray).push(
               this.newTabItemVariable(
                 {
-                  attributeName: line.attributeName,
-                  name: line.attributeName,
+                  attributeName: line.name,
+                  name: line.name,
                   variableId: line.id,
-                  visible: true,
+                  visible: false,
                   tabId: this.formTab.value.id
                 },
                 index + 1
