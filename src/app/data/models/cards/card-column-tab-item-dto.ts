@@ -97,6 +97,7 @@ export interface TabItemConfigVariableDTO extends TabItemConfigCommonDTO {
     id: number;
     attributeName: string;
     value: string;
+    name: string;
   };
   visible: boolean;
 }

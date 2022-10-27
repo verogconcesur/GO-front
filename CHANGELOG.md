@@ -2,6 +2,27 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [1.0.1](https://git.sdos.es/Delivery-Projects/concesur/concenet_front/-/compare/v1.0.0...v1.0.1) (2022-10-27)
+
+
+### Features
+
+* cards free movement ([2a0f9b6](https://git.sdos.es/Delivery-Projects/concesur/concenet_front/-/commit/2a0f9b6bf025876f965470f274c6b88dd9698b54))
+* change label ([63c9dbb](https://git.sdos.es/Delivery-Projects/concesur/concenet_front/-/commit/63c9dbb839c28783f2ca049b86e25940254ebdb3))
+* cuando hay un solo workflow autoseleccionar ([b0fce1f](https://git.sdos.es/Delivery-Projects/concesur/concenet_front/-/commit/b0fce1fbc8511739335529571ba1b618cb264f2a))
+* mejoras ([d859928](https://git.sdos.es/Delivery-Projects/concesur/concenet_front/-/commit/d8599281d3fd2aabffd1936b2841c393267961c2))
+
+
+### Bug Fixes
+
+* con-242 se queda bloqueada la modal de enviar y mover, mostrar label si no hay datos de task ([a7f4355](https://git.sdos.es/Delivery-Projects/concesur/concenet_front/-/commit/a7f43556064633ce8507744f400e481a689f520d))
+* controlar error preparar movimiento si solicitamos un movimiento a un target sin usuario ([803de0c](https://git.sdos.es/Delivery-Projects/concesur/concenet_front/-/commit/803de0c94a2b0a502a9cda8015d607fa1935ff5c))
+* corrección modal enviar a otro worfklow ([f290d31](https://git.sdos.es/Delivery-Projects/concesur/concenet_front/-/commit/f290d3136ec71c07a78c9250460455e0e5ed5522))
+* filtrar tabItems por visible ([1232a33](https://git.sdos.es/Delivery-Projects/concesur/concenet_front/-/commit/1232a33e7db698982483414702f5334ba9768e59))
+* mostrar error y quitar datos si el servicio de cards falla ([06e5061](https://git.sdos.es/Delivery-Projects/concesur/concenet_front/-/commit/06e50613b1f86e24f4cb288509a2babea74cb391))
+* styles issues ([d04ed59](https://git.sdos.es/Delivery-Projects/concesur/concenet_front/-/commit/d04ed59a7524a1d5f090d8032ae2a91484b39001))
+* validación para que no si un estado portada no trae usuarios no falle ([d20ca99](https://git.sdos.es/Delivery-Projects/concesur/concenet_front/-/commit/d20ca9913eef8790906bace74048ab3908fa3db1))
+
 ## 1.0.0 (2022-10-20)
 
 
