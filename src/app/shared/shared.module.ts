@@ -17,6 +17,7 @@ import { ResponsiveTabsComponent } from './components/responsive-tabs/responsive
 import { HighlightDirective } from './directives/highLight.directive';
 import { DropFilesZonetDirective } from './directives/dropFilesZone.directive';
 import { TwoDigitDecimalDirective } from './utils/two-digit-decimal.directive';
+import { CardTabItemTypePipePipe } from './utils/card-tab-item-type-pipe.pipe';
 
 @NgModule({
   declarations: [
@@ -28,7 +29,8 @@ import { TwoDigitDecimalDirective } from './utils/two-digit-decimal.directive';
     HighlightDirective,
     DropFilesZonetDirective,
     ResponsiveTabsComponent,
-    TwoDigitDecimalDirective
+    TwoDigitDecimalDirective,
+    CardTabItemTypePipePipe
   ],
   imports: [
     TranslateModule,
@@ -54,7 +56,8 @@ import { TwoDigitDecimalDirective } from './utils/two-digit-decimal.directive';
     HighlightDirective,
     DropFilesZonetDirective,
     CustomDialogModule,
-    TwoDigitDecimalDirective
+    TwoDigitDecimalDirective,
+    CardTabItemTypePipePipe
   ]
 })
 export class SharedModule {}

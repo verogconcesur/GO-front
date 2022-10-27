@@ -131,13 +131,16 @@
         </form>
         <app-entity-tab
             [entityAttributesFormArray]="formTab?.controls?.tabItems"
-            [ngStyle]="{
-                display:
-                    (formTab?.controls?.contentTypeId?.value === 1 || formTab?.controls?.contentTypeId?.value === 2) &&
-                    formTab?.controls?.contentSourceId?.value
-                        ? 'block'
-                        : 'none'
-            }"
+            *ngIf="
+                (formTab?.controls?.contentTypeId?.value === 1 || formTab?.controls?.contentTypeId?.value === 2) &&
+                formTab?.controls?.contentSourceId?.value
+            "
         ></app-entity-tab>
+        <app-custom-tab
+            [tabItems]="formTab?.controls?.tabItems"
+            *ngIf="formTab?.controls?.contentTypeId?.value === 3"
+            (editTabItemEvent)="editTabItem($event)"
+            (newTabItemEvent)="newTabItem($event)"
+        ></app-custom-tab>
     </div>
 </div>
