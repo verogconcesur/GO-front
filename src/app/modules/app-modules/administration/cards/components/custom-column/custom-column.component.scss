@@ -1,6 +1,6 @@
 @import 'utils/core';
 .custom-column-container {
-  padding: 0 30px 25px 30px;
+  padding: 0 0 25px 30px;
   @include respond-to($desktop-small) {
     padding: 25px 5px;
   }

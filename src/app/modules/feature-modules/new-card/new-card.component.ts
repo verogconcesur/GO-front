@@ -272,9 +272,19 @@ export class NewCardComponent implements OnInit {
     const arrayForm = this.fb.array([]);
     switch (tab.contentTypeId) {
       case 1:
-        tab.tabItems.forEach((tabItem) => {
-          (arrayForm as UntypedFormArray).push(this.generateEntityTabItem(tabItem));
-        });
+        tab.tabItems
+          .filter((tabItem) => {
+            switch (tabItem.typeItem) {
+              case 'VARIABLE':
+                return tabItem.tabItemConfigVariable.visible;
+              case 'ACTION':
+                return tabItem.tabItemConfigAction.visible;
+            }
+            return false;
+          })
+          .forEach((tabItem) => {
+            (arrayForm as UntypedFormArray).push(this.generateEntityTabItem(tabItem));
+          });
         break;
     }
     return arrayForm;

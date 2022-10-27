@@ -4,6 +4,8 @@ import { Observable } from 'rxjs';
 import { ComponentType } from '@angular/cdk/portal';
 import { TabItemConfigInputComponent } from '../components/tab-items/tab-item-config-input/tab-item-config-input.component';
 import CardColumnTabItemDTO from '@data/models/cards/card-column-tab-item-dto';
+import { TabItemConfigTextComponent } from '../components/tab-items/tab-item-config-text/tab-item-config-text.component';
+import { TabItemConfigTitleComponent } from '../components/tab-items/tab-item-config-title/tab-item-config-title.component';
 
 export const enum CustomizableInputSelectorModalEnum {
   ID = 'my-profile-dialog-id',
@@ -21,8 +23,10 @@ export class CustomizableInputSelectorAuxService {
     let component: ComponentType<ComponentToExtendForCustomDialog>;
     switch (tabItem.typeItem) {
       case 'TITLE':
+        component = TabItemConfigTitleComponent;
         break;
       case 'TEXT':
+        component = TabItemConfigTextComponent;
         break;
       case 'INPUT':
         component = TabItemConfigInputComponent;

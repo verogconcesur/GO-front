@@ -13,7 +13,7 @@ import { Observable, of } from 'rxjs';
 export const enum TabItemConfigInputComponentModalEnum {
   ID = 'config-input-dialog-id',
   PANEL_CLASS = 'config-input-dialog',
-  TITLE = 'tabItem.config-input.title'
+  TITLE = 'common.customTabItem.INPUT'
 }
 
 @Component({
@@ -23,9 +23,13 @@ export const enum TabItemConfigInputComponentModalEnum {
 })
 export class TabItemConfigInputComponent extends ComponentToExtendForCustomDialog implements OnInit {
   public labels = {
-    title: marker(TabItemConfigInputComponentModalEnum.TITLE)
+    title: marker(TabItemConfigInputComponentModalEnum.TITLE),
+    name: marker('userProfile.name'),
+    minLength: marker('errors.minLength'),
+    nameRequired: marker('userProfile.nameRequired')
   };
 
+  public minLength = 3;
   public tabItemForm: UntypedFormGroup;
   public tabItemToEdit: CardColumnTabItemDTO;
 
@@ -60,7 +64,7 @@ export class TabItemConfigInputComponent extends ComponentToExtendForCustomDialo
   }
 
   public onSubmitCustomDialog(): Observable<CardColumnTabItemDTO> {
-    return of(this.tabItemForm.value);
+    return of(this.tabItemForm.getRawValue() as CardColumnTabItemDTO);
   }
 
   public setAndGetFooterConfig(): CustomDialogFooterConfigI | null {
@@ -88,29 +92,32 @@ export class TabItemConfigInputComponent extends ComponentToExtendForCustomDialo
   private initializeForm = (): void => {
     this.tabItemForm = this.fb.group({
       id: [this.tabItemToEdit.id ? this.tabItemToEdit.id : null],
-      name: [this.tabItemToEdit.name ? this.tabItemToEdit.name : '', [Validators.required]],
-      description: [this.tabItemToEdit.description ? this.tabItemToEdit.description : '', [Validators.required]],
-      tabItemConfigInput: this.fb.group({
-        id: [this.tabItemToEdit.tabItemConfigInput.id ? this.tabItemToEdit.tabItemConfigInput.id : null],
-        tabItemId: [this.tabItemToEdit.tabItemConfigInput.tabItemId ? this.tabItemToEdit.tabItemConfigInput.tabItemId : null],
-        description: [
-          this.tabItemToEdit.tabItemConfigInput.description ? this.tabItemToEdit.tabItemConfigInput.description : null
-        ],
-        dataType: [
-          this.tabItemToEdit.tabItemConfigInput.dataType ? this.tabItemToEdit.tabItemConfigInput.dataType : null,
-          [Validators.required]
-        ],
-        dateApplyColor: [
-          this.tabItemToEdit.tabItemConfigInput.dateApplyColor ? this.tabItemToEdit.tabItemConfigInput.dateApplyColor : null
-        ],
-        dateColor: [this.tabItemToEdit.tabItemConfigInput.dateColor ? this.tabItemToEdit.tabItemConfigInput.dateColor : null],
-        dateLimit: [this.tabItemToEdit.tabItemConfigInput.dateLimit ? this.tabItemToEdit.tabItemConfigInput.dateLimit : null],
-        dateType: [this.tabItemToEdit.tabItemConfigInput.dateType ? this.tabItemToEdit.tabItemConfigInput.dateType : null],
-        mandatory: [this.tabItemToEdit.tabItemConfigInput.mandatory ? this.tabItemToEdit.tabItemConfigInput.mandatory : null],
-        numDecimals: [
-          this.tabItemToEdit.tabItemConfigInput.numDecimals ? this.tabItemToEdit.tabItemConfigInput.numDecimals : null
-        ]
-      })
+      typeItem: [this.tabItemToEdit.typeItem ? this.tabItemToEdit.typeItem : '', [Validators.required]],
+      name: [this.tabItemToEdit.name ? this.tabItemToEdit.name : '', [Validators.required, Validators.minLength(this.minLength)]],
+      description: [this.tabItemToEdit.description ? this.tabItemToEdit.description : null],
+      tabId: [this.tabItemToEdit.tabId ? this.tabItemToEdit.tabId : null],
+      orderNumber: [this.tabItemToEdit.orderNumber ? this.tabItemToEdit.orderNumber : null]
+      // tabItemConfigInput: this.fb.group({
+      //   id: [this.tabItemToEdit.tabItemConfigInput.id ? this.tabItemToEdit.tabItemConfigInput.id : null],
+      //   tabItemId: [this.tabItemToEdit.tabItemConfigInput.tabItemId ? this.tabItemToEdit.tabItemConfigInput.tabItemId : null],
+      //   description: [
+      //     this.tabItemToEdit.tabItemConfigInput.description ? this.tabItemToEdit.tabItemConfigInput.description : null
+      //   ],
+      //   dataType: [
+      //     this.tabItemToEdit.tabItemConfigInput.dataType ? this.tabItemToEdit.tabItemConfigInput.dataType : null,
+      //     [Validators.required]
+      //   ],
+      //   dateApplyColor: [
+      //     this.tabItemToEdit.tabItemConfigInput.dateApplyColor ? this.tabItemToEdit.tabItemConfigInput.dateApplyColor : null
+      //   ],
+      //   dateColor: [this.tabItemToEdit.tabItemConfigInput.dateColor ? this.tabItemToEdit.tabItemConfigInput.dateColor : null],
+      //   dateLimit: [this.tabItemToEdit.tabItemConfigInput.dateLimit ? this.tabItemToEdit.tabItemConfigInput.dateLimit : null],
+      //   dateType: [this.tabItemToEdit.tabItemConfigInput.dateType ? this.tabItemToEdit.tabItemConfigInput.dateType : null],
+      //   mandatory: [this.tabItemToEdit.tabItemConfigInput.mandatory ? this.tabItemToEdit.tabItemConfigInput.mandatory : null],
+      //   numDecimals: [
+      //     this.tabItemToEdit.tabItemConfigInput.numDecimals ? this.tabItemToEdit.tabItemConfigInput.numDecimals : null
+      //   ]
+      // })
     });
   };
 }
