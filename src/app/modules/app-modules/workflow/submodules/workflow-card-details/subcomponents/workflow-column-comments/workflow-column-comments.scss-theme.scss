@@ -14,5 +14,8 @@
     .note-statusbar {
       display: none;
     }
+    .popover-content.note-children-container {
+      overflow: hidden;
+    }
   }
 }
