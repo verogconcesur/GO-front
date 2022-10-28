@@ -4,6 +4,6 @@ import { NgxLoggerLevel } from 'ngx-logger';
 export const environment: Env = {
   appVersion: `${require('../../package.json').version}-pre`,
   production: true,
-  apiBaseUrl: '',
+  apiBaseUrl: 'https://concenet-pre.sdos.es/concenet-rest',
   logLevel: NgxLoggerLevel.DEBUG
 };

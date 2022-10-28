@@ -58,6 +58,14 @@ export class WorkflowPrepareAndMoveService {
       : substateTarget?.workflowSubstateUser
       ? substateTarget?.workflowSubstateUser
       : [];
+    if (
+      !user &&
+      move &&
+      move.workflowSubstateTarget.workflowState.front &&
+      move.workflowSubstateTarget.workflowSubstateUser?.length === 1
+    ) {
+      user = move.workflowSubstateTarget.workflowSubstateUser[0];
+    }
     this.workflowService
       .prepareMovement(item, targetId)
       .pipe(take(1))
@@ -77,6 +85,7 @@ export class WorkflowPrepareAndMoveService {
                 data[2]?.requiredSize ||
                 data[2]?.requiredUser ||
                 data[2]?.sendMail)) ||
+            this.showMainUserSelector(user, move) ||
             view === 'MOVES_IN_OTHER_WORKFLOWS'
           ) {
             this.dialog
@@ -87,7 +96,8 @@ export class WorkflowPrepareAndMoveService {
                   usersOut,
                   usersIn,
                   view,
-                  selectedUser: user
+                  selectedUser: user,
+                  mainUserSelector: this.showMainUserSelector(user, move)
                 }
               })
               .afterClosed()
@@ -95,6 +105,7 @@ export class WorkflowPrepareAndMoveService {
               .subscribe(
                 (res: {
                   task: { description: string };
+                  user: { user: WorkflowSubstateUserDTO };
                   in: { size: 'S' | 'M' | 'L' | 'XL'; user: WorkflowSubstateUserDTO; template: string };
                   out: { size: 'S' | 'M' | 'L' | 'XL'; user: WorkflowSubstateUserDTO; template: string };
                   mov: { size: 'S' | 'M' | 'L' | 'XL'; user: WorkflowSubstateUserDTO; template: string };
@@ -150,6 +161,9 @@ export class WorkflowPrepareAndMoveService {
                   if (res.task?.description) {
                     item.cardInstanceWorkflows[0].information = res.task.description;
                   }
+                  if (res.user?.user) {
+                    user = res.user.user;
+                  }
                   item.cardInstanceWorkflows[0].workflowSubstateEvents = newData;
                   this.moveCard(item, targetId, user, dropZoneId, itemToReplace, view);
                 },
@@ -178,6 +192,18 @@ export class WorkflowPrepareAndMoveService {
           });
         }
       );
+  }
+
+  private showMainUserSelector(user: WorkflowSubstateUserDTO, move: WorkflowMoveDTO): boolean {
+    if (
+      !user &&
+      move &&
+      move.workflowSubstateTarget.workflowState.front &&
+      move.workflowSubstateTarget.workflowSubstateUser?.length
+    ) {
+      return true;
+    }
+    return false;
   }
 
   private moveCard(
