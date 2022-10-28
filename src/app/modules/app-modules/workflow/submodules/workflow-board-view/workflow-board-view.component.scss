@@ -48,6 +48,10 @@
     @include respond-to($desktop-large) {
       display: flex;
     }
+    mat-icon {
+      right: -7px;
+      position: absolute;
+    }
   }
   &__scroll-columns {
     display: flex;

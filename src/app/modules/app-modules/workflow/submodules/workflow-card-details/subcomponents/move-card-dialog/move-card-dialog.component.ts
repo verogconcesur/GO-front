@@ -289,15 +289,19 @@ export class MoveCardDialogComponent implements OnInit {
           ];
           movesByWorkflow.children[0].workflowSubstateTargets = [move.workflowSubstateTarget];
           if (move.workflowSubstateTarget.workflowState.front) {
-            movesByWorkflow.children[0].workflowSubstateTargets[0].children = [
-              ...movesByWorkflow.children[0].workflowSubstateTargets[0].workflowSubstateUser
-            ].map((user: WorkflowSubstateUserDTO) => {
-              if (!user.move) {
-                user.name = this.getUserFullName(user.user);
-                user.move = move;
-              }
-              return user;
-            });
+            if (movesByWorkflow?.children[0]?.workflowSubstateTargets[0]?.workflowSubstateUser) {
+              movesByWorkflow.children[0].workflowSubstateTargets[0].children = [
+                ...movesByWorkflow.children[0].workflowSubstateTargets[0].workflowSubstateUser
+              ].map((user: WorkflowSubstateUserDTO) => {
+                if (!user.move) {
+                  user.name = this.getUserFullName(user.user);
+                  user.move = move;
+                }
+                return user;
+              });
+            } else {
+              movesByWorkflow.children[0].workflowSubstateTargets[0].children = [];
+            }
           } else {
             movesByWorkflow.children[0].workflowSubstateTargets[0].move = move;
           }
