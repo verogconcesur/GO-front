@@ -20,15 +20,13 @@
   }
   &__warnings {
     margin-top: 20px;
-    form {
-      .preparation__section {
-        &__title {
-          margin-bottom: 5px;
-        }
-        mat-form-field {
-          width: 100%;
-        }
-      }
+  }
+  .preparation__section {
+    &__title {
+      margin-bottom: 5px;
+    }
+    mat-form-field {
+      width: 100%;
     }
   }
 
