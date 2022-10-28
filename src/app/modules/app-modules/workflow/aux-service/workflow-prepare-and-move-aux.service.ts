@@ -58,6 +58,14 @@ export class WorkflowPrepareAndMoveService {
       : substateTarget?.workflowSubstateUser
       ? substateTarget?.workflowSubstateUser
       : [];
+    if (
+      !user &&
+      move &&
+      move.workflowSubstateTarget.workflowState.front &&
+      move.workflowSubstateTarget.workflowSubstateUser?.length === 1
+    ) {
+      user = move.workflowSubstateTarget.workflowSubstateUser[0];
+    }
     this.workflowService
       .prepareMovement(item, targetId)
       .pipe(take(1))
