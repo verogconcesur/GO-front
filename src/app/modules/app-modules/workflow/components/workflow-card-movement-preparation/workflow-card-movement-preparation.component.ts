@@ -16,6 +16,7 @@ import { TranslateService } from '@ngx-translate/core';
 export class WorkflowCardMovementPreparationComponent implements OnInit {
   public taskForm: UntypedFormGroup = null;
   public formsCreated = false;
+  public userForm: UntypedFormGroup = null;
   public preparationIn: WorkflowSubstateEventDTO = null;
   public preparationInForm: UntypedFormGroup = null;
   public preparationOut: WorkflowSubstateEventDTO = null;
@@ -51,6 +52,7 @@ export class WorkflowCardMovementPreparationComponent implements OnInit {
   public tabsToShow: ('IN' | 'OUT' | 'MOV')[] = [];
   public tabToShow: 'IN' | 'OUT' | 'MOV';
   public sendToOtherWorkflow = false;
+  public mainUserSelector = false;
 
   constructor(
     public dialogRef: MatDialogRef<WorkflowCardMovementPreparationComponent>,
@@ -61,6 +63,7 @@ export class WorkflowCardMovementPreparationComponent implements OnInit {
       usersOut: WorkflowSubstateUserDTO[];
       view: 'MOVES_IN_THIS_WORKFLOW' | 'MOVES_IN_OTHER_WORKFLOWS';
       selectedUser: WorkflowSubstateUserDTO;
+      mainUserSelector: boolean;
     },
     private fb: FormBuilder,
     private translateService: TranslateService
@@ -69,7 +72,8 @@ export class WorkflowCardMovementPreparationComponent implements OnInit {
   ngOnInit(): void {
     this.usersIn = this.data.usersIn;
     this.usersOut = this.data.usersOut;
-    this.usersMov = this.data.usersOut;
+    this.usersMov = this.data.usersIn;
+    this.mainUserSelector = this.data.mainUserSelector;
     this.data.preparation.forEach((p: WorkflowSubstateEventDTO) => {
       if (
         p.substateEventType === 'IN' &&
@@ -114,6 +118,11 @@ export class WorkflowCardMovementPreparationComponent implements OnInit {
     if (this.sendToOtherWorkflow) {
       this.taskForm = this.fb.group({
         description: [null, Validators.required]
+      });
+    }
+    if (this.mainUserSelector) {
+      this.userForm = this.fb.group({
+        user: [null, Validators.required]
       });
     }
     if (this.preparationIn) {
@@ -223,6 +232,7 @@ export class WorkflowCardMovementPreparationComponent implements OnInit {
   public save(): void {
     this.dialogRef.close({
       task: this.taskForm ? this.taskForm.value : null,
+      user: this.userForm ? this.userForm.value : null,
       in: this.preparationInForm ? this.preparationInForm.value : null,
       out: this.preparationOutForm ? this.preparationOutForm.value : null,
       mov: this.preparationMovForm ? this.preparationMovForm.value : null
@@ -232,6 +242,7 @@ export class WorkflowCardMovementPreparationComponent implements OnInit {
   public disableSaveButton(): boolean {
     return (
       this.taskForm?.invalid ||
+      this.userForm?.invalid ||
       this.preparationInForm?.invalid ||
       this.preparationOutForm?.invalid ||
       this.preparationMovForm?.invalid
