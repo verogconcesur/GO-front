@@ -123,7 +123,10 @@ export class WorkflowColumnActionsAndLinksComponent implements OnInit {
       null,
       null,
       '',
-      null
+      null,
+      move.workflowSubstateSource.workflowState.workflow.id !== move.workflowSubstateTarget.workflowState.workflow.id
+        ? 'MOVES_IN_OTHER_WORKFLOWS'
+        : 'MOVES_IN_THIS_WORKFLOW'
     );
   }
 
