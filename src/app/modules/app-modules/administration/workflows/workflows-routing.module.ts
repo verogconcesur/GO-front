@@ -2,29 +2,28 @@ import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 import { RouteConstants, RoutePermissionConstants } from '@app/constants/route.constants';
 import { AuthGuardService } from '@app/security/guards/authentication.guard';
-import { WorkflowsComponent } from './workflows.component';
+import { WorkflowDetailComponent } from './components/workflow-detail/workflow-detail.component';
+import { WorkflowListComponent } from './components/workflow-list/workflow-list.component';
 
 const routes: Routes = [
   {
     path: RouteConstants.EMPTY,
-    component: WorkflowsComponent,
+    component: WorkflowListComponent,
     canActivate: [AuthGuardService],
     data: { permissions: RoutePermissionConstants.ADMINISTRATION }
   },
-  // {
-  //   path: RouteConstants.CREATE_CARD,
-  //   component: CreateEditCardComponent,
-  //   canActivate: [AuthGuardService],
-  //   data: { permissions: RoutePermissionConstants.ADMINISTRATION },
-  // },
-  // {
-  //   path: `${RouteConstants.CREATE_CARD}/${RouteConstants.ID_CARD}`,
-  //   component: CreateEditCardComponent,
-  //   canActivate: [AuthGuardService],
-  //   data: { permissions: RoutePermissionConstants.ADMINISTRATION },
-  //   children: [
-  //   ]
-  // },
+  {
+    path: RouteConstants.CREATE_WORKFLOW,
+    component: WorkflowDetailComponent,
+    canActivate: [AuthGuardService],
+    data: { permissions: RoutePermissionConstants.ADMINISTRATION }
+  },
+  {
+    path: `${RouteConstants.EDIT}/${RouteConstants.ID_WORKFLOW}`,
+    component: WorkflowDetailComponent,
+    canActivate: [AuthGuardService],
+    data: { permissions: RoutePermissionConstants.ADMINISTRATION }
+  },
   {
     path: RouteConstants.OTHER,
     pathMatch: 'full',

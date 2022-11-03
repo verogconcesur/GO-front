@@ -439,6 +439,8 @@
     },
     "workflows": {
         "byFacilityGroupLabel": "{facility}'s workflows",
+        "createWorkflow": "Create workflow",
+        "draft": "Draft",
         "dueOutDateTime": "Pick up {date} at {time}",
         "emptySubstate": "Empty substate",
         "filter": "Filter Workflows",
@@ -449,6 +451,7 @@
         "numCards": "{num} {num, plural, =0{cards} one{card} other{cards}}",
         "originalSubstate": "Original substate",
         "peopleWorking": "{num} {num, plural, =0{people working} one{person working} other{people working}}",
+        "published": "Published",
         "select": "Select a Workflow",
         "substatesWithAndWithoutCards": "Showing substates with or without cards",
         "substatesWithCards": "Showing only substates with cards",

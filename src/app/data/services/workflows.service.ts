@@ -17,6 +17,10 @@ import WorkflowSubstateUserDTO from '@data/models/workflows/workflow-substate-us
 import { WorkflowFilterService } from '@modules/app-modules/workflow/aux-service/workflow-filter.service';
 import { BehaviorSubject, Observable, of, throwError } from 'rxjs';
 import { catchError, map } from 'rxjs/operators';
+import { WorkflowSearchFilterDTO } from '@data/models/workflows/workflow-filter-dto';
+import PaginationRequestI from '@data/interfaces/pagination-request';
+import { getPaginationUrlGetParams } from '@data/utils/pagination-aux';
+import PaginationResponseI from '@data/interfaces/pagination-response';
 
 @Injectable({
   providedIn: 'root'
@@ -31,6 +35,7 @@ export class WorkflowsService {
   private readonly GET_MOCK_WORKFLOWS_PATH = '/api/mock/workflow';
   private readonly GET_WORKFLOWS_CREATECARD_PATH = '/api/cardInstanceWorkflow/createCard/getWorkflows';
   private readonly GET_WORKFLOWS_LIST_PATH = '/list';
+  private readonly GET_WORKFLOWS_SEARCH_PATH = '/search';
   private readonly GET_WORKFLOWS_FACILITY_PATH = '/facility';
   private readonly GET_WORKFLOWS_INSTANCE_PATH = '/instances';
   private readonly GET_WORKFLOWS_VIEW_PATH = '/view';
@@ -54,6 +59,27 @@ export class WorkflowsService {
       .get<WorkflowDTO[]>(`${this.env.apiBaseUrl}${this.GET_WORKFLOWS_PATH}${this.GET_WORKFLOWS_LIST_PATH}`)
       .pipe(catchError((error) => throwError(error.error as ConcenetError)));
   }
+
+  /**
+   * Devuelve listado de workflows paginado
+   *
+   * @returns WorkflowDTO[]
+   */
+  public searchWorkflows(
+    filter: WorkflowSearchFilterDTO,
+    pagination?: PaginationRequestI
+  ): Observable<PaginationResponseI<WorkflowDTO>> {
+    return this.http
+      .post<PaginationResponseI<WorkflowDTO>>(
+        `${this.env.apiBaseUrl}${this.GET_WORKFLOWS_PATH}${this.GET_WORKFLOWS_SEARCH_PATH}${getPaginationUrlGetParams(
+          pagination,
+          true
+        )}`,
+        filter
+      )
+      .pipe(catchError((error) => throwError(error.error as ConcenetError)));
+  }
+
   /**
    * Devuelve el listado de workflow que el usuario logado puede ver para la creación de una ficha.
    *
@@ -169,6 +195,10 @@ export class WorkflowsService {
         cardInstanceWorkflow
       )
       .pipe(catchError((error) => throwError(error.error as ConcenetError)));
+  }
+
+  public deleteWorkflow(id: number): Observable<boolean> {
+    return this.http.delete<boolean>(`${this.env.apiBaseUrl}${this.GET_WORKFLOWS_PATH}/${id}`);
   }
 
   public prepareMovement(card: WorkflowCardDTO, targetId: number): Observable<WorkflowSubstateEventDTO[]> {
