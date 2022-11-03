@@ -1,0 +1,13 @@
+@import 'utils/core';
+.workflows-filter {
+  margin: 10px 0;
+  app-organization-levels-nested-combos {
+    display: contents;
+  }
+  mat-form-field {
+    min-width: 425px;
+    @include respond-to($mobile) {
+      min-width: 99%;
+    }
+  }
+}
