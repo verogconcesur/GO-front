@@ -170,12 +170,24 @@ export class CardInstanceBudgetsComponent implements OnInit {
         })
         .pipe(take(1))
         .subscribe((response) => {
-          if (response) {
+          if (response && response.length) {
             this.globalMessageService.showSuccess({
               message: this.translateService.instant(marker('common.successOperation')),
               actionText: this.translateService.instant(marker('common.close'))
             });
             this.reload.emit(true);
+          } else {
+            this.editing = true;
+            this.formBudgets.push(
+              this.fb.group({
+                id: [null],
+                accepted: [false],
+                amount: ['', [Validators.max(this.maxAmount), Validators.required]],
+                description: ['', Validators.required],
+                editMode: [true],
+                workflowId: [this.cardInstanceBudgetsConfig.workflowId]
+              })
+            );
           }
         });
     }
