@@ -6,6 +6,9 @@ import { TabItemConfigInputComponent } from '../components/tab-items/tab-item-co
 import CardColumnTabItemDTO from '@data/models/cards/card-column-tab-item-dto';
 import { TabItemConfigTextComponent } from '../components/tab-items/tab-item-config-text/tab-item-config-text.component';
 import { TabItemConfigTitleComponent } from '../components/tab-items/tab-item-config-title/tab-item-config-title.component';
+import { TabItemConfigListComponent } from '../components/tab-items/tab-item-config-list/tab-item-config-list.component';
+import { TabItemConfigTableComponent } from '../components/tab-items/tab-item-config-table/tab-item-config-table.component';
+import { TabItemConfigOptionComponent } from '../components/tab-items/tab-item-config-option/tab-item-config-option.component';
 
 export const enum CustomizableInputSelectorModalEnum {
   ID = 'my-profile-dialog-id',
@@ -32,16 +35,13 @@ export class CustomizableInputSelectorAuxService {
         component = TabItemConfigInputComponent;
         break;
       case 'LIST':
+        component = TabItemConfigListComponent;
         break;
       case 'TABLE':
+        component = TabItemConfigTableComponent;
         break;
       case 'OPTION':
-        break;
-      case 'VARIABLE':
-        break;
-      case 'LINK':
-        break;
-      case 'ACTION':
+        component = TabItemConfigOptionComponent;
         break;
     }
     return this.customDialogService.open({
@@ -50,7 +50,7 @@ export class CustomizableInputSelectorAuxService {
       id: CustomizableInputSelectorModalEnum.ID,
       panelClass: CustomizableInputSelectorModalEnum.PANEL_CLASS,
       disableClose: true,
-      width: '700px'
+      width: '800px'
     });
   }
 }
