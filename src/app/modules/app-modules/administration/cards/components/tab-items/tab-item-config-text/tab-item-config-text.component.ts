@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { UntypedFormGroup, UntypedFormBuilder, Validators } from '@angular/forms';
+import { UntypedFormGroup, UntypedFormBuilder, Validators, FormGroup } from '@angular/forms';
 import { marker } from '@biesbjerg/ngx-translate-extract-marker';
 import CardColumnTabItemDTO from '@data/models/cards/card-column-tab-item-dto';
 import { ComponentToExtendForCustomDialog, CustomDialogFooterConfigI } from '@jenga/custom-dialog';
@@ -22,9 +22,11 @@ export const enum TabItemConfigTextComponentModalEnum {
 export class TabItemConfigTextComponent extends ComponentToExtendForCustomDialog implements OnInit {
   public labels = {
     title: marker(TabItemConfigTextComponentModalEnum.TITLE),
-    name: marker('userProfile.name'),
+    name: marker('common.tabName'),
     minLength: marker('errors.minLength'),
-    nameRequired: marker('userProfile.nameRequired')
+    nameRequired: marker('userProfile.nameRequired'),
+    required: marker('errors.required'),
+    paragraph: marker('common.paragraph')
   };
 
   public minLength = 3;
@@ -43,6 +45,9 @@ export class TabItemConfigTextComponent extends ComponentToExtendForCustomDialog
       TabItemConfigTextComponentModalEnum.PANEL_CLASS,
       marker(TabItemConfigTextComponentModalEnum.TITLE)
     );
+  }
+  get tabItemConfigText(): FormGroup {
+    return this.tabItemForm.get('tabItemConfigText') as FormGroup;
   }
 
   ngOnInit(): void {
@@ -94,7 +99,18 @@ export class TabItemConfigTextComponent extends ComponentToExtendForCustomDialog
       name: [this.tabItemToEdit.name ? this.tabItemToEdit.name : '', [Validators.required, Validators.minLength(this.minLength)]],
       description: [this.tabItemToEdit.description ? this.tabItemToEdit.description : null],
       tabId: [this.tabItemToEdit.tabId ? this.tabItemToEdit.tabId : null],
-      orderNumber: [this.tabItemToEdit.orderNumber ? this.tabItemToEdit.orderNumber : null]
+      orderNumber: [this.tabItemToEdit.orderNumber ? this.tabItemToEdit.orderNumber : null],
+      tabItemConfigText: this.fb.group({
+        id: [this.tabItemToEdit?.tabItemConfigText?.id ? this.tabItemToEdit.tabItemConfigText.id : null],
+        tabItemId: [this.tabItemToEdit?.tabItemConfigText?.tabItemId ? this.tabItemToEdit.tabItemConfigText.tabItemId : null],
+        description: [
+          this.tabItemToEdit?.tabItemConfigText?.description ? this.tabItemToEdit.tabItemConfigText.description : null
+        ],
+        value: [
+          this.tabItemToEdit?.tabItemConfigText?.value ? this.tabItemToEdit.tabItemConfigText.value : '',
+          [Validators.required]
+        ]
+      })
     });
   };
 }

@@ -1,0 +1,14 @@
+@import 'utils/core';
+
+.tab-item-config-content {
+  width: 100%;
+  padding-right: 15px;
+  &__form {
+    width: 100%;
+    &__section {
+      mat-form-field {
+        margin-right: 10px;
+      }
+    }
+  }
+}

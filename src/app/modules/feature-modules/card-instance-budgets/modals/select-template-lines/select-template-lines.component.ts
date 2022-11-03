@@ -55,45 +55,46 @@ export class SelectTemplateLinesComponent extends ComponentToExtendForCustomDial
     return of(true);
   }
 
-  public onSubmitCustomDialog(): Observable<boolean | CardBudgetsDTO[]> {
+  public onSubmitCustomDialog(): Observable<boolean | { newLine: boolean }> {
     let formValue: CardBudgetsDTO[] = this.budgetsForm.getRawValue();
     formValue = formValue.filter((budget) => budget.selected);
-    const spinner = this.spinnerService.show();
-    const config = this.extendedComponentData;
-    return this.budgetsService.addLines(config.cardInstanceWorkflowId, config.tabId, formValue).pipe(
-      map((response) => {
-        this.globalMessageService.showSuccess({
-          message: this.translateService.instant(marker('common.successOperation')),
-          actionText: this.translateService.instant(marker('common.close'))
-        });
-        return response;
-      }),
-      catchError((error) => {
-        this.globalMessageService.showError({
-          message: error.message,
-          actionText: this.translateService.instant(marker('common.close'))
-        });
-        return of(false);
-      }),
-      finalize(() => {
-        this.spinnerService.hide(spinner);
-      })
-    );
+    if (formValue && formValue.length) {
+      const spinner = this.spinnerService.show();
+      const config = this.extendedComponentData;
+      return this.budgetsService.addLines(config.cardInstanceWorkflowId, config.tabId, formValue).pipe(
+        map((response) => {
+          this.globalMessageService.showSuccess({
+            message: this.translateService.instant(marker('common.successOperation')),
+            actionText: this.translateService.instant(marker('common.close'))
+          });
+          return { newLine: false };
+        }),
+        catchError((error) => {
+          this.globalMessageService.showError({
+            message: error.message,
+            actionText: this.translateService.instant(marker('common.close'))
+          });
+          return of(false);
+        }),
+        finalize(() => {
+          this.spinnerService.hide(spinner);
+        })
+      );
+    } else {
+      return of({ newLine: true });
+    }
   }
 
   public setAndGetFooterConfig(): CustomDialogFooterConfigI | null {
     return {
       show: true,
-      leftSideButtons: [
-      ],
+      leftSideButtons: [],
       rightSideButtons: [
         {
           type: 'submit',
-          label: marker('common.save'),
+          label: marker('common.import'),
           design: 'raised',
-          color: 'primary',
-          //TODO: tener en cuenta templateBudgetLines
-          disabledFn: () => !this.budgetsForm.value.find((budget: CardBudgetsDTO) => budget.selected)
+          color: 'primary'
         }
       ]
     };

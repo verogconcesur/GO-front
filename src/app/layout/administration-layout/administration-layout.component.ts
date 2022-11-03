@@ -39,6 +39,7 @@ export class AdministrationLayoutComponent implements OnInit {
   public readonly FACILITIES_TEMPLATE_PATH = `${RouteConstants.ORGANIZATION}/${RouteConstants.FACILITIES}`;
   public readonly TEMPLATES_PATH = RouteConstants.TEMPLATES;
   public readonly CARDS_PATH = RouteConstants.CARDS;
+  public readonly WORKFLOWS_PATH = RouteConstants.ADM_WORKFLOWS;
 
   public userDetails: UserDetailsDTO;
 

@@ -71,7 +71,6 @@ export class WorkflowPrepareAndMoveService {
       .pipe(take(1))
       .subscribe(
         (data: WorkflowSubstateEventDTO[]) => {
-          console.log(data);
           if (
             (data?.length &&
               // !data[0]?.requiredFields &&

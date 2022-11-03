@@ -5,33 +5,12 @@
   padding-right: 15px;
   &__form {
     width: 100%;
-    &____section {
-      &__title {
-        margin: 0 0 10px 0;
-        &.first-child {
-          margin-top: 0px;
-        }
-      }
-      &__info {
-        margin: 0 0 5px 0;
-        line-height: 38px;
-      }
-      &__group {
-        margin-bottom: 15px;
-        &.grid-group {
-          display: grid;
-          justify-items: left;
-          gap: 1rem;
-          grid-template-columns: repeat(auto-fit, minmax(10rem, 1fr));
-        }
-        &__title {
-          padding-bottom: 0px;
-          text-transform: uppercase;
-          margin-bottom: 0px;
-          padding-right: 0.5rem;
-          &::after {
-            content: ':';
-          }
+    &__section {
+      mat-form-field {
+        margin-right: 10px;
+        &.text-area {
+          width: 100%;
+          max-width: 500px;
         }
       }
     }

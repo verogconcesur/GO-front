@@ -61,7 +61,12 @@ export enum RouteConstants {
   //Cards
   CARDS = 'cards',
   CREATE_CARD = 'create',
-  ID_CARD = ':idCard'
+  ID_CARD = ':idCard',
+
+  //Wokflows
+  ADM_WORKFLOWS = 'workflows',
+  CREATE_WORKFLOW = 'create',
+  ID_WORKFLOW = ':idWorkflow'
 }
 
 export const RoutePermissionConstants: Record<string, PermissionConstants[]> = {

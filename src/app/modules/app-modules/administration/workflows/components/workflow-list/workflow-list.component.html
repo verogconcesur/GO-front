@@ -1,0 +1,17 @@
+<div class="workflows-container">
+    <div class="workflows-container__header">
+        <app-administration-common-header-section
+            #workflowsHeader
+            [searchType]="'search'"
+            [buttonLabel]="labels.createWorkflow"
+            [showFilterButton]="true"
+            [areFiltersSettedAndActive]="areFiltersSettedAndActive()"
+            [searchFn]="getFilteredData"
+            [title]="'administration.workflows'"
+            (buttonCreateAction)="buttonCreateAction()"
+            (buttonShowFilterDrawerAction)="buttonShowFilterDrawerAction()"
+            (buttonSearchAction)="buttonSearchAction($event)"
+        ></app-administration-common-header-section>
+    </div>
+    <app-workflows-table #workflowsTable></app-workflows-table>
+</div>
