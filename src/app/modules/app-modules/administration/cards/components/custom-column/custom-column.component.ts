@@ -241,8 +241,8 @@ export class CustomColumnComponent implements OnInit {
       tabItemConfigInput: this.fb.group({
         id: [tabItem?.tabItemConfigInput?.id ? tabItem.tabItemConfigInput.id : null],
         dataType: [tabItem?.tabItemConfigInput?.dataType ? tabItem.tabItemConfigInput.dataType : null],
-        dateApplyColor: [tabItem?.tabItemConfigInput?.dateApplyColor ? tabItem.tabItemConfigInput.dateApplyColor : null],
-        dateColor: [tabItem?.tabItemConfigInput?.dateColor ? true : false],
+        dateApplyColor: [tabItem?.tabItemConfigInput?.dateApplyColor ? true : false],
+        dateColor: [tabItem?.tabItemConfigInput?.dateColor ? tabItem.tabItemConfigInput.dateColor : null],
         dateLimit: [tabItem?.tabItemConfigInput?.dateLimit ? true : false],
         dateType: [tabItem?.tabItemConfigInput?.dateType ? tabItem.tabItemConfigInput.dateType : null],
         mandatory: [tabItem?.tabItemConfigInput?.mandatory ? true : false],
