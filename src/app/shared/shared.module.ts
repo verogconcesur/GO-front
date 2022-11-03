@@ -18,6 +18,7 @@ import { HighlightDirective } from './directives/highLight.directive';
 import { DropFilesZonetDirective } from './directives/dropFilesZone.directive';
 import { TwoDigitDecimalDirective } from './utils/two-digit-decimal.directive';
 import { CardTabItemTypePipePipe } from './utils/card-tab-item-type-pipe.pipe';
+import { SafeHtmlPipe } from './utils/safe-inner-html.pipe';
 
 @NgModule({
   declarations: [
@@ -30,7 +31,8 @@ import { CardTabItemTypePipePipe } from './utils/card-tab-item-type-pipe.pipe';
     DropFilesZonetDirective,
     ResponsiveTabsComponent,
     TwoDigitDecimalDirective,
-    CardTabItemTypePipePipe
+    CardTabItemTypePipePipe,
+    SafeHtmlPipe
   ],
   imports: [
     TranslateModule,
@@ -57,7 +59,8 @@ import { CardTabItemTypePipePipe } from './utils/card-tab-item-type-pipe.pipe';
     DropFilesZonetDirective,
     CustomDialogModule,
     TwoDigitDecimalDirective,
-    CardTabItemTypePipePipe
+    CardTabItemTypePipePipe,
+    SafeHtmlPipe
   ]
 })
 export class SharedModule {}
