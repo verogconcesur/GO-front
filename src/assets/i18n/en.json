@@ -361,6 +361,8 @@
         "outTab": "Exit events",
         "size": "Choose a card size",
         "sizePlaceholder": "Card size",
+        "taskHistoricLabel": "Comment for the historical record",
+        "taskHistoricalPlaceholder": "Write a comment for the historical record",
         "taskLabel": "Task description",
         "taskPlaceholder": "By moving the task to another Workflow you are creating a task. Add a description.",
         "template": "Check the template to send",

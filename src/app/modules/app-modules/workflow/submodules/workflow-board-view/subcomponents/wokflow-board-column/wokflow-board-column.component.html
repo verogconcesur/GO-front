@@ -46,7 +46,11 @@
     <!-- Usamos ngStyle en lugar de NgIf para que los cdkDropList estén renderizados y visibles en caso de que se expanda la columna haciendo el
          drag sobre la tarjeta colapsada -->
     <div class="workflow-board-column__expanded" [ngStyle]="{ display: collapsed ? 'none' : 'flex' }">
-        <div class="workflow-board-column__expanded__block" *ngFor="let user of wState.front ? wState.workflowUsers : []">
+        <div
+            class="workflow-board-column__expanded__block"
+            cdkScrollable
+            *ngFor="let user of wState.front ? wState.workflowUsers : []"
+        >
             <h4>{{ getUserName(user) }}</h4>
             <div class="workflow-substate front" *ngFor="let wSubstate of getWSubstatesToShowByUser(user, wState)">
                 <h3 class="title uppercase">{{ wSubstate.name }}</h3>
@@ -98,7 +102,7 @@
                 </div>
             </div>
         </div>
-        <div class="workflow-board-column__expanded__block" *ngIf="!wState.front">
+        <div class="workflow-board-column__expanded__block" cdkScrollable *ngIf="!wState.front">
             <div class="workflow-substate no-front" *ngFor="let wSubstate of wState.workflowSubstates">
                 <h3 class="title uppercase">{{ wSubstate.name }}</h3>
                 <div
