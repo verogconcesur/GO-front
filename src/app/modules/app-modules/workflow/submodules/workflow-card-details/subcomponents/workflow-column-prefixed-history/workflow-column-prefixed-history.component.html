@@ -99,7 +99,11 @@
         <div class="card-history__data__item" *ngFor="let item of historyData">
             <div class="history-status">
                 <div class="history-status__prev" [ngClass]="{ active: !item?.initial }"></div>
-                <div class="history-status__circle" [ngClass]="{ active: item?.initial }"></div>
+                <div
+                    class="history-status__circle"
+                    [ngClass]="{ active: item?.workflowSubstateTarget?.exitPoint || item?.initial }"
+                    [ngStyle]="getCircleStyles(item)"
+                ></div>
                 <div class="history-status__after" [ngClass]="{ active: !item?.final }"></div>
             </div>
             <div class="history-info">
@@ -108,8 +112,15 @@
                     <div class="history-info__user">{{ item.user.fullName }}</div>
                 </div>
                 <div class="history-info__line">
-                    <div class="history-info__description" [innerHtml]="getHistoryDescription(item)"></div>
+                    <div class="history-info__description">
+                        <mat-icon *ngIf="item?.eventHistoryType === 'CHANGE_STATE'">redo</mat-icon>
+                        <mat-icon *ngIf="item?.eventHistoryType === 'ASIG_USER'"> transfer_within_a_station</mat-icon>
+                        <div [innerHtml]="getHistoryDescription(item) | safeHtml"></div>
+                    </div>
                     <div class="history-info__date">{{ item.dateEvent | date: "dd/MM/yy, HH:mm" }}</div>
+                </div>
+                <div class="history-info__line">
+                    <div class="history-info__comment" *ngIf="item.comments">{{ item.comments }}</div>
                 </div>
             </div>
         </div>
