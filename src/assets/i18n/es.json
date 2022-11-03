@@ -382,6 +382,8 @@
         "outTab": "Eventos de salida del estado actual",
         "size": "Indique el tamaño de tarjeta",
         "sizePlaceholder": "Tamaño de tarjerta",
+        "taskHistoricLabel": "Comentario para el historial de la ficha",
+        "taskHistoricalPlaceholder": "Escriba un comentario referente al movimiento que va a realizar, visible desde el histórico de la ficha",
         "taskLabel": "Descipción tarea",
         "taskPlaceholder": "Al mover la tarea a otro Workflow está creando una tarea. Añada una descripción.",
         "template": "Verifique la plantilla de email a enviar",
