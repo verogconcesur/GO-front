@@ -55,8 +55,13 @@ const routes: Routes = [
       {
         path: RouteConstants.CARDS,
         canActivate: [AuthGuardService],
+        loadChildren: () => import('./modules/app-modules/administration/cards/cards.module').then((m) => m.CardsModule)
+      },
+      {
+        path: RouteConstants.ADM_WORKFLOWS,
+        canActivate: [AuthGuardService],
         loadChildren: () =>
-          import('./modules/app-modules/administration/cards/cards.module').then((m) => m.CardsModule)
+          import('./modules/app-modules/administration/workflows/workflows.module').then((m) => m.WorkflowsModule)
       },
       {
         path: RouteConstants.OTHER,

@@ -462,6 +462,9 @@
     },
     "workflows": {
         "byFacilityGroupLabel": "Workflows de {facility}",
+        "createWorkflow": "Crear workflow",
+        "deleteConfirmation": "¿Está seguro que desea eliminar este workflow?",
+        "draft": "Borrador",
         "dueOutDateTime": "Recoge el {date} a las {time}",
         "emptySubstate": "Subestado vacío",
         "filter": "Filtrar Workflows",
@@ -472,6 +475,7 @@
         "numCards": "{num} {num, plural, =0{fichas} one{ficha} other{fichas}}",
         "originalSubstate": "Subestado de origen",
         "peopleWorking": "{num} {num, plural, =0{personas trabajando} one{persona trabajando} other{personas trabajando}}",
+        "published": "Publicado",
         "select": "Selecciona un Workflow",
         "substatesWithAndWithoutCards": "Mostrando subestados con o sin tarjetas",
         "substatesWithCards": "Mostrando únicamente subestados con tarjetas",

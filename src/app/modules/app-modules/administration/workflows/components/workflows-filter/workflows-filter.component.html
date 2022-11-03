@@ -1,0 +1,15 @@
+<form [formGroup]="filterForm" *ngIf="filterForm" class="workflows-filter" fxLayout="column" fxLayoutAlign="center center">
+    <!-- status -->
+    <mat-form-field appearance="outline" floatLabel="always">
+        <mat-label>{{ labels.status | translate }}</mat-label>
+        <mat-select formControlName="status">
+            <mat-option [value]="null"></mat-option>
+            <mat-option *ngFor="let status of statusList" [value]="status.value">{{ status.label | translate }}</mat-option>
+        </mat-select>
+    </mat-form-field>
+
+    <app-organization-levels-nested-combos
+        #OrganizationLevelsNestedCombos
+        [form]="filterForm"
+    ></app-organization-levels-nested-combos>
+</form>
