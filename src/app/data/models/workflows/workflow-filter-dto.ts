@@ -22,5 +22,5 @@ export interface WorkflowSearchFilterDTO {
   facilities: FacilityDTO[];
   search: string;
   specialties: SpecialtyDTO[];
-  status: 'DRAFT' | 'PUBLISHED' | '';
+  status: 'DRAFT' | 'PUBLISHED';
 }

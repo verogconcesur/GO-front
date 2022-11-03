@@ -463,6 +463,7 @@
     "workflows": {
         "byFacilityGroupLabel": "{facility}'s workflows",
         "createWorkflow": "Create workflow",
+        "deleteConfirmation": "Do you really want to delete this workflow?",
         "draft": "Draft",
         "dueOutDateTime": "Pick up {date} at {time}",
         "emptySubstate": "Empty substate",

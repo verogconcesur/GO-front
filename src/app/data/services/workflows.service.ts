@@ -36,6 +36,7 @@ export class WorkflowsService {
   private readonly GET_WORKFLOWS_CREATECARD_PATH = '/api/cardInstanceWorkflow/createCard/getWorkflows';
   private readonly GET_WORKFLOWS_LIST_PATH = '/list';
   private readonly GET_WORKFLOWS_SEARCH_PATH = '/search';
+  private readonly DUPLICATE_WORKFLOWS_PATH = '/duplicate';
   private readonly GET_WORKFLOWS_FACILITY_PATH = '/facility';
   private readonly GET_WORKFLOWS_INSTANCE_PATH = '/instances';
   private readonly GET_WORKFLOWS_VIEW_PATH = '/view';
@@ -199,6 +200,10 @@ export class WorkflowsService {
 
   public deleteWorkflow(id: number): Observable<boolean> {
     return this.http.delete<boolean>(`${this.env.apiBaseUrl}${this.GET_WORKFLOWS_PATH}/${id}`);
+  }
+
+  public duplicateWorkflow(id: number): Observable<boolean> {
+    return this.http.get<boolean>(`${this.env.apiBaseUrl}${this.GET_WORKFLOWS_PATH}${this.DUPLICATE_WORKFLOWS_PATH}/${id}`);
   }
 
   public prepareMovement(card: WorkflowCardDTO, targetId: number): Observable<WorkflowSubstateEventDTO[]> {

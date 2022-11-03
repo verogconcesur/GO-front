@@ -1,4 +1,6 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
+import { Router } from '@angular/router';
+import { RouteConstants } from '@app/constants/route.constants';
 import { marker } from '@biesbjerg/ngx-translate-extract-marker';
 import WorkflowDTO from '@data/models/workflows/workflow-dto';
 // eslint-disable-next-line max-len
@@ -20,12 +22,12 @@ export class WorkflowListComponent implements OnInit {
   };
   private lastFilterSearch: string;
 
-  constructor() {}
+  constructor(private router: Router) {}
 
   ngOnInit(): void {}
 
   public buttonCreateAction(): void {
-    console.log('Redirecto to create route');
+    this.router.navigate([RouteConstants.ADMINISTRATION, RouteConstants.ADM_WORKFLOWS, RouteConstants.CREATE_WORKFLOW]);
   }
 
   public getFilteredData = (

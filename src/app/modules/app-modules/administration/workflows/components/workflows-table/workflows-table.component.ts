@@ -1,5 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { PageEvent } from '@angular/material/paginator';
+import { Router } from '@angular/router';
+import { RouteConstants } from '@app/constants/route.constants';
 import { ConcenetError } from '@app/types/error';
 import { marker } from '@biesbjerg/ngx-translate-extract-marker';
 import PaginationResponseI from '@data/interfaces/pagination-response';
@@ -56,7 +58,8 @@ export class WorkflowsTableComponent implements OnInit {
     private confirmationDialog: ConfirmDialogService,
     private globalMessageService: GlobalMessageService,
     private translateService: TranslateService,
-    private spinnerService: ProgressSpinnerDialogService
+    private spinnerService: ProgressSpinnerDialogService,
+    private router: Router
   ) {}
 
   ngOnInit(): void {
@@ -124,7 +127,7 @@ export class WorkflowsTableComponent implements OnInit {
   }
 
   public goToEditWorkflow(wf: WorkflowDTO): void {
-    console.log(wf);
+    this.router.navigate([RouteConstants.ADMINISTRATION, RouteConstants.ADM_WORKFLOWS, RouteConstants.EDIT, wf.id]);
   }
 
   public getWorkflows = (pageEvent?: PageEvent): void => {
@@ -197,14 +200,31 @@ export class WorkflowsTableComponent implements OnInit {
   };
 
   public duplicateWorkflow(wf: WorkflowDTO): void {
-    console.log('duplicar wf', wf);
+    this.workflowService
+      .duplicateWorkflow(wf.id)
+      .pipe(take(1))
+      .subscribe({
+        next: (response) => {
+          this.globalMessageService.showSuccess({
+            message: this.translateService.instant(marker('common.successOperation')),
+            actionText: this.translateService.instant(marker('common.close'))
+          });
+          this.getWorkflows();
+        },
+        error: (error: ConcenetError) => {
+          this.globalMessageService.showError({
+            message: this.translateService.instant(error.error),
+            actionText: this.translateService.instant(marker('common.close'))
+          });
+        }
+      });
   }
 
   public deleteWorkflow = (wf: WorkflowDTO): void => {
     this.confirmationDialog
       .open({
         title: this.translateService.instant(marker('common.warning')),
-        message: this.translateService.instant(marker('user.deleteConfirmation'))
+        message: this.translateService.instant(marker('workflows.deleteConfirmation'))
       })
       .pipe(take(1))
       .subscribe((ok: boolean) => {
@@ -237,7 +257,7 @@ export class WorkflowsTableComponent implements OnInit {
       departments: this.filterValue?.departments ? this.filterValue.departments : [],
       facilities: this.filterValue?.facilities ? this.filterValue.facilities : [],
       specialties: this.filterValue?.specialties ? this.filterValue.specialties : [],
-      status: this.filterValue?.status ? this.filterValue.status : ''
+      status: this.filterValue?.status ? this.filterValue.status : null
     });
     this.filterDrawerService.filterValueSubject$.pipe(untilDestroyed(this)).subscribe((filterValue: WorkflowSearchFilterDTO) => {
       if (this.filterValue !== filterValue) {
