@@ -29,7 +29,7 @@
             <mat-form-field appearance="outline" floatLabel="always">
                 <mat-label>{{ labels.userPlaceholder | translate }}</mat-label>
                 <mat-select formControlName="user">
-                    <mat-option *ngFor="let user of usersIn" [value]="user">{{ user.user.fullName }}</mat-option>
+                    <mat-option *ngFor="let user of usersIn" [value]="user">{{ getUserFullname(user) }}</mat-option>
                 </mat-select>
                 <mat-error class="preparation__error" *ngIf="userForm.controls.user.invalid && userForm.controls.user.touched">
                     {{ labels.required | translate }}
@@ -61,6 +61,28 @@
     </mat-tab-group>
     <div class="wc-movement-preparation__warnings" [hidden]="tabToShow !== 'IN'">
         <form [formGroup]="preparationInForm" *ngIf="preparationInForm && formsCreated" class="smaller-mat-form-fields">
+            <div class="preparation__section" *ngIf="preparationIn.requiredHistoryComment">
+                <div class="preparation__section__title">
+                    {{ labels.size | translate }}
+                </div>
+                <mat-form-field appearance="outline" floatLabel="always">
+                    <mat-label>{{ labels.taskHistoricLabel | translate }}</mat-label>
+                    <textarea
+                        matInput
+                        formControlName="historyComment"
+                        [placeholder]="labels.taskHistoricalPlaceholder | translate"
+                        cdkTextareaAutosize
+                    ></textarea>
+                    <mat-error
+                        *ngIf="
+                            preparationInForm.controls.historyComment.invalid && preparationInForm.controls.historyComment.touched
+                        "
+                    >
+                        <span>{{ labels.required | translate }}</span>
+                    </mat-error>
+                </mat-form-field>
+            </div>
+
             <div class="preparation__section" *ngIf="preparationIn.requiredSize">
                 <div class="preparation__section__title">
                     {{ labels.size | translate }}
@@ -88,7 +110,7 @@
                 <mat-form-field appearance="outline" floatLabel="always">
                     <mat-label>{{ labels.userPlaceholder | translate }}</mat-label>
                     <mat-select formControlName="user" [disabled]="userInDisabled">
-                        <mat-option *ngFor="let user of usersIn" [value]="user">{{ user.user.fullName }}</mat-option>
+                        <mat-option *ngFor="let user of usersIn" [value]="user">{{ getUserFullname(user) }}</mat-option>
                     </mat-select>
                     <mat-error
                         class="preparation__error"
@@ -121,6 +143,28 @@
     </div>
     <div class="wc-movement-preparation__warnings" [hidden]="tabToShow !== 'OUT'">
         <form [formGroup]="preparationOutForm" *ngIf="preparationOutForm && formsCreated" class="smaller-mat-form-fields">
+            <div class="preparation__section" *ngIf="preparationOut.requiredHistoryComment">
+                <div class="preparation__section__title">
+                    {{ labels.size | translate }}
+                </div>
+                <mat-form-field appearance="outline" floatLabel="always">
+                    <mat-label>{{ labels.taskHistoricLabel | translate }}</mat-label>
+                    <textarea
+                        matInput
+                        formControlName="historyComment"
+                        [placeholder]="labels.taskHistoricalPlaceholder | translate"
+                        cdkTextareaAutosize
+                    ></textarea>
+                    <mat-error
+                        *ngIf="
+                            preparationOutForm.controls.historyComment.invalid &&
+                            preparationOutForm.controls.historyComment.touched
+                        "
+                    >
+                        <span>{{ labels.required | translate }}</span>
+                    </mat-error>
+                </mat-form-field>
+            </div>
             <div class="preparation__section" *ngIf="preparationOut.requiredSize">
                 <div class="preparation__section__title">
                     {{ labels.size | translate }}
@@ -148,7 +192,7 @@
                 <mat-form-field appearance="outline" floatLabel="always">
                     <mat-label>{{ labels.userPlaceholder | translate }}</mat-label>
                     <mat-select formControlName="user" [disabled]="userOutDisabled">
-                        <mat-option *ngFor="let user of usersOut" [value]="user">{{ user.user.fullName }}</mat-option>
+                        <mat-option *ngFor="let user of usersOut" [value]="user">{{ getUserFullname(user) }}</mat-option>
                     </mat-select>
                     <mat-error
                         class="preparation__error"
@@ -181,6 +225,28 @@
     </div>
     <div class="wc-movement-preparation__warnings" [hidden]="tabToShow !== 'MOV'">
         <form [formGroup]="preparationMovForm" *ngIf="preparationMovForm && formsCreated" class="smaller-mat-form-fields">
+            <div class="preparation__section" *ngIf="preparationMov.requiredHistoryComment">
+                <div class="preparation__section__title">
+                    {{ labels.size | translate }}
+                </div>
+                <mat-form-field appearance="outline" floatLabel="always">
+                    <mat-label>{{ labels.taskHistoricLabel | translate }}</mat-label>
+                    <textarea
+                        matInput
+                        formControlName="historyComment"
+                        [placeholder]="labels.taskHistoricalPlaceholder | translate"
+                        cdkTextareaAutosize
+                    ></textarea>
+                    <mat-error
+                        *ngIf="
+                            preparationMovForm.controls.historyComment.invalid &&
+                            preparationMovForm.controls.historyComment.touched
+                        "
+                    >
+                        <span>{{ labels.required | translate }}</span>
+                    </mat-error>
+                </mat-form-field>
+            </div>
             <div class="preparation__section" *ngIf="preparationMov.requiredSize">
                 <div class="preparation__section__title">
                     {{ labels.size | translate }}
@@ -208,7 +274,7 @@
                 <mat-form-field appearance="outline" floatLabel="always">
                     <mat-label>{{ labels.userPlaceholder | translate }}</mat-label>
                     <mat-select formControlName="user" [disabled]="userMovDisabled">
-                        <mat-option *ngFor="let user of usersMov" [value]="user">{{ user.user.fullName }}</mat-option>
+                        <mat-option *ngFor="let user of usersMov" [value]="user">{{ getUserFullname(user) }}</mat-option>
                     </mat-select>
                     <mat-error
                         class="preparation__error"

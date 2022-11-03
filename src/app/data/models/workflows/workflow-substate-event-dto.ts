@@ -9,6 +9,7 @@ export default interface WorkflowSubstateEventDTO {
   requiredMyself?: boolean;
   requiredSize?: boolean;
   requiredUser?: boolean;
+  requiredHistoryComment?: boolean;
   requiredUserId?: number;
   sendMail?: boolean;
   sendMailAuto?: boolean;
@@ -17,6 +18,7 @@ export default interface WorkflowSubstateEventDTO {
   sendMailTemplate?: TemplatesCommunicationDTO;
   signDocument?: boolean;
   signDocumentTemplate?: TemplatesCommunicationDTO;
+  historyComment?: string;
   substateEventType?: 'IN' | 'OUT' | 'MOV';
   templateComunication?: TemplatesCommunicationDTO;
 }
