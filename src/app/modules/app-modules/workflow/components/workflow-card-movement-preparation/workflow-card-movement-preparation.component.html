@@ -37,6 +37,22 @@
             </mat-form-field>
         </form>
     </div>
+    <div class="preparation__section" *ngIf="userForm">
+        <form [formGroup]="userForm">
+            <div class="preparation__section__title">
+                {{ labels.user | translate }}
+            </div>
+            <mat-form-field appearance="outline" floatLabel="always">
+                <mat-label>{{ labels.userPlaceholder | translate }}</mat-label>
+                <mat-select formControlName="user">
+                    <mat-option *ngFor="let user of usersIn" [value]="user">{{ user.user.fullName }}</mat-option>
+                </mat-select>
+                <mat-error class="preparation__error" *ngIf="userForm.controls.user.invalid && userForm.controls.user.touched">
+                    {{ labels.required | translate }}
+                </mat-error>
+            </mat-form-field>
+        </form>
+    </div>
     <mat-tab-group
         animationDuration="0ms"
         mat-align-tabs="center"

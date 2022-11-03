@@ -190,10 +190,25 @@ export class WorkflowColumnPrefixedHistoryComponent implements OnInit, OnChanges
 
   public getHistoryDescription(item: CardHistoryDTO): string {
     let html = item.description;
+    let style = '';
     if (html.indexOf('[') >= 0 && html.indexOf(']') >= 0) {
-      html = item.description.split('[').join('<span class="substate-target">').split(']').join('</span>');
+      if (item.workflowSubstateTarget?.color) {
+        style = `style="background-color: ${item.workflowSubstateTarget?.color}; color: ${this.getFontColor(
+          item.workflowSubstateTarget?.color
+        )}"`;
+      }
+      html = item.description.split('[').join(`<span class="substate-target" ${style}>`).split(']').join('</span>');
     }
     return html;
+  }
+
+  public getCircleStyles(item: CardHistoryDTO): string {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const styles: any = {};
+    if (item.workflowSubstateTarget?.exitPoint && item.workflowSubstateTarget?.color) {
+      styles['background-color'] = item.workflowSubstateTarget.color;
+    }
+    return styles;
   }
 
   public filterDateChange(type: 'ini' | 'end') {
@@ -254,5 +269,19 @@ export class WorkflowColumnPrefixedHistoryComponent implements OnInit, OnChanges
       eventHistoryTypes: { disabled: true, value: [] },
       workflows: { disabled: true, value: [] }
     });
+  }
+
+  private getFontColor(btnColor: string): string {
+    const lightColor = '#fff';
+    const darkColor = '#000';
+    if (btnColor) {
+      const bgColor = btnColor;
+      const color = bgColor.charAt(0) === '#' ? bgColor.substring(1, 7) : bgColor;
+      const r = parseInt(color.substring(0, 2), 16); // hexToR
+      const g = parseInt(color.substring(2, 4), 16); // hexToG
+      const b = parseInt(color.substring(4, 6), 16); // hexToB
+      return r * 0.299 + g * 0.587 + b * 0.114 > 186 ? darkColor : lightColor;
+    }
+    return darkColor;
   }
 }

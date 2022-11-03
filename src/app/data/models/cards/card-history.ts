@@ -7,6 +7,7 @@ export default interface CardHistoryDTO {
   cardInstance: CardInstanceDTO;
   dateEvent: number;
   description: string;
+  comments: string;
   eventHistoryType: string;
   id: number;
   newUserAssig: UserDetailsDTO;
