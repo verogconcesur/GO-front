@@ -55,7 +55,7 @@ export class SelectTemplateLinesComponent extends ComponentToExtendForCustomDial
     return of(true);
   }
 
-  public onSubmitCustomDialog(): Observable<boolean | CardBudgetsDTO[]> {
+  public onSubmitCustomDialog(): Observable<boolean | { newLine: boolean }> {
     let formValue: CardBudgetsDTO[] = this.budgetsForm.getRawValue();
     formValue = formValue.filter((budget) => budget.selected);
     if (formValue && formValue.length) {
@@ -67,7 +67,7 @@ export class SelectTemplateLinesComponent extends ComponentToExtendForCustomDial
             message: this.translateService.instant(marker('common.successOperation')),
             actionText: this.translateService.instant(marker('common.close'))
           });
-          return response;
+          return { newLine: false };
         }),
         catchError((error) => {
           this.globalMessageService.showError({
@@ -81,7 +81,7 @@ export class SelectTemplateLinesComponent extends ComponentToExtendForCustomDial
         })
       );
     } else {
-      return of(true);
+      return of({ newLine: true });
     }
   }
 
