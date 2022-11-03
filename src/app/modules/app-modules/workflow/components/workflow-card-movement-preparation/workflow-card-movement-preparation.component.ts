@@ -47,7 +47,9 @@ export class WorkflowCardMovementPreparationComponent implements OnInit {
     save: marker('common.save'),
     insertText: marker('common.insertTextHere'),
     taskLabel: marker('prepareMovement.taskLabel'),
-    taskPlaceholder: marker('prepareMovement.taskPlaceholder')
+    taskPlaceholder: marker('prepareMovement.taskPlaceholder'),
+    taskHistoricLabel: marker('prepareMovement.taskHistoricLabel'),
+    taskHistoricalPlaceholder: marker('prepareMovement.taskHistoricalPlaceholder')
   };
   public tabsToShow: ('IN' | 'OUT' | 'MOV')[] = [];
   public tabToShow: 'IN' | 'OUT' | 'MOV';
@@ -72,7 +74,7 @@ export class WorkflowCardMovementPreparationComponent implements OnInit {
   ngOnInit(): void {
     this.usersIn = this.data.usersIn;
     this.usersOut = this.data.usersOut;
-    this.usersMov = this.data.usersIn;
+    this.usersMov = this.data.usersIn?.length ? this.data.usersIn : this.data.usersOut;
     this.mainUserSelector = this.data.mainUserSelector;
     this.data.preparation.forEach((p: WorkflowSubstateEventDTO) => {
       if (
@@ -138,6 +140,9 @@ export class WorkflowCardMovementPreparationComponent implements OnInit {
           ])
         );
       }
+      if (this.preparationIn.requiredHistoryComment) {
+        this.preparationInForm.addControl('historyComment', this.fb.control(null, [Validators.required]));
+      }
       if (this.preparationIn.sendMail) {
         this.preparationInForm.addControl(
           'template',
@@ -162,6 +167,9 @@ export class WorkflowCardMovementPreparationComponent implements OnInit {
             Validators.required
           ])
         );
+      }
+      if (this.preparationOut.requiredHistoryComment) {
+        this.preparationOutForm.addControl('historyComment', this.fb.control(null, [Validators.required]));
       }
       if (this.preparationOut.sendMail) {
         this.preparationOutForm.addControl(
@@ -188,6 +196,9 @@ export class WorkflowCardMovementPreparationComponent implements OnInit {
           ])
         );
       }
+      if (this.preparationMov.requiredHistoryComment) {
+        this.preparationMovForm.addControl('historyComment', this.fb.control(null, [Validators.required]));
+      }
       if (this.preparationMov.sendMail) {
         this.preparationMovForm.addControl(
           'template',
@@ -205,6 +216,21 @@ export class WorkflowCardMovementPreparationComponent implements OnInit {
 
   public findUserIn(user: WorkflowSubstateUserDTO, users: WorkflowSubstateUserDTO[]): WorkflowSubstateUserDTO {
     return users?.find((item: WorkflowSubstateUserDTO) => item.user.id === user?.user?.id);
+  }
+
+  public getUserFullname(user: WorkflowSubstateUserDTO): string {
+    if (user.user.fullName) {
+      return user.user.fullName;
+    } else {
+      let fullName = user.user.name;
+      if (user.user.firstName) {
+        fullName += ` ${user.user.firstName}`;
+      }
+      if (user.user.lastName) {
+        fullName += ` ${user.user.lastName}`;
+      }
+      return fullName;
+    }
   }
 
   public textEditorContentChanged(html: string, form: UntypedFormGroup) {
