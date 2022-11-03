@@ -22,7 +22,7 @@ export const enum TabItemConfigListComponentModalEnum {
 export class TabItemConfigListComponent extends ComponentToExtendForCustomDialog implements OnInit {
   public labels = {
     title: marker(TabItemConfigListComponentModalEnum.TITLE),
-    name: marker('userProfile.name'),
+    name: marker('common.tabName'),
     minLength: marker('errors.minLength'),
     nameRequired: marker('userProfile.nameRequired')
   };
@@ -94,7 +94,14 @@ export class TabItemConfigListComponent extends ComponentToExtendForCustomDialog
       name: [this.tabItemToEdit.name ? this.tabItemToEdit.name : '', [Validators.required, Validators.minLength(this.minLength)]],
       description: [this.tabItemToEdit.description ? this.tabItemToEdit.description : null],
       tabId: [this.tabItemToEdit.tabId ? this.tabItemToEdit.tabId : null],
-      orderNumber: [this.tabItemToEdit.orderNumber ? this.tabItemToEdit.orderNumber : null]
+      orderNumber: [this.tabItemToEdit.orderNumber ? this.tabItemToEdit.orderNumber : null],
+      tabItemConfigList: this.fb.group({
+        id: [this.tabItemToEdit?.tabItemConfigList?.id ? this.tabItemToEdit.tabItemConfigList.id : null],
+        tabItemId: [this.tabItemToEdit?.tabItemConfigList?.tabItemId ? this.tabItemToEdit.tabItemConfigList.tabItemId : null],
+        description: [
+          this.tabItemToEdit?.tabItemConfigList?.description ? this.tabItemToEdit.tabItemConfigList.description : null
+        ]
+      })
     });
   };
 }

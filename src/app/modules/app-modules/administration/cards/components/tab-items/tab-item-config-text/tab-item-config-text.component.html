@@ -2,20 +2,35 @@
     <div class="tab-item-config-content__form">
         <form [formGroup]="tabItemForm" *ngIf="tabItemForm" class="smaller-mat-form-fields">
             <!-- General Data -->
-            <div class="tab-item-config-content__form__section">
-                <div class="tab-item-config-content__form__section__group grid-group">
-                    <!-- Name -->
-                    <mat-form-field appearance="outline" floatLabel="always">
-                        <mat-label>{{ labels.name | translate }}</mat-label>
-                        <input matInput formControlName="name" />
-                        <mat-error
-                            class="tab-item-config-content__form__section__group__error"
-                            *ngIf="tabItemForm.controls.name.invalid && tabItemForm.controls.name.touched"
-                        >
-                            {{ labels.nameRequired | translate }} ({{ labels.minLength | translate: { length: this.minLength } }})
-                        </mat-error>
-                    </mat-form-field>
-                </div>
+            <div class="tab-item-config-content__form__section" fxLayout="row" fxLayoutAlign=" start">
+                <!-- Name -->
+                <mat-form-field appearance="outline" floatLabel="always">
+                    <mat-label>{{ labels.name | translate }}</mat-label>
+                    <input matInput formControlName="name" />
+                    <mat-error
+                        class="tab-item-config-content__form__section__group__error"
+                        *ngIf="tabItemForm.controls.name.invalid && tabItemForm.controls.name.touched"
+                    >
+                        {{ labels.nameRequired | translate }} ({{ labels.minLength | translate: { length: this.minLength } }})
+                    </mat-error>
+                </mat-form-field>
+                <!-- Value -->
+                <mat-form-field appearance="outline" floatLabel="always" class="text-area" formGroupName="tabItemConfigText">
+                    <mat-label>{{ labels.paragraph | translate }}</mat-label>
+                    <textarea
+                        matInput
+                        formControlName="value"
+                        cdkTextareaAutosize
+                        cdkAutosizeMinRows="5"
+                        cdkAutosizeMaxRows="5"
+                    ></textarea>
+                    <mat-error
+                        class="tab-item-config-content__form__section__group__error"
+                        *ngIf="tabItemConfigText.controls.value.invalid && tabItemConfigText.controls.value.touched"
+                    >
+                        {{ labels.required | translate }}
+                    </mat-error>
+                </mat-form-field>
             </div>
         </form>
     </div>
