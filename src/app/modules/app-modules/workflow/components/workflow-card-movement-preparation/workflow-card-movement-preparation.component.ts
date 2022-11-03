@@ -72,7 +72,7 @@ export class WorkflowCardMovementPreparationComponent implements OnInit {
   ngOnInit(): void {
     this.usersIn = this.data.usersIn;
     this.usersOut = this.data.usersOut;
-    this.usersMov = this.data.usersIn;
+    this.usersMov = this.data.usersIn?.length ? this.data.usersIn : this.data.usersOut;
     this.mainUserSelector = this.data.mainUserSelector;
     this.data.preparation.forEach((p: WorkflowSubstateEventDTO) => {
       if (
@@ -205,6 +205,21 @@ export class WorkflowCardMovementPreparationComponent implements OnInit {
 
   public findUserIn(user: WorkflowSubstateUserDTO, users: WorkflowSubstateUserDTO[]): WorkflowSubstateUserDTO {
     return users?.find((item: WorkflowSubstateUserDTO) => item.user.id === user?.user?.id);
+  }
+
+  public getUserFullname(user: WorkflowSubstateUserDTO): string {
+    if (user.user.fullName) {
+      return user.user.fullName;
+    } else {
+      let fullName = user.user.name;
+      if (user.user.firstName) {
+        fullName += ` ${user.user.firstName}`;
+      }
+      if (user.user.lastName) {
+        fullName += ` ${user.user.lastName}`;
+      }
+      return fullName;
+    }
   }
 
   public textEditorContentChanged(html: string, form: UntypedFormGroup) {

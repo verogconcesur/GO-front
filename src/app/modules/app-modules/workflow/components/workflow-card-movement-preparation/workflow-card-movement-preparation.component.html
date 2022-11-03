@@ -29,7 +29,7 @@
             <mat-form-field appearance="outline" floatLabel="always">
                 <mat-label>{{ labels.userPlaceholder | translate }}</mat-label>
                 <mat-select formControlName="user">
-                    <mat-option *ngFor="let user of usersIn" [value]="user">{{ user.user.fullName }}</mat-option>
+                    <mat-option *ngFor="let user of usersIn" [value]="user">{{ getUserFullname(user) }}</mat-option>
                 </mat-select>
                 <mat-error class="preparation__error" *ngIf="userForm.controls.user.invalid && userForm.controls.user.touched">
                     {{ labels.required | translate }}
@@ -88,7 +88,7 @@
                 <mat-form-field appearance="outline" floatLabel="always">
                     <mat-label>{{ labels.userPlaceholder | translate }}</mat-label>
                     <mat-select formControlName="user" [disabled]="userInDisabled">
-                        <mat-option *ngFor="let user of usersIn" [value]="user">{{ user.user.fullName }}</mat-option>
+                        <mat-option *ngFor="let user of usersIn" [value]="user">{{ getUserFullname(user) }}</mat-option>
                     </mat-select>
                     <mat-error
                         class="preparation__error"
@@ -148,7 +148,7 @@
                 <mat-form-field appearance="outline" floatLabel="always">
                     <mat-label>{{ labels.userPlaceholder | translate }}</mat-label>
                     <mat-select formControlName="user" [disabled]="userOutDisabled">
-                        <mat-option *ngFor="let user of usersOut" [value]="user">{{ user.user.fullName }}</mat-option>
+                        <mat-option *ngFor="let user of usersOut" [value]="user">{{ getUserFullname(user) }}</mat-option>
                     </mat-select>
                     <mat-error
                         class="preparation__error"
@@ -208,7 +208,7 @@
                 <mat-form-field appearance="outline" floatLabel="always">
                     <mat-label>{{ labels.userPlaceholder | translate }}</mat-label>
                     <mat-select formControlName="user" [disabled]="userMovDisabled">
-                        <mat-option *ngFor="let user of usersMov" [value]="user">{{ user.user.fullName }}</mat-option>
+                        <mat-option *ngFor="let user of usersMov" [value]="user">{{ getUserFullname(user) }}</mat-option>
                     </mat-select>
                     <mat-error
                         class="preparation__error"
