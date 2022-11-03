@@ -1,1 +1,23 @@
-<p>tab-item-config-list works!</p>
+<div class="tab-item-config-content" fxLayout="column" fxLayoutAlign="center center">
+    <div class="tab-item-config-content__form">
+        <form [formGroup]="tabItemForm" *ngIf="tabItemForm" class="smaller-mat-form-fields">
+            <!-- General Data -->
+            <div class="tab-item-config-content__form__section">
+                <!-- Name -->
+                <mat-form-field appearance="outline" floatLabel="always">
+                    <mat-label>{{ labels.name | translate }}</mat-label>
+                    <input matInput formControlName="name" />
+                    <mat-error
+                        class="tab-item-config-content__form__section__group__error"
+                        *ngIf="tabItemForm.controls.name.invalid && tabItemForm.controls.name.touched"
+                    >
+                        {{ labels.nameRequired | translate }} ({{ labels.minLength | translate: { length: this.minLength } }})
+                    </mat-error>
+                </mat-form-field>
+            </div>
+        </form>
+    </div>
+    <div class="tab-item-config-content__buttons">
+        <!-- TODO: buttons used when the component is not opened with customDialogService -->
+    </div>
+</div>

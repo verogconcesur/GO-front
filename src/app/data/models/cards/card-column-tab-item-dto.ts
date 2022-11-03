@@ -1,5 +1,17 @@
 // export const TabItemsCustomTypes = ['TITLE', 'TEXT', 'INPUT', 'LIST', 'TABLE', 'OPTION'];
 export const TabItemsCustomTypes = ['TITLE', 'TEXT', 'INPUT'];
+// export const InputDataTypes = ['STRING', 'NUMBER', 'TEMPORAL'];
+export const InputDataTypes = [
+  { value: 'STRING', label: 'cards.column.dataType.string' },
+  { value: 'NUMBER', label: 'cards.column.dataType.number' },
+  { value: 'TEMPORAL', label: 'cards.column.dataType.temporal' }
+];
+// export const InputDateTypes = ['DATETIME', 'DATE', 'TIME'];
+export const InputDateTypes = [
+  { value: 'DATETIME', label: 'cards.column.dateType.datetime' },
+  { value: 'DATE', label: 'cards.column.dateType.date' },
+  { value: 'TIME', label: 'cards.column.dateType.time' }
+];
 export default interface CardColumnTabItemDTO {
   id?: number;
   tabId?: number;
@@ -23,21 +35,19 @@ export interface TabItemConfigActionDTO {
   actionType: 'SIGN_DOC' | 'MESSAGE_CLIENT' | 'ATTACH_DOC';
   visible: boolean;
 }
-export interface TabItemConfigInputDTO {
+export interface TabItemConfigCommonDTO {
   id?: number;
   tabItemId?: number;
+}
+export interface TabItemConfigInputDTO extends TabItemConfigCommonDTO {
   description: string;
   dataType: 'STRING' | 'NUMBER' | 'TEMPORAL';
-  dateApplyColor?: string;
-  dateColor?: boolean;
+  dateApplyColor?: boolean;
+  dateColor?: string;
   dateLimit?: boolean;
   dateType?: 'DATETIME' | 'DATE' | 'TIME';
   mandatory?: boolean;
   numDecimals?: number;
-}
-export interface TabItemConfigCommonDTO {
-  id?: number;
-  tabItemId?: number;
 }
 export interface TabItemConfigLinkDTO extends TabItemConfigCommonDTO {
   link: string;

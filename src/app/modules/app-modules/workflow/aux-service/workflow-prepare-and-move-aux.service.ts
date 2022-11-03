@@ -78,12 +78,15 @@ export class WorkflowPrepareAndMoveService {
               // !data[2]?.requiredFields &&
               (data[0]?.requiredSize ||
                 data[0]?.requiredUser ||
+                data[0]?.requiredHistoryComment ||
                 data[0]?.sendMail ||
                 data[1]?.requiredSize ||
                 data[1]?.requiredUser ||
+                data[1]?.requiredHistoryComment ||
                 data[1]?.sendMail ||
                 data[2]?.requiredSize ||
                 data[2]?.requiredUser ||
+                data[2]?.requiredHistoryComment ||
                 data[2]?.sendMail)) ||
             this.showMainUserSelector(user, move) ||
             view === 'MOVES_IN_OTHER_WORKFLOWS'
@@ -106,9 +109,9 @@ export class WorkflowPrepareAndMoveService {
                 (res: {
                   task: { description: string };
                   user: { user: WorkflowSubstateUserDTO };
-                  in: { size: 'S' | 'M' | 'L' | 'XL'; user: WorkflowSubstateUserDTO; template: string };
-                  out: { size: 'S' | 'M' | 'L' | 'XL'; user: WorkflowSubstateUserDTO; template: string };
-                  mov: { size: 'S' | 'M' | 'L' | 'XL'; user: WorkflowSubstateUserDTO; template: string };
+                  in: { size: 'S' | 'M' | 'L' | 'XL'; user: WorkflowSubstateUserDTO; template: string; historyComment: string };
+                  out: { size: 'S' | 'M' | 'L' | 'XL'; user: WorkflowSubstateUserDTO; template: string; historyComment: string };
+                  mov: { size: 'S' | 'M' | 'L' | 'XL'; user: WorkflowSubstateUserDTO; template: string; historyComment: string };
                 }) => {
                   if (!res) {
                     //Recargamos para que al mover tarjeta en vista board no se quede pillado el hover de cdk drag and drop
