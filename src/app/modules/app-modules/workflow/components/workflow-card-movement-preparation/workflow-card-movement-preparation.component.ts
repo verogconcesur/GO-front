@@ -47,7 +47,9 @@ export class WorkflowCardMovementPreparationComponent implements OnInit {
     save: marker('common.save'),
     insertText: marker('common.insertTextHere'),
     taskLabel: marker('prepareMovement.taskLabel'),
-    taskPlaceholder: marker('prepareMovement.taskPlaceholder')
+    taskPlaceholder: marker('prepareMovement.taskPlaceholder'),
+    taskHistoricLabel: marker('prepareMovement.taskHistoricLabel'),
+    taskHistoricalPlaceholder: marker('prepareMovement.taskHistoricalPlaceholder')
   };
   public tabsToShow: ('IN' | 'OUT' | 'MOV')[] = [];
   public tabToShow: 'IN' | 'OUT' | 'MOV';
@@ -138,6 +140,9 @@ export class WorkflowCardMovementPreparationComponent implements OnInit {
           ])
         );
       }
+      if (this.preparationIn.requiredHistoryComment) {
+        this.preparationInForm.addControl('historyComment', this.fb.control(null, [Validators.required]));
+      }
       if (this.preparationIn.sendMail) {
         this.preparationInForm.addControl(
           'template',
@@ -163,6 +168,9 @@ export class WorkflowCardMovementPreparationComponent implements OnInit {
           ])
         );
       }
+      if (this.preparationOut.requiredHistoryComment) {
+        this.preparationOutForm.addControl('historyComment', this.fb.control(null, [Validators.required]));
+      }
       if (this.preparationOut.sendMail) {
         this.preparationOutForm.addControl(
           'template',
@@ -187,6 +195,9 @@ export class WorkflowCardMovementPreparationComponent implements OnInit {
             Validators.required
           ])
         );
+      }
+      if (this.preparationMov.requiredHistoryComment) {
+        this.preparationMovForm.addControl('historyComment', this.fb.control(null, [Validators.required]));
       }
       if (this.preparationMov.sendMail) {
         this.preparationMovForm.addControl(
