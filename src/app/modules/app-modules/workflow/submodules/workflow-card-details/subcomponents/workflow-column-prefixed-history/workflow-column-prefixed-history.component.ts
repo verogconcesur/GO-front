@@ -198,7 +198,6 @@ export class WorkflowColumnPrefixedHistoryComponent implements OnInit, OnChanges
         )}"`;
       }
       html = item.description.split('[').join(`<span class="substate-target" ${style}>`).split(']').join('</span>');
-      console.log(style, html);
     }
     return html;
   }
