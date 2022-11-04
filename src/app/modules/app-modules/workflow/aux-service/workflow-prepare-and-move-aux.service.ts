@@ -132,6 +132,9 @@ export class WorkflowPrepareAndMoveService {
                     if (res.out.template) {
                       events.out.templateComunication.processedTemplate = res.out.template;
                     }
+                    if (res.out.historyComment) {
+                      events.out.historyComment = res.out.historyComment;
+                    }
                     if (res.out.user?.user?.id) {
                       events.out.requiredUserId = res.out.user.user.id;
                     }
@@ -144,6 +147,9 @@ export class WorkflowPrepareAndMoveService {
                     if (res.in.template) {
                       events.in.templateComunication.processedTemplate = res.in.template;
                     }
+                    if (res.in.historyComment) {
+                      events.in.historyComment = res.in.historyComment;
+                    }
                     if (res.in.user?.user?.id) {
                       events.in.requiredUserId = res.in.user.user.id;
                     }
@@ -155,6 +161,9 @@ export class WorkflowPrepareAndMoveService {
                     }
                     if (res.mov.template) {
                       events.mov.templateComunication.processedTemplate = res.mov.template;
+                    }
+                    if (res.mov.historyComment) {
+                      events.mov.historyComment = res.mov.historyComment;
                     }
                     if (res.mov.user?.user?.id) {
                       events.mov.requiredUserId = res.mov.user.user.id;

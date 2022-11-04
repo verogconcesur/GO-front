@@ -79,19 +79,28 @@ export class WorkflowCardMovementPreparationComponent implements OnInit {
     this.data.preparation.forEach((p: WorkflowSubstateEventDTO) => {
       if (
         p.substateEventType === 'IN' &&
-        (p.requiredSize || (p.requiredUser && !this.findUserIn(this.data.selectedUser, this.usersIn)) || p.sendMail)
+        (p.requiredSize ||
+          (p.requiredUser && !this.findUserIn(this.data.selectedUser, this.usersIn)) ||
+          p.sendMail ||
+          p.requiredHistoryComment)
       ) {
         this.tabsToShow.push('IN');
         this.preparationIn = p;
       } else if (
         p.substateEventType === 'OUT' &&
-        (p.requiredSize || (p.requiredUser && !this.findUserIn(this.data.selectedUser, this.usersOut)) || p.sendMail)
+        (p.requiredSize ||
+          (p.requiredUser && !this.findUserIn(this.data.selectedUser, this.usersOut)) ||
+          p.sendMail ||
+          p.requiredHistoryComment)
       ) {
         this.tabsToShow.push('OUT');
         this.preparationOut = p;
       } else if (
         p.substateEventType === 'MOV' &&
-        (p.requiredSize || (p.requiredUser && !this.findUserIn(this.data.selectedUser, this.usersMov)) || p.sendMail)
+        (p.requiredSize ||
+          (p.requiredUser && !this.findUserIn(this.data.selectedUser, this.usersMov)) ||
+          p.sendMail ||
+          p.requiredHistoryComment)
       ) {
         this.tabsToShow.push('MOV');
         this.preparationMov = p;
