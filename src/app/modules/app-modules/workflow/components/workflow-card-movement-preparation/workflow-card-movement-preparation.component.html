@@ -227,7 +227,7 @@
         <form [formGroup]="preparationMovForm" *ngIf="preparationMovForm && formsCreated" class="smaller-mat-form-fields">
             <div class="preparation__section" *ngIf="preparationMov.requiredHistoryComment">
                 <div class="preparation__section__title">
-                    {{ labels.size | translate }}
+                    {{ labels.taskHistoricLabel | translate }}
                 </div>
                 <mat-form-field appearance="outline" floatLabel="always">
                     <mat-label>{{ labels.taskHistoricLabel | translate }}</mat-label>
