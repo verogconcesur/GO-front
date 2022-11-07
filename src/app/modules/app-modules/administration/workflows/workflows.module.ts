@@ -11,9 +11,16 @@ import { WorkflowsTableComponent } from './components/workflows-table/workflows-
 import { WorkflowsFilterComponent } from './components/workflows-filter/workflows-filter.component';
 // eslint-disable-next-line max-len
 import { OrganizationLevelsNestedCombosModule } from '@modules/feature-modules/organization-levels-nested-combos/organization-levels-nested-combos.module';
+import { CreateEditWorkflowComponent } from './components/modals/create-edit-workflow/create-edit-workflow.component';
 
 @NgModule({
-  declarations: [WorkflowDetailComponent, WorkflowListComponent, WorkflowsTableComponent, WorkflowsFilterComponent],
+  declarations: [
+    WorkflowDetailComponent,
+    WorkflowListComponent,
+    WorkflowsTableComponent,
+    WorkflowsFilterComponent,
+    CreateEditWorkflowComponent
+  ],
   imports: [
     CommonModule,
     WorkflowsRoutingModule,
