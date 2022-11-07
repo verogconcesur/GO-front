@@ -25,7 +25,7 @@ export class TwoDigitDecimalDirective {
     const next: string = [current.slice(0, position), event.key === 'Decimal' ? '.' : event.key, current.slice(position)].join(
       ''
     );
-    const regex = '/^d*.?d{0,' + this.decimals.toString() + '}$/g)';
+    const regex = new RegExp('^\\d*\\.?\\d{0,' + this.decimals.toString() + '}$', 'g');
     if (next && !String(next).match(regex)) {
       event.preventDefault();
     }
