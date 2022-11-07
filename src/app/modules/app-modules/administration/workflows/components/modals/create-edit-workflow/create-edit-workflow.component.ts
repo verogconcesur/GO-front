@@ -28,7 +28,8 @@ export class CreateEditWorkflowComponent extends ComponentToExtendForCustomDialo
     editWorkflow: marker('workflows.editWorkflow'),
     name: marker('common.name'),
     minLength: marker('errors.minLength'),
-    nameRequired: marker('userProfile.nameRequired')
+    nameRequired: marker('userProfile.nameRequired'),
+    manualCreateCard: marker('workflows.manualCreateCard')
   };
 
   public minLength = 3;
@@ -118,7 +119,8 @@ export class CreateEditWorkflowComponent extends ComponentToExtendForCustomDialo
     this.workflowForm = this.fb.group({
       id: [this.workflowEdit?.id ? this.workflowEdit.id : null],
       name: [this.workflowEdit?.name ? this.workflowEdit.name : '', [Validators.required, Validators.minLength(this.minLength)]],
-      status: [this.workflowEdit?.status ? this.workflowEdit.status : WorkFlowStatusEnum.draft]
+      status: [this.workflowEdit?.status ? this.workflowEdit.status : WorkFlowStatusEnum.draft],
+      manualCreateCard: [this.workflowEdit?.manualCreateCard ? true : false]
     });
   };
 }
