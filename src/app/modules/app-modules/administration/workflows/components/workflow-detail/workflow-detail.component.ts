@@ -1,9 +1,15 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewEncapsulation } from '@angular/core';
+import { MatTabChangeEvent } from '@angular/material/tabs';
 import { ActivatedRoute, Router } from '@angular/router';
 import { RouteConstants } from '@app/constants/route.constants';
+import { marker } from '@biesbjerg/ngx-translate-extract-marker';
 import WorkflowDTO from '@data/models/workflows/workflow-dto';
 import { WorkflowAdministrationService } from '@data/services/workflow-administration.service';
 import { CustomDialogService } from '@jenga/custom-dialog';
+import { TranslateService } from '@ngx-translate/core';
+import { ProgressSpinnerDialogService } from '@shared/services/progress-spinner-dialog.service';
+import { take } from 'rxjs/operators';
+import { WorkflowsCreateEditAuxService } from '../../aux-service/workflows-create-edit-aux.service';
 // eslint-disable-next-line max-len
 import {
   CreateEditWorkflowComponent,
@@ -16,42 +22,89 @@ import {
   styleUrls: ['./workflow-detail.component.scss']
 })
 export class WorkflowDetailComponent implements OnInit {
-  public workflowDetail: WorkflowDTO;
+  public workflowDetail: WorkflowDTO = null;
+  public firstLoad = false;
+  public tabIndex = 0;
+  public labels = {
+    newWorkflow: marker('workflows.newWorkflow'),
+    organization: marker('administration.organization'),
+    roles: marker('roles.roles'),
+    users: marker('users.title'),
+    cards: marker('administration.records'),
+    cardConfig: marker('workflows.cardConfig'),
+    states: marker('workflows.states'),
+    timeline: marker('administration.templates.clientTimeline.title'),
+    budgets: marker('administration.templates.budgets.title')
+  };
   constructor(
+    public workflowsCreateEditAuxService: WorkflowsCreateEditAuxService,
     private route: ActivatedRoute,
     private router: Router,
     private workflowService: WorkflowAdministrationService,
-    private customDialogService: CustomDialogService
+    private customDialogService: CustomDialogService,
+    private translateService: TranslateService,
+    private spinnerService: ProgressSpinnerDialogService
   ) {}
+
+  ngOnInit(): void {
+    this.getWorkflowInfo();
+  }
 
   public getWorkflowInfo() {
     this.route.paramMap.subscribe((params) => {
       const idWorkflow = Number(params.get('idWorkflow'));
       if (idWorkflow) {
-        this.workflowService.getWorkflow(idWorkflow).subscribe((res) => {
-          this.workflowDetail = res;
-        });
-      } else {
-        this.customDialogService
-          .open({
-            id: CreateEditWorkflowComponentModalEnum.ID,
-            panelClass: CreateEditWorkflowComponentModalEnum.PANEL_CLASS,
-            component: CreateEditWorkflowComponent,
-            extendedComponentData: null,
-            disableClose: true,
-            width: '900px'
-          })
-          .subscribe((res) => {
-            if (res) {
+        const spinner = this.spinnerService.show();
+        this.workflowService
+          .getWorkflow(idWorkflow)
+          .pipe(take(1))
+          .subscribe(
+            (res) => {
+              this.spinnerService.hide(spinner);
               this.workflowDetail = res;
-            } else {
-              this.router.navigate([RouteConstants.ADMINISTRATION, RouteConstants.ADM_WORKFLOWS]);
+              this.firstLoad = true;
+            },
+            (error) => {
+              this.spinnerService.hide(spinner);
+              this.firstLoad = true;
             }
-          });
+          );
+      } else {
+        this.firstLoad = true;
+        this.createEditWorkflow();
       }
     });
   }
-  ngOnInit(): void {
-    this.getWorkflowInfo();
+
+  public getWorkflowName(): string {
+    if (this.workflowDetail) {
+      return this.workflowDetail.name;
+    } else if (this.firstLoad) {
+      return this.translateService.instant(this.labels.newWorkflow);
+    }
+    return '';
+  }
+
+  public changeSelectedTab(tab: MatTabChangeEvent): void {
+    this.tabIndex = tab.index;
+  }
+
+  public createEditWorkflow(): void {
+    this.customDialogService
+      .open({
+        id: CreateEditWorkflowComponentModalEnum.ID,
+        panelClass: CreateEditWorkflowComponentModalEnum.PANEL_CLASS,
+        component: CreateEditWorkflowComponent,
+        extendedComponentData: this.workflowDetail,
+        disableClose: true,
+        width: '900px'
+      })
+      .subscribe((res) => {
+        if (res) {
+          this.workflowDetail = res;
+        } else {
+          this.router.navigate([RouteConstants.ADMINISTRATION, RouteConstants.ADM_WORKFLOWS]);
+        }
+      });
   }
 }
