@@ -3,7 +3,7 @@ import { Inject, Injectable } from '@angular/core';
 import { ENV } from '@app/constants/global.constants';
 import { Env } from '@app/types/env';
 import { ConcenetError } from '@app/types/error';
-import WorkflowDTO from '@data/models/workflows/workflow-dto';
+import WorkflowDTO, { WorkFlowStatusEnum } from '@data/models/workflows/workflow-dto';
 import { WorkflowFilterService } from '@modules/app-modules/workflow/aux-service/workflow-filter.service';
 import { Observable, throwError } from 'rxjs';
 import { catchError } from 'rxjs/operators';
@@ -23,8 +23,6 @@ export class WorkflowAdministrationService {
   public createEditWorkflow(workflow: WorkflowDTO, status?: string): Observable<WorkflowDTO> {
     if (status) {
       workflow.status = status;
-    } else {
-      workflow.status = 'DRAFT';
     }
     return this.http
       .post<WorkflowDTO>(`${this.env.apiBaseUrl}${this.WORKFLOW_PATH}`, workflow)

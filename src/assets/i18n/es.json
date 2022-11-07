@@ -466,6 +466,7 @@
         "deleteConfirmation": "¿Está seguro que desea eliminar este workflow?",
         "draft": "Borrador",
         "dueOutDateTime": "Recoge el {date} a las {time}",
+        "editWorkflow": "Editar Workflow",
         "emptySubstate": "Subestado vacío",
         "filter": "Filtrar Workflows",
         "filterFacilities": "Filtrar Instalaciones",
