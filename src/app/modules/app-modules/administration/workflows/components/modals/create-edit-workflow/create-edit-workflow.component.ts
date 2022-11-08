@@ -1,7 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { UntypedFormGroup, UntypedFormBuilder, FormGroup, Validators } from '@angular/forms';
 import { marker } from '@biesbjerg/ngx-translate-extract-marker';
-import CardColumnTabItemDTO from '@data/models/cards/card-column-tab-item-dto';
 import WorkflowDTO, { WorkFlowStatusEnum } from '@data/models/workflows/workflow-dto';
 import { WorkflowAdministrationService } from '@data/services/workflow-administration.service';
 import { ComponentToExtendForCustomDialog, CustomDialogFooterConfigI } from '@jenga/custom-dialog';
@@ -24,7 +23,7 @@ export const enum CreateEditWorkflowComponentModalEnum {
 })
 export class CreateEditWorkflowComponent extends ComponentToExtendForCustomDialog implements OnInit {
   public labels = {
-    title: marker(CreateEditWorkflowComponentModalEnum.TITLE),
+    title: marker('workflows.newWorkflow'),
     editWorkflow: marker('workflows.editWorkflow'),
     name: marker('common.name'),
     minLength: marker('errors.minLength'),

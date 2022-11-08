@@ -1,1 +1,59 @@
-<p>workflow-detail works!</p>
+<div class="wf">
+    <div class="wf__header" fxLayout="row wrap" fxLayoutAlign="space-between center">
+        <h1 class="wf__header__title mat-display-2" (click)="createEditWorkflow()">
+            {{ getWorkflowName() | translate }}
+        </h1>
+    </div>
+    <div class="wf__tabs">
+        <mat-tab-group
+            class="mat-tab-page-sections font-size-smaller"
+            mat-align-tabs="start"
+            [selectedIndex]="tabIndex"
+            (selectedTabChange)="changeSelectedTab($event)"
+        >
+            <mat-tab label="{{ labels.organization | translate }}"></mat-tab>
+            <mat-tab
+                label="{{ labels.roles | translate }}"
+                [disabled]="!workflowsCreateEditAuxService.enableTabStep(0)"
+            ></mat-tab>
+            <mat-tab
+                label="{{ labels.users | translate }}"
+                [disabled]="!workflowsCreateEditAuxService.enableTabStep(1)"
+            ></mat-tab>
+            <mat-tab
+                label="{{ labels.cards | translate }}"
+                [disabled]="!workflowsCreateEditAuxService.enableTabStep(2)"
+            ></mat-tab>
+            <mat-tab label="{{ labels.cardConfig | translate }}" [disabled]="!workflowsCreateEditAuxService.enableTabStep(3)">
+            </mat-tab>
+            <mat-tab label="{{ labels.states | translate }}" [disabled]="!workflowsCreateEditAuxService.enableTabStep(4)">
+            </mat-tab>
+            <mat-tab label="{{ labels.timeline | translate }}" [disabled]="!workflowsCreateEditAuxService.enableTabStep(5)">
+            </mat-tab>
+            <mat-tab label="{{ labels.budgets | translate }}" [disabled]="!workflowsCreateEditAuxService.enableTabStep(6)">
+            </mat-tab>
+        </mat-tab-group>
+        <div [ngSwitch]="tabIndex">
+            <app-workflow-organization
+                [workflowId]="workflowDetail?.id"
+                [stepIndex]="0"
+                *ngSwitchCase="0"
+            ></app-workflow-organization>
+            <app-workflow-roles [workflowId]="workflowDetail?.id" [stepIndex]="1" *ngSwitchCase="1"></app-workflow-roles>
+            <app-workflow-users *ngSwitchCase="2"></app-workflow-users>
+            <app-workflow-cards *ngSwitchCase="3"></app-workflow-cards>
+            <app-workflow-card-config *ngSwitchCase="4"></app-workflow-card-config>
+            <app-workflow-states *ngSwitchCase="5"></app-workflow-states>
+            <app-workflow-timeline *ngSwitchCase="6"></app-workflow-timeline>
+            <app-workflow-budgets *ngSwitchCase="7"></app-workflow-budgets>
+        </div>
+    </div>
+    <div class="wf__footer" fxLayout="row wrap" fxLayoutAlign="space-between center">
+        <button [disabled]="!workflowsCreateEditAuxService.getFormGroupByStep(tabIndex)?.dirty" (click)="resetForm()">
+            Reset
+        </button>
+        <button [disabled]="!workflowsCreateEditAuxService.getFormGroupByStep(tabIndex)?.valid" (click)="saveAndGoNextStep()">
+            next
+        </button>
+    </div>
+</div>

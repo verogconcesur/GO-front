@@ -12,6 +12,15 @@ import { WorkflowsFilterComponent } from './components/workflows-filter/workflow
 // eslint-disable-next-line max-len
 import { OrganizationLevelsNestedCombosModule } from '@modules/feature-modules/organization-levels-nested-combos/organization-levels-nested-combos.module';
 import { CreateEditWorkflowComponent } from './components/modals/create-edit-workflow/create-edit-workflow.component';
+// eslint-disable-next-line max-len
+import { WorkflowOrganizationComponent } from './components/create-edit-steps/workflow-organization/workflow-organization.component';
+import { WorkflowRolesComponent } from './components/create-edit-steps/workflow-roles/workflow-roles.component';
+import { WorkflowUsersComponent } from './components/create-edit-steps/workflow-users/workflow-users.component';
+import { WorkflowCardsComponent } from './components/create-edit-steps/workflow-cards/workflow-cards.component';
+import { WorkflowCardConfigComponent } from './components/create-edit-steps/workflow-card-config/workflow-card-config.component';
+import { WorkflowTimelineComponent } from './components/create-edit-steps/workflow-timeline/workflow-timeline.component';
+import { WorkflowStatesComponent } from './components/create-edit-steps/workflow-states/workflow-states.component';
+import { WorkflowBudgetsComponent } from './components/create-edit-steps/workflow-budgets/workflow-budgets.component';
 
 @NgModule({
   declarations: [
@@ -19,7 +28,15 @@ import { CreateEditWorkflowComponent } from './components/modals/create-edit-wor
     WorkflowListComponent,
     WorkflowsTableComponent,
     WorkflowsFilterComponent,
-    CreateEditWorkflowComponent
+    CreateEditWorkflowComponent,
+    WorkflowOrganizationComponent,
+    WorkflowRolesComponent,
+    WorkflowUsersComponent,
+    WorkflowCardsComponent,
+    WorkflowCardConfigComponent,
+    WorkflowTimelineComponent,
+    WorkflowStatesComponent,
+    WorkflowBudgetsComponent
   ],
   imports: [
     CommonModule,
