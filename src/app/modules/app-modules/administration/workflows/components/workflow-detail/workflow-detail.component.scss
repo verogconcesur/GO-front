@@ -1,0 +1,31 @@
+@import 'utils/core';
+@import 'utils/theme';
+
+.wf {
+  padding: 48px;
+  box-sizing: border-box;
+  @include respond-to($tablet-small) {
+    padding: 10px;
+  }
+  @include respond-to($mobile) {
+    padding: 5px;
+  }
+  &__header {
+    padding: 0 30px 10px 16px;
+    @include respond-to($tablet-small) {
+      padding: 0 5px 10px 0;
+    }
+    @include respond-to($mobile) {
+      padding: 10px 5px;
+    }
+    &__title {
+      margin-bottom: 0px;
+      color: mat-color($foreground, secondary-text);
+    }
+  }
+  &__tabs {
+    &__tab {
+      font-size: 1.2em;
+    }
+  }
+}

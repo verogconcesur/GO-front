@@ -395,6 +395,7 @@
     "roles": {
         "create": "Create Role",
         "deleteConfirmation": "Do you really want to delete this role?",
+        "roles": "Roles",
         "title": "Roles and permissions"
     },
     "sample": {
@@ -462,6 +463,7 @@
     },
     "workflows": {
         "byFacilityGroupLabel": "{facility}'s workflows",
+        "cardConfig": "Card config",
         "createWorkflow": "Create workflow",
         "deleteConfirmation": "Do you really want to delete this workflow?",
         "draft": "Draft",
@@ -473,12 +475,14 @@
         "filterState": "Filter by State",
         "filterSubstate": "Filter by Substate",
         "filterUser": "Filter by User",
+        "newWorkflow": "New workflow",
         "manualCreateCard": "Manual creation of cards",
         "numCards": "{num} {num, plural, =0{cards} one{card} other{cards}}",
         "originalSubstate": "Original substate",
         "peopleWorking": "{num} {num, plural, =0{people working} one{person working} other{people working}}",
         "published": "Published",
         "select": "Select a Workflow",
+        "states": "States controls and definition",
         "substatesWithAndWithoutCards": "Showing substates with or without cards",
         "substatesWithCards": "Showing only substates with cards",
         "substatesWithoutCards": "Showing only substates whithout cards",
