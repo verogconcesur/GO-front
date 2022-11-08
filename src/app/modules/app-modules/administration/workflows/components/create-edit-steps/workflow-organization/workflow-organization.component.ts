@@ -32,7 +32,6 @@ export class WorkflowOrganizationComponent extends WorkflowStepAbstractClass {
     this.form.get('id').setValue(this.originalData.id);
     this.form.markAsPristine();
     this.form.markAsUntouched();
-    console.log(this.originalData, this.form);
   }
 
   public async getWorkflowStepData(): Promise<boolean> {
