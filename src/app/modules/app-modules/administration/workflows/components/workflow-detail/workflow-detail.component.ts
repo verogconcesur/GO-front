@@ -6,6 +6,7 @@ import { marker } from '@biesbjerg/ngx-translate-extract-marker';
 import WorkflowDTO from '@data/models/workflows/workflow-dto';
 import { WorkflowAdministrationService } from '@data/services/workflow-administration.service';
 import { CustomDialogService } from '@jenga/custom-dialog';
+import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
 import { TranslateService } from '@ngx-translate/core';
 import { ProgressSpinnerDialogService } from '@shared/services/progress-spinner-dialog.service';
 import { take } from 'rxjs/operators';
@@ -16,6 +17,7 @@ import {
   CreateEditWorkflowComponentModalEnum
 } from '../modals/create-edit-workflow/create-edit-workflow.component';
 
+@UntilDestroy()
 @Component({
   selector: 'app-workflow-detail',
   templateUrl: './workflow-detail.component.html',
@@ -47,7 +49,16 @@ export class WorkflowDetailComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
+    this.initListeners();
     this.getWorkflowInfo();
+  }
+
+  public initListeners(): void {
+    this.workflowsCreateEditAuxService.nextStep$.pipe(untilDestroyed(this)).subscribe((goNext: boolean) => {
+      if (goNext && this.tabIndex < 7) {
+        this.tabIndex++;
+      }
+    });
   }
 
   public getWorkflowInfo() {
@@ -89,6 +100,14 @@ export class WorkflowDetailComponent implements OnInit {
     this.tabIndex = tab.index;
   }
 
+  public saveAndGoNextStep(): void {
+    this.workflowsCreateEditAuxService.saveAndGoNextStep(true);
+  }
+
+  public resetForm(): void {
+    this.workflowsCreateEditAuxService.resetForm();
+  }
+
   public createEditWorkflow(): void {
     this.customDialogService
       .open({
@@ -102,8 +121,6 @@ export class WorkflowDetailComponent implements OnInit {
       .subscribe((res) => {
         if (res) {
           this.workflowDetail = res;
-        } else {
-          this.router.navigate([RouteConstants.ADMINISTRATION, RouteConstants.ADM_WORKFLOWS]);
         }
       });
   }

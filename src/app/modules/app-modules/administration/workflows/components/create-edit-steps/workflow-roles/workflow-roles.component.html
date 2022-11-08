@@ -1,1 +1,5 @@
-<p>workflow-roles works!</p>
+<form [formGroup]="form" *ngIf="form" class="smaller-mat-form-fields">
+    <mat-form-field appearance="outline" floatLabel="always">
+        <input matInput formControlName="idRole" />
+    </mat-form-field>
+</form>

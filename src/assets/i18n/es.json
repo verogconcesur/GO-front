@@ -384,7 +384,7 @@
         "sizePlaceholder": "Tamaño de tarjerta",
         "taskHistoricLabel": "Comentario para el historial de la ficha",
         "taskHistoricalPlaceholder": "Escriba un comentario referente al movimiento que va a realizar, visible desde el histórico de la ficha",
-        "taskLabel": "Descipción tarea",
+        "taskLabel": "Descripción tarea",
         "taskPlaceholder": "Al mover la tarea a otro Workflow está creando una tarea. Añada una descripción.",
         "template": "Verifique la plantilla de email a enviar",
         "templatePlaceholder": "Plantilla a enviar",
@@ -395,6 +395,7 @@
     "roles": {
         "create": "Crear rol",
         "deleteConfirmation": "¿Realmente quiere eliminar este rol?",
+        "roles": "Roles",
         "title": "Roles y permisos"
     },
     "sample": {
@@ -462,6 +463,7 @@
     },
     "workflows": {
         "byFacilityGroupLabel": "Workflows de {facility}",
+        "cardConfig": "Configuración de la tarjeta",
         "createWorkflow": "Crear workflow",
         "deleteConfirmation": "¿Está seguro que desea eliminar este workflow?",
         "draft": "Borrador",
@@ -479,6 +481,7 @@
         "peopleWorking": "{num} {num, plural, =0{personas trabajando} one{persona trabajando} other{personas trabajando}}",
         "published": "Publicado",
         "select": "Selecciona un Workflow",
+        "states": "Definición y control de estados",
         "substatesWithAndWithoutCards": "Mostrando subestados con o sin tarjetas",
         "substatesWithCards": "Mostrando únicamente subestados con tarjetas",
         "substatesWithoutCards": "Mostrando únicamente subestados sin tarjetas",
