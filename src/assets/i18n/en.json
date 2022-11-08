@@ -476,6 +476,7 @@
         "filterSubstate": "Filter by Substate",
         "filterUser": "Filter by User",
         "newWorkflow": "New workflow",
+        "manualCreateCard": "Manual creation of cards",
         "numCards": "{num} {num, plural, =0{cards} one{card} other{cards}}",
         "originalSubstate": "Original substate",
         "peopleWorking": "{num} {num, plural, =0{people working} one{person working} other{people working}}",

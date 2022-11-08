@@ -476,6 +476,7 @@
         "filterSubstate": "Filtrar Subestados",
         "filterUser": "Filtrar Usuarios",
         "newWorkflow": "Nuevo workflow",
+        "manualCreateCard": "Creación manual de fichas",
         "numCards": "{num} {num, plural, =0{fichas} one{ficha} other{fichas}}",
         "originalSubstate": "Subestado de origen",
         "peopleWorking": "{num} {num, plural, =0{personas trabajando} one{persona trabajando} other{personas trabajando}}",
