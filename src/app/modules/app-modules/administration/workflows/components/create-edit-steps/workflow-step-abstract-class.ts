@@ -83,9 +83,11 @@ export abstract class WorkflowStepAbstractClass implements OnInit, OnChanges {
     }
   }
 
-  public abstract initForm(): void;
+  private setFormOriginalValues(): void {
+    this.initForm(this.originalData);
+  }
 
-  public abstract setFormOriginalValues(): void;
+  public abstract initForm(data?: any): void;
 
   public abstract getWorkflowStepData(): Promise<boolean>;
 

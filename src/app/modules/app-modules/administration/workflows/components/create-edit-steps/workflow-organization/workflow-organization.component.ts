@@ -22,16 +22,11 @@ export class WorkflowOrganizationComponent extends WorkflowStepAbstractClass {
     super(workflowsCreateEditAuxService);
   }
 
-  public initForm(): void {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  public initForm(data: any): void {
     this.form = this.fb.group({
-      id: [null, [Validators.required]]
+      id: [data?.id ? data.id : null, [Validators.required]]
     });
-  }
-
-  public setFormOriginalValues(): void {
-    this.form.get('id').setValue(this.originalData.id);
-    this.form.markAsPristine();
-    this.form.markAsUntouched();
   }
 
   public async getWorkflowStepData(): Promise<boolean> {
