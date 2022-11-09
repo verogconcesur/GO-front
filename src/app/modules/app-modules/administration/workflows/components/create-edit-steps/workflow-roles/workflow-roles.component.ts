@@ -21,16 +21,11 @@ export class WorkflowRolesComponent extends WorkflowStepAbstractClass {
     super(workflowsCreateEditAuxService);
   }
 
-  public initForm(): void {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  public initForm(data: any): void {
     this.form = this.fb.group({
-      idRole: [null, [Validators.required]]
+      idRole: [data?.idRole ? data.idRole : null, [Validators.required]]
     });
-  }
-
-  public setFormOriginalValues(): void {
-    this.form.get('idRole').setValue(this.originalData.idRole);
-    this.form.markAsPristine();
-    this.form.markAsUntouched();
   }
 
   public async getWorkflowStepData(): Promise<boolean> {
