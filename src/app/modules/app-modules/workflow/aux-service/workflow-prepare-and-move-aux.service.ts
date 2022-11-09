@@ -47,6 +47,7 @@ export class WorkflowPrepareAndMoveService {
   ): void {
     this.spinner = this.spinnerService.show();
     view = view ? view : 'MOVES_IN_THIS_WORKFLOW';
+    const destinationName = this.getDestinationName(move ? move.workflowSubstateTarget : substateTarget);
     const targetId = move ? move.workflowSubstateTarget.id : substateTarget ? substateTarget.id : null;
     const usersOut = move
       ? move.workflowSubstateSource.workflowSubstateUser
@@ -80,14 +81,17 @@ export class WorkflowPrepareAndMoveService {
                 data[0]?.requiredUser ||
                 data[0]?.requiredHistoryComment ||
                 data[0]?.sendMail ||
+                data[0]?.requiredMovementExtra ||
                 data[1]?.requiredSize ||
                 data[1]?.requiredUser ||
                 data[1]?.requiredHistoryComment ||
                 data[1]?.sendMail ||
+                data[1]?.requiredMovementExtra ||
                 data[2]?.requiredSize ||
                 data[2]?.requiredUser ||
                 data[2]?.requiredHistoryComment ||
-                data[2]?.sendMail)) ||
+                data[2]?.sendMail ||
+                data[2]?.requiredMovementExtra)) ||
             this.showMainUserSelector(user, move) ||
             view === 'MOVES_IN_OTHER_WORKFLOWS'
           ) {
@@ -95,6 +99,7 @@ export class WorkflowPrepareAndMoveService {
               .open(WorkflowCardMovementPreparationComponent, {
                 maxWidth: '650px',
                 data: {
+                  destinationName,
                   preparation: data,
                   usersOut,
                   usersIn,
@@ -109,9 +114,27 @@ export class WorkflowPrepareAndMoveService {
                 (res: {
                   task: { description: string };
                   user: { user: WorkflowSubstateUserDTO };
-                  in: { size: 'S' | 'M' | 'L' | 'XL'; user: WorkflowSubstateUserDTO; template: string; historyComment: string };
-                  out: { size: 'S' | 'M' | 'L' | 'XL'; user: WorkflowSubstateUserDTO; template: string; historyComment: string };
-                  mov: { size: 'S' | 'M' | 'L' | 'XL'; user: WorkflowSubstateUserDTO; template: string; historyComment: string };
+                  in: {
+                    size: 'S' | 'M' | 'L' | 'XL';
+                    user: WorkflowSubstateUserDTO;
+                    template: string;
+                    historyComment: string;
+                    movementExtraConfirm: boolean;
+                  };
+                  out: {
+                    size: 'S' | 'M' | 'L' | 'XL';
+                    user: WorkflowSubstateUserDTO;
+                    template: string;
+                    historyComment: string;
+                    movementExtraConfirm: boolean;
+                  };
+                  mov: {
+                    size: 'S' | 'M' | 'L' | 'XL';
+                    user: WorkflowSubstateUserDTO;
+                    template: string;
+                    historyComment: string;
+                    movementExtraConfirm: boolean;
+                  };
                 }) => {
                   if (!res) {
                     //Recargamos para que al mover tarjeta en vista board no se quede pillado el hover de cdk drag and drop
@@ -135,6 +158,9 @@ export class WorkflowPrepareAndMoveService {
                     if (res.out.historyComment) {
                       events.out.historyComment = res.out.historyComment;
                     }
+                    if (res.out.movementExtraConfirm) {
+                      events.out.movementExtraConfirm = res.out.movementExtraConfirm;
+                    }
                     if (res.out.user?.user?.id) {
                       events.out.requiredUserId = res.out.user.user.id;
                     }
@@ -150,6 +176,9 @@ export class WorkflowPrepareAndMoveService {
                     if (res.in.historyComment) {
                       events.in.historyComment = res.in.historyComment;
                     }
+                    if (res.in.movementExtraConfirm) {
+                      events.in.movementExtraConfirm = res.in.movementExtraConfirm;
+                    }
                     if (res.in.user?.user?.id) {
                       events.in.requiredUserId = res.in.user.user.id;
                     }
@@ -164,6 +193,9 @@ export class WorkflowPrepareAndMoveService {
                     }
                     if (res.mov.historyComment) {
                       events.mov.historyComment = res.mov.historyComment;
+                    }
+                    if (res.mov.movementExtraConfirm) {
+                      events.mov.movementExtraConfirm = res.mov.movementExtraConfirm;
                     }
                     if (res.mov.user?.user?.id) {
                       events.mov.requiredUserId = res.mov.user.user.id;
@@ -194,6 +226,14 @@ export class WorkflowPrepareAndMoveService {
           } else {
             this.moveCard(item, targetId, user, dropZoneId, itemToReplace, view);
           }
+          // item: WorkflowCardDTO,
+          // move: WorkflowMoveDTO,
+          // substateTarget: WorkflowSubstateDTO,
+          // user: WorkflowSubstateUserDTO,
+          // dropZoneId: string,
+          // // eslint-disable-next-line @typescript-eslint/no-explicit-any
+          // itemToReplace: any,
+          // view?: 'MOVES_IN_THIS_WORKFLOW' | 'MOVES_IN_OTHER_WORKFLOWS'
         },
         (error) => {
           this.reloadData$.next(null);
@@ -238,16 +278,20 @@ export class WorkflowPrepareAndMoveService {
       )
       .pipe(take(1))
       .subscribe(
-        (resp: WorkflowCardInstanceDTO) => {
+        (resp: WorkflowMoveDTO[]) => {
           if (this.spinner) {
             this.spinnerService.hide(this.spinner);
           }
-          if (resp) {
-            this.reloadData$.next(view);
+          if (resp && resp.length > 0 && resp[0].workflowSubstateTarget.id !== targetId) {
+            if (item?.cardInstanceWorkflows?.length && item.cardInstanceWorkflows[0].cardInstanceWorkflowUsers?.length) {
+              user = item.cardInstanceWorkflows[0].cardInstanceWorkflowUsers[0];
+            }
+            this.spinner = null;
+            this.prepareAndMove(item, resp[0], null, user, dropZoneId, itemToReplace, 'MOVES_IN_THIS_WORKFLOW');
           } else {
-            this.reloadData$.next(null);
+            this.reloadData$.next(view);
+            this.spinner = null;
           }
-          this.spinner = null;
         },
         (error: ConcenetError) => {
           this.spinnerService.hide(this.spinner);
@@ -259,5 +303,17 @@ export class WorkflowPrepareAndMoveService {
           this.spinner = null;
         }
       );
+  }
+
+  private getDestinationName(target: WorkflowSubstateDTO): string {
+    let name = '';
+    if (target.workflowState?.workflow?.name) {
+      name += `${target.workflowState.workflow.name} - `;
+    }
+    if (target.workflowState?.name) {
+      name += `${target.workflowState.name} - `;
+    }
+    name += target.name;
+    return name;
   }
 }

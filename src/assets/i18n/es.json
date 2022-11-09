@@ -377,6 +377,8 @@
         "prevPage": "Página previa"
     },
     "prepareMovement": {
+        "extraMovement": "Movimiento asociado",
+        "extraMovementQuestion": "Marque esta casilla si desea mover la tarjeta a {destination} dentro del workflow original.",
         "inTab": "Eventos de entrada al nuevo estado",
         "moveTab": "Eventos del movimiento",
         "outTab": "Eventos de salida del estado actual",
@@ -388,7 +390,7 @@
         "taskPlaceholder": "Al mover la tarea a otro Workflow está creando una tarea. Añada una descripción.",
         "template": "Verifique la plantilla de email a enviar",
         "templatePlaceholder": "Plantilla a enviar",
-        "title": "Complete la siguiente información antes de realizar el movimiento",
+        "title": "Complete la siguiente información antes de mover la tarjeta a <b>{destination}</b>",
         "user": "Seleccione un usuario",
         "userPlaceholder": "Usuario"
     },
@@ -475,8 +477,8 @@
         "filterState": "Filtrar Estados",
         "filterSubstate": "Filtrar Subestados",
         "filterUser": "Filtrar Usuarios",
-        "newWorkflow": "Nuevo workflow",
         "manualCreateCard": "Creación manual de fichas",
+        "newWorkflow": "Nuevo workflow",
         "numCards": "{num} {num, plural, =0{fichas} one{ficha} other{fichas}}",
         "originalSubstate": "Subestado de origen",
         "peopleWorking": "{num} {num, plural, =0{personas trabajando} one{persona trabajando} other{personas trabajando}}",
