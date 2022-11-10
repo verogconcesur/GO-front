@@ -15,6 +15,10 @@ export default interface CardHistoryDTO {
   workflow: WorkflowDTO;
   workflowSubstateSource: WorkflowSubstateDTO;
   workflowSubstateTarget: WorkflowSubstateDTO;
+  workflowSubstateTargetExtra?: WorkflowSubstateDTO;
+  movementExtraAuto?: boolean;
+  movementExtraConfirm?: boolean;
+  requiredMovementExtra?: boolean;
   initial?: boolean;
   final?: boolean;
 }

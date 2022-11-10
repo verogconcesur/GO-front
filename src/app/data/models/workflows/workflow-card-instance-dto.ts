@@ -1,18 +1,12 @@
 import UserDTO from '../user-permissions/user-dto';
 import WorkflowCardDTO from './workflow-card-dto';
 import WorkflowSubstateEventDTO from './workflow-substate-event-dto';
+import WorkflowSubstateUserDTO from './workflow-substate-user-dto';
 
 export default interface WorkflowCardInstanceDTO {
   // cardInstance: WorkflowCardDTO;
   cardInstanceId: number;
-  cardInstanceWorkflowUsers: {
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    cardInstanceWorkflow: any;
-    dateAssignment: string;
-    id: number;
-    userId: number;
-    user?: UserDTO;
-  }[];
+  cardInstanceWorkflowUsers: WorkflowSubstateUserDTO[];
   id: number;
   facilityId: number;
   size: 'S' | 'M' | 'L' | 'XL';

@@ -1,6 +1,6 @@
 <div class="wc-movement-preparation">
     <div class="wc-movement-preparation__header">
-        <h2>{{ labels.title | translate }}</h2>
+        <h2 [innerHtml]="getModalTitle() | safeHtml"></h2>
         <button mat-button (click)="close()">
             <mat-icon>close</mat-icon>
         </button>
@@ -44,17 +44,17 @@
         *ngIf="tabsToShow?.length"
     >
         <mat-tab
-            *ngIf="preparationOutForm"
+            *ngIf="showTab('OUT')"
             [label]="getTabLabel('OUT')"
             [labelClass]="{ 'text-red': preparationOutForm?.invalid }"
         ></mat-tab>
         <mat-tab
-            *ngIf="preparationInForm"
+            *ngIf="showTab('IN')"
             [label]="getTabLabel('IN')"
             [labelClass]="{ 'text-red': preparationInForm?.invalid }"
         ></mat-tab>
         <mat-tab
-            *ngIf="preparationMovForm"
+            *ngIf="showTab('MOV')"
             [label]="getTabLabel('MOV')"
             [labelClass]="{ 'text-red': preparationMovForm?.invalid }"
         ></mat-tab>
@@ -139,6 +139,14 @@
                     {{ labels.required | translate }}
                 </mat-error>
             </div>
+            <div class="preparation__section" *ngIf="preparationIn.requiredMovementExtra && !preparationIn.movementExtraAuto">
+                <div class="preparation__section__title">
+                    {{ labels.extraMovement | translate }}
+                </div>
+                <mat-checkbox formControlName="movementExtraConfirm">
+                    <span [innerHtml]="getMovementExtraLabel(preparationIn) | safeHtml"></span
+                ></mat-checkbox>
+            </div>
         </form>
     </div>
     <div class="wc-movement-preparation__warnings" [hidden]="tabToShow !== 'OUT'">
@@ -221,6 +229,14 @@
                     {{ labels.required | translate }}
                 </mat-error>
             </div>
+            <div class="preparation__section" *ngIf="preparationOut.requiredMovementExtra && !preparationOut.movementExtraAuto">
+                <div class="preparation__section__title">
+                    {{ labels.extraMovement | translate }}
+                </div>
+                <mat-checkbox formControlName="movementExtraConfirm"
+                    ><span [innerHtml]="getMovementExtraLabel(preparationOut) | safeHtml"></span
+                ></mat-checkbox>
+            </div>
         </form>
     </div>
     <div class="wc-movement-preparation__warnings" [hidden]="tabToShow !== 'MOV'">
@@ -302,6 +318,14 @@
                 >
                     {{ labels.required | translate }}
                 </mat-error>
+            </div>
+            <div class="preparation__section" *ngIf="preparationMov.requiredMovementExtra && !preparationMov.movementExtraAuto">
+                <div class="preparation__section__title">
+                    {{ labels.extraMovement | translate }}
+                </div>
+                <mat-checkbox formControlName="movementExtraConfirm">
+                    <span [innerHtml]="getMovementExtraLabel(preparationMov) | safeHtml"></span>
+                </mat-checkbox>
             </div>
         </form>
     </div>

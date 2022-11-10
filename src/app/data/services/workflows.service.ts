@@ -184,13 +184,13 @@ export class WorkflowsService {
     targetId: number,
     wUser: WorkflowSubstateUserDTO,
     newOrderNumber: number
-  ): Observable<WorkflowCardInstanceDTO> {
+  ): Observable<WorkflowMoveDTO[]> {
     const cardInstanceWorkflow: WorkflowCardInstanceDTO = card.cardInstanceWorkflows[0];
     cardInstanceWorkflow.orderNumber = newOrderNumber;
     cardInstanceWorkflow.cardInstanceId = card.id;
     cardInstanceWorkflow.cardInstanceWorkflowUsers[0].userId = wUser?.user ? wUser?.user?.id : null;
     return this.http
-      .post<WorkflowCardInstanceDTO>(
+      .post<WorkflowMoveDTO[]>(
         `${this.env.apiBaseUrl}${this.GET_WORKFLOWS_PATH}/${card?.cardInstanceWorkflows[0]?.workflowId}` +
           `${this.GET_WORKFLOWS_MOVEMENT_PATH}/${targetId}`,
         cardInstanceWorkflow
