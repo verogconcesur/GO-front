@@ -1,5 +1,7 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { UntypedFormBuilder, Validators } from '@angular/forms';
+import { TranslateService } from '@ngx-translate/core';
+import { ConfirmDialogService } from '@shared/services/confirm-dialog.service';
 import { ProgressSpinnerDialogService } from '@shared/services/progress-spinner-dialog.service';
 import { WorkflowsCreateEditAuxService } from '../../../aux-service/workflows-create-edit-aux.service';
 import { WorkflowStepAbstractClass } from '../workflow-step-abstract-class';
@@ -16,9 +18,11 @@ export class WorkflowRolesComponent extends WorkflowStepAbstractClass {
   constructor(
     private fb: UntypedFormBuilder,
     public workflowsCreateEditAuxService: WorkflowsCreateEditAuxService,
-    private spinnerService: ProgressSpinnerDialogService
+    private spinnerService: ProgressSpinnerDialogService,
+    public confirmationDialog: ConfirmDialogService,
+    public translateService: TranslateService,
   ) {
-    super(workflowsCreateEditAuxService);
+    super(workflowsCreateEditAuxService, confirmationDialog, translateService);
   }
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
