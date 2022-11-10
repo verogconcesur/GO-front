@@ -3,7 +3,6 @@ import { MatDialog } from '@angular/material/dialog';
 import { ConcenetError } from '@app/types/error';
 import { marker } from '@biesbjerg/ngx-translate-extract-marker';
 import WorkflowCardDTO from '@data/models/workflows/workflow-card-dto';
-import WorkflowCardInstanceDTO from '@data/models/workflows/workflow-card-instance-dto';
 import WorkflowMoveDTO from '@data/models/workflows/workflow-move-dto';
 import WorkflowSubstateDTO from '@data/models/workflows/workflow-substate-dto';
 import WorkflowSubstateEventDTO from '@data/models/workflows/workflow-substate-event-dto';
@@ -158,6 +157,7 @@ export class WorkflowPrepareAndMoveService {
                     if (res.out.historyComment) {
                       events.out.historyComment = res.out.historyComment;
                     }
+                    events.out.movementExtraConfirm = false;
                     if (res.out.movementExtraConfirm) {
                       events.out.movementExtraConfirm = res.out.movementExtraConfirm;
                     }
@@ -176,6 +176,7 @@ export class WorkflowPrepareAndMoveService {
                     if (res.in.historyComment) {
                       events.in.historyComment = res.in.historyComment;
                     }
+                    events.in.movementExtraConfirm = false;
                     if (res.in.movementExtraConfirm) {
                       events.in.movementExtraConfirm = res.in.movementExtraConfirm;
                     }
@@ -194,6 +195,7 @@ export class WorkflowPrepareAndMoveService {
                     if (res.mov.historyComment) {
                       events.mov.historyComment = res.mov.historyComment;
                     }
+                    events.mov.movementExtraConfirm = false;
                     if (res.mov.movementExtraConfirm) {
                       events.mov.movementExtraConfirm = res.mov.movementExtraConfirm;
                     }
@@ -285,6 +287,9 @@ export class WorkflowPrepareAndMoveService {
           if (resp && resp.length > 0 && resp[0].workflowSubstateTarget.id !== targetId) {
             if (item?.cardInstanceWorkflows?.length && item.cardInstanceWorkflows[0].cardInstanceWorkflowUsers?.length) {
               user = item.cardInstanceWorkflows[0].cardInstanceWorkflowUsers[0];
+            }
+            if (item?.cardInstanceWorkflows?.length && item.cardInstanceWorkflows[0].workflowSubstateEvents) {
+              item.cardInstanceWorkflows[0].workflowSubstateEvents = [];
             }
             this.spinner = null;
             this.prepareAndMove(item, resp[0], null, user, dropZoneId, itemToReplace, 'MOVES_IN_THIS_WORKFLOW');
