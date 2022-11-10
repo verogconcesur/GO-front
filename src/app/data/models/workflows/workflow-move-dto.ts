@@ -44,4 +44,8 @@ export default interface WorkflowMoveDTO {
   };
   workflowSubstateSource: WorkflowSubstateDTO;
   workflowSubstateTarget: WorkflowSubstateDTO;
+  workflowSubstateTargetExtra?: WorkflowSubstateDTO;
+  movementExtraAuto?: boolean;
+  movementExtraConfirm?: boolean;
+  requiredMovementExtra?: boolean;
 }
