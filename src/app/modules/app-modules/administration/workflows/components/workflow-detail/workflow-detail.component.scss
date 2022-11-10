@@ -25,17 +25,22 @@
   }
   &__tabs {
     padding-bottom: 130px;
+    min-height: calc(100vh - 451px);
+    @include respond-to($tablet-small) {
+      min-height: calc(100vh - 413px);
+    }
+    @include respond-to($mobile) {
+      min-height: calc(100vh - 413px);
+    }
     &__tab {
       font-size: 1.2em;
     }
   }
   &__footer {
     height: 130px;
-    position: fixed;
-    bottom: 0px;
     background-color: mat-color($background, background);
-    width: calc(100% - 17px);
-    margin-left: -48px;
+    width: calc(100% + 96px);
+    margin: 0 0 -48px -48px;
     button {
       margin: 0 30px;
       width: 160px;
@@ -43,11 +48,13 @@
     }
 
     @include respond-to($tablet-small) {
-      margin-left: -20px;
+      width: calc(100% + 20px);
+      margin: 0 0 -10px -10px;
     }
 
     @include respond-to($mobile) {
-      margin-left: -10px;
+      width: calc(100% + 10px);
+      margin: 0 0 -5px -5px;
     }
   }
 }
