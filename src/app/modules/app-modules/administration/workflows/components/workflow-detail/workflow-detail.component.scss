@@ -24,8 +24,30 @@
     }
   }
   &__tabs {
+    padding-bottom: 130px;
     &__tab {
       font-size: 1.2em;
+    }
+  }
+  &__footer {
+    height: 130px;
+    position: fixed;
+    bottom: 0px;
+    background-color: mat-color($background, background);
+    width: calc(100% - 17px);
+    margin-left: -48px;
+    button {
+      margin: 0 30px;
+      width: 160px;
+      height: 50px;
+    }
+
+    @include respond-to($tablet-small) {
+      margin-left: -20px;
+    }
+
+    @include respond-to($mobile) {
+      margin-left: -10px;
     }
   }
 }

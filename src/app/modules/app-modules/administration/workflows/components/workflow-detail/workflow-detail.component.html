@@ -48,12 +48,22 @@
             <app-workflow-budgets *ngSwitchCase="7"></app-workflow-budgets>
         </div>
     </div>
-    <div class="wf__footer" fxLayout="row wrap" fxLayoutAlign="space-between center">
-        <button [disabled]="!workflowsCreateEditAuxService.getFormGroupByStep(tabIndex)?.dirty" (click)="resetForm()">
-            Reset
+    <div class="wf__footer" fxLayout="row" fxLayoutAlign="space-between center">
+        <button
+            mat-stroked-button
+            color="warn"
+            [disabled]="!workflowsCreateEditAuxService.getFormGroupByStep(tabIndex)?.dirty"
+            (click)="resetForm()"
+        >
+            {{ labels.reset | translate }}
         </button>
-        <button [disabled]="!workflowsCreateEditAuxService.getFormGroupByStep(tabIndex)?.valid" (click)="saveAndGoNextStep()">
-            next
+        <button
+            mat-flat-button
+            color="primary"
+            [disabled]="!workflowsCreateEditAuxService.getFormGroupByStep(tabIndex)?.valid"
+            (click)="saveAndGoNextStep()"
+        >
+            {{ labels.save | translate }}
         </button>
     </div>
 </div>
