@@ -377,6 +377,8 @@
         "prevPage": "Previous page"
     },
     "prepareMovement": {
+        "extraMovement": "Move associated",
+        "extraMovementQuestion": "Do you want to excute the associated move to {destination}?",
         "inTab": "Enter events",
         "moveTab": "Movement events",
         "outTab": "Exit events",
@@ -388,7 +390,7 @@
         "taskPlaceholder": "By moving the task to another Workflow you are creating a task. Add a description.",
         "template": "Check the template to send",
         "templatePlaceholder": "Template to send",
-        "title": "You must complete the following information before proceeding to make the movement",
+        "title": "You must complete the following information before moving the card to <b>{destination}</b>",
         "user": "Select a user",
         "userPlaceholder": "User"
     },
