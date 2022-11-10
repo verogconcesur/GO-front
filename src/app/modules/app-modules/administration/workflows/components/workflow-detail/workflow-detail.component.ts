@@ -36,7 +36,9 @@ export class WorkflowDetailComponent implements OnInit {
     cardConfig: marker('workflows.cardConfig'),
     states: marker('workflows.states'),
     timeline: marker('administration.templates.clientTimeline.title'),
-    budgets: marker('administration.templates.budgets.title')
+    budgets: marker('administration.templates.budgets.title'),
+    save: marker('common.save'),
+    reset: marker('common.reset')
   };
   constructor(
     public workflowsCreateEditAuxService: WorkflowsCreateEditAuxService,

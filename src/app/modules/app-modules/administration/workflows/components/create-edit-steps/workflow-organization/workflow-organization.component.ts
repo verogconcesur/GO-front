@@ -13,6 +13,7 @@ import { DepartmentService } from '@data/services/deparment.service';
 import { FacilityService } from '@data/services/facility.sevice';
 import { SpecialtyService } from '@data/services/specialty.service';
 import { WorkflowAdministrationService } from '@data/services/workflow-administration.service';
+import { untilDestroyed } from '@ngneat/until-destroy';
 import { TranslateService } from '@ngx-translate/core';
 import { ConfirmDialogService } from '@shared/services/confirm-dialog.service';
 import { ProgressSpinnerDialogService } from '@shared/services/progress-spinner-dialog.service';
@@ -66,6 +67,9 @@ export class WorkflowOrganizationComponent extends WorkflowStepAbstractClass {
       specialties: [data?.specialties]
     });
     this.originalData = this.form.getRawValue();
+    this.workflowsCreateEditAuxService.resetForm$.pipe(untilDestroyed(this)).subscribe(() => {
+      this.getOptionsAfterSelection('facilities');
+    });
   }
 
   public selectItem(
