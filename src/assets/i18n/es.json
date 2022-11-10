@@ -466,6 +466,7 @@
     "workflows": {
         "byFacilityGroupLabel": "Workflows de {facility}",
         "cardConfig": "Configuración de la tarjeta",
+        "confirmSave": "¿Desea guardar los cambios de la pestaña?",
         "createWorkflow": "Crear workflow",
         "deleteConfirmation": "¿Está seguro que desea eliminar este workflow?",
         "draft": "Borrador",
@@ -484,6 +485,10 @@
         "peopleWorking": "{num} {num, plural, =0{personas trabajando} one{persona trabajando} other{personas trabajando}}",
         "published": "Publicado",
         "select": "Selecciona un Workflow",
+        "selectBrands": "¿A qué marca?",
+        "selectDepartments": "Seleccione deparamento de: {facility}",
+        "selectFacilities": "¿A qué instalación pertenece?",
+        "selectSpecialties": "Seleccione especialidad de: {department}",
         "states": "Definición y control de estados",
         "substatesWithAndWithoutCards": "Mostrando subestados con o sin tarjetas",
         "substatesWithCards": "Mostrando únicamente subestados con tarjetas",

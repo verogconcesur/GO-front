@@ -466,6 +466,7 @@
     "workflows": {
         "byFacilityGroupLabel": "{facility}'s workflows",
         "cardConfig": "Card config",
+        "confirmSave": "Do you want to save the tab changes?",
         "createWorkflow": "Create workflow",
         "deleteConfirmation": "Do you really want to delete this workflow?",
         "draft": "Draft",
@@ -484,6 +485,10 @@
         "peopleWorking": "{num} {num, plural, =0{people working} one{person working} other{people working}}",
         "published": "Published",
         "select": "Select a Workflow",
+        "selectBrands": "To which brand?",
+        "selectDepartments": "Select deparment from: {facility}",
+        "selectFacilities": "Which facility do you belong to?",
+        "selectSpecialties": "Select specialty from: {department}",
         "states": "States controls and definition",
         "substatesWithAndWithoutCards": "Showing substates with or without cards",
         "substatesWithCards": "Showing only substates with cards",
