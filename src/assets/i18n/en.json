@@ -239,7 +239,6 @@
         "state": "State",
         "substate": "Substate",
         "successOperation": "Success operation.",
-        "tabName": "Tab name",
         "tabTypes": {
             "customizable": "Customizable content",
             "prefixed": "Prefixed content",

@@ -22,7 +22,7 @@ export const enum TabItemConfigListComponentModalEnum {
 export class TabItemConfigListComponent extends ComponentToExtendForCustomDialog implements OnInit {
   public labels = {
     title: marker(TabItemConfigListComponentModalEnum.TITLE),
-    name: marker('common.tabName'),
+    name: marker('common.name'),
     minLength: marker('errors.minLength'),
     nameRequired: marker('userProfile.nameRequired')
   };
