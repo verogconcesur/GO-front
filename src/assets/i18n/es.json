@@ -239,7 +239,6 @@
         "state": "Estado",
         "substate": "Subestado",
         "successOperation": "Operación realizada con éxito.",
-        "tabName": "Nombre de la pestañá",
         "tabTypes": {
             "customizable": "Contenido personalizable",
             "prefixed": "Contenido prefijado",
