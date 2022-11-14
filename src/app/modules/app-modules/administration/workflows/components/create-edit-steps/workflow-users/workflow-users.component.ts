@@ -15,11 +15,18 @@ import WorkflowRoleDTO from '@data/models/workflow-admin/workflow-role-dto';
 import WorkflowSubstateUserDTO from '@data/models/workflows/workflow-substate-user-dto';
 import { UserService } from '@data/services/user.service';
 import { WorkflowAdministrationService } from '@data/services/workflow-administration.service';
+import { CustomDialogService } from '@jenga/custom-dialog';
+import {
+  CreateEditUserComponent,
+  CreateEditUserComponentModalEnum
+} from '@modules/app-modules/administration/users/components/create-edit-user/create-edit-user.component';
 import { TranslateService } from '@ngx-translate/core';
 import { ConfirmDialogService } from '@shared/services/confirm-dialog.service';
+import { GlobalMessageService } from '@shared/services/global-message.service';
 import { ProgressSpinnerDialogService } from '@shared/services/progress-spinner-dialog.service';
+import { NGXLogger } from 'ngx-logger';
 import { forkJoin } from 'rxjs';
-import { take } from 'rxjs/operators';
+import { finalize, take } from 'rxjs/operators';
 import { WorkflowsCreateEditAuxService } from '../../../aux-service/workflows-create-edit-aux.service';
 import { WorkflowStepAbstractClass } from '../workflow-step-abstract-class';
 
@@ -42,7 +49,8 @@ export class WorkflowUsersComponent extends WorkflowStepAbstractClass implements
     department: marker('userProfile.department'),
     specialty: marker('userProfile.specialty'),
     actions: marker('common.actions'),
-    noDataToShow: marker('errors.noDataToShow')
+    noDataToShow: marker('errors.noDataToShow'),
+    others: marker('common.others')
   };
 
   public displayedColumns = ['fullName', 'permissionsGroup', 'brand', 'facility', 'department', 'specialty', 'actions'];
@@ -54,18 +62,33 @@ export class WorkflowUsersComponent extends WorkflowStepAbstractClass implements
     private spinnerService: ProgressSpinnerDialogService,
     public confirmationDialog: ConfirmDialogService,
     public translateService: TranslateService,
-    private userService: UserService
+    private userService: UserService,
+    private logger: NGXLogger,
+    private customDialogService: CustomDialogService,
+    private globalMessageService: GlobalMessageService
   ) {
     super(workflowsCreateEditAuxService, confirmationDialog, translateService);
   }
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   public initForm(data?: any): void {
+    if (data?.orUsers) {
+      data.orUsers.forEach((user: WorkflowSubstateUserDTO) => {
+        const findUser = data.wUsers.find((wUser: WorkflowSubstateUserDTO) => wUser.user.id === user.user.id);
+        user.selected = false;
+        if (findUser) {
+          user.selected = true;
+          user.id = findUser.id;
+        }
+      });
+    }
     this.form = this.fb.group({
-      wUsers: [data?.wUsers ? data.wUsers : []],
-      orUsers: [data?.orUsers ? data.orUsers : []],
-      usersByRole: [data?.usersByRole ? data.usersByRole : []]
+      wUsers: [data?.wUsers ? data.wUsers : [], [Validators.required]],
+      orUsers: [data?.orUsers ? data.orUsers : []]
     });
+    if (this.originalData?.usersByRole?.length && data?.orUsers && data?.wUsers) {
+      this.originalData.usersByRole = this.getUsersByRoleAndOtherUsers(data.orUsers, data.wUsers);
+    }
   }
 
   public async getWorkflowStepData(): Promise<boolean> {
@@ -93,26 +116,23 @@ export class WorkflowUsersComponent extends WorkflowStepAbstractClass implements
       ];
 
       forkJoin(resquests).subscribe((responses: [WorkflowSubstateUserDTO[], PaginationResponseI<UserDetailsDTO>]) => {
-        const wUsers = responses[0] ? responses[0] : [];
+        const wUsers = responses[0] ? [...responses[0]] : [];
         const orUsers = responses[1]?.content
-          ? responses[1].content.map((user) => ({
+          ? [...responses[1].content].map((user) => ({
               user,
               id: null,
               extra: false,
               selected: wUsers.find((wUser) => wUser.user.id === user.id) ? true : false
             }))
           : [];
-        const data = {
+        this.originalData = {
           //Workflow users
           wUsers,
           //All users with organization and roles selected
           orUsers,
           //Users by role
-          usersByRole: this.getUsersByRoleAndOtherUsers(orUsers, responses[0])
+          usersByRole: this.getUsersByRoleAndOtherUsers(orUsers, wUsers)
         };
-        this.originalData = data;
-        console.log(data);
-        this.initForm(this.originalData);
         this.spinnerService.hide(spinner);
         resolve(true);
       });
@@ -123,8 +143,23 @@ export class WorkflowUsersComponent extends WorkflowStepAbstractClass implements
     const spinner = this.spinnerService.show();
     return new Promise((resolve, reject) => {
       this.spinnerService.hide(spinner);
-      resolve(true);
-      //resolve(false) => si se produce error
+      this.workflowService
+        .postWorkflowUsers(this.workflowId, this.form.get('wUsers').value)
+        .pipe(
+          take(1),
+          finalize(() => {
+            this.spinnerService.hide(spinner);
+          })
+        )
+        .subscribe({
+          next: (response) => {
+            resolve(true);
+          },
+          error: (err) => {
+            this.logger.error(err);
+            resolve(false);
+          }
+        });
     });
   }
 
@@ -132,12 +167,52 @@ export class WorkflowUsersComponent extends WorkflowStepAbstractClass implements
     //show add user modal
   }
 
-  public showUserDetails(user: WorkflowSubstateUserDTO): void {
-    console.log(user);
+  public showUserDetails(user: WorkflowSubstateUserDTO) {
+    this.customDialogService
+      .open({
+        id: CreateEditUserComponentModalEnum.ID,
+        panelClass: CreateEditUserComponentModalEnum.PANEL_CLASS,
+        component: CreateEditUserComponent,
+        extendedComponentData: user ? user.user : null,
+        disableClose: true,
+        width: '700px'
+      })
+      .pipe(take(1))
+      .subscribe(async (response) => {
+        if (response) {
+          this.globalMessageService.showSuccess({
+            message: this.translateService.instant(marker('common.successOperation')),
+            actionText: this.translateService.instant(marker('common.close'))
+          });
+          if (this.form.valid && !this.form.dirty && this.form.untouched) {
+            await this.getWorkflowStepData();
+            this.initForm(this.originalData);
+          } else {
+            setTimeout(() => {
+              this.globalMessageService.showError({
+                message: this.translateService.instant(marker('errors.avoidReloadUnsavedChanges')),
+                actionText: this.translateService.instant(marker('common.close'))
+              });
+            }, 1000);
+          }
+        }
+      });
   }
 
-  public userSelectionChange(user: WorkflowSubstateUserDTO) {
-    console.log(user);
+  public userSelectionChange() {
+    this.form
+      .get('wUsers')
+      .setValue(
+        [...this.originalData.usersByRole].reduce(
+          (prev: WorkflowSubstateUserDTO[], curr: { role: RoleDTO; users: WorkflowSubstateUserDTO[] }) => [
+            ...prev,
+            ...curr.users.filter((user: WorkflowSubstateUserDTO) => user.selected)
+          ],
+          []
+        )
+      );
+    this.form.markAsDirty();
+    this.form.markAsTouched();
   }
 
   public areAllRolesUsersSelected(roleData: { role: RoleDTO; users: WorkflowSubstateUserDTO[] }): boolean {
@@ -154,13 +229,11 @@ export class WorkflowUsersComponent extends WorkflowStepAbstractClass implements
 
   public setRolesUsersSelection(check: boolean | string, roleData: { role: RoleDTO; users: WorkflowSubstateUserDTO[] }) {
     if (check && check !== 'false') {
-      console.log('Set to true', check);
       roleData.users.forEach((user) => (user.selected = true));
     } else {
-      console.log('Set to false', check);
       roleData.users.forEach((user) => (user.selected = false));
     }
-    console.log(roleData);
+    this.userSelectionChange();
   }
 
   public getUserOrganizationLabel = (data: BrandDTO[] | FacilityDTO[] | DepartmentDTO[] | SpecialtyDTO[]): string => {
@@ -194,8 +267,8 @@ export class WorkflowUsersComponent extends WorkflowStepAbstractClass implements
     });
     if (wUsers) {
       const otherUsers: WorkflowSubstateUserDTO[] = [];
-      wUsers.forEach((wUser) => {
-        if (!orUsers.find((orUser) => orUser.user.id === wUser.id)) {
+      [...wUsers].forEach((wUser) => {
+        if (!orUsers.find((orUser) => orUser.user.id === wUser.user.id)) {
           otherUsers.push(wUser);
         }
       });

@@ -25,9 +25,9 @@
                                 (click)="$event.stopPropagation()"
                             ></mat-checkbox>
                             <span
-                                >&nbsp;&nbsp;{{ roleData.role.name }} ({{ countUsersSelected(roleData.users) }}/{{
-                                    roleData.users.length
-                                }})
+                                >&nbsp;&nbsp;{{ roleData.role?.name ? roleData.role?.name : (labels.others | translate) }} ({{
+                                    countUsersSelected(roleData.users)
+                                }}/{{ roleData.users.length }})
                             </span>
                         </mat-panel-title>
                     </mat-expansion-panel-header>
@@ -39,7 +39,7 @@
                                 <mat-checkbox
                                     class="user-checkbox"
                                     [(ngModel)]="element.selected"
-                                    (ngModelChange)="userSelectionChange(element)"
+                                    (ngModelChange)="userSelectionChange()"
                                 ></mat-checkbox
                                 ><span
                                     >&nbsp;&nbsp;{{ element.user.name }}&nbsp;{{ element.user.firstName }}&nbsp;{{
