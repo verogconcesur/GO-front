@@ -174,16 +174,6 @@ export class WorkflowOrganizationComponent extends WorkflowStepAbstractClass {
       .pipe(take(1))
       .subscribe((facilities: FacilityDTO[]) => {
         this.facilitiesList = facilities;
-        if (this.form.get('facilities').value?.length) {
-          //Se había inicializado el formulario con datos
-          this.form
-            .get('facilities')
-            .setValue(
-              this.form
-                .get('facilities')
-                .value.map((facilityDefault: FacilityDTO) => facilities.find((facility) => facility.id === facilityDefault.id))
-            );
-        }
         this.getDepartmentsOptions();
         this.getBrandsOptions();
       });
@@ -312,10 +302,9 @@ export class WorkflowOrganizationComponent extends WorkflowStepAbstractClass {
           })
         )
         .subscribe({
-          next: (response) => {
-            console.log(response);
-          },
-          error: () => {
+          next: () => {},
+          error: (err) => {
+            this.logger.error(err);
             resolve(false);
           }
         });
