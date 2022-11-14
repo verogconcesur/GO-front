@@ -4,6 +4,7 @@ import { ENV } from '@app/constants/global.constants';
 import { Env } from '@app/types/env';
 import { ConcenetError } from '@app/types/error';
 import WorkflowOrganizationDTO from '@data/models/workflow-admin/workflow-organization-dto';
+import WorkflowRoleDTO from '@data/models/workflow-admin/workflow-role-dto';
 import WorkflowDTO from '@data/models/workflows/workflow-dto';
 import { WorkflowFilterService } from '@modules/app-modules/workflow/aux-service/workflow-filter.service';
 import { Observable, throwError } from 'rxjs';
@@ -15,6 +16,7 @@ import { catchError } from 'rxjs/operators';
 export class WorkflowAdministrationService {
   private readonly WORKFLOW_PATH = '/api/workflows';
   private readonly ORGANIZATION_PATH = '/organization';
+  private readonly ROLES_PATH = '/roles';
   constructor(@Inject(ENV) private env: Env, private http: HttpClient, private workflowFilterService: WorkflowFilterService) {}
 
   /**
@@ -67,6 +69,28 @@ export class WorkflowAdministrationService {
         `${this.env.apiBaseUrl}${this.WORKFLOW_PATH}/${workflowId}${this.ORGANIZATION_PATH}`,
         workflowOrganizationDTO
       )
+      .pipe(catchError((error) => throwError(error.error as ConcenetError)));
+  }
+
+  /**
+   * Obtener Roles Workflow
+   *
+   * @returns WorkflowDTO[]
+   */
+  public getWorkflowRoles(workflowId: number): Observable<WorkflowRoleDTO[]> {
+    return this.http
+      .get<WorkflowRoleDTO[]>(`${this.env.apiBaseUrl}${this.WORKFLOW_PATH}/${workflowId}${this.ROLES_PATH}`)
+      .pipe(catchError((error) => throwError(error.error as ConcenetError)));
+  }
+
+  /**
+   * Editar Roles Workflow
+   *
+   * @returns WorkflowDTO[]
+   */
+  public postWorkflowRoles(workflowId: number, workflowRoles: WorkflowRoleDTO[]): Observable<WorkflowRoleDTO[]> {
+    return this.http
+      .post<WorkflowRoleDTO[]>(`${this.env.apiBaseUrl}${this.WORKFLOW_PATH}/${workflowId}${this.ROLES_PATH}`, workflowRoles)
       .pipe(catchError((error) => throwError(error.error as ConcenetError)));
   }
 }
