@@ -150,6 +150,7 @@ export class WorkflowPrepareAndMoveService {
                   if (res.out && events.out) {
                     if (res.out.size) {
                       item.cardInstanceWorkflows[0].size = res.out.size;
+                      events.out.size = res.out.size;
                     }
                     if (res.out.template) {
                       events.out.templateComunication.processedTemplate = res.out.template;
@@ -169,6 +170,7 @@ export class WorkflowPrepareAndMoveService {
                   if (res.in && events.in) {
                     if (res.in.size) {
                       item.cardInstanceWorkflows[0].size = res.in.size;
+                      events.in.size = res.in.size;
                     }
                     if (res.in.template) {
                       events.in.templateComunication.processedTemplate = res.in.template;
@@ -188,6 +190,7 @@ export class WorkflowPrepareAndMoveService {
                   if (res.mov && events.mov) {
                     if (res.mov.size) {
                       item.cardInstanceWorkflows[0].size = res.mov.size;
+                      events.mov.size = res.mov.size;
                     }
                     if (res.mov.template) {
                       events.mov.templateComunication.processedTemplate = res.mov.template;
