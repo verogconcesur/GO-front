@@ -1,0 +1,23 @@
+@import 'utils/core';
+@import 'utils/theme';
+.users-container {
+  padding: 20px;
+  &__section {
+    margin-bottom: 20px;
+    &__title {
+      width: 100%;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 10px;
+    }
+    &__content {
+      table {
+        margin-top: -15px;
+        .user-checkbox {
+          margin-left: -22px;
+        }
+      }
+    }
+  }
+}

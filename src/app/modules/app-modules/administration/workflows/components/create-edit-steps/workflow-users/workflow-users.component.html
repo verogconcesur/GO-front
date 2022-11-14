@@ -1,1 +1,136 @@
-<p>workflow-users works!</p>
+<!-- <form [formGroup]="form" *ngIf="form" class="smaller-mat-form-fields">
+    <mat-form-field appearance="outline" floatLabel="always">
+        <input matInput formControlName="id" />
+    </mat-form-field>
+</form> -->
+<div *ngIf="form" class="users-container">
+    <div class="users-container__section">
+        <div class="users-container__section__title">
+            <h1>{{ labels.users | translate }}</h1>
+
+            <button (click)="addUser()" mat-raised-button color="primary">
+                + <span class="create-action__normal-label">{{ labels.addUser | translate }}</span>
+            </button>
+        </div>
+        <div class="users-container__section__content" *ngIf="originalData?.usersByRole">
+            <mat-accordion class="header-color-primary" multi>
+                <mat-expansion-panel class="mat-elevation-z2" [expanded]="true" *ngFor="let roleData of originalData.usersByRole">
+                    <mat-expansion-panel-header>
+                        <mat-panel-title>
+                            <mat-checkbox
+                                class="light-border"
+                                [checked]="areAllRolesUsersSelected(roleData)"
+                                [indeterminate]="areSomeRolesUsersSelected(roleData)"
+                                (change)="setRolesUsersSelection($event.checked, roleData)"
+                                (click)="$event.stopPropagation()"
+                            ></mat-checkbox>
+                            <span
+                                >&nbsp;&nbsp;{{ roleData.role.name }} ({{ countUsersSelected(roleData.users) }}/{{
+                                    roleData.users.length
+                                }})
+                            </span>
+                        </mat-panel-title>
+                    </mat-expansion-panel-header>
+                    <table class="table-users table-ellipsis" mat-table [dataSource]="roleData.users" style="width: 100%">
+                        <!-- fullname Column -->
+                        <ng-container matColumnDef="fullName">
+                            <th mat-header-cell *matHeaderCellDef>{{ labels.fullName | translate }}</th>
+                            <td mat-cell *matCellDef="let element">
+                                <mat-checkbox
+                                    class="user-checkbox"
+                                    [(ngModel)]="element.selected"
+                                    (ngModelChange)="userSelectionChange(element)"
+                                ></mat-checkbox
+                                ><span
+                                    >&nbsp;&nbsp;{{ element.user.name }}&nbsp;{{ element.user.firstName }}&nbsp;{{
+                                        element.user.lastName
+                                    }}</span
+                                >
+                            </td>
+                        </ng-container>
+
+                        <!-- permissionsGroup Column -->
+                        <ng-container matColumnDef="permissionsGroup">
+                            <th mat-header-cell *matHeaderCellDef>{{ labels.permissionsGroup | translate }}</th>
+                            <td mat-cell *matCellDef="let element">{{ element.user.role?.name }}</td>
+                        </ng-container>
+
+                        <!-- brand Column -->
+                        <ng-container matColumnDef="brand">
+                            <th mat-header-cell *matHeaderCellDef>{{ labels.brand | translate }}</th>
+                            <td
+                                mat-cell
+                                *matCellDef="let element"
+                                matTooltipPosition="above"
+                                [matTooltip]="getUserOrganizationLabel(element.user?.brands)"
+                                appShowIfTruncated
+                            >
+                                {{ getUserOrganizationLabel(element.user?.brands) }}
+                            </td>
+                        </ng-container>
+
+                        <!-- facilities Column -->
+                        <ng-container matColumnDef="facility">
+                            <th mat-header-cell *matHeaderCellDef>{{ labels.facility | translate }}</th>
+                            <td
+                                mat-cell
+                                *matCellDef="let element"
+                                matTooltipPosition="above"
+                                [matTooltip]="getUserOrganizationLabel(element.user?.facilities)"
+                                appShowIfTruncated
+                            >
+                                {{ getUserOrganizationLabel(element.user?.facilities) }}
+                            </td>
+                        </ng-container>
+
+                        <!-- departments Column -->
+                        <ng-container matColumnDef="department">
+                            <th mat-header-cell *matHeaderCellDef>{{ labels.department | translate }}</th>
+                            <td
+                                mat-cell
+                                *matCellDef="let element"
+                                matTooltipPosition="above"
+                                [matTooltip]="getUserOrganizationLabel(element.user?.departments)"
+                                appShowIfTruncated
+                            >
+                                {{ getUserOrganizationLabel(element.user?.departments) }}
+                            </td>
+                        </ng-container>
+
+                        <!-- specialties Column -->
+                        <ng-container matColumnDef="specialty">
+                            <th mat-header-cell *matHeaderCellDef>{{ labels.specialty | translate }}</th>
+                            <td
+                                mat-cell
+                                *matCellDef="let element"
+                                matTooltipPosition="above"
+                                [matTooltip]="getUserOrganizationLabel(element.user?.specialties)"
+                                appShowIfTruncated
+                            >
+                                {{ getUserOrganizationLabel(element.user?.specialties) }}
+                            </td>
+                        </ng-container>
+
+                        <!-- actions Column -->
+                        <ng-container matColumnDef="actions">
+                            <th mat-header-cell *matHeaderCellDef>{{ labels.actions | translate }}</th>
+                            <td mat-cell *matCellDef="let element" class="action-buttons no-ellipsis">
+                                <button mat-icon-button aria-label="details">
+                                    <mat-icon (click)="showUserDetails(element)">remove_red_eye</mat-icon>
+                                </button>
+                            </td>
+                        </ng-container>
+
+                        <tr mat-header-row *matHeaderRowDef="displayedColumns; sticky: true"></tr>
+                        <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
+                        <tr class="mat-row" *matNoDataRow>
+                            <td class="mat-cell" style="text-align: center" [attr.colspan]="displayedColumns.length">
+                                {{ labels.noDataToShow | translate }}
+                            </td>
+                        </tr>
+                    </table>
+                </mat-expansion-panel>
+            </mat-accordion>
+        </div>
+    </div>
+</div>
