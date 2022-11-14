@@ -19,6 +19,7 @@ export default interface WorkflowSubstateEventDTO {
   signDocument?: boolean;
   signDocumentTemplate?: TemplatesCommunicationDTO;
   historyComment?: string;
+  size?: 'S' | 'M' | 'L' | 'XL';
   substateEventType?: 'IN' | 'OUT' | 'MOV';
   templateComunication?: TemplatesCommunicationDTO;
 }
