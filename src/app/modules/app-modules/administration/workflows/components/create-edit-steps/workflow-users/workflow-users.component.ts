@@ -20,6 +20,10 @@ import {
   CreateEditUserComponent,
   CreateEditUserComponentModalEnum
 } from '@modules/app-modules/administration/users/components/create-edit-user/create-edit-user.component';
+import {
+  UserSearcherDialogComponent,
+  UserSearcherDialogComponentModalEnum
+} from '@modules/feature-modules/user-searcher-dialog/user-searcher-dialog.component';
 import { TranslateService } from '@ngx-translate/core';
 import { ConfirmDialogService } from '@shared/services/confirm-dialog.service';
 import { GlobalMessageService } from '@shared/services/global-message.service';
@@ -54,6 +58,7 @@ export class WorkflowUsersComponent extends WorkflowStepAbstractClass implements
   };
 
   public displayedColumns = ['fullName', 'permissionsGroup', 'brand', 'facility', 'department', 'specialty', 'actions'];
+  private usersFilter: UserFilterByIdsDTO;
 
   constructor(
     private fb: UntypedFormBuilder,
@@ -97,7 +102,7 @@ export class WorkflowUsersComponent extends WorkflowStepAbstractClass implements
     const roles = this.workflowsCreateEditAuxService
       .getFormGroupByStep(1)
       .value.roles.filter((role: WorkflowRoleDTO) => role.selected);
-    const usersFilter: UserFilterByIdsDTO = {
+    this.usersFilter = {
       brands: [...organization.brands].map((item) => item.id),
       departments: [...organization.departments].map((item) => item.id),
       facilities: [...organization.facilities].map((item) => item.id),
@@ -109,7 +114,7 @@ export class WorkflowUsersComponent extends WorkflowStepAbstractClass implements
     return new Promise((resolve, reject) => {
       const resquests = [
         this.workflowService.getWorkflowUsers(this.workflowId).pipe(take(1)),
-        this.userService.searchUsers(usersFilter, {
+        this.userService.searchUsers(this.usersFilter, {
           page: 0,
           size: 10000
         })
@@ -164,7 +169,22 @@ export class WorkflowUsersComponent extends WorkflowStepAbstractClass implements
   }
 
   public addUser(): void {
-    //show add user modal
+    this.customDialogService
+      .open({
+        id: UserSearcherDialogComponentModalEnum.ID,
+        panelClass: UserSearcherDialogComponentModalEnum.PANEL_CLASS,
+        component: UserSearcherDialogComponent,
+        extendedComponentData: this.usersFilter,
+        disableClose: true,
+        width: '50%',
+        maxWidth: '900px'
+      })
+      .pipe(take(1))
+      .subscribe(async (response) => {
+        if (response && Array.isArray(response) && response.length) {
+          console.log('Comprobar si están los usuarios y seleccionar o añadir a la lista de otros ', response);
+        }
+      });
   }
 
   public showUserDetails(user: WorkflowSubstateUserDTO) {

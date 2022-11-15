@@ -21,6 +21,7 @@ import { WorkflowCardConfigComponent } from './components/create-edit-steps/work
 import { WorkflowTimelineComponent } from './components/create-edit-steps/workflow-timeline/workflow-timeline.component';
 import { WorkflowStatesComponent } from './components/create-edit-steps/workflow-states/workflow-states.component';
 import { WorkflowBudgetsComponent } from './components/create-edit-steps/workflow-budgets/workflow-budgets.component';
+import { UserSearcherDialogModule } from '@modules/feature-modules/user-searcher-dialog/user-searcher-dialog.module';
 
 @NgModule({
   declarations: [
@@ -44,7 +45,8 @@ import { WorkflowBudgetsComponent } from './components/create-edit-steps/workflo
     SharedModule,
     FilterDrawerModule,
     AdministrationCommonHeaderSectionModule,
-    OrganizationLevelsNestedCombosModule
+    OrganizationLevelsNestedCombosModule,
+    UserSearcherDialogModule
   ]
 })
 export class WorkflowsModule {}
