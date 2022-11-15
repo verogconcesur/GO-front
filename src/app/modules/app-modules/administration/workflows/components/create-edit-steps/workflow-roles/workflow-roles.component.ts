@@ -41,6 +41,9 @@ export class WorkflowRolesComponent extends WorkflowStepAbstractClass {
   }
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   public initForm(data: any): void {
+    if (data?.roles) {
+      data = data.roles;
+    }
     this.form = this.fb.group({
       roles: this.fb.array([])
     });
@@ -92,12 +95,12 @@ export class WorkflowRolesComponent extends WorkflowStepAbstractClass {
           take(1),
           finalize(() => {
             this.spinnerService.hide(spinner);
-            resolve(true);
           })
         )
         .subscribe({
           next: (response) => {
-            console.log(response);
+            this.initForm(listRoles);
+            resolve(true);
           },
           error: (err) => {
             this.logger.error(err);

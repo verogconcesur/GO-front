@@ -7,6 +7,7 @@ import CardDTO from '@data/models/cards/card-dto';
 import WorkflowOrganizationDTO from '@data/models/workflow-admin/workflow-organization-dto';
 import WorkflowRoleDTO from '@data/models/workflow-admin/workflow-role-dto';
 import WorkflowDTO from '@data/models/workflows/workflow-dto';
+import WorkflowSubstateUserDTO from '@data/models/workflows/workflow-substate-user-dto';
 import { WorkflowFilterService } from '@modules/app-modules/workflow/aux-service/workflow-filter.service';
 import { Observable, throwError } from 'rxjs';
 import { catchError } from 'rxjs/operators';
@@ -19,6 +20,7 @@ export class WorkflowAdministrationService {
   private readonly ORGANIZATION_PATH = '/organization';
   private readonly ROLES_PATH = '/roles';
   private readonly CARD_PATH = '/card';
+  private readonly USERS_PATH = '/users';
   constructor(@Inject(ENV) private env: Env, private http: HttpClient, private workflowFilterService: WorkflowFilterService) {}
 
   /**
@@ -90,9 +92,37 @@ export class WorkflowAdministrationService {
    *
    * @returns WorkflowRoleDTO[]
    */
-  public postWorkflowRoles(workflowId: number, workflowRoles: WorkflowRoleDTO[]): Observable<WorkflowRoleDTO[]> {
+  public postWorkflowRoles(workflowId: number, workflowRoles: WorkflowRoleDTO[]): Observable<{ roles: WorkflowRoleDTO[] }> {
     return this.http
-      .post<WorkflowRoleDTO[]>(`${this.env.apiBaseUrl}${this.WORKFLOW_PATH}/${workflowId}${this.ROLES_PATH}`, workflowRoles)
+      .post<{ roles: WorkflowRoleDTO[] }>(
+        `${this.env.apiBaseUrl}${this.WORKFLOW_PATH}/${workflowId}${this.ROLES_PATH}`,
+        workflowRoles
+      )
+      .pipe(catchError((error) => throwError(error.error as ConcenetError)));
+  }
+
+  /**
+   * Obtener Users Workflow
+   *
+   * @returns WorkflowSubstateUserDTO[]
+   */
+  public getWorkflowUsers(workflowId: number): Observable<WorkflowSubstateUserDTO[]> {
+    return this.http
+      .get<WorkflowSubstateUserDTO[]>(`${this.env.apiBaseUrl}${this.WORKFLOW_PATH}/${workflowId}${this.USERS_PATH}`)
+      .pipe(catchError((error) => throwError(error.error as ConcenetError)));
+  }
+
+  /**
+   * Editar Users Workflow
+   *
+   * @returns WorkflowSubstateUserDTO[]
+   */
+  public postWorkflowUsers(workflowId: number, workflowUsers: WorkflowSubstateUserDTO[]): Observable<WorkflowSubstateUserDTO[]> {
+    return this.http
+      .post<WorkflowSubstateUserDTO[]>(
+        `${this.env.apiBaseUrl}${this.WORKFLOW_PATH}/${workflowId}${this.USERS_PATH}`,
+        workflowUsers
+      )
       .pipe(catchError((error) => throwError(error.error as ConcenetError)));
   }
 

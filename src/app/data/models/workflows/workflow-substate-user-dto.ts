@@ -18,4 +18,6 @@ export default interface WorkflowSubstateUserDTO {
   cardInstanceWorkflow?: any;
   dateAssignment?: string;
   userId?: number;
+  extra?: boolean;
+  selected?: boolean;
 }
