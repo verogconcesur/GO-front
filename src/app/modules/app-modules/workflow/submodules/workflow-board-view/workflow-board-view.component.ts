@@ -112,6 +112,7 @@ export class WorkflowBoardViewComponent implements OnInit {
 
   public reloadCardData(event: number): void {
     const spinner = this.spinnerService.show();
+
     this.workflowService
       .getWorkflowCards(this.workflow, this.facilities, 'BOARD')
       .pipe(take(1))
@@ -161,9 +162,18 @@ export class WorkflowBoardViewComponent implements OnInit {
         totalCards += wSubstate.cards.length;
         wSubstate.workflowSubstateUser.forEach((user: WorkflowSubstateUserDTO) => {
           const cardsBySubstateId = totalUsers[user.user.id] ? totalUsers[user.user.id].cardsBySubstateId : {};
-          const substateCardsByUser = wSubstate.cards.filter(
-            (card: WorkflowCardDTO) => card.cardInstanceWorkflows[0].cardInstanceWorkflowUsers[0].userId === user.user.id
-          );
+          const substateCardsByUser = wSubstate.cards
+            .filter((card: WorkflowCardDTO) => card.cardInstanceWorkflows[0].cardInstanceWorkflowUsers[0].userId === user.user.id)
+            //Rompo recursividad
+            .map((card) => ({
+              ...card,
+              workflowSubstate: {
+                ...card.workflowSubstate,
+                workflowSubstateEvents: [],
+                workflowState: null,
+                workflowSubstateUser: []
+              }
+            }));
           user.cards = this.workflowFilterService.orderCardsByOrderNumber([...substateCardsByUser]);
           user.cardsBySubstateId = lodash.cloneDeep(cardsBySubstateId);
           user.cardsBySubstateId[wSubstate.id] = [...substateCardsByUser];
