@@ -46,6 +46,16 @@ export class CardService {
   constructor(@Inject(ENV) private env: Env, private http: HttpClient) {}
 
   /**
+   * Get all Cards
+   *
+   * @returns CardDTO
+   */
+  public getAllCards(): Observable<CardDTO[]> {
+    return this.http
+      .get<CardDTO[]>(`${this.env.apiBaseUrl}${this.GET_CARD_PATH}`)
+      .pipe(catchError((error) => throwError(error.error as ConcenetError)));
+  }
+  /**
    * Get card by id
    *
    * @returns CardDTO

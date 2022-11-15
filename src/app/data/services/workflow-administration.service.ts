@@ -3,6 +3,7 @@ import { Inject, Injectable } from '@angular/core';
 import { ENV } from '@app/constants/global.constants';
 import { Env } from '@app/types/env';
 import { ConcenetError } from '@app/types/error';
+import CardDTO from '@data/models/cards/card-dto';
 import WorkflowOrganizationDTO from '@data/models/workflow-admin/workflow-organization-dto';
 import WorkflowRoleDTO from '@data/models/workflow-admin/workflow-role-dto';
 import WorkflowDTO from '@data/models/workflows/workflow-dto';
@@ -17,6 +18,7 @@ export class WorkflowAdministrationService {
   private readonly WORKFLOW_PATH = '/api/workflows';
   private readonly ORGANIZATION_PATH = '/organization';
   private readonly ROLES_PATH = '/roles';
+  private readonly CARD_PATH = '/card';
   constructor(@Inject(ENV) private env: Env, private http: HttpClient, private workflowFilterService: WorkflowFilterService) {}
 
   /**
@@ -47,7 +49,7 @@ export class WorkflowAdministrationService {
   /**
    * Obtener Organización Workflow
    *
-   * @returns WorkflowDTO[]
+   * @returns WorkflowOrganizationDTO[]
    */
   public getWorkflowOrganization(workflowId: number): Observable<WorkflowOrganizationDTO> {
     return this.http
@@ -58,7 +60,7 @@ export class WorkflowAdministrationService {
   /**
    * Editar Organización Workflow Workflow
    *
-   * @returns WorkflowDTO[]
+   * @returns WorkflowOrganizationDTO[]
    */
   public postWorkflowOrganization(
     workflowId: number,
@@ -75,7 +77,7 @@ export class WorkflowAdministrationService {
   /**
    * Obtener Roles Workflow
    *
-   * @returns WorkflowDTO[]
+   * @returns WorkflowRoleDTO[]
    */
   public getWorkflowRoles(workflowId: number): Observable<WorkflowRoleDTO[]> {
     return this.http
@@ -86,11 +88,33 @@ export class WorkflowAdministrationService {
   /**
    * Editar Roles Workflow
    *
-   * @returns WorkflowDTO[]
+   * @returns WorkflowRoleDTO[]
    */
   public postWorkflowRoles(workflowId: number, workflowRoles: WorkflowRoleDTO[]): Observable<WorkflowRoleDTO[]> {
     return this.http
       .post<WorkflowRoleDTO[]>(`${this.env.apiBaseUrl}${this.WORKFLOW_PATH}/${workflowId}${this.ROLES_PATH}`, workflowRoles)
+      .pipe(catchError((error) => throwError(error.error as ConcenetError)));
+  }
+
+  /**
+   * Obtener Card Workflow
+   *
+   * @returns CardDTO[]
+   */
+  public getWorkflowCard(workflowId: number): Observable<CardDTO[]> {
+    return this.http
+      .get<CardDTO[]>(`${this.env.apiBaseUrl}${this.WORKFLOW_PATH}/${workflowId}${this.CARD_PATH}`)
+      .pipe(catchError((error) => throwError(error.error as ConcenetError)));
+  }
+
+  /**
+   * Editar Card Workflow
+   *
+   * @returns CardDTO[]
+   */
+  public postWorkflowCard(workflowId: number, card: CardDTO): Observable<CardDTO[]> {
+    return this.http
+      .post<CardDTO[]>(`${this.env.apiBaseUrl}${this.WORKFLOW_PATH}/${workflowId}${this.CARD_PATH}`, card)
       .pipe(catchError((error) => throwError(error.error as ConcenetError)));
   }
 }
