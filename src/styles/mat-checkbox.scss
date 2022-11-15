@@ -1,8 +1,13 @@
 @import '@angular/material/theming';
 
 @mixin custom-mat-checkbox-theme($theme, $main-typo) {
+  $primary: map-get($theme, primary);
   .mat-checkbox-layout {
     // The important is necessary
     white-space: normal !important;
+  }
+
+  mat-checkbox.light-border .mat-checkbox-frame {
+    border-color: mat-contrast($primary, 400);
   }
 }

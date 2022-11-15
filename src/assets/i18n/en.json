@@ -217,6 +217,7 @@
         "next": "Next",
         "okClient": "OK Client",
         "origin": "Origin",
+        "others": "Others",
         "paragraph": "Paragraph",
         "payments": "Payments",
         "pending": "Pending",
@@ -263,6 +264,7 @@
         "yes": "Yes"
     },
     "errors": {
+        "avoidReloadUnsavedChanges": "Data reload aborted as there are unsaved changes.",
         "dateFormat": "The date must have this format: {format}",
         "emailPattern": "The text must be an email.",
         "extensionChanged": "The file extension has changed.",

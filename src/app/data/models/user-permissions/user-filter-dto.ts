@@ -13,3 +13,13 @@ export default interface UserFilterDTO {
   search: string;
   specialties: SpecialtyDTO[];
 }
+
+export interface UserFilterByIdsDTO {
+  brands: number[];
+  departments: number[];
+  email: string;
+  facilities: number[];
+  roles: number[];
+  search: string;
+  specialties: number[];
+}
