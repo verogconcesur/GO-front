@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewEncapsulation } from '@angular/core';
+import { Component, OnDestroy, OnInit, ViewEncapsulation } from '@angular/core';
 import { MatTabChangeEvent } from '@angular/material/tabs';
 import { ActivatedRoute, Router } from '@angular/router';
 import { RouteConstants } from '@app/constants/route.constants';
@@ -23,7 +23,7 @@ import {
   templateUrl: './workflow-detail.component.html',
   styleUrls: ['./workflow-detail.component.scss']
 })
-export class WorkflowDetailComponent implements OnInit {
+export class WorkflowDetailComponent implements OnInit, OnDestroy {
   public workflowDetail: WorkflowDTO = null;
   public firstLoad = false;
   public tabIndex = 0;
@@ -53,6 +53,10 @@ export class WorkflowDetailComponent implements OnInit {
   ngOnInit(): void {
     this.initListeners();
     this.getWorkflowInfo();
+  }
+
+  ngOnDestroy(): void {
+    this.workflowsCreateEditAuxService.destroy();
   }
 
   public initListeners(): void {

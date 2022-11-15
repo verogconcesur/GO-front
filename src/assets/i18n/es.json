@@ -217,6 +217,7 @@
         "next": "Siguiente",
         "okClient": "OK Cliente",
         "origin": "Origen",
+        "others": "Otros",
         "paragraph": "Párrafo",
         "payments": "Pagos",
         "pending": "Pendiente",
@@ -263,6 +264,7 @@
         "yes": "Sí"
     },
     "errors": {
+        "avoidReloadUnsavedChanges": "Recarga de datos abortada puesto que hay cambios sin guardar.",
         "dateFormat": "La fecha debe tener este formato: {format}",
         "emailPattern": "El texto introducido debe ser un email.",
         "extensionChanged": "La extensión del archivo ha cambiado.",

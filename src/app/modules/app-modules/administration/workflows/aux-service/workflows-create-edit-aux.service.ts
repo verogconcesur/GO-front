@@ -15,6 +15,11 @@ export class WorkflowsCreateEditAuxService {
 
   constructor() {}
 
+  public destroy(): void {
+    this.formsByStep = [];
+    this.formsOriginalData = [];
+  }
+
   public setFormGroupByStep(form: UntypedFormGroup, index: number): void {
     this.formsByStep[index] = form;
   }
