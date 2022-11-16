@@ -8,8 +8,7 @@ import FacilityDTO from '@data/models/organization/facility-dto';
 import SpecialtyDTO from '@data/models/organization/specialty-dto';
 import RoleDTO from '@data/models/user-permissions/role-dto';
 import UserDetailsDTO from '@data/models/user-permissions/user-details-dto';
-import UserDTO from '@data/models/user-permissions/user-dto';
-import UserFilterDTO, { UserFilterByIdsDTO } from '@data/models/user-permissions/user-filter-dto';
+import { UserFilterByIdsDTO } from '@data/models/user-permissions/user-filter-dto';
 import WorkflowOrganizationDTO from '@data/models/workflow-admin/workflow-organization-dto';
 import WorkflowRoleDTO from '@data/models/workflow-admin/workflow-role-dto';
 import WorkflowSubstateUserDTO from '@data/models/workflows/workflow-substate-user-dto';
@@ -147,7 +146,6 @@ export class WorkflowUsersComponent extends WorkflowStepAbstractClass implements
   public async saveStep(): Promise<boolean> {
     const spinner = this.spinnerService.show();
     return new Promise((resolve, reject) => {
-      this.spinnerService.hide(spinner);
       this.workflowService
         .postWorkflowUsers(this.workflowId, this.form.get('wUsers').value)
         .pipe(
@@ -182,7 +180,35 @@ export class WorkflowUsersComponent extends WorkflowStepAbstractClass implements
       .pipe(take(1))
       .subscribe(async (response) => {
         if (response && Array.isArray(response) && response.length) {
-          console.log('Comprobar si están los usuarios y seleccionar o añadir a la lista de otros ', response);
+          const usersNotFound: UserDetailsDTO[] = [...response];
+          const usersIdsToAdd = [...response].map((user) => user.id);
+          let emptyRoleGroup: { role: RoleDTO; users: WorkflowSubstateUserDTO[] } = { role: null, users: [] };
+          let addEmptyRoleGroup = true;
+          this.originalData.usersByRole.forEach((roleUsers: { role: RoleDTO; users: WorkflowSubstateUserDTO[] }) => {
+            if (!roleUsers.role) {
+              emptyRoleGroup = roleUsers;
+              addEmptyRoleGroup = false;
+            }
+            roleUsers.users.forEach((user: WorkflowSubstateUserDTO) => {
+              if (usersIdsToAdd.indexOf(user.user.id) >= 0) {
+                user.selected = true;
+                usersIdsToAdd.splice(usersIdsToAdd.indexOf(user.user.id), 1);
+                usersNotFound.splice(usersIdsToAdd.indexOf(user.user.id), 1);
+              }
+            });
+          });
+          usersNotFound.forEach((user: UserDetailsDTO) => {
+            emptyRoleGroup.users.push({
+              user,
+              extra: true, //DGDC TODO: Si extra true ¿no sirve el selected?
+              id: null,
+              selected: true
+            });
+            if (addEmptyRoleGroup) {
+              this.originalData.usersByRole.push(emptyRoleGroup);
+            }
+          });
+          this.userSelectionChange();
         }
       });
   }
@@ -289,7 +315,7 @@ export class WorkflowUsersComponent extends WorkflowStepAbstractClass implements
       const otherUsers: WorkflowSubstateUserDTO[] = [];
       [...wUsers].forEach((wUser) => {
         if (!orUsers.find((orUser) => orUser.user.id === wUser.user.id)) {
-          otherUsers.push(wUser);
+          otherUsers.push({ ...wUser, selected: true });
         }
       });
       if (otherUsers.length) {

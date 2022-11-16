@@ -18,6 +18,7 @@ import { TranslateService } from '@ngx-translate/core';
 import { ConfirmDialogService } from '@shared/services/confirm-dialog.service';
 import { GlobalMessageService } from '@shared/services/global-message.service';
 import { ProgressSpinnerDialogService } from '@shared/services/progress-spinner-dialog.service';
+import { NGXLogger } from 'ngx-logger';
 import { Observable, of } from 'rxjs';
 import { finalize, map, take } from 'rxjs/operators';
 import { WorkflowsFilterComponent } from '../workflows-filter/workflows-filter.component';
@@ -59,6 +60,7 @@ export class WorkflowsTableComponent implements OnInit {
     private globalMessageService: GlobalMessageService,
     private translateService: TranslateService,
     private spinnerService: ProgressSpinnerDialogService,
+    private logger: NGXLogger,
     private router: Router
   ) {}
 
@@ -153,10 +155,19 @@ export class WorkflowsTableComponent implements OnInit {
         take(1),
         finalize(() => this.spinnerService.hide(spinner))
       )
-      .subscribe((response: PaginationResponseI<WorkflowDTO>) => {
-        this.paginationConfig.length = response.totalElements;
-        this.dataSource = response.content;
-      });
+      .subscribe(
+        (response: PaginationResponseI<WorkflowDTO>) => {
+          this.paginationConfig.length = response.totalElements;
+          this.dataSource = response.content;
+        },
+        (error) => {
+          this.logger.error(error);
+          this.globalMessageService.showError({
+            message: error.message,
+            actionText: this.translateService.instant(marker('common.close'))
+          });
+        }
+      );
   };
 
   public optionLabelFn = (option: WorkflowDTO): string => {
