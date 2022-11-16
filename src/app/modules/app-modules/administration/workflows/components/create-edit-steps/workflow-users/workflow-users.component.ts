@@ -204,11 +204,27 @@ export class WorkflowUsersComponent extends WorkflowStepAbstractClass implements
               id: null,
               selected: true
             });
-            if (addEmptyRoleGroup) {
-              this.originalData.usersByRole.push(emptyRoleGroup);
-            }
           });
-          this.userSelectionChange();
+          if (addEmptyRoleGroup) {
+            this.originalData.usersByRole.push(emptyRoleGroup);
+            this.userSelectionChange();
+          } else {
+            const copyUsersByRole = [...this.originalData.usersByRole];
+            this.originalData.usersByRole = [];
+            setTimeout(() => {
+              this.originalData.usersByRole = copyUsersByRole.map(
+                (usersByRole: { role: RoleDTO; users: WorkflowSubstateUserDTO[] }) => {
+                  if (usersByRole.role) {
+                    return usersByRole;
+                  } else {
+                    return emptyRoleGroup;
+                  }
+                }
+              );
+              console.log(this.originalData);
+              this.userSelectionChange();
+            }, 50);
+          }
         }
       });
   }
