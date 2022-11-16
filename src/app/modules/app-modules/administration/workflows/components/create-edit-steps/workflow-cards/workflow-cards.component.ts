@@ -101,7 +101,7 @@ export class WorkflowCardsComponent extends WorkflowStepAbstractClass {
         id: WorkflowCardsPermissionsComponentModalEnum.ID,
         panelClass: WorkflowCardsPermissionsComponentModalEnum.PANEL_CLASS,
         component: WorkflowCardsPermissionsComponent,
-        extendedComponentData: this.workflowId,
+        extendedComponentData: { workflowId: this.workflowId, cardId: this.form.get('card').value.id },
         disableClose: true,
         width: '900px'
       })

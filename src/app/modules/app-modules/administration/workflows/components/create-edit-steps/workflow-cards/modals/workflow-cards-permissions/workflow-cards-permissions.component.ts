@@ -84,7 +84,7 @@ export class WorkflowCardsPermissionsComponent extends ComponentToExtendForCusto
   ngOnDestroy(): void {}
 
   public confirmCloseCustomDialog(): Observable<boolean> {
-    if (this.permissionForm.touched && this.permissionForm.dirty) {
+    if (this.permissionForm.touched) {
       return this.confirmDialogService.open({
         title: this.translateService.instant(marker('common.warning')),
         message: this.translateService.instant(marker('common.unsavedChangesExit'))
@@ -124,11 +124,10 @@ export class WorkflowCardsPermissionsComponent extends ComponentToExtendForCusto
       show: true,
       leftSideButtons: [
         {
-          type: 'custom',
+          type: 'close',
           label: marker('common.cancel'),
           design: 'stroked',
-          color: 'warn',
-          clickFn: this.confirmCloseCustomDialog
+          color: 'warn'
         }
       ],
       rightSideButtons: [
@@ -137,8 +136,8 @@ export class WorkflowCardsPermissionsComponent extends ComponentToExtendForCusto
           label: marker('common.save'),
           design: 'raised',
           color: 'primary',
-          clickFn: this.onSubmitCustomDialog,
-          disabledFn: () => !(this.permissionForm.touched && this.permissionForm.dirty && this.permissionForm.valid)
+          disabledFn: () =>
+            !(this.permissionForm && this.permissionForm.touched && this.permissionForm.dirty && this.permissionForm.valid)
         }
       ]
     };
