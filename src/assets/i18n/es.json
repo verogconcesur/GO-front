@@ -146,6 +146,9 @@
         "workflows": "Workflow"
     },
     "common": {
+        "EDIT": "Ver u editar",
+        "HIDE": "Ocultar",
+        "SHOW": "Ver",
         "accessDenied": "Acceso denegado. No tiene privilegios suficientes.",
         "actions": "Acciones",
         "actionsTabItems": {
@@ -250,6 +253,7 @@
         "title": "Título",
         "to": "Hasta",
         "town": "Ciudad",
+        "typeCard": "Tipos de ficha",
         "unfollow": "Dejar de seguir",
         "unsavedChangesExit": "Hay cambios en el formulario sin guardar, ¿desea salir igualmente?",
         "unselectAll": "Deseleccionar todos",
@@ -257,7 +261,9 @@
         "users": "Usuarios",
         "vehicle": "Vehículo",
         "warning": "Advertencia",
-        "workOrder": "Orden de trabajo"
+        "whoSees": "Quien lo ve",
+        "workOrder": "Orden de trabajo",
+        "workflows": "workflows"
     },
     "confirmdialog": {
         "no": "No",
@@ -467,12 +473,18 @@
     },
     "workflows": {
         "byFacilityGroupLabel": "Workflows de {facility}",
+        "card": {
+            "cardTabs": "Pestañas de la ficha",
+            "permissionSubtitle": "Selecciona las pestañas que deseas que aparezcan en este workflow. Haz click sobre el nombre de las pestañas para personalizar estos permisos por rol.",
+            "permissionTitle": "Personalizar permisos sobre las pestañas de la ficha"
+        },
         "cardConfig": "Configuración de la tarjeta",
         "confirmSave": "¿Desea guardar los cambios de la pestaña?",
         "createWorkflow": "Crear workflow",
         "deleteConfirmation": "¿Está seguro que desea eliminar este workflow?",
         "draft": "Borrador",
         "dueOutDateTime": "Recoge el {date} a las {time}",
+        "editPermissions": "Personalizar permisos",
         "editWorkflow": "Editar Workflow",
         "emptySubstate": "Subestado vacío",
         "filter": "Filtrar Workflows",

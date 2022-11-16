@@ -21,6 +21,8 @@ import { WorkflowCardConfigComponent } from './components/create-edit-steps/work
 import { WorkflowTimelineComponent } from './components/create-edit-steps/workflow-timeline/workflow-timeline.component';
 import { WorkflowStatesComponent } from './components/create-edit-steps/workflow-states/workflow-states.component';
 import { WorkflowBudgetsComponent } from './components/create-edit-steps/workflow-budgets/workflow-budgets.component';
+// eslint-disable-next-line max-len
+import { WorkflowCardsPermissionsComponent } from './components/create-edit-steps/workflow-cards/modals/workflow-cards-permissions/workflow-cards-permissions.component';
 
 @NgModule({
   declarations: [
@@ -36,7 +38,8 @@ import { WorkflowBudgetsComponent } from './components/create-edit-steps/workflo
     WorkflowCardConfigComponent,
     WorkflowTimelineComponent,
     WorkflowStatesComponent,
-    WorkflowBudgetsComponent
+    WorkflowBudgetsComponent,
+    WorkflowCardsPermissionsComponent
   ],
   imports: [
     CommonModule,

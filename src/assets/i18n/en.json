@@ -146,6 +146,9 @@
         "workflows": "Workflow"
     },
     "common": {
+        "EDIT": "Show and edit",
+        "HIDE": "Hide",
+        "SHOW": "Show",
         "accessDenied": "Access denied.",
         "actions": "Actions",
         "actionsTabItems": {
@@ -250,6 +253,7 @@
         "title": "Title",
         "to": "To",
         "town": "Town",
+        "typeCard": "Type card",
         "unfollow": "Unfollow",
         "unsavedChangesExit": "There are unsaved changes, do you want to continue?",
         "unselectAll": "Unselect all",
@@ -257,7 +261,9 @@
         "users": "Users",
         "vehicle": "Vehicle",
         "warning": "Warning",
-        "workOrder": "Work order"
+        "whoSees": "Who sees",
+        "workOrder": "Work order",
+        "workflows": "workflows"
     },
     "confirmdialog": {
         "no": "No",
@@ -467,12 +473,18 @@
     },
     "workflows": {
         "byFacilityGroupLabel": "{facility}'s workflows",
+        "card": {
+            "cardTabs": "Tabs of the card",
+            "permissionSubtitle": "Select the tabs you want to appear in this workflow. Click on the name of the tabs to customize these permissions by role.",
+            "permissionTitle": "Customize permissions on card tabs"
+        },
         "cardConfig": "Card config",
         "confirmSave": "Do you want to save the tab changes?",
         "createWorkflow": "Create workflow",
         "deleteConfirmation": "Do you really want to delete this workflow?",
         "draft": "Draft",
         "dueOutDateTime": "Pick up {date} at {time}",
+        "editPermissions": "Customice permissions",
         "editWorkflow": "Edit Workflow",
         "emptySubstate": "Empty substate",
         "filter": "Filter Workflows",

@@ -41,7 +41,7 @@
             ></app-workflow-organization>
             <app-workflow-roles [workflowId]="workflowDetail?.id" [stepIndex]="1" *ngSwitchCase="1"></app-workflow-roles>
             <app-workflow-users [workflowId]="workflowDetail?.id" [stepIndex]="2" *ngSwitchCase="2"></app-workflow-users>
-            <app-workflow-cards *ngSwitchCase="3"></app-workflow-cards>
+            <app-workflow-cards [workflowId]="workflowDetail?.id" [stepIndex]="3" *ngSwitchCase="3"></app-workflow-cards>
             <app-workflow-card-config *ngSwitchCase="4"></app-workflow-card-config>
             <app-workflow-states *ngSwitchCase="5"></app-workflow-states>
             <app-workflow-timeline *ngSwitchCase="6"></app-workflow-timeline>

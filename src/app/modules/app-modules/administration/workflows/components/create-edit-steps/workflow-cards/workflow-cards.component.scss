@@ -20,9 +20,17 @@
         color: mat-contrast($primary, statusSuccess);
         border: unset;
       }
-      &__users {
+      &__workflows {
         font-weight: 300;
         margin-top: 5px;
+      }
+    }
+    &__edit {
+      cursor: pointer;
+      margin-bottom: 10px;
+      color: mat-color($primary, 600);
+      span {
+        margin-left: 10px;
       }
     }
   }
