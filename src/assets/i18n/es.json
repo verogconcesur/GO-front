@@ -153,6 +153,7 @@
             "message": "Mensaje a cliente",
             "sign": "Firmar documento"
         },
+        "add": "Añadir",
         "address": "Dirección",
         "adviser": "Asesor",
         "amount": "Importe",
@@ -250,8 +251,10 @@
         "title": "Título",
         "to": "Hasta",
         "town": "Ciudad",
+        "type3CharsToSearch": "Escribe al menos tres caracteres...",
         "unfollow": "Dejar de seguir",
         "unsavedChangesExit": "Hay cambios en el formulario sin guardar, ¿desea salir igualmente?",
+        "unselect": "Deseleccionar",
         "unselectAll": "Deseleccionar todos",
         "user": "Usuario",
         "users": "Usuarios",
@@ -424,6 +427,7 @@
             "title": "Mí perfil"
         },
         "permissionsInheritFromRole": "Heredados de <b>{role}</b>*",
+        "searchDialog": "Buscador de usuarios",
         "selectRoleFirst": "Primero selecciona un rol",
         "userPermissions": "Permisos de usuario"
     },
@@ -463,7 +467,8 @@
             "roleNameRequired": "El nombre del rol es un elemento requerido",
             "selectAll": "Seleccionar todos"
         },
-        "title": "Usuarios"
+        "title": "Usuarios",
+        "usersSelected": "{count} usuarios seleccionados"
     },
     "workflows": {
         "byFacilityGroupLabel": "Workflows de {facility}",

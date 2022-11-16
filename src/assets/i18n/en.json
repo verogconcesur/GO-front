@@ -153,6 +153,7 @@
             "message": "Message to client",
             "sign": "Sign document"
         },
+        "add": "Add",
         "address": "Address",
         "adviser": "Adviser",
         "amount": "Amount",
@@ -250,8 +251,10 @@
         "title": "Title",
         "to": "To",
         "town": "Town",
+        "type3CharsToSearch": "Write at least three characters...",
         "unfollow": "Unfollow",
         "unsavedChangesExit": "There are unsaved changes, do you want to continue?",
+        "unselect": "Unselect",
         "unselectAll": "Unselect all",
         "user": "User",
         "users": "Users",
@@ -424,6 +427,7 @@
             "title": "My profile"
         },
         "permissionsInheritFromRole": "Inherited from <b>{role}</b>*",
+        "searchDialog": "User searcher",
         "selectRoleFirst": "First select a role",
         "userPermissions": "User's permissions"
     },
@@ -463,7 +467,8 @@
             "roleNameRequired": "Role name is a required element",
             "selectAll": "Select all"
         },
-        "title": "Users"
+        "title": "Users",
+        "usersSelected": "{count} users selected"
     },
     "workflows": {
         "byFacilityGroupLabel": "{facility}'s workflows",

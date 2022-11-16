@@ -8,8 +8,7 @@ import FacilityDTO from '@data/models/organization/facility-dto';
 import SpecialtyDTO from '@data/models/organization/specialty-dto';
 import RoleDTO from '@data/models/user-permissions/role-dto';
 import UserDetailsDTO from '@data/models/user-permissions/user-details-dto';
-import UserDTO from '@data/models/user-permissions/user-dto';
-import UserFilterDTO, { UserFilterByIdsDTO } from '@data/models/user-permissions/user-filter-dto';
+import { UserFilterByIdsDTO } from '@data/models/user-permissions/user-filter-dto';
 import WorkflowOrganizationDTO from '@data/models/workflow-admin/workflow-organization-dto';
 import WorkflowRoleDTO from '@data/models/workflow-admin/workflow-role-dto';
 import WorkflowSubstateUserDTO from '@data/models/workflows/workflow-substate-user-dto';
@@ -20,6 +19,10 @@ import {
   CreateEditUserComponent,
   CreateEditUserComponentModalEnum
 } from '@modules/app-modules/administration/users/components/create-edit-user/create-edit-user.component';
+import {
+  UserSearcherDialogComponent,
+  UserSearcherDialogComponentModalEnum
+} from '@modules/feature-modules/user-searcher-dialog/user-searcher-dialog.component';
 import { TranslateService } from '@ngx-translate/core';
 import { ConfirmDialogService } from '@shared/services/confirm-dialog.service';
 import { GlobalMessageService } from '@shared/services/global-message.service';
@@ -54,6 +57,7 @@ export class WorkflowUsersComponent extends WorkflowStepAbstractClass implements
   };
 
   public displayedColumns = ['fullName', 'permissionsGroup', 'brand', 'facility', 'department', 'specialty', 'actions'];
+  private usersFilter: UserFilterByIdsDTO;
 
   constructor(
     private fb: UntypedFormBuilder,
@@ -97,7 +101,7 @@ export class WorkflowUsersComponent extends WorkflowStepAbstractClass implements
     const roles = this.workflowsCreateEditAuxService
       .getFormGroupByStep(1)
       .value.roles.filter((role: WorkflowRoleDTO) => role.selected);
-    const usersFilter: UserFilterByIdsDTO = {
+    this.usersFilter = {
       brands: [...organization.brands].map((item) => item.id),
       departments: [...organization.departments].map((item) => item.id),
       facilities: [...organization.facilities].map((item) => item.id),
@@ -109,7 +113,7 @@ export class WorkflowUsersComponent extends WorkflowStepAbstractClass implements
     return new Promise((resolve, reject) => {
       const resquests = [
         this.workflowService.getWorkflowUsers(this.workflowId).pipe(take(1)),
-        this.userService.searchUsers(usersFilter, {
+        this.userService.searchUsers(this.usersFilter, {
           page: 0,
           size: 10000
         })
@@ -142,7 +146,6 @@ export class WorkflowUsersComponent extends WorkflowStepAbstractClass implements
   public async saveStep(): Promise<boolean> {
     const spinner = this.spinnerService.show();
     return new Promise((resolve, reject) => {
-      this.spinnerService.hide(spinner);
       this.workflowService
         .postWorkflowUsers(this.workflowId, this.form.get('wUsers').value)
         .pipe(
@@ -164,7 +167,66 @@ export class WorkflowUsersComponent extends WorkflowStepAbstractClass implements
   }
 
   public addUser(): void {
-    //show add user modal
+    this.customDialogService
+      .open({
+        id: UserSearcherDialogComponentModalEnum.ID,
+        panelClass: UserSearcherDialogComponentModalEnum.PANEL_CLASS,
+        component: UserSearcherDialogComponent,
+        extendedComponentData: this.usersFilter,
+        disableClose: true,
+        width: '50%',
+        maxWidth: '900px'
+      })
+      .pipe(take(1))
+      .subscribe(async (response) => {
+        if (response && Array.isArray(response) && response.length) {
+          const usersNotFound: UserDetailsDTO[] = [...response];
+          const usersIdsToAdd = [...response].map((user) => user.id);
+          let emptyRoleGroup: { role: RoleDTO; users: WorkflowSubstateUserDTO[] } = { role: null, users: [] };
+          let addEmptyRoleGroup = true;
+          this.originalData.usersByRole.forEach((roleUsers: { role: RoleDTO; users: WorkflowSubstateUserDTO[] }) => {
+            if (!roleUsers.role) {
+              emptyRoleGroup = roleUsers;
+              addEmptyRoleGroup = false;
+            }
+            roleUsers.users.forEach((user: WorkflowSubstateUserDTO) => {
+              if (usersIdsToAdd.indexOf(user.user.id) >= 0) {
+                user.selected = true;
+                usersIdsToAdd.splice(usersIdsToAdd.indexOf(user.user.id), 1);
+                usersNotFound.splice(usersIdsToAdd.indexOf(user.user.id), 1);
+              }
+            });
+          });
+          usersNotFound.forEach((user: UserDetailsDTO) => {
+            emptyRoleGroup.users.push({
+              user,
+              extra: true, //DGDC TODO: Si extra true ¿no sirve el selected?
+              id: null,
+              selected: true
+            });
+          });
+          if (addEmptyRoleGroup) {
+            this.originalData.usersByRole.push(emptyRoleGroup);
+            this.userSelectionChange();
+          } else {
+            const copyUsersByRole = [...this.originalData.usersByRole];
+            this.originalData.usersByRole = [];
+            setTimeout(() => {
+              this.originalData.usersByRole = copyUsersByRole.map(
+                (usersByRole: { role: RoleDTO; users: WorkflowSubstateUserDTO[] }) => {
+                  if (usersByRole.role) {
+                    return usersByRole;
+                  } else {
+                    return emptyRoleGroup;
+                  }
+                }
+              );
+              console.log(this.originalData);
+              this.userSelectionChange();
+            }, 50);
+          }
+        }
+      });
   }
 
   public showUserDetails(user: WorkflowSubstateUserDTO) {
@@ -269,7 +331,7 @@ export class WorkflowUsersComponent extends WorkflowStepAbstractClass implements
       const otherUsers: WorkflowSubstateUserDTO[] = [];
       [...wUsers].forEach((wUser) => {
         if (!orUsers.find((orUser) => orUser.user.id === wUser.user.id)) {
-          otherUsers.push(wUser);
+          otherUsers.push({ ...wUser, selected: true });
         }
       });
       if (otherUsers.length) {
