@@ -1,3 +1,5 @@
+import TreeNode from '@data/interfaces/tree-node';
+
 // export const TabItemsCustomTypes = ['TITLE', 'TEXT', 'INPUT', 'LIST', 'TABLE', 'OPTION'];
 export const TabItemsCustomTypes = ['TITLE', 'TEXT', 'INPUT'];
 // export const InputDataTypes = ['STRING', 'NUMBER', 'TEMPORAL'];
@@ -12,7 +14,7 @@ export const InputDateTypes = [
   { value: 'DATE', label: 'cards.column.dateType.date' },
   { value: 'TIME', label: 'cards.column.dateType.time' }
 ];
-export default interface CardColumnTabItemDTO {
+export default interface CardColumnTabItemDTO extends TreeNode {
   id?: number;
   tabId?: number;
   typeItem: string;

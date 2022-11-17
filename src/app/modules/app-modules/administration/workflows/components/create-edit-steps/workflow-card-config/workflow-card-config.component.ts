@@ -1,15 +1,250 @@
-import { Component, OnInit } from '@angular/core';
+import { NestedTreeControl } from '@angular/cdk/tree';
+import { Component, Input, OnInit, ViewChild, ViewEncapsulation } from '@angular/core';
+import { UntypedFormBuilder, UntypedFormControl, UntypedFormGroup, Validators } from '@angular/forms';
+import { MatMenuTrigger } from '@angular/material/menu';
+import { MatTreeNestedDataSource } from '@angular/material/tree';
+import { marker } from '@biesbjerg/ngx-translate-extract-marker';
+import TreeNode from '@data/interfaces/tree-node';
+import CardColumnDTO from '@data/models/cards/card-column-dto';
+import CardColumnTabDTO from '@data/models/cards/card-column-tab-dto';
+import CardColumnTabItemDTO from '@data/models/cards/card-column-tab-item-dto';
+import WorkflowViewDTO from '@data/models/workflow-admin/workflow-view-dto';
+import { WorkflowAdministrationService } from '@data/services/workflow-administration.service';
+import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
+import { TranslateService } from '@ngx-translate/core';
+import { ConfirmDialogService } from '@shared/services/confirm-dialog.service';
+import { ProgressSpinnerDialogService } from '@shared/services/progress-spinner-dialog.service';
+import { normalizaStringToLowerCase } from '@shared/utils/string-normalization-lower-case';
+import lodash from 'lodash';
+import { forkJoin, Observable, of } from 'rxjs';
+import { take } from 'rxjs/operators';
+import { WorkflowsCreateEditAuxService } from '../../../aux-service/workflows-create-edit-aux.service';
+import { WorkflowStepAbstractClass } from '../workflow-step-abstract-class';
 
+@UntilDestroy()
 @Component({
   selector: 'app-workflow-card-config',
   templateUrl: './workflow-card-config.component.html',
-  styleUrls: ['./workflow-card-config.component.scss']
+  styleUrls: ['./workflow-card-config.component.scss'],
+  encapsulation: ViewEncapsulation.None
 })
-export class WorkflowCardConfigComponent implements OnInit {
+export class WorkflowCardConfigComponent extends WorkflowStepAbstractClass implements OnInit {
+  @Input() workflowId: number;
+  @Input() stepIndex: number;
+  @ViewChild('menuTrigger') trigger: MatMenuTrigger;
+  public labels = {
+    boardView: marker('workflows.cardsInBoardView'),
+    calendarView: marker('workflows.cardsInCalendarView'),
+    tableView: marker('workflows.cardsInTableView'),
+    field: marker('common.field'),
+    required: marker('errors.required'),
+    noData: marker('errors.noDataToShow'),
+    filter: marker('common.filterAction'),
+    select: marker('common.select')
+  };
+  public treeControl = new NestedTreeControl<TreeNode>((node) => node.children);
+  public dataSource = new MatTreeNestedDataSource<TreeNode>();
+  //Used to highlight the results
+  public searchedWords$: Observable<string[]> = of([]);
+  public filterTextSearchControl = new UntypedFormControl();
+  private lastInputSelected: { viewType: 'BOARD' | 'TABLE' | 'CALENDAR'; fieldIndex: number };
 
-  constructor() { }
-
-  ngOnInit(): void {
+  constructor(
+    private fb: UntypedFormBuilder,
+    public workflowsCreateEditAuxService: WorkflowsCreateEditAuxService,
+    private spinnerService: ProgressSpinnerDialogService,
+    public confirmationDialog: ConfirmDialogService,
+    public translateService: TranslateService,
+    public workflowService: WorkflowAdministrationService
+  ) {
+    super(workflowsCreateEditAuxService, confirmationDialog, translateService);
   }
 
+  ngOnInit() {
+    super.ngOnInit();
+    this.filterTextSearchControl.valueChanges.pipe(untilDestroyed(this)).subscribe((value) => {
+      if (value) {
+        this.searchedWords$ = of([value]);
+      } else {
+        this.searchedWords$ = of([]);
+      }
+      this.filter();
+    });
+  }
+
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  public initForm(data: any): void {
+    console.log('initform', data);
+    const dataByViewType: { BOARD: WorkflowViewDTO[]; TABLE: WorkflowViewDTO[]; CALENDAR: WorkflowViewDTO[] } = {
+      BOARD: [],
+      TABLE: [],
+      CALENDAR: []
+    };
+    if (data?.view) {
+      ['TABLE', 'CALENDAR', 'BOARD'].forEach((view: 'TABLE' | 'CALENDAR' | 'BOARD') => {
+        dataByViewType[view] = data.view
+          .filter((d: WorkflowViewDTO) => d.viewType === view)
+          .sort((a: WorkflowViewDTO, b: WorkflowViewDTO) => a.orderNumber - b.orderNumber);
+      });
+    }
+    this.form = this.fb.group({
+      BOARD: this.fb.group({
+        field1: this.getFieldFormGroup('BOARD', 1, dataByViewType.BOARD?.length >= 1 ? dataByViewType.BOARD[0] : null),
+        field2: this.getFieldFormGroup('BOARD', 2, dataByViewType.BOARD?.length >= 2 ? dataByViewType.BOARD[1] : null),
+        field3: this.getFieldFormGroup('BOARD', 3, dataByViewType.BOARD?.length >= 3 ? dataByViewType.BOARD[2] : null)
+      }),
+      CALENDAR: this.fb.group({
+        field1: this.getFieldFormGroup('CALENDAR', 1, dataByViewType.CALENDAR?.length >= 1 ? dataByViewType.CALENDAR[0] : null),
+        field2: this.getFieldFormGroup('CALENDAR', 2, dataByViewType.CALENDAR?.length >= 2 ? dataByViewType.CALENDAR[1] : null),
+        field3: this.getFieldFormGroup('CALENDAR', 3, dataByViewType.CALENDAR?.length >= 3 ? dataByViewType.CALENDAR[2] : null)
+      }),
+      TABLE: this.getTableViewFormGroups(dataByViewType.TABLE)
+    });
+    console.log(dataByViewType, this.form);
+  }
+
+  public resetFilter(): void {
+    this.filterTextSearchControl.setValue(null);
+  }
+
+  public filter(): void {
+    const originalData: TreeNode[] = lodash.cloneDeep(this.originalData.attributes);
+    const filterValue = this.filterTextSearchControl.value ? normalizaStringToLowerCase(this.filterTextSearchControl.value) : '';
+    if (filterValue) {
+      this.setTreeDataSource(this.filterNodes(filterValue, originalData));
+    } else {
+      this.setTreeDataSource(originalData);
+    }
+  }
+
+  public hasChild = (_: number, node: TreeNode) => !!node.children && node.children.length > 0;
+
+  public selectAttribute(node: CardColumnTabItemDTO): void {
+    ['description', 'id', 'name', 'tabId'].forEach((attr: 'description' | 'id' | 'name' | 'tabId') => {
+      this.form
+        .get(`${this.lastInputSelected.viewType}.field${this.lastInputSelected.fieldIndex}.tabItem.${attr}`)
+        ?.setValue(node[attr]);
+      this.form
+        .get(`${this.lastInputSelected.viewType}.field${this.lastInputSelected.fieldIndex}.tabItem.${attr}`)
+        ?.markAsDirty();
+      this.form
+        .get(`${this.lastInputSelected.viewType}.field${this.lastInputSelected.fieldIndex}.tabItem.${attr}`)
+        ?.markAsTouched();
+    });
+    this.trigger.closeMenu();
+  }
+
+  public async getWorkflowStepData(): Promise<boolean> {
+    const spinner = this.spinnerService.show();
+    return new Promise((resolve, reject) => {
+      const resquests = [
+        this.workflowService.getWorkflowViews(this.workflowId).pipe(take(1)),
+        this.workflowService.getWorkflowViewAttributes(this.workflowId).pipe(take(1))
+      ];
+
+      forkJoin(resquests).subscribe(
+        (responses: [WorkflowViewDTO[], CardColumnDTO[]]) => {
+          this.originalData = {
+            //Workflow views
+            view: responses[0],
+            //Views attributes
+            attributes: responses[1]
+          };
+          this.createAttrTree();
+          this.spinnerService.hide(spinner);
+          resolve(true);
+        },
+        (errors) => {
+          console.log(errors);
+          this.spinnerService.hide(spinner);
+        }
+      );
+    });
+  }
+
+  public async saveStep(): Promise<boolean> {
+    const spinner = this.spinnerService.show();
+    return new Promise((resolve, reject) => {
+      this.spinnerService.hide(spinner);
+      resolve(true);
+      //resolve(false) => si se produce error
+    });
+  }
+
+  public hasErrorIn(viewType: 'BOARD' | 'CALENDAR' | 'TABLE', fieldIndex: number): boolean {
+    return !this.form.get(`${viewType}.field${fieldIndex}`)?.valid;
+  }
+
+  public clearField(viewType: 'BOARD' | 'CALENDAR' | 'TABLE', fieldIndex: number): void {
+    ['description', 'id', 'name', 'tabId'].forEach((attr: 'description' | 'id' | 'name' | 'tabId') => {
+      this.form.get(`${viewType}.field${fieldIndex}.tabItem.${attr}`)?.setValue(null);
+    });
+  }
+
+  public setTabItemTo(viewType: 'BOARD' | 'CALENDAR' | 'TABLE', fieldIndex: number): void {
+    this.lastInputSelected = { viewType, fieldIndex };
+  }
+
+  private getFieldFormGroup(
+    viewType: 'BOARD' | 'CALENDAR' | 'TABLE',
+    orderNumber: number,
+    data?: WorkflowViewDTO
+  ): UntypedFormGroup {
+    const formGroup: UntypedFormGroup = this.fb.group({
+      id: [data ? data.id : null],
+      orderNumber: [data ? data.orderNumber : orderNumber],
+      viewType: [viewType, [Validators.required]],
+      tabItem: this.fb.group({
+        description: [data ? data.tabItem?.description : null],
+        id: [data ? data.tabItem?.id : null, [Validators.required]],
+        name: [data ? data.tabItem?.name : null, [Validators.required]],
+        tabId: [data ? data.tabItem?.tabId : null]
+      })
+    });
+    return formGroup;
+  }
+
+  private getTableViewFormGroups(data: WorkflowViewDTO[]): UntypedFormGroup {
+    const formGroup: UntypedFormGroup = this.fb.group({});
+    data.forEach((value: WorkflowViewDTO, index) => {
+      const orderNumber = index + 1;
+      formGroup.addControl(`field${orderNumber}`, this.getFieldFormGroup('TABLE', orderNumber, value));
+    });
+    for (let n = data.length; n <= 1; n++) {
+      formGroup.addControl(`field${n + 1}`, this.getFieldFormGroup('TABLE', n + 1, null));
+    }
+    return formGroup;
+  }
+
+  private setTreeDataSource(data: TreeNode[]): void {
+    this.dataSource.data = null;
+    this.treeControl.dataNodes = null;
+    this.dataSource.data = data;
+    this.treeControl.dataNodes = data;
+    this.treeControl.expandAll();
+  }
+
+  private createAttrTree() {
+    this.originalData.attributes.forEach((cardColumn: CardColumnDTO) => {
+      cardColumn.children = cardColumn.tabs;
+      cardColumn.children.forEach((cardColumnTab: CardColumnTabDTO) => {
+        cardColumnTab.children = cardColumnTab.tabItems;
+      });
+    });
+    this.setTreeDataSource(this.originalData.attributes);
+  }
+
+  private filterNodes(filterValue: string, data: TreeNode[]): TreeNode[] {
+    return data.filter((item: TreeNode) => {
+      if (normalizaStringToLowerCase(item.name ? item.name : '').indexOf(filterValue) >= 0) {
+        return item;
+      } else if (item.children?.length) {
+        item.children = this.filterNodes(filterValue, item.children);
+        if (item.children.length) {
+          return item;
+        }
+      }
+      return null;
+    });
+  }
 }

@@ -1,1 +1,276 @@
-<p>workflow-card-config works!</p>
+<form [formGroup]="form" *ngIf="form" class="smaller-mat-form-fields card-config">
+    <div class="card-config__item">
+        <h2 class="card-config__item__title">{{ labels.boardView | translate }}</h2>
+        <div class="card-config__item__card">
+            <div class="card-config__item__card__colors">
+                <div class="card-config__item__card__colors__color x-1"></div>
+            </div>
+            <div class="card-config__item__card__info">
+                <section formGroupName="BOARD">
+                    <section class="field-section" formGroupName="field1">
+                        <mat-form-field appearance="outline" floatLabel="always" formGroupName="tabItem">
+                            <mat-label>{{ labels.field | translate }} 1</mat-label>
+                            <input
+                                matInput
+                                formControlName="name"
+                                readonly
+                                [placeholder]="labels.select | translate"
+                                [matMenuTriggerFor]="attrSearcherMenu"
+                                (click)="setTabItemTo('BOARD', 1)"
+                            />
+                            <mat-icon class="select-arrow">keyboard_arrow_down</mat-icon>
+                            <mat-error class="custom-actions-container__header__group__error" *ngIf="hasErrorIn('BOARD', 1)">
+                                {{ labels.required | translate }}
+                            </mat-error>
+                        </mat-form-field>
+                        <button
+                            aria-label="Clear"
+                            class="clear-field-button"
+                            mat-icon-button
+                            *ngIf="!hasErrorIn('BOARD', 1)"
+                            (click)="clearField('BOARD', 1)"
+                        >
+                            <mat-icon>clear</mat-icon>
+                        </button>
+                    </section>
+                    <section class="field-section" formGroupName="field2">
+                        <mat-form-field appearance="outline" floatLabel="always" formGroupName="tabItem">
+                            <mat-label>{{ labels.field | translate }} 2</mat-label>
+                            <input
+                                matInput
+                                formControlName="name"
+                                readonly
+                                [placeholder]="labels.select | translate"
+                                [matMenuTriggerFor]="attrSearcherMenu"
+                                (click)="setTabItemTo('BOARD', 2)"
+                            />
+                            <mat-icon class="select-arrow">keyboard_arrow_down</mat-icon>
+                            <mat-error class="custom-actions-container__header__group__error" *ngIf="hasErrorIn('BOARD', 2)">
+                                {{ labels.required | translate }}
+                            </mat-error>
+                        </mat-form-field>
+                        <button
+                            aria-label="Clear"
+                            class="clear-field-button"
+                            mat-icon-button
+                            *ngIf="!hasErrorIn('BOARD', 2)"
+                            (click)="clearField('BOARD', 2)"
+                        >
+                            <mat-icon>clear</mat-icon>
+                        </button>
+                    </section>
+                    <section class="field-section" formGroupName="field3">
+                        <mat-form-field appearance="outline" floatLabel="always" formGroupName="tabItem">
+                            <mat-label>{{ labels.field | translate }} 3</mat-label>
+                            <input
+                                matInput
+                                formControlName="name"
+                                readonly
+                                [placeholder]="labels.select | translate"
+                                [matMenuTriggerFor]="attrSearcherMenu"
+                                (click)="setTabItemTo('BOARD', 3)"
+                            />
+                            <mat-icon class="select-arrow">keyboard_arrow_down</mat-icon>
+                            <mat-error class="custom-actions-container__header__group__error" *ngIf="hasErrorIn('BOARD', 3)">
+                                {{ labels.required | translate }}
+                            </mat-error>
+                        </mat-form-field>
+                        <button
+                            aria-label="Clear"
+                            class="clear-field-button"
+                            mat-icon-button
+                            *ngIf="!hasErrorIn('BOARD', 3)"
+                            (click)="clearField('BOARD', 3)"
+                        >
+                            <mat-icon>clear</mat-icon>
+                        </button>
+                    </section>
+                </section>
+            </div>
+        </div>
+    </div>
+    <div class="card-config__item">
+        <h2 class="card-config__item__title">{{ labels.calendarView | translate }}</h2>
+        <div class="card-config__item__card">
+            <div class="card-config__item__card__colors">
+                <div class="card-config__item__card__colors__color x-1"></div>
+            </div>
+            <div class="card-config__item__card__info">
+                <section formGroupName="CALENDAR">
+                    <section class="field-section" formGroupName="field1">
+                        <mat-form-field appearance="outline" floatLabel="always" formGroupName="tabItem">
+                            <mat-label>{{ labels.field | translate }} 1</mat-label>
+                            <input
+                                matInput
+                                formControlName="name"
+                                readonly
+                                [placeholder]="labels.select | translate"
+                                [matMenuTriggerFor]="attrSearcherMenu"
+                                (click)="setTabItemTo('CALENDAR', 1)"
+                            />
+                            <mat-icon class="select-arrow">keyboard_arrow_down</mat-icon>
+                            <mat-error class="custom-actions-container__header__group__error" *ngIf="hasErrorIn('CALENDAR', 1)">
+                                {{ labels.required | translate }}
+                            </mat-error>
+                        </mat-form-field>
+                        <button
+                            aria-label="Clear"
+                            class="clear-field-button"
+                            mat-icon-button
+                            *ngIf="!hasErrorIn('CALENDAR', 1)"
+                            (click)="clearField('CALENDAR', 1)"
+                        >
+                            <mat-icon>clear</mat-icon>
+                        </button>
+                    </section>
+                    <section class="field-section" formGroupName="field2">
+                        <mat-form-field appearance="outline" floatLabel="always" formGroupName="tabItem">
+                            <mat-label>{{ labels.field | translate }} 2</mat-label>
+                            <input
+                                matInput
+                                formControlName="name"
+                                readonly
+                                [placeholder]="labels.select | translate"
+                                [matMenuTriggerFor]="attrSearcherMenu"
+                                (click)="setTabItemTo('CALENDAR', 2)"
+                            />
+                            <mat-icon class="select-arrow">keyboard_arrow_down</mat-icon>
+                            <mat-error class="custom-actions-container__header__group__error" *ngIf="hasErrorIn('CALENDAR', 2)">
+                                {{ labels.required | translate }}
+                            </mat-error>
+                        </mat-form-field>
+                        <button
+                            aria-label="Clear"
+                            class="clear-field-button"
+                            mat-icon-button
+                            *ngIf="!hasErrorIn('CALENDAR', 2)"
+                            (click)="clearField('CALENDAR', 2)"
+                        >
+                            <mat-icon>clear</mat-icon>
+                        </button>
+                    </section>
+                    <section class="field-section" formGroupName="field3">
+                        <mat-form-field appearance="outline" floatLabel="always" formGroupName="tabItem">
+                            <mat-label>{{ labels.field | translate }} 3</mat-label>
+                            <input
+                                matInput
+                                formControlName="name"
+                                readonly
+                                [placeholder]="labels.select | translate"
+                                [matMenuTriggerFor]="attrSearcherMenu"
+                                (click)="setTabItemTo('CALENDAR', 3)"
+                            />
+                            <mat-icon class="select-arrow">keyboard_arrow_down</mat-icon>
+                            <mat-error class="custom-actions-container__header__group__error" *ngIf="hasErrorIn('CALENDAR', 3)">
+                                {{ labels.required | translate }}
+                            </mat-error>
+                        </mat-form-field>
+                        <button
+                            aria-label="Clear"
+                            class="clear-field-button"
+                            mat-icon-button
+                            *ngIf="!hasErrorIn('CALENDAR', 3)"
+                            (click)="clearField('CALENDAR', 3)"
+                        >
+                            <mat-icon>clear</mat-icon>
+                        </button>
+                    </section>
+                </section>
+            </div>
+        </div>
+    </div>
+    <div class="card-config__item">
+        <h2 class="card-config__item__title">{{ labels.tableView | translate }}</h2>
+        <div class="card-config__item__card">
+            <div class="card-config__item__card__colors">
+                <div class="card-config__item__card__colors__color x-1"></div>
+            </div>
+            <div class="card-config__item__card__info">
+                <section formGroupName="TABLE">
+                    <section class="field-section" formGroupName="field1">
+                        <mat-form-field appearance="outline" floatLabel="always" formGroupName="tabItem">
+                            <mat-label>{{ labels.field | translate }} 1</mat-label>
+                            <input
+                                matInput
+                                formControlName="name"
+                                readonly
+                                [placeholder]="labels.select | translate"
+                                [matMenuTriggerFor]="attrSearcherMenu"
+                                (click)="setTabItemTo('TABLE', 1)"
+                            />
+                            <mat-icon class="select-arrow">keyboard_arrow_down</mat-icon>
+                            <mat-error class="custom-actions-container__header__group__error" *ngIf="hasErrorIn('TABLE', 1)">
+                                {{ labels.required | translate }}
+                            </mat-error>
+                        </mat-form-field>
+                        <button
+                            aria-label="Clear"
+                            class="clear-field-button"
+                            mat-icon-button
+                            *ngIf="!hasErrorIn('TABLE', 1)"
+                            (click)="clearField('TABLE', 1)"
+                        >
+                            <mat-icon>clear</mat-icon>
+                        </button>
+                    </section>
+                </section>
+            </div>
+        </div>
+    </div>
+</form>
+
+<button style="display: none" #menuTrigger="matMenuTrigger" [matMenuTriggerFor]="attrSearcherMenu"></button>
+<mat-menu #attrSearcherMenu="matMenu" class="attr-menu">
+    <div class="attr-dialog">
+        <div class="attr-dialog__filter">
+            <div class="attr-dialog__filter__form">
+                <form class="smaller-mat-form-fields" fxLayout="row" fxLayoutAlign="end center" (ngSubmit)="filter()">
+                    <mat-form-field appearance="outline" class="smaller-mat-form-fields__no-margin">
+                        <input
+                            type="text"
+                            matInput
+                            [placeholder]="labels.filter | translate"
+                            [formControl]="filterTextSearchControl"
+                            (keyup.enter)="filter()"
+                            (click)="$event.stopPropagation()"
+                        />
+                    </mat-form-field>
+                </form>
+            </div>
+            <div class="attr-dialog__content">
+                <p class="attr-dialog__content__no-data" *ngIf="!dataSource.data?.length">{{ labels.noData | translate }}</p>
+                <mat-tree [dataSource]="dataSource" [treeControl]="treeControl" class="attr-tree">
+                    <mat-tree-node *matTreeNodeDef="let node" matTreeNodeToggle (click)="selectAttribute(node)">
+                        <button mat-button>
+                            <div
+                                appHighlight
+                                [searchedWords]="searchedWords$ | async"
+                                [text]="node.name"
+                                classToApply="selected"
+                            ></div>
+                            <mat-icon>keyboard_arrow_right</mat-icon>
+                        </button>
+                    </mat-tree-node>
+                    <mat-nested-tree-node *matTreeNodeDef="let node; when: hasChild">
+                        <div class="mat-tree-node mat-tree-group-node">
+                            <button mat-button matTreeNodeToggle [attr.aria-label]="'Toggle ' + node.name">
+                                <div
+                                    appHighlight
+                                    [searchedWords]="searchedWords$ | async"
+                                    [text]="node.name"
+                                    classToApply="selected"
+                                ></div>
+                                <mat-icon class="mat-icon-rtl-mirror">
+                                    {{ treeControl.isExpanded(node) ? "expand_more" : "chevron_right" }}
+                                </mat-icon>
+                            </button>
+                        </div>
+                        <div [class.attr-tree-invisible]="!treeControl.isExpanded(node)" role="group">
+                            <ng-container matTreeNodeOutlet></ng-container>
+                        </div>
+                    </mat-nested-tree-node>
+                </mat-tree>
+            </div>
+        </div>
+    </div>
+</mat-menu>

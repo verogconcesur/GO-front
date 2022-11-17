@@ -194,6 +194,7 @@
         "edit": "Editar",
         "emails": "Emails",
         "externalLinks": "Enlaces externos",
+        "field": "Campo",
         "fileName": "Nombre de archivo",
         "filter": "Filtro",
         "filterAction": "Filtrar",
@@ -473,6 +474,9 @@
     "workflows": {
         "byFacilityGroupLabel": "Workflows de {facility}",
         "cardConfig": "Configuración de la tarjeta",
+        "cardsInBoardView": "Tarjetas en vista pizarra",
+        "cardsInCalendarView": "Tarjetas en vista calendario",
+        "cardsInTableView": "Tarjetas en vista tablero",
         "confirmSave": "¿Desea guardar los cambios de la pestaña?",
         "createWorkflow": "Crear workflow",
         "deleteConfirmation": "¿Está seguro que desea eliminar este workflow?",

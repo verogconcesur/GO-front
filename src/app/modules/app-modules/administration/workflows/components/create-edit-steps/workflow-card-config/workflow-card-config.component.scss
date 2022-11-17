@@ -1,0 +1,182 @@
+@import 'utils/core';
+@import 'utils/theme';
+.card-config {
+  margin-top: 20px;
+  max-width: 100%;
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  flex-wrap: wrap;
+
+  &__item {
+    margin: 10px;
+    &__title {
+      font-weight: 600;
+    }
+    &__card {
+      background-color: mat-contrast($primary, 400);
+      overflow: hidden;
+      width: 300px;
+      min-height: 100px;
+      padding: 8px;
+      margin: 10px 0;
+      border-radius: 8px;
+      box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.04);
+      display: flex;
+      justify-content: flex-start;
+      align-items: center;
+      position: relative;
+
+      &__colors {
+        width: 6px;
+        height: 90%;
+        position: absolute;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        flex-direction: column;
+        &__color {
+          border-radius: 8px;
+          width: 6px;
+          background-color: mat-color($primary, statusSuccess);
+          &.x-1 {
+            height: 100%;
+          }
+          &.x-2 {
+            height: 46%;
+          }
+          &.x-3 {
+            height: 30%;
+          }
+          &.x-4 {
+            height: 22%;
+          }
+        }
+      }
+      &__info section {
+        padding-top: 10px;
+        margin: 0 0 0 20px;
+        display: flex;
+        justify-content: flex-start;
+        align-items: flex-start;
+        flex-direction: column;
+        position: relative;
+        .select-arrow {
+          position: absolute;
+          right: -6px;
+          top: 0px;
+          pointer-events: none;
+        }
+        .clear-field-button {
+          position: absolute;
+          right: -45px;
+          top: 11px;
+        }
+      }
+    }
+  }
+}
+
+.attr-menu {
+  width: 450px;
+  max-width: 450px !important;
+  .mat-menu-content,
+  .mat-menu-content:not(:empty) {
+    padding-top: 0px;
+    padding-bottom: 0px;
+  }
+  .attr-dialog {
+    &__filter {
+      mat-form-field {
+        width: 100%;
+      }
+    }
+    &__content {
+      margin: 5px 0 0 0;
+      max-height: calc(100vh - 250px);
+      overflow-y: auto;
+      overflow-x: hidden;
+
+      &__no-data {
+        color: mat-color($warn, 900);
+      }
+
+      .attr-tree-invisible {
+        display: none;
+      }
+
+      .attr-tree ul,
+      .attr-tree li {
+        margin-top: 0;
+        margin-bottom: 0;
+        list-style-type: none;
+      }
+
+      /*
+       * This padding sets alignment of the nested nodes.
+       */
+      .attr-tree .mat-nested-tree-node div[role='group'] {
+        padding-left: 15px;
+      }
+
+      .attr-tree .mat-tree-node.mat-tree-group-node {
+        button {
+          width: 100%;
+          border-bottom: 1px solid lighten(mat-color($primary, statusNeutral), 20%);
+          border-radius: 0px;
+          padding: 2px;
+          .mat-button-wrapper {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+          }
+        }
+      }
+
+      /*
+       * Padding for leaf nodes.
+       * Leaf nodes need to have padding so as to align with other non-leaf nodes
+       * under the same parent.
+       */
+      .attr-tree div[role='group'] > .mat-tree-node {
+        padding-left: 15px;
+        button {
+          width: 100%;
+          color: mat-color($primary, A400);
+          border-bottom: 1px solid lighten(mat-color($primary, statusNeutral), 20%);
+          border-radius: 0px;
+          padding: 2px;
+          .mat-button-wrapper {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            mat-icon {
+              position: relative;
+              color: mat-color($primary, A400);
+              font-size: 1.3em;
+              width: 15px;
+              height: 15px;
+              margin-top: -3px;
+              margin-right: 5px;
+              margin-left: 5px;
+              &::before {
+                content: '';
+                background-color: mat-color($primary, A400);
+                position: absolute;
+                top: 8px;
+                left: 3px;
+                width: 3px;
+                height: 3px;
+                border-radius: 7px;
+              }
+            }
+          }
+        }
+      }
+
+      .selected {
+        background-color: yellow;
+      }
+    }
+  }
+}
