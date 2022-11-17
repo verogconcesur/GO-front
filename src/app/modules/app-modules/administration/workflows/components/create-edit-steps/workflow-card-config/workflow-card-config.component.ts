@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { NestedTreeControl } from '@angular/cdk/tree';
 import { Component, Input, OnInit, ViewChild, ViewEncapsulation } from '@angular/core';
 import { UntypedFormBuilder, UntypedFormControl, UntypedFormGroup, Validators } from '@angular/forms';
@@ -13,11 +14,13 @@ import { WorkflowAdministrationService } from '@data/services/workflow-administr
 import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
 import { TranslateService } from '@ngx-translate/core';
 import { ConfirmDialogService } from '@shared/services/confirm-dialog.service';
+import { GlobalMessageService } from '@shared/services/global-message.service';
 import { ProgressSpinnerDialogService } from '@shared/services/progress-spinner-dialog.service';
 import { normalizaStringToLowerCase } from '@shared/utils/string-normalization-lower-case';
 import lodash from 'lodash';
+import { NGXLogger } from 'ngx-logger';
 import { forkJoin, Observable, of } from 'rxjs';
-import { take } from 'rxjs/operators';
+import { finalize, take } from 'rxjs/operators';
 import { WorkflowsCreateEditAuxService } from '../../../aux-service/workflows-create-edit-aux.service';
 import { WorkflowStepAbstractClass } from '../workflow-step-abstract-class';
 
@@ -40,7 +43,8 @@ export class WorkflowCardConfigComponent extends WorkflowStepAbstractClass imple
     required: marker('errors.required'),
     noData: marker('errors.noDataToShow'),
     filter: marker('common.filterAction'),
-    select: marker('common.select')
+    select: marker('common.select'),
+    addField: marker('workflows.addField')
   };
   public treeControl = new NestedTreeControl<TreeNode>((node) => node.children);
   public dataSource = new MatTreeNestedDataSource<TreeNode>();
@@ -55,7 +59,9 @@ export class WorkflowCardConfigComponent extends WorkflowStepAbstractClass imple
     private spinnerService: ProgressSpinnerDialogService,
     public confirmationDialog: ConfirmDialogService,
     public translateService: TranslateService,
-    public workflowService: WorkflowAdministrationService
+    public workflowService: WorkflowAdministrationService,
+    private globalMessageService: GlobalMessageService,
+    private logger: NGXLogger
   ) {
     super(workflowsCreateEditAuxService, confirmationDialog, translateService);
   }
@@ -72,9 +78,7 @@ export class WorkflowCardConfigComponent extends WorkflowStepAbstractClass imple
     });
   }
 
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   public initForm(data: any): void {
-    console.log('initform', data);
     const dataByViewType: { BOARD: WorkflowViewDTO[]; TABLE: WorkflowViewDTO[]; CALENDAR: WorkflowViewDTO[] } = {
       BOARD: [],
       TABLE: [],
@@ -100,7 +104,6 @@ export class WorkflowCardConfigComponent extends WorkflowStepAbstractClass imple
       }),
       TABLE: this.getTableViewFormGroups(dataByViewType.TABLE)
     });
-    console.log(dataByViewType, this.form);
   }
 
   public resetFilter(): void {
@@ -120,17 +123,11 @@ export class WorkflowCardConfigComponent extends WorkflowStepAbstractClass imple
   public hasChild = (_: number, node: TreeNode) => !!node.children && node.children.length > 0;
 
   public selectAttribute(node: CardColumnTabItemDTO): void {
-    ['description', 'id', 'name', 'tabId'].forEach((attr: 'description' | 'id' | 'name' | 'tabId') => {
-      this.form
-        .get(`${this.lastInputSelected.viewType}.field${this.lastInputSelected.fieldIndex}.tabItem.${attr}`)
-        ?.setValue(node[attr]);
-      this.form
-        .get(`${this.lastInputSelected.viewType}.field${this.lastInputSelected.fieldIndex}.tabItem.${attr}`)
-        ?.markAsDirty();
-      this.form
-        .get(`${this.lastInputSelected.viewType}.field${this.lastInputSelected.fieldIndex}.tabItem.${attr}`)
-        ?.markAsTouched();
-    });
+    this.form
+      .get(`${this.lastInputSelected.viewType}.field${this.lastInputSelected.fieldIndex}.tabItem`)
+      ?.setValue(this.originalData.tabItems.find((item: CardColumnTabItemDTO) => item.id === node.id));
+    this.form.get(`${this.lastInputSelected.viewType}.field${this.lastInputSelected.fieldIndex}.tabItem`)?.markAsDirty();
+    this.form.get(`${this.lastInputSelected.viewType}.field${this.lastInputSelected.fieldIndex}.tabItem`)?.markAsTouched();
     this.trigger.closeMenu();
   }
 
@@ -165,20 +162,72 @@ export class WorkflowCardConfigComponent extends WorkflowStepAbstractClass imple
   public async saveStep(): Promise<boolean> {
     const spinner = this.spinnerService.show();
     return new Promise((resolve, reject) => {
-      this.spinnerService.hide(spinner);
-      resolve(true);
-      //resolve(false) => si se produce error
+      const rawData: any = this.form.getRawValue();
+      const dataToSend: any = [];
+      ['CALENDAR', 'BOARD', 'TABLE'].forEach((viewType) => {
+        Object.keys(rawData[viewType]).forEach((k) => {
+          if (rawData[viewType][k].tabItem) {
+            dataToSend.push(rawData[viewType][k]);
+          }
+        });
+      });
+      this.workflowService
+        .postWorkflowViews(this.workflowId, dataToSend)
+        .pipe(
+          take(1),
+          finalize(() => this.spinnerService.hide(spinner))
+        )
+        .subscribe(
+          (response) => {
+            console.log(response);
+            resolve(true);
+          },
+          (error) => {
+            this.logger.error(error);
+            this.globalMessageService.showError({
+              message: error.message,
+              actionText: this.translateService.instant(marker('common.close'))
+            });
+            resolve(false);
+          }
+        );
     });
+  }
+
+  public getNumberOfFields(viewType: 'BOARD' | 'CALENDAR' | 'TABLE'): number[] {
+    const arr = [];
+    for (let x = 1; x <= Object.keys(this.form.get(viewType).value).length; x++) {
+      arr.push(x);
+    }
+    return arr;
+  }
+
+  public addField(viewType: 'BOARD' | 'CALENDAR' | 'TABLE'): void {
+    const orderNumber: number = Object.keys(this.form.get(viewType).value).length + 1;
+    (this.form.get(viewType) as UntypedFormGroup).addControl(
+      `field${orderNumber}`,
+      this.getFieldFormGroup('TABLE', orderNumber, null)
+    );
+  }
+
+  public deleteField(viewType: 'BOARD' | 'CALENDAR' | 'TABLE', fieldIndex: number): void {
+    (this.form.get(viewType) as UntypedFormGroup).removeControl(`field${fieldIndex}`);
+  }
+
+  public isLastFieldAndNotFirst(viewType: 'BOARD' | 'CALENDAR' | 'TABLE', fieldIndex: number): boolean {
+    return fieldIndex !== 1 && Object.keys(this.form.get(viewType).value).length === fieldIndex;
   }
 
   public hasErrorIn(viewType: 'BOARD' | 'CALENDAR' | 'TABLE', fieldIndex: number): boolean {
     return !this.form.get(`${viewType}.field${fieldIndex}`)?.valid;
   }
 
+  public hasValue(viewType: 'BOARD' | 'CALENDAR' | 'TABLE', fieldIndex: number): boolean {
+    return this.form.get(`${viewType}.field${fieldIndex}`)?.value?.tabItem?.id;
+  }
+
   public clearField(viewType: 'BOARD' | 'CALENDAR' | 'TABLE', fieldIndex: number): void {
-    ['description', 'id', 'name', 'tabId'].forEach((attr: 'description' | 'id' | 'name' | 'tabId') => {
-      this.form.get(`${viewType}.field${fieldIndex}.tabItem.${attr}`)?.setValue(null);
-    });
+    this.form.get(`${viewType}.field${fieldIndex}.tabItem`)?.setValue(null);
   }
 
   public setTabItemTo(viewType: 'BOARD' | 'CALENDAR' | 'TABLE', fieldIndex: number): void {
@@ -190,16 +239,16 @@ export class WorkflowCardConfigComponent extends WorkflowStepAbstractClass imple
     orderNumber: number,
     data?: WorkflowViewDTO
   ): UntypedFormGroup {
+    let validations = [Validators.required];
+    //La validación sólo se aplica al primer campo
+    if (orderNumber > 1) {
+      validations = [];
+    }
     const formGroup: UntypedFormGroup = this.fb.group({
       id: [data ? data.id : null],
       orderNumber: [data ? data.orderNumber : orderNumber],
-      viewType: [viewType, [Validators.required]],
-      tabItem: this.fb.group({
-        description: [data ? data.tabItem?.description : null],
-        id: [data ? data.tabItem?.id : null, [Validators.required]],
-        name: [data ? data.tabItem?.name : null, [Validators.required]],
-        tabId: [data ? data.tabItem?.tabId : null]
-      })
+      viewType: [viewType, validations],
+      tabItem: [data ? data.tabItem : null, validations]
     });
     return formGroup;
   }
@@ -210,7 +259,7 @@ export class WorkflowCardConfigComponent extends WorkflowStepAbstractClass imple
       const orderNumber = index + 1;
       formGroup.addControl(`field${orderNumber}`, this.getFieldFormGroup('TABLE', orderNumber, value));
     });
-    for (let n = data.length; n <= 1; n++) {
+    for (let n = data.length; n < 1; n++) {
       formGroup.addControl(`field${n + 1}`, this.getFieldFormGroup('TABLE', n + 1, null));
     }
     return formGroup;
@@ -225,12 +274,18 @@ export class WorkflowCardConfigComponent extends WorkflowStepAbstractClass imple
   }
 
   private createAttrTree() {
+    let attrs: CardColumnTabItemDTO[] = [];
     this.originalData.attributes.forEach((cardColumn: CardColumnDTO) => {
       cardColumn.children = cardColumn.tabs;
       cardColumn.children.forEach((cardColumnTab: CardColumnTabDTO) => {
+        cardColumnTab.tabItems.forEach((tabItem: CardColumnTabItemDTO) => {
+          tabItem.frontName = `${tabItem.name} (${cardColumn.name} - ${cardColumnTab.name})`;
+        });
         cardColumnTab.children = cardColumnTab.tabItems;
+        attrs = [...attrs, ...cardColumnTab.tabItems];
       });
     });
+    this.originalData.tabItems = attrs;
     this.setTreeDataSource(this.originalData.attributes);
   }
 

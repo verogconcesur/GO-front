@@ -30,6 +30,7 @@ export default interface CardColumnTabItemDTO extends TreeNode {
   tabItemConfigText?: TabItemConfigTextDTO;
   tabItemConfigTitle?: TabItemConfigTitleDTO;
   tabItemConfigVariable?: TabItemConfigVariableDTO;
+  frontName?: string;
 }
 export interface TabItemConfigActionDTO {
   id?: number;

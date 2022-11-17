@@ -16,7 +16,7 @@
     &__card {
       background-color: mat-contrast($primary, 400);
       overflow: hidden;
-      width: 300px;
+      width: 420px;
       min-height: 100px;
       padding: 8px;
       margin: 10px 0;
@@ -29,7 +29,7 @@
 
       &__colors {
         width: 6px;
-        height: 90%;
+        height: calc(100% - 20px);
         position: absolute;
         display: flex;
         justify-content: space-between;
@@ -53,24 +53,35 @@
           }
         }
       }
+      &__info.table-view-info {
+        padding-bottom: 25px;
+        .add-field-button {
+          width: 320px;
+          margin-left: 20px;
+        }
+      }
       &__info section {
         padding-top: 10px;
-        margin: 0 0 0 20px;
+        margin: 0 0 0 10px;
         display: flex;
         justify-content: flex-start;
         align-items: flex-start;
         flex-direction: column;
         position: relative;
-        .select-arrow {
-          position: absolute;
-          right: -6px;
-          top: 0px;
-          pointer-events: none;
+        .field-section {
+          mat-form-field {
+            width: 350px;
+          }
         }
         .clear-field-button {
           position: absolute;
-          right: -45px;
+          right: -35px;
           top: 11px;
+        }
+        .delete-field-button {
+          position: absolute;
+          right: -60px;
+          top: 10px;
         }
       }
     }

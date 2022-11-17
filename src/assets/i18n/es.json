@@ -472,6 +472,7 @@
         "usersSelected": "{count} usuarios seleccionados"
     },
     "workflows": {
+        "addField": "Añadir campo",
         "byFacilityGroupLabel": "Workflows de {facility}",
         "cardConfig": "Configuración de la tarjeta",
         "cardsInBoardView": "Tarjetas en vista pizarra",
