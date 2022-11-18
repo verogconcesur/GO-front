@@ -146,6 +146,9 @@
         "workflows": "Workflow"
     },
     "common": {
+        "EDIT": "Show and edit",
+        "HIDE": "Hide",
+        "SHOW": "Show",
         "accessDenied": "Access denied.",
         "actions": "Actions",
         "actionsTabItems": {
@@ -156,6 +159,7 @@
         "add": "Add",
         "address": "Address",
         "adviser": "Adviser",
+        "all": "All",
         "amount": "Amount",
         "apply": "Apply",
         "askForConfirmation": "Do you want to continue?",
@@ -252,6 +256,7 @@
         "title": "Title",
         "to": "To",
         "town": "Town",
+        "typeCard": "Type card",
         "type3CharsToSearch": "Write at least three characters...",
         "unfollow": "Unfollow",
         "unsavedChangesExit": "There are unsaved changes, do you want to continue?",
@@ -261,7 +266,9 @@
         "users": "Users",
         "vehicle": "Vehicle",
         "warning": "Warning",
-        "workOrder": "Work order"
+        "whoSees": "Who sees",
+        "workOrder": "Work order",
+        "workflows": "workflows"
     },
     "confirmdialog": {
         "no": "No",
@@ -475,6 +482,11 @@
     "workflows": {
         "addField": "Add field",
         "byFacilityGroupLabel": "{facility}'s workflows",
+        "card": {
+            "cardTabs": "Tabs of the card",
+            "permissionSubtitle": "Select the tabs you want to appear in this workflow. Click on the name of the tabs to customize these permissions by role.",
+            "permissionTitle": "Customize permissions on card tabs"
+        },
         "cardConfig": "Card config",
         "cardsInBoardView": "Board view cards",
         "cardsInCalendarView": "Calendar view cards",
@@ -484,6 +496,7 @@
         "deleteConfirmation": "Do you really want to delete this workflow?",
         "draft": "Draft",
         "dueOutDateTime": "Pick up {date} at {time}",
+        "editPermissions": "Customice permissions",
         "editWorkflow": "Edit Workflow",
         "emptySubstate": "Empty substate",
         "filter": "Filter Workflows",
