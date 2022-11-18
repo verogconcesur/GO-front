@@ -158,6 +158,7 @@
         },
         "address": "Address",
         "adviser": "Adviser",
+        "all": "All",
         "amount": "Amount",
         "apply": "Apply",
         "askForConfirmation": "Do you want to continue?",

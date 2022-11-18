@@ -1,12 +1,165 @@
-<div class="workflow-cards-permissions-dialog" fxLayout="column" fxLayoutAlign="center center">
+<div class="workflow-cards-permissions-content" fxLayout="column" fxLayoutAlign="center center">
     <div *ngIf="!isModalModeActive()">
-        <div class="workflow-cards-permissions-dialog__title mat-display-2">{{ labels.title | translate }}</div>
+        <div class="workflow-cards-permissions-content__title mat-display-2">{{ labels.title | translate }}</div>
     </div>
-    <div class="workflow-cards-permissions-dialog__form">
-        <h2></h2>
-      
+    <div class="workflow-cards-permissions-content__form">
+        <div class="workflow-cards-permissions-content__form__title">
+            <h2>{{ labels.subtitle | translate }}</h2>
+        </div>
+        <div class="workflow-cards-permissions-content__form__subtitle">
+            <p>{{ labels.text | translate }}</p>
+        </div>
+        <div class="workflow-cards-permissions-content__form__main" fxLayout="row">
+            <div fxFlex="40" *ngIf="cardData">
+                <div>
+                    <h2>{{ labels.cardDetal | translate }}</h2>
+                </div>
+                <div class="workflow-cards-permissions-content__form__main__tabList">
+                    <div fxLayout="row" class="workflow-cards-permissions-content__form__main__tabList__item">
+                        <mat-checkbox
+                            [checked]="allTabSelectedbWithPermissions()"
+                            [indeterminate]="someTabSelectedbWithPermissions()"
+                            (change)="selectAllTabs()"
+                            (click)="$event.stopPropagation()"
+                        ></mat-checkbox>
+                        <span>{{ labels.all | translate }}</span>
+                    </div>
+                    <div *ngFor="let col of cardData.cols">
+                        <h3>{{ col.name }}</h3>
+                        <div
+                            *ngFor="let tab of col.tabs"
+                            class="workflow-cards-permissions-content__form__main__tabList__item"
+                            [ngClass]="{ selected: tab?.id === selectedTab?.id }"
+                            fxLayout="row"
+                            (click)="selectTabToShow(tab); $event.stopPropagation()"
+                        >
+                            <mat-checkbox
+                                [checked]="isTabSelected(tab)"
+                                (change)="addRemoveTabFromPermissions(tab)"
+                                (click)="$event.stopPropagation()"
+                            ></mat-checkbox>
+                            <span>{{ tab.name }}</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div fxFlex="56" fxFlexOffset="4" *ngIf="selectedTab">
+                <div>
+                    <h2>{{ selectedTab.name }}</h2>
+                </div>
+                <div class="workflow-cards-permissions-content__form__main__permissions" *ngIf="cardTabForm" fxLayout="column">
+                    <div fxLayout="row" class="workflow-cards-permissions-content__form__main__permissions__header">
+                        <div
+                            fxFlex="40"
+                            class="workflow-cards-permissions-content__form__main__permissions__item"
+                            fxLayout="row"
+                            fxLayoutAlign="start center"
+                        >
+                            <span>{{ labels.whoSees | translate }}</span>
+                        </div>
+                        <div
+                            fxFlex="20"
+                            class="workflow-cards-permissions-content__form__main__permissions__item"
+                            fxLayout="row"
+                            fxLayoutAlign="center center"
+                        >
+                            <span>{{ labels.hide | translate }}</span>
+                        </div>
+                        <div
+                            fxFlex="20"
+                            class="workflow-cards-permissions-content__form__main__permissions__item"
+                            fxLayout="row"
+                            fxLayoutAlign="center center"
+                        >
+                            <span>{{ labels.show | translate }}</span>
+                        </div>
+                        <div
+                            fxFlex="20"
+                            class="workflow-cards-permissions-content__form__main__permissions__item"
+                            fxLayout="row"
+                            fxLayoutAlign="center center"
+                        >
+                            <span>{{ labels.edit | translate }}</span>
+                        </div>
+                    </div>
+                    <div fxLayout="row">
+                        <div
+                            fxFlex="40"
+                            class="workflow-cards-permissions-content__form__main__permissions__item"
+                            fxLayout="row"
+                            fxLayoutAlign="start center"
+                        >
+                            <span>{{ labels.all | translate }}</span>
+                        </div>
+                        <mat-radio-group fxFlex="60" fxLayout="row" [formControl]="allPermisionForm">
+                            <div
+                                fxFlex="33"
+                                class="workflow-cards-permissions-content__form__main__permissions__item"
+                                fxLayout="row"
+                                fxLayoutAlign="center center"
+                            >
+                                <mat-radio-button value="HIDE"></mat-radio-button>
+                            </div>
+                            <div
+                                fxFlex="33"
+                                class="workflow-cards-permissions-content__form__main__permissions__item"
+                                fxLayout="row"
+                                fxLayoutAlign="center center"
+                            >
+                                <mat-radio-button value="SHOW"></mat-radio-button>
+                            </div>
+                            <div
+                                fxFlex="33"
+                                class="workflow-cards-permissions-content__form__main__permissions__item"
+                                fxLayout="row"
+                                fxLayoutAlign="center center"
+                            >
+                                <mat-radio-button value="EDIT"></mat-radio-button></div
+                        ></mat-radio-group>
+                    </div>
+                    <div fxLayout="row">
+                        <mat-divider></mat-divider>
+                    </div>
+                    <div fxLayout="row" *ngFor="let permission of workflowCardPermissions.controls" [formGroup]="permission">
+                        <div
+                            fxFlex="40"
+                            class="workflow-cards-permissions-content__form__main__permissions__item"
+                            fxLayout="row"
+                            fxLayoutAlign="start center"
+                        >
+                            <span>{{ permission?.value?.role?.name }}</span>
+                        </div>
+                        <mat-radio-group formControlName="permissionType" fxFlex="60" fxLayout="row">
+                            <div
+                                fxFlex="33"
+                                class="workflow-cards-permissions-content__form__main__permissions__item"
+                                fxLayout="row"
+                                fxLayoutAlign="center center"
+                            >
+                                <mat-radio-button value="HIDE"></mat-radio-button>
+                            </div>
+                            <div
+                                fxFlex="33"
+                                class="workflow-cards-permissions-content__form__main__permissions__item"
+                                fxLayout="row"
+                                fxLayoutAlign="center center"
+                            >
+                                <mat-radio-button value="SHOW"></mat-radio-button>
+                            </div>
+                            <div
+                                fxFlex="33"
+                                class="workflow-cards-permissions-content__form__main__permissions__item"
+                                fxLayout="row"
+                                fxLayoutAlign="center center"
+                            >
+                                <mat-radio-button value="EDIT"></mat-radio-button></div
+                        ></mat-radio-group>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
-    <div class="workflow-cards-permissions-dialog__buttons">
+    <div class="workflow-cards-permissions-content__buttons">
         <!-- TODO: buttons used when the component is not opened with customDialogService -->
     </div>
 </div>

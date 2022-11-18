@@ -146,7 +146,7 @@
         "workflows": "Workflow"
     },
     "common": {
-        "EDIT": "Ver u editar",
+        "EDIT": "Ver y editar",
         "HIDE": "Ocultar",
         "SHOW": "Ver",
         "accessDenied": "Acceso denegado. No tiene privilegios suficientes.",
@@ -158,6 +158,7 @@
         },
         "address": "Dirección",
         "adviser": "Asesor",
+        "all": "Todos",
         "amount": "Importe",
         "apply": "Aplicar",
         "askForConfirmation": "¿Desea continuar?",

@@ -85,7 +85,7 @@ export class WorkflowCardsComponent extends WorkflowStepAbstractClass {
     });
   }
   public editPermissions(): void {
-    if (this.originalData.id === this.form.get('card').value.id) {
+    if (this.originalData && this.originalData.id === this.form.get('card').value.id) {
       this.openEditModal();
     } else {
       this.saveStep().then((res) => {
