@@ -128,6 +128,7 @@ export class WorkflowCardConfigComponent extends WorkflowStepAbstractClass imple
       ?.setValue(this.originalData.tabItems.find((item: CardColumnTabItemDTO) => item.id === node.id));
     this.form.get(`${this.lastInputSelected.viewType}.field${this.lastInputSelected.fieldIndex}.tabItem`)?.markAsDirty();
     this.form.get(`${this.lastInputSelected.viewType}.field${this.lastInputSelected.fieldIndex}.tabItem`)?.markAsTouched();
+    this.resetFilter();
     this.trigger.closeMenu();
   }
 
