@@ -221,7 +221,6 @@ export class WorkflowUsersComponent extends WorkflowStepAbstractClass implements
                   }
                 }
               );
-              console.log(this.originalData);
               this.userSelectionChange();
             }, 50);
           }
