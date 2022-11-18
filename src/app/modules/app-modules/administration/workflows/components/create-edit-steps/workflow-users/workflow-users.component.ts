@@ -102,11 +102,11 @@ export class WorkflowUsersComponent extends WorkflowStepAbstractClass implements
       .getFormGroupByStep(1)
       .value.roles.filter((role: WorkflowRoleDTO) => role.selected);
     this.usersFilter = {
-      brands: [...organization.brands].map((item) => item.id),
-      departments: [...organization.departments].map((item) => item.id),
-      facilities: [...organization.facilities].map((item) => item.id),
-      roles: [...roles].map((item) => item.id),
-      specialties: [...organization.specialties].map((item) => item.id),
+      brands: [...(organization.brands ? organization.brands : [])].map((item) => item.id),
+      departments: [...(organization.departments ? organization.departments : [])].map((item) => item.id),
+      facilities: [...(organization.facilities ? organization.facilities : [])].map((item) => item.id),
+      roles: [...(roles ? roles : [])].map((item) => item.id),
+      specialties: [...(organization.specialties ? organization.specialties : [])].map((item) => item.id),
       email: '',
       search: ''
     };
