@@ -180,7 +180,6 @@ export class WorkflowCardConfigComponent extends WorkflowStepAbstractClass imple
         )
         .subscribe(
           (response) => {
-            console.log(response);
             resolve(true);
           },
           (error) => {
@@ -249,7 +248,10 @@ export class WorkflowCardConfigComponent extends WorkflowStepAbstractClass imple
       id: [data ? data.id : null],
       orderNumber: [data ? data.orderNumber : orderNumber],
       viewType: [viewType, validations],
-      tabItem: [data ? data.tabItem : null, validations]
+      tabItem: [
+        data?.tabItem ? this.originalData.tabItems.find((item: CardColumnTabItemDTO) => item.id === data.tabItem.id) : null,
+        validations
+      ]
     });
     return formGroup;
   }
