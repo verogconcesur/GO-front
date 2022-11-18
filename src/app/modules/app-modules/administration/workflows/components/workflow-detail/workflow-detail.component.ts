@@ -109,7 +109,9 @@ export class WorkflowDetailComponent implements OnInit, OnDestroy, AfterViewInit
   }
 
   public myTabChange(tab: MatTab, tabHeader: MatTabHeader, idx: number) {
-    if (this.workflowsCreateEditAuxService.isFormGroupSettedAndNotDirtyOrTouched(this.tabIndex)) {
+    if (idx >= 1 && !this.workflowsCreateEditAuxService.enableTabStep(idx - 1)) {
+      return;
+    } else if (this.workflowsCreateEditAuxService.isFormGroupSettedAndNotDirtyOrTouched(this.tabIndex)) {
       this.tabIndex = idx;
     } else {
       this.confirmDialogService
