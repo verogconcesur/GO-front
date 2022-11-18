@@ -1,13 +1,13 @@
-import { Component, OnDestroy, OnInit, ViewEncapsulation } from '@angular/core';
-import { MatTabChangeEvent } from '@angular/material/tabs';
-import { ActivatedRoute, Router } from '@angular/router';
-import { RouteConstants } from '@app/constants/route.constants';
+import { AfterViewInit, Component, OnDestroy, OnInit, ViewChild, ViewEncapsulation } from '@angular/core';
+import { MatTab, MatTabChangeEvent, MatTabGroup, MatTabHeader } from '@angular/material/tabs';
+import { ActivatedRoute } from '@angular/router';
 import { marker } from '@biesbjerg/ngx-translate-extract-marker';
 import WorkflowDTO from '@data/models/workflows/workflow-dto';
 import { WorkflowAdministrationService } from '@data/services/workflow-administration.service';
 import { CustomDialogService } from '@jenga/custom-dialog';
 import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
 import { TranslateService } from '@ngx-translate/core';
+import { ConfirmDialogService } from '@shared/services/confirm-dialog.service';
 import { ProgressSpinnerDialogService } from '@shared/services/progress-spinner-dialog.service';
 import { take } from 'rxjs/operators';
 import { WorkflowsCreateEditAuxService } from '../../aux-service/workflows-create-edit-aux.service';
@@ -23,7 +23,8 @@ import {
   templateUrl: './workflow-detail.component.html',
   styleUrls: ['./workflow-detail.component.scss']
 })
-export class WorkflowDetailComponent implements OnInit, OnDestroy {
+export class WorkflowDetailComponent implements OnInit, OnDestroy, AfterViewInit {
+  @ViewChild('tabGroup') tabs: MatTabGroup;
   public workflowDetail: WorkflowDTO = null;
   public firstLoad = false;
   public tabIndex = 0;
@@ -43,11 +44,11 @@ export class WorkflowDetailComponent implements OnInit, OnDestroy {
   constructor(
     public workflowsCreateEditAuxService: WorkflowsCreateEditAuxService,
     private route: ActivatedRoute,
-    private router: Router,
     private workflowService: WorkflowAdministrationService,
     private customDialogService: CustomDialogService,
     private translateService: TranslateService,
-    private spinnerService: ProgressSpinnerDialogService
+    private spinnerService: ProgressSpinnerDialogService,
+    private confirmDialogService: ConfirmDialogService
   ) {}
 
   ngOnInit(): void {
@@ -57,6 +58,11 @@ export class WorkflowDetailComponent implements OnInit, OnDestroy {
 
   ngOnDestroy(): void {
     this.workflowsCreateEditAuxService.destroy();
+  }
+
+  ngAfterViewInit(): void {
+    // eslint-disable-next-line no-underscore-dangle
+    this.tabs._handleClick = this.myTabChange.bind(this);
   }
 
   public initListeners(): void {
@@ -102,8 +108,25 @@ export class WorkflowDetailComponent implements OnInit, OnDestroy {
     return '';
   }
 
-  public changeSelectedTab(tab: MatTabChangeEvent): void {
-    this.tabIndex = tab.index;
+  public myTabChange(tab: MatTab, tabHeader: MatTabHeader, idx: number) {
+    if (idx >= 1 && !this.workflowsCreateEditAuxService.enableTabStep(idx - 1)) {
+      return;
+    } else if (this.workflowsCreateEditAuxService.isFormGroupSettedAndNotDirtyOrTouched(this.tabIndex)) {
+      this.tabIndex = idx;
+    } else {
+      this.confirmDialogService
+        .open({
+          title: this.translateService.instant(marker('common.warning')),
+          message: this.translateService.instant(marker('errors.ifContinueLosingChanges'))
+        })
+        .pipe(take(1))
+        .subscribe((ok: boolean) => {
+          if (ok) {
+            this.resetForm();
+            this.tabIndex = idx;
+          }
+        });
+    }
   }
 
   public saveAndGoNextStep(): void {

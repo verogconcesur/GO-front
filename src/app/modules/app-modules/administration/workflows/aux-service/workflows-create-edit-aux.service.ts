@@ -28,6 +28,16 @@ export class WorkflowsCreateEditAuxService {
     return this.formsByStep[index];
   }
 
+  public isFormGroupSettedAndNotDirtyOrTouched(i: number): boolean {
+    return (
+      this.formsByStep &&
+      this.formsByStep[i] &&
+      this.getFormGroupByStep(i).valid &&
+      !this.getFormGroupByStep(i).dirty &&
+      !this.getFormGroupByStep(i).touched
+    );
+  }
+
   public setFormOriginalData(data: any, index: number): void {
     this.formsOriginalData[index] = data;
   }

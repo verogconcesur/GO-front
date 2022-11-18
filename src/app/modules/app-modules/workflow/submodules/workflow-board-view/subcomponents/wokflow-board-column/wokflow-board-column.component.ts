@@ -272,8 +272,13 @@ export class WokflowBoardColumnComponent implements OnInit {
       //Se va a posicionar en la última posición
       itemToReplace = { orderNumber: null };
     }
-    const sameDropZone = `${this.wSubstateKey}${item.cardInstanceWorkflows[0].workflowSubstateId}` === dropZoneId;
-
+    const sameDropZone =
+      `${this.wSubstateKey}${item.cardInstanceWorkflows[0].workflowSubstateId}` === dropZoneId ||
+      event.container.id === event.previousContainer.id;
+    //Quitar cuando se pueda ordenar dentro de un mismo subestado
+    if (sameDropZone) {
+      return;
+    }
     // DGDC: descomentar en el momento en el que se pueda ordenar dentro de un mismo subestado
     // if ((event.previousContainer === event.container && event.previousIndex !== event.currentIndex) || sameDropZone) {
     // DGDC: quitar en el momento en el que se pueda ordenar dentro de un mismo subestado

@@ -156,6 +156,7 @@
             "message": "Mensaje a cliente",
             "sign": "Firmar documento"
         },
+        "add": "Añadir",
         "address": "Dirección",
         "adviser": "Asesor",
         "all": "Todos",
@@ -197,6 +198,7 @@
         "edit": "Editar",
         "emails": "Emails",
         "externalLinks": "Enlaces externos",
+        "field": "Campo",
         "fileName": "Nombre de archivo",
         "filter": "Filtro",
         "filterAction": "Filtrar",
@@ -255,8 +257,10 @@
         "to": "Hasta",
         "town": "Ciudad",
         "typeCard": "Tipos de ficha",
+        "type3CharsToSearch": "Escribe al menos tres caracteres...",
         "unfollow": "Dejar de seguir",
         "unsavedChangesExit": "Hay cambios en el formulario sin guardar, ¿desea salir igualmente?",
+        "unselect": "Deseleccionar",
         "unselectAll": "Deseleccionar todos",
         "user": "Usuario",
         "users": "Usuarios",
@@ -277,6 +281,7 @@
         "extensionChanged": "La extensión del archivo ha cambiado.",
         "fileNameCharacters": "Hay caracteres inválidos",
         "fileNameExtension": "El nombre debe contener un punto y una extensión",
+        "ifContinueLosingChanges": "Si continua perderá los cambios realizados",
         "maxLengthError": "Longitud máxima: {length}",
         "minLength": "Longitud mínima: {length}",
         "noDataToShow": "No hay información disponible",
@@ -431,6 +436,7 @@
             "title": "Mí perfil"
         },
         "permissionsInheritFromRole": "Heredados de <b>{role}</b>*",
+        "searchDialog": "Buscador de usuarios",
         "selectRoleFirst": "Primero selecciona un rol",
         "userPermissions": "Permisos de usuario"
     },
@@ -470,9 +476,11 @@
             "roleNameRequired": "El nombre del rol es un elemento requerido",
             "selectAll": "Seleccionar todos"
         },
-        "title": "Usuarios"
+        "title": "Usuarios",
+        "usersSelected": "{count} usuarios seleccionados"
     },
     "workflows": {
+        "addField": "Añadir campo",
         "byFacilityGroupLabel": "Workflows de {facility}",
         "card": {
             "cardTabs": "Pestañas de la ficha",
@@ -480,6 +488,9 @@
             "permissionTitle": "Personalizar permisos sobre las pestañas de la ficha"
         },
         "cardConfig": "Configuración de la tarjeta",
+        "cardsInBoardView": "Tarjetas en vista pizarra",
+        "cardsInCalendarView": "Tarjetas en vista calendario",
+        "cardsInTableView": "Tarjetas en vista tablero",
         "confirmSave": "¿Desea guardar los cambios de la pestaña?",
         "createWorkflow": "Crear workflow",
         "deleteConfirmation": "¿Está seguro que desea eliminar este workflow?",

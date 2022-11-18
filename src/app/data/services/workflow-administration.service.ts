@@ -6,8 +6,10 @@ import { ConcenetError } from '@app/types/error';
 import CardDTO from '@data/models/cards/card-dto';
 import RoleDTO from '@data/models/user-permissions/role-dto';
 import WorkflowCardTabDTO from '@data/models/workflow-admin/workflow-card-tab-dto';
+import CardColumnDTO from '@data/models/cards/card-column-dto';
 import WorkflowOrganizationDTO from '@data/models/workflow-admin/workflow-organization-dto';
 import WorkflowRoleDTO from '@data/models/workflow-admin/workflow-role-dto';
+import WorkflowViewDTO from '@data/models/workflow-admin/workflow-view-dto';
 import WorkflowDTO from '@data/models/workflows/workflow-dto';
 import WorkflowSubstateUserDTO from '@data/models/workflows/workflow-substate-user-dto';
 import { WorkflowFilterService } from '@modules/app-modules/workflow/aux-service/workflow-filter.service';
@@ -24,6 +26,8 @@ export class WorkflowAdministrationService {
   private readonly CARD_PATH = '/card';
   private readonly PERMISSIONS_PATH = '/permissions';
   private readonly USERS_PATH = '/users';
+  private readonly VIEW_PATH = '/views';
+  private readonly ATTRIBUTES_PATH = '/attributes';
   constructor(@Inject(ENV) private env: Env, private http: HttpClient, private workflowFilterService: WorkflowFilterService) {}
 
   /**
@@ -139,6 +143,16 @@ export class WorkflowAdministrationService {
       .get<CardDTO[]>(`${this.env.apiBaseUrl}${this.WORKFLOW_PATH}/${workflowId}${this.CARD_PATH}`)
       .pipe(catchError((error) => throwError(error.error as ConcenetError)));
   }
+  /**
+   * Obtener Views Workflow
+   *
+   * @returns WorkflowViewDTO[]
+   */
+  public getWorkflowViews(workflowId: number): Observable<WorkflowViewDTO[]> {
+    return this.http
+      .get<WorkflowViewDTO[]>(`${this.env.apiBaseUrl}${this.WORKFLOW_PATH}/${workflowId}${this.VIEW_PATH}`)
+      .pipe(catchError((error) => throwError(error.error as ConcenetError)));
+  }
 
   /**
    * Editar Card Workflow
@@ -148,6 +162,16 @@ export class WorkflowAdministrationService {
   public postWorkflowCard(workflowId: number, card: CardDTO): Observable<CardDTO[]> {
     return this.http
       .post<CardDTO[]>(`${this.env.apiBaseUrl}${this.WORKFLOW_PATH}/${workflowId}${this.CARD_PATH}`, card)
+      .pipe(catchError((error) => throwError(error.error as ConcenetError)));
+  }
+  /**
+   * Obtener Views Attributes Workflow
+   *
+   * @returns CardColumnDTO[]
+   */
+  public getWorkflowViewAttributes(workflowId: number): Observable<CardColumnDTO[]> {
+    return this.http
+      .get<CardColumnDTO[]>(`${this.env.apiBaseUrl}${this.WORKFLOW_PATH}/${workflowId}${this.VIEW_PATH}${this.ATTRIBUTES_PATH}`)
       .pipe(catchError((error) => throwError(error.error as ConcenetError)));
   }
 
@@ -184,6 +208,16 @@ export class WorkflowAdministrationService {
         `${this.env.apiBaseUrl}${this.WORKFLOW_PATH}/${workflowId}${this.CARD_PATH}${this.PERMISSIONS_PATH}`,
         cardTabList
       )
+      .pipe(catchError((error) => throwError(error.error as ConcenetError)));
+  }
+  /**
+   * Editar Users Workflow
+   *
+   * @returns WorkflowViewDTO[]
+   */
+  public postWorkflowViews(workflowId: number, workflowViews: WorkflowViewDTO[]): Observable<WorkflowViewDTO[]> {
+    return this.http
+      .post<WorkflowViewDTO[]>(`${this.env.apiBaseUrl}${this.WORKFLOW_PATH}/${workflowId}${this.VIEW_PATH}`, workflowViews)
       .pipe(catchError((error) => throwError(error.error as ConcenetError)));
   }
 }

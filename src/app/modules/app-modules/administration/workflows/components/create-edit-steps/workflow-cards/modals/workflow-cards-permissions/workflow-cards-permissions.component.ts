@@ -131,10 +131,18 @@ export class WorkflowCardsPermissionsComponent extends ComponentToExtendForCusto
         this.selectedTab = null;
       }
     } else {
-      const formCardTab = this.generateFormPermissionByTab(tab);
-      this.permissionForm.push(formCardTab);
-      this.cardTabForm = formCardTab;
-      this.selectedTab = tab;
+      const cardTabPermission = this.originalPermissions.find((permission: WorkflowCardTabDTO) => permission?.tabId === tab?.id);
+      if (cardTabPermission) {
+        const formCardTab = this.generateFormPermission(cardTabPermission);
+        this.permissionForm.push(formCardTab);
+        this.cardTabForm = formCardTab;
+        this.selectedTab = tab;
+      } else {
+        const formCardTab = this.generateFormPermissionByTab(tab);
+        this.permissionForm.push(formCardTab);
+        this.cardTabForm = formCardTab;
+        this.selectedTab = tab;
+      }
     }
   }
   public selectTabToShow(tab: CardColumnTabDTO) {
@@ -205,26 +213,26 @@ export class WorkflowCardsPermissionsComponent extends ComponentToExtendForCusto
       ]
     };
   }
-
+  public changeAllPermissions(): void {
+    const value = this.allPermisionForm.value;
+    if (value) {
+      const tabFormData = this.cardTabForm.getRawValue();
+      tabFormData.workflowCardTabPermissions = tabFormData.workflowCardTabPermissions.map(
+        (cardTabPermission: WorkflowCardTabPermissionsDTO) => {
+          cardTabPermission.permissionType = value;
+          return cardTabPermission;
+        }
+      );
+      this.cardTabForm.patchValue(tabFormData);
+      this.permissionForm.markAsTouched();
+      this.allPermisionForm.setValue(null);
+    }
+  }
   private initializeForm = (): void => {
     this.permissionForm = this.fb.array([]);
     this.originalPermissions.forEach((permission: WorkflowCardTabDTO) => {
       if (this.cardData.cols.find((col) => col.tabs.find((tab) => tab.id === permission.tabId))) {
         this.permissionForm.push(this.generateFormPermission(permission));
-      }
-    });
-    this.allPermisionForm.valueChanges.subscribe((res) => {
-      if (res) {
-        const tabFormData = this.cardTabForm.getRawValue();
-        tabFormData.workflowCardTabPermissions = tabFormData.workflowCardTabPermissions.map(
-          (cardTabPermission: WorkflowCardTabPermissionsDTO) => {
-            cardTabPermission.permissionType = res;
-            return cardTabPermission;
-          }
-        );
-        this.cardTabForm.patchValue(tabFormData);
-        this.permissionForm.markAsTouched();
-        this.allPermisionForm.setValue(null);
       }
     });
   };

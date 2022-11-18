@@ -91,7 +91,12 @@
                         >
                             <span>{{ labels.all | translate }}</span>
                         </div>
-                        <mat-radio-group fxFlex="60" fxLayout="row" [formControl]="allPermisionForm">
+                        <mat-radio-group
+                            fxFlex="60"
+                            fxLayout="row"
+                            [formControl]="allPermisionForm"
+                            (change)="changeAllPermissions()"
+                        >
                             <div
                                 fxFlex="33"
                                 class="workflow-cards-permissions-content__form__main__permissions__item"

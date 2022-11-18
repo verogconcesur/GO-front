@@ -156,6 +156,7 @@
             "message": "Message to client",
             "sign": "Sign document"
         },
+        "add": "Add",
         "address": "Address",
         "adviser": "Adviser",
         "all": "All",
@@ -197,6 +198,7 @@
         "edit": "Edit",
         "emails": "Emails",
         "externalLinks": "External links",
+        "field": "Field",
         "fileName": "File name",
         "filter": "Filter",
         "filterAction": "Filter",
@@ -255,8 +257,10 @@
         "to": "To",
         "town": "Town",
         "typeCard": "Type card",
+        "type3CharsToSearch": "Write at least three characters...",
         "unfollow": "Unfollow",
         "unsavedChangesExit": "There are unsaved changes, do you want to continue?",
+        "unselect": "Unselect",
         "unselectAll": "Unselect all",
         "user": "User",
         "users": "Users",
@@ -277,6 +281,7 @@
         "extensionChanged": "The file extension has changed.",
         "fileNameCharacters": "There are invalid characters",
         "fileNameExtension": "Name must contain a dot and an extension",
+        "ifContinueLosingChanges": "If you confirm you will lose the unsaved changes",
         "maxLengthError": "Max length: {length}",
         "minLength": "Min length: {length}",
         "noDataToShow": "No data to show in table",
@@ -431,6 +436,7 @@
             "title": "My profile"
         },
         "permissionsInheritFromRole": "Inherited from <b>{role}</b>*",
+        "searchDialog": "User searcher",
         "selectRoleFirst": "First select a role",
         "userPermissions": "User's permissions"
     },
@@ -470,9 +476,11 @@
             "roleNameRequired": "Role name is a required element",
             "selectAll": "Select all"
         },
-        "title": "Users"
+        "title": "Users",
+        "usersSelected": "{count} users selected"
     },
     "workflows": {
+        "addField": "Add field",
         "byFacilityGroupLabel": "{facility}'s workflows",
         "card": {
             "cardTabs": "Tabs of the card",
@@ -480,6 +488,9 @@
             "permissionTitle": "Customize permissions on card tabs"
         },
         "cardConfig": "Card config",
+        "cardsInBoardView": "Board view cards",
+        "cardsInCalendarView": "Calendar view cards",
+        "cardsInTableView": "Table view cards",
         "confirmSave": "Do you want to save the tab changes?",
         "createWorkflow": "Create workflow",
         "deleteConfirmation": "Do you really want to delete this workflow?",
