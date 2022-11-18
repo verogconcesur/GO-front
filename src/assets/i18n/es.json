@@ -146,6 +146,9 @@
         "workflows": "Workflow"
     },
     "common": {
+        "EDIT": "Ver y editar",
+        "HIDE": "Ocultar",
+        "SHOW": "Ver",
         "accessDenied": "Acceso denegado. No tiene privilegios suficientes.",
         "actions": "Acciones",
         "actionsTabItems": {
@@ -156,6 +159,7 @@
         "add": "Añadir",
         "address": "Dirección",
         "adviser": "Asesor",
+        "all": "Todos",
         "amount": "Importe",
         "apply": "Aplicar",
         "askForConfirmation": "¿Desea continuar?",
@@ -252,6 +256,7 @@
         "title": "Título",
         "to": "Hasta",
         "town": "Ciudad",
+        "typeCard": "Tipos de ficha",
         "type3CharsToSearch": "Escribe al menos tres caracteres...",
         "unfollow": "Dejar de seguir",
         "unsavedChangesExit": "Hay cambios en el formulario sin guardar, ¿desea salir igualmente?",
@@ -261,7 +266,9 @@
         "users": "Usuarios",
         "vehicle": "Vehículo",
         "warning": "Advertencia",
-        "workOrder": "Orden de trabajo"
+        "whoSees": "Quien lo ve",
+        "workOrder": "Orden de trabajo",
+        "workflows": "workflows"
     },
     "confirmdialog": {
         "no": "No",
@@ -475,6 +482,11 @@
     "workflows": {
         "addField": "Añadir campo",
         "byFacilityGroupLabel": "Workflows de {facility}",
+        "card": {
+            "cardTabs": "Pestañas de la ficha",
+            "permissionSubtitle": "Selecciona las pestañas que deseas que aparezcan en este workflow. Haz click sobre el nombre de las pestañas para personalizar estos permisos por rol.",
+            "permissionTitle": "Personalizar permisos sobre las pestañas de la ficha"
+        },
         "cardConfig": "Configuración de la tarjeta",
         "cardsInBoardView": "Tarjetas en vista pizarra",
         "cardsInCalendarView": "Tarjetas en vista calendario",
@@ -484,6 +496,7 @@
         "deleteConfirmation": "¿Está seguro que desea eliminar este workflow?",
         "draft": "Borrador",
         "dueOutDateTime": "Recoge el {date} a las {time}",
+        "editPermissions": "Personalizar permisos",
         "editWorkflow": "Editar Workflow",
         "emptySubstate": "Subestado vacío",
         "filter": "Filtrar Workflows",
