@@ -274,6 +274,7 @@
         "extensionChanged": "La extensión del archivo ha cambiado.",
         "fileNameCharacters": "Hay caracteres inválidos",
         "fileNameExtension": "El nombre debe contener un punto y una extensión",
+        "ifContinueLosingChanges": "Si continua perderá los cambios realizados",
         "maxLengthError": "Longitud máxima: {length}",
         "minLength": "Longitud mínima: {length}",
         "noDataToShow": "No hay información disponible",
