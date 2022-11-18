@@ -194,6 +194,7 @@
         "edit": "Edit",
         "emails": "Emails",
         "externalLinks": "External links",
+        "field": "Field",
         "fileName": "File name",
         "filter": "Filter",
         "filterAction": "Filter",
@@ -471,8 +472,12 @@
         "usersSelected": "{count} users selected"
     },
     "workflows": {
+        "addField": "Add field",
         "byFacilityGroupLabel": "{facility}'s workflows",
         "cardConfig": "Card config",
+        "cardsInBoardView": "Board view cards",
+        "cardsInCalendarView": "Calendar view cards",
+        "cardsInTableView": "Table view cards",
         "confirmSave": "Do you want to save the tab changes?",
         "createWorkflow": "Create workflow",
         "deleteConfirmation": "Do you really want to delete this workflow?",

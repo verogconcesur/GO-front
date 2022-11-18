@@ -23,11 +23,7 @@ import { normalizaStringToLowerCase } from '@shared/utils/string-normalization-l
 import { Observable, of } from 'rxjs';
 import { WorkflowPrepareAndMoveService } from '@modules/app-modules/workflow/aux-service/workflow-prepare-and-move-aux.service';
 import CardDTO from '@data/models/cards/card-dto';
-
-interface TreeNode {
-  name: string;
-  children?: TreeNode[];
-}
+import TreeNode from '@data/interfaces/tree-node';
 
 export type MoveCardDialogConfig = {
   cardInstance: CardInstanceDTO;
@@ -181,7 +177,6 @@ export class MoveCardDialogComponent implements OnInit {
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   public moveCardTo(node: any): void {
-    console.log(node.move);
     this.prepareAndMoveService.prepareAndMove(
       {
         cardId: null,
