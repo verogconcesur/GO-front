@@ -274,6 +274,7 @@
         "extensionChanged": "The file extension has changed.",
         "fileNameCharacters": "There are invalid characters",
         "fileNameExtension": "Name must contain a dot and an extension",
+        "ifContinueLosingChanges": "If you confirm you will lose the unsaved changes",
         "maxLengthError": "Max length: {length}",
         "minLength": "Min length: {length}",
         "noDataToShow": "No data to show in table",
