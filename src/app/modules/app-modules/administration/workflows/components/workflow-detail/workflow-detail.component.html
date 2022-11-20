@@ -47,7 +47,7 @@
                 [stepIndex]="4"
                 *ngSwitchCase="4"
             ></app-workflow-card-config>
-            <app-workflow-states *ngSwitchCase="5"></app-workflow-states>
+            <app-workflow-states [workflowId]="workflowDetail?.id" [stepIndex]="5" *ngSwitchCase="5"></app-workflow-states>
             <app-workflow-timeline *ngSwitchCase="6"></app-workflow-timeline>
             <app-workflow-budgets *ngSwitchCase="7"></app-workflow-budgets>
         </div>

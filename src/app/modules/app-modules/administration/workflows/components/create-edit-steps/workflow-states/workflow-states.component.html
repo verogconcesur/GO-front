@@ -1,1 +1,16 @@
-<p>workflow-states works!</p>
+<form [formGroup]="form" *ngIf="form" class="smaller-mat-form-fields states-container">
+    <section formArrayName="states">
+        <div class="states-container__state" *ngFor="let state of getStatesFormArray().controls; let i = index">
+            <section [formGroupName]="i">
+                <!-- Name -->
+                <mat-form-field appearance="outline" floatLabel="always">
+                    <mat-label>{{ labels.stateName | translate }}</mat-label>
+                    <input matInput formControlName="name" />
+                    <mat-error *ngIf="state.controls.name.invalid && state.controls.name.touched">
+                        {{ labels.nameRequired | translate }}
+                    </mat-error>
+                </mat-form-field>
+            </section>
+        </div>
+    </section>
+</form>

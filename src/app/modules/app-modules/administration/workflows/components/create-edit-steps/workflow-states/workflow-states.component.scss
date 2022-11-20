@@ -1,0 +1,19 @@
+@import 'utils/core';
+@import 'utils/theme';
+.states-container {
+  width: 100%;
+  section {
+    width: 100%;
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+    flex-direction: row;
+    flex-wrap: nowrap;
+    overflow-y: auto;
+  }
+  &__state {
+    background-color: mat-contrast($primary, 400);
+    margin: 20px;
+    padding: 10px;
+  }
+}
