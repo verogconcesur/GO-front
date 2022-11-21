@@ -19,7 +19,7 @@
       padding: 10px 5px;
     }
     &__title {
-      margin-bottom: 0px;
+      margin-bottom: 0px !important;
       color: mat-color($foreground, secondary-text);
     }
   }
