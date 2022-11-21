@@ -24,13 +24,13 @@
     }
   }
   &__tabs {
-    padding-bottom: 130px;
-    min-height: calc(100vh - 451px);
+    padding-bottom: 10px;
+    min-height: calc(100vh - 331px);
     @include respond-to($tablet-small) {
-      min-height: calc(100vh - 413px);
+      min-height: calc(100vh - 300px);
     }
     @include respond-to($mobile) {
-      min-height: calc(100vh - 413px);
+      min-height: calc(100vh - 300px);
     }
     &__tab {
       font-size: 1.2em;

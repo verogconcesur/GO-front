@@ -67,7 +67,8 @@
             [disabled]="!workflowsCreateEditAuxService.getFormGroupByStep(tabIndex)?.valid"
             (click)="saveAndGoNextStep()"
         >
-            {{ labels.save | translate }}
+            <div *ngIf="tabIndex !== 5">{{ labels.save | translate }}</div>
+            <div *ngIf="tabIndex === 5">{{ labels.next | translate }}</div>
         </button>
     </div>
 </div>
