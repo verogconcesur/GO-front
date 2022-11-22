@@ -19,18 +19,29 @@
       padding: 10px 5px;
     }
     &__title {
-      margin-bottom: 0px;
+      margin-bottom: 0px !important;
       color: mat-color($foreground, secondary-text);
+      cursor: pointer;
+      .edit-name-icon {
+        transition: opacity 0.5s ease;
+        color: mat-color($primary, 900);
+        opacity: 0;
+      }
+      &:hover {
+        .edit-name-icon {
+          opacity: 1;
+        }
+      }
     }
   }
   &__tabs {
-    padding-bottom: 130px;
-    min-height: calc(100vh - 451px);
+    padding-bottom: 10px;
+    min-height: calc(100vh - 331px);
     @include respond-to($tablet-small) {
-      min-height: calc(100vh - 413px);
+      min-height: calc(100vh - 300px);
     }
     @include respond-to($mobile) {
-      min-height: calc(100vh - 413px);
+      min-height: calc(100vh - 300px);
     }
     &__tab {
       font-size: 1.2em;
