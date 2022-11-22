@@ -87,13 +87,13 @@ export class WorkflowAdministrationStatesSubstatesService {
   /**
    * Modificar orden estados del Workflow
    *
-   * @returns WorkflowSubstateDTO[]
+   * @returns WorkflowStateDTO
    */
-  public editOrderWorkflowSubstates(workflowId: number, substates: WorkflowSubstateDTO[]): Observable<WorkflowSubstateDTO[]> {
+  public editOrderWorkflowSubstates(workflowId: number, state: WorkflowStateDTO): Observable<WorkflowStateDTO> {
     return this.http
-      .post<WorkflowSubstateDTO[]>(
+      .post<WorkflowStateDTO>(
         `${this.env.apiBaseUrl}${this.WORKFLOW_PATH}/${workflowId}${this.SUBSTATES_PATH}${this.ORDERS_PATH}`,
-        substates
+        state
       )
       .pipe(catchError((error) => throwError(error.error as ConcenetError)));
   }

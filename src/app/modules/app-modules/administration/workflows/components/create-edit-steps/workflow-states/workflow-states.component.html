@@ -10,12 +10,14 @@
             class="states-container__state mat-elevation-z2"
             *ngFor="let state of getStatesFormArray().controls; let i = index"
             cdkDragBoundary=".states-container__states"
+            [cdkDragDisabled]="state.controls.anchor.value"
             cdkDrag
         >
             <div *cdkDragPlaceholder class="wf-state-placeholder"></div>
             <section [formGroupName]="i">
                 <div class="states-container__state__line">
-                    <mat-icon class="drag-line-icon" cdkDragHandle>drag_indicator</mat-icon>
+                    <mat-icon class="drag-line-icon" *ngIf="!state.controls.anchor.value" cdkDragHandle>drag_indicator</mat-icon>
+                    <mat-icon class="drag-line-icon" *ngIf="state.controls.anchor.value">anchor</mat-icon>
                     <div class="line-name">
                         <div
                             class="name uppercase bold"

@@ -291,15 +291,15 @@ export class WorkflowStatesComponent extends WorkflowStepAbstractClass {
   public dropSubstate(event: CdkDragDrop<any>, state: UntypedFormGroup): void {
     moveItemInFormArray(state.controls.workflowSubstates as UntypedFormArray, event.previousIndex, event.currentIndex);
     const spinner = this.spinnerService.show();
+    const stateValue = state.value;
+    stateValue.anchor = false;
+    stateValue.workflowSubstates.map((substate: WorkflowSubstateDTO) => ({
+      ...substate,
+      anchor: false,
+      workflowState: { id: stateValue.id }
+    }));
     this.wStatesService
-      .editOrderWorkflowSubstates(
-        this.workflowId,
-        state.value.workflowSubstates.map((substate: WorkflowSubstateDTO) => ({
-          ...substate,
-          anchor: false,
-          workflowState: { id: state.value.id }
-        }))
-      )
+      .editOrderWorkflowSubstates(this.workflowId, stateValue)
       .pipe(
         take(1),
         finalize(() => {
@@ -337,7 +337,19 @@ export class WorkflowStatesComponent extends WorkflowStepAbstractClass {
         )
         .subscribe(
           (data: WorkflowStateDTO[]) => {
-            this.originalData = { states: data ? data.sort((a, b) => a.orderNumber - b.orderNumber) : [] };
+            this.originalData = {
+              states: data
+                ? data.sort((a, b) => {
+                    if (a.anchor) {
+                      return -1;
+                    }
+                    if (b.anchor) {
+                      return 1;
+                    }
+                    return a.orderNumber - b.orderNumber;
+                  })
+                : []
+            };
             resolve(true);
           },
           (error: ConcenetError) => {
