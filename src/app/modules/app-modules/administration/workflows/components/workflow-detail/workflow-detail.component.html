@@ -2,6 +2,7 @@
     <div class="wf__header" fxLayout="row wrap" fxLayoutAlign="space-between center">
         <h1 class="wf__header__title mat-display-2" (click)="createEditWorkflow()">
             {{ getWorkflowName() | translate }}
+            <mat-icon class="edit-name-icon">edit</mat-icon>
         </h1>
     </div>
     <div class="wf__tabs">
@@ -47,27 +48,29 @@
                 [stepIndex]="4"
                 *ngSwitchCase="4"
             ></app-workflow-card-config>
-            <app-workflow-states *ngSwitchCase="5"></app-workflow-states>
+            <app-workflow-states [workflowId]="workflowDetail?.id" [stepIndex]="5" *ngSwitchCase="5"></app-workflow-states>
             <app-workflow-timeline *ngSwitchCase="6"></app-workflow-timeline>
             <app-workflow-budgets *ngSwitchCase="7"></app-workflow-budgets>
         </div>
     </div>
-    <div class="wf__footer" fxLayout="row" fxLayoutAlign="space-between center">
-        <button
-            mat-stroked-button
-            color="warn"
-            [disabled]="!workflowsCreateEditAuxService.getFormGroupByStep(tabIndex)?.dirty"
-            (click)="resetForm()"
-        >
-            {{ labels.reset | translate }}
-        </button>
+    <div class="wf__footer" fxLayout="row-reverse" fxLayoutAlign="space-between center">
         <button
             mat-flat-button
             color="primary"
             [disabled]="!workflowsCreateEditAuxService.getFormGroupByStep(tabIndex)?.valid"
             (click)="saveAndGoNextStep()"
         >
-            {{ labels.save | translate }}
+            <div *ngIf="tabIndex !== 5">{{ labels.save | translate }}</div>
+            <div *ngIf="tabIndex === 5">{{ labels.next | translate }}</div>
+        </button>
+        <button
+            *ngIf="tabIndex !== 5"
+            mat-stroked-button
+            color="warn"
+            [disabled]="!workflowsCreateEditAuxService.getFormGroupByStep(tabIndex)?.dirty"
+            (click)="resetForm()"
+        >
+            {{ labels.reset | translate }}
         </button>
     </div>
 </div>
