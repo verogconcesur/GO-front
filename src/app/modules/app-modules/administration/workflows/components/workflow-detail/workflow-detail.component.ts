@@ -21,7 +21,8 @@ import {
 @Component({
   selector: 'app-workflow-detail',
   templateUrl: './workflow-detail.component.html',
-  styleUrls: ['./workflow-detail.component.scss']
+  styleUrls: ['./workflow-detail.component.scss'],
+  encapsulation: ViewEncapsulation.None
 })
 export class WorkflowDetailComponent implements OnInit, OnDestroy, AfterViewInit {
   @ViewChild('tabGroup') tabs: MatTabGroup;
@@ -39,7 +40,8 @@ export class WorkflowDetailComponent implements OnInit, OnDestroy, AfterViewInit
     timeline: marker('administration.templates.clientTimeline.title'),
     budgets: marker('administration.templates.budgets.title'),
     save: marker('common.save'),
-    reset: marker('common.reset')
+    reset: marker('common.reset'),
+    next: marker('common.next')
   };
   constructor(
     public workflowsCreateEditAuxService: WorkflowsCreateEditAuxService,

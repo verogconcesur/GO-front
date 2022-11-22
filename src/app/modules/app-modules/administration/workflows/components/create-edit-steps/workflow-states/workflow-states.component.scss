@@ -1,0 +1,129 @@
+@import 'utils/core';
+@import 'utils/theme';
+.states-container {
+  width: 100%;
+  &__states {
+    width: 100%;
+    min-height: calc(100vh - 380px);
+    display: flex;
+    justify-content: flex-start;
+    align-items: flex-start;
+    flex-direction: row;
+    flex-wrap: nowrap;
+    overflow-y: auto;
+  }
+
+  &__state {
+    background-color: mat-contrast($primary, 400);
+    border-radius: 5px;
+    margin: 20px;
+    padding: 0 10px;
+    &.add-state {
+      background-color: transparent;
+      border: 1px solid mat-contrast($primary, 50);
+      color: mat-color($primary, 500);
+      min-width: 246px;
+      min-height: 100px;
+      padding: 10px;
+      display: flex;
+      justify-content: flex-start;
+      align-items: flex-start;
+      text-transform: uppercase;
+      cursor: pointer;
+      .add-state__label {
+        display: flex;
+        align-items: center;
+        mat-icon {
+          margin-right: 5px;
+        }
+      }
+    }
+    &__line {
+      padding: 10px 0;
+      color: mat-color($primary, 500);
+      display: flex;
+      justify-content: flex-end;
+      align-items: center;
+    }
+    &__substate {
+      background-color: mat-contrast($primary, 400);
+      &__line {
+        padding: 10px 0;
+        display: flex;
+        justify-content: flex-end;
+        align-items: center;
+        .drag-line-icon {
+          color: mat-contrast($primary, 50);
+        }
+        .delete-line-icon {
+          color: mat-contrast($primary, 50);
+        }
+      }
+      .add-state__substate__label {
+        padding: 10px 0;
+        display: flex;
+        justify-content: flex-start;
+        align-items: center;
+        mat-icon {
+          margin-right: 5px;
+          color: mat-color($primary, 500);
+        }
+      }
+    }
+  }
+}
+.bold {
+  font-weight: 500;
+}
+.pointer {
+  cursor: pointer;
+}
+.drag-line-icon {
+  cursor: pointer;
+}
+.edit-line-icon {
+  opacity: 0;
+  transition: opacity 0.5s ease;
+  cursor: pointer;
+  display: block;
+  font-size: 1em;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.delete-line-icon {
+  color: mat-contrast($primary, 100);
+  cursor: pointer;
+}
+.line-name {
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+  padding: 0 10px;
+  width: 180px;
+  cursor: pointer;
+  .name {
+    max-width: 160px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  &:hover {
+    .edit-line-icon {
+      opacity: 1;
+    }
+  }
+}
+
+.wf-state-placeholder {
+  margin: 20px;
+  background-color: mat-contrast($primary, 50);
+  border-radius: 5px;
+  min-width: 246px;
+  min-height: 300px;
+}
+.wf-substate-placeholder {
+  background-color: mat-contrast($primary, 50);
+  min-width: 100%;
+  min-height: 44px;
+}
