@@ -21,6 +21,17 @@
     &__title {
       margin-bottom: 0px !important;
       color: mat-color($foreground, secondary-text);
+      cursor: pointer;
+      .edit-name-icon {
+        transition: opacity 0.5s ease;
+        color: mat-color($primary, 900);
+        opacity: 0;
+      }
+      &:hover {
+        .edit-name-icon {
+          opacity: 1;
+        }
+      }
     }
   }
   &__tabs {
