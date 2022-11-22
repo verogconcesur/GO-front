@@ -1,0 +1,12 @@
+@import 'utils/core';
+@import 'utils/theme';
+.timeline-container {
+  padding: 20px;
+  &__section {
+    margin-bottom: 20px;
+    &__title {
+      width: 100%;
+      font-weight: 600;
+    }
+  }
+}
