@@ -1,3 +1,4 @@
+/* eslint-disable max-len */
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { WorkflowsRoutingModule } from './workflows-routing.module';
@@ -24,6 +25,8 @@ import { WorkflowBudgetsComponent } from './components/create-edit-steps/workflo
 // eslint-disable-next-line max-len
 import { WorkflowCardsPermissionsComponent } from './components/create-edit-steps/workflow-cards/modals/workflow-cards-permissions/workflow-cards-permissions.component';
 import { UserSearcherDialogModule } from '@modules/feature-modules/user-searcher-dialog/user-searcher-dialog.module';
+import { WfEditSubstateDialogComponent } from './components/create-edit-steps/workflow-states/modals/wf-edit-substate-dialog/wf-edit-substate-dialog.component';
+import { WfEditStateDialogComponent } from './components/create-edit-steps/workflow-states/modals/wf-edit-state-dialog/wf-edit-state-dialog.component';
 
 @NgModule({
   declarations: [
@@ -40,7 +43,9 @@ import { UserSearcherDialogModule } from '@modules/feature-modules/user-searcher
     WorkflowTimelineComponent,
     WorkflowStatesComponent,
     WorkflowBudgetsComponent,
-    WorkflowCardsPermissionsComponent
+    WorkflowCardsPermissionsComponent,
+    WfEditSubstateDialogComponent,
+    WfEditStateDialogComponent
   ],
   imports: [
     CommonModule,
