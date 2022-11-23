@@ -3,8 +3,11 @@
         #responsiveTab
         class="r-tabs-tab"
         *ngFor="let tab of visibleTabs"
-        [ngClass]="{ active: tab.id === tabSelected.id }"
+        [ngClass]="{ active: tab.id === tabSelected?.id, disabled: tab.disabled && tab.disabled() }"
         (click)="tabSelectedChange(tab)"
+        matTooltipPosition="above"
+        [matTooltip]="getTabDisabledTooltip(tab)"
+        [matTooltipDisabled]="!(tab.disabled && tab.disabled()) || !tab.disabledTooltip"
     >
         {{ tab.label | translate }}
     </div>
@@ -23,8 +26,11 @@
     <div
         class="r-tabs-tab"
         *ngFor="let tab of hiddenTabs"
-        [ngClass]="{ active: tab.id === tabSelected.id }"
+        [ngClass]="{ active: tab.id === tabSelected?.id, disabled: tab.disabled && tab.disabled() }"
         (click)="tabSelectedChange(tab)"
+        matTooltipPosition="above"
+        [matTooltip]="getTabDisabledTooltip(tab)"
+        [matTooltipDisabled]="!(tab.disabled && tab.disabled()) || !tab.disabledTooltip"
     >
         {{ tab.label | translate }}
     </div>
