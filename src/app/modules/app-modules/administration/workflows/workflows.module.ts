@@ -27,6 +27,10 @@ import { WorkflowCardsPermissionsComponent } from './components/create-edit-step
 import { UserSearcherDialogModule } from '@modules/feature-modules/user-searcher-dialog/user-searcher-dialog.module';
 import { WfEditSubstateDialogComponent } from './components/create-edit-steps/workflow-states/modals/wf-edit-substate-dialog/wf-edit-substate-dialog.component';
 import { WfEditStateDialogComponent } from './components/create-edit-steps/workflow-states/modals/wf-edit-state-dialog/wf-edit-state-dialog.component';
+import { WfEditSubstateGeneralTabComponent } from './components/create-edit-steps/workflow-states/modals/wf-edit-substate-dialog/tabs/wf-edit-substate-general-tab/wf-edit-substate-general-tab.component';
+import { WfEditSubstateMovementsTabComponent } from './components/create-edit-steps/workflow-states/modals/wf-edit-substate-dialog/tabs/wf-edit-substate-movements-tab/wf-edit-substate-movements-tab.component';
+import { WfEditSubstateEventsTabComponent } from './components/create-edit-steps/workflow-states/modals/wf-edit-substate-dialog/tabs/wf-edit-substate-events-tab/wf-edit-substate-events-tab.component';
+import { WfEditPermissionsTabComponent } from './components/create-edit-steps/workflow-states/modals/wf-edit-substate-dialog/tabs/wf-edit-permissions-tab/wf-edit-permissions-tab.component';
 
 @NgModule({
   declarations: [
@@ -45,7 +49,11 @@ import { WfEditStateDialogComponent } from './components/create-edit-steps/workf
     WorkflowBudgetsComponent,
     WorkflowCardsPermissionsComponent,
     WfEditSubstateDialogComponent,
-    WfEditStateDialogComponent
+    WfEditStateDialogComponent,
+    WfEditSubstateGeneralTabComponent,
+    WfEditSubstateMovementsTabComponent,
+    WfEditSubstateEventsTabComponent,
+    WfEditPermissionsTabComponent
   ],
   imports: [
     CommonModule,

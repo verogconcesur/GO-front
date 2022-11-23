@@ -7,6 +7,7 @@ import WorkflowStateDTO from '@data/models/workflows/workflow-state-dto';
 import WorkflowSubstateDTO from '@data/models/workflows/workflow-substate-dto';
 import { WorkflowAdministrationStatesSubstatesService } from '@data/services/workflow-administration-states-substates.service';
 import { CustomDialogService } from '@jenga/custom-dialog';
+import { untilDestroyed } from '@ngneat/until-destroy';
 import { TranslateService } from '@ngx-translate/core';
 import { ConfirmDialogService } from '@shared/services/confirm-dialog.service';
 import { GlobalMessageService } from '@shared/services/global-message.service';
@@ -20,6 +21,7 @@ import {
   WfEditStateComponentModalEnum,
   WfEditStateDialogComponent
 } from './modals/wf-edit-state-dialog/wf-edit-state-dialog.component';
+import { WEditSubstateFormAuxService } from './modals/wf-edit-substate-dialog/aux-service/wf-edit-substate-aux.service';
 import {
   WfEditSubstateComponentModalEnum,
   WfEditSubstateDialogComponent
@@ -31,9 +33,11 @@ import WorkflowStateSubstatesLengthValidator from './validators/workflow-states-
   templateUrl: './workflow-states.component.html',
   styleUrls: ['./workflow-states.component.scss']
 })
-export class WorkflowStatesComponent extends WorkflowStepAbstractClass {
+export class WorkflowStatesComponent extends WorkflowStepAbstractClass implements OnInit {
   @Input() workflowId: number;
   @Input() stepIndex: number;
+  public substateModified = false;
+
   public labels = {
     stateName: marker('workflows.stateName'),
     substateName: marker('workflows.substateName'),
@@ -47,6 +51,7 @@ export class WorkflowStatesComponent extends WorkflowStepAbstractClass {
   constructor(
     private fb: UntypedFormBuilder,
     public workflowsCreateEditAuxService: WorkflowsCreateEditAuxService,
+    private editSubstateAuxService: WEditSubstateFormAuxService,
     private spinnerService: ProgressSpinnerDialogService,
     public confirmationDialog: ConfirmDialogService,
     public translateService: TranslateService,
@@ -56,6 +61,16 @@ export class WorkflowStatesComponent extends WorkflowStepAbstractClass {
     private customDialogService: CustomDialogService
   ) {
     super(workflowsCreateEditAuxService, confirmationDialog, translateService);
+  }
+
+  ngOnInit(): void {
+    this.initListener();
+  }
+
+  public initListener(): void {
+    this.editSubstateAuxService.saveAction$.pipe(untilDestroyed(this)).subscribe((saveAction) => {
+      this.substateModified = true;
+    });
   }
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -351,7 +366,8 @@ export class WorkflowStatesComponent extends WorkflowStepAbstractClass {
         width: substate ? '850px' : '700px'
       })
       .subscribe(async (res) => {
-        if (res) {
+        if (res || this.substateModified) {
+          this.substateModified = false;
           await this.getWorkflowStepData();
           this.initForm(this.originalData);
         }

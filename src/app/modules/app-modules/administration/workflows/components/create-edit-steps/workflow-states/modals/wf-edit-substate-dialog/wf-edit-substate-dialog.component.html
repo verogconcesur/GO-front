@@ -1,1 +1,13 @@
-<p>wf-edit-substate-dialog works!</p>
+<div class="edit-substate">
+    <app-responsive-tabs [tabs]="tabs" (tabSelectedEvent)="tabChange($event)"></app-responsive-tabs>
+    <div class="edit-substate__tab" [ngSwitch]="tabToShow?.id">
+        <app-wf-edit-substate-general-tab
+            *ngSwitchCase="'GENERAL'"
+            [state]="state"
+            [substate]="substate"
+            [workflowId]="workflowId"
+            (substateChanged)="substateChanged($event)"
+            tabId="GENERAL"
+        ></app-wf-edit-substate-general-tab>
+    </div>
+</div>
