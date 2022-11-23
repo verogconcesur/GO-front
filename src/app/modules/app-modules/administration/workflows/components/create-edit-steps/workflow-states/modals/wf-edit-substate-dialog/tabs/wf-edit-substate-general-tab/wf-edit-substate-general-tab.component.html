@@ -1,0 +1,43 @@
+<form [formGroup]="form" *ngIf="form" class="smaller-mat-form-fields edit-state">
+    <!-- Name -->
+    <div>
+        <mat-form-field appearance="outline" floatLabel="always">
+            <mat-label>{{ labels.name | translate }}</mat-label>
+            <input matInput formControlName="name" />
+            <mat-error *ngIf="form.controls.name.invalid">
+                {{ labels.nameRequired | translate }}
+            </mat-error>
+        </mat-form-field>
+    </div>
+    <!-- color -->
+    <div>
+        <mat-form-field class="color-picker" appearance="outline" floatLabel="always">
+            <mat-label>{{ labels.color | translate }}</mat-label>
+            <input type="color" matInput formControlName="color" />
+        </mat-form-field>
+    </div>
+    <!-- entryPoint -->
+    <div class="check-line" (click)="entryExitPointSelected('entryPoint')">
+        <mat-checkbox formControlName="entryPoint" [disabled]="form.get('exitPoint').value">{{
+            labels.entryPoint | translate
+        }}</mat-checkbox>
+        <div class="label-info">{{ labels.entryPointDescription | translate }}</div>
+    </div>
+    <!-- exitPoint -->
+    <div class="check-line" (click)="entryExitPointSelected('exitPoint')">
+        <mat-checkbox formControlName="exitPoint" [disabled]="form.get('entryPoint').value">{{
+            labels.exitPoint | translate
+        }}</mat-checkbox>
+        <div class="label-info">{{ labels.exitPointDescription | translate }}</div>
+    </div>
+    <!-- hideBoard -->
+    <div class="check-line">
+        <mat-checkbox formControlName="hideBoard">{{ labels.hideBoard | translate }}</mat-checkbox>
+        <div class="label-info">{{ labels.hideBoardDescription | translate }}</div>
+    </div>
+    <!-- lockInMoves -->
+    <div class="check-line">
+        <mat-checkbox formControlName="locked">{{ labels.lockInMoves | translate }}</mat-checkbox>
+        <div class="label-info">{{ labels.lockInMovesDescription | translate }}</div>
+    </div>
+</form>
