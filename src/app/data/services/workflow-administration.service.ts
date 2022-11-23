@@ -15,6 +15,8 @@ import WorkflowSubstateUserDTO from '@data/models/workflows/workflow-substate-us
 import { WorkflowFilterService } from '@modules/app-modules/workflow/aux-service/workflow-filter.service';
 import { Observable, throwError } from 'rxjs';
 import { catchError } from 'rxjs/operators';
+import TemplatesCommonDTO from '@data/models/templates/templates-common-dto';
+import { WorkflowTimelineDTO } from '@data/models/workflow-admin/workflow-timeline-dto';
 
 @Injectable({
   providedIn: 'root'
@@ -28,6 +30,8 @@ export class WorkflowAdministrationService {
   private readonly USERS_PATH = '/users';
   private readonly VIEW_PATH = '/views';
   private readonly ATTRIBUTES_PATH = '/attributes';
+  private readonly TIMELINE_PATH = '/timeline';
+  private readonly TEMPLATES_PATH = '/listTemplates';
   constructor(@Inject(ENV) private env: Env, private http: HttpClient, private workflowFilterService: WorkflowFilterService) {}
 
   /**
@@ -218,6 +222,39 @@ export class WorkflowAdministrationService {
   public postWorkflowViews(workflowId: number, workflowViews: WorkflowViewDTO[]): Observable<WorkflowViewDTO[]> {
     return this.http
       .post<WorkflowViewDTO[]>(`${this.env.apiBaseUrl}${this.WORKFLOW_PATH}/${workflowId}${this.VIEW_PATH}`, workflowViews)
+      .pipe(catchError((error) => throwError(error.error as ConcenetError)));
+  }
+
+  public getTemplates(workflowId: number, templateType: string): Observable<TemplatesCommonDTO[]> {
+    return this.http
+      .get<TemplatesCommonDTO[]>(
+        `${this.env.apiBaseUrl}${this.WORKFLOW_PATH}/${workflowId}${this.TEMPLATES_PATH}/${templateType}`
+      )
+      .pipe(catchError((error) => throwError(error as ConcenetError)));
+  }
+
+  /**
+   * Obtener Timeline Workflow
+   *
+   * @returns WorkflowTimeLineDTO
+   */
+  public getWorkflowTimeline(workflowId: number): Observable<WorkflowTimelineDTO> {
+    return this.http
+      .get<WorkflowTimelineDTO>(`${this.env.apiBaseUrl}${this.WORKFLOW_PATH}/${workflowId}${this.TIMELINE_PATH}`)
+      .pipe(catchError((error) => throwError(error.error as ConcenetError)));
+  }
+
+  /**
+   * Editar Timeline Workflow
+   *
+   * @returns WorkflowTimeLineDTO
+   */
+  public postWorkflowTimeline(workflowId: number, workflowTimeline: WorkflowTimelineDTO): Observable<WorkflowTimelineDTO> {
+    return this.http
+      .post<WorkflowTimelineDTO>(
+        `${this.env.apiBaseUrl}${this.WORKFLOW_PATH}/${workflowId}${this.TIMELINE_PATH}`,
+        workflowTimeline
+      )
       .pipe(catchError((error) => throwError(error.error as ConcenetError)));
   }
 }
