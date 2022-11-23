@@ -76,13 +76,13 @@ export class ResponsiveTabsComponent implements OnInit, AfterViewInit, OnChanges
   }
 
   public getTabDisabledTooltip(tab: ResponsiveTabI): string {
-    if (tab.disabled() && tab.disabledTooltip) {
+    if (tab.disabled && tab.disabled() && tab.disabledTooltip) {
       return this.translateService.instant(tab.disabledTooltip);
     }
   }
 
   public tabSelectedChange(tab: ResponsiveTabI): void {
-    if (tab.disabled()) {
+    if (tab.disabled && tab.disabled()) {
       return;
     }
     this.tabSelected = tab;

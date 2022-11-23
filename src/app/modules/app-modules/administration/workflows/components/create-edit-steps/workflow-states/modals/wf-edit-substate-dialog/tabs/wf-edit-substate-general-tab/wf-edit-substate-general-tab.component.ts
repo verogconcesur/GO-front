@@ -1,17 +1,17 @@
-import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
-import { FormBuilder, UntypedFormArray, UntypedFormGroup, Validators } from '@angular/forms';
+import { Component, OnInit } from '@angular/core';
+import { FormBuilder, Validators } from '@angular/forms';
 import { ConcenetError } from '@app/types/error';
 import { marker } from '@biesbjerg/ngx-translate-extract-marker';
-import WorkflowStateDTO from '@data/models/workflows/workflow-state-dto';
 import WorkflowSubstateDTO from '@data/models/workflows/workflow-substate-dto';
 import { WorkflowAdministrationStatesSubstatesService } from '@data/services/workflow-administration-states-substates.service';
-import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
+import { UntilDestroy } from '@ngneat/until-destroy';
 import { TranslateService } from '@ngx-translate/core';
 import { GlobalMessageService } from '@shared/services/global-message.service';
 import { ProgressSpinnerDialogService } from '@shared/services/progress-spinner-dialog.service';
 import { NGXLogger } from 'ngx-logger';
 import { finalize, take } from 'rxjs/operators';
-import { TAB_IDS, WEditSubstateFormAuxService } from '../../aux-service/wf-edit-substate-aux.service';
+import { WEditSubstateFormAuxService } from '../../aux-service/wf-edit-substate-aux.service';
+import { WfEditSubstateAbstractTabClass } from '../wf-edit-substate-abstract-tab-class';
 
 @UntilDestroy()
 @Component({
@@ -19,13 +19,7 @@ import { TAB_IDS, WEditSubstateFormAuxService } from '../../aux-service/wf-edit-
   templateUrl: './wf-edit-substate-general-tab.component.html',
   styleUrls: ['./wf-edit-substate-general-tab.component.scss']
 })
-export class WfEditSubstateGeneralTabComponent implements OnInit {
-  @Input() state: WorkflowStateDTO = null;
-  @Input() substate: WorkflowSubstateDTO = null;
-  @Input() workflowId: number = null;
-  @Input() tabId: TAB_IDS;
-  @Output() substateChanged: EventEmitter<WorkflowSubstateDTO> = new EventEmitter();
-
+export class WfEditSubstateGeneralTabComponent extends WfEditSubstateAbstractTabClass implements OnInit {
   public labels = {
     name: marker('workflows.stateName'),
     nameRequired: marker('errors.required'),
@@ -42,21 +36,14 @@ export class WfEditSubstateGeneralTabComponent implements OnInit {
 
   constructor(
     private fb: FormBuilder,
-    private editSubstateAuxService: WEditSubstateFormAuxService,
+    public editSubstateAuxService: WEditSubstateFormAuxService,
     private substatesService: WorkflowAdministrationStatesSubstatesService,
     private spinnerService: ProgressSpinnerDialogService,
     private logger: NGXLogger,
     private translateService: TranslateService,
     private globalMessageService: GlobalMessageService
-  ) {}
-
-  get form(): UntypedFormGroup {
-    return this.editSubstateAuxService.getFormGroupByTab(this.tabId);
-  }
-
-  ngOnInit(): void {
-    this.initListeners();
-    this.initForm(this.substate);
+  ) {
+    super(editSubstateAuxService);
   }
 
   public entryExitPointSelected(opt: 'entryPoint' | 'exitPoint'): void {
@@ -68,16 +55,7 @@ export class WfEditSubstateGeneralTabComponent implements OnInit {
     }
   }
 
-  private initListeners(): void {
-    this.editSubstateAuxService.saveAction$.pipe(untilDestroyed(this)).subscribe((saveAction) => {
-      this.saveData();
-    });
-    this.editSubstateAuxService.resetForm$.pipe(untilDestroyed(this)).subscribe((resetAction) => {
-      this.initForm(this.editSubstateAuxService.getFormOriginalData(this.tabId));
-    });
-  }
-
-  private initForm(data: WorkflowSubstateDTO): void {
+  public initForm(data: WorkflowSubstateDTO): void {
     const form = this.fb.group({
       name: [data?.name ? data.name : null, [Validators.required]],
       entryPoint: [data?.entryPoint ? data.entryPoint : false],
@@ -90,7 +68,7 @@ export class WfEditSubstateGeneralTabComponent implements OnInit {
     this.editSubstateAuxService.setFormOriginalData(this.form.value, this.tabId);
   }
 
-  private saveData(): void {
+  public saveData(): void {
     const spinner = this.spinnerService.show();
     this.substatesService
       .createWorkflowSubstate(this.workflowId, this.state.id, { ...this.substate, ...this.form.value })

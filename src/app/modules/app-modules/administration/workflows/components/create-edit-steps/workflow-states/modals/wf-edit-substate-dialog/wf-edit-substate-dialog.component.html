@@ -6,8 +6,36 @@
             [state]="state"
             [substate]="substate"
             [workflowId]="workflowId"
+            [dataToInitForm]="substate"
             (substateChanged)="substateChanged($event)"
-            tabId="GENERAL"
+            [tabId]="tabToShow?.id"
         ></app-wf-edit-substate-general-tab>
+        <app-wf-edit-permissions-tab
+            *ngSwitchCase="'STATE_PERMISSIONS'"
+            [state]="state"
+            [substate]="substate"
+            [workflowId]="workflowId"
+            [dataToInitForm]="substate"
+            (substateChanged)="substateChanged($event)"
+            [tabId]="tabToShow?.id"
+        ></app-wf-edit-permissions-tab>
+        <app-wf-edit-substate-movements-tab
+            *ngSwitchCase="'MOVEMENTS'"
+            [state]="state"
+            [substate]="substate"
+            [workflowId]="workflowId"
+            [dataToInitForm]="substate"
+            (substateChanged)="substateChanged($event)"
+            [tabId]="tabToShow?.id"
+        ></app-wf-edit-substate-movements-tab>
+        <app-wf-edit-substate-events-tab
+            *ngSwitchCase="'EVENTS'"
+            [state]="state"
+            [substate]="substate"
+            [workflowId]="workflowId"
+            [dataToInitForm]="substate"
+            (substateChanged)="substateChanged($event)"
+            [tabId]="tabToShow?.id"
+        ></app-wf-edit-substate-events-tab>
     </div>
 </div>
