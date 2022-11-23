@@ -18,7 +18,7 @@
                 <div class="states-container__state__line">
                     <mat-icon class="drag-line-icon" *ngIf="!state.controls.anchor.value" cdkDragHandle>drag_indicator</mat-icon>
                     <mat-icon class="drag-line-icon" *ngIf="state.controls.anchor.value">anchor</mat-icon>
-                    <div class="line-name">
+                    <div class="line-name" (click)="edit(state.value)">
                         <div
                             class="name uppercase bold"
                             matTooltipPosition="above"
@@ -55,6 +55,7 @@
                                         matTooltipPosition="above"
                                         [matTooltip]="substate.controls.name.value"
                                         appShowIfTruncated
+                                        (click)="edit(state.value, substate.value)"
                                     >
                                         {{ substate.controls.name.value }}
                                     </div>
