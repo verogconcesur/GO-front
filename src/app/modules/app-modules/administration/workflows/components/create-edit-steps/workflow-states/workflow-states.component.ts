@@ -6,8 +6,6 @@ import { marker } from '@biesbjerg/ngx-translate-extract-marker';
 import WorkflowStateDTO from '@data/models/workflows/workflow-state-dto';
 import WorkflowSubstateDTO from '@data/models/workflows/workflow-substate-dto';
 import { WorkflowAdministrationStatesSubstatesService } from '@data/services/workflow-administration-states-substates.service';
-import { CustomDialogService } from '@jenga/custom-dialog';
-import { untilDestroyed } from '@ngneat/until-destroy';
 import { TranslateService } from '@ngx-translate/core';
 import { ConfirmDialogService } from '@shared/services/confirm-dialog.service';
 import { GlobalMessageService } from '@shared/services/global-message.service';
@@ -17,15 +15,6 @@ import { NGXLogger } from 'ngx-logger';
 import { finalize, take } from 'rxjs/operators';
 import { WorkflowsCreateEditAuxService } from '../../../aux-service/workflows-create-edit-aux.service';
 import { WorkflowStepAbstractClass } from '../workflow-step-abstract-class';
-import {
-  WfEditStateComponentModalEnum,
-  WfEditStateDialogComponent
-} from './modals/wf-edit-state-dialog/wf-edit-state-dialog.component';
-import { WEditSubstateFormAuxService } from './modals/wf-edit-substate-dialog/aux-service/wf-edit-substate-aux.service';
-import {
-  WfEditSubstateComponentModalEnum,
-  WfEditSubstateDialogComponent
-} from './modals/wf-edit-substate-dialog/wf-edit-substate-dialog.component';
 import WorkflowStateSubstatesLengthValidator from './validators/workflow-states-substates-length.validator';
 
 @Component({
@@ -33,11 +22,9 @@ import WorkflowStateSubstatesLengthValidator from './validators/workflow-states-
   templateUrl: './workflow-states.component.html',
   styleUrls: ['./workflow-states.component.scss']
 })
-export class WorkflowStatesComponent extends WorkflowStepAbstractClass implements OnInit {
+export class WorkflowStatesComponent extends WorkflowStepAbstractClass {
   @Input() workflowId: number;
   @Input() stepIndex: number;
-  public substateModified = false;
-
   public labels = {
     stateName: marker('workflows.stateName'),
     substateName: marker('workflows.substateName'),
@@ -51,26 +38,14 @@ export class WorkflowStatesComponent extends WorkflowStepAbstractClass implement
   constructor(
     private fb: UntypedFormBuilder,
     public workflowsCreateEditAuxService: WorkflowsCreateEditAuxService,
-    private editSubstateAuxService: WEditSubstateFormAuxService,
     private spinnerService: ProgressSpinnerDialogService,
     public confirmationDialog: ConfirmDialogService,
     public translateService: TranslateService,
     private wStatesService: WorkflowAdministrationStatesSubstatesService,
     private globalMessageService: GlobalMessageService,
-    private logger: NGXLogger,
-    private customDialogService: CustomDialogService
+    private logger: NGXLogger
   ) {
     super(workflowsCreateEditAuxService, confirmationDialog, translateService);
-  }
-
-  ngOnInit(): void {
-    this.initListener();
-  }
-
-  public initListener(): void {
-    this.editSubstateAuxService.saveAction$.pipe(untilDestroyed(this)).subscribe((saveAction) => {
-      this.substateModified = true;
-    });
   }
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -348,31 +323,6 @@ export class WorkflowStatesComponent extends WorkflowStepAbstractClass implement
       );
   }
   /** END Drag and drop */
-
-  public edit(state: WorkflowStateDTO, substate?: WorkflowSubstateDTO): void {
-    let id: string = WfEditStateComponentModalEnum.ID;
-    let panelClass: string = WfEditStateComponentModalEnum.PANEL_CLASS;
-    if (substate) {
-      id = WfEditSubstateComponentModalEnum.ID;
-      panelClass = WfEditSubstateComponentModalEnum.PANEL_CLASS;
-    }
-    this.customDialogService
-      .open({
-        id,
-        panelClass,
-        component: substate ? WfEditSubstateDialogComponent : WfEditStateDialogComponent,
-        extendedComponentData: { state, substate, workflowId: this.workflowId },
-        disableClose: true,
-        width: substate ? '850px' : '700px'
-      })
-      .subscribe(async (res) => {
-        if (res || this.substateModified) {
-          this.substateModified = false;
-          await this.getWorkflowStepData();
-          this.initForm(this.originalData);
-        }
-      });
-  }
 
   public async getWorkflowStepData(): Promise<boolean> {
     const spinner = this.spinnerService.show();
