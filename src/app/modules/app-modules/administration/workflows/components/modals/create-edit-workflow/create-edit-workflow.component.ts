@@ -16,7 +16,6 @@ export const enum CreateEditWorkflowComponentModalEnum {
   PANEL_CLASS = 'create-edit-workflow-dialog',
   TITLE = 'workflows.newWorkflow'
 }
-
 @Component({
   selector: 'app-create-edit-workflow',
   templateUrl: './create-edit-workflow.component.html',
