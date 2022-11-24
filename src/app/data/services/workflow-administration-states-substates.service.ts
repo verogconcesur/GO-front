@@ -8,6 +8,7 @@ import { Observable, throwError } from 'rxjs';
 import { catchError } from 'rxjs/operators';
 import WorkflowStateDTO from '@data/models/workflows/workflow-state-dto';
 import WorkflowSubstateDTO from '@data/models/workflows/workflow-substate-dto';
+import WorkflowMoveDTO from '@data/models/workflows/workflow-move-dto';
 
 @Injectable({
   providedIn: 'root'
@@ -17,6 +18,7 @@ export class WorkflowAdministrationStatesSubstatesService {
   private readonly STATES_PATH = '/states';
   private readonly SUBSTATES_PATH = '/substates';
   private readonly ORDERS_PATH = '/orders';
+  private readonly MOVEMENTS_PATH = '/movements';
   constructor(@Inject(ENV) private env: Env, private http: HttpClient, private workflowFilterService: WorkflowFilterService) {}
 
   /**
@@ -108,6 +110,20 @@ export class WorkflowAdministrationStatesSubstatesService {
       .delete<boolean>(
         // eslint-disable-next-line max-len
         `${this.env.apiBaseUrl}${this.WORKFLOW_PATH}/${workflowId}${this.STATES_PATH}/${stateId}${this.SUBSTATES_PATH}/${substateId}`
+      )
+      .pipe(catchError((error) => throwError(error.error as ConcenetError)));
+  }
+
+  /**
+   * Obtener movimientos asociados a un subestado
+   *
+   * @returns WorkflowMoveDTO[]
+   */
+  public getWorkflowSubstateMovements(workflowId: number, substateId: number): Observable<WorkflowMoveDTO[]> {
+    return this.http
+      .get<WorkflowMoveDTO[]>(
+        // eslint-disable-next-line max-len
+        `${this.env.apiBaseUrl}${this.WORKFLOW_PATH}/${workflowId}${this.STATES_PATH}${this.SUBSTATES_PATH}/${substateId}${this.MOVEMENTS_PATH}`
       )
       .pipe(catchError((error) => throwError(error.error as ConcenetError)));
   }
