@@ -1,0 +1,15 @@
+@import 'utils/core';
+@import 'utils/theme';
+.edit-substate {
+  &__tab {
+    position: relative;
+    padding: 25px 5px 10px 5px;
+    min-height: 400px;
+    max-height: 600px;
+    &.darker-bg {
+      padding: 0px;
+      margin-top: 10px;
+      background-color: mat-contrast($primary, 500);
+    }
+  }
+}
