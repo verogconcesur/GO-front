@@ -261,6 +261,7 @@
         "to": "To",
         "town": "Town",
         "type3CharsToSearch": "Write at least three characters...",
+        "typeBudget": "Add a budget template",
         "typeCard": "Type card",
         "unfollow": "Unfollow",
         "unsavedChangesExit": "There are unsaved changes, do you want to continue?",
@@ -526,6 +527,7 @@
         "selectDepartments": "Select deparment from: {facility}",
         "selectFacilities": "Which facility do you belong to?",
         "selectSpecialties": "Select specialty from: {department}",
+        "selectTimeline": "Select timeline template",
         "state-anchor": "Lock status to board view",
         "state-anchorDescription": "Select this option if you want this status to be displayed in as many columns as there are people assigned to it. This option is ideal for states in which tasks are distributed among different workers.",
         "state-color": "State's color",
@@ -547,6 +549,8 @@
         "substatesWithCards": "Showing only substates with cards",
         "substatesWithoutCards": "Showing only substates whithout cards",
         "taskDescription": "Task description",
+        "timelineLabel": "Timeline template",
+        "timelineStates": "Timeline states",
         "workOrderInformation": "Work order information"
     }
 }
