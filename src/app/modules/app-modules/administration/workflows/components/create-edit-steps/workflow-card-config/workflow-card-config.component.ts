@@ -28,8 +28,7 @@ import { WorkflowStepAbstractClass } from '../workflow-step-abstract-class';
 @Component({
   selector: 'app-workflow-card-config',
   templateUrl: './workflow-card-config.component.html',
-  styleUrls: ['./workflow-card-config.component.scss'],
-  encapsulation: ViewEncapsulation.None
+  styleUrls: ['./workflow-card-config.component.scss']
 })
 export class WorkflowCardConfigComponent extends WorkflowStepAbstractClass implements OnInit {
   @Input() workflowId: number;
@@ -41,16 +40,10 @@ export class WorkflowCardConfigComponent extends WorkflowStepAbstractClass imple
     tableView: marker('workflows.cardsInTableView'),
     field: marker('common.field'),
     required: marker('errors.required'),
-    noData: marker('errors.noDataToShow'),
-    filter: marker('common.filterAction'),
     select: marker('common.select'),
     addField: marker('workflows.addField')
   };
-  public treeControl = new NestedTreeControl<TreeNode>((node) => node.children);
-  public dataSource = new MatTreeNestedDataSource<TreeNode>();
-  //Used to highlight the results
-  public searchedWords$: Observable<string[]> = of([]);
-  public filterTextSearchControl = new UntypedFormControl();
+  public treeData: TreeNode[] = [];
   private lastInputSelected: { viewType: 'BOARD' | 'TABLE' | 'CALENDAR'; fieldIndex: number };
 
   constructor(
@@ -68,14 +61,6 @@ export class WorkflowCardConfigComponent extends WorkflowStepAbstractClass imple
 
   ngOnInit() {
     super.ngOnInit();
-    this.filterTextSearchControl.valueChanges.pipe(untilDestroyed(this)).subscribe((value) => {
-      if (value) {
-        this.searchedWords$ = of([value]);
-      } else {
-        this.searchedWords$ = of([]);
-      }
-      this.filter();
-    });
   }
 
   public initForm(data: any): void {
@@ -106,29 +91,12 @@ export class WorkflowCardConfigComponent extends WorkflowStepAbstractClass imple
     });
   }
 
-  public resetFilter(): void {
-    this.filterTextSearchControl.setValue(null);
-  }
-
-  public filter(): void {
-    const originalData: TreeNode[] = lodash.cloneDeep(this.originalData.attributes);
-    const filterValue = this.filterTextSearchControl.value ? normalizaStringToLowerCase(this.filterTextSearchControl.value) : '';
-    if (filterValue) {
-      this.setTreeDataSource(this.filterNodes(filterValue, originalData));
-    } else {
-      this.setTreeDataSource(originalData);
-    }
-  }
-
-  public hasChild = (_: number, node: TreeNode) => !!node.children && node.children.length > 0;
-
   public selectAttribute(node: CardColumnTabItemDTO): void {
     this.form
       .get(`${this.lastInputSelected.viewType}.field${this.lastInputSelected.fieldIndex}.tabItem`)
       ?.setValue(this.originalData.tabItems.find((item: CardColumnTabItemDTO) => item.id === node.id));
     this.form.get(`${this.lastInputSelected.viewType}.field${this.lastInputSelected.fieldIndex}.tabItem`)?.markAsDirty();
     this.form.get(`${this.lastInputSelected.viewType}.field${this.lastInputSelected.fieldIndex}.tabItem`)?.markAsTouched();
-    this.resetFilter();
     this.trigger.closeMenu();
   }
 
@@ -268,14 +236,6 @@ export class WorkflowCardConfigComponent extends WorkflowStepAbstractClass imple
     return formGroup;
   }
 
-  private setTreeDataSource(data: TreeNode[]): void {
-    this.dataSource.data = null;
-    this.treeControl.dataNodes = null;
-    this.dataSource.data = data;
-    this.treeControl.dataNodes = data;
-    this.treeControl.expandAll();
-  }
-
   private createAttrTree() {
     let attrs: CardColumnTabItemDTO[] = [];
     this.originalData.attributes.forEach((cardColumn: CardColumnDTO) => {
@@ -289,20 +249,6 @@ export class WorkflowCardConfigComponent extends WorkflowStepAbstractClass imple
       });
     });
     this.originalData.tabItems = attrs;
-    this.setTreeDataSource(this.originalData.attributes);
-  }
-
-  private filterNodes(filterValue: string, data: TreeNode[]): TreeNode[] {
-    return data.filter((item: TreeNode) => {
-      if (normalizaStringToLowerCase(item.name ? item.name : '').indexOf(filterValue) >= 0) {
-        return item;
-      } else if (item.children?.length) {
-        item.children = this.filterNodes(filterValue, item.children);
-        if (item.children.length) {
-          return item;
-        }
-      }
-      return null;
-    });
+    this.treeData = this.originalData.attributes;
   }
 }

@@ -22,12 +22,12 @@ export class WfEditSubstateEventsTabComponent extends WfEditSubstateAbstractTabC
     private fb: FormBuilder,
     public editSubstateAuxService: WEditSubstateFormAuxService,
     private substatesService: WorkflowAdministrationStatesSubstatesService,
-    private spinnerService: ProgressSpinnerDialogService,
+    public spinnerService: ProgressSpinnerDialogService,
     private logger: NGXLogger,
     private translateService: TranslateService,
     private globalMessageService: GlobalMessageService
   ) {
-    super(editSubstateAuxService);
+    super(editSubstateAuxService, spinnerService);
   }
 
   public initForm(data: WorkflowSubstateDTO): void {
