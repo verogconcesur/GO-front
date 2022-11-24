@@ -7,9 +7,10 @@
     min-height: 400px;
     max-height: 600px;
     &.darker-bg {
-      padding: 0px;
-      margin-top: 10px;
-      background-color: mat-contrast($primary, 500);
+      margin-top: 23px;
+      margin-bottom: 13px;
+      padding: 0;
+      background-color: mat-color($background, background-administration);
     }
   }
 }
