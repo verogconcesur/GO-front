@@ -64,6 +64,7 @@ export class WorkflowStatesComponent extends WorkflowStepAbstractClass implement
   }
 
   ngOnInit(): void {
+    super.ngOnInit();
     this.initListener();
   }
 
@@ -414,10 +415,11 @@ export class WorkflowStatesComponent extends WorkflowStepAbstractClass implement
     });
   }
 
+  //Los guardados se hacen de manera parcial con cada acción
   public async saveStep(): Promise<boolean> {
-    const spinner = this.spinnerService.show();
+    // const spinner = this.spinnerService.show();
     return new Promise((resolve, reject) => {
-      this.spinnerService.hide(spinner);
+      // this.spinnerService.hide(spinner);
       resolve(true);
       //resolve(false) => si se produce error
     });

@@ -22,25 +22,10 @@
       justify-content: center;
       padding-top: 10px;
       h2 {
-        background-color: rgba(mat-contrast($primary, 500), 80%);
+        background-color: rgba(mat-color($background, background-administration), 80%);
+        color: mat-contrast($primary, 100);
         border-radius: 10px;
         padding: 5px 10px;
-      }
-    }
-    &__substate {
-      background-color: mat-contrast($primary, 400);
-      padding: 10px 15px;
-      border-radius: 5px;
-      width: 215px;
-      min-height: 100%;
-      display: flex;
-      justify-content: flex-start;
-      align-items: center;
-      &.target {
-        margin: 15px 0px 15px 40px;
-      }
-      &.source {
-        margin: 15px 40px 15px 0;
       }
     }
     &.target {
@@ -49,6 +34,72 @@
       &.from {
         min-height: auto;
         border-left: 0px;
+      }
+    }
+    &__substate {
+      background-color: mat-contrast($primary, 400);
+      padding: 10px 15px;
+      border-radius: 10px;
+      width: 215px;
+      height: 42px;
+      display: flex;
+      justify-content: flex-start;
+      align-items: center;
+      color: mat-color($primary, 500);
+      position: relative;
+      &.source,
+      &.target {
+        .line {
+          position: absolute;
+          top: 50%;
+          height: 2px;
+          width: 40px;
+          border-top: 2px solid mat-color($primary, 500);
+          &.dotted {
+            width: 38px;
+            border-top: 2px dashed mat-color($primary, 300);
+          }
+          &::before {
+            content: '';
+            width: 10px;
+            height: 10px;
+            top: -6px;
+            border-radius: 10px;
+            position: absolute;
+            background-color: mat-color($primary, 500);
+          }
+        }
+      }
+      &.source {
+        margin: 15px 40px 15px 0;
+        .line {
+          right: -40px;
+          &::before {
+            left: -6px;
+          }
+        }
+      }
+      &.target {
+        margin: 15px 0px 15px 40px;
+        &.add-movement {
+          height: 38px;
+          cursor: pointer;
+          background-color: transparent;
+          border: 2px solid mat-color($primary, 500);
+        }
+        .line {
+          left: -40px;
+          &.dotted {
+            width: 38px;
+            left: -38px;
+          }
+          &::before {
+            right: -4px;
+          }
+        }
+      }
+      mat-icon {
+        margin-right: 10px;
       }
     }
   }
