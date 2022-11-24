@@ -1,1 +1,18 @@
-<p>workflow-budgets works!</p>
+<div *ngIf="form && originalData" class="budgets-container">
+    <div class="budgets-container__section" fxLayout="row wrap">
+        <div class="budgets-container__section__title">
+            <h1>{{ labels.budgets | translate }}</h1>
+        </div>
+        <div *ngFor="let budget of originalData.budgetTemplates" fxLayout="column" fxLayoutAlign="start center">
+            <div
+                class="budgets-container__section__item"
+                [ngClass]="{ selected: itemIsSelected(budget) }"
+                (click)="selectItem(budget)"
+                fxLayout="column"
+                fxLayoutAlign="center center"
+            >
+                <span>{{ budget?.name }}</span>
+            </div>
+        </div>
+    </div>
+</div>

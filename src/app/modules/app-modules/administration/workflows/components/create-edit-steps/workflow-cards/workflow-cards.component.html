@@ -1,22 +1,22 @@
-<div *ngIf="form" class="roles-container">
-    <div class="roles-container__section" fxLayout="row wrap">
-        <div class="roles-container__section__title">
+<div *ngIf="form" class="cards-container">
+    <div class="cards-container__section" fxLayout="row wrap">
+        <div class="cards-container__section__title">
             <h1>{{ labels.cards | translate }}</h1>
         </div>
         <div *ngFor="let card of cardsList" fxLayout="column" fxLayoutAlign="start center">
             <div
-                class="roles-container__section__item"
+                class="cards-container__section__item"
                 [ngClass]="{ selected: itemIsSelected(card) }"
                 (click)="selectItem(card)"
                 fxLayout="column"
                 fxLayoutAlign="center center"
             >
                 <span>{{ card?.name }}</span>
-                <span class="roles-container__section__item__workflows"
+                <span class="cards-container__section__item__workflows"
                     >{{ card?.workflowCount }} {{ labels.workflows | translate }}</span
                 >
             </div>
-            <div class="roles-container__section__edit" fxLayoutAlign="center center" *ngIf="itemIsSelected(card)" (click)="editPermissions()">
+            <div class="cards-container__section__edit" fxLayoutAlign="center center" *ngIf="itemIsSelected(card)" (click)="editPermissions()">
                 <mat-icon>edit</mat-icon> <span>{{ labels.permissions | translate }}</span>
             </div>
         </div>
