@@ -19,7 +19,19 @@ export class WorkflowAdministrationStatesSubstatesService {
   private readonly SUBSTATES_PATH = '/substates';
   private readonly ORDERS_PATH = '/orders';
   private readonly MOVEMENTS_PATH = '/movements';
+  private readonly ALL_PATH = '/all';
   constructor(@Inject(ENV) private env: Env, private http: HttpClient, private workflowFilterService: WorkflowFilterService) {}
+
+  /**
+   * Devuelve el listado completo de estados y subestados.
+   *
+   * @returns WorkflowStateDTO[]
+   */
+  public getAllStatesAndSubstates(): Observable<WorkflowStateDTO[]> {
+    return this.http
+      .get<WorkflowStateDTO[]>(`${this.env.apiBaseUrl}${this.WORKFLOW_PATH}${this.STATES_PATH}${this.ALL_PATH}`)
+      .pipe(catchError((error) => throwError(error.error as ConcenetError)));
+  }
 
   /**
    * Obtener Workflow States and Substates

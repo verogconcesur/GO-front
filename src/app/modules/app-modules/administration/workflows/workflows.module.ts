@@ -31,6 +31,7 @@ import { WfEditSubstateGeneralTabComponent } from './components/create-edit-step
 import { WfEditSubstateMovementsTabComponent } from './components/create-edit-steps/workflow-states/modals/wf-edit-substate-dialog/tabs/wf-edit-substate-movements-tab/wf-edit-substate-movements-tab.component';
 import { WfEditSubstateEventsTabComponent } from './components/create-edit-steps/workflow-states/modals/wf-edit-substate-dialog/tabs/wf-edit-substate-events-tab/wf-edit-substate-events-tab.component';
 import { WfEditPermissionsTabComponent } from './components/create-edit-steps/workflow-states/modals/wf-edit-substate-dialog/tabs/wf-edit-permissions-tab/wf-edit-permissions-tab.component';
+import { GenericTreeNodeSearcherModule } from '@modules/feature-modules/generic-tree-node-searcher/generic-tree-node-searcher.module';
 
 @NgModule({
   declarations: [
@@ -62,7 +63,8 @@ import { WfEditPermissionsTabComponent } from './components/create-edit-steps/wo
     FilterDrawerModule,
     AdministrationCommonHeaderSectionModule,
     OrganizationLevelsNestedCombosModule,
-    UserSearcherDialogModule
+    UserSearcherDialogModule,
+    GenericTreeNodeSearcherModule
   ]
 })
 export class WorkflowsModule {}

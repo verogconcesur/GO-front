@@ -8,8 +8,9 @@ import WorkflowSubstateDTO from '@data/models/workflows/workflow-substate-dto';
 import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
 import { TranslateService } from '@ngx-translate/core';
 import { ConfirmDialogService } from '@shared/services/confirm-dialog.service';
+import { ProgressSpinnerDialogService } from '@shared/services/progress-spinner-dialog.service';
 import { Observable } from 'rxjs';
-import { take } from 'rxjs/operators';
+import { finalize, take } from 'rxjs/operators';
 import { TAB_IDS, WEditSubstateFormAuxService } from '../aux-service/wf-edit-substate-aux.service';
 
 /**
@@ -25,7 +26,7 @@ export abstract class WfEditSubstateAbstractTabClass implements OnInit {
   @Input() tabId: TAB_IDS;
   @Output() substateChanged: EventEmitter<WorkflowSubstateDTO> = new EventEmitter();
 
-  constructor(public editSubstateAuxService: WEditSubstateFormAuxService) {}
+  constructor(public editSubstateAuxService: WEditSubstateFormAuxService, public spinnerService: ProgressSpinnerDialogService) {}
 
   get form(): UntypedFormGroup {
     return this.editSubstateAuxService.getFormGroupByTab(this.tabId);
@@ -36,8 +37,12 @@ export abstract class WfEditSubstateAbstractTabClass implements OnInit {
     if (this.dataToInitForm) {
       this.initForm(this.dataToInitForm);
     } else {
+      const spinner = this.spinnerService.show();
       this.getData()
-        .pipe(take(1))
+        .pipe(
+          take(1),
+          finalize(() => this.spinnerService.hide(spinner))
+        )
         .subscribe((data) => {
           this.dataToInitForm = data;
           this.initForm(this.dataToInitForm);
