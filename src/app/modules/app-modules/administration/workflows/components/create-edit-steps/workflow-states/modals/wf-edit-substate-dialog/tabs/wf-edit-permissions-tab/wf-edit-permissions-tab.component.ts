@@ -6,6 +6,7 @@ import { TranslateService } from '@ngx-translate/core';
 import { GlobalMessageService } from '@shared/services/global-message.service';
 import { ProgressSpinnerDialogService } from '@shared/services/progress-spinner-dialog.service';
 import { NGXLogger } from 'ngx-logger';
+import { Observable, of } from 'rxjs';
 import { WEditSubstateFormAuxService } from '../../aux-service/wf-edit-substate-aux.service';
 import { WfEditSubstateAbstractTabClass } from '../wf-edit-substate-abstract-tab-class';
 
@@ -62,5 +63,10 @@ export class WfEditPermissionsTabComponent extends WfEditSubstateAbstractTabClas
     //       });
     //     }
     //   });
+  }
+
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  public getData(): Observable<any> {
+    return of(true);
   }
 }

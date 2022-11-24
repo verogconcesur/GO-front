@@ -1,6 +1,6 @@
 <div class="edit-substate">
     <app-responsive-tabs [tabs]="tabs" (tabSelectedEvent)="tabChange($event)"></app-responsive-tabs>
-    <div class="edit-substate__tab" [ngSwitch]="tabToShow?.id">
+    <div class="edit-substate__tab" [ngSwitch]="tabToShow?.id" [ngClass]="{ 'darker-bg': tabToShow?.id === 'MOVEMENTS' }">
         <app-wf-edit-substate-general-tab
             *ngSwitchCase="'GENERAL'"
             [state]="state"
@@ -24,7 +24,6 @@
             [state]="state"
             [substate]="substate"
             [workflowId]="workflowId"
-            [dataToInitForm]="substate"
             (substateChanged)="substateChanged($event)"
             [tabId]="tabToShow?.id"
         ></app-wf-edit-substate-movements-tab>

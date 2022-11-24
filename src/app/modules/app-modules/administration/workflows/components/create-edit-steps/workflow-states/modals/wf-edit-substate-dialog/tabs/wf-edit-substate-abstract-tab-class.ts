@@ -8,6 +8,7 @@ import WorkflowSubstateDTO from '@data/models/workflows/workflow-substate-dto';
 import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
 import { TranslateService } from '@ngx-translate/core';
 import { ConfirmDialogService } from '@shared/services/confirm-dialog.service';
+import { Observable } from 'rxjs';
 import { take } from 'rxjs/operators';
 import { TAB_IDS, WEditSubstateFormAuxService } from '../aux-service/wf-edit-substate-aux.service';
 
@@ -32,7 +33,16 @@ export abstract class WfEditSubstateAbstractTabClass implements OnInit {
 
   ngOnInit(): void {
     this.initListeners();
-    this.initForm(this.dataToInitForm);
+    if (this.dataToInitForm) {
+      this.initForm(this.dataToInitForm);
+    } else {
+      this.getData()
+        .pipe(take(1))
+        .subscribe((data) => {
+          this.dataToInitForm = data;
+          this.initForm(this.dataToInitForm);
+        });
+    }
   }
 
   private initListeners(): void {
@@ -47,4 +57,6 @@ export abstract class WfEditSubstateAbstractTabClass implements OnInit {
   public abstract initForm(data?: any): void;
 
   public abstract saveData(): void;
+
+  public abstract getData(): Observable<any>;
 }
