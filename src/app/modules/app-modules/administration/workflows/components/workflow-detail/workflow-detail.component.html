@@ -35,12 +35,12 @@
             </mat-tab>
         </mat-tab-group>
         <div [ngSwitch]="tabIndex">
-            <!-- <app-workflow-states [workflowId]="workflowDetail?.id" [stepIndex]="0" *ngSwitchCase="0"></app-workflow-states> -->
-            <app-workflow-organization
+            <app-workflow-states [workflowId]="workflowDetail?.id" [stepIndex]="0" *ngSwitchCase="0"></app-workflow-states>
+            <!-- <app-workflow-organization
                 [workflowId]="workflowDetail?.id"
                 [stepIndex]="0"
                 *ngSwitchCase="0"
-            ></app-workflow-organization>
+            ></app-workflow-organization> -->
             <app-workflow-roles [workflowId]="workflowDetail?.id" [stepIndex]="1" *ngSwitchCase="1"></app-workflow-roles>
             <app-workflow-users [workflowId]="workflowDetail?.id" [stepIndex]="2" *ngSwitchCase="2"></app-workflow-users>
             <app-workflow-cards [workflowId]="workflowDetail?.id" [stepIndex]="3" *ngSwitchCase="3"></app-workflow-cards>

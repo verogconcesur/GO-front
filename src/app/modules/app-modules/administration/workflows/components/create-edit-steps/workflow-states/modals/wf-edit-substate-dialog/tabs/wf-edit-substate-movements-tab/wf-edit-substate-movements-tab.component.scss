@@ -56,7 +56,7 @@
           width: 40px;
           border-top: 2px solid mat-color($primary, 500);
           &.dotted {
-            width: 38px;
+            width: 40px;
             border-top: 2px dashed mat-color($primary, 300);
           }
           &::before {
@@ -77,6 +77,14 @@
           &::before {
             left: -6px;
           }
+          &.down {
+            right: -42px;
+            height: 50%;
+            width: 40px;
+            border-top: 3px solid mat-color($primary, 500);
+            border-right: 3px solid mat-color($primary, 500);
+            border-top-right-radius: 15px;
+          }
         }
       }
       &.target {
@@ -89,18 +97,58 @@
         }
         .line {
           left: -40px;
-          &.dotted {
-            width: 38px;
-            left: -38px;
-          }
           &::before {
             right: -4px;
           }
+          &.up {
+            left: -42px;
+            height: 140%;
+            width: 40px;
+            top: -90%;
+            border-top: 0px;
+            border-bottom: 3px solid mat-color($primary, 500);
+            border-left: 3px solid mat-color($primary, 500);
+            border-bottom-left-radius: 15px;
+            &::before {
+              top: calc(100% - 4px);
+            }
+          }
         }
       }
-      mat-icon {
+      &.target:nth-child(2) {
+        .line {
+          &.up {
+            height: 100%;
+            top: -50%;
+          }
+        }
+      }
+      mat-icon.info-icon {
         margin-right: 10px;
       }
+      .move-options {
+        top: -18px;
+        left: -54px;
+        border-radius: 50px;
+        position: absolute;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        padding: 2px;
+        cursor: pointer;
+        background-color: mat-color($primary, 500);
+        color: mat-contrast($primary, 400);
+      }
     }
+  }
+}
+
+.attr-menu {
+  width: 450px;
+  max-width: 450px !important;
+  .mat-menu-content,
+  .mat-menu-content:not(:empty) {
+    padding-top: 0px;
+    padding-bottom: 0px;
   }
 }

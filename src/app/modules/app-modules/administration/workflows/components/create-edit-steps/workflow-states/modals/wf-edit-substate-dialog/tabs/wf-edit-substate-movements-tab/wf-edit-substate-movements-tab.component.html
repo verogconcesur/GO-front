@@ -9,17 +9,40 @@
 <div class="substate-movements">
     <div class="substate-movements__column source">
         <div class="substate-movements__column__substate source mat-elevation-z2">
-            <mat-icon>home</mat-icon>
+            <mat-icon class="info-icon">home</mat-icon>
             <div class="substate-movements__column__substate__info">{{ state?.name }} / {{ substate?.name }}</div>
             <div class="line dotted"></div>
-            <div class="line"></div>
+            <div class="line down" *ngIf="movementsFa?.controls.length"></div>
         </div>
     </div>
     <div class="substate-movements__column target">
-        <div class="substate-movements__column__substate target add-movement mat-elevation-z2" (click)="addMovement()">
+        <div
+            class="substate-movements__column__substate target add-movement mat-elevation-z2"
+            [matMenuTriggerFor]="attrSearcherMenu"
+            (click)="$event.stopPropagation()"
+        >
             <mat-icon>add</mat-icon>
             <div class="substate-movements__column__substate__info">{{ labels.addMovement }}</div>
             <div class="line dotted"></div>
         </div>
+        <div *ngFor="let targetFg of movementsFa?.controls" class="substate-movements__column__substate target mat-elevation-z2">
+            <div class="substate-movements__column__substate__info">
+                {{ targetFg.value.workflowSubstateTarget.workflowState?.name }} / {{ targetFg.value.workflowSubstateTarget.name }}
+            </div>
+            <div class="line up"></div>
+
+            <div class="move-options">
+                <mat-icon>more_vert</mat-icon>
+            </div>
+        </div>
     </div>
 </div>
+
+<button style="display: none" #menuTrigger="matMenuTrigger" [matMenuTriggerFor]="attrSearcherMenu"></button>
+<mat-menu #attrSearcherMenu="matMenu" class="attr-menu" (closed)="genericTreeNodeSearcher.resetFilter()">
+    <app-generic-tree-node-searcher
+        #genericTreeNodeSearcher
+        [originalData]="allStatesAndSubstates"
+        (nodeSelected)="nodeSelected($event)"
+    ></app-generic-tree-node-searcher>
+</mat-menu>

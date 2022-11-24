@@ -1,9 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { NestedTreeControl } from '@angular/cdk/tree';
 import { Component, Input, OnInit, ViewChild, ViewEncapsulation } from '@angular/core';
-import { UntypedFormBuilder, UntypedFormControl, UntypedFormGroup, Validators } from '@angular/forms';
+import { UntypedFormBuilder, UntypedFormGroup, Validators } from '@angular/forms';
 import { MatMenuTrigger } from '@angular/material/menu';
-import { MatTreeNestedDataSource } from '@angular/material/tree';
 import { marker } from '@biesbjerg/ngx-translate-extract-marker';
 import TreeNode from '@data/interfaces/tree-node';
 import CardColumnDTO from '@data/models/cards/card-column-dto';
@@ -11,15 +9,13 @@ import CardColumnTabDTO from '@data/models/cards/card-column-tab-dto';
 import CardColumnTabItemDTO from '@data/models/cards/card-column-tab-item-dto';
 import WorkflowViewDTO from '@data/models/workflow-admin/workflow-view-dto';
 import { WorkflowAdministrationService } from '@data/services/workflow-administration.service';
-import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
+import { UntilDestroy } from '@ngneat/until-destroy';
 import { TranslateService } from '@ngx-translate/core';
 import { ConfirmDialogService } from '@shared/services/confirm-dialog.service';
 import { GlobalMessageService } from '@shared/services/global-message.service';
 import { ProgressSpinnerDialogService } from '@shared/services/progress-spinner-dialog.service';
-import { normalizaStringToLowerCase } from '@shared/utils/string-normalization-lower-case';
-import lodash from 'lodash';
 import { NGXLogger } from 'ngx-logger';
-import { forkJoin, Observable, of } from 'rxjs';
+import { forkJoin } from 'rxjs';
 import { finalize, take } from 'rxjs/operators';
 import { WorkflowsCreateEditAuxService } from '../../../aux-service/workflows-create-edit-aux.service';
 import { WorkflowStepAbstractClass } from '../workflow-step-abstract-class';
@@ -28,7 +24,8 @@ import { WorkflowStepAbstractClass } from '../workflow-step-abstract-class';
 @Component({
   selector: 'app-workflow-card-config',
   templateUrl: './workflow-card-config.component.html',
-  styleUrls: ['./workflow-card-config.component.scss']
+  styleUrls: ['./workflow-card-config.component.scss'],
+  encapsulation: ViewEncapsulation.None
 })
 export class WorkflowCardConfigComponent extends WorkflowStepAbstractClass implements OnInit {
   @Input() workflowId: number;

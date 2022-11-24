@@ -139,4 +139,18 @@ export class WorkflowAdministrationStatesSubstatesService {
       )
       .pipe(catchError((error) => throwError(error.error as ConcenetError)));
   }
+
+  public postWorkflowSubstateMovements(
+    workflowId: number,
+    substateId: number,
+    wfMovement: WorkflowMoveDTO
+  ): Observable<WorkflowMoveDTO> {
+    return this.http
+      .post<WorkflowMoveDTO>(
+        // eslint-disable-next-line max-len
+        `${this.env.apiBaseUrl}${this.WORKFLOW_PATH}/${workflowId}${this.STATES_PATH}${this.SUBSTATES_PATH}/${substateId}${this.MOVEMENTS_PATH}`,
+        wfMovement
+      )
+      .pipe(catchError((error) => throwError(error.error as ConcenetError)));
+  }
 }
