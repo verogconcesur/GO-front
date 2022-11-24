@@ -261,6 +261,7 @@
         "to": "Hasta",
         "town": "Ciudad",
         "type3CharsToSearch": "Escribe al menos tres caracteres...",
+        "typeBudget": "Añade una plantilla de presupuestos",
         "typeCard": "Tipos de ficha",
         "unfollow": "Dejar de seguir",
         "unsavedChangesExit": "Hay cambios en el formulario sin guardar, ¿desea salir igualmente?",
@@ -526,6 +527,7 @@
         "selectDepartments": "Seleccione deparamento de: {facility}",
         "selectFacilities": "¿A qué instalación pertenece?",
         "selectSpecialties": "Seleccione especialidad de: {department}",
+        "selectTimeline": "Seleccione plantilla de timeline",
         "state-anchor": "Anclar estado en la vista de tablero",
         "state-anchorDescription": "Selecciona esta opción si deseas que este estado se visualice en tantas columnas como personas tenga asignadas. Esta opción es la idónea para estados en los que se reparten tareas entre diferentes trabajadores.",
         "state-color": "Color de estado",
@@ -547,6 +549,8 @@
         "substatesWithCards": "Mostrando únicamente subestados con tarjetas",
         "substatesWithoutCards": "Mostrando únicamente subestados sin tarjetas",
         "taskDescription": "Descripción de la tarea",
+        "timelineLabel": "Plantilla de timeline",
+        "timelineStates": "Estados de timeline",
         "workOrderInformation": "Información de la orden de trabajo"
     }
 }

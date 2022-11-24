@@ -32,6 +32,7 @@ export class WorkflowAdministrationService {
   private readonly ATTRIBUTES_PATH = '/attributes';
   private readonly TIMELINE_PATH = '/timeline';
   private readonly TEMPLATES_PATH = '/listTemplates';
+  private readonly BUDGET_PATH = '/budget';
   constructor(@Inject(ENV) private env: Env, private http: HttpClient, private workflowFilterService: WorkflowFilterService) {}
 
   /**
@@ -255,6 +256,28 @@ export class WorkflowAdministrationService {
         `${this.env.apiBaseUrl}${this.WORKFLOW_PATH}/${workflowId}${this.TIMELINE_PATH}`,
         workflowTimeline
       )
+      .pipe(catchError((error) => throwError(error.error as ConcenetError)));
+  }
+
+  /**
+   * Obtener Budget Workflow
+   *
+   * @returns WorkflowTimeLineDTO
+   */
+  public getWorkflowBudget(workflowId: number): Observable<TemplatesCommonDTO> {
+    return this.http
+      .get<TemplatesCommonDTO>(`${this.env.apiBaseUrl}${this.WORKFLOW_PATH}/${workflowId}${this.BUDGET_PATH}`)
+      .pipe(catchError((error) => throwError(error.error as ConcenetError)));
+  }
+
+  /**
+   * Editar Budget Workflow
+   *
+   * @returns WorkflowTimeLineDTO
+   */
+  public postWorkflowBudget(workflowId: number, budget: TemplatesCommonDTO): Observable<TemplatesCommonDTO> {
+    return this.http
+      .post<TemplatesCommonDTO>(`${this.env.apiBaseUrl}${this.WORKFLOW_PATH}/${workflowId}${this.BUDGET_PATH}`, budget)
       .pipe(catchError((error) => throwError(error.error as ConcenetError)));
   }
 }
