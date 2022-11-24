@@ -89,7 +89,7 @@ export class WfEditSubstateDialogComponent extends ComponentToExtendForCustomDia
   public setSubstateTitle(): void {
     let title = this.translateService.instant(marker('workflows.editSubstate'));
     if (this.state && this.substate) {
-      title = `${title} (${this.state.name} => ${this.substate.name})`;
+      title = `${title} (${this.state.name} / ${this.substate.name})`;
     }
     super.MODAL_TITLE = title;
   }
@@ -144,7 +144,9 @@ export class WfEditSubstateDialogComponent extends ComponentToExtendForCustomDia
           design: 'raised',
           color: '',
           clickFn: () => this.editSubstateAuxService.resetForm$.next(true),
-          hiddenFn: () => !(this.form.get(this.tabToShow.id).touched && this.form.get(this.tabToShow.id).dirty)
+          hiddenFn: () =>
+            !(this.form.get(this.tabToShow.id).touched && this.form.get(this.tabToShow.id).dirty) ||
+            this.tabToShow?.id === 'MOVEMENTS'
         },
         {
           type: 'custom',
@@ -152,6 +154,7 @@ export class WfEditSubstateDialogComponent extends ComponentToExtendForCustomDia
           design: 'raised',
           color: 'primary',
           clickFn: () => this.editSubstateAuxService.saveAction$.next(true),
+          hiddenFn: () => this.tabToShow?.id === 'MOVEMENTS',
           disabledFn: () =>
             !(
               this.form.get(this.tabToShow.id).touched &&
