@@ -143,9 +143,9 @@ export class WorkflowAdministrationService {
    *
    * @returns CardDTO[]
    */
-  public getWorkflowCard(workflowId: number): Observable<CardDTO[]> {
+  public getWorkflowCard(workflowId: number): Observable<CardDTO> {
     return this.http
-      .get<CardDTO[]>(`${this.env.apiBaseUrl}${this.WORKFLOW_PATH}/${workflowId}${this.CARD_PATH}`)
+      .get<CardDTO>(`${this.env.apiBaseUrl}${this.WORKFLOW_PATH}/${workflowId}${this.CARD_PATH}`)
       .pipe(catchError((error) => throwError(error.error as ConcenetError)));
   }
   /**
