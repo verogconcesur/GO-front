@@ -17,7 +17,7 @@
   &__column {
     padding-top: 40px;
     &.from {
-      width: 325px;
+      width: 400px;
       display: flex;
       justify-content: center;
       padding-top: 10px;
@@ -40,7 +40,7 @@
       background-color: mat-contrast($primary, 400);
       padding: 10px 15px;
       border-radius: 10px;
-      width: 215px;
+      width: 300px;
       height: 42px;
       display: flex;
       justify-content: flex-start;
@@ -56,7 +56,7 @@
           width: 40px;
           border-top: 2px solid mat-color($primary, 500);
           &.dotted {
-            width: 38px;
+            width: 40px;
             border-top: 2px dashed mat-color($primary, 300);
           }
           &::before {
@@ -77,11 +77,21 @@
           &::before {
             left: -6px;
           }
+          &.down {
+            right: -42px;
+            height: 50%;
+            width: 40px;
+            border-top: 3px solid mat-color($primary, 500);
+            border-right: 3px solid mat-color($primary, 500);
+            border-top-right-radius: 15px;
+          }
         }
       }
       &.target {
         margin: 15px 0px 15px 40px;
+        justify-content: space-between;
         &.add-movement {
+          justify-content: flex-start;
           height: 38px;
           cursor: pointer;
           background-color: transparent;
@@ -89,18 +99,130 @@
         }
         .line {
           left: -40px;
-          &.dotted {
-            width: 38px;
-            left: -38px;
-          }
           &::before {
             right: -4px;
           }
+          &.up {
+            left: -42px;
+            height: 140%;
+            width: 40px;
+            top: -90%;
+            border-top: 0px;
+            border-bottom: 3px solid mat-color($primary, 500);
+            border-left: 3px solid mat-color($primary, 500);
+            border-bottom-left-radius: 15px;
+            &::before {
+              top: calc(100% - 4px);
+            }
+          }
+        }
+        .substate-movements__column__substate__info {
+          width: 100%;
+          display: flex;
+          justify-content: flex-start;
+          align-items: center;
+          flex-direction: column;
+          div {
+            width: 100%;
+            font-size: 0.9em;
+            display: flex;
+            justify-content: flex-start;
+            align-items: center;
+            mat-icon {
+              margin-right: 5px;
+            }
+            &.state-substate-name {
+              color: mat-color($primary, 900);
+              overflow: hidden;
+              white-space: nowrap;
+              text-overflow: ellipsis;
+            }
+            &.extra-info {
+              font-size: 0.85em;
+              width: 100%;
+              .chip {
+                margin-left: 5px;
+                color: mat-contrast($primary, 400);
+                background-color: mat-color($primary, 300);
+                overflow: hidden;
+                border-radius: 20px;
+                max-width: 24px;
+                padding: 3px;
+                white-space: nowrap;
+                display: flex;
+                justify-content: flex-start;
+                align-items: center;
+                transition: max-width 0.5s ease;
+                cursor: pointer;
+                position: relative;
+                &:first-child {
+                  margin-left: 0px;
+                }
+                &.wf-2::before {
+                  content: '+';
+                  position: absolute;
+                  top: -3px;
+                  left: 7px;
+                }
+                mat-icon {
+                  margin-right: 0px;
+                }
+                label {
+                  margin-left: 5px;
+                  cursor: pointer;
+                }
+                &.selected {
+                  background-color: mat-color($primary, 400);
+                  max-width: calc(100% - 29px);
+                }
+              }
+            }
+          }
         }
       }
-      mat-icon {
+      &.target:nth-child(2) {
+        .line {
+          &.up {
+            height: 100%;
+            top: -50%;
+          }
+        }
+      }
+      mat-icon.info-icon {
         margin-right: 10px;
       }
+      mat-icon.delete-icon {
+        color: mat-color($primary, paginator);
+        font-size: 1.2em;
+        cursor: pointer;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+      }
+
+      .move-options {
+        top: -18px;
+        left: -54px;
+        border-radius: 50px;
+        position: absolute;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        padding: 2px;
+        cursor: pointer;
+        background-color: mat-color($primary, 500);
+        color: mat-contrast($primary, 400);
+      }
     }
+  }
+}
+
+.attr-menu {
+  width: 450px;
+  max-width: 450px !important;
+  .mat-menu-content,
+  .mat-menu-content:not(:empty) {
+    padding-top: 0px;
+    padding-bottom: 0px;
   }
 }
