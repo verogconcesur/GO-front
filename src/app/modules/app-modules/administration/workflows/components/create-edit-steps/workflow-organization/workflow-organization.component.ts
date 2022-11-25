@@ -66,7 +66,6 @@ export class WorkflowOrganizationComponent extends WorkflowStepAbstractClass {
       departments: [data?.departments],
       specialties: [data?.specialties]
     });
-    this.originalData = this.form.getRawValue();
     this.workflowsCreateEditAuxService.resetForm$.pipe(untilDestroyed(this)).subscribe(() => {
       this.getOptionsAfterSelection('facilities');
     });
@@ -160,8 +159,7 @@ export class WorkflowOrganizationComponent extends WorkflowStepAbstractClass {
         .getWorkflowOrganization(this.workflowId)
         .pipe(take(1))
         .subscribe((res) => {
-          this.organizationData = res;
-          this.initForm(res);
+          this.originalData = res;
           this.getFacilityOptions();
           this.spinnerService.hide(spinner);
           resolve(true);

@@ -24,8 +24,7 @@ import { WorkflowStepAbstractClass } from '../workflow-step-abstract-class';
 @Component({
   selector: 'app-workflow-card-config',
   templateUrl: './workflow-card-config.component.html',
-  styleUrls: ['./workflow-card-config.component.scss'],
-  encapsulation: ViewEncapsulation.None
+  styleUrls: ['./workflow-card-config.component.scss']
 })
 export class WorkflowCardConfigComponent extends WorkflowStepAbstractClass implements OnInit {
   @Input() workflowId: number;

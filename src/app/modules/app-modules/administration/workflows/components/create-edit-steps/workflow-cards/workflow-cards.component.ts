@@ -10,6 +10,7 @@ import { ConfirmDialogService } from '@shared/services/confirm-dialog.service';
 import { GlobalMessageService } from '@shared/services/global-message.service';
 import { ProgressSpinnerDialogService } from '@shared/services/progress-spinner-dialog.service';
 import { NGXLogger } from 'ngx-logger';
+import { forkJoin } from 'rxjs';
 import { finalize, take } from 'rxjs/operators';
 import { WorkflowsCreateEditAuxService } from '../../../aux-service/workflows-create-edit-aux.service';
 import { WorkflowStepAbstractClass } from '../workflow-step-abstract-class';
@@ -50,9 +51,8 @@ export class WorkflowCardsComponent extends WorkflowStepAbstractClass {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   public initForm(data: any): void {
     this.form = this.fb.group({
-      card: [data, [Validators.required]]
+      card: [data?.cardData, [Validators.required]]
     });
-    this.originalData = this.form.getRawValue()?.card;
   }
 
   public itemIsSelected(card: CardDTO): boolean {
@@ -65,27 +65,8 @@ export class WorkflowCardsComponent extends WorkflowStepAbstractClass {
     this.form.markAsDirty();
   }
 
-  public async getWorkflowStepData(): Promise<boolean> {
-    const spinner = this.spinnerService.show();
-    return new Promise((resolve, reject) => {
-      this.workflowService
-        .getWorkflowCard(this.workflowId)
-        .pipe(take(1))
-        .subscribe((res) => {
-          this.initForm(res);
-          this.cardService
-            .getAllCards()
-            .pipe(take(1))
-            .subscribe((cards: CardDTO[]) => {
-              this.cardsList = cards;
-              this.spinnerService.hide(spinner);
-              resolve(true);
-            });
-        });
-    });
-  }
   public editPermissions(): void {
-    if (this.originalData && this.originalData.id === this.form.get('card').value.id) {
+    if (this.originalData.cardData && this.originalData.cardData.id === this.form.get('card').value.id) {
       this.openEditModal();
     } else {
       this.saveStep().then((res) => {
@@ -114,6 +95,29 @@ export class WorkflowCardsComponent extends WorkflowStepAbstractClass {
           });
         }
       });
+  }
+  public async getWorkflowStepData(): Promise<boolean> {
+    const spinner = this.spinnerService.show();
+    return new Promise((resolve, reject) => {
+      const resquests = [
+        this.workflowService.getWorkflowCard(this.workflowId).pipe(take(1)),
+        this.cardService.getAllCards().pipe(take(1))
+      ];
+      forkJoin(resquests).subscribe(
+        (responses: [CardDTO, CardDTO[]]) => {
+          this.originalData = {
+            cardData: responses[0],
+            cardsList: responses[1] ? responses[1] : []
+          };
+          this.spinnerService.hide(spinner);
+          resolve(true);
+        },
+        (errors) => {
+          console.log(errors);
+          this.spinnerService.hide(spinner);
+        }
+      );
+    });
   }
   public async saveStep(): Promise<boolean> {
     const spinner = this.spinnerService.show();
