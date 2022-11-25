@@ -153,4 +153,18 @@ export class WorkflowAdministrationStatesSubstatesService {
       )
       .pipe(catchError((error) => throwError(error.error as ConcenetError)));
   }
+
+  /**
+   * Eliminar Movimiento asociado a subestado de Workflow
+   *
+   * @returns boolean
+   */
+  public deleteWorkflowSubstateMovement(workflowId: number, substateId: number, movementId: number): Observable<boolean> {
+    return this.http
+      .delete<boolean>(
+        // eslint-disable-next-line max-len
+        `${this.env.apiBaseUrl}${this.WORKFLOW_PATH}/${workflowId}${this.STATES_PATH}${this.SUBSTATES_PATH}/${substateId}${this.MOVEMENTS_PATH}/${movementId}`
+      )
+      .pipe(catchError((error) => throwError(error.error as ConcenetError)));
+  }
 }

@@ -487,6 +487,7 @@
     },
     "workflows": {
         "addField": "Add field",
+        "addMovement": "Add movement",
         "addState": "Add state",
         "addSubstate": "Add substate",
         "byFacilityGroupLabel": "{facility}'s workflows",
@@ -515,6 +516,7 @@
         "filterSubstate": "Filter by Substate",
         "filterUser": "Filter by User",
         "manualCreateCard": "Manual creation of cards",
+        "movementCreateNewTask": "This movement creates a new task in workflow destination",
         "newState": "New state",
         "newSubstate": "New substate",
         "newWorkflow": "New workflow",

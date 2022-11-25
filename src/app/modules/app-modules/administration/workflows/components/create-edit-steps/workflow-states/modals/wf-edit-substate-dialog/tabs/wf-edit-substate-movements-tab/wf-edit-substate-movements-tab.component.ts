@@ -29,11 +29,15 @@ export class WfEditSubstateMovementsTabComponent extends WfEditSubstateAbstractT
   public labels = {
     from: marker('common.from'),
     to: marker('common.to'),
-    addMovement: marker('workflows.addMovement')
+    addMovement: marker('workflows.addMovement'),
+    newTaskTooltip: marker('workflows.movementCreateNewTask'),
+    configMovements: marker('workflows.configMovementEvents')
   };
   public substateMovements: WorkflowMoveDTO[];
   public allStatesAndSubstates: TreeNode[];
   public workflowRoles: WorkflowRoleDTO[];
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  public chipsStatus: any = {};
 
   constructor(
     private fb: FormBuilder,
@@ -58,7 +62,6 @@ export class WfEditSubstateMovementsTabComponent extends WfEditSubstateAbstractT
   }
 
   public initForm(movements: WorkflowMoveDTO[]): void {
-    console.log('Set form with data', movements);
     const fa: UntypedFormArray = this.fb.array([]);
     movements?.forEach((move: WorkflowMoveDTO) => fa.push(this.createMovementFormGroup(move)));
     const form = this.fb.group({
@@ -66,13 +69,79 @@ export class WfEditSubstateMovementsTabComponent extends WfEditSubstateAbstractT
     });
     this.editSubstateAuxService.setFormGroupByTab(form, this.tabId);
     this.editSubstateAuxService.setFormOriginalData(this.form.value, this.tabId);
-    console.log(this.form, this.form.value);
+    // console.log(this.form, this.form.value);
   }
+
+  public deleteMovement = (movefg: UntypedFormGroup) => {
+    const spinner = this.spinnerService.show();
+    this.substatesService
+      .deleteWorkflowSubstateMovement(this.workflowId, this.substate.id, movefg.get('id').value)
+      .pipe(take(1))
+      .subscribe(
+        (res) => {
+          this.getDataAndInitForm(spinner);
+        },
+        (error) => {
+          this.spinnerService.hide(spinner);
+          this.logger.error(error);
+          this.globalMessageService.showError({
+            message: error.message,
+            actionText: this.translateService.instant(marker('common.close'))
+          });
+        }
+      );
+  };
+
+  public editMoveEvent = (movefg: UntypedFormGroup) => {
+    console.log(movefg);
+  };
 
   public saveData(): void {}
 
   public getData(): Observable<WorkflowMoveDTO[]> {
     return this.substatesService.getWorkflowSubstateMovements(this.workflowId, this.substate.id).pipe(take(1));
+  }
+
+  public getDataAndInitForm(spinner?: string): void {
+    this.getData()
+      .pipe(
+        take(1),
+        finalize(() => {
+          if (spinner) {
+            this.spinnerService.hide(spinner);
+          }
+        })
+      )
+      .subscribe((data) => {
+        this.dataToInitForm = data;
+        this.initForm(this.dataToInitForm);
+      });
+  }
+
+  public isTargetSameWorkflow(move: WorkflowSubstateDTO): boolean {
+    return move.workflowState?.workflow?.id === this.workflowId;
+  }
+
+  public isChipSelected(chip: 'wf' | 'wf2' | 'info', id: number): boolean {
+    if (!this.chipsStatus[id] && chip === 'wf') {
+      return true;
+    } else if (this.chipsStatus[id] === chip) {
+      return true;
+    }
+    return false;
+  }
+
+  public changeChipSelection(chip: 'wf' | 'wf2' | 'info', id: number) {
+    this.chipsStatus[id] = chip;
+  }
+
+  public getMovementName(move: WorkflowSubstateDTO): string {
+    let name = '';
+    if (move?.workflowState?.name) {
+      name += `${move.workflowState.name} / `;
+    }
+    name += `${move.name}`;
+    return name;
   }
 
   public nodeSelected(node: WorkflowSubstateDTO): void {
@@ -114,15 +183,7 @@ export class WfEditSubstateMovementsTabComponent extends WfEditSubstateAbstractT
       .pipe(take(1))
       .subscribe(
         (res) => {
-          this.getData()
-            .pipe(
-              take(1),
-              finalize(() => this.spinnerService.hide(spinner))
-            )
-            .subscribe((data) => {
-              this.dataToInitForm = data;
-              this.initForm(this.dataToInitForm);
-            });
+          this.getDataAndInitForm(spinner);
         },
         (error) => {
           this.spinnerService.hide(spinner);

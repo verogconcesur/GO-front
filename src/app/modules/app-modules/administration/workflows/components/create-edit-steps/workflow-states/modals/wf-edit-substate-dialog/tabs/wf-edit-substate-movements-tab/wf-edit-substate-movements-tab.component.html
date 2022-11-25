@@ -22,16 +22,69 @@
             (click)="$event.stopPropagation()"
         >
             <mat-icon>add</mat-icon>
-            <div class="substate-movements__column__substate__info">{{ labels.addMovement }}</div>
+            <div class="substate-movements__column__substate__info">
+                {{ labels.addMovement | translate }}
+            </div>
             <div class="line dotted"></div>
         </div>
         <div *ngFor="let targetFg of movementsFa?.controls" class="substate-movements__column__substate target mat-elevation-z2">
             <div class="substate-movements__column__substate__info">
-                {{ targetFg.value.workflowSubstateTarget.workflowState?.name }} / {{ targetFg.value.workflowSubstateTarget.name }}
+                <div class="state-substate-name">
+                    {{ getMovementName(targetFg.value.workflowSubstateTarget) }}
+                </div>
+                <div class="extra-info">
+                    <div
+                        class="chip"
+                        [ngClass]="{ selected: isChipSelected('wf', targetFg.value.workflowSubstateTarget.id) }"
+                        matTooltip="{{ labels.newTaskTooltip | translate }}"
+                        [matTooltipDisabled]="isTargetSameWorkflow(targetFg.value.workflowSubstateTarget)"
+                        matTooltipPosition="above"
+                        (click)="changeChipSelection('wf', targetFg.value.workflowSubstateTarget.id)"
+                    >
+                        <mat-icon *ngIf="isTargetSameWorkflow(targetFg.value.workflowSubstateTarget)">home</mat-icon>
+                        <mat-icon
+                            *ngIf="!isTargetSameWorkflow(targetFg.value.workflowSubstateTarget)"
+                            style="transform: rotate(90deg)"
+                            >call_split</mat-icon
+                        >
+                        <label *ngIf="isChipSelected('wf', targetFg.value.workflowSubstateTarget.id)">{{
+                            targetFg.value.workflowSubstateTarget.workflowState.workflow.name
+                        }}</label>
+                    </div>
+                    <!-- <div
+                        class="chip wf-2"
+                        [ngClass]="{ selected: isChipSelected('wf2', targetFg.value.workflowSubstateTarget.id) }"
+                        matTooltip="{{ labels.newTaskTooltip | translate }}"
+                        [matTooltipDisabled]="isTargetSameWorkflow(targetFg.value.workflowSubstateTarget)"
+                        matTooltipPosition="above"
+                        (click)="changeChipSelection('wf2', targetFg.value.workflowSubstateTarget.id)"
+                    >
+                        <mat-icon style="transform: rotate(90deg)">call_split</mat-icon>
+                        <label *ngIf="isChipSelected('wf2', targetFg.value.workflowSubstateTarget.id)">{{
+                            targetFg.value.workflowSubstateTarget.workflowState.workflow.name
+                        }}</label>
+                    </div> -->
+                    <!-- <div
+                        class="chip"
+                        [ngClass]="{ selected: isChipSelected('info', targetFg.value.workflowSubstateTarget.id) }"
+                        (click)="changeChipSelection('info', targetFg.value.workflowSubstateTarget.id)"
+                    >
+                        <mat-icon>info_outline</mat-icon>
+                        <label *ngIf="isChipSelected('info', targetFg.value.workflowSubstateTarget.id)">{{
+                            targetFg.value.workflowSubstateTarget.workflowState.workflow.name
+                        }}</label>
+                    </div> -->
+                </div>
             </div>
+            <mat-icon class="delete-icon" (click)="deleteMovement(targetFg)">close</mat-icon>
             <div class="line up"></div>
 
-            <div class="move-options">
+            <div
+                class="move-options"
+                matTooltipPosition="above"
+                matTooltip="{{ labels.configMovements | translate }}"
+                (click)="editMoveEvent(targetFg)"
+            >
                 <mat-icon>more_vert</mat-icon>
             </div>
         </div>
