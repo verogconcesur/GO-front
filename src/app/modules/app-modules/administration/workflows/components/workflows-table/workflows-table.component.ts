@@ -9,8 +9,9 @@ import BrandDTO from '@data/models/organization/brand-dto';
 import DepartmentDTO from '@data/models/organization/department-dto';
 import FacilityDTO from '@data/models/organization/facility-dto';
 import SpecialtyDTO from '@data/models/organization/specialty-dto';
-import WorkflowDTO from '@data/models/workflows/workflow-dto';
+import WorkflowDTO, { WorkFlowStatusEnum } from '@data/models/workflows/workflow-dto';
 import { WorkflowSearchFilterDTO } from '@data/models/workflows/workflow-filter-dto';
+import { WorkflowAdministrationService } from '@data/services/workflow-administration.service';
 import { WorkflowsService } from '@data/services/workflows.service';
 import { FilterDrawerService } from '@modules/feature-modules/filter-drawer/services/filter-drawer.service';
 import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
@@ -55,6 +56,7 @@ export class WorkflowsTableComponent implements OnInit {
 
   constructor(
     private workflowService: WorkflowsService,
+    public workflowAdminService: WorkflowAdministrationService,
     private filterDrawerService: FilterDrawerService,
     private confirmationDialog: ConfirmDialogService,
     private globalMessageService: GlobalMessageService,
@@ -209,7 +211,43 @@ export class WorkflowsTableComponent implements OnInit {
     });
     return label;
   };
-
+  public publishWorkflow(wf: WorkflowDTO): void {
+    const msg =
+      wf.status === WorkFlowStatusEnum.draft
+        ? this.translateService.instant(marker('workflows.publishWarn'))
+        : this.translateService.instant(marker('workflows.draftWarn'));
+    this.confirmationDialog
+      .open({
+        title: this.translateService.instant(marker('common.warning')),
+        message: msg
+      })
+      .pipe(take(1))
+      .subscribe((ok: boolean) => {
+        if (ok) {
+          this.workflowAdminService
+            .createEditWorkflow(
+              wf,
+              wf.status === WorkFlowStatusEnum.draft ? WorkFlowStatusEnum.published : WorkFlowStatusEnum.draft
+            )
+            .pipe(take(1))
+            .subscribe({
+              next: (response) => {
+                this.globalMessageService.showSuccess({
+                  message: this.translateService.instant(marker('common.successOperation')),
+                  actionText: this.translateService.instant(marker('common.close'))
+                });
+                this.getWorkflows();
+              },
+              error: (error: ConcenetError) => {
+                this.globalMessageService.showError({
+                  message: this.translateService.instant(error.error),
+                  actionText: this.translateService.instant(marker('common.close'))
+                });
+              }
+            });
+        }
+      });
+  }
   public duplicateWorkflow(wf: WorkflowDTO): void {
     this.workflowService
       .duplicateWorkflow(wf.id)
