@@ -43,7 +43,7 @@
                     </div>
                 </div>
             </div>
-            <div fxFlex="56" fxFlexOffset="4" *ngIf="selectedTab">
+            <div fxFlex="56" fxFlexOffset="4" *ngIf="selectedTab && allPermisionForm">
                 <div>
                     <h2>{{ selectedTab.name }}</h2>
                 </div>
@@ -82,7 +82,7 @@
                             <span>{{ labels.edit | translate }}</span>
                         </div>
                     </div>
-                    <div fxLayout="row">
+                    <div fxLayout="row" [formGroup]="allPermisionForm">
                         <div
                             fxFlex="40"
                             class="workflow-cards-permissions-content__form__main__permissions__item"
@@ -91,19 +91,14 @@
                         >
                             <span>{{ labels.all | translate }}</span>
                         </div>
-                        <mat-radio-group
-                            fxFlex="60"
-                            fxLayout="row"
-                            [formControl]="allPermisionForm"
-                            (change)="changeAllPermissions()"
-                        >
+                        <mat-radio-group fxFlex="60" fxLayout="row" formControlName="permission">
                             <div
                                 fxFlex="33"
                                 class="workflow-cards-permissions-content__form__main__permissions__item"
                                 fxLayout="row"
                                 fxLayoutAlign="center center"
                             >
-                                <mat-radio-button value="HIDE"></mat-radio-button>
+                                <mat-radio-button value="HIDE" (click)="changeAllPermissions('HIDE')"></mat-radio-button>
                             </div>
                             <div
                                 fxFlex="33"
@@ -111,7 +106,7 @@
                                 fxLayout="row"
                                 fxLayoutAlign="center center"
                             >
-                                <mat-radio-button value="SHOW"></mat-radio-button>
+                                <mat-radio-button value="SHOW" (click)="changeAllPermissions('SHOW')"></mat-radio-button>
                             </div>
                             <div
                                 fxFlex="33"
@@ -119,7 +114,7 @@
                                 fxLayout="row"
                                 fxLayoutAlign="center center"
                             >
-                                <mat-radio-button value="EDIT"></mat-radio-button></div
+                                <mat-radio-button value="EDIT" (click)="changeAllPermissions('EDIT')"></mat-radio-button></div
                         ></mat-radio-group>
                     </div>
                     <div fxLayout="row">
