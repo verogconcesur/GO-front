@@ -9,6 +9,7 @@ import { catchError } from 'rxjs/operators';
 import WorkflowStateDTO from '@data/models/workflows/workflow-state-dto';
 import WorkflowSubstateDTO from '@data/models/workflows/workflow-substate-dto';
 import WorkflowMoveDTO from '@data/models/workflows/workflow-move-dto';
+import WorkflowSubstateEventDTO from '@data/models/workflows/workflow-substate-event-dto';
 
 @Injectable({
   providedIn: 'root'
@@ -19,6 +20,7 @@ export class WorkflowAdministrationStatesSubstatesService {
   private readonly SUBSTATES_PATH = '/substates';
   private readonly ORDERS_PATH = '/orders';
   private readonly MOVEMENTS_PATH = '/movements';
+  private readonly EVENTS_PATH = '/events';
   private readonly ALL_PATH = '/all';
   constructor(@Inject(ENV) private env: Env, private http: HttpClient, private workflowFilterService: WorkflowFilterService) {}
 
@@ -164,6 +166,34 @@ export class WorkflowAdministrationStatesSubstatesService {
       .delete<boolean>(
         // eslint-disable-next-line max-len
         `${this.env.apiBaseUrl}${this.WORKFLOW_PATH}/${workflowId}${this.STATES_PATH}${this.SUBSTATES_PATH}/${substateId}${this.MOVEMENTS_PATH}/${movementId}`
+      )
+      .pipe(catchError((error) => throwError(error.error as ConcenetError)));
+  }
+
+  /**
+   * Obtener eventos asociados a un subestado
+   *
+   * @returns WorkflowMoveDTO[]
+   */
+  public getWorkflowSubstateEvents(workflowId: number, substateId: number): Observable<WorkflowSubstateEventDTO[]> {
+    return this.http
+      .get<WorkflowSubstateEventDTO[]>(
+        // eslint-disable-next-line max-len
+        `${this.env.apiBaseUrl}${this.WORKFLOW_PATH}/${workflowId}${this.STATES_PATH}${this.SUBSTATES_PATH}/${substateId}${this.EVENTS_PATH}`
+      )
+      .pipe(catchError((error) => throwError(error.error as ConcenetError)));
+  }
+
+  public postWorkflowSubstateEvents(
+    workflowId: number,
+    substateId: number,
+    wfEvent: WorkflowSubstateEventDTO
+  ): Observable<WorkflowSubstateEventDTO> {
+    return this.http
+      .post<WorkflowSubstateEventDTO>(
+        // eslint-disable-next-line max-len
+        `${this.env.apiBaseUrl}${this.WORKFLOW_PATH}/${workflowId}${this.STATES_PATH}${this.SUBSTATES_PATH}/${substateId}${this.EVENTS_PATH}`,
+        wfEvent
       )
       .pipe(catchError((error) => throwError(error.error as ConcenetError)));
   }

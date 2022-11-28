@@ -1,12 +1,14 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder } from '@angular/forms';
+import { marker } from '@biesbjerg/ngx-translate-extract-marker';
 import WorkflowSubstateDTO from '@data/models/workflows/workflow-substate-dto';
 import { WorkflowAdministrationStatesSubstatesService } from '@data/services/workflow-administration-states-substates.service';
 import { TranslateService } from '@ngx-translate/core';
 import { GlobalMessageService } from '@shared/services/global-message.service';
 import { ProgressSpinnerDialogService } from '@shared/services/progress-spinner-dialog.service';
 import { NGXLogger } from 'ngx-logger';
-import { Observable, of } from 'rxjs';
+import { forkJoin, Observable, of } from 'rxjs';
+import { take } from 'rxjs/operators';
 import { WEditSubstateFormAuxService } from '../../aux-service/wf-edit-substate-aux.service';
 import { WfEditSubstateAbstractTabClass } from '../wf-edit-substate-abstract-tab-class';
 
@@ -16,7 +18,10 @@ import { WfEditSubstateAbstractTabClass } from '../wf-edit-substate-abstract-tab
   styleUrls: ['./wf-edit-substate-events-tab.component.scss']
 })
 export class WfEditSubstateEventsTabComponent extends WfEditSubstateAbstractTabClass implements OnInit {
-  public labels = {};
+  public labels = {
+    inputEvent: marker('workflows.inputEvent'),
+    exitEvent: marker('workflows.exitEvent')
+  };
 
   constructor(
     private fb: FormBuilder,
@@ -31,42 +36,15 @@ export class WfEditSubstateEventsTabComponent extends WfEditSubstateAbstractTabC
   }
 
   public initForm(data: WorkflowSubstateDTO): void {
-    console.log('Set form with data', data);
     const form = this.fb.group({});
     this.editSubstateAuxService.setFormGroupByTab(form, this.tabId);
     this.editSubstateAuxService.setFormOriginalData(this.form.value, this.tabId);
   }
 
-  public saveData(): void {
-    // const spinner = this.spinnerService.show();
-    // this.substatesService
-    //   .createWorkflowSubstate(this.workflowId, this.state.id, { ...this.substate, ...this.form.value })
-    //   .pipe(
-    //     take(1),
-    //     finalize(() => this.spinnerService.hide(spinner))
-    //   )
-    //   .subscribe({
-    //     next: (response: WorkflowSubstateDTO) => {
-    //       this.substateChanged.emit(response);
-    //       this.initForm(response);
-    //       this.editSubstateAuxService.setFormOriginalData(this.form.value, this.tabId);
-    //       this.globalMessageService.showSuccess({
-    //         message: this.translateService.instant(marker('common.successOperation')),
-    //         actionText: this.translateService.instant(marker('common.close'))
-    //       });
-    //     },
-    //     error: (error: ConcenetError) => {
-    //       this.logger.error(error);
-    //       this.globalMessageService.showError({
-    //         message: error.message,
-    //         actionText: this.translateService.instant(marker('common.close'))
-    //       });
-    //     }
-    //   });
-  }
+  public saveData(): void {}
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   public getData(): Observable<any> {
-    return of(true);
+    return forkJoin([this.substatesService.getWorkflowSubstateEvents(this.workflowId, this.substate.id).pipe(take(1))]);
   }
 }

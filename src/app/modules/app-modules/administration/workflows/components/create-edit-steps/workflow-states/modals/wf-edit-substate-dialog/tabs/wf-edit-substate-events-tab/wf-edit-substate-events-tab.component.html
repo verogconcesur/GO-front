@@ -1,1 +1,8 @@
-<p>wf-edit-substate-events-tab works!</p>
+<mat-tab-group mat-stretch-tabs="false" mat-align-tabs="center">
+    <mat-tab label="{{ labels.inputEvent | translate }}"
+        ><app-wf-edit-substate-events-dialog></app-wf-edit-substate-events-dialog
+    ></mat-tab>
+    <mat-tab label="{{ labels.exitEvent | translate }}"
+        ><app-wf-edit-substate-events-dialog></app-wf-edit-substate-events-dialog
+    ></mat-tab>
+</mat-tab-group>

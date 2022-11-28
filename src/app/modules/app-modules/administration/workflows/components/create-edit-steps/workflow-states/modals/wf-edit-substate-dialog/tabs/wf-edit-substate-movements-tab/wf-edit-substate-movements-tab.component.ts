@@ -9,12 +9,17 @@ import WorkflowStateDTO from '@data/models/workflows/workflow-state-dto';
 import WorkflowSubstateDTO from '@data/models/workflows/workflow-substate-dto';
 import { WorkflowAdministrationStatesSubstatesService } from '@data/services/workflow-administration-states-substates.service';
 import { WorkflowAdministrationService } from '@data/services/workflow-administration.service';
+import { CustomDialogService } from '@jenga/custom-dialog';
 import { TranslateService } from '@ngx-translate/core';
 import { GlobalMessageService } from '@shared/services/global-message.service';
 import { ProgressSpinnerDialogService } from '@shared/services/progress-spinner-dialog.service';
 import { NGXLogger } from 'ngx-logger';
 import { forkJoin, Observable, of } from 'rxjs';
 import { finalize, take } from 'rxjs/operators';
+import {
+  WfEditSubstateEventsComponentModalEnum,
+  WfEditSubstateEventsDialogComponent
+} from '../../../wf-edit-substate-events-dialog/wf-edit-substate-events-dialog.component';
 import { WEditSubstateFormAuxService } from '../../aux-service/wf-edit-substate-aux.service';
 import { WfEditSubstateAbstractTabClass } from '../wf-edit-substate-abstract-tab-class';
 
@@ -47,7 +52,8 @@ export class WfEditSubstateMovementsTabComponent extends WfEditSubstateAbstractT
     public spinnerService: ProgressSpinnerDialogService,
     private logger: NGXLogger,
     private translateService: TranslateService,
-    private globalMessageService: GlobalMessageService
+    private globalMessageService: GlobalMessageService,
+    private customDialogService: CustomDialogService
   ) {
     super(editSubstateAuxService, spinnerService);
   }
@@ -93,7 +99,29 @@ export class WfEditSubstateMovementsTabComponent extends WfEditSubstateAbstractT
   };
 
   public editMoveEvent = (movefg: UntypedFormGroup) => {
-    console.log(movefg);
+    this.customDialogService
+      .open({
+        component: WfEditSubstateEventsDialogComponent,
+        extendedComponentData: {
+          workflowId: this.workflowId,
+          state: this.state,
+          substate: this.substate,
+          move: movefg.value,
+          eventType: 'MOV',
+          roles: this.workflowRoles,
+          allStatesAndSubstates: this.allStatesAndSubstates
+        },
+        id: WfEditSubstateEventsComponentModalEnum.ID,
+        panelClass: WfEditSubstateEventsComponentModalEnum.PANEL_CLASS,
+        disableClose: true,
+        width: '900px'
+      })
+      .pipe(take(1))
+      .subscribe((data) => {
+        if (data) {
+          this.getDataAndInitForm(this.spinnerService.show());
+        }
+      });
   };
 
   public saveData(): void {}
@@ -227,14 +255,14 @@ export class WfEditSubstateMovementsTabComponent extends WfEditSubstateAbstractT
   private fetchAllStatesSubstatesAndRoles(): void {
     const spinner = this.spinnerService.show();
     const resquests = [
-      this.workflowService.getWorkflowRoles(this.workflowId).pipe(take(1)),
+      this.workflowService.getWorkflowUserRoles(this.workflowId).pipe(take(1)),
       this.substatesService.getAllStatesAndSubstates().pipe(take(1))
     ];
     forkJoin(resquests)
       .pipe(finalize(() => this.spinnerService.hide(spinner)))
       .subscribe(
         (responses: [WorkflowRoleDTO[], WorkflowStateDTO[]]) => {
-          this.workflowRoles = responses[0].filter((role: WorkflowRoleDTO) => role.selected);
+          this.workflowRoles = responses[0];
           this.allStatesAndSubstates = [];
           if (responses[1]?.length) {
             this.allStatesAndSubstates = this.createTree(responses[1]);
@@ -318,7 +346,6 @@ export class WfEditSubstateMovementsTabComponent extends WfEditSubstateAbstractT
       otherWorkflowsNode.children.push(otherWorkflows[k]);
     });
     treeNode.push(otherWorkflowsNode);
-    console.log(treeNode);
     return treeNode;
   }
 }
