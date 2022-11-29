@@ -1,4 +1,4 @@
-import { Component, Input, OnChanges, OnInit, SimpleChanges, ViewChild } from '@angular/core';
+import { Component, EventEmitter, Input, OnChanges, OnInit, Output, SimpleChanges, ViewChild } from '@angular/core';
 import { FormBuilder, UntypedFormGroup, ValidatorFn } from '@angular/forms';
 import { MatMenuTrigger } from '@angular/material/menu';
 import { marker } from '@biesbjerg/ngx-translate-extract-marker';
@@ -23,6 +23,7 @@ import { ProgressSpinnerDialogService } from '@shared/services/progress-spinner-
 import CombinedRequiredFieldsValidator from '@shared/validators/combined-required-fields.validator';
 import { forkJoin, Observable, of } from 'rxjs';
 import { catchError, finalize, map, take } from 'rxjs/operators';
+import { WEditSubstateFormAuxService } from '../wf-edit-substate-dialog/aux-service/wf-edit-substate-aux.service';
 export const enum WfEditSubstateEventsComponentModalEnum {
   ID = 'edit-state-dialog-id',
   PANEL_CLASS = 'edit-state-dialog',
@@ -45,6 +46,7 @@ export class WfEditSubstateEventsDialogComponent extends ComponentToExtendForCus
     allStatesAndSubstates: TreeNode[];
     roles?: WorkflowRoleDTO[];
   };
+  @Output() formIntialized: EventEmitter<boolean> = new EventEmitter();
   public labels = {
     whoSeeThisMovement: marker('workflows.whoSeeThisMovement'),
     roles: marker('common.roles'),
@@ -89,6 +91,7 @@ export class WfEditSubstateEventsDialogComponent extends ComponentToExtendForCus
   constructor(
     private fb: FormBuilder,
     private spinnerService: ProgressSpinnerDialogService,
+    public editSubstateAuxService: WEditSubstateFormAuxService,
     private confirmDialogService: ConfirmDialogService,
     private translateService: TranslateService,
     private wStatesService: WorkflowAdministrationStatesSubstatesService,
@@ -107,12 +110,19 @@ export class WfEditSubstateEventsDialogComponent extends ComponentToExtendForCus
     const spinner = this.spinnerService.show();
     this.getInfoFromExtendedComponentData(true);
     await this.getTemplatesAndFields();
-    this.initForm(this.move);
+    if (this.move) {
+      this.initForm(this.move);
+    }
     this.spinnerService.hide(spinner);
   }
 
-  ngOnChanges(changes: SimpleChanges): void {
+  async ngOnChanges(changes: SimpleChanges): Promise<void> {
     if (changes.extendedComponentData) {
+      if (!this.fieldsList || !this.templatesList) {
+        const spinner = this.spinnerService.show();
+        await this.getTemplatesAndFields();
+        this.spinnerService.hide(spinner);
+      }
       this.getInfoFromExtendedComponentData();
     }
   }
@@ -121,10 +131,10 @@ export class WfEditSubstateEventsDialogComponent extends ComponentToExtendForCus
     this.state = this.extendedComponentData?.state;
     this.substate = this.extendedComponentData?.substate;
     this.workflowId = this.extendedComponentData?.workflowId;
-    this.allStatesAndSubstates = this.extendedComponentData?.allStatesAndSubstates[0].children;
     this.move = this.extendedComponentData?.move;
     this.eventType = this.extendedComponentData?.eventType;
-    this.roles = this.extendedComponentData?.roles;
+    this.allStatesAndSubstates = this.editSubstateAuxService.allStatesAndSubstates[0].children;
+    this.roles = this.editSubstateAuxService.workflowRoles;
     if (!avoidInitFrom) {
       this.initForm(this.move);
     }
@@ -142,8 +152,10 @@ export class WfEditSubstateEventsDialogComponent extends ComponentToExtendForCus
 
   public isTargetAndSourceSameWorkflow(): boolean {
     return (
+      this.move?.workflowSubstateSource?.workflowState?.workflow?.id &&
+      this.move?.workflowSubstateTarget?.workflowState?.workflow?.id &&
       this.move?.workflowSubstateSource?.workflowState?.workflow?.id ===
-      this.move?.workflowSubstateTarget?.workflowState?.workflow?.id
+        this.move?.workflowSubstateTarget?.workflowState?.workflow?.id
     );
   }
 
@@ -160,7 +172,7 @@ export class WfEditSubstateEventsDialogComponent extends ComponentToExtendForCus
     if (this.eventType === 'MOV') {
       //Parte del formulario específica para los eventos de tipo mov
       let extraMovement = {};
-      if (this.isTargetAndSourceSameWorkflow()) {
+      if (this.move?.workflowSubstateSource && this.move?.workflowSubstateTarget && !this.isTargetAndSourceSameWorkflow()) {
         extraMovement = {
           requiredMovementExtra: [data?.requiredMovementExtra ? true : false],
           movementExtraAuto: [data?.movementExtraAuto ? true : false],
@@ -183,8 +195,21 @@ export class WfEditSubstateEventsDialogComponent extends ComponentToExtendForCus
               })
             : this.roles
         ],
+        //Acceso directo
+        shortcut: [data?.shortcut ? true : false],
+        shortcutColor: [data?.shortcutColor ? data.shortcutColor : '#FFFFFF'],
+        shortcutName: [data?.shortcutName ? data.shortcutName : null],
         ...extraMovement
       };
+      validatorsExtra = [
+        ...validatorsExtra,
+        CombinedRequiredFieldsValidator.field1RequiredIfFieldsConditions('shortcutColor', [
+          { control: 'shortcut', operation: 'equal', value: true }
+        ]),
+        CombinedRequiredFieldsValidator.field1RequiredIfFieldsConditions('shortcutName', [
+          { control: 'shortcut', operation: 'equal', value: true }
+        ])
+      ];
     }
     this.form = this.fb.group(
       {
@@ -205,18 +230,14 @@ export class WfEditSubstateEventsDialogComponent extends ComponentToExtendForCus
         requiredUser: [data?.requiredUser ? data.requiredUser : false],
         requiredMyself: [data?.requiredMyself ? data.requiredMyself : false],
         //Rellenar campo
-        requiredFields: [data?.requiredSize ? true : false],
+        requiredFields: [data?.requiredFields ? true : false],
         requiredFieldsList: [
-          data?.requiredFieldsList
+          data?.requiredFieldsList && this.fieldsList
             ? this.fieldsList.filter((field) => data.requiredFieldsList.find((f) => f.id === field.id))
             : []
         ],
         //Comentario para el historial
         requiredHistoryComment: [data?.requiredHistoryComment ? true : false],
-        //Acceso directo
-        shortcut: [data?.shortcut ? true : false],
-        shortcutColor: [data?.shortcutColor ? data.shortcutColor : '#FFFFFF'],
-        shortcutName: [data?.shortcutName ? data.shortcutName : null],
         ...typeMoveExtra
       },
       {
@@ -242,17 +263,12 @@ export class WfEditSubstateEventsDialogComponent extends ComponentToExtendForCus
             operation: 'equal',
             value: true
           }),
-          CombinedRequiredFieldsValidator.field1RequiredIfFieldsConditions('shortcutColor', [
-            { control: 'shortcut', operation: 'equal', value: true }
-          ]),
-          CombinedRequiredFieldsValidator.field1RequiredIfFieldsConditions('shortcutName', [
-            { control: 'shortcut', operation: 'equal', value: true }
-          ]),
           ...validatorsExtra
         ]
       }
     );
-    console.log(this.form, this.form.value);
+    this.formIntialized.emit(true);
+    // console.log(this.form, this.form.value);
   }
 
   public allRolesSelected(): boolean {
@@ -383,24 +399,27 @@ export class WfEditSubstateEventsDialogComponent extends ComponentToExtendForCus
 
   private async getTemplatesAndFields(): Promise<boolean> {
     return new Promise((resolve, reject) => {
+      if (!this.workflowId) {
+        resolve(false);
+        return;
+      }
       const requests = [
         this.workflowService.getWorkflowViewAttributes(this.workflowId).pipe(take(1)),
         this.cardService.listTemplates('COMUNICATION').pipe(take(1))
       ];
-      forkJoin(requests)
-        .pipe(finalize(() => resolve(true)))
-        .subscribe((responses: [cards: CardColumnDTO[], templates: TemplatesCommonDTO[]]) => {
-          const fieldList: CardColumnTabItemDTO[] = [];
-          responses[0].forEach((cardCol: CardColumnDTO) => {
-            cardCol.tabs.forEach((tab: CardColumnTabDTO) => {
-              tab.tabItems.forEach((tabItem: CardColumnTabItemDTO) => {
-                fieldList.push({ ...tabItem, name: `${cardCol.name} - ${tab.name} - ${tabItem.name}` });
-              });
+      forkJoin(requests).subscribe((responses: [cards: CardColumnDTO[], templates: TemplatesCommonDTO[]]) => {
+        const fieldList: CardColumnTabItemDTO[] = [];
+        responses[0].forEach((cardCol: CardColumnDTO) => {
+          cardCol.tabs.forEach((tab: CardColumnTabDTO) => {
+            tab.tabItems.forEach((tabItem: CardColumnTabItemDTO) => {
+              fieldList.push({ ...tabItem, name: `${cardCol.name} - ${tab.name} - ${tabItem.name}` });
             });
           });
-          this.fieldsList = fieldList;
-          this.templatesList = responses[1];
         });
+        this.fieldsList = fieldList;
+        this.templatesList = responses[1];
+        resolve(true);
+      });
     });
   }
 }

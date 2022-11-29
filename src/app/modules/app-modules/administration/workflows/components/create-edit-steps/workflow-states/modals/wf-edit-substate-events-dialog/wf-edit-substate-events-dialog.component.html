@@ -154,7 +154,7 @@
                 </mat-checkbox>
             </div>
         </section>
-        <section class="event__config__section">
+        <section class="event__config__section" *ngIf="eventType === 'MOV' && move">
             <h2 class="event__config__section__title">
                 {{ labels.shortcut | translate }}
             </h2>
@@ -195,7 +195,7 @@
                 </div>
             </div>
         </section>
-        <section class="event__config__section" *ngIf="eventType === 'MOV' && move">
+        <section class="event__config__section" *ngIf="eventType === 'MOV' && move && !isTargetAndSourceSameWorkflow()">
             <h2 class="event__config__section__title">
                 {{ labels.extraMovement | translate }}
             </h2>
@@ -217,7 +217,7 @@
                         class="select-wrapper"
                         appearance="outline"
                         floatLabel="always"
-                        *ngIf="form.get('requiredMovementExtra').value"
+                        *ngIf="form.get('requiredMovementExtra')?.value"
                         [matMenuTriggerFor]="attrSearcherMenu"
                     >
                         <mat-label>{{ labels.workflowSubstateTargetExtra | translate }}</mat-label>

@@ -1,20 +1,16 @@
 import { Component, OnInit, ViewChild, ViewEncapsulation } from '@angular/core';
-import { FormBuilder, FormGroup, UntypedFormArray, UntypedFormGroup, Validators } from '@angular/forms';
+import { FormBuilder, UntypedFormArray, UntypedFormGroup, Validators } from '@angular/forms';
 import { MatMenuTrigger } from '@angular/material/menu';
 import { marker } from '@biesbjerg/ngx-translate-extract-marker';
-import TreeNode from '@data/interfaces/tree-node';
-import WorkflowRoleDTO from '@data/models/workflow-admin/workflow-role-dto';
 import WorkflowMoveDTO from '@data/models/workflows/workflow-move-dto';
-import WorkflowStateDTO from '@data/models/workflows/workflow-state-dto';
 import WorkflowSubstateDTO from '@data/models/workflows/workflow-substate-dto';
 import { WorkflowAdministrationStatesSubstatesService } from '@data/services/workflow-administration-states-substates.service';
-import { WorkflowAdministrationService } from '@data/services/workflow-administration.service';
 import { CustomDialogService } from '@jenga/custom-dialog';
 import { TranslateService } from '@ngx-translate/core';
 import { GlobalMessageService } from '@shared/services/global-message.service';
 import { ProgressSpinnerDialogService } from '@shared/services/progress-spinner-dialog.service';
 import { NGXLogger } from 'ngx-logger';
-import { forkJoin, Observable, of } from 'rxjs';
+import { Observable } from 'rxjs';
 import { finalize, take } from 'rxjs/operators';
 import {
   WfEditSubstateEventsComponentModalEnum,
@@ -39,15 +35,12 @@ export class WfEditSubstateMovementsTabComponent extends WfEditSubstateAbstractT
     configMovements: marker('workflows.configMovementEvents')
   };
   public substateMovements: WorkflowMoveDTO[];
-  public allStatesAndSubstates: TreeNode[];
-  public workflowRoles: WorkflowRoleDTO[];
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   public chipsStatus: any = {};
 
   constructor(
     private fb: FormBuilder,
     public editSubstateAuxService: WEditSubstateFormAuxService,
-    private workflowService: WorkflowAdministrationService,
     private substatesService: WorkflowAdministrationStatesSubstatesService,
     public spinnerService: ProgressSpinnerDialogService,
     private logger: NGXLogger,
@@ -64,7 +57,6 @@ export class WfEditSubstateMovementsTabComponent extends WfEditSubstateAbstractT
 
   ngOnInit(): void {
     super.ngOnInit();
-    this.fetchAllStatesSubstatesAndRoles();
   }
 
   public initForm(movements: WorkflowMoveDTO[]): void {
@@ -107,9 +99,7 @@ export class WfEditSubstateMovementsTabComponent extends WfEditSubstateAbstractT
           state: this.state,
           substate: this.substate,
           move: movefg.value,
-          eventType: 'MOV',
-          roles: this.workflowRoles,
-          allStatesAndSubstates: this.allStatesAndSubstates
+          eventType: 'MOV'
         },
         id: WfEditSubstateEventsComponentModalEnum.ID,
         panelClass: WfEditSubstateEventsComponentModalEnum.PANEL_CLASS,
@@ -182,7 +172,7 @@ export class WfEditSubstateMovementsTabComponent extends WfEditSubstateAbstractT
       requiredMyself: false,
       requiredSize: false,
       requiredUser: false,
-      roles: this.workflowRoles,
+      roles: this.editSubstateAuxService.workflowRoles,
       sendMail: false,
       sendMailAuto: false,
       sendMailReceiverRole: null,
@@ -250,102 +240,5 @@ export class WfEditSubstateMovementsTabComponent extends WfEditSubstateAbstractT
       movementExtraConfirm: [move?.movementExtraConfirm ? move.movementExtraConfirm : false],
       requiredMovementExtra: [move?.requiredMovementExtra ? move.requiredMovementExtra : false]
     });
-  }
-
-  private fetchAllStatesSubstatesAndRoles(): void {
-    const spinner = this.spinnerService.show();
-    const resquests = [
-      this.workflowService.getWorkflowUserRoles(this.workflowId).pipe(take(1)),
-      this.substatesService.getAllStatesAndSubstates().pipe(take(1))
-    ];
-    forkJoin(resquests)
-      .pipe(finalize(() => this.spinnerService.hide(spinner)))
-      .subscribe(
-        (responses: [WorkflowRoleDTO[], WorkflowStateDTO[]]) => {
-          this.workflowRoles = responses[0];
-          this.allStatesAndSubstates = [];
-          if (responses[1]?.length) {
-            this.allStatesAndSubstates = this.createTree(responses[1]);
-          }
-        },
-        (error) => {
-          this.logger.error(error);
-          this.globalMessageService.showError({
-            message: error.message,
-            actionText: this.translateService.instant(marker('common.close'))
-          });
-        }
-      );
-  }
-
-  private createTree(data: WorkflowStateDTO[]): TreeNode[] {
-    const treeNode: TreeNode[] = [];
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const otherWorkflows: any = {};
-    const workflowsIdsFound: number[] = [];
-    data.forEach((state: WorkflowStateDTO) => {
-      if (state.id === this.state.id && this.state.workflowSubstates.length === 1) {
-        return;
-      }
-      if (workflowsIdsFound.indexOf(state.workflow.id) === -1) {
-        //Es un workflow nuevo
-        workflowsIdsFound.push(state.workflow.id);
-        const dataToPush = {
-          ...state.workflow,
-          name: `${this.translateService.instant('cards.workflows')}: ${state.workflow.name}`,
-          children: [
-            {
-              ...state,
-              name: `${this.translateService.instant('common.state')}: ${state.name}`,
-              children: [
-                ...state.workflowSubstates
-                  .filter((wfSubs: WorkflowSubstateDTO) => wfSubs.id !== this.substate.id)
-                  .map((wfSubs: WorkflowSubstateDTO) => ({
-                    ...wfSubs,
-                    workflowState: { ...state, children: [], workflowSubstates: [] }
-                  }))
-              ]
-            }
-          ]
-        };
-        if (state.workflow.id === this.workflowId) {
-          //Es el workflow que estamos editando
-          treeNode.push(dataToPush);
-        } else {
-          //Es otro workflow
-          otherWorkflows[state.workflow.id] = dataToPush;
-        }
-      } else {
-        //Ya tenemos este workflow
-        const dataToPush = {
-          ...state,
-          name: `${this.translateService.instant('common.state')}: ${state.name}`,
-          children: [
-            ...state.workflowSubstates
-              .filter((wfSubs: WorkflowSubstateDTO) => wfSubs.id !== this.substate.id)
-              .map((wfSubs: WorkflowSubstateDTO) => ({
-                ...wfSubs,
-                workflowState: { ...state, children: [], workflowSubstates: [] }
-              }))
-          ]
-        };
-        if (state.workflow.id === this.workflowId) {
-          //Es el workflow que estamos editando
-          treeNode[0].children.push(dataToPush);
-        } else {
-          //Es otro workflow
-          otherWorkflows[state.workflow.id].children.push(dataToPush);
-        }
-      }
-    });
-    const otherWorkflowsNode: TreeNode = {
-      name: this.translateService.instant(marker('cards.otherWorkflows')),
-      children: []
-    };
-    Object.keys(otherWorkflows).forEach((k) => {
-      otherWorkflowsNode.children.push(otherWorkflows[k]);
-    });
-    treeNode.push(otherWorkflowsNode);
-    return treeNode;
   }
 }

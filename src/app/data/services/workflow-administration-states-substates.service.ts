@@ -187,13 +187,13 @@ export class WorkflowAdministrationStatesSubstatesService {
   public postWorkflowSubstateEvents(
     workflowId: number,
     substateId: number,
-    wfEvent: WorkflowSubstateEventDTO
-  ): Observable<WorkflowSubstateEventDTO> {
+    wfEvents: WorkflowSubstateEventDTO[]
+  ): Observable<WorkflowSubstateEventDTO[]> {
     return this.http
-      .post<WorkflowSubstateEventDTO>(
+      .post<WorkflowSubstateEventDTO[]>(
         // eslint-disable-next-line max-len
         `${this.env.apiBaseUrl}${this.WORKFLOW_PATH}/${workflowId}${this.STATES_PATH}${this.SUBSTATES_PATH}/${substateId}${this.EVENTS_PATH}`,
-        wfEvent
+        wfEvents
       )
       .pipe(catchError((error) => throwError(error.error as ConcenetError)));
   }

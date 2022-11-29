@@ -96,7 +96,7 @@
 <mat-menu #attrSearcherMenu="matMenu" class="attr-menu" (closed)="genericTreeNodeSearcher.resetFilter()">
     <app-generic-tree-node-searcher
         #genericTreeNodeSearcher
-        [originalData]="allStatesAndSubstates"
+        [originalData]="editSubstateAuxService.allStatesAndSubstates"
         (nodeSelected)="nodeSelected($event)"
     ></app-generic-tree-node-searcher>
 </mat-menu>
