@@ -72,9 +72,11 @@ export class GenericTreeNodeSearcherComponent implements OnInit, OnChanges {
   private setTreeDataSource(data: TreeNode[]): void {
     this.dataSource.data = null;
     this.treeControl.dataNodes = null;
-    this.dataSource.data = data;
-    this.treeControl.dataNodes = data;
-    this.treeControl.expandAll();
+    if (data) {
+      this.dataSource.data = data;
+      this.treeControl.dataNodes = data;
+      this.treeControl.expandAll();
+    }
   }
 
   private filterNodes(filterValue: string, data: TreeNode[]): TreeNode[] {

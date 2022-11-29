@@ -487,6 +487,7 @@
     },
     "workflows": {
         "addField": "Añadir campo",
+        "addMovement": "Añadir movimiento",
         "addState": "Añadir estado",
         "addSubstate": "Añadir subestado",
         "byFacilityGroupLabel": "Workflows de {facility}",
@@ -516,6 +517,7 @@
         "filterSubstate": "Filtrar Subestados",
         "filterUser": "Filtrar Usuarios",
         "manualCreateCard": "Creación manual de fichas",
+        "movementCreateNewTask": "Este movimiento crea una nueva tarea en el workflow de destino",
         "newState": "Nuevo estado",
         "newSubstate": "Nuevo subestado",
         "newWorkflow": "Nuevo workflow",

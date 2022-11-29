@@ -1,15 +1,19 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild, ViewEncapsulation } from '@angular/core';
 import { FormBuilder, FormGroup, UntypedFormArray, UntypedFormGroup, Validators } from '@angular/forms';
+import { MatMenuTrigger } from '@angular/material/menu';
 import { marker } from '@biesbjerg/ngx-translate-extract-marker';
+import TreeNode from '@data/interfaces/tree-node';
+import WorkflowRoleDTO from '@data/models/workflow-admin/workflow-role-dto';
 import WorkflowMoveDTO from '@data/models/workflows/workflow-move-dto';
 import WorkflowStateDTO from '@data/models/workflows/workflow-state-dto';
 import WorkflowSubstateDTO from '@data/models/workflows/workflow-substate-dto';
 import { WorkflowAdministrationStatesSubstatesService } from '@data/services/workflow-administration-states-substates.service';
+import { WorkflowAdministrationService } from '@data/services/workflow-administration.service';
 import { TranslateService } from '@ngx-translate/core';
 import { GlobalMessageService } from '@shared/services/global-message.service';
 import { ProgressSpinnerDialogService } from '@shared/services/progress-spinner-dialog.service';
 import { NGXLogger } from 'ngx-logger';
-import { Observable, of } from 'rxjs';
+import { forkJoin, Observable, of } from 'rxjs';
 import { finalize, take } from 'rxjs/operators';
 import { WEditSubstateFormAuxService } from '../../aux-service/wf-edit-substate-aux.service';
 import { WfEditSubstateAbstractTabClass } from '../wf-edit-substate-abstract-tab-class';
@@ -17,19 +21,28 @@ import { WfEditSubstateAbstractTabClass } from '../wf-edit-substate-abstract-tab
 @Component({
   selector: 'app-wf-edit-substate-movements-tab',
   templateUrl: './wf-edit-substate-movements-tab.component.html',
-  styleUrls: ['./wf-edit-substate-movements-tab.component.scss']
+  styleUrls: ['./wf-edit-substate-movements-tab.component.scss'],
+  encapsulation: ViewEncapsulation.None
 })
 export class WfEditSubstateMovementsTabComponent extends WfEditSubstateAbstractTabClass implements OnInit {
+  @ViewChild('menuTrigger') trigger: MatMenuTrigger;
   public labels = {
     from: marker('common.from'),
     to: marker('common.to'),
-    addMovement: marker('workflows.addMovement')
+    addMovement: marker('workflows.addMovement'),
+    newTaskTooltip: marker('workflows.movementCreateNewTask'),
+    configMovements: marker('workflows.configMovementEvents')
   };
-  public allStatesAndSubstates: WorkflowStateDTO[];
+  public substateMovements: WorkflowMoveDTO[];
+  public allStatesAndSubstates: TreeNode[];
+  public workflowRoles: WorkflowRoleDTO[];
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  public chipsStatus: any = {};
 
   constructor(
     private fb: FormBuilder,
     public editSubstateAuxService: WEditSubstateFormAuxService,
+    private workflowService: WorkflowAdministrationService,
     private substatesService: WorkflowAdministrationStatesSubstatesService,
     public spinnerService: ProgressSpinnerDialogService,
     private logger: NGXLogger,
@@ -39,13 +52,16 @@ export class WfEditSubstateMovementsTabComponent extends WfEditSubstateAbstractT
     super(editSubstateAuxService, spinnerService);
   }
 
+  get movementsFa(): UntypedFormArray {
+    return this.form.get('movements') as UntypedFormArray;
+  }
+
   ngOnInit(): void {
     super.ngOnInit();
-    this.fetchAllStatesAndSubstates();
+    this.fetchAllStatesSubstatesAndRoles();
   }
 
   public initForm(movements: WorkflowMoveDTO[]): void {
-    console.log('Set form with data', movements);
     const fa: UntypedFormArray = this.fb.array([]);
     movements?.forEach((move: WorkflowMoveDTO) => fa.push(this.createMovementFormGroup(move)));
     const form = this.fb.group({
@@ -53,43 +69,131 @@ export class WfEditSubstateMovementsTabComponent extends WfEditSubstateAbstractT
     });
     this.editSubstateAuxService.setFormGroupByTab(form, this.tabId);
     this.editSubstateAuxService.setFormOriginalData(this.form.value, this.tabId);
-    console.log(this.form, this.form.value);
+    // console.log(this.form, this.form.value);
   }
 
-  public addMovement(): void {
-    console.log('add movement', this.state, this.substate);
-  }
+  public deleteMovement = (movefg: UntypedFormGroup) => {
+    const spinner = this.spinnerService.show();
+    this.substatesService
+      .deleteWorkflowSubstateMovement(this.workflowId, this.substate.id, movefg.get('id').value)
+      .pipe(take(1))
+      .subscribe(
+        (res) => {
+          this.getDataAndInitForm(spinner);
+        },
+        (error) => {
+          this.spinnerService.hide(spinner);
+          this.logger.error(error);
+          this.globalMessageService.showError({
+            message: error.message,
+            actionText: this.translateService.instant(marker('common.close'))
+          });
+        }
+      );
+  };
 
-  public saveData(): void {
-    // const spinner = this.spinnerService.show();
-    // this.substatesService
-    //   .createWorkflowSubstate(this.workflowId, this.state.id, { ...this.substate, ...this.form.value })
-    //   .pipe(
-    //     take(1),
-    //     finalize(() => this.spinnerService.hide(spinner))
-    //   )
-    //   .subscribe({
-    //     next: (response: WorkflowSubstateDTO) => {
-    //       this.substateChanged.emit(response);
-    //       this.initForm(response);
-    //       this.editSubstateAuxService.setFormOriginalData(this.form.value, this.tabId);
-    //       this.globalMessageService.showSuccess({
-    //         message: this.translateService.instant(marker('common.successOperation')),
-    //         actionText: this.translateService.instant(marker('common.close'))
-    //       });
-    //     },
-    //     error: (error: ConcenetError) => {
-    //       this.logger.error(error);
-    //       this.globalMessageService.showError({
-    //         message: error.message,
-    //         actionText: this.translateService.instant(marker('common.close'))
-    //       });
-    //     }
-    //   });
-  }
+  public editMoveEvent = (movefg: UntypedFormGroup) => {
+    console.log(movefg);
+  };
+
+  public saveData(): void {}
 
   public getData(): Observable<WorkflowMoveDTO[]> {
     return this.substatesService.getWorkflowSubstateMovements(this.workflowId, this.substate.id).pipe(take(1));
+  }
+
+  public getDataAndInitForm(spinner?: string): void {
+    this.getData()
+      .pipe(
+        take(1),
+        finalize(() => {
+          if (spinner) {
+            this.spinnerService.hide(spinner);
+          }
+        })
+      )
+      .subscribe((data) => {
+        this.dataToInitForm = data;
+        this.initForm(this.dataToInitForm);
+      });
+  }
+
+  public isTargetSameWorkflow(move: WorkflowSubstateDTO): boolean {
+    return move.workflowState?.workflow?.id === this.workflowId;
+  }
+
+  public isChipSelected(chip: 'wf' | 'wf2' | 'info', id: number): boolean {
+    if (!this.chipsStatus[id] && chip === 'wf') {
+      return true;
+    } else if (this.chipsStatus[id] === chip) {
+      return true;
+    }
+    return false;
+  }
+
+  public changeChipSelection(chip: 'wf' | 'wf2' | 'info', id: number) {
+    this.chipsStatus[id] = chip;
+  }
+
+  public getMovementName(move: WorkflowSubstateDTO): string {
+    let name = '';
+    if (move?.workflowState?.name) {
+      name += `${move.workflowState.name} / `;
+    }
+    name += `${move.name}`;
+    return name;
+  }
+
+  public nodeSelected(node: WorkflowSubstateDTO): void {
+    const wfMovement: WorkflowMoveDTO = {
+      id: null,
+      orderNumber: (this.form.get('movements') as UntypedFormArray).length,
+      requiredFields: false,
+      requiredFieldsList: [],
+      requiredHistoryComment: false,
+      requiredMyself: false,
+      requiredSize: false,
+      requiredUser: false,
+      roles: this.workflowRoles,
+      sendMail: false,
+      sendMailAuto: false,
+      sendMailReceiverRole: null,
+      sendMailReceiverType: null,
+      shortcut: false,
+      shortcutColor: null,
+      shortcutName: null,
+      signDocument: false,
+      workflowSubstateSource: {
+        ...this.substate
+      },
+      workflowSubstateTarget: {
+        ...node
+      },
+      workflowSubstateTargetExtra: null,
+      movementExtraAuto: false,
+      movementExtraConfirm: false,
+      requiredMovementExtra: false,
+      sendMailTemplate: null,
+      signDocumentTemplate: null
+    };
+    this.trigger.closeMenu();
+    const spinner = this.spinnerService.show();
+    this.substatesService
+      .postWorkflowSubstateMovements(this.workflowId, this.substate.id, wfMovement)
+      .pipe(take(1))
+      .subscribe(
+        (res) => {
+          this.getDataAndInitForm(spinner);
+        },
+        (error) => {
+          this.spinnerService.hide(spinner);
+          this.logger.error(error);
+          this.globalMessageService.showError({
+            message: error.message,
+            actionText: this.translateService.instant(marker('common.close'))
+          });
+        }
+      );
   }
 
   private createMovementFormGroup(move?: WorkflowMoveDTO): UntypedFormGroup {
@@ -111,8 +215,8 @@ export class WfEditSubstateMovementsTabComponent extends WfEditSubstateAbstractT
       shortcutColor: [move?.shortcutColor ? move.shortcutColor : null],
       shortcutName: [move?.shortcutName ? move.shortcutName : null],
       signDocument: [move?.signDocument ? move.signDocument : false],
-      workflowSubstateSource: [move?.workflowSubstateSource ? move.workflowSubstateSource : null],
-      workflowSubstateTarget: [move?.workflowSubstateTarget ? move.workflowSubstateTarget : null],
+      workflowSubstateSource: [move?.workflowSubstateSource ? move.workflowSubstateSource : null, [Validators.required]],
+      workflowSubstateTarget: [move?.workflowSubstateTarget ? move.workflowSubstateTarget : null, [Validators.required]],
       workflowSubstateTargetExtra: [move?.workflowSubstateTargetExtra ? move.workflowSubstateTargetExtra : null],
       movementExtraAuto: [move?.movementExtraAuto ? move.movementExtraAuto : false],
       movementExtraConfirm: [move?.movementExtraConfirm ? move.movementExtraConfirm : false],
@@ -120,17 +224,101 @@ export class WfEditSubstateMovementsTabComponent extends WfEditSubstateAbstractT
     });
   }
 
-  private fetchAllStatesAndSubstates(): void {
+  private fetchAllStatesSubstatesAndRoles(): void {
     const spinner = this.spinnerService.show();
-    this.substatesService
-      .getAllStatesAndSubstates()
-      .pipe(
-        take(1),
-        finalize(() => this.spinnerService.hide(spinner))
-      )
-      .subscribe((data: WorkflowStateDTO[]) => {
-        this.allStatesAndSubstates = data;
-        console.log(this.allStatesAndSubstates);
-      });
+    const resquests = [
+      this.workflowService.getWorkflowRoles(this.workflowId).pipe(take(1)),
+      this.substatesService.getAllStatesAndSubstates().pipe(take(1))
+    ];
+    forkJoin(resquests)
+      .pipe(finalize(() => this.spinnerService.hide(spinner)))
+      .subscribe(
+        (responses: [WorkflowRoleDTO[], WorkflowStateDTO[]]) => {
+          this.workflowRoles = responses[0].filter((role: WorkflowRoleDTO) => role.selected);
+          this.allStatesAndSubstates = [];
+          if (responses[1]?.length) {
+            this.allStatesAndSubstates = this.createTree(responses[1]);
+          }
+        },
+        (error) => {
+          this.logger.error(error);
+          this.globalMessageService.showError({
+            message: error.message,
+            actionText: this.translateService.instant(marker('common.close'))
+          });
+        }
+      );
+  }
+
+  private createTree(data: WorkflowStateDTO[]): TreeNode[] {
+    const treeNode: TreeNode[] = [];
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const otherWorkflows: any = {};
+    const workflowsIdsFound: number[] = [];
+    data.forEach((state: WorkflowStateDTO) => {
+      if (state.id === this.state.id && this.state.workflowSubstates.length === 1) {
+        return;
+      }
+      if (workflowsIdsFound.indexOf(state.workflow.id) === -1) {
+        //Es un workflow nuevo
+        workflowsIdsFound.push(state.workflow.id);
+        const dataToPush = {
+          ...state.workflow,
+          name: `${this.translateService.instant('cards.workflows')}: ${state.workflow.name}`,
+          children: [
+            {
+              ...state,
+              name: `${this.translateService.instant('common.state')}: ${state.name}`,
+              children: [
+                ...state.workflowSubstates
+                  .filter((wfSubs: WorkflowSubstateDTO) => wfSubs.id !== this.substate.id)
+                  .map((wfSubs: WorkflowSubstateDTO) => ({
+                    ...wfSubs,
+                    workflowState: { ...state, children: [], workflowSubstates: [] }
+                  }))
+              ]
+            }
+          ]
+        };
+        if (state.workflow.id === this.workflowId) {
+          //Es el workflow que estamos editando
+          treeNode.push(dataToPush);
+        } else {
+          //Es otro workflow
+          otherWorkflows[state.workflow.id] = dataToPush;
+        }
+      } else {
+        //Ya tenemos este workflow
+        const dataToPush = {
+          ...state,
+          name: `${this.translateService.instant('common.state')}: ${state.name}`,
+          children: [
+            ...state.workflowSubstates
+              .filter((wfSubs: WorkflowSubstateDTO) => wfSubs.id !== this.substate.id)
+              .map((wfSubs: WorkflowSubstateDTO) => ({
+                ...wfSubs,
+                workflowState: { ...state, children: [], workflowSubstates: [] }
+              }))
+          ]
+        };
+        if (state.workflow.id === this.workflowId) {
+          //Es el workflow que estamos editando
+          treeNode[0].children.push(dataToPush);
+        } else {
+          //Es otro workflow
+          otherWorkflows[state.workflow.id].children.push(dataToPush);
+        }
+      }
+    });
+    const otherWorkflowsNode: TreeNode = {
+      name: this.translateService.instant(marker('cards.otherWorkflows')),
+      children: []
+    };
+    Object.keys(otherWorkflows).forEach((k) => {
+      otherWorkflowsNode.children.push(otherWorkflows[k]);
+    });
+    treeNode.push(otherWorkflowsNode);
+    console.log(treeNode);
+    return treeNode;
   }
 }
