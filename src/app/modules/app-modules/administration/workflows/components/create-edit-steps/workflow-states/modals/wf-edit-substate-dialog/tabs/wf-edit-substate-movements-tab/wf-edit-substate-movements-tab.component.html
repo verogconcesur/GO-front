@@ -54,16 +54,16 @@
                     <div
                         class="chip wf-2"
                         *ngIf="targetFg.value.workflowSubstateTargetExtra"
-                        [ngClass]="{ selected: isChipSelected('wf2', targetFg.value.workflowSubstateTargetExtra.id) }"
-                        matTooltip="{{ labels.newTaskTooltip | translate }}"
-                        [matTooltipDisabled]="isTargetSameWorkflow(targetFg.value.workflowSubstateTargetExtra)"
+                        [ngClass]="{ selected: isChipSelected('wf2', targetFg.value.workflowSubstateTarget.id) }"
+                        matTooltip="{{ labels.requiredMovementExtraDescription | translate }}"
                         matTooltipPosition="above"
-                        (click)="changeChipSelection('wf2', targetFg.value.workflowSubstateTargetExtra.id)"
+                        (click)="changeChipSelection('wf2', targetFg.value.workflowSubstateTarget.id)"
                     >
-                        <mat-icon style="transform: rotate(90deg)">call_split</mat-icon>
-                        <label *ngIf="isChipSelected('wf2', targetFg.value.workflowSubstateTargetExtra.id)">{{
-                            targetFg.value.workflowSubstateTargetExtra.workflowState.workflow.name
-                        }}</label>
+                        <mat-icon>home</mat-icon>
+                        <label *ngIf="isChipSelected('wf2', targetFg.value.workflowSubstateTarget.id)">
+                            {{ targetFg.value.workflowSubstateTargetExtra.workflowState.name }} /
+                            {{ targetFg.value.workflowSubstateTargetExtra.name }}</label
+                        >
                     </div>
                     <!-- <div
                         class="chip"

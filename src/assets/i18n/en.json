@@ -280,6 +280,9 @@
         "no": "No",
         "yes": "Yes"
     },
+    "customer": {
+        "searchDialog": "Customer searcher"
+    },
     "errors": {
         "avoidReloadUnsavedChanges": "Data reload aborted as there are unsaved changes.",
         "dateFormat": "The date must have this format: {format}",
@@ -486,6 +489,9 @@
         "title": "Users",
         "usersSelected": "{count} users selected"
     },
+    "vehicle": {
+        "searchDialog": "Vehicle searcher"
+    },
     "workflows": {
         "addField": "Add field",
         "addMovement": "Add movement",
@@ -501,6 +507,9 @@
         "cardsInBoardView": "Board view cards",
         "cardsInCalendarView": "Calendar view cards",
         "cardsInTableView": "Table view cards",
+        "changeCustomer": "Change customer",
+        "changeUser": "Change user",
+        "changeVehicle": "Change vehicle",
         "configMoveEvent": "Move event configuration",
         "configMovementEvents": "Move event configuration",
         "confirmSave": "Do you want to save the tab changes?",
@@ -514,7 +523,6 @@
         "editSubstate": "Edit substate",
         "editWorkflow": "Edit Workflow",
         "emptySubstate": "Empty substate",
-        "inputEvent": "Substate input events",
         "exitEvent": "Substate exit events",
         "extraMovement": "Extra movement",
         "filter": "Filter Workflows",
@@ -523,6 +531,7 @@
         "filterSubstate": "Filter by Substate",
         "filterUser": "Filter by User",
         "historical": "Historical",
+        "inputEvent": "Substate input events",
         "manualCreateCard": "Manual creation of cards",
         "movementCreateNewTask": "This movement creates a new task in workflow destination",
         "movementExtraAutoDescription": "Extra movement",
@@ -552,6 +561,9 @@
         "sendMailReceiverRole": "Select roles destination",
         "sendMailReceiverType": "Select type of user",
         "sendMailTemplate": "Email template",
+        "setCustomer": "Set customer",
+        "setUser": "Set user",
+        "setVehicle": "Set vehicle",
         "shortcutColor": "Shortcut color",
         "shortcutDescription": "Shortcut description",
         "shortcutName": "Shortcut name",
