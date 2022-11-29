@@ -1,0 +1,248 @@
+<div class="event">
+    <!-- Shown only for move event -->
+    <div class="event__detail" *ngIf="eventType === 'MOV' && move">
+        <div class="event__detail__from-to">{{ getMoveEventDetail("from") }}</div>
+        <mat-icon class="move" *ngIf="isTargetAndSourceSameWorkflow()">keyboard_arrow_right</mat-icon>
+        <mat-icon *ngIf="!isTargetAndSourceSameWorkflow()" style="transform: rotate(90deg)">call_split</mat-icon>
+        <div class="event__detail__from-to">{{ getMoveEventDetail("to") }}</div>
+    </div>
+    <form [formGroup]="form" class="event__config" *ngIf="form">
+        <section class="event__config__section" *ngIf="eventType === 'MOV' && move">
+            <h2 class="event__config__section__title">
+                {{ labels.whoSeeThisMovement | translate }}
+            </h2>
+            <div class="event__config__section__wrapper">
+                <h4 class="subtitle uppercase">{{ labels.roles | translate }}</h4>
+                <div class="bordered">
+                    <div>
+                        <mat-checkbox
+                            color="primary"
+                            [checked]="allRolesSelected()"
+                            [indeterminate]="someRolesSelected()"
+                            (change)="setAllRoles($event.checked)"
+                            >{{ labels.all | translate }}
+                        </mat-checkbox>
+                    </div>
+                    <div *ngFor="let role of form.get('roles').value">
+                        <mat-checkbox [checked]="role.selected" (change)="changeRoleValue(role)">{{ role.name }}</mat-checkbox>
+                    </div>
+                </div>
+            </div>
+        </section>
+        <section class="event__config__section">
+            <h2 class="event__config__section__title">
+                {{ labels.events | translate }}
+            </h2>
+            <div class="event__config__section__wrapper">
+                <div [ngClass]="{ bordered: form.get('sendMail')?.value }">
+                    <div>
+                        <mat-checkbox color="primary" formControlName="sendMail">{{ labels.sendMail | translate }} </mat-checkbox>
+                    </div>
+                    <div *ngIf="form.get('sendMail')?.value">
+                        <mat-checkbox color="primary" formControlName="sendMailAuto"
+                            >{{ labels.sendMailAuto | translate }}
+                        </mat-checkbox>
+                    </div>
+
+                    <mat-form-field
+                        class="select-wrapper"
+                        appearance="outline"
+                        floatLabel="always"
+                        *ngIf="form.get('sendMail').value"
+                    >
+                        <mat-label>{{ labels.sendMailTemplate | translate }}</mat-label>
+                        <mat-select formControlName="sendMailTemplate">
+                            <mat-option *ngFor="let template of templatesList" [value]="template">{{
+                                template.name | translate
+                            }}</mat-option>
+                        </mat-select>
+                        <mat-error *ngIf="form.controls?.sendMailTemplate.invalid">
+                            <span *ngIf="form.controls.sendMailTemplate.errors.required">{{ labels.required | translate }}</span>
+                        </mat-error>
+                    </mat-form-field>
+
+                    <mat-form-field
+                        class="select-wrapper"
+                        appearance="outline"
+                        floatLabel="always"
+                        *ngIf="form.get('sendMail').value"
+                    >
+                        <mat-label>{{ labels.sendMailReceiverType | translate }}</mat-label>
+                        <mat-select formControlName="sendMailReceiverType">
+                            <mat-option *ngFor="let type of ['USER', 'CLIENT']" [value]="type">
+                                <span *ngIf="type === 'CLIENT'">{{ labels.client | translate }}</span>
+                                <span *ngIf="type === 'USER'">{{ labels.user | translate }}</span>
+                            </mat-option>
+                        </mat-select>
+                        <mat-error *ngIf="form.controls?.sendMailReceiverType.invalid">
+                            <span *ngIf="form.controls.sendMailReceiverType.errors.required">{{
+                                labels.required | translate
+                            }}</span>
+                        </mat-error>
+                    </mat-form-field>
+
+                    <mat-form-field
+                        class="select-wrapper"
+                        appearance="outline"
+                        floatLabel="always"
+                        *ngIf="form.get('sendMail').value && form.get('sendMailReceiverType').value === 'USER'"
+                    >
+                        <mat-label>{{ labels.sendMailReceiverRole | translate }}</mat-label>
+                        <mat-select formControlName="sendMailReceiverRole">
+                            <mat-option *ngFor="let role of roles" [value]="role">
+                                {{ role.name }}
+                            </mat-option>
+                        </mat-select>
+                        <mat-error *ngIf="form.controls?.sendMailReceiverRole.invalid">
+                            <span *ngIf="form.controls.sendMailReceiverRole.errors.required">{{
+                                labels.required | translate
+                            }}</span>
+                        </mat-error>
+                    </mat-form-field>
+                </div>
+
+                <div>
+                    <mat-checkbox color="primary" formControlName="requiredSize"
+                        >{{ labels.requiredSize | translate }}
+                    </mat-checkbox>
+                </div>
+
+                <div>
+                    <mat-checkbox color="primary" formControlName="requiredUser" (change)="requiredUserChange('user')"
+                        >{{ labels.requiredUser | translate }}
+                    </mat-checkbox>
+                </div>
+
+                <div>
+                    <mat-checkbox color="primary" formControlName="requiredMyself" (change)="requiredUserChange('myself')"
+                        >{{ labels.requiredMyself | translate }}
+                    </mat-checkbox>
+                </div>
+
+                <div [ngClass]="{ bordered: form.get('requiredFields')?.value }">
+                    <mat-checkbox color="primary" formControlName="requiredFields" (change)="requiredUserChange('myself')"
+                        >{{ labels.requiredFields | translate }}
+                    </mat-checkbox>
+
+                    <mat-form-field
+                        class="select-wrapper"
+                        appearance="outline"
+                        floatLabel="always"
+                        *ngIf="form.get('requiredFields').value"
+                    >
+                        <mat-label>{{ labels.requiredFieldsList | translate }}</mat-label>
+                        <mat-select formControlName="requiredFieldsList" multiple>
+                            <mat-option *ngFor="let field of fieldsList" [value]="field">{{ field.name | translate }}</mat-option>
+                        </mat-select>
+                        <mat-error *ngIf="form.controls?.requiredFieldsList.invalid">
+                            <span *ngIf="form.controls.requiredFieldsList.errors.required">{{
+                                labels.required | translate
+                            }}</span>
+                        </mat-error>
+                    </mat-form-field>
+                </div>
+            </div>
+        </section>
+        <section class="event__config__section">
+            <h2 class="event__config__section__title">
+                {{ labels.historical | translate }}
+            </h2>
+
+            <div class="event__config__section__wrapper">
+                <mat-checkbox color="primary" formControlName="requiredHistoryComment" (change)="requiredUserChange('myself')"
+                    >{{ labels.requiredHistoryComment | translate }}
+                </mat-checkbox>
+            </div>
+        </section>
+        <section class="event__config__section" *ngIf="eventType === 'MOV' && move">
+            <h2 class="event__config__section__title">
+                {{ labels.shortcut | translate }}
+            </h2>
+
+            <div class="event__config__section__wrapper">
+                <div [ngClass]="{ bordered: form.get('shortcut')?.value }">
+                    <div>
+                        <mat-checkbox color="primary" formControlName="shortcut"
+                            >{{ labels.shortcutDescription | translate }}
+                        </mat-checkbox>
+                    </div>
+
+                    <mat-form-field
+                        class="select-wrapper"
+                        appearance="outline"
+                        floatLabel="always"
+                        *ngIf="form.controls?.shortcut?.value"
+                    >
+                        <mat-label>{{ labels.shortcutName | translate }}</mat-label>
+                        <input matInput formControlName="shortcutName" />
+                        <mat-error *ngIf="form.controls?.shortcutName.invalid">
+                            <span *ngIf="form.controls.shortcutName.errors.required">{{ labels.required | translate }}</span>
+                        </mat-error>
+                    </mat-form-field>
+
+                    <mat-form-field
+                        class="select-wrapper"
+                        appearance="outline"
+                        floatLabel="always"
+                        *ngIf="form.controls?.shortcut?.value"
+                    >
+                        <mat-label>{{ labels.shortcutColor | translate }}</mat-label>
+                        <input matInput formControlName="shortcutColor" type="color" />
+                        <mat-error *ngIf="form.controls?.shortcutColor.invalid">
+                            <span *ngIf="form.controls.shortcutColor.errors.required">{{ labels.required | translate }}</span>
+                        </mat-error>
+                    </mat-form-field>
+                </div>
+            </div>
+        </section>
+        <section class="event__config__section" *ngIf="eventType === 'MOV' && move && !isTargetAndSourceSameWorkflow()">
+            <h2 class="event__config__section__title">
+                {{ labels.extraMovement | translate }}
+            </h2>
+
+            <div class="event__config__section__wrapper">
+                <div [ngClass]="{ bordered: form.get('requiredMovementExtra')?.value }">
+                    <div>
+                        <mat-checkbox color="primary" formControlName="requiredMovementExtra"
+                            >{{ labels.requiredMovementExtraDescription | translate }}
+                        </mat-checkbox>
+                    </div>
+                    <div *ngIf="form.controls?.requiredMovementExtra?.value">
+                        <mat-checkbox color="primary" formControlName="movementExtraAuto"
+                            >{{ labels.movementExtraAutoDescription | translate }}
+                        </mat-checkbox>
+                    </div>
+
+                    <mat-form-field
+                        class="select-wrapper"
+                        appearance="outline"
+                        floatLabel="always"
+                        *ngIf="form.get('requiredMovementExtra')?.value"
+                        [matMenuTriggerFor]="attrSearcherMenu"
+                    >
+                        <mat-label>{{ labels.workflowSubstateTargetExtra | translate }}</mat-label>
+
+                        <input matInput formControlName="workflowSubstateTargetExtra" readonly style="display: none" />
+                        <div>
+                            {{ getWorkflowTagetName() }}
+                        </div>
+                        <mat-error *ngIf="form.controls?.workflowSubstateTargetExtra.invalid">
+                            <span *ngIf="form.controls.workflowSubstateTargetExtra.errors.required">{{
+                                labels.required | translate
+                            }}</span>
+                        </mat-error>
+                    </mat-form-field>
+                </div>
+            </div>
+        </section>
+    </form>
+</div>
+
+<button style="display: none" #menuTrigger="matMenuTrigger" [matMenuTriggerFor]="attrSearcherMenu"></button>
+<mat-menu #attrSearcherMenu="matMenu" class="attr-menu" (closed)="genericTreeNodeSearcher.resetFilter()">
+    <app-generic-tree-node-searcher
+        #genericTreeNodeSearcher
+        [originalData]="allStatesAndSubstates"
+        (nodeSelected)="nodeSelected($event)"
+    ></app-generic-tree-node-searcher>
+</mat-menu>
