@@ -9,6 +9,7 @@ import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
 import { TranslateService } from '@ngx-translate/core';
 import { ResponsiveTabI } from '@shared/components/responsive-tabs/responsive-tabs.component';
 import { ConfirmDialogService } from '@shared/services/confirm-dialog.service';
+import { ProgressSpinnerDialogService } from '@shared/services/progress-spinner-dialog.service';
 import { Observable, of } from 'rxjs';
 import { map, take } from 'rxjs/operators';
 import { WEditSubstateFormAuxService } from './aux-service/wf-edit-substate-aux.service';
@@ -36,6 +37,7 @@ export class WfEditSubstateDialogComponent extends ComponentToExtendForCustomDia
     private translateService: TranslateService,
     private dialog: MatDialog,
     private editSubstateAuxService: WEditSubstateFormAuxService,
+    private spinnerService: ProgressSpinnerDialogService,
     private confirmationDialog: ConfirmDialogService
   ) {
     super(WfEditSubstateComponentModalEnum.ID, WfEditSubstateComponentModalEnum.PANEL_CLASS, marker('workflows.editSubstate'));
@@ -45,12 +47,15 @@ export class WfEditSubstateDialogComponent extends ComponentToExtendForCustomDia
     return this.editSubstateAuxService.getFormGroupByTab();
   }
 
-  ngOnInit(): void {
+  async ngOnInit(): Promise<void> {
+    const spinner = this.spinnerService.show();
     this.state = this.extendedComponentData.state;
     this.substate = this.extendedComponentData.substate;
     this.workflowId = this.extendedComponentData.workflowId;
     this.setSubstateTitle();
     this.initTabs();
+    await this.editSubstateAuxService.fetchAllStatesSubstatesAndRoles(this.workflowId, this.state, this.substate);
+    this.spinnerService.hide(spinner);
   }
 
   ngOnDestroy(): void {
@@ -146,7 +151,8 @@ export class WfEditSubstateDialogComponent extends ComponentToExtendForCustomDia
           clickFn: () => this.editSubstateAuxService.resetForm$.next(true),
           hiddenFn: () =>
             !(this.form.get(this.tabToShow.id).touched && this.form.get(this.tabToShow.id).dirty) ||
-            this.tabToShow?.id === 'MOVEMENTS'
+            this.tabToShow?.id === 'MOVEMENTS' ||
+            this.tabToShow?.id === 'EVENTS'
         },
         {
           type: 'custom',
