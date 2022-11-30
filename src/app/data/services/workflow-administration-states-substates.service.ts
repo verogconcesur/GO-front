@@ -10,6 +10,7 @@ import WorkflowStateDTO from '@data/models/workflows/workflow-state-dto';
 import WorkflowSubstateDTO from '@data/models/workflows/workflow-substate-dto';
 import WorkflowMoveDTO from '@data/models/workflows/workflow-move-dto';
 import WorkflowSubstateEventDTO from '@data/models/workflows/workflow-substate-event-dto';
+import WorkflowSubstateUserDTO from '@data/models/workflows/workflow-substate-user-dto';
 
 @Injectable({
   providedIn: 'root'
@@ -21,6 +22,7 @@ export class WorkflowAdministrationStatesSubstatesService {
   private readonly ORDERS_PATH = '/orders';
   private readonly MOVEMENTS_PATH = '/movements';
   private readonly EVENTS_PATH = '/events';
+  private readonly PERMISSIONS_PATH = '/permissions';
   private readonly ALL_PATH = '/all';
   constructor(@Inject(ENV) private env: Env, private http: HttpClient, private workflowFilterService: WorkflowFilterService) {}
 
@@ -194,6 +196,36 @@ export class WorkflowAdministrationStatesSubstatesService {
         // eslint-disable-next-line max-len
         `${this.env.apiBaseUrl}${this.WORKFLOW_PATH}/${workflowId}${this.STATES_PATH}${this.SUBSTATES_PATH}/${substateId}${this.EVENTS_PATH}`,
         wfEvents
+      )
+      .pipe(catchError((error) => throwError(error.error as ConcenetError)));
+  }
+  /** Obtener permisos asociados a un subestado
+   *
+   * @returns WorkflowSubstateUserDTO[]
+   */
+  public getWorkflowSubstatePermissions(workflowId: number, substateId: number): Observable<WorkflowSubstateUserDTO[]> {
+    return this.http
+      .get<WorkflowSubstateUserDTO[]>(
+        // eslint-disable-next-line max-len
+        `${this.env.apiBaseUrl}${this.WORKFLOW_PATH}/${workflowId}${this.SUBSTATES_PATH}/${substateId}${this.PERMISSIONS_PATH}`
+      )
+      .pipe(catchError((error) => throwError(error.error as ConcenetError)));
+  }
+  /**
+   * Obtener permisos asociados a un subestado
+   *
+   * @returns WorkflowSubstateUserDTO[]
+   */
+  public saveWorkflowSubstatePermissions(
+    workflowId: number,
+    substateId: number,
+    users: WorkflowSubstateUserDTO[]
+  ): Observable<WorkflowSubstateUserDTO[]> {
+    return this.http
+      .post<WorkflowSubstateUserDTO[]>(
+        // eslint-disable-next-line max-len
+        `${this.env.apiBaseUrl}${this.WORKFLOW_PATH}/${workflowId}${this.SUBSTATES_PATH}/${substateId}${this.PERMISSIONS_PATH}`,
+        users
       )
       .pipe(catchError((error) => throwError(error.error as ConcenetError)));
   }
