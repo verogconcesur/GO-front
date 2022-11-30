@@ -11,6 +11,7 @@ import { GlobalMessageService } from '@shared/services/global-message.service';
 import { finalize, take } from 'rxjs/operators';
 // eslint-disable-next-line max-len
 import { EntitiesSearcherDialogService } from '@modules/feature-modules/entities-searcher-dialog/entities-searcher-dialog.service';
+import { WorkflowPrepareAndMoveService } from '@modules/app-modules/workflow/aux-service/workflow-prepare-and-move-aux.service';
 
 @Component({
   selector: 'app-workflow-column-customizable-entity',
@@ -42,7 +43,8 @@ export class WorkflowColumnCustomizableEntityComponent implements OnInit, OnChan
     private globalMessageService: GlobalMessageService,
     private translateService: TranslateService,
     private datePipe: DatePipe,
-    private entitySearcher: EntitiesSearcherDialogService
+    private entitySearcher: EntitiesSearcherDialogService,
+    private prepareAndMoveService: WorkflowPrepareAndMoveService
   ) {}
 
   ngOnInit(): void {
@@ -137,7 +139,9 @@ export class WorkflowColumnCustomizableEntityComponent implements OnInit, OnChan
         )
         .subscribe(
           (resp) => {
-            this.getData();
+            // this.getData();
+            // Para que recargue la vista tablero
+            this.prepareAndMoveService.reloadData$.next('MOVES_IN_OTHER_WORKFLOWS');
           },
           (error) => {
             this.globalMessageService.showError({
