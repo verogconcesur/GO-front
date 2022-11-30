@@ -55,6 +55,7 @@ export class UserSearcherDialogComponent extends ComponentToExtendForCustomDialo
   public displayedColumns = ['fullName', 'permissionsGroup', 'actions'];
   public dataSource: UserDetailsDTO[] = [];
   public selectedUsers: UserDetailsDTO[] = [];
+  public multiple = false;
   private usersFilter: UserFilterDTO;
   private minStringLengthBeforeSeach = 3;
 
@@ -67,7 +68,8 @@ export class UserSearcherDialogComponent extends ComponentToExtendForCustomDialo
   }
 
   ngOnInit(): void {
-    this.usersFilter = { ...this.extendedComponentData, roles: [] };
+    this.usersFilter = { ...this.extendedComponentData.filter, roles: [] };
+    this.multiple = this.extendedComponentData.multiple ? true : false;
     this.filterTextSearchControl.valueChanges.pipe(untilDestroyed(this)).subscribe((value) => {
       if (value.length >= this.minStringLengthBeforeSeach) {
         this.searchAction();
@@ -98,10 +100,14 @@ export class UserSearcherDialogComponent extends ComponentToExtendForCustomDialo
   }
 
   public addOrRemoveUser(user: UserDetailsDTO): void {
-    if (!this.selectedUsers.find((u) => u.id === user.id)) {
-      this.selectedUsers.push(user);
+    if (this.multiple) {
+      if (!this.selectedUsers.find((u) => u.id === user.id)) {
+        this.selectedUsers.push(user);
+      } else {
+        this.selectedUsers.splice(this.selectedUsers.indexOf(user), 1);
+      }
     } else {
-      this.selectedUsers.splice(this.selectedUsers.indexOf(user), 1);
+      this.selectedUsers = [user];
     }
   }
 

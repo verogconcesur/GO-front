@@ -42,6 +42,7 @@ export class CardService {
   private readonly GET_DETAIL_TAB_PATH = '/getDetailTab';
   private readonly CREATE_CARD_INSTANCE_PATH = '/api/cardInstanceWorkflow/createCard';
   private readonly GET_TEMPLATE_LIST_PATH = '/api/templates/listByFilter';
+  private readonly ENTITY_PATH = '/entity';
 
   constructor(@Inject(ENV) private env: Env, private http: HttpClient) {}
 
@@ -239,6 +240,20 @@ export class CardService {
   public listTemplates(templateType: string): Observable<TemplatesCommonDTO[]> {
     return this.http
       .post<TemplatesCommonDTO[]>(`${this.env.apiBaseUrl}${this.GET_TEMPLATE_LIST_PATH}`, { templateType })
+      .pipe(catchError((error) => throwError(error.error as ConcenetError)));
+  }
+
+  /**
+   * Edita un tab de tipo entity asignandole el nuevo seleccionado y devolviendo su detalle.
+   *
+   * @returns WorkflowCardTabItemDTO
+   */
+  public setEntityToTab(cardWfId: number, tabId: number, entityId: number): Observable<WorkflowCardTabItemDTO> {
+    return this.http
+      .get<WorkflowCardTabItemDTO>(
+        // eslint-disable-next-line max-len
+        `${this.env.apiBaseUrl}${this.GET_CARD_INSTANCE_PATH}${this.GET_DETAIL_PATH}/${cardWfId}${this.ENTITY_PATH}/${tabId}/${entityId}`
+      )
       .pipe(catchError((error) => throwError(error.error as ConcenetError)));
   }
 }

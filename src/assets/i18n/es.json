@@ -280,6 +280,9 @@
         "no": "No",
         "yes": "Sí"
     },
+    "customer": {
+        "searchDialog": "Buscador de cliente"
+    },
     "errors": {
         "avoidReloadUnsavedChanges": "Recarga de datos abortada puesto que hay cambios sin guardar.",
         "dateFormat": "La fecha debe tener este formato: {format}",
@@ -486,6 +489,9 @@
         "title": "Usuarios",
         "usersSelected": "{count} usuarios seleccionados"
     },
+    "vehicle": {
+        "searchDialog": "Buscador de vehículos"
+    },
     "workflows": {
         "addField": "Añadir campo",
         "addMovement": "Añadir movimiento",
@@ -501,6 +507,9 @@
         "cardsInBoardView": "Tarjetas en vista pizarra",
         "cardsInCalendarView": "Tarjetas en vista calendario",
         "cardsInTableView": "Tarjetas en vista tablero",
+        "changeCustomer": "Cambiar cliente",
+        "changeUser": "Cambiar asesor",
+        "changeVehicle": "Cambiar vehículo",
         "configMoveEvent": "Ajustes de movimiento",
         "configMovementEvents": "Ajustes de movimiento",
         "confirmSave": "¿Desea guardar los cambios de la pestaña?",
@@ -514,7 +523,6 @@
         "editSubstate": "Editar subestado",
         "editWorkflow": "Editar Workflow",
         "emptySubstate": "Subestado vacío",
-        "inputEvent": "Eventos de entrada al subestado",
         "exitEvent": "Eventos de salida del subestado",
         "extraMovement": "Añadir movimiento extra",
         "filter": "Filtrar Workflows",
@@ -523,6 +531,7 @@
         "filterSubstate": "Filtrar Subestados",
         "filterUser": "Filtrar Usuarios",
         "historical": "Historial de la ficha",
+        "inputEvent": "Eventos de entrada al subestado",
         "manualCreateCard": "Creación manual de fichas",
         "movementCreateNewTask": "Este movimiento crea una nueva tarea en el workflow de destino",
         "movementExtraAutoDescription": "Realizar movimiento extra de forma automática sin requerir validación por parte del usuario.",
@@ -540,7 +549,7 @@
         "requiredMovementExtraDescription": "Movimiento adicional asociado a este movimiento",
         "requiredMyself": "Asignar al mismo usuario que está realizando el movimiento",
         "requiredSize": "Asignar un peso a la ficha",
-        "requiredUser": "Asignar un usuarios",
+        "requiredUser": "Asignar a un usuario",
         "select": "Selecciona un Workflow",
         "selectBrands": "¿A qué marca?",
         "selectDepartments": "Seleccione deparamento de: {facility}",
@@ -552,6 +561,9 @@
         "sendMailReceiverRole": "Enviar correo electróno a los usuarios que pertenecen al siguiente rol",
         "sendMailReceiverType": "Tipo destinario al que va dirigido el correo electrónico",
         "sendMailTemplate": "Plantilla de correo electrónico",
+        "setCustomer": "Asignar cliente",
+        "setUser": "Asignar usuario",
+        "setVehicle": "Asignar vehículo",
         "shortcutColor": "Color de acceso directo",
         "shortcutDescription": "Mostrar en la ficha como acceso directo",
         "shortcutName": "Nombre del acceso directo",

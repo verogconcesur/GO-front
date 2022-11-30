@@ -105,20 +105,16 @@ export class WfEditSubstateEventsTabComponent extends WfEditSubstateAbstractTabC
   public saveData(): void {
     const spinner = this.spinnerService.show();
     const data: WorkflowSubstateEventDTO[] = [];
-    if (this.form.get('in').dirty && this.form.get('in').touched) {
-      data.push({
-        ...this.extendedComponentDataIN.move,
-        substateEventType: 'IN',
-        ...this.form.get('in').value
-      });
-    }
-    if (this.form.get('out').dirty && this.form.get('out').touched) {
-      data.push({
-        ...this.extendedComponentDataIN.move,
-        substateEventType: 'OUT',
-        ...this.form.get('out').value
-      });
-    }
+    data.push({
+      ...this.extendedComponentDataIN.move,
+      substateEventType: 'IN',
+      ...this.form.get('in').value
+    });
+    data.push({
+      ...this.extendedComponentDataIN.move,
+      substateEventType: 'OUT',
+      ...this.form.get('out').value
+    });
 
     this.substatesService
       .postWorkflowSubstateEvents(this.workflowId, this.substate.id, data)
