@@ -6,7 +6,7 @@ import CardDTO from '@data/models/cards/card-dto';
 import RoleDTO from '@data/models/user-permissions/role-dto';
 import WorkflowCardTabDTO from '@data/models/workflow-admin/workflow-card-tab-dto';
 import WorkflowCardTabPermissionsDTO, {
-  WorkFlowCardPermissionsEnum
+  WorkFlowPermissionsEnum
 } from '@data/models/workflow-admin/workflow-card-tab-permissions-dto';
 import { CardService } from '@data/services/cards.service';
 import { WorkflowAdministrationService } from '@data/services/workflow-administration.service';
@@ -223,7 +223,7 @@ export class WorkflowCardsPermissionsComponent extends ComponentToExtendForCusto
     const tabFormData = this.cardTabForm.getRawValue();
     tabFormData.workflowCardTabPermissions = tabFormData.workflowCardTabPermissions.map(
       (cardTabPermission: WorkflowCardTabPermissionsDTO) => {
-        cardTabPermission.permissionType = permission as WorkFlowCardPermissionsEnum;
+        cardTabPermission.permissionType = permission as WorkFlowPermissionsEnum;
         return cardTabPermission;
       }
     );
@@ -285,7 +285,7 @@ export class WorkflowCardsPermissionsComponent extends ComponentToExtendForCusto
   private generateTabPermissionByRole(role: RoleDTO, cardTabId?: number): FormGroup {
     return this.fb.group({
       id: [null],
-      permissionType: [WorkFlowCardPermissionsEnum.hide],
+      permissionType: [WorkFlowPermissionsEnum.hide],
       role: [role],
       workflowCardTabId: [null]
     });

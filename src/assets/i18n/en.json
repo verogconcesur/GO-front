@@ -585,6 +585,8 @@
         "state-lockInMoves": "Block incoming movements",
         "state-lockInMovesDescription": "It does not allow token movements towards this state. It will display an error message in the worker tool, in case you try to perform such a move.",
         "state-permissions": "State's permissions",
+        "state-roleList": "Roles",
+        "state-roleTitle": "Who sees the state",
         "stateName": "State name",
         "states": "States controls and definition",
         "substateName": "Substate name",
