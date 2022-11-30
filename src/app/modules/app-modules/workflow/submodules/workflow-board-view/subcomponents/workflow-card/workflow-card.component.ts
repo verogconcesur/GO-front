@@ -29,6 +29,7 @@ export class WorkflowCardComponent implements OnInit {
   public labels = {
     dueOutDateTime: marker('workflows.dueOutDateTime')
   };
+  public cardInfoExpanded = false;
   public readonly dragStartDelay = 100; //To prevent drag a card on tablet when user is scrolling
 
   constructor(
@@ -49,6 +50,17 @@ export class WorkflowCardComponent implements OnInit {
 
   public getColorsClass(): string {
     return `x-${this.getColors().length}`;
+  }
+
+  public expandCardInfo(): void {
+    this.cardInfoExpanded = !this.cardInfoExpanded;
+  }
+
+  public getCardSizeClass(): string {
+    if (this.cardInfoExpanded) {
+      return `${this.cardSize} expanded`;
+    }
+    return this.cardSize;
   }
 
   public getLabel(tabItem: WorkflowCardTabItemDTO): string {
