@@ -13,6 +13,7 @@ export default interface WorkflowCardDTO {
   colors: string[];
   movements: WorkflowMoveDTO[];
   cardInstanceWorkflows: WorkflowCardInstanceDTO[];
+  information?: string;
   countCompletedTasks?: number;
   countTotalTasks?: number;
   workflowSubstate?: WorkflowSubstateDTO;
