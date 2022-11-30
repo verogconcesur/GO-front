@@ -211,6 +211,7 @@ export class WfEditSubstateEventsDialogComponent extends ComponentToExtendForCus
         ])
       ];
     }
+    // console.log(data, this.templatesList);
     this.form = this.fb.group(
       {
         //Mandar email
