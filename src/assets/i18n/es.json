@@ -581,6 +581,8 @@
         "state-lockInMoves": "Bloquear movimientos entrantes",
         "state-lockInMovesDescription": "No permite realizar movimientos de fichas hacia este estado. Mostrará un mensaje de error en la herramienta del trabajador, en caso de que intente realizar dicho movimiento.",
         "state-permissions": "Permisos de estado",
+        "state-roleList": "Roles",
+        "state-roleTitle": "Quién ve el estado",
         "stateName": "Nombre de estado",
         "states": "Definición y control de estados",
         "substateName": "Nombre de subestado",
