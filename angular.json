@@ -27,7 +27,16 @@
                         "main": "src/main.ts",
                         "polyfills": "src/polyfills.ts",
                         "tsConfig": "tsconfig.app.json",
-                        "assets": ["src/favicon.ico", "src/robots.txt", "src/assets"],
+                        "assets": [
+                            "src/favicon.ico",
+                            "src/robots.txt",
+                            "src/assets",
+                            {
+                                "glob": "**/*",
+                                "input": "node_modules/ngx-extended-pdf-viewer/assets/",
+                                "output": "/assets/"
+                            }
+                        ],
                         "styles": ["src/styles.scss", "node_modules/summernote/dist/summernote-lite.min.css"],
                         "scripts": [
                             "node_modules/jquery/dist/jquery.min.js",
