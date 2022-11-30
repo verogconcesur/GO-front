@@ -19,19 +19,40 @@
     }
     .workflow-card.size-s,
     .workflow-card__placeholder.size-s {
-      height: 60px;
+      height: 80px;
     }
     .workflow-card.size-m,
     .workflow-card__placeholder.size-m {
-      height: 94px;
+      height: 106px;
     }
     .workflow-card.size-l,
     .workflow-card__placeholder.size-l {
-      height: 144px;
+      height: 156px;
     }
     .workflow-card.size-xl,
     .workflow-card__placeholder.size-xl {
-      height: 274px;
+      height: 286px;
+    }
+
+    .workflow-card.expanded.size-s,
+    .workflow-card.expanded .workflow-card__placeholder.size-s {
+      min-height: 80px;
+      height: auto;
+    }
+    .workflow-card.expanded.size-m,
+    .workflow-card.expanded .workflow-card__placeholder.size-m {
+      min-height: 106px;
+      height: auto;
+    }
+    .workflow-card.expanded.size-l,
+    .workflow-card.expanded .workflow-card__placeholder.size-l {
+      min-height: 156px;
+      height: auto;
+    }
+    .workflow-card.expanded.size-xl,
+    .workflow-card.expanded .workflow-card__placeholder.size-xl {
+      min-height: 286px;
+      height: auto;
     }
 
     &.undroppable {

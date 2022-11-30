@@ -32,7 +32,8 @@ export class WfEditSubstateMovementsTabComponent extends WfEditSubstateAbstractT
     to: marker('common.to'),
     addMovement: marker('workflows.addMovement'),
     newTaskTooltip: marker('workflows.movementCreateNewTask'),
-    configMovements: marker('workflows.configMovementEvents')
+    configMovements: marker('workflows.configMovementEvents'),
+    requiredMovementExtraDescription: marker('workflows.requiredMovementExtraDescription')
   };
   public substateMovements: WorkflowMoveDTO[];
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -229,6 +230,7 @@ export class WfEditSubstateMovementsTabComponent extends WfEditSubstateAbstractT
       sendMailAuto: [move?.sendMailAuto ? move.sendMailAuto : false],
       sendMailReceiverRole: [move?.sendMailReceiverRole ? move.sendMailReceiverRole : null],
       sendMailReceiverType: [move?.sendMailReceiverType ? move.sendMailReceiverType : null],
+      sendMailTemplate: [move?.sendMailTemplate ? move.sendMailTemplate : null],
       shortcut: [move?.shortcut ? move.shortcut : false],
       shortcutColor: [move?.shortcutColor ? move.shortcutColor : null],
       shortcutName: [move?.shortcutName ? move.shortcutName : null],

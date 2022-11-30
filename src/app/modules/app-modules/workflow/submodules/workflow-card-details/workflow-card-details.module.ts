@@ -22,6 +22,7 @@ import { MoveCardDialogComponent } from './subcomponents/move-card-dialog/move-c
 import { CardInstanceAttachmentsModule } from '@modules/feature-modules/card-instance-attachments/card-instance-attachments.module';
 import { WorkflowCardTasksModule } from '@modules/feature-modules/workflow-card-tasks/workflow-card-tasks.module';
 import { CardInstanceBudgetsModule } from '@modules/feature-modules/card-instance-budgets/card-instance-budgets.module';
+import { EntitiesSearcherDialogModule } from '@modules/feature-modules/entities-searcher-dialog/entities-searcher-dialog.module';
 
 @NgModule({
   declarations: [
@@ -47,7 +48,8 @@ import { CardInstanceBudgetsModule } from '@modules/feature-modules/card-instanc
     CardInstanceBudgetsModule,
     WorkflowCardDetailsRoutingModule,
     TextEditorWrapperModule,
-    WorkflowCardTasksModule
+    WorkflowCardTasksModule,
+    EntitiesSearcherDialogModule
   ]
 })
 export class WorkflowCardDetailsModule {}

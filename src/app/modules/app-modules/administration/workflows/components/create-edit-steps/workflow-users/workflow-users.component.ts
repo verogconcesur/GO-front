@@ -172,7 +172,7 @@ export class WorkflowUsersComponent extends WorkflowStepAbstractClass implements
         id: UserSearcherDialogComponentModalEnum.ID,
         panelClass: UserSearcherDialogComponentModalEnum.PANEL_CLASS,
         component: UserSearcherDialogComponent,
-        extendedComponentData: this.usersFilter,
+        extendedComponentData: { filter: this.usersFilter, multiple: true },
         disableClose: true,
         width: '50%',
         maxWidth: '900px'
