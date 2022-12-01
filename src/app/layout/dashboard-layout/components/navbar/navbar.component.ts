@@ -10,6 +10,9 @@ import WorkflowDTO from '@data/models/workflows/workflow-dto';
 import { WorkflowsService } from '@data/services/workflows.service';
 import { NewCardComponent, NewCardComponentModalEnum } from '@modules/feature-modules/new-card/new-card.component';
 import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
+import { FormBuilder, UntypedFormGroup } from '@angular/forms';
+import WorkflowCardDTO from '@data/models/workflows/workflow-card-dto';
+import { take } from 'rxjs/operators';
 
 @UntilDestroy()
 @Component({
@@ -29,14 +32,36 @@ export class NavbarComponent implements OnInit {
     createCard: marker('app.menu.createCard'),
     search: marker('common.search')
   };
+  public searcherForm: UntypedFormGroup;
   constructor(
     private router: Router,
     private authService: AuthenticationService,
+    private fb: FormBuilder,
     private workflowService: WorkflowsService,
     public dialog: MatDialog
   ) {}
 
-  ngOnInit(): void {}
+  ngOnInit(): void {
+    this.initForm();
+  }
+
+  public initForm(): void {
+    this.searcherForm = this.fb.group({
+      search: [null]
+    });
+  }
+
+  public searchCards(): void {
+    console.log(this.searcherForm, this.searcherForm.get('search')?.value);
+    if (this.searcherForm.get('search')?.value?.length >= 3) {
+      this.workflowService
+        .searchCardsInWorkflows(this.searcherForm.get('search').value)
+        .pipe(take(1))
+        .subscribe((data: WorkflowCardDTO[]) => {
+          console.log(data);
+        });
+    }
+  }
 
   public navigateToAdministration(): void {
     this.router.navigate([RouteConstants.ADMINISTRATION]);

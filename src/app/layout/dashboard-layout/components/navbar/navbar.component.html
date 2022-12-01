@@ -32,10 +32,15 @@
     <div fxLayout="row" class="navbar__right" fxLayoutAlign="end center">
         <!-- Responsive search input -->
         <div class="responsive__tablet_or_more">
-            <form class="navbar__search" fxLayout="row" fxLayoutAlign="end center">
+            <form [formGroup]="searcherForm" class="navbar__search" fxLayout="row" fxLayoutAlign="end center">
                 <mat-form-field appearance="outline">
-                    <input matInput [placeholder]="labels.search | translate" />
-                    <mat-icon matSuffix>search</mat-icon>
+                    <input
+                        formControlName="search"
+                        matInput
+                        [placeholder]="labels.search | translate"
+                        (keyup.enter)="searchCards()"
+                    />
+                    <mat-icon matSuffix (click)="searchCards()">search</mat-icon>
                 </mat-form-field>
             </form>
         </div>
