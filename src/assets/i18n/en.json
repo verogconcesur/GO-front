@@ -193,6 +193,7 @@
         "delete": "Delete",
         "deleteConfirmation": "Do you really want to delete this item?",
         "directLinks": "Short cuts",
+        "download": "Download",
         "dropHere": "Drop here",
         "duplicate": "Duplicate",
         "edit": "Edit",
@@ -399,6 +400,9 @@
         "nextPage": "Next Page",
         "pageOf": "Page {num1} of {num2}",
         "prevPage": "Previous page"
+    },
+    "pdf": {
+        "viewer": "Pdf Viewer"
     },
     "prepareMovement": {
         "extraMovement": "Move associated",

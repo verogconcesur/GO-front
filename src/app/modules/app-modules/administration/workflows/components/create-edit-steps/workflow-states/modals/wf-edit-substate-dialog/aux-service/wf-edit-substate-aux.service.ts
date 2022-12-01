@@ -189,12 +189,15 @@ export class WEditSubstateFormAuxService {
             }
           ]
         };
-        if (state.workflow.id === workflowId) {
-          //Es el workflow que estamos editando
-          treeNode.push(dataToPush);
-        } else {
-          //Es otro workflow
-          otherWorkflows[state.workflow.id] = dataToPush;
+        //Primero compruebo que tengamos subestados dentro del estado
+        if (dataToPush.children?.length && dataToPush.children[0]?.children?.length) {
+          if (state.workflow.id === workflowId) {
+            //Es el workflow que estamos editando
+            treeNode.push(dataToPush);
+          } else {
+            //Es otro workflow
+            otherWorkflows[state.workflow.id] = dataToPush;
+          }
         }
       } else {
         //Ya tenemos este workflow
@@ -210,12 +213,15 @@ export class WEditSubstateFormAuxService {
               }))
           ]
         };
-        if (state.workflow.id === workflowId) {
-          //Es el workflow que estamos editando
-          treeNode[0].children.push(dataToPush);
-        } else {
-          //Es otro workflow
-          otherWorkflows[state.workflow.id].children.push(dataToPush);
+        //compruebo que tengamos subestados dentro del estado
+        if (dataToPush.children.length) {
+          if (state.workflow.id === workflowId) {
+            //Es el workflow que estamos editando
+            treeNode[0].children.push(dataToPush);
+          } else {
+            //Es otro workflow
+            otherWorkflows[state.workflow.id].children.push(dataToPush);
+          }
         }
       }
     });
