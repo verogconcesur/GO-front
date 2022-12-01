@@ -61,7 +61,7 @@ export class WorkflowColumnCustomizableEntityComponent implements OnInit, OnChan
   }
 
   public showChangeOrAsignEntity(): boolean {
-    if ([1, 2, 3].indexOf(this.tab.contentSourceId) >= 0) {
+    if (this.tab.permissionType === 'EDIT' && [1, 2, 3].indexOf(this.tab.contentSourceId) >= 0) {
       return true;
     }
     return false;
