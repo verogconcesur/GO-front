@@ -1,5 +1,7 @@
 import { Component, Input } from '@angular/core';
 import { UntypedFormBuilder, Validators } from '@angular/forms';
+import { Router } from '@angular/router';
+import { RouteConstants } from '@app/constants/route.constants';
 import { marker } from '@biesbjerg/ngx-translate-extract-marker';
 import TemplatesBudgetDetailsDTO from '@data/models/templates/templates-budget-details-dto';
 import TemplatesCommonDTO from '@data/models/templates/templates-common-dto';
@@ -34,6 +36,7 @@ export class WorkflowBudgetsComponent extends WorkflowStepAbstractClass {
     private spinnerService: ProgressSpinnerDialogService,
     public workflowService: WorkflowAdministrationService,
     public budgetService: TemplatesBudgetsService,
+    private router: Router,
     private logger: NGXLogger
   ) {
     super(workflowsCreateEditAuxService, confirmationDialog, translateService);
@@ -101,7 +104,9 @@ export class WorkflowBudgetsComponent extends WorkflowStepAbstractClass {
         )
         .subscribe({
           next: (response) => {
-            console.log(response);
+            if (response) {
+              this.router.navigate([RouteConstants.ADMINISTRATION, RouteConstants.ADM_WORKFLOWS]);
+            }
           },
           error: (err) => {
             this.logger.error(err);

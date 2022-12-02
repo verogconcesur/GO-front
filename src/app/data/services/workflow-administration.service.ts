@@ -104,12 +104,9 @@ export class WorkflowAdministrationService {
    *
    * @returns WorkflowRoleDTO[]
    */
-  public postWorkflowRoles(workflowId: number, workflowRoles: WorkflowRoleDTO[]): Observable<{ roles: WorkflowRoleDTO[] }> {
+  public postWorkflowRoles(workflowId: number, workflowRoles: WorkflowRoleDTO[]): Observable<WorkflowRoleDTO[]> {
     return this.http
-      .post<{ roles: WorkflowRoleDTO[] }>(
-        `${this.env.apiBaseUrl}${this.WORKFLOW_PATH}/${workflowId}${this.ROLES_PATH}`,
-        workflowRoles
-      )
+      .post<WorkflowRoleDTO[]>(`${this.env.apiBaseUrl}${this.WORKFLOW_PATH}/${workflowId}${this.ROLES_PATH}`, workflowRoles)
       .pipe(catchError((error) => throwError(error.error as ConcenetError)));
   }
 

@@ -230,11 +230,7 @@ export class WorkflowsService {
   }
 
   public syncData(workflowId: number, facilityId: number): Observable<any> {
-    return this.http.post<any>(
-      `${this.env.apiBaseUrl}${this.GET_MOCK_WORKFLOWS_PATH}/${workflowId}` +
-        `${this.GET_WORKFLOWS_FACILITY_PATH}/${facilityId}${this.SYNCRONIZE_PATH}`,
-      {}
-    );
+    return this.http.get<any>(`${this.env.apiBaseUrl}${this.GET_WORKFLOWS_PATH}/${workflowId}${this.SYNCRONIZE_PATH}`);
   }
 
   public getSubStateUsers(
