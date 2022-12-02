@@ -12,6 +12,7 @@ export default interface WorkflowCardInstanceDTO {
   size: 'S' | 'M' | 'L' | 'XL';
   orderNumber: number;
   workflowId: number;
+  workflowName: string;
   workflowSubstateId: number;
   workflowSubstateEvents: WorkflowSubstateEventDTO[];
   information?: string;

@@ -1,32 +1,38 @@
 <div class="navbar__searcher" [ngClass]="{ centered: format === 'icon' }">
     <form [formGroup]="searcherForm" class="navbar__search" fxLayout="row" fxLayoutAlign="end center" *ngIf="format === 'input'">
-        <mat-form-field
-            appearance="outline"
-            [matMenuTriggerFor]="cardSearcherMenu"
-            #inputModeTrigger="matMenuTrigger"
-            (click)="closeIfNoCards()"
-            (menuOpened)="menuOpened()"
-            (menuClosed)="menuClosed()"
-            [ngClass]="{ active: cards.length > 0 }"
-        >
+        <mat-form-field appearance="outline">
             <input
                 formControlName="search"
                 autocomplete="off"
                 matInput
+                [matAutocomplete]="auto"
                 [placeholder]="labels.search | translate"
-                (keyup.enter)="searchCards()"
             />
-            <mat-icon matSuffix *ngIf="searching <= 0" (click)="searchCards()">search</mat-icon>
-            <mat-spinner class="spinner" *ngIf="searching > 0" diameter="20"></mat-spinner>
+            <mat-icon matSuffix *ngIf="searching <= 0">search</mat-icon>
+            <mat-spinner matSuffix class="spinner" *ngIf="searching > 0" diameter="20"></mat-spinner>
+            <mat-autocomplete autoActiveFirstOption="false" #auto="matAutocomplete" [panelWidth]="'315px'">
+                <mat-optgroup *ngFor="let group of filteredOptions | async" [label]="group.workflowName">
+                    <mat-option
+                        *ngFor="let option of group.cards"
+                        class="search-option-card"
+                        [value]="option"
+                        (click)="cardSelected(option)"
+                    >
+                        <app-workflow-card
+                            [card]="option"
+                            [disableDrag]="true"
+                            [forceSize]="'size-s'"
+                            [showExtraInfo]="false"
+                            [navigationMode]="'absolute'"
+                        ></app-workflow-card>
+                    </mat-option>
+                </mat-optgroup>
+            </mat-autocomplete>
         </mat-form-field>
     </form>
-    <!-- <div *ngIf="format === 'input'">
-        <div *ngFor="let card of cards">card</div>
-    </div> -->
     <mat-icon *ngIf="format === 'icon'" [matMenuTriggerFor]="cardSearcherMenu">search</mat-icon>
 </div>
 
-<!-- <button style="display: none" #searchTrigger="matMenuTrigger" [matMenuTriggerFor]="cardSearcherMenu"></button> -->
 <mat-menu #cardSearcherMenu="matMenu" class="user-profile-menu">
     <div (click)="$event.stopPropagation()">
         <form
@@ -39,23 +45,32 @@
             <mat-form-field appearance="outline">
                 <input
                     formControlName="search"
+                    autocomplete="off"
                     matInput
+                    [matAutocomplete]="auto"
                     [placeholder]="labels.search | translate"
-                    (keyup.enter)="searchCards()"
-                    (click)="$event.stopPropagation()"
                 />
-                <mat-icon matSuffix *ngIf="searching <= 0" (click)="searchCards(); $event.stopPropagation()">search</mat-icon>
-                <mat-spinner class="spinner" *ngIf="searching > 0" diameter="20"></mat-spinner>
+                <mat-icon matSuffix *ngIf="searching <= 0">search</mat-icon>
+                <mat-spinner matSuffix class="spinner" *ngIf="searching > 0" diameter="20"></mat-spinner>
+                <mat-autocomplete autoActiveFirstOption="false" #auto="matAutocomplete" [panelWidth]="'315px'">
+                    <mat-optgroup *ngFor="let group of filteredOptions | async" [label]="group.workflowName">
+                        <mat-option
+                            *ngFor="let option of group.cards"
+                            class="search-option-card"
+                            [value]="option"
+                            (click)="cardSelected(option)"
+                        >
+                            <app-workflow-card
+                                [card]="option"
+                                [disableDrag]="true"
+                                [forceSize]="'size-s'"
+                                [showExtraInfo]="false"
+                                [navigationMode]="'absolute'"
+                            ></app-workflow-card>
+                        </mat-option>
+                    </mat-optgroup>
+                </mat-autocomplete>
             </mat-form-field>
         </form>
-
-        <!-- Spinner -->
-        <ng-container *ngIf="searching > 0">
-            <div class="overlay-spinner">
-                <mat-spinner diameter="26"></mat-spinner>
-            </div>
-        </ng-container>
-
-        <div class="card" *ngFor="let card of cards">card</div>
     </div>
 </mat-menu>

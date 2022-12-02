@@ -3,6 +3,7 @@ import { RouterModule } from '@angular/router';
 import { FilterDrawerModule } from '@modules/feature-modules/filter-drawer/filter-drawer.module';
 import { MyProfileDialogModule } from '@modules/feature-modules/my-profile-dialog/my-profile-dialog.module';
 import { NewCardModule } from '@modules/feature-modules/new-card/new-card.module';
+import { WorkflowCardModule } from '@modules/feature-modules/workflow-card/workflow-card.module';
 import { SharedModule } from '@shared/shared.module';
 import { AdministrationLayoutComponent } from './administration-layout/administration-layout.component';
 import { NavbarComponent } from './dashboard-layout/components/navbar/navbar.component';
@@ -19,7 +20,7 @@ import { DashboardLayoutComponent } from './dashboard-layout/dashboard-layout.co
     AdministrationLayoutComponent,
     WorkflowCardSearcherComponent
   ],
-  imports: [RouterModule, SharedModule, FilterDrawerModule, MyProfileDialogModule, NewCardModule],
+  imports: [RouterModule, SharedModule, FilterDrawerModule, MyProfileDialogModule, NewCardModule, WorkflowCardModule],
   exports: [DashboardLayoutComponent],
   providers: []
 })
