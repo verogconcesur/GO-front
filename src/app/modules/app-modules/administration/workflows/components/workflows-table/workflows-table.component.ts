@@ -212,26 +212,62 @@ export class WorkflowsTableComponent implements OnInit {
     return label;
   };
   public publishWorkflow(wf: WorkflowDTO): void {
-    const msg =
-      wf.status === WorkFlowStatusEnum.draft
-        ? this.translateService.instant(marker('workflows.publishWarn'))
-        : this.translateService.instant(marker('workflows.draftWarn'));
     this.confirmationDialog
       .open({
         title: this.translateService.instant(marker('common.warning')),
-        message: msg
+        message: this.translateService.instant(marker('workflows.publishWarn'))
       })
       .pipe(take(1))
       .subscribe((ok: boolean) => {
         if (ok) {
           this.workflowAdminService
-            .createEditWorkflow(
-              wf,
-              wf.status === WorkFlowStatusEnum.draft ? WorkFlowStatusEnum.published : WorkFlowStatusEnum.draft
-            )
+            .validateWorkflow(wf.id)
             .pipe(take(1))
             .subscribe({
-              next: (response) => {
+              next: () => {
+                this.workflowAdminService
+                  .createEditWorkflow(wf, WorkFlowStatusEnum.published)
+                  .pipe(take(1))
+                  .subscribe({
+                    next: () => {
+                      this.globalMessageService.showSuccess({
+                        message: this.translateService.instant(marker('common.successOperation')),
+                        actionText: this.translateService.instant(marker('common.close'))
+                      });
+                      this.getWorkflows();
+                    },
+                    error: (error: ConcenetError) => {
+                      this.globalMessageService.showError({
+                        message: this.translateService.instant(error.message),
+                        actionText: this.translateService.instant(marker('common.close'))
+                      });
+                    }
+                  });
+              },
+              error: (error: ConcenetError) => {
+                this.globalMessageService.showError({
+                  message: this.translateService.instant(error.message),
+                  actionText: this.translateService.instant(marker('common.close'))
+                });
+              }
+            });
+        }
+      });
+  }
+  public unPublishWorkflow(wf: WorkflowDTO): void {
+    this.confirmationDialog
+      .open({
+        title: this.translateService.instant(marker('common.warning')),
+        message: this.translateService.instant(marker('workflows.draftWarn'))
+      })
+      .pipe(take(1))
+      .subscribe((ok: boolean) => {
+        if (ok) {
+          this.workflowAdminService
+            .createEditWorkflow(wf, WorkFlowStatusEnum.draft)
+            .pipe(take(1))
+            .subscribe({
+              next: () => {
                 this.globalMessageService.showSuccess({
                   message: this.translateService.instant(marker('common.successOperation')),
                   actionText: this.translateService.instant(marker('common.close'))
@@ -240,7 +276,7 @@ export class WorkflowsTableComponent implements OnInit {
               },
               error: (error: ConcenetError) => {
                 this.globalMessageService.showError({
-                  message: this.translateService.instant(error.error),
+                  message: this.translateService.instant(error.message),
                   actionText: this.translateService.instant(marker('common.close'))
                 });
               }
@@ -253,7 +289,7 @@ export class WorkflowsTableComponent implements OnInit {
       .duplicateWorkflow(wf.id)
       .pipe(take(1))
       .subscribe({
-        next: (response) => {
+        next: () => {
           this.globalMessageService.showSuccess({
             message: this.translateService.instant(marker('common.successOperation')),
             actionText: this.translateService.instant(marker('common.close'))

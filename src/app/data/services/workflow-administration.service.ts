@@ -33,6 +33,8 @@ export class WorkflowAdministrationService {
   private readonly TIMELINE_PATH = '/timeline';
   private readonly TEMPLATES_PATH = '/listTemplates';
   private readonly BUDGET_PATH = '/budget';
+  private readonly VALIDATE_PATH = '/validatePublish';
+
   constructor(@Inject(ENV) private env: Env, private http: HttpClient, private workflowFilterService: WorkflowFilterService) {}
 
   /**
@@ -275,6 +277,16 @@ export class WorkflowAdministrationService {
   public postWorkflowBudget(workflowId: number, budget: TemplatesCommonDTO): Observable<TemplatesCommonDTO> {
     return this.http
       .post<TemplatesCommonDTO>(`${this.env.apiBaseUrl}${this.WORKFLOW_PATH}/${workflowId}${this.BUDGET_PATH}`, budget)
+      .pipe(catchError((error) => throwError(error.error as ConcenetError)));
+  }
+  /**
+   * Validar workflow
+   *
+   * @returns unknown
+   */
+  public validateWorkflow(workflowId: number): Observable<unknown> {
+    return this.http
+      .get<unknown>(`${this.env.apiBaseUrl}${this.WORKFLOW_PATH}${this.VALIDATE_PATH}/${workflowId}`)
       .pipe(catchError((error) => throwError(error.error as ConcenetError)));
   }
 }
