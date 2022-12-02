@@ -78,7 +78,7 @@
             <td mat-cell *matCellDef="let element" class="action-buttons no-ellipsis">
                 <div fxLayout="row wrap" fxLayoutAlign="space-between center">
                     <button mat-icon-button aria-label="close" *ngIf="element.status === 'PUBLISHED'">
-                        <mat-icon (click)="publishWorkflow(element)">clear</mat-icon>
+                        <mat-icon (click)="unPublishWorkflow(element)">clear</mat-icon>
                     </button>
                     <button mat-icon-button aria-label="publish" *ngIf="element.status === 'DRAFT'">
                         <mat-icon (click)="publishWorkflow(element)">gavel</mat-icon>

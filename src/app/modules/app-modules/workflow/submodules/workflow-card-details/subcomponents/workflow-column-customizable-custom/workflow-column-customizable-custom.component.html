@@ -1,3 +1,35 @@
-<div style="display: flex; justify-content: center; align-items: center; width: 100%; min-height: 200px">
-    <h2>Sección en construcción.</h2>
+<div class="items-container smaller-mat-form-fields" fxLayout="column" *ngIf="tabForm">
+    <div *ngFor="let itemForm of tabForm.controls; let i = index">
+        <div [ngSwitch]="tabItems[i].typeItem">
+            <app-item-title
+                *ngSwitchCase="'TITLE'"
+                [tabItem]="tabItems[i]"
+                [tab]="tab"
+                [cardInstance]="cardInstance"
+            ></app-item-title>
+            <app-item-text
+                *ngSwitchCase="'TEXT'"
+                [tabItem]="tabItems[i]"
+                [tab]="tab"
+                [cardInstance]="cardInstance"
+            ></app-item-text>
+            <app-item-input
+                *ngSwitchCase="'INPUT'"
+                [tabItemForm]="itemForm"
+                [tabItem]="tabItems[i]"
+                [tab]="tab"
+                [cardInstance]="cardInstance"
+                [editMode]="editMode"
+            ></app-item-input>
+        </div>
+    </div>
+</div>
+<div class="buttons-container" fxLayoutAlign="space-between center" *ngIf="editMode">
+    <button mat-stroked-button color="warn" (click)="cancel()">{{ labels.cancel | translate }}</button>
+    <button mat-flat-button color="primary" (click)="save()" [disabled]="tabForm.invalid">{{ labels.save | translate }}</button>
+</div>
+<div class="buttons-container" fxLayoutAlign="end center" *ngIf="!editMode">
+    <button mat-flat-button color="primary" (click)="edit()">
+        {{ labels.edit | translate }}
+    </button>
 </div>
