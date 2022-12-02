@@ -22,7 +22,11 @@ export class WorkflowCardComponent implements OnInit {
   @Input() wState: WorkflowStateDTO;
   @Input() wSubstate: WorkflowSubstateDTO;
   @Input() wUserId: number;
-  @Input() droppableStates: string[];
+  @Input() droppableStates: string[] = [];
+  @Input() disableDrag = false;
+  @Input() forceSize: 'size-s' | 'size-m' | 'size-l' | 'size-xl';
+  @Input() showExtraInfo = true;
+  @Input() navigationMode: 'relative' | 'absolute' = 'relative';
   @Output() isDraggingEvent: EventEmitter<boolean> = new EventEmitter();
   public cardSize = 'size-m';
   public cardId: number;
@@ -108,7 +112,9 @@ export class WorkflowCardComponent implements OnInit {
   }
 
   public getCardSize(): void {
-    if (this.card.cardInstanceWorkflows[0].size) {
+    if (this.forceSize) {
+      this.cardSize = this.forceSize;
+    } else if (this.card.cardInstanceWorkflows[0].size) {
       this.cardSize = 'size-' + this.card.cardInstanceWorkflows[0].size.toLowerCase();
     }
   }
@@ -120,27 +126,83 @@ export class WorkflowCardComponent implements OnInit {
   public showCardInfo(): void {
     //Firefox => para evitar que al arrastrar abra el detalle de la tarjeta
     if (!this.dragAndDropService.draggingCard$.value) {
-      this.router.navigate(
-        [
+      if (this.navigationMode === 'relative') {
+        this.router.navigate(
+          [
+            {
+              outlets: {
+                card: [
+                  RouteConstants.WORKFLOWS_ID_CARD,
+                  this.card.cardInstanceWorkflows[0].id,
+                  RouteConstants.WORKFLOWS_ID_USER,
+                  this.wUserId
+                ]
+              }
+            }
+          ],
           {
-            outlets: {
-              card: [
-                RouteConstants.WORKFLOWS_ID_CARD,
-                this.card.cardInstanceWorkflows[0].id,
-                RouteConstants.WORKFLOWS_ID_USER,
-                this.wUserId
-              ]
+            relativeTo: this.route,
+            state: {
+              relativeTo: JSON.stringify(this.route, this.replacerFunc),
+              card: JSON.stringify(this.card)
             }
           }
-        ],
-        {
-          relativeTo: this.route,
-          state: {
-            relativeTo: JSON.stringify(this.route, this.replacerFunc),
-            card: JSON.stringify(this.card)
-          }
+        );
+      } else {
+        const currentUrl = window.location.hash.split('#/').join('/');
+        let wId = null; //this.card.cardInstanceWorkflows[0].workflowId;
+        let view = RouteConstants.WORKFLOWS_BOARD_VIEW;
+        if (currentUrl.indexOf(RouteConstants.WORKFLOWS) >= 0 && currentUrl.indexOf(RouteConstants.WORKFLOWS_BOARD_VIEW) >= 0) {
+          const id = parseInt(
+            currentUrl.split(RouteConstants.WORKFLOWS + '/')[1].split('/' + RouteConstants.WORKFLOWS_BOARD_VIEW)[0],
+            10
+          );
+          wId = id ? id : wId;
+        } else if (
+          currentUrl.indexOf(RouteConstants.WORKFLOWS) >= 0 &&
+          currentUrl.indexOf(RouteConstants.WORKFLOWS_CALENDAR_VIEW) >= 0
+        ) {
+          view = RouteConstants.WORKFLOWS_CALENDAR_VIEW;
+          const id = parseInt(
+            currentUrl.split(RouteConstants.WORKFLOWS + '/')[1].split('/' + RouteConstants.WORKFLOWS_CALENDAR_VIEW)[0],
+            10
+          );
+          wId = id ? id : wId;
+        } else if (
+          currentUrl.indexOf(RouteConstants.WORKFLOWS) >= 0 &&
+          currentUrl.indexOf(RouteConstants.WORKFLOWS_TABLE_VIEW) >= 0
+        ) {
+          view = RouteConstants.WORKFLOWS_TABLE_VIEW;
+          const id = parseInt(
+            currentUrl.split(RouteConstants.WORKFLOWS + '/')[1].split('/' + RouteConstants.WORKFLOWS_TABLE_VIEW)[0],
+            10
+          );
+          wId = id ? id : wId;
         }
-      );
+        if (wId) {
+          this.router.navigateByUrl(
+            '/dashboard/workflow/' +
+              wId +
+              '/' +
+              view +
+              '/(card:wcId/' +
+              this.card.cardInstanceWorkflows[0].id +
+              '/wuId/' +
+              (this.wUserId ? this.wUserId : 'null') +
+              ')'
+          );
+        } else {
+          this.router.navigateByUrl(
+            '/dashboard/workflow/' +
+              view +
+              '/(card:wcId/' +
+              this.card.cardInstanceWorkflows[0].id +
+              '/wuId/' +
+              (this.wUserId ? this.wUserId : 'null') +
+              ')'
+          );
+        }
+      }
     }
   }
 

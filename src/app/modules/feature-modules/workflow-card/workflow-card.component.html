@@ -2,6 +2,7 @@
     class="workflow-card"
     [ngClass]="getCardSizeClass()"
     cdkDrag
+    [cdkDragDisabled]="disableDrag"
     [cdkDragStartDelay]="dragStartDelay"
     (cdkDragStarted)="setCardDragging(true)"
     (cdkDragReleased)="setCardDragging(false)"
@@ -23,7 +24,7 @@
         </div>
         <div
             class="workflow-card__info__data extra-info"
-            *ngIf="card.information"
+            *ngIf="card.information && showExtraInfo"
             matTooltip="{{ card.information }}"
             appShowIfTruncated
             matTooltipPosition="below"
