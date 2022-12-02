@@ -32,17 +32,7 @@
     <div fxLayout="row" class="navbar__right" fxLayoutAlign="end center">
         <!-- Responsive search input -->
         <div class="responsive__tablet_or_more">
-            <form [formGroup]="searcherForm" class="navbar__search" fxLayout="row" fxLayoutAlign="end center">
-                <mat-form-field appearance="outline">
-                    <input
-                        formControlName="search"
-                        matInput
-                        [placeholder]="labels.search | translate"
-                        (keyup.enter)="searchCards()"
-                    />
-                    <mat-icon matSuffix (click)="searchCards()">search</mat-icon>
-                </mat-form-field>
-            </form>
+            <app-workflow-card-searcher [format]="'input'"></app-workflow-card-searcher>
         </div>
         <button mat-raised-button class="responsive__tablet_or_more" (click)="openNewCardDialog()">
             <span class="navbar__right__createCard">
@@ -50,7 +40,7 @@
             </span>
         </button>
         <button class="responsive__less-than-tablet" mat-icon-button aria-label="Search">
-            <mat-icon>search</mat-icon>
+            <app-workflow-card-searcher [format]="'icon'"></app-workflow-card-searcher>
         </button>
         <!-- END Responsive search input -->
         <button mat-icon-button aria-label="Email">

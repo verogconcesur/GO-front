@@ -1,0 +1,26 @@
+//Reutiliza estilos importados con el theme tanto del navbar como del user-profile
+.navbar {
+  &__searcher {
+    &.centered {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+  }
+  &__search {
+    mat-form-field {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      &.active {
+        z-index: 1001;
+      }
+    }
+  }
+}
+
+.user-profile-menu {
+  .card {
+    width: 150px;
+  }
+}
