@@ -99,8 +99,8 @@ export class WorkflowUsersComponent extends WorkflowStepAbstractClass implements
     const spinner = this.spinnerService.show();
     const organization: WorkflowOrganizationDTO = this.workflowsCreateEditAuxService.getFormGroupByStep(0).value;
     const roles = this.workflowsCreateEditAuxService
-      .getFormGroupByStep(1)
-      .value.roles.filter((role: WorkflowRoleDTO) => role.selected);
+      .getFormOriginalData(1) // Por alguna razón el formulario no está recargando correctamente al guardar en este paso
+      .roles.filter((role: WorkflowRoleDTO) => role.selected);
     this.usersFilter = {
       brands: [...(organization.brands ? organization.brands : [])].map((item) => item.id),
       departments: [...(organization.departments ? organization.departments : [])].map((item) => item.id),

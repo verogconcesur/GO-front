@@ -68,7 +68,8 @@
                         class="bottom-right"
                         *ngIf="
                             !cardInstanceAttachmentsConfig.disableIndividualDownloadAction &&
-                            !cardInstanceAttachmentsConfig.disableAttachmentsSelection
+                            !cardInstanceAttachmentsConfig.disableAttachmentsSelection &&
+                            !isPdf(item)
                         "
                         (click)="downloadAttachment(item)"
                         >vertical_align_bottom</mat-icon
@@ -77,10 +78,31 @@
                         class="top-right"
                         *ngIf="
                             !cardInstanceAttachmentsConfig.disableIndividualDownloadAction &&
-                            cardInstanceAttachmentsConfig.disableAttachmentsSelection
+                            cardInstanceAttachmentsConfig.disableAttachmentsSelection &&
+                            !isPdf(item)
                         "
                         (click)="downloadAttachment(item)"
                         >vertical_align_bottom</mat-icon
+                    >
+                    <mat-icon
+                        class="bottom-right"
+                        *ngIf="
+                            !cardInstanceAttachmentsConfig.disableIndividualDownloadAction &&
+                            !cardInstanceAttachmentsConfig.disableAttachmentsSelection &&
+                            isPdf(item)
+                        "
+                        (click)="downloadAttachment(item)"
+                        >open_in_browser</mat-icon
+                    >
+                    <mat-icon
+                        class="top-right"
+                        *ngIf="
+                            !cardInstanceAttachmentsConfig.disableIndividualDownloadAction &&
+                            cardInstanceAttachmentsConfig.disableAttachmentsSelection &&
+                            isPdf(item)
+                        "
+                        (click)="downloadAttachment(item)"
+                        >open_in_browser</mat-icon
                     >
                 </div>
                 <div

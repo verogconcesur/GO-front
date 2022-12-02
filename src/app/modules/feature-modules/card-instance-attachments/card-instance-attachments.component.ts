@@ -80,6 +80,13 @@ export class CardInstanceAttachmentsComponent implements OnInit, OnChanges {
     return `url(/assets/img/unknown.svg)`;
   }
 
+  public isPdf(item: AttachmentDTO): boolean {
+    if (item?.type?.toLowerCase().indexOf('pdf') >= 0) {
+      return true;
+    }
+    return false;
+  }
+
   public downloadAttachment(item: AttachmentDTO): void {
     const spinner = this.spinnerService.show();
     //window.open(this.attachmentService.getDownloadAttachmentUrl(this.cardInstanceWorkflowId, this.tabId, item.id), '_blank');
