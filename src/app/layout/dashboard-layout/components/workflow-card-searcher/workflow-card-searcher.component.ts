@@ -17,8 +17,6 @@ import { delay, finalize, map, switchMap, take } from 'rxjs/operators';
 })
 export class WorkflowCardSearcherComponent implements OnInit {
   @Input() format: 'icon' | 'input';
-  // @ViewChild('menuTrigger') trigger: MatMenuTrigger;
-  @ViewChild('inputModeTrigger') trigger: MatMenuTrigger;
 
   public labels = {
     search: marker('common.search')
@@ -57,18 +55,18 @@ export class WorkflowCardSearcherComponent implements OnInit {
     console.log(card);
   }
 
-  public closeIfNoCards(): void {
-    console.log(this.trigger, this.trigger.menuOpen);
-    if (this.cards.length === 0) {
-      console.log('close');
-      this.trigger.closeMenu();
-    } else if (!this.trigger.menuOpen) {
-      console.log('open');
-      setTimeout(() => {
-        this.trigger.openMenu();
-      }, 100);
-    }
-  }
+  // public closeIfNoCards(): void {
+  //   console.log(this.trigger, this.trigger.menuOpen);
+  //   if (this.cards.length === 0) {
+  //     console.log('close');
+  //     this.trigger.closeMenu();
+  //   } else if (!this.trigger.menuOpen) {
+  //     console.log('open');
+  //     setTimeout(() => {
+  //       this.trigger.openMenu();
+  //     }, 100);
+  //   }
+  // }
 
   // public menuOpened() {
   //   console.log('menu opened');
