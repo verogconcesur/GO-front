@@ -15,6 +15,7 @@
             <app-workflow-column-customizable-custom
                 *ngIf="showColumn('CUSTOMIZABLE_CUSTOM')"
                 [tab]="tabToShow"
+                [cardInstance]="cardInstance"
             ></app-workflow-column-customizable-custom>
             <app-workflow-column-prefixed-information
                 *ngIf="showColumn('PREFIXED_INFORMATION')"

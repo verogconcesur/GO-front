@@ -7,6 +7,7 @@ import { ConcenetError } from '@app/types/error';
 import PaginationRequestI from '@data/interfaces/pagination-request';
 import PaginationResponseI from '@data/interfaces/pagination-response';
 import BasicFilterDTO from '@data/models/basic-filter-dto';
+import CardColumnTabItemDTO from '@data/models/cards/card-column-tab-item-dto';
 import CardContentSourceDTO from '@data/models/cards/card-content-source-dto';
 import CardContentTypeDTO from '@data/models/cards/card-content-type-dto';
 import CardCreateDTO from '@data/models/cards/card-create-dto';
@@ -15,6 +16,7 @@ import CardInstanceDTO from '@data/models/cards/card-instance-dto';
 import TemplatesCommonDTO from '@data/models/templates/templates-common-dto';
 import WorkflowCardSlotDTO from '@data/models/workflows/workflow-card-slot-dto';
 import WorkflowCardTabItemDTO from '@data/models/workflows/workflow-card-tab-item-dto';
+import WorkflowCardTabitemInstanceDTO from '@data/models/workflows/workflow-card-tabitem-instance-dto';
 import WorkflowMoveDTO from '@data/models/workflows/workflow-move-dto';
 import { getPaginationUrlGetParams } from '@data/utils/pagination-aux';
 import { Observable, throwError } from 'rxjs';
@@ -43,6 +45,7 @@ export class CardService {
   private readonly CREATE_CARD_INSTANCE_PATH = '/api/cardInstanceWorkflow/createCard';
   private readonly GET_TEMPLATE_LIST_PATH = '/api/templates/listByFilter';
   private readonly ENTITY_PATH = '/entity';
+  private readonly CUSTOM_PATH = '/custom';
 
   constructor(@Inject(ENV) private env: Env, private http: HttpClient) {}
 
@@ -111,9 +114,9 @@ export class CardService {
   public getCardTabData(
     cardInstanceWorkflowId: number,
     tabId: number
-  ): Observable<WorkflowCardSlotDTO[] | WorkflowCardTabItemDTO[]> {
+  ): Observable<WorkflowCardSlotDTO[] | WorkflowCardTabItemDTO[] | CardColumnTabItemDTO[]> {
     return this.http
-      .get<WorkflowCardSlotDTO[] | WorkflowCardTabItemDTO[]>(
+      .get<WorkflowCardSlotDTO[] | WorkflowCardTabItemDTO[] | CardColumnTabItemDTO[]>(
         // eslint-disable-next-line max-len
         `${this.env.apiBaseUrl}${this.GET_CARD_INSTANCE_PATH}${this.GET_DETAIL_PATH}/${cardInstanceWorkflowId}${this.GET_TAB_PATH}/${tabId}`
       )
@@ -253,6 +256,25 @@ export class CardService {
       .get<WorkflowCardTabItemDTO>(
         // eslint-disable-next-line max-len
         `${this.env.apiBaseUrl}${this.GET_CARD_INSTANCE_PATH}${this.GET_DETAIL_PATH}/${cardWfId}${this.ENTITY_PATH}/${tabId}/${entityId}`
+      )
+      .pipe(catchError((error) => throwError(error.error as ConcenetError)));
+  }
+
+  /**
+   * Edita un tab de tipo entity asignandole el nuevo seleccionado y devolviendo su detalle.
+   *
+   * @returns WorkflowCardTabItemDTO
+   */
+  public setCustomTab(
+    cardWfId: number,
+    tabId: number,
+    tabItems: WorkflowCardTabitemInstanceDTO[]
+  ): Observable<WorkflowCardTabitemInstanceDTO> {
+    return this.http
+      .post<WorkflowCardTabitemInstanceDTO>(
+        // eslint-disable-next-line max-len
+        `${this.env.apiBaseUrl}${this.GET_CARD_INSTANCE_PATH}${this.GET_DETAIL_PATH}/${cardWfId}${this.CUSTOM_PATH}/${tabId}`,
+        tabItems
       )
       .pipe(catchError((error) => throwError(error.error as ConcenetError)));
   }
