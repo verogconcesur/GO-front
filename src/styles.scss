@@ -21,6 +21,7 @@
 @import 'app/modules/app-modules/administration/cards/components/create-edit-card/create-edit-card.component.scss-theme.scss';
 @import 'app/modules/app-modules/workflow/workflow.component.scss-theme.scss';
 @import 'app/modules/feature-modules/new-card/new-card.component.scss-theme.scss';
+@import 'app/modules/feature-modules/workflow-card/workflow-card.component.scss-theme.scss';
 
 @mixin custom-components-theme($theme, $main-typography) {
   @include app-component-theme($theme);
@@ -40,6 +41,7 @@
   @include template-common-styles-theme($theme, $main-typography);
   @include create-edit-specialty-component-theme($theme, $main-typography);
   @include workflow-component-theme($theme, $main-typography);
+  @include workflow-card-component-theme($theme, $main-typography);
   @include responsive-tabs-component-theme($theme, $main-typography);
   @include create-edit-card-component-theme($theme, $main-typography);
   @include new-card-component-theme($theme, $main-typography);

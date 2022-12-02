@@ -93,6 +93,8 @@ export class WorkflowCardConfigComponent extends WorkflowStepAbstractClass imple
       ?.setValue(this.originalData.tabItems.find((item: CardColumnTabItemDTO) => item.id === node.id));
     this.form.get(`${this.lastInputSelected.viewType}.field${this.lastInputSelected.fieldIndex}.tabItem`)?.markAsDirty();
     this.form.get(`${this.lastInputSelected.viewType}.field${this.lastInputSelected.fieldIndex}.tabItem`)?.markAsTouched();
+    // this.form.get(`${this.lastInputSelected.viewType}`)?.markAsDirty();
+    // this.form.get(`${this.lastInputSelected.viewType}`)?.markAsTouched();
     this.trigger.closeMenu();
   }
 
@@ -192,6 +194,8 @@ export class WorkflowCardConfigComponent extends WorkflowStepAbstractClass imple
 
   public clearField(viewType: 'BOARD' | 'CALENDAR' | 'TABLE', fieldIndex: number): void {
     this.form.get(`${viewType}.field${fieldIndex}.tabItem`)?.setValue(null);
+    this.form.get(`${viewType}.field${fieldIndex}.tabItem`)?.markAsDirty();
+    this.form.get(`${viewType}.field${fieldIndex}.tabItem`)?.markAsTouched();
   }
 
   public setTabItemTo(viewType: 'BOARD' | 'CALENDAR' | 'TABLE', fieldIndex: number): void {
@@ -205,7 +209,7 @@ export class WorkflowCardConfigComponent extends WorkflowStepAbstractClass imple
   ): UntypedFormGroup {
     let validations = [Validators.required];
     //La validación sólo se aplica al primer campo
-    if (orderNumber > 1) {
+    if (orderNumber > 1 || viewType !== 'BOARD') {
       validations = [];
     }
     const formGroup: UntypedFormGroup = this.fb.group({

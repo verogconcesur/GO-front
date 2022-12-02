@@ -60,6 +60,7 @@
         "jquery": "^3.6.0",
         "lodash.clonedeep": "^4.5.0",
         "miragejs": "^0.1.45",
+        "ngx-extended-pdf-viewer": "^15.0.12",
         "ngx-logger": "^4.1.9",
         "ngx-summernote": "^0.8.8",
         "ngx-translate-messageformat-compiler": "^5.1.0",

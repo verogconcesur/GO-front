@@ -193,6 +193,7 @@
         "delete": "Eliminar",
         "deleteConfirmation": "¿Está seguro que desea eliminar este elemento?",
         "directLinks": "Accesos directos",
+        "download": "Descargar",
         "dropHere": "Suelta aquí",
         "duplicate": "Duplicar",
         "edit": "Editar",
@@ -399,6 +400,9 @@
         "nextPage": "Siguiente página",
         "pageOf": "Página {num1} de {num2}",
         "prevPage": "Página previa"
+    },
+    "pdf": {
+        "viewer": "Visor de pdf"
     },
     "prepareMovement": {
         "extraMovement": "Movimiento asociado",

@@ -10,6 +10,9 @@ import WorkflowDTO from '@data/models/workflows/workflow-dto';
 import { WorkflowsService } from '@data/services/workflows.service';
 import { NewCardComponent, NewCardComponentModalEnum } from '@modules/feature-modules/new-card/new-card.component';
 import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
+import { FormBuilder, UntypedFormGroup } from '@angular/forms';
+import WorkflowCardDTO from '@data/models/workflows/workflow-card-dto';
+import { finalize, take } from 'rxjs/operators';
 
 @UntilDestroy()
 @Component({
@@ -17,7 +20,7 @@ import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
   templateUrl: './navbar.component.html',
   styleUrls: ['./navbar.component.scss']
 })
-export class NavbarComponent implements OnInit {
+export class NavbarComponent {
   public readonly WORKFLOW_PATH = RouteConstants.WORKFLOWS;
   public labels = {
     title: marker('app.title'),
@@ -26,17 +29,9 @@ export class NavbarComponent implements OnInit {
     vehicles: marker('app.menu.vehicles'),
     advanceSearch: marker('app.menu.advanceSearch'),
     administration: marker('app.menu.administration'),
-    createCard: marker('app.menu.createCard'),
-    search: marker('common.search')
+    createCard: marker('app.menu.createCard')
   };
-  constructor(
-    private router: Router,
-    private authService: AuthenticationService,
-    private workflowService: WorkflowsService,
-    public dialog: MatDialog
-  ) {}
-
-  ngOnInit(): void {}
+  constructor(private router: Router, private authService: AuthenticationService, public dialog: MatDialog) {}
 
   public navigateToAdministration(): void {
     this.router.navigate([RouteConstants.ADMINISTRATION]);

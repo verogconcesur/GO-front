@@ -61,7 +61,7 @@ export class WorkflowColumnCustomizableEntityComponent implements OnInit, OnChan
   }
 
   public showChangeOrAsignEntity(): boolean {
-    if ([1, 2, 3].indexOf(this.tab.contentSourceId) >= 0) {
+    if (this.tab.permissionType === 'EDIT' && [1, 2, 3].indexOf(this.tab.contentSourceId) >= 0) {
       return true;
     }
     return false;
@@ -129,27 +129,27 @@ export class WorkflowColumnCustomizableEntityComponent implements OnInit, OnChan
         mode = 'USER';
         break;
     }
-    this.entitySearcher.openEntitySearcher(this.workflowId, mode).then((data) => {
-      this.setShowLoading.emit(true);
-      this.cardService
-        .setEntityToTab(this.idCard, this.tab.id, data.id)
-        .pipe(
-          take(1),
-          finalize(() => this.setShowLoading.emit(false))
-        )
-        .subscribe(
-          (resp) => {
-            // this.getData();
-            // Para que recargue la vista tablero
-            this.prepareAndMoveService.reloadData$.next('MOVES_IN_OTHER_WORKFLOWS');
-          },
-          (error) => {
-            this.globalMessageService.showError({
-              message: error.message,
-              actionText: this.translateService.instant(marker('common.close'))
-            });
-          }
-        );
-    });
+    this.setShowLoading.emit(true);
+    this.entitySearcher
+      .openEntitySearcher(this.workflowId, mode)
+      .then((data) => {
+        this.cardService
+          .setEntityToTab(this.idCard, this.tab.id, data.id)
+          .pipe(take(1))
+          .subscribe(
+            (resp) => {
+              // this.getData();
+              // Para que recargue la vista tablero
+              this.prepareAndMoveService.reloadData$.next('MOVES_IN_OTHER_WORKFLOWS');
+            },
+            (error) => {
+              this.globalMessageService.showError({
+                message: error.message,
+                actionText: this.translateService.instant(marker('common.close'))
+              });
+            }
+          );
+      })
+      .finally(() => this.setShowLoading.emit(false));
   }
 }

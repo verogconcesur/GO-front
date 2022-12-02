@@ -14,6 +14,7 @@ import CardCreateDTO from '@data/models/cards/card-create-dto';
 import CardDTO from '@data/models/cards/card-dto';
 import CardInstanceDTO from '@data/models/cards/card-instance-dto';
 import TemplatesCommonDTO from '@data/models/templates/templates-common-dto';
+import WorkflowCardDTO from '@data/models/workflows/workflow-card-dto';
 import WorkflowCardSlotDTO from '@data/models/workflows/workflow-card-slot-dto';
 import WorkflowCardTabItemDTO from '@data/models/workflows/workflow-card-tab-item-dto';
 import WorkflowCardTabitemInstanceDTO from '@data/models/workflows/workflow-card-tabitem-instance-dto';
@@ -46,6 +47,7 @@ export class CardService {
   private readonly GET_TEMPLATE_LIST_PATH = '/api/templates/listByFilter';
   private readonly ENTITY_PATH = '/entity';
   private readonly CUSTOM_PATH = '/custom';
+  private readonly SYNCRONIZE_PATH = '/synchronize';
 
   constructor(@Inject(ENV) private env: Env, private http: HttpClient) {}
 
@@ -68,6 +70,15 @@ export class CardService {
     return this.http
       .get<CardDTO>(`${this.env.apiBaseUrl}${this.GET_CARD_PATH}/${id}`)
       .pipe(catchError((error) => throwError(error.error as ConcenetError)));
+  }
+
+  /**
+   * Sync card
+   */
+  public syncCard(idCard: number): Observable<any> {
+    return this.http.get<any>(
+      `${this.env.apiBaseUrl}${this.GET_CARD_INSTANCE_PATH}${this.GET_DETAIL_PATH}/${idCard}${this.SYNCRONIZE_PATH}`
+    );
   }
 
   /**
