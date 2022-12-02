@@ -1,5 +1,9 @@
 @import 'utils/theme';
 
+.w-colunm-entity {
+  overflow-y: auto;
+  height: 100%;
+}
 .w-colunm-entity-data {
   text-transform: uppercase;
   margin: 30px 10px;
@@ -23,7 +27,7 @@
 .w-colunm-entity-change-button {
   position: absolute;
   bottom: 20px;
-  left: 20px;
+  right: 23px;
 }
 
 .no-data {
