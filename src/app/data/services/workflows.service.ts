@@ -62,6 +62,20 @@ export class WorkflowsService {
   }
 
   /**
+   * Obtiene las tarjetas visibles para el usuario cuyos datos matrícula, vin, NIF/NIE o Referencia de la orden contenga el texto enviado.
+   *
+   * @returns WorkflowCardDTO[]
+   */
+  public searchCardsInWorkflows(search: string): Observable<WorkflowCardDTO[]> {
+    return this.http
+      .post<WorkflowCardDTO[]>(
+        `${this.env.apiBaseUrl}${this.GET_WORKFLOWS_PATH}${this.GET_WORKFLOWS_INSTANCE_PATH}${this.GET_WORKFLOWS_SEARCH_PATH}`,
+        { search }
+      )
+      .pipe(catchError((error) => throwError(error.error as ConcenetError)));
+  }
+
+  /**
    * Devuelve listado de workflows paginado
    *
    * @returns WorkflowDTO[]

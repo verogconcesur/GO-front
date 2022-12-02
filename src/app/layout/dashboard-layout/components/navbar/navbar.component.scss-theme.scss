@@ -18,8 +18,16 @@
     }
     &__search {
       color: mat-contrast($primary, statusNeutral);
-      mat-form-field{
+      mat-form-field {
         width: 180px;
+      }
+      .spinner {
+        display: inline-block;
+        margin-bottom: -5px;
+        margin-left: -20px;
+        circle {
+          stroke: mat-contrast($primary, 400) !important;
+        }
       }
       .mat-form-field-appearance-outline .mat-form-field-wrapper {
         margin: 0 0;
