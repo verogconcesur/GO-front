@@ -1,7 +1,6 @@
-import { CdkDragDrop } from '@angular/cdk/drag-drop';
-import { identifierName } from '@angular/compiler';
 import { Component, Input } from '@angular/core';
 import { FormArray, FormControl, FormGroup, UntypedFormBuilder, Validators } from '@angular/forms';
+import { ConcenetError } from '@app/types/error';
 import { marker } from '@biesbjerg/ngx-translate-extract-marker';
 import TemplatesCommonDTO from '@data/models/templates/templates-common-dto';
 import TemplatesTimelineDTO, { TemplatesTimelineItemsDTO } from '@data/models/templates/templates-timeline-dto';
@@ -13,8 +12,8 @@ import { WorkflowAdministrationStatesSubstatesService } from '@data/services/wor
 import { WorkflowAdministrationService } from '@data/services/workflow-administration.service';
 import { TranslateService } from '@ngx-translate/core';
 import { ConfirmDialogService } from '@shared/services/confirm-dialog.service';
+import { GlobalMessageService } from '@shared/services/global-message.service';
 import { ProgressSpinnerDialogService } from '@shared/services/progress-spinner-dialog.service';
-import { NGXLogger } from 'ngx-logger';
 import { forkJoin } from 'rxjs';
 import { finalize, take } from 'rxjs/operators';
 import { WorkflowsCreateEditAuxService } from '../../../aux-service/workflows-create-edit-aux.service';
@@ -46,7 +45,7 @@ export class WorkflowTimelineComponent extends WorkflowStepAbstractClass {
     public workflowService: WorkflowAdministrationService,
     public workflowStateService: WorkflowAdministrationStatesSubstatesService,
     public timelineService: TemplatesTimelineService,
-    private logger: NGXLogger
+    private globalMessageService: GlobalMessageService
   ) {
     super(workflowsCreateEditAuxService, confirmationDialog, translateService);
   }
@@ -199,8 +198,11 @@ export class WorkflowTimelineComponent extends WorkflowStepAbstractClass {
           next: (response) => {
             resolve(true);
           },
-          error: (err) => {
-            this.logger.error(err);
+          error: (error: ConcenetError) => {
+            this.globalMessageService.showError({
+              message: error.message,
+              actionText: this.translateService.instant(marker('common.close'))
+            });
             resolve(false);
           }
         });

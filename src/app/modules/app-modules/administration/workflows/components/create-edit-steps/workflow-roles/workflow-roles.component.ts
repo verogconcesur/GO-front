@@ -1,11 +1,13 @@
 import { Component, Input } from '@angular/core';
 import { FormArray, FormGroup, UntypedFormBuilder } from '@angular/forms';
+import { ConcenetError } from '@app/types/error';
 import { marker } from '@biesbjerg/ngx-translate-extract-marker';
 import WorkflowRoleDTO from '@data/models/workflow-admin/workflow-role-dto';
 import { RoleService } from '@data/services/role.service';
 import { WorkflowAdministrationService } from '@data/services/workflow-administration.service';
 import { TranslateService } from '@ngx-translate/core';
 import { ConfirmDialogService } from '@shared/services/confirm-dialog.service';
+import { GlobalMessageService } from '@shared/services/global-message.service';
 import { ProgressSpinnerDialogService } from '@shared/services/progress-spinner-dialog.service';
 import { NGXLogger } from 'ngx-logger';
 import { finalize, take } from 'rxjs/operators';
@@ -32,6 +34,7 @@ export class WorkflowRolesComponent extends WorkflowStepAbstractClass {
     private spinnerService: ProgressSpinnerDialogService,
     public workflowService: WorkflowAdministrationService,
     public roleService: RoleService,
+    private globalMessageService: GlobalMessageService,
     private logger: NGXLogger
   ) {
     super(workflowsCreateEditAuxService, confirmationDialog, translateService);
@@ -98,8 +101,11 @@ export class WorkflowRolesComponent extends WorkflowStepAbstractClass {
           next: (response) => {
             resolve(true);
           },
-          error: (err) => {
-            this.logger.error(err);
+          error: (error: ConcenetError) => {
+            this.globalMessageService.showError({
+              message: error.message,
+              actionText: this.translateService.instant(marker('common.close'))
+            });
             resolve(false);
           }
         });
