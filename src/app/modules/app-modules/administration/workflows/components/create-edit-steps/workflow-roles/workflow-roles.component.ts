@@ -42,8 +42,8 @@ export class WorkflowRolesComponent extends WorkflowStepAbstractClass {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   public initForm(data: any): void {
     const fbArray = this.fb.array([]);
-    if (data && data.length) {
-      data.forEach((role: WorkflowRoleDTO) => {
+    if (data && data.roles && data.roles.length) {
+      data.roles.forEach((role: WorkflowRoleDTO) => {
         (fbArray as FormArray).push(this.generateRoleForm(role));
       });
     }
@@ -75,7 +75,7 @@ export class WorkflowRolesComponent extends WorkflowStepAbstractClass {
         .getWorkflowRoles(this.workflowId)
         .pipe(take(1))
         .subscribe((res) => {
-          this.originalData = res;
+          this.originalData = { roles: res };
           this.spinnerService.hide(spinner);
           resolve(true);
         });
