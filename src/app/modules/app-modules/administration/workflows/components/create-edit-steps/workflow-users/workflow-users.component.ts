@@ -1,5 +1,6 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { UntypedFormBuilder, Validators } from '@angular/forms';
+import { ConcenetError } from '@app/types/error';
 import { marker } from '@biesbjerg/ngx-translate-extract-marker';
 import PaginationResponseI from '@data/interfaces/pagination-response';
 import BrandDTO from '@data/models/organization/brand-dto';
@@ -67,7 +68,6 @@ export class WorkflowUsersComponent extends WorkflowStepAbstractClass implements
     public confirmationDialog: ConfirmDialogService,
     public translateService: TranslateService,
     private userService: UserService,
-    private logger: NGXLogger,
     private customDialogService: CustomDialogService,
     private globalMessageService: GlobalMessageService
   ) {
@@ -158,8 +158,11 @@ export class WorkflowUsersComponent extends WorkflowStepAbstractClass implements
           next: (response) => {
             resolve(true);
           },
-          error: (err) => {
-            this.logger.error(err);
+          error: (error: ConcenetError) => {
+            this.globalMessageService.showError({
+              message: error.message,
+              actionText: this.translateService.instant(marker('common.close'))
+            });
             resolve(false);
           }
         });
