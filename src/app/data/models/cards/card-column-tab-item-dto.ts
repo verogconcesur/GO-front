@@ -1,3 +1,5 @@
+import TreeNode from '@data/interfaces/tree-node';
+import { Moment } from 'moment';
 // export const TabItemsCustomTypes = ['TITLE', 'TEXT', 'INPUT', 'LIST', 'TABLE', 'OPTION'];
 export const TabItemsCustomTypes = ['TITLE', 'TEXT', 'INPUT'];
 // export const InputDataTypes = ['STRING', 'NUMBER', 'TEMPORAL'];
@@ -12,7 +14,7 @@ export const InputDateTypes = [
   { value: 'DATE', label: 'cards.column.dateType.date' },
   { value: 'TIME', label: 'cards.column.dateType.time' }
 ];
-export default interface CardColumnTabItemDTO {
+export default interface CardColumnTabItemDTO extends TreeNode {
   id?: number;
   tabId?: number;
   typeItem: string;
@@ -28,6 +30,7 @@ export default interface CardColumnTabItemDTO {
   tabItemConfigText?: TabItemConfigTextDTO;
   tabItemConfigTitle?: TabItemConfigTitleDTO;
   tabItemConfigVariable?: TabItemConfigVariableDTO;
+  frontName?: string;
 }
 export interface TabItemConfigActionDTO {
   id?: number;
@@ -35,9 +38,15 @@ export interface TabItemConfigActionDTO {
   actionType: 'SIGN_DOC' | 'MESSAGE_CLIENT' | 'ATTACH_DOC';
   visible: boolean;
 }
+export interface CardTabItemInstanceDTO {
+  id?: number;
+  tabItem?: CardColumnTabItemDTO;
+  value: string | Date | Moment;
+}
 export interface TabItemConfigCommonDTO {
   id?: number;
   tabItemId?: number;
+  cardTabItemInstance?: CardTabItemInstanceDTO;
 }
 export interface TabItemConfigInputDTO extends TabItemConfigCommonDTO {
   description: string;

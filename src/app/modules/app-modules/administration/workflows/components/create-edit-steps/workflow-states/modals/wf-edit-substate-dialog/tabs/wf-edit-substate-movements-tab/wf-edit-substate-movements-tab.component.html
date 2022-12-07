@@ -1,0 +1,102 @@
+<div class="substate-movements from">
+    <div class="substate-movements__column from source">
+        <h2>{{ labels.from | translate }}</h2>
+    </div>
+    <div class="substate-movements__column from target">
+        <h2>{{ labels.to | translate }}</h2>
+    </div>
+</div>
+<div class="substate-movements">
+    <div class="substate-movements__column source">
+        <div class="substate-movements__column__substate source mat-elevation-z2">
+            <mat-icon class="info-icon">home</mat-icon>
+            <div class="substate-movements__column__substate__info">{{ state?.name }} / {{ substate?.name }}</div>
+            <div class="line dotted"></div>
+            <div class="line down" *ngIf="movementsFa?.controls.length"></div>
+        </div>
+    </div>
+    <div class="substate-movements__column target">
+        <div
+            class="substate-movements__column__substate target add-movement mat-elevation-z2"
+            [matMenuTriggerFor]="attrSearcherMenu"
+            (click)="$event.stopPropagation()"
+        >
+            <mat-icon>add</mat-icon>
+            <div class="substate-movements__column__substate__info">
+                {{ labels.addMovement | translate }}
+            </div>
+            <div class="line dotted"></div>
+        </div>
+        <div *ngFor="let targetFg of movementsFa?.controls" class="substate-movements__column__substate target mat-elevation-z2">
+            <div class="substate-movements__column__substate__info">
+                <div class="state-substate-name">
+                    {{ getMovementName(targetFg.value.workflowSubstateTarget) }}
+                </div>
+                <div class="extra-info">
+                    <div
+                        class="chip"
+                        [ngClass]="{ selected: isChipSelected('wf', targetFg.value.workflowSubstateTarget.id) }"
+                        matTooltip="{{ labels.newTaskTooltip | translate }}"
+                        [matTooltipDisabled]="isTargetSameWorkflow(targetFg.value.workflowSubstateTarget)"
+                        matTooltipPosition="above"
+                        (click)="changeChipSelection('wf', targetFg.value.workflowSubstateTarget.id)"
+                    >
+                        <mat-icon *ngIf="isTargetSameWorkflow(targetFg.value.workflowSubstateTarget)">home</mat-icon>
+                        <mat-icon
+                            *ngIf="!isTargetSameWorkflow(targetFg.value.workflowSubstateTarget)"
+                            style="transform: rotate(90deg)"
+                            >call_split</mat-icon
+                        >
+                        <label *ngIf="isChipSelected('wf', targetFg.value.workflowSubstateTarget.id)">{{
+                            targetFg.value.workflowSubstateTarget.workflowState.workflow.name
+                        }}</label>
+                    </div>
+                    <div
+                        class="chip wf-2"
+                        *ngIf="targetFg.value.workflowSubstateTargetExtra"
+                        [ngClass]="{ selected: isChipSelected('wf2', targetFg.value.workflowSubstateTarget.id) }"
+                        matTooltip="{{ labels.requiredMovementExtraDescription | translate }}"
+                        matTooltipPosition="above"
+                        (click)="changeChipSelection('wf2', targetFg.value.workflowSubstateTarget.id)"
+                    >
+                        <mat-icon>home</mat-icon>
+                        <label *ngIf="isChipSelected('wf2', targetFg.value.workflowSubstateTarget.id)">
+                            {{ targetFg.value.workflowSubstateTargetExtra.workflowState.name }} /
+                            {{ targetFg.value.workflowSubstateTargetExtra.name }}</label
+                        >
+                    </div>
+                    <!-- <div
+                        class="chip"
+                        [ngClass]="{ selected: isChipSelected('info', targetFg.value.workflowSubstateTarget.id) }"
+                        (click)="changeChipSelection('info', targetFg.value.workflowSubstateTarget.id)"
+                    >
+                        <mat-icon>info_outline</mat-icon>
+                        <label *ngIf="isChipSelected('info', targetFg.value.workflowSubstateTarget.id)">{{
+                            targetFg.value.workflowSubstateTarget.workflowState.workflow.name
+                        }}</label>
+                    </div> -->
+                </div>
+            </div>
+            <mat-icon class="delete-icon" (click)="deleteMovement(targetFg)">close</mat-icon>
+            <div class="line up"></div>
+
+            <div
+                class="move-options"
+                matTooltipPosition="above"
+                matTooltip="{{ labels.configMovements | translate }}"
+                (click)="editMoveEvent(targetFg)"
+            >
+                <mat-icon>more_vert</mat-icon>
+            </div>
+        </div>
+    </div>
+</div>
+
+<button style="display: none" #menuTrigger="matMenuTrigger" [matMenuTriggerFor]="attrSearcherMenu"></button>
+<mat-menu #attrSearcherMenu="matMenu" class="attr-menu" (closed)="genericTreeNodeSearcher.resetFilter()">
+    <app-generic-tree-node-searcher
+        #genericTreeNodeSearcher
+        [originalData]="editSubstateAuxService.allStatesAndSubstates"
+        (nodeSelected)="nodeSelected($event)"
+    ></app-generic-tree-node-searcher>
+</mat-menu>

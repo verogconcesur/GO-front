@@ -36,6 +36,8 @@
     },
     "private": true,
     "dependencies": {
+        "@angular-material-components/datetime-picker": "^8.0.0",
+        "@angular-material-components/moment-adapter": "^8.0.0",
         "@angular/animations": "^14.2.3",
         "@angular/cdk": "^14.0.0",
         "@angular/common": "^14.2.3",
@@ -58,6 +60,7 @@
         "jquery": "^3.6.0",
         "lodash.clonedeep": "^4.5.0",
         "miragejs": "^0.1.45",
+        "ngx-extended-pdf-viewer": "^15.0.12",
         "ngx-logger": "^4.1.9",
         "ngx-summernote": "^0.8.8",
         "ngx-translate-messageformat-compiler": "^5.1.0",

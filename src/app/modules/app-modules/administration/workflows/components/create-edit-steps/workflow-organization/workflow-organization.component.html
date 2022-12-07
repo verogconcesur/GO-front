@@ -1,0 +1,66 @@
+<div *ngIf="form" class="organization-container">
+    <div *ngIf="facilitiesList && facilitiesList.length" class="organization-container__section" fxLayout="row wrap">
+        <div class="organization-container__section__title">
+            <h1>{{ labels.facilities | translate }}</h1>
+        </div>
+        <div
+            class="organization-container__section__item"
+            *ngFor="let facility of facilitiesList"
+            [ngClass]="{ selected: isItemSelected('facilities', facility) }"
+            (click)="selectItem('facilities', facility)"
+            fxLayout="column"
+            fxLayoutAlign="center center"
+        >
+            <span>{{ facility.name }}</span>
+        </div>
+    </div>
+    <div *ngIf="brandsList && brandsList.length" class="organization-container__section" fxLayout="row wrap">
+        <div class="organization-container__section__title">
+            <h1>{{ labels.brands | translate }}</h1>
+        </div>
+        <div
+            class="organization-container__section__item"
+            *ngFor="let brand of brandsList"
+            [ngClass]="{ selected: isItemSelected('brands', brand) }"
+            (click)="selectItem('brands', brand)"
+            fxLayout="column"
+            fxLayoutAlign="center center"
+        >
+            <span>{{ brand.name }}</span>
+        </div>
+    </div>
+    <ng-container *ngIf="departmentsList && departmentsList.length">
+        <div *ngFor="let departmentGrouped of departmentsList" class="organization-container__section" fxLayout="row wrap">
+            <div class="organization-container__section__title">
+                <h1>{{ labels.departments | translate: { facility: departmentGrouped.facilityName } }}</h1>
+            </div>
+            <div
+                class="organization-container__section__item"
+                *ngFor="let deparment of departmentGrouped.departments"
+                [ngClass]="{ selected: isItemSelected('departments', deparment) }"
+                (click)="selectItem('departments', deparment)"
+                fxLayout="column"
+                fxLayoutAlign="center center"
+            >
+                <span>{{ deparment.name }}</span>
+            </div>
+        </div>
+    </ng-container>
+    <ng-container *ngIf="specialtiesList && specialtiesList.length">
+        <div *ngFor="let specialtyGrouped of specialtiesList" class="organization-container__section" fxLayout="row wrap">
+            <div class="organization-container__section__title">
+                <h1>{{ labels.specialties | translate: { department: specialtyGrouped.departmentName } }}</h1>
+            </div>
+            <div
+                class="organization-container__section__item"
+                *ngFor="let specialty of specialtyGrouped.specialties"
+                [ngClass]="{ selected: isItemSelected('specialties', specialty) }"
+                (click)="selectItem('specialties', specialty)"
+                fxLayout="column"
+                fxLayoutAlign="center center"
+            >
+                <span>{{ specialty.name }}</span>
+            </div>
+        </div>
+    </ng-container>
+</div>

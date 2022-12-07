@@ -49,7 +49,8 @@ export class WorkflowCardMovementPreparationComponent implements OnInit {
     taskLabel: marker('prepareMovement.taskLabel'),
     taskPlaceholder: marker('prepareMovement.taskPlaceholder'),
     taskHistoricLabel: marker('prepareMovement.taskHistoricLabel'),
-    taskHistoricalPlaceholder: marker('prepareMovement.taskHistoricalPlaceholder')
+    taskHistoricalPlaceholder: marker('prepareMovement.taskHistoricalPlaceholder'),
+    extraMovement: marker('prepareMovement.extraMovement')
   };
   public tabsToShow: ('IN' | 'OUT' | 'MOV')[] = [];
   public tabToShow: 'IN' | 'OUT' | 'MOV';
@@ -60,6 +61,7 @@ export class WorkflowCardMovementPreparationComponent implements OnInit {
     public dialogRef: MatDialogRef<WorkflowCardMovementPreparationComponent>,
     @Inject(MAT_DIALOG_DATA)
     public data: {
+      destinationName: string;
       preparation: WorkflowSubstateEventDTO[];
       usersIn: WorkflowSubstateUserDTO[];
       usersOut: WorkflowSubstateUserDTO[];
@@ -82,7 +84,8 @@ export class WorkflowCardMovementPreparationComponent implements OnInit {
         (p.requiredSize ||
           (p.requiredUser && !this.findUserIn(this.data.selectedUser, this.usersIn)) ||
           p.sendMail ||
-          p.requiredHistoryComment)
+          p.requiredHistoryComment ||
+          p.requiredMovementExtra)
       ) {
         this.tabsToShow.push('IN');
         this.preparationIn = p;
@@ -91,7 +94,8 @@ export class WorkflowCardMovementPreparationComponent implements OnInit {
         (p.requiredSize ||
           (p.requiredUser && !this.findUserIn(this.data.selectedUser, this.usersOut)) ||
           p.sendMail ||
-          p.requiredHistoryComment)
+          p.requiredHistoryComment ||
+          p.requiredMovementExtra)
       ) {
         this.tabsToShow.push('OUT');
         this.preparationOut = p;
@@ -100,7 +104,8 @@ export class WorkflowCardMovementPreparationComponent implements OnInit {
         (p.requiredSize ||
           (p.requiredUser && !this.findUserIn(this.data.selectedUser, this.usersMov)) ||
           p.sendMail ||
-          p.requiredHistoryComment)
+          p.requiredHistoryComment ||
+          p.requiredMovementExtra)
       ) {
         this.tabsToShow.push('MOV');
         this.preparationMov = p;
@@ -123,6 +128,35 @@ export class WorkflowCardMovementPreparationComponent implements OnInit {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   public tabSelected(event: any) {
     this.tabToShow = this.tabsToShow[event.index];
+  }
+
+  public showTab(type: 'IN' | 'OUT' | 'MOV'): boolean {
+    if (
+      type === 'IN' &&
+      this.preparationIn &&
+      (!this.preparationIn.requiredMovementExtra ||
+        !this.preparationIn.movementExtraAuto ||
+        Object.keys(this.preparationInForm?.controls).length > 1)
+    ) {
+      return true;
+    } else if (
+      type === 'OUT' &&
+      this.preparationOut &&
+      (!this.preparationOut.requiredMovementExtra ||
+        !this.preparationOut.movementExtraAuto ||
+        Object.keys(this.preparationOutForm?.controls).length > 1)
+    ) {
+      return true;
+    } else if (
+      type === 'MOV' &&
+      this.preparationMov &&
+      (!this.preparationMov.requiredMovementExtra ||
+        !this.preparationMov.movementExtraAuto ||
+        Object.keys(this.preparationMovForm?.controls).length > 1)
+    ) {
+      return true;
+    }
+    return false;
   }
 
   public initForm(): void {
@@ -152,6 +186,9 @@ export class WorkflowCardMovementPreparationComponent implements OnInit {
       if (this.preparationIn.requiredHistoryComment) {
         this.preparationInForm.addControl('historyComment', this.fb.control(null, [Validators.required]));
       }
+      if (this.preparationIn.requiredMovementExtra) {
+        this.preparationInForm.addControl('movementExtraConfirm', this.fb.control(this.preparationIn.movementExtraAuto, []));
+      }
       if (this.preparationIn.sendMail) {
         this.preparationInForm.addControl(
           'template',
@@ -179,6 +216,9 @@ export class WorkflowCardMovementPreparationComponent implements OnInit {
       }
       if (this.preparationOut.requiredHistoryComment) {
         this.preparationOutForm.addControl('historyComment', this.fb.control(null, [Validators.required]));
+      }
+      if (this.preparationOut.requiredMovementExtra) {
+        this.preparationOutForm.addControl('movementExtraConfirm', this.fb.control(this.preparationOut.movementExtraAuto, []));
       }
       if (this.preparationOut.sendMail) {
         this.preparationOutForm.addControl(
@@ -208,6 +248,9 @@ export class WorkflowCardMovementPreparationComponent implements OnInit {
       if (this.preparationMov.requiredHistoryComment) {
         this.preparationMovForm.addControl('historyComment', this.fb.control(null, [Validators.required]));
       }
+      if (this.preparationMov.requiredMovementExtra) {
+        this.preparationMovForm.addControl('movementExtraConfirm', this.fb.control(this.preparationMov.movementExtraAuto, []));
+      }
       if (this.preparationMov.sendMail) {
         this.preparationMovForm.addControl(
           'template',
@@ -225,6 +268,13 @@ export class WorkflowCardMovementPreparationComponent implements OnInit {
 
   public findUserIn(user: WorkflowSubstateUserDTO, users: WorkflowSubstateUserDTO[]): WorkflowSubstateUserDTO {
     return users?.find((item: WorkflowSubstateUserDTO) => item.user.id === user?.user?.id);
+  }
+
+  public getMovementExtraLabel(preparation: WorkflowSubstateEventDTO): string {
+    return this.translateService.instant(marker('prepareMovement.extraMovementQuestion'), {
+      // eslint-disable-next-line max-len
+      destination: `<b>${preparation.workflowSubstateTargetExtra.workflowState.name} - ${preparation.workflowSubstateTargetExtra.name}</b>`
+    });
   }
 
   public getUserFullname(user: WorkflowSubstateUserDTO): string {
@@ -282,5 +332,9 @@ export class WorkflowCardMovementPreparationComponent implements OnInit {
       this.preparationOutForm?.invalid ||
       this.preparationMovForm?.invalid
     );
+  }
+
+  public getModalTitle(): string {
+    return this.translateService.instant(this.labels.title, { destination: this.data.destinationName });
   }
 }

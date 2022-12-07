@@ -1,4 +1,4 @@
-import { Injectable, NgModule } from '@angular/core';
+import { NgModule } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
 import { MatCheckboxModule } from '@angular/material/checkbox';
@@ -29,7 +29,24 @@ import { MatAutocompleteModule } from '@angular/material/autocomplete';
 import { MatTreeModule } from '@angular/material/tree';
 import { DragDropModule } from '@angular/cdk/drag-drop';
 import { MatStepperModule } from '@angular/material/stepper';
-
+import {
+  NgxMatTimepickerModule,
+  NgxMatDatetimePickerModule,
+  NgxMatDateFormats,
+  NGX_MAT_DATE_FORMATS
+} from '@angular-material-components/datetime-picker';
+import { NgxMatMomentModule } from '@angular-material-components/moment-adapter';
+const CUSTOM_DATE_FORMATS: NgxMatDateFormats = {
+  parse: {
+    dateInput: 'DD/MM/YYYY HH:mm'
+  },
+  display: {
+    dateInput: 'DD/MM/YYYY HH:mm',
+    monthYearLabel: 'MMM YYYY',
+    dateA11yLabel: 'DD/MM/YYYY HH:mm',
+    monthYearA11yLabel: 'MMMM YYYY'
+  }
+};
 @NgModule({
   declarations: [],
   imports: [
@@ -61,11 +78,15 @@ import { MatStepperModule } from '@angular/material/stepper';
     MatAutocompleteModule,
     MatTreeModule,
     DragDropModule,
-    MatStepperModule
+    MatStepperModule,
+    NgxMatTimepickerModule,
+    NgxMatDatetimePickerModule,
+    NgxMatMomentModule
   ],
   providers: [
     { provide: MatPaginatorIntl, useClass: MyCustomPaginatorIntl },
-    { provide: MAT_DATE_LOCALE, useValue: 'es-ES' }
+    { provide: MAT_DATE_LOCALE, useValue: 'es-ES' },
+    { provide: NGX_MAT_DATE_FORMATS, useValue: CUSTOM_DATE_FORMATS }
   ],
   exports: [
     MatButtonModule,
@@ -96,7 +117,10 @@ import { MatStepperModule } from '@angular/material/stepper';
     MatAutocompleteModule,
     MatTreeModule,
     DragDropModule,
-    MatStepperModule
+    MatStepperModule,
+    NgxMatTimepickerModule,
+    NgxMatDatetimePickerModule,
+    NgxMatMomentModule
   ]
 })
 export class MaterialModule {}

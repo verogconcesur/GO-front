@@ -1,0 +1,18 @@
+<div *ngIf="form" class="roles-container">
+    <div class="roles-container__section" fxLayout="row wrap">
+        <div class="roles-container__section__title">
+            <h1>{{ labels.roles | translate }}</h1>
+        </div>
+        <div
+            class="roles-container__section__item"
+            *ngFor="let role of roles?.controls"
+            [ngClass]="{ selected: role?.value?.selected }"
+            (click)="selectItem(role)"
+            fxLayout="column"
+            fxLayoutAlign="center center"
+        >
+            <span>{{ role?.value?.name }}</span>
+            <span class="roles-container__section__item__users">{{ role?.value?.userCount }} {{labels.users | translate }}</span>
+        </div>
+    </div>
+</div>
