@@ -2,7 +2,10 @@ import { Component, Input, OnInit } from '@angular/core';
 import CardColumnDTO from '@data/models/cards/card-column-dto';
 import CardColumnTabDTO from '@data/models/cards/card-column-tab-dto';
 import CardInstanceDTO from '@data/models/cards/card-instance-dto';
+import { CardService } from '@data/services/cards.service';
+import { WorkflowPrepareAndMoveService } from '@modules/app-modules/workflow/aux-service/workflow-prepare-and-move-aux.service';
 import { ResponsiveTabI } from '@shared/components/responsive-tabs/responsive-tabs.component';
+import { take } from 'rxjs/operators';
 
 @Component({
   selector: 'app-workflow-card-column',
@@ -18,7 +21,7 @@ export class WorkflowCardColumnComponent implements OnInit {
   public showLoading = false;
   public tabToShow: CardColumnTabDTO = null;
 
-  constructor() {}
+  constructor(private cardService: CardService, private prepareAndMoveService: WorkflowPrepareAndMoveService) {}
 
   ngOnInit(): void {}
 
@@ -33,6 +36,16 @@ export class WorkflowCardColumnComponent implements OnInit {
 
   public setShowLoading(loading: boolean): void {
     this.showLoading = loading;
+  }
+
+  public syncData(): void {
+    // console.log('syncdata', this.cardInstance);
+    this.cardService
+      .syncCard(this.cardInstance.cardInstanceWorkflow.id)
+      .pipe(take(1))
+      .subscribe((data) => {
+        this.prepareAndMoveService.reloadData$.next('MOVES_IN_THIS_WORKFLOW');
+      });
   }
 
   // type     	content_type_id	  content_type	  content_source_id	  content_source

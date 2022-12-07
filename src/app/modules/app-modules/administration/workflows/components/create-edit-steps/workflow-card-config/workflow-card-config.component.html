@@ -1,0 +1,153 @@
+<form [formGroup]="form" *ngIf="form" class="smaller-mat-form-fields card-config">
+    <div class="card-config__item">
+        <h2 class="card-config__item__title">{{ labels.boardView | translate }}</h2>
+        <div class="card-config__item__card">
+            <div class="card-config__item__card__colors">
+                <div class="card-config__item__card__colors__color x-1"></div>
+            </div>
+            <div class="card-config__item__card__info">
+                <section formGroupName="BOARD">
+                    <section class="field-section" *ngFor="let ind of getNumberOfFields('BOARD')" [formGroupName]="'field' + ind">
+                        <mat-form-field
+                            appearance="outline"
+                            floatLabel="always"
+                            [matMenuTriggerFor]="attrSearcherMenu"
+                            (click)="$event.stopPropagation(); setTabItemTo('BOARD', ind)"
+                        >
+                            <mat-label>{{ labels.field | translate }} {{ ind }}</mat-label>
+                            <mat-select formControlName="tabItem" [placeholder]="labels.select | translate">
+                                <mat-option
+                                    style="display: none"
+                                    *ngFor="let tabItem of originalData?.tabItems"
+                                    [value]="tabItem"
+                                    >{{ tabItem.frontName }}</mat-option
+                                >
+                            </mat-select>
+                            <mat-error class="custom-actions-container__header__group__error" *ngIf="hasErrorIn('BOARD', ind)">
+                                {{ labels.required | translate }}
+                            </mat-error>
+                        </mat-form-field>
+                        <button
+                            aria-label="Clear"
+                            class="clear-field-button"
+                            mat-icon-button
+                            *ngIf="hasValue('BOARD', ind)"
+                            (click)="clearField('BOARD', ind)"
+                        >
+                            <mat-icon>clear</mat-icon>
+                        </button>
+                    </section>
+                </section>
+            </div>
+        </div>
+    </div>
+    <div class="card-config__item">
+        <h2 class="card-config__item__title">{{ labels.calendarView | translate }}</h2>
+        <div class="card-config__item__card">
+            <div class="card-config__item__card__colors">
+                <div class="card-config__item__card__colors__color x-1"></div>
+            </div>
+            <div class="card-config__item__card__info">
+                <section formGroupName="CALENDAR">
+                    <section
+                        class="field-section"
+                        *ngFor="let ind of getNumberOfFields('CALENDAR')"
+                        [formGroupName]="'field' + ind"
+                    >
+                        <mat-form-field
+                            appearance="outline"
+                            floatLabel="always"
+                            [matMenuTriggerFor]="attrSearcherMenu"
+                            (click)="$event.stopPropagation(); setTabItemTo('CALENDAR', ind)"
+                        >
+                            <mat-label>{{ labels.field | translate }} {{ ind }}</mat-label>
+                            <mat-select formControlName="tabItem" [placeholder]="labels.select | translate">
+                                <mat-option
+                                    style="display: none"
+                                    *ngFor="let tabItem of originalData?.tabItems"
+                                    [value]="tabItem"
+                                    >{{ tabItem.frontName }}</mat-option
+                                >
+                            </mat-select>
+                            <mat-error class="custom-actions-container__header__group__error" *ngIf="hasErrorIn('CALENDAR', ind)">
+                                {{ labels.required | translate }}
+                            </mat-error>
+                        </mat-form-field>
+                        <button
+                            aria-label="Clear"
+                            class="clear-field-button"
+                            mat-icon-button
+                            *ngIf="hasValue('CALENDAR', ind)"
+                            (click)="clearField('CALENDAR', ind)"
+                        >
+                            <mat-icon>clear</mat-icon>
+                        </button>
+                    </section>
+                </section>
+            </div>
+        </div>
+    </div>
+    <div class="card-config__item">
+        <h2 class="card-config__item__title">{{ labels.tableView | translate }}</h2>
+        <div class="card-config__item__card">
+            <div class="card-config__item__card__colors">
+                <div class="card-config__item__card__colors__color x-1"></div>
+            </div>
+            <div class="card-config__item__card__info table-view-info">
+                <section formGroupName="TABLE">
+                    <section class="field-section" *ngFor="let ind of getNumberOfFields('TABLE')" [formGroupName]="'field' + ind">
+                        <mat-form-field
+                            appearance="outline"
+                            floatLabel="always"
+                            [matMenuTriggerFor]="attrSearcherMenu"
+                            (click)="$event.stopPropagation(); setTabItemTo('TABLE', ind)"
+                        >
+                            <mat-label>{{ labels.field | translate }} {{ ind }}</mat-label>
+                            <mat-select formControlName="tabItem" [placeholder]="labels.select | translate">
+                                <mat-option
+                                    style="display: none"
+                                    *ngFor="let tabItem of originalData?.tabItems"
+                                    [value]="tabItem"
+                                    >{{ tabItem.frontName }}</mat-option
+                                >
+                            </mat-select>
+                            <mat-error class="custom-actions-container__header__group__error" *ngIf="hasErrorIn('TABLE', ind)">
+                                {{ labels.required | translate }}
+                            </mat-error>
+                        </mat-form-field>
+                        <button
+                            aria-label="Clear"
+                            class="clear-field-button"
+                            mat-icon-button
+                            *ngIf="hasValue('TABLE', ind)"
+                            (click)="clearField('TABLE', ind)"
+                        >
+                            <mat-icon>clear</mat-icon>
+                        </button>
+                        <button
+                            aria-label="Delete"
+                            class="delete-field-button"
+                            mat-icon-button
+                            *ngIf="isLastFieldAndNotFirst('TABLE', ind)"
+                            (click)="deleteField('TABLE', ind)"
+                        >
+                            <mat-icon>delete_outline</mat-icon>
+                        </button>
+                    </section>
+                    <button mat-stroked-button color="primary" class="add-field-button" (click)="addField('TABLE')">
+                        + {{ labels.addField | translate }}
+                    </button>
+                </section>
+            </div>
+        </div>
+    </div>
+</form>
+
+<button style="display: none" #menuTrigger="matMenuTrigger" [matMenuTriggerFor]="attrSearcherMenu"></button>
+<mat-menu #attrSearcherMenu="matMenu" class="attr-menu" (closed)="genericTreeNodeSearcher.resetFilter()">
+    <app-generic-tree-node-searcher
+        #genericTreeNodeSearcher
+        [originalData]="treeData"
+        (nodeSelected)="selectAttribute($event)"
+    ></app-generic-tree-node-searcher>
+</mat-menu>

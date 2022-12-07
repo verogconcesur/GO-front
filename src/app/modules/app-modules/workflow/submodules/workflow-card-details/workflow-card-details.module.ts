@@ -1,5 +1,5 @@
 /* eslint-disable max-len */
-import { CUSTOM_ELEMENTS_SCHEMA, NgModule } from '@angular/core';
+import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 
 import { WorkflowCardDetailsRoutingModule } from './workflow-card-details-routing.module';
@@ -22,7 +22,10 @@ import { MoveCardDialogComponent } from './subcomponents/move-card-dialog/move-c
 import { CardInstanceAttachmentsModule } from '@modules/feature-modules/card-instance-attachments/card-instance-attachments.module';
 import { WorkflowCardTasksModule } from '@modules/feature-modules/workflow-card-tasks/workflow-card-tasks.module';
 import { CardInstanceBudgetsModule } from '@modules/feature-modules/card-instance-budgets/card-instance-budgets.module';
-
+import { EntitiesSearcherDialogModule } from '@modules/feature-modules/entities-searcher-dialog/entities-searcher-dialog.module';
+import { ItemTitleComponent } from './subcomponents/workflow-column-customizable-custom/items/item-title/item-title.component';
+import { ItemTextComponent } from './subcomponents/workflow-column-customizable-custom/items/item-text/item-text.component';
+import { ItemInputComponent } from './subcomponents/workflow-column-customizable-custom/items/item-input/item-input.component';
 @NgModule({
   declarations: [
     WorkflowCardDetailsComponent,
@@ -38,7 +41,10 @@ import { CardInstanceBudgetsModule } from '@modules/feature-modules/card-instanc
     WorkflowColumnCommentsComponent,
     WorkflowColumnClientMessagesComponent,
     WorkflowColumnActionsAndLinksComponent,
-    MoveCardDialogComponent
+    MoveCardDialogComponent,
+    ItemTitleComponent,
+    ItemTextComponent,
+    ItemInputComponent
   ],
   imports: [
     CommonModule,
@@ -47,7 +53,8 @@ import { CardInstanceBudgetsModule } from '@modules/feature-modules/card-instanc
     CardInstanceBudgetsModule,
     WorkflowCardDetailsRoutingModule,
     TextEditorWrapperModule,
-    WorkflowCardTasksModule
+    WorkflowCardTasksModule,
+    EntitiesSearcherDialogModule
   ]
 })
 export class WorkflowCardDetailsModule {}

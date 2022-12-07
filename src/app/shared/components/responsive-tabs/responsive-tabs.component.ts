@@ -6,18 +6,23 @@ import {
   EventEmitter,
   HostListener,
   Input,
+  OnChanges,
   OnInit,
   Output,
   QueryList,
+  SimpleChanges,
   ViewChild,
   ViewChildren
 } from '@angular/core';
 import { marker } from '@biesbjerg/ngx-translate-extract-marker';
+import { TranslateService } from '@ngx-translate/core';
 
 export interface ResponsiveTabI {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   id: any;
   label: string;
+  disabled?: () => boolean;
+  disabledTooltip?: string;
 }
 
 @Component({
@@ -25,7 +30,7 @@ export interface ResponsiveTabI {
   templateUrl: './responsive-tabs.component.html',
   styleUrls: ['./responsive-tabs.component.scss']
 })
-export class ResponsiveTabsComponent implements OnInit, AfterViewInit {
+export class ResponsiveTabsComponent implements OnInit, AfterViewInit, OnChanges {
   @ViewChild('responsiveTabsWrapper') responsiveTabsWrapper: ElementRef;
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   @ViewChildren('responsiveTab', { read: ElementRef }) responsiveTab: QueryList<ElementRef>;
@@ -42,13 +47,25 @@ export class ResponsiveTabsComponent implements OnInit, AfterViewInit {
   public showMoreButton = false;
   public calculatingTabsWidth = false;
 
-  constructor() {}
+  constructor(private translateService: TranslateService) {}
 
   @HostListener('window:resize', ['$event']) onResize(event: { target: { innerWidth: number } }) {
     this.calculateTabsWidth();
   }
 
-  ngOnInit(): void {
+  ngOnInit(): void {}
+
+  ngOnChanges(changes: SimpleChanges): void {
+    if (changes.tabs) {
+      this.initTabs();
+    }
+  }
+
+  ngAfterViewInit(): void {
+    this.calculateTabsWidth();
+  }
+
+  public initTabs(): void {
     if (this.tabs?.length) {
       let tab = this.tabs[0];
       if (this.tabSelectedId) {
@@ -58,12 +75,18 @@ export class ResponsiveTabsComponent implements OnInit, AfterViewInit {
     }
   }
 
-  ngAfterViewInit(): void {
-    this.calculateTabsWidth();
+  public getTabDisabledTooltip(tab: ResponsiveTabI): string {
+    if (tab.disabled && tab.disabled() && tab.disabledTooltip) {
+      return this.translateService.instant(tab.disabledTooltip);
+    }
   }
 
   public tabSelectedChange(tab: ResponsiveTabI): void {
+    if (tab.disabled && tab.disabled()) {
+      return;
+    }
     this.tabSelected = tab;
+    this.tabSelectedId = tab.id;
     this.tabSelectedEvent.emit(this.tabSelected);
   }
 
@@ -103,6 +126,6 @@ export class ResponsiveTabsComponent implements OnInit, AfterViewInit {
   }
 
   public isHiddenTabSelected(): boolean {
-    return this.hiddenTabs.filter((tab) => tab.id === this.tabSelected.id).length > 0;
+    return this.hiddenTabs.filter((tab) => tab.id === this.tabSelected?.id).length > 0;
   }
 }

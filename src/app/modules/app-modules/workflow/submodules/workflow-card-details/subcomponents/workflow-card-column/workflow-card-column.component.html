@@ -1,5 +1,11 @@
 <div class="w-column">
-    <h5 class="uppercase">{{ column.name }}</h5>
+    <h5 class="uppercase">
+        {{ column.name }}
+
+        <button mat-icon-button *ngIf="containerClass === 'actions'" (click)="syncData()">
+            <mat-icon>sync</mat-icon>
+        </button>
+    </h5>
     <div class="w-column__container" [ngClass]="containerClass">
         <app-responsive-tabs *ngIf="showTabs" [tabs]="getTabsInfo()" (tabSelectedEvent)="tabChange($event)"></app-responsive-tabs>
         <div class="loading" *ngIf="showLoading">
@@ -15,6 +21,7 @@
             <app-workflow-column-customizable-custom
                 *ngIf="showColumn('CUSTOMIZABLE_CUSTOM')"
                 [tab]="tabToShow"
+                [cardInstance]="cardInstance"
             ></app-workflow-column-customizable-custom>
             <app-workflow-column-prefixed-information
                 *ngIf="showColumn('PREFIXED_INFORMATION')"

@@ -1,0 +1,66 @@
+<div *ngIf="form" class="timeline-container">
+    <div class="timeline-container__section" fxLayout="row wrap">
+        <div class="timeline-container__section__title">
+            <h1>{{ labels.title | translate }}</h1>
+        </div>
+    </div>
+    <div class="timeline-container__section smaller-mat-form-fields" *ngIf="templateForm && originalData?.timelineTemplates">
+        <!-- template -->
+        <mat-form-field appearance="outline" floatLabel="always">
+            <mat-label>{{ labels.label | translate }}</mat-label>
+            <mat-select [formControl]="templateForm" (selectionChange)="changeTemplate()">
+                <mat-option *ngFor="let template of originalData.timelineTemplates" [value]="template">{{
+                    template.name
+                }}</mat-option>
+            </mat-select>
+            <mat-error *ngIf="templateForm?.invalid">
+                <span *ngIf="templateForm?.errors?.required">{{ labels.required | translate }}</span>
+            </mat-error>
+        </mat-form-field>
+    </div>
+    <div class="timeline-container__section" *ngIf="form && form.value && form.value.templateTimelineDTO">
+        <div class="timeline-container__section__title">
+            <h1>{{ labels.timelineStates | translate }}</h1>
+        </div>
+        <div cdkDropListGroup fxLayout="row wrap" fxLayoutAlign="start start">
+            <div class="timeline-container__section__timelines" fxLayout="row wrap">
+                <div
+                    *ngFor="let timelineItem of form?.value?.templateTimelineDTO?.templateTimelineItems"
+                    fxLayout="column"
+                    class="timeline-container__section__timelines__item"
+                >
+                    <h2>{{ timelineItem?.name }}</h2>
+                    <div
+                        class="timeline-container__section__timelines__item__container"
+                        cdkDropList
+                        (cdkDropListDropped)="dropSubstate(timelineItem)"
+                    >
+                        <div fxLayout="column" fxLayoutGap="10px">
+                            <div
+                                *ngFor="let substate of getSubstatesByTimeline(timelineItem)"
+                                class="timeline-container__section__timelines__item__container__element"
+                                fxLayout="row"
+                                fxLayoutAlign="center center"
+                            >
+                                <span>{{ substate?.workflowState?.name }} - {{ substate?.name }}</span>
+                                <mat-icon (click)="removeTimeLine(substate)">close</mat-icon>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="timeline-container__section__states" fxLayout="column" fxLayoutGap="10px" cdkDropList>
+                <div
+                    *ngFor="let substate of getSubstatesByTimeline()"
+                    class="timeline-container__section__states__item"
+                    fxLayout="row"
+                    fxLayoutAlign="center center"
+                    cdkDrag
+                    (cdkDragStarted)="setSubstateDragging(substate)"
+                >
+                    <span>{{ substate?.workflowState?.name }} - {{ substate?.name }}</span>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

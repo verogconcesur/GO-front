@@ -1,6 +1,7 @@
 import CardColumnTabItemDTO from '../cards/card-column-tab-item-dto';
 import TemplatesCommunicationDTO from '../templates/templates-communication-dto';
 import RoleDTO from '../user-permissions/role-dto';
+import WorkflowSubstateDTO from './workflow-substate-dto';
 
 export default interface WorkflowSubstateEventDTO {
   id: number;
@@ -11,6 +12,9 @@ export default interface WorkflowSubstateEventDTO {
   requiredUser?: boolean;
   requiredHistoryComment?: boolean;
   requiredUserId?: number;
+  movementExtraAuto?: boolean;
+  movementExtraConfirm?: boolean;
+  requiredMovementExtra?: boolean;
   sendMail?: boolean;
   sendMailAuto?: boolean;
   sendMailReceiverRole?: RoleDTO;
@@ -22,4 +26,5 @@ export default interface WorkflowSubstateEventDTO {
   size?: 'S' | 'M' | 'L' | 'XL';
   substateEventType?: 'IN' | 'OUT' | 'MOV';
   templateComunication?: TemplatesCommunicationDTO;
+  workflowSubstateTargetExtra?: WorkflowSubstateDTO;
 }

@@ -11,7 +11,8 @@ import { GlobalMessageService } from '@shared/services/global-message.service';
 import { ProgressSpinnerDialogService } from '@shared/services/progress-spinner-dialog.service';
 import { saveAs } from 'file-saver';
 import { NGXLogger } from 'ngx-logger';
-import { take } from 'rxjs/operators';
+import { finalize, take } from 'rxjs/operators';
+import { PdfViewerService } from '../pdf-viewer-dialog/pdf-viewer.service';
 import CardInstanceAttachmentsConfig from './card-instance-attachments-config-interface';
 import { RenameAttachmentComponent } from './subcomponets/rename-attachment/rename-attachment.component';
 
@@ -42,7 +43,8 @@ export class CardInstanceAttachmentsComponent implements OnInit, OnChanges {
     private translateService: TranslateService,
     private confirmationDialog: ConfirmDialogService,
     private globalMessageService: GlobalMessageService,
-    private spinnerService: ProgressSpinnerDialogService
+    private spinnerService: ProgressSpinnerDialogService,
+    private pdfViewerService: PdfViewerService
   ) {}
 
   ngOnInit(): void {}
@@ -78,19 +80,31 @@ export class CardInstanceAttachmentsComponent implements OnInit, OnChanges {
     return `url(/assets/img/unknown.svg)`;
   }
 
+  public isPdf(item: AttachmentDTO): boolean {
+    if (item?.type?.toLowerCase().indexOf('pdf') >= 0) {
+      return true;
+    }
+    return false;
+  }
+
   public downloadAttachment(item: AttachmentDTO): void {
     const spinner = this.spinnerService.show();
     //window.open(this.attachmentService.getDownloadAttachmentUrl(this.cardInstanceWorkflowId, this.tabId, item.id), '_blank');
     this.attachmentService
       .downloadAttachment(this.cardInstanceWorkflowId, this.tabId, item.id)
-      .pipe(take(1))
+      .pipe(
+        take(1),
+        finalize(() => this.spinnerService.hide(spinner))
+      )
       .subscribe(
         (data: AttachmentDTO) => {
-          this.spinnerService.hide(spinner);
-          saveAs(`data:${data.type};base64,${data.content}`, data.name);
+          if (data.type.toLocaleLowerCase() === 'application/pdf') {
+            this.pdfViewerService.openPdfViewer(data);
+          } else {
+            saveAs(`data:${data.type};base64,${data.content}`, data.name);
+          }
         },
         (error: ConcenetError) => {
-          this.spinnerService.hide(spinner);
           this.logger.error(error);
 
           this.globalMessageService.showError({

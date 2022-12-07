@@ -7,7 +7,7 @@ import PaginationRequestI from '@data/interfaces/pagination-request';
 import PaginationResponseI from '@data/interfaces/pagination-response';
 import UserDetailsDTO from '@data/models/user-permissions/user-details-dto';
 import UserDTO from '@data/models/user-permissions/user-dto';
-import UserFilterDTO from '@data/models/user-permissions/user-filter-dto';
+import UserFilterDTO, { UserFilterByIdsDTO } from '@data/models/user-permissions/user-filter-dto';
 import { getPaginationUrlGetParams } from '@data/utils/pagination-aux';
 import { BehaviorSubject, Observable, throwError } from 'rxjs';
 import { catchError } from 'rxjs/operators';
@@ -72,7 +72,7 @@ export class UserService {
   }
 
   public searchUsers(
-    userFilter: UserFilterDTO,
+    userFilter: UserFilterDTO | UserFilterByIdsDTO,
     pagination?: PaginationRequestI
   ): Observable<PaginationResponseI<UserDetailsDTO>> {
     return this.http

@@ -1,0 +1,25 @@
+@import 'utils/core';
+@import 'utils/theme';
+.budgets-container {
+  padding: 20px;
+  &__section {
+    margin-bottom: 20px;
+    &__title {
+      width: 100%;
+      font-weight: 600;
+    }
+    &__item {
+      width: 300px;
+      height: 100px;
+      border: 1px solid mat-contrast($primary, A100);
+      cursor: pointer;
+      margin: 0 20px 10px 0;
+      font-weight: 600;
+      &.selected {
+        background-color: mat-color($primary, 600);
+        color: mat-contrast($primary, statusSuccess);
+        border: unset;
+      }
+    }
+  }
+}

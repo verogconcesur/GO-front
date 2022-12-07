@@ -1,0 +1,20 @@
+@import 'utils/core';
+
+.workflow-create-content {
+  width: 100%;
+  padding-right: 15px;
+  &__form {
+    width: 100%;
+    &__section {
+      padding-bottom: 20px;
+      mat-form-field {
+        margin-right: 10px;
+      }
+      section {
+        display: inline-block;
+        margin-right: 10px;
+        width: 200px;
+      }
+    }
+  }
+}

@@ -1,0 +1,228 @@
+@import 'utils/core';
+@import 'utils/theme';
+.substate-movements {
+  position: absolute;
+  height: 100%;
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  overflow: hidden;
+  overflow-y: visible;
+  &.from {
+    z-index: 100;
+    width: calc(100% - 17px);
+    pointer-events: none;
+  }
+  &__column {
+    padding-top: 40px;
+    &.from {
+      width: 400px;
+      display: flex;
+      justify-content: center;
+      padding-top: 10px;
+      h2 {
+        background-color: rgba(mat-color($background, background-administration), 80%);
+        color: mat-contrast($primary, 100);
+        border-radius: 10px;
+        padding: 5px 10px;
+      }
+    }
+    &.target {
+      border-left: 1px solid mat-color($primary, paginator);
+      min-height: calc(100% - 40px);
+      &.from {
+        min-height: auto;
+        border-left: 0px;
+      }
+    }
+    &__substate {
+      background-color: mat-contrast($primary, 400);
+      padding: 10px 15px;
+      border-radius: 10px;
+      width: 300px;
+      height: 42px;
+      display: flex;
+      justify-content: flex-start;
+      align-items: center;
+      color: mat-color($primary, 500);
+      position: relative;
+      &.source,
+      &.target {
+        .line {
+          position: absolute;
+          top: 50%;
+          height: 2px;
+          width: 40px;
+          border-top: 2px solid mat-color($primary, 500);
+          &.dotted {
+            width: 40px;
+            border-top: 2px dashed mat-color($primary, 300);
+          }
+          &::before {
+            content: '';
+            width: 10px;
+            height: 10px;
+            top: -6px;
+            border-radius: 10px;
+            position: absolute;
+            background-color: mat-color($primary, 500);
+          }
+        }
+      }
+      &.source {
+        margin: 15px 40px 15px 0;
+        .line {
+          right: -40px;
+          &::before {
+            left: -6px;
+          }
+          &.down {
+            right: -42px;
+            height: 50%;
+            width: 40px;
+            border-top: 3px solid mat-color($primary, 500);
+            border-right: 3px solid mat-color($primary, 500);
+            border-top-right-radius: 15px;
+          }
+        }
+      }
+      &.target {
+        margin: 15px 0px 15px 40px;
+        justify-content: space-between;
+        &.add-movement {
+          justify-content: flex-start;
+          height: 38px;
+          cursor: pointer;
+          background-color: transparent;
+          border: 2px solid mat-color($primary, 500);
+        }
+        .line {
+          left: -40px;
+          &::before {
+            right: -4px;
+          }
+          &.up {
+            left: -42px;
+            height: 140%;
+            width: 40px;
+            top: -90%;
+            border-top: 0px;
+            border-bottom: 3px solid mat-color($primary, 500);
+            border-left: 3px solid mat-color($primary, 500);
+            border-bottom-left-radius: 15px;
+            &::before {
+              top: calc(100% - 4px);
+            }
+          }
+        }
+        .substate-movements__column__substate__info {
+          width: 100%;
+          display: flex;
+          justify-content: flex-start;
+          align-items: center;
+          flex-direction: column;
+          div {
+            width: 100%;
+            font-size: 0.9em;
+            display: flex;
+            justify-content: flex-start;
+            align-items: center;
+            mat-icon {
+              margin-right: 5px;
+            }
+            &.state-substate-name {
+              color: mat-color($primary, 900);
+              overflow: hidden;
+              white-space: nowrap;
+              text-overflow: ellipsis;
+            }
+            &.extra-info {
+              font-size: 0.85em;
+              width: 100%;
+              .chip {
+                margin-left: 5px;
+                color: mat-contrast($primary, 400);
+                background-color: mat-color($primary, 300);
+                overflow: hidden;
+                border-radius: 20px;
+                max-width: 24px;
+                padding: 3px;
+                white-space: nowrap;
+                display: flex;
+                justify-content: flex-start;
+                align-items: center;
+                transition: max-width 0.5s ease;
+                cursor: pointer;
+                position: relative;
+                &:first-child {
+                  margin-left: 0px;
+                }
+                &.wf-2::before {
+                  content: '+';
+                  position: absolute;
+                  top: -4px;
+                  left: 4px;
+                }
+                mat-icon {
+                  margin-right: 0px;
+                }
+                label {
+                  margin-left: 5px;
+                  cursor: pointer;
+                }
+                &.selected {
+                  background-color: mat-color($primary, 400);
+                  max-width: calc(100% - 29px);
+                }
+              }
+            }
+          }
+        }
+      }
+      &.target:nth-child(2) {
+        .line {
+          &.up {
+            height: 100%;
+            top: -50%;
+          }
+        }
+      }
+      mat-icon.info-icon {
+        margin-right: 10px;
+      }
+      mat-icon.delete-icon {
+        color: mat-color($primary, paginator);
+        font-size: 1.2em;
+        cursor: pointer;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+      }
+
+      .move-options {
+        top: -18px;
+        left: -54px;
+        border-radius: 50px;
+        position: absolute;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        padding: 2px;
+        cursor: pointer;
+        background-color: mat-color($primary, 500);
+        color: mat-contrast($primary, 400);
+      }
+    }
+  }
+}
+
+.attr-menu {
+  width: 450px;
+  max-width: 450px !important;
+  .mat-menu-content,
+  .mat-menu-content:not(:empty) {
+    padding-top: 0px;
+    padding-bottom: 0px;
+  }
+}
