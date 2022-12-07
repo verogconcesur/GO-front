@@ -17,6 +17,7 @@ import { WorkflowsCreateEditAuxService } from '../../aux-service/workflows-creat
 export abstract class WorkflowStepAbstractClass implements OnInit, OnChanges {
   @Input() abstract workflowId: number;
   @Input() abstract stepIndex: number;
+  @Input() lastStep: boolean;
   private useAuxServiceFormCacheActive = false;
 
   constructor(
@@ -83,8 +84,12 @@ export abstract class WorkflowStepAbstractClass implements OnInit, OnChanges {
               }
             }
           });
-      } else if (this.form.valid && !this.form.touched && !this.form.dirty && nextStep) {
+      } else if (this.form.valid && !this.form.touched && !this.form.dirty && nextStep && !this.lastStep) {
         this.workflowsCreateEditAuxService.nextStep$.next(true);
+      } else if (this.form.valid && !this.form.touched && !this.form.dirty && nextStep && this.lastStep) {
+        //Último paso volvemos atrás
+        this.workflowsCreateEditAuxService.destroy();
+        this.workflowsCreateEditAuxService.goBackToWorkflowsList();
       }
     });
     //ResetForm
