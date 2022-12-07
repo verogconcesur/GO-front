@@ -50,7 +50,7 @@ export class CustomizableInputSelectorAuxService {
       id: CustomizableInputSelectorModalEnum.ID,
       panelClass: CustomizableInputSelectorModalEnum.PANEL_CLASS,
       disableClose: true,
-      width: '800px'
+      width: '900px'
     });
   }
 }

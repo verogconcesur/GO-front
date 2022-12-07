@@ -8,7 +8,7 @@ export default interface CardCreateDTO {
     information?: string;
     userId?: number;
   };
-  cardInstanceWorkflowUsers?: { user: { id: number } }[];
+  cardInstanceWorkflowUsers?: WorkflowSubstateUserDTO[];
   workflowSubstateId: number;
   facilityId: number;
 }

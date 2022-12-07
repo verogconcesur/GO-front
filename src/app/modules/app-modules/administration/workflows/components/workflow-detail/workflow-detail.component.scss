@@ -1,0 +1,71 @@
+@import 'utils/core';
+@import 'utils/theme';
+
+.wf {
+  padding: 48px;
+  box-sizing: border-box;
+  @include respond-to($tablet-small) {
+    padding: 10px;
+  }
+  @include respond-to($mobile) {
+    padding: 5px;
+  }
+  &__header {
+    padding: 0 30px 10px 16px;
+    @include respond-to($tablet-small) {
+      padding: 0 5px 10px 0;
+    }
+    @include respond-to($mobile) {
+      padding: 10px 5px;
+    }
+    &__title {
+      margin-bottom: 0px !important;
+      color: mat-color($foreground, secondary-text);
+      cursor: pointer;
+      .edit-name-icon {
+        transition: opacity 0.5s ease;
+        color: mat-color($primary, 900);
+        opacity: 0;
+      }
+      &:hover {
+        .edit-name-icon {
+          opacity: 1;
+        }
+      }
+    }
+  }
+  &__tabs {
+    padding-bottom: 10px;
+    min-height: calc(100vh - 331px);
+    @include respond-to($tablet-small) {
+      min-height: calc(100vh - 300px);
+    }
+    @include respond-to($mobile) {
+      min-height: calc(100vh - 300px);
+    }
+    &__tab {
+      font-size: 1.2em;
+    }
+  }
+  &__footer {
+    height: 130px;
+    background-color: mat-color($background, background);
+    width: calc(100% + 96px);
+    margin: 0 0 -48px -48px;
+    button {
+      margin: 0 30px;
+      width: 160px;
+      height: 50px;
+    }
+
+    @include respond-to($tablet-small) {
+      width: calc(100% + 20px);
+      margin: 0 0 -10px -10px;
+    }
+
+    @include respond-to($mobile) {
+      width: calc(100% + 10px);
+      margin: 0 0 -5px -5px;
+    }
+  }
+}

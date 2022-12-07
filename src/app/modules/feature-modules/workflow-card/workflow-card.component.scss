@@ -13,10 +13,14 @@
   justify-content: flex-start;
   align-items: center;
   position: relative;
+  transition: height 0.5s ease;
+  transition: min-height 0.5s ease;
 
   &__colors {
     width: 6px;
-    height: 100%;
+    position: absolute;
+    height: 90%;
+    top: 5%;
     display: flex;
     justify-content: space-between;
     align-items: center;
@@ -39,11 +43,12 @@
     }
   }
   &__info {
-    margin: 0 0 0 15px;
+    margin: 0 0 0 20px;
     display: flex;
     justify-content: flex-start;
     align-items: flex-start;
     flex-direction: column;
+    width: calc(100% - 20px);
     &__tasks {
       font-size: 0.85em;
       color: lighten(mat-contrast($primary, 50), 20%);
@@ -51,7 +56,7 @@
       justify-content: center;
       align-items: center;
       position: absolute;
-      bottom: 10px;
+      top: 10px;
       right: 10px;
       border-radius: 4px;
       padding: 2px 5px;
@@ -64,6 +69,7 @@
       }
     }
     &__data {
+      line-height: initial !important;
       font-size: 14px;
       color: mat-contrast($primary, 50);
       &:first-child {
@@ -74,6 +80,23 @@
       &:nth-child(2) {
         font-weight: 500;
       }
+
+      &.extra-info {
+        width: 100%;
+        padding: 2px;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        display: inline-block;
+        border-radius: 5px;
+        &:hover {
+          background-color: mat-color($background, background-administration);
+        }
+      }
     }
+  }
+  &.expanded .workflow-card__info .workflow-card__info__data.extra-info {
+    white-space: normal;
+    text-overflow: clip;
   }
 }

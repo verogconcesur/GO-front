@@ -1,0 +1,33 @@
+//Reutiliza estilos importados con el theme tanto del navbar como del user-profile
+// DGDC TODO: rehacer estilos!!
+.navbar {
+  &__searcher {
+    &.centered {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+  }
+  &__search {
+    mat-form-field {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .spinner {
+      margin-bottom: 4px;
+    }
+  }
+}
+
+.user-profile-menu {
+  .card {
+    width: 150px;
+  }
+}
+
+.search-option-card {
+  margin: 5px 0;
+  width: 300px;
+  height: 90px !important;
+}

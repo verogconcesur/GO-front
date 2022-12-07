@@ -1,0 +1,99 @@
+@import 'utils/core';
+@import 'utils/theme';
+.card-config {
+  margin-top: 20px;
+  max-width: 100%;
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  flex-wrap: wrap;
+
+  &__item {
+    margin: 10px;
+    &__title {
+      font-weight: 600;
+    }
+    &__card {
+      background-color: mat-contrast($primary, 400);
+      overflow: hidden;
+      width: 420px;
+      min-height: 100px;
+      padding: 8px;
+      margin: 10px 0;
+      border-radius: 8px;
+      box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.04);
+      display: flex;
+      justify-content: flex-start;
+      align-items: center;
+      position: relative;
+
+      &__colors {
+        width: 6px;
+        height: calc(100% - 20px);
+        position: absolute;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        flex-direction: column;
+        &__color {
+          border-radius: 8px;
+          width: 6px;
+          background-color: mat-color($primary, statusSuccess);
+          &.x-1 {
+            height: 100%;
+          }
+          &.x-2 {
+            height: 46%;
+          }
+          &.x-3 {
+            height: 30%;
+          }
+          &.x-4 {
+            height: 22%;
+          }
+        }
+      }
+      &__info.table-view-info {
+        padding-bottom: 25px;
+        .add-field-button {
+          width: 320px;
+          margin-left: 20px;
+        }
+      }
+      &__info section {
+        padding-top: 10px;
+        margin: 0 0 0 10px;
+        display: flex;
+        justify-content: flex-start;
+        align-items: flex-start;
+        flex-direction: column;
+        position: relative;
+        .field-section {
+          mat-form-field {
+            width: 350px;
+          }
+        }
+        .clear-field-button {
+          position: absolute;
+          right: -35px;
+          top: 11px;
+        }
+        .delete-field-button {
+          position: absolute;
+          right: -60px;
+          top: 10px;
+        }
+      }
+    }
+  }
+}
+
+.attr-menu {
+  width: 450px;
+  max-width: 450px !important;
+  .mat-menu-content,
+  .mat-menu-content:not(:empty) {
+    padding-top: 0px;
+    padding-bottom: 0px;
+  }
+}

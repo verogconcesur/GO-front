@@ -1,13 +1,14 @@
 <div
     class="workflow-card"
-    [ngClass]="cardSize"
+    [ngClass]="getCardSizeClass()"
     cdkDrag
+    [cdkDragDisabled]="disableDrag"
     [cdkDragStartDelay]="dragStartDelay"
     (cdkDragStarted)="setCardDragging(true)"
     (cdkDragReleased)="setCardDragging(false)"
     (click)="showCardInfo()"
 >
-    <div class="workflow-card__placeholder" [ngClass]="cardSize" *cdkDragPlaceholder></div>
+    <div class="workflow-card__placeholder" [ngClass]="getCardSizeClass()" *cdkDragPlaceholder></div>
     <div class="workflow-card__colors">
         <div
             class="workflow-card__colors__color"
@@ -20,6 +21,16 @@
         <!-- CardId: {{ card.id }} - OrderNumber: {{ card.orderNumber }} -->
         <div *ngFor="let tabItem of card.tabItems" class="workflow-card__info__data">
             {{ getLabel(tabItem) }}
+        </div>
+        <div
+            class="workflow-card__info__data extra-info"
+            *ngIf="card.information && showExtraInfo"
+            matTooltip="{{ card.information }}"
+            appShowIfTruncated
+            matTooltipPosition="below"
+            (click)="$event.stopPropagation(); expandCardInfo()"
+        >
+            {{ card.information }}
         </div>
         <div
             class="workflow-card__info__tasks"

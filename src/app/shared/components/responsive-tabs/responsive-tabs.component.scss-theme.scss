@@ -21,6 +21,10 @@
     &.active {
       border-bottom: 2px solid blue;
     }
+    &.disabled {
+      color: mat-color($primary, paginator);
+      cursor: not-allowed;
+    }
     mat-icon {
       width: 20px;
       height: 20px;

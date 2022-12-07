@@ -10,10 +10,19 @@
       border-bottom: 0px;
 
       .mat-tab-label {
-        color: mat-color($foreground, secondary-text);
+        // color: mat-color($foreground, secondary-text);
         font-size: 1.5rem;
         font-weight: 400;
         padding: 0 15px;
+      }
+    }
+
+    &.font-size-smaller {
+      .mat-tab-header {
+        .mat-tab-label {
+          font-size: 1.1rem;
+          font-weight: 200;
+        }
       }
     }
   }
