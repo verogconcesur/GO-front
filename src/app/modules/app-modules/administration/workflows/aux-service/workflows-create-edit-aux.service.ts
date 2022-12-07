@@ -1,6 +1,8 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { Injectable } from '@angular/core';
 import { UntypedFormGroup } from '@angular/forms';
+import { Router } from '@angular/router';
+import { RouteConstants } from '@app/constants/route.constants';
 import { of, Subject } from 'rxjs';
 
 @Injectable({
@@ -13,7 +15,7 @@ export class WorkflowsCreateEditAuxService {
   private formsByStep: UntypedFormGroup[] = [];
   private formsOriginalData: any[] = [];
 
-  constructor() {}
+  constructor(private router: Router) {}
 
   public destroy(): void {
     this.formsByStep = [];
@@ -67,5 +69,9 @@ export class WorkflowsCreateEditAuxService {
 
   public resetForm(): void {
     this.resetForm$.next(true);
+  }
+
+  public goBackToWorkflowsList(): void {
+    this.router.navigate([RouteConstants.ADMINISTRATION, RouteConstants.ADM_WORKFLOWS]);
   }
 }
