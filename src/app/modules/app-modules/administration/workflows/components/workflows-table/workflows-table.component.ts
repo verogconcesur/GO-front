@@ -220,6 +220,7 @@ export class WorkflowsTableComponent implements OnInit {
       .pipe(take(1))
       .subscribe((ok: boolean) => {
         if (ok) {
+          const spinner = this.spinnerService.show();
           this.workflowAdminService
             .validateWorkflow(wf.id)
             .pipe(take(1))
@@ -227,7 +228,10 @@ export class WorkflowsTableComponent implements OnInit {
               next: () => {
                 this.workflowAdminService
                   .createEditWorkflow(wf, WorkFlowStatusEnum.published)
-                  .pipe(take(1))
+                  .pipe(
+                    take(1),
+                    finalize(() => this.spinnerService.hide(spinner))
+                  )
                   .subscribe({
                     next: () => {
                       this.globalMessageService.showSuccess({
@@ -245,6 +249,7 @@ export class WorkflowsTableComponent implements OnInit {
                   });
               },
               error: (error: ConcenetError) => {
+                this.spinnerService.hide(spinner);
                 this.globalMessageService.showError({
                   message: this.translateService.instant(error.message),
                   actionText: this.translateService.instant(marker('common.close'))
