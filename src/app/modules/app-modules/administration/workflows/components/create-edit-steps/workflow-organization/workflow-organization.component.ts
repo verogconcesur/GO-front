@@ -1,5 +1,6 @@
 import { Component, Input } from '@angular/core';
 import { UntypedFormBuilder, Validators } from '@angular/forms';
+import { ConcenetError } from '@app/types/error';
 import { marker } from '@biesbjerg/ngx-translate-extract-marker';
 import DepartmentsGroupedByFacility from '@data/interfaces/departments-grouped-by-facility';
 import SpecialtiesGroupedByDepartment from '@data/interfaces/specialties-grouped-by-department';
@@ -16,6 +17,7 @@ import { WorkflowAdministrationService } from '@data/services/workflow-administr
 import { untilDestroyed } from '@ngneat/until-destroy';
 import { TranslateService } from '@ngx-translate/core';
 import { ConfirmDialogService } from '@shared/services/confirm-dialog.service';
+import { GlobalMessageService } from '@shared/services/global-message.service';
 import { ProgressSpinnerDialogService } from '@shared/services/progress-spinner-dialog.service';
 import { NGXLogger } from 'ngx-logger';
 import { finalize, take } from 'rxjs/operators';
@@ -52,6 +54,7 @@ export class WorkflowOrganizationComponent extends WorkflowStepAbstractClass {
     private brandService: BrandService,
     private departmentService: DepartmentService,
     private specialtyService: SpecialtyService,
+    private globalMessageService: GlobalMessageService,
     private logger: NGXLogger
   ) {
     super(workflowsCreateEditAuxService, confirmationDialog, translateService);
@@ -301,8 +304,11 @@ export class WorkflowOrganizationComponent extends WorkflowStepAbstractClass {
         )
         .subscribe({
           next: () => {},
-          error: (err) => {
-            this.logger.error(err);
+          error: (error: ConcenetError) => {
+            this.globalMessageService.showError({
+              message: error.message,
+              actionText: this.translateService.instant(marker('common.close'))
+            });
             resolve(false);
           }
         });

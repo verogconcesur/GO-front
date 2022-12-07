@@ -2,6 +2,7 @@
 import { Component, Input, OnInit, ViewChild, ViewEncapsulation } from '@angular/core';
 import { UntypedFormBuilder, UntypedFormGroup, Validators } from '@angular/forms';
 import { MatMenuTrigger } from '@angular/material/menu';
+import { ConcenetError } from '@app/types/error';
 import { marker } from '@biesbjerg/ngx-translate-extract-marker';
 import TreeNode from '@data/interfaces/tree-node';
 import CardColumnDTO from '@data/models/cards/card-column-dto';
@@ -148,7 +149,7 @@ export class WorkflowCardConfigComponent extends WorkflowStepAbstractClass imple
           (response) => {
             resolve(true);
           },
-          (error) => {
+          (error: ConcenetError) => {
             this.logger.error(error);
             this.globalMessageService.showError({
               message: error.message,

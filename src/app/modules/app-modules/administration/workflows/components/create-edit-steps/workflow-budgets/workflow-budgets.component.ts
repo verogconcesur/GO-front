@@ -2,6 +2,7 @@ import { Component, Input } from '@angular/core';
 import { UntypedFormBuilder, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { RouteConstants } from '@app/constants/route.constants';
+import { ConcenetError } from '@app/types/error';
 import { marker } from '@biesbjerg/ngx-translate-extract-marker';
 import TemplatesBudgetDetailsDTO from '@data/models/templates/templates-budget-details-dto';
 import TemplatesCommonDTO from '@data/models/templates/templates-common-dto';
@@ -9,6 +10,7 @@ import { TemplatesBudgetsService } from '@data/services/templates-budgets.servic
 import { WorkflowAdministrationService } from '@data/services/workflow-administration.service';
 import { TranslateService } from '@ngx-translate/core';
 import { ConfirmDialogService } from '@shared/services/confirm-dialog.service';
+import { GlobalMessageService } from '@shared/services/global-message.service';
 import { ProgressSpinnerDialogService } from '@shared/services/progress-spinner-dialog.service';
 import { NGXLogger } from 'ngx-logger';
 import { forkJoin } from 'rxjs';
@@ -36,8 +38,8 @@ export class WorkflowBudgetsComponent extends WorkflowStepAbstractClass {
     private spinnerService: ProgressSpinnerDialogService,
     public workflowService: WorkflowAdministrationService,
     public budgetService: TemplatesBudgetsService,
-    private router: Router,
-    private logger: NGXLogger
+    private globalMessageService: GlobalMessageService,
+    private router: Router
   ) {
     super(workflowsCreateEditAuxService, confirmationDialog, translateService);
   }
@@ -108,8 +110,11 @@ export class WorkflowBudgetsComponent extends WorkflowStepAbstractClass {
               this.router.navigate([RouteConstants.ADMINISTRATION, RouteConstants.ADM_WORKFLOWS]);
             }
           },
-          error: (err) => {
-            this.logger.error(err);
+          error: (error: ConcenetError) => {
+            this.globalMessageService.showError({
+              message: error.message,
+              actionText: this.translateService.instant(marker('common.close'))
+            });
             resolve(false);
           }
         });

@@ -1,5 +1,5 @@
 /* eslint-disable max-len */
-import { CUSTOM_ELEMENTS_SCHEMA, NgModule } from '@angular/core';
+import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 
 import { WorkflowCardDetailsRoutingModule } from './workflow-card-details-routing.module';
@@ -23,7 +23,9 @@ import { CardInstanceAttachmentsModule } from '@modules/feature-modules/card-ins
 import { WorkflowCardTasksModule } from '@modules/feature-modules/workflow-card-tasks/workflow-card-tasks.module';
 import { CardInstanceBudgetsModule } from '@modules/feature-modules/card-instance-budgets/card-instance-budgets.module';
 import { EntitiesSearcherDialogModule } from '@modules/feature-modules/entities-searcher-dialog/entities-searcher-dialog.module';
-
+import { ItemTitleComponent } from './subcomponents/workflow-column-customizable-custom/items/item-title/item-title.component';
+import { ItemTextComponent } from './subcomponents/workflow-column-customizable-custom/items/item-text/item-text.component';
+import { ItemInputComponent } from './subcomponents/workflow-column-customizable-custom/items/item-input/item-input.component';
 @NgModule({
   declarations: [
     WorkflowCardDetailsComponent,
@@ -39,7 +41,10 @@ import { EntitiesSearcherDialogModule } from '@modules/feature-modules/entities-
     WorkflowColumnCommentsComponent,
     WorkflowColumnClientMessagesComponent,
     WorkflowColumnActionsAndLinksComponent,
-    MoveCardDialogComponent
+    MoveCardDialogComponent,
+    ItemTitleComponent,
+    ItemTextComponent,
+    ItemInputComponent
   ],
   imports: [
     CommonModule,
