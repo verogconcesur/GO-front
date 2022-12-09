@@ -150,7 +150,7 @@ export class EntityComponent implements OnInit {
       case 3:
         const user = entity as UserEntityDTO;
         let textOptionUser = user.fullName;
-        if (user.email.toLowerCase().trim().includes(this.searchForm.get('search').value.toLowerCase().trim())) {
+        if (user.email && user.email.toLowerCase().trim().includes(this.searchForm.get('search').value.toLowerCase().trim())) {
           textOptionUser = textOptionUser + '/' + user.email;
         }
         return textOptionUser;
