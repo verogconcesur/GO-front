@@ -53,7 +53,7 @@ export class WorkflowColumnActionsAndLinksComponent implements OnInit {
     //Cogemos el cardInstanceWorkflowId de la ruta
     if (this.idCard) {
       this.cardService
-        .getCardTabData(this.idCard, this.tab.id)
+        .getCardTabData(this.idCard, this.tab?.id ? this.tab?.id : 0)
         .pipe(take(1))
         .subscribe(
           (data: WorkflowCardTabItemDTO[]) => {

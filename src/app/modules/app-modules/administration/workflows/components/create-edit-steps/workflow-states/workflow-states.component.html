@@ -49,13 +49,12 @@
                         <section [formGroupName]="i2">
                             <div class="states-container__state__substate__line">
                                 <mat-icon class="drag-line-icon" cdkDragHandle>drag_indicator</mat-icon>
-                                <div class="line-name">
+                                <div class="line-name" (click)="edit(state.value, substate.value)">
                                     <div
                                         class="name"
                                         matTooltipPosition="above"
                                         [matTooltip]="substate.controls.name.value"
                                         appShowIfTruncated
-                                        (click)="edit(state.value, substate.value)"
                                     >
                                         {{ substate.controls.name.value }}
                                     </div>

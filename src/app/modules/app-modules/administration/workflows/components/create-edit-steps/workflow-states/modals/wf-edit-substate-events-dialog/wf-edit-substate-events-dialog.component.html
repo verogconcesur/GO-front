@@ -120,7 +120,7 @@
                 </div>
 
                 <div [ngClass]="{ bordered: form.get('requiredFields')?.value }">
-                    <mat-checkbox color="primary" formControlName="requiredFields" (change)="requiredUserChange('myself')"
+                    <mat-checkbox color="primary" formControlName="requiredFields"
                         >{{ labels.requiredFields | translate }}
                     </mat-checkbox>
 
@@ -143,13 +143,13 @@
                 </div>
             </div>
         </section>
-        <section class="event__config__section">
+        <section class="event__config__section" *ngIf="eventType === 'MOV' && move">
             <h2 class="event__config__section__title">
                 {{ labels.historical | translate }}
             </h2>
 
             <div class="event__config__section__wrapper">
-                <mat-checkbox color="primary" formControlName="requiredHistoryComment" (change)="requiredUserChange('myself')"
+                <mat-checkbox color="primary" formControlName="requiredHistoryComment"
                     >{{ labels.requiredHistoryComment | translate }}
                 </mat-checkbox>
             </div>

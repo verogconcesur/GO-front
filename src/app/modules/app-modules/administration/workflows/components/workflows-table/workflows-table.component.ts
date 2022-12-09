@@ -222,34 +222,20 @@ export class WorkflowsTableComponent implements OnInit {
         if (ok) {
           const spinner = this.spinnerService.show();
           this.workflowAdminService
-            .validateWorkflow(wf.id)
-            .pipe(take(1))
+            .changeStatus(wf.id, WorkFlowStatusEnum.published)
+            .pipe(
+              take(1),
+              finalize(() => this.spinnerService.hide(spinner))
+            )
             .subscribe({
               next: () => {
-                this.workflowAdminService
-                  .createEditWorkflow(wf, WorkFlowStatusEnum.published)
-                  .pipe(
-                    take(1),
-                    finalize(() => this.spinnerService.hide(spinner))
-                  )
-                  .subscribe({
-                    next: () => {
-                      this.globalMessageService.showSuccess({
-                        message: this.translateService.instant(marker('common.successOperation')),
-                        actionText: this.translateService.instant(marker('common.close'))
-                      });
-                      this.getWorkflows();
-                    },
-                    error: (error: ConcenetError) => {
-                      this.globalMessageService.showError({
-                        message: this.translateService.instant(error.message),
-                        actionText: this.translateService.instant(marker('common.close'))
-                      });
-                    }
-                  });
+                this.globalMessageService.showSuccess({
+                  message: this.translateService.instant(marker('common.successOperation')),
+                  actionText: this.translateService.instant(marker('common.close'))
+                });
+                this.getWorkflows();
               },
               error: (error: ConcenetError) => {
-                this.spinnerService.hide(spinner);
                 this.globalMessageService.showError({
                   message: this.translateService.instant(error.message),
                   actionText: this.translateService.instant(marker('common.close'))
@@ -269,7 +255,7 @@ export class WorkflowsTableComponent implements OnInit {
       .subscribe((ok: boolean) => {
         if (ok) {
           this.workflowAdminService
-            .createEditWorkflow(wf, WorkFlowStatusEnum.draft)
+            .changeStatus(wf.id, WorkFlowStatusEnum.draft)
             .pipe(take(1))
             .subscribe({
               next: () => {
