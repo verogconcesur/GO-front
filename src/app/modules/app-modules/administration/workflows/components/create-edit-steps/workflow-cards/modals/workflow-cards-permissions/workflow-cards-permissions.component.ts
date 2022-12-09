@@ -81,7 +81,7 @@ export class WorkflowCardsPermissionsComponent extends ComponentToExtendForCusto
     ]).subscribe((res) => {
       this.originalPermissions = res[0];
       this.cardData = res[1];
-      this.cardData.cols = this.cardData.cols.slice(0, 2);
+      this.cardData.cols = [...this.cardData.cols.slice(0, 2), this.cardData.cols[3]];
       this.roles = res[2];
       this.initializeForm();
       this.spinnerService.hide(spinner);
