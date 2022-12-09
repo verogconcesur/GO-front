@@ -10,7 +10,7 @@ import CardColumnDTO from '@data/models/cards/card-column-dto';
 import WorkflowOrganizationDTO from '@data/models/workflow-admin/workflow-organization-dto';
 import WorkflowRoleDTO from '@data/models/workflow-admin/workflow-role-dto';
 import WorkflowViewDTO from '@data/models/workflow-admin/workflow-view-dto';
-import WorkflowDTO from '@data/models/workflows/workflow-dto';
+import WorkflowDTO, { WorkFlowStatusEnum } from '@data/models/workflows/workflow-dto';
 import WorkflowSubstateUserDTO from '@data/models/workflows/workflow-substate-user-dto';
 import { WorkflowFilterService } from '@modules/app-modules/workflow/aux-service/workflow-filter.service';
 import { Observable, throwError } from 'rxjs';
@@ -34,6 +34,7 @@ export class WorkflowAdministrationService {
   private readonly TEMPLATES_PATH = '/listTemplates';
   private readonly BUDGET_PATH = '/budget';
   private readonly VALIDATE_PATH = '/validatePublish';
+  private readonly CHANGE_STATUS_PATH = '/changeStatus';
 
   constructor(@Inject(ENV) private env: Env, private http: HttpClient, private workflowFilterService: WorkflowFilterService) {}
 
@@ -287,6 +288,17 @@ export class WorkflowAdministrationService {
   public validateWorkflow(workflowId: number): Observable<unknown> {
     return this.http
       .get<unknown>(`${this.env.apiBaseUrl}${this.WORKFLOW_PATH}${this.VALIDATE_PATH}/${workflowId}`)
+      .pipe(catchError((error) => throwError(error.error as ConcenetError)));
+  }
+
+  /**
+   * Cambiar estado workflow
+   *
+   * @return unknown
+   */
+  public changeStatus(workflowId: number, status: WorkFlowStatusEnum): Observable<unknown> {
+    return this.http
+      .get<unknown>(`${this.env.apiBaseUrl}${this.WORKFLOW_PATH}${this.CHANGE_STATUS_PATH}/${workflowId}/${status}`)
       .pipe(catchError((error) => throwError(error.error as ConcenetError)));
   }
 }
