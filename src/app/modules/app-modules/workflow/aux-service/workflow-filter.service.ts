@@ -265,10 +265,7 @@ export class WorkflowFilterService {
         .filter((ws: WorkflowStateDTO) => {
           if (ws.anchor) {
             return true;
-          } else if (
-            ws.front &&
-            ws.workflowUsers.filter((wssu: WorkflowSubstateUserDTO) => usersToFilterIds.indexOf(wssu.user.id) >= 0)
-          ) {
+          } else if (ws.workflowUsers.filter((wssu: WorkflowSubstateUserDTO) => usersToFilterIds.indexOf(wssu.user.id) >= 0)) {
             return true;
           }
           return false;
@@ -281,7 +278,31 @@ export class WorkflowFilterService {
               (wssu: WorkflowSubstateUserDTO) => usersToFilterIds.indexOf(wssu.user.id) >= 0
             );
             return ws;
+          } else if (!ws.front) {
+            ws.workflowSubstates = ws.workflowSubstates
+              .map((wss: WorkflowSubstateDTO) => {
+                wss.cards = wss.cards.filter((card: WorkflowCardDTO) => {
+                  let found = false;
+                  card.cardInstanceWorkflows[0].cardInstanceWorkflowUsers.forEach((user: WorkflowSubstateUserDTO) => {
+                    if (usersToFilterIds.indexOf(user.userId) >= 0) {
+                      found = true;
+                    }
+                  });
+                  return found;
+                });
+                return wss;
+              })
+              .filter((wss: WorkflowSubstateDTO) => wss.cards.length);
+            return ws;
           }
+        })
+        .filter((ws: WorkflowStateDTO) => {
+          if (ws.anchor || ws.front) {
+            return true;
+          } else if (ws.workflowSubstates.length) {
+            return true;
+          }
+          return false;
         });
     }
 
