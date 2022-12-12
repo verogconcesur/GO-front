@@ -1,4 +1,5 @@
 @import 'utils/core';
+@import 'utils/theme';
 
 .create-edit-template-content {
   width: 100%;
@@ -64,8 +65,30 @@
 .draggable-item {
   width: 585px;
   margin: 5px;
+  display: block;
   &.cdk-drag-preview {
     max-height: 58px;
     max-width: 585px;
+  }
+  .timeline-item__first-line {
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+  }
+  .timeline-item__actions {
+    button {
+      padding: 0px;
+      min-width: 30px;
+      &:first-child {
+        margin-left: 15px;
+      }
+      .message.active {
+        color: mat-color($primary, 600);
+      }
+    }
+  }
+  .timeline-item__message {
+    margin-top: 10px;
+    width: 100%;
   }
 }

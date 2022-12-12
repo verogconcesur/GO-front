@@ -46,40 +46,64 @@
                                     cdkDragBoundary=".timelines-items-list"
                                 >
                                     <div class="timeline-item-custom-placeholder" *cdkDragPlaceholder></div>
-                                    <mat-icon cdkDragHandle class="opacity-04">drag_indicator</mat-icon>
-                                    <!-- 
-                                    <mat-form-field
-                                        appearance="outline"
-                                        class="smaller-mat-form-fields__no-margin"
-                                        floatLabel="always"
-                                    >
-                                    <mat-label>{{ labels.name | translate }}</mat-label>
-                                        <input type="text" matInput formControlName="name" />
-                                        <input type="text" matInput [(ngModel)]="item.description" /> 
-                                    </mat-form-field> -->
-                                    <mat-form-field
-                                        appearance="outline"
-                                        floatLabel="always"
-                                        class="smaller-mat-form-fields__no-margin"
-                                    >
-                                        <mat-label>{{ labels.name | translate }}</mat-label>
-                                        <input matInput formControlName="name" />
-                                    </mat-form-field>
+                                    <div class="timeline-item__first-line">
+                                        <mat-icon cdkDragHandle class="opacity-04">drag_indicator</mat-icon>
 
-                                    <div class="timeline-item__actions">
-                                        <button mat-button class="opacity-04" (click)="deleteTimelineItem(i)">
-                                            <mat-icon>close</mat-icon>
-                                        </button>
+                                        <mat-form-field
+                                            appearance="outline"
+                                            floatLabel="always"
+                                            class="smaller-mat-form-fields__no-margin"
+                                        >
+                                            <mat-label>{{ labels.name | translate }}</mat-label>
+                                            <input matInput formControlName="name" />
+                                        </mat-form-field>
+
+                                        <mat-checkbox color="primary" formControlName="closed"
+                                            >{{ labels.closed | translate }}
+                                        </mat-checkbox>
+
+                                        <div class="timeline-item__actions">
+                                            <button
+                                                mat-button
+                                                [ngClass]="{ 'opacity-04': showingLandingMessageEditor !== i }"
+                                                (click)="showLandingMessageEditor(i)"
+                                                matTooltip="{{ labels.landingMessage | translate }}"
+                                                matTooltipPosition="above"
+                                            >
+                                                <mat-icon
+                                                    class="message"
+                                                    [ngClass]="{ active: showingLandingMessageEditor === i }"
+                                                    >textsms</mat-icon
+                                                >
+                                            </button>
+                                        </div>
+
+                                        <div class="timeline-item__actions">
+                                            <button mat-button class="opacity-04" (click)="deleteTimelineItem(i)">
+                                                <mat-icon>close</mat-icon>
+                                            </button>
+                                        </div>
+                                    </div>
+
+                                    <div class="timeline-item__message" *ngIf="showingLandingMessageEditor === i">
+                                        <app-text-editor-wrapper
+                                            *ngIf="textEditorToolbarOptions.macroListOptions.length"
+                                            id="textEditor"
+                                            textEditorId="textEditor"
+                                            [initialValue]="itemForm.get('messageLanding').value"
+                                            [textEditorConfig]="textEditorToolbarOptions"
+                                            [placeholder]="labels.insertText | translate"
+                                            (contentChanged)="textEditorContentChanged($event, itemForm)"
+                                        ></app-text-editor-wrapper>
                                     </div>
                                 </div>
                             </ng-container>
                         </div>
                     </div>
                     <mat-error *ngIf="timelineForm.get('templateTimelineItems').invalid">
-                        <span
-                            *ngIf="timelineForm?.get('templateTimelineItems')?.errors?.required && timelineForm?.touched"
-                            >{{ labels.required | translate }}</span
-                        >
+                        <span *ngIf="timelineForm?.get('templateTimelineItems')?.errors?.required && timelineForm?.touched">{{
+                            labels.required | translate
+                        }}</span>
                     </mat-error>
                     <button mat-button class="v-align-bottom opacity-06 no-padding" (click)="addTimelineItem()">
                         <mat-icon>add</mat-icon>

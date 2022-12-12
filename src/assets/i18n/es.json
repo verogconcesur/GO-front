@@ -36,12 +36,14 @@
             },
             "clientTimeline": {
                 "add": "Nueva plantilla de timeline de cliente",
+                "closed": "Final",
                 "create": "Crear timeline de cliente",
                 "delete": "Eliminar plantilla de timeline de cliente",
                 "deleteConfirmation": "¿Realmente quieres eliminar esta plantilla?",
                 "edit": "Editar plantilla de timeline de cliente",
                 "itemConcept": "Concepto del elemento",
                 "items": "Elementos",
+                "landingMessage": "Texto a mostrar en la landing del cliente cuando su ficha entre en este punto del Timeline.",
                 "name": "Nombre de plantilla de timeline de cliente",
                 "title": "Timeline de cliente"
             },
@@ -501,6 +503,7 @@
         "addMovement": "Añadir movimiento",
         "addState": "Añadir estado",
         "addSubstate": "Añadir subestado",
+        "allowAllMovements": "Permitir movimiento libre de tarjetas",
         "byFacilityGroupLabel": "Workflows de {facility}",
         "card": {
             "cardTabs": "Pestañas de la ficha",
@@ -522,6 +525,7 @@
         "draft": "Borrador",
         "draftWarn": "¿Esta seguro de que desea convertir en borrador este workflow?",
         "dueOutDateTime": "Recoge el {date} a las {time}",
+        "duplicateWarn": "¿Está seguro que desea duplicar este Workflow?",
         "editPermissions": "Personalizar permisos",
         "editState": "Editar estado",
         "editSubstate": "Editar subestado",
