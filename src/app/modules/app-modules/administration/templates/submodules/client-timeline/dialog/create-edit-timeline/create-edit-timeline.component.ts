@@ -469,8 +469,8 @@ export class CreateEditTimelineComponent extends ComponentToExtendForCustomDialo
         name: [this.timelineToEdit ? this.timelineToEdit.template.name : null, Validators.required],
         brands: [this.timelineToEdit ? this.timelineToEdit.template.brands : null, Validators.required],
         facilities: [this.timelineToEdit ? this.timelineToEdit.template.facilities : null, Validators.required],
-        departments: [this.timelineToEdit ? this.timelineToEdit.template.departments : null],
-        specialties: [this.timelineToEdit ? this.timelineToEdit.template.specialties : null]
+        departments: [this.timelineToEdit ? this.timelineToEdit.template.departments : null, Validators.required],
+        specialties: [this.timelineToEdit ? this.timelineToEdit.template.specialties : null, Validators.required]
       })
     });
   }
