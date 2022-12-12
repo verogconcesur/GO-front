@@ -503,6 +503,7 @@
         "addMovement": "Add movement",
         "addState": "Add state",
         "addSubstate": "Add substate",
+        "allowAllMovements": "Allow free movements",
         "byFacilityGroupLabel": "{facility}'s workflows",
         "card": {
             "cardTabs": "Tabs of the card",

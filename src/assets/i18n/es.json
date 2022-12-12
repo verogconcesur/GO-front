@@ -503,6 +503,7 @@
         "addMovement": "Añadir movimiento",
         "addState": "Añadir estado",
         "addSubstate": "Añadir subestado",
+        "allowAllMovements": "Permitir movimiento libre de tarjetas",
         "byFacilityGroupLabel": "Workflows de {facility}",
         "card": {
             "cardTabs": "Pestañas de la ficha",

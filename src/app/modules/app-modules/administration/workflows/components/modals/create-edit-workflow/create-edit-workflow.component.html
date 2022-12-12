@@ -11,12 +11,16 @@
                         class="workflow-create-content__form__section__group__error"
                         *ngIf="workflowForm.controls.name.invalid && workflowForm.controls.name.touched"
                     >
-                        {{ labels.nameRequired | translate }} ({{ labels.minLength | translate: { length: this.minLength } }})
+                        {{ labels.nameRequired | translate }} ({{ labels.minLength | translate : { length: this.minLength } }})
                     </mat-error>
                 </mat-form-field>
                 <!-- manualCreateCard -->
                 <section>
                     <mat-checkbox formControlName="manualCreateCard">{{ labels.manualCreateCard | translate }}</mat-checkbox>
+                </section>
+                <!-- allowAllMovements -->
+                <section>
+                    <mat-checkbox formControlName="allowAllMovements">{{ labels.allowAllMovements | translate }}</mat-checkbox>
                 </section>
             </div>
         </form>
