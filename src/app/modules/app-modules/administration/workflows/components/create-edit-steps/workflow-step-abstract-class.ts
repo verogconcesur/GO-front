@@ -76,7 +76,7 @@ export abstract class WorkflowStepAbstractClass implements OnInit, OnChanges {
             if (ok) {
               const result = await this.saveStep();
               if (result) {
-                this.originalData = this.form.value;
+                this.originalData = this.form?.value;
                 this.setFormOriginalValues();
                 if (nextStep) {
                   this.workflowsCreateEditAuxService.nextStep$.next(true);

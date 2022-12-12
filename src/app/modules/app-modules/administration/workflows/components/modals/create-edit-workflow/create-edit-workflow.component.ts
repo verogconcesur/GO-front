@@ -29,7 +29,8 @@ export class CreateEditWorkflowComponent extends ComponentToExtendForCustomDialo
     name: marker('common.name'),
     minLength: marker('errors.minLength'),
     nameRequired: marker('userProfile.nameRequired'),
-    manualCreateCard: marker('workflows.manualCreateCard')
+    manualCreateCard: marker('workflows.manualCreateCard'),
+    allowAllMovements: marker('workflows.allowAllMovements')
   };
 
   public minLength = 3;
@@ -120,7 +121,8 @@ export class CreateEditWorkflowComponent extends ComponentToExtendForCustomDialo
       id: [this.workflowEdit?.id ? this.workflowEdit.id : null],
       name: [this.workflowEdit?.name ? this.workflowEdit.name : '', [Validators.required, Validators.minLength(this.minLength)]],
       status: [this.workflowEdit?.status ? this.workflowEdit.status : WorkFlowStatusEnum.draft],
-      manualCreateCard: [this.workflowEdit?.manualCreateCard ? true : false]
+      manualCreateCard: [this.workflowEdit?.manualCreateCard ? true : false],
+      allowAllMovements: [this.workflowEdit?.allowAllMovements ? true : false]
     });
   };
 }

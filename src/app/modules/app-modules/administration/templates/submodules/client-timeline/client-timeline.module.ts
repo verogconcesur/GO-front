@@ -7,9 +7,16 @@ import { OrganizationLevelsNestedCombosModule } from '@modules/feature-modules/o
 import { SharedModule } from '@shared/shared.module';
 import { ClientTimelineComponent } from './client-timeline.component';
 import { CreateEditTimelineComponent } from './dialog/create-edit-timeline/create-edit-timeline.component';
+import { TextEditorWrapperModule } from '@modules/feature-modules/text-editor-wrapper/text-editor-wrapper.module';
 
 @NgModule({
   declarations: [ClientTimelineComponent, CreateEditTimelineComponent],
-  imports: [CommonModule, SharedModule, ClientTimelineRoutingModule, OrganizationLevelsNestedCombosModule]
+  imports: [
+    CommonModule,
+    SharedModule,
+    ClientTimelineRoutingModule,
+    OrganizationLevelsNestedCombosModule,
+    TextEditorWrapperModule
+  ]
 })
 export class ClientTimelineModule {}
