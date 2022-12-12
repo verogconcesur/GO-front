@@ -524,6 +524,7 @@
         "draft": "Draft",
         "draftWarn": "Are you sure you want to convert to draft this workflow?",
         "dueOutDateTime": "Pick up {date} at {time}",
+        "duplicateWarn": "Are you sure you want to duplicate this workflow?",
         "editPermissions": "Customice permissions",
         "editState": "Edit state",
         "editSubstate": "Edit substate",

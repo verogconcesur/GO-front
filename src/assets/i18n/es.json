@@ -524,6 +524,7 @@
         "draft": "Borrador",
         "draftWarn": "¿Esta seguro de que desea convertir en borrador este workflow?",
         "dueOutDateTime": "Recoge el {date} a las {time}",
+        "duplicateWarn": "¿Está seguro que desea duplicar este Workflow?",
         "editPermissions": "Personalizar permisos",
         "editState": "Editar estado",
         "editSubstate": "Editar subestado",
