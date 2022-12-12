@@ -348,10 +348,14 @@ export class WfEditSubstateEventsDialogComponent extends ComponentToExtendForCus
   }
 
   public onSubmitCustomDialog(): Observable<boolean> {
+    const formValue = {
+      ...this.form.value,
+      requiredFieldsList: this.form.value.requiredFields ? this.form.value.requiredFieldsList : []
+    };
     const spinner = this.spinnerService.show();
     if (this.eventType === 'MOV') {
       return this.wStatesService
-        .postWorkflowSubstateMovements(this.workflowId, this.substate.id, { ...this.move, ...this.form.value })
+        .postWorkflowSubstateMovements(this.workflowId, this.substate.id, { ...this.move, ...formValue })
         .pipe(
           take(1),
           map((response) => {
