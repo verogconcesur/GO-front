@@ -36,12 +36,14 @@
             },
             "clientTimeline": {
                 "add": "Nueva plantilla de timeline de cliente",
+                "closed": "Final",
                 "create": "Crear timeline de cliente",
                 "delete": "Eliminar plantilla de timeline de cliente",
                 "deleteConfirmation": "¿Realmente quieres eliminar esta plantilla?",
                 "edit": "Editar plantilla de timeline de cliente",
                 "itemConcept": "Concepto del elemento",
                 "items": "Elementos",
+                "landingMessage": "Texto a mostrar en la landing del cliente cuando su ficha entre en este punto del Timeline.",
                 "name": "Nombre de plantilla de timeline de cliente",
                 "title": "Timeline de cliente"
             },

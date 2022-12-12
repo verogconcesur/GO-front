@@ -36,12 +36,14 @@
             },
             "clientTimeline": {
                 "add": "New timeline template",
+                "closed": "Final",
                 "create": "Create client timeline",
                 "delete": "Delete timeline template",
                 "deleteConfirmation": "Do you really want to delete this timeline template?",
                 "edit": "Edit timeline template",
                 "itemConcept": "Item concept",
                 "items": "Items",
+                "landingMessage": "Text to show when your card is in this state of the Timeline",
                 "name": "timeline's template name",
                 "title": "Client timeline"
             },
