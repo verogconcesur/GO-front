@@ -42,7 +42,7 @@
                   </tasks>
               </configuration>
               <goals>
-                  <goal>run</goal>
+                  <goal>npm</goal>
               </goals>
           </execution>
 
