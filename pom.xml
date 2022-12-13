@@ -32,20 +32,6 @@
             </configuration>
           </execution>
 
-        <!--Only for CD/CI husky issue summernote-->
-         <execution>
-              <id>createGitDir</id>
-              <configuration>
-                  <tasks>
-                      <delete dir=".git"/>
-                      <mkdir dir=".git"/>
-                  </tasks>
-              </configuration>
-              <goals>
-                  <goal>npm</goal>
-              </goals>
-          </execution>
-
           <execution>
             <id>npm install</id>
             <goals>
