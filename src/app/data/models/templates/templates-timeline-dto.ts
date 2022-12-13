@@ -7,6 +7,8 @@ export interface TemplatesTimelineItemsDTO {
   name: string;
   id: number;
   orderNumber: number;
+  messageLanding: string;
+  closed: boolean;
 }
 
 export default interface TemplatesTimelineDTO {

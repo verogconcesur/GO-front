@@ -213,8 +213,8 @@ export class CreateEditCommunicationComponent extends ComponentToExtendForCustom
         name: [this.communicationToEdit ? this.communicationToEdit.template.name : null, Validators.required],
         brands: [this.communicationToEdit ? this.communicationToEdit.template.brands : null, Validators.required],
         facilities: [this.communicationToEdit ? this.communicationToEdit.template.facilities : null, Validators.required],
-        departments: [this.communicationToEdit ? this.communicationToEdit.template.departments : null],
-        specialties: [this.communicationToEdit ? this.communicationToEdit.template.specialties : null]
+        departments: [this.communicationToEdit ? this.communicationToEdit.template.departments : null, Validators.required],
+        specialties: [this.communicationToEdit ? this.communicationToEdit.template.specialties : null, Validators.required]
       }),
       text: [this.communicationToEdit ? this.communicationToEdit.text : null, Validators.required],
       variables: [this.communicationToEdit ? this.communicationToEdit.variables : []]
