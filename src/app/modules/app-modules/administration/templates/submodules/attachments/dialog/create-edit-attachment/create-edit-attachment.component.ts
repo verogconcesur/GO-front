@@ -434,8 +434,8 @@ export class CreateEditAttachmentComponent extends ComponentToExtendForCustomDia
         name: [this.attachmentToEdit ? this.attachmentToEdit.template.name : null, Validators.required],
         brands: [this.attachmentToEdit ? this.attachmentToEdit.template.brands : null, Validators.required],
         facilities: [this.attachmentToEdit ? this.attachmentToEdit.template.facilities : null, Validators.required],
-        departments: [this.attachmentToEdit ? this.attachmentToEdit.template.departments : null],
-        specialties: [this.attachmentToEdit ? this.attachmentToEdit.template.specialties : null]
+        departments: [this.attachmentToEdit ? this.attachmentToEdit.template.departments : null, Validators.required],
+        specialties: [this.attachmentToEdit ? this.attachmentToEdit.template.specialties : null, Validators.required]
       })
     });
   }

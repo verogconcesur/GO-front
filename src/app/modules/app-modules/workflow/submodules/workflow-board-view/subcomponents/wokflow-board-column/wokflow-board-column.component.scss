@@ -123,6 +123,7 @@
       border-right: 1px solid #0000001f;
       padding-left: 32px;
       min-width: 300px;
+      overflow-x: hidden;
       &:first-child {
         padding-left: 0px;
       }

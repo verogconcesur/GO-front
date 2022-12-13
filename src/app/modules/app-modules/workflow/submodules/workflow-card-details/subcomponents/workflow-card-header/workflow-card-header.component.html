@@ -50,7 +50,7 @@
     </div>
 </div>
 <mat-menu #users="matMenu">
-    <div mat-menu-item *ngFor="let user of getUsers()">
+    <div mat-menu-item *ngFor="let user of card?.users ? card.users : []">
         {{ user?.user?.fullName }}
     </div>
 </mat-menu>

@@ -41,13 +41,14 @@
     width: 12px;
     padding-left: 2px;
     height: 50px;
-    display: none;
+    display: flex;
+    // display: none;
     justify-content: center;
     align-items: center;
     border-radius: 10px 0 0 10px;
-    @include respond-to($desktop-large) {
-      display: flex;
-    }
+    // @include respond-to($desktop-large) {
+    //   display: flex;
+    // }
     mat-icon {
       right: -7px;
       position: absolute;

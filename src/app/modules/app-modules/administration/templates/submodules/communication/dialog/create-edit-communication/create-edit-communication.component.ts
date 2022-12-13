@@ -2,6 +2,10 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { FormArray, UntypedFormBuilder, UntypedFormGroup, Validators } from '@angular/forms';
 import { marker } from '@biesbjerg/ngx-translate-extract-marker';
+import BrandDTO from '@data/models/organization/brand-dto';
+import DepartmentDTO from '@data/models/organization/department-dto';
+import FacilityDTO from '@data/models/organization/facility-dto';
+import SpecialtyDTO from '@data/models/organization/specialty-dto';
 import TemplatesCommunicationDTO from '@data/models/templates/templates-communication-dto';
 import VariablesDTO from '@data/models/variables-dto';
 import { TemplatesCommunicationService } from '@data/services/templates-communication.service';
@@ -103,6 +107,13 @@ export class CreateEditCommunicationComponent extends ComponentToExtendForCustom
       formValue.id = this.communicationToEdit.id;
       formValue.template.id = this.communicationToEdit.template.id;
     }
+    formValue.template = {
+      ...formValue.template,
+      brands: formValue.template.brands.map((brand: BrandDTO) => ({ id: brand.id })),
+      departments: formValue.template.departments.map((dep: DepartmentDTO) => ({ id: dep.id })),
+      facilities: formValue.template.facilities.map((fac: FacilityDTO) => ({ id: fac.id })),
+      specialties: formValue.template.specialties.map((spe: SpecialtyDTO) => ({ id: spe.id }))
+    };
     const spinner = this.spinnerService.show();
     return this.communicationService.addOrEditCommunication(formValue).pipe(
       map((response) => {
@@ -202,8 +213,8 @@ export class CreateEditCommunicationComponent extends ComponentToExtendForCustom
         name: [this.communicationToEdit ? this.communicationToEdit.template.name : null, Validators.required],
         brands: [this.communicationToEdit ? this.communicationToEdit.template.brands : null, Validators.required],
         facilities: [this.communicationToEdit ? this.communicationToEdit.template.facilities : null, Validators.required],
-        departments: [this.communicationToEdit ? this.communicationToEdit.template.departments : null],
-        specialties: [this.communicationToEdit ? this.communicationToEdit.template.specialties : null]
+        departments: [this.communicationToEdit ? this.communicationToEdit.template.departments : null, Validators.required],
+        specialties: [this.communicationToEdit ? this.communicationToEdit.template.specialties : null, Validators.required]
       }),
       text: [this.communicationToEdit ? this.communicationToEdit.text : null, Validators.required],
       variables: [this.communicationToEdit ? this.communicationToEdit.variables : []]

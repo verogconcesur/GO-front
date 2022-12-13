@@ -244,8 +244,8 @@ export class CreateEditBudgetComponent extends ComponentToExtendForCustomDialog 
       name: [this.budgetToEdit ? this.budgetToEdit.template.name : null, Validators.required],
       brands: [this.budgetToEdit ? this.budgetToEdit.template.brands : null, Validators.required],
       facilities: [this.budgetToEdit ? this.budgetToEdit.template.facilities : null, Validators.required],
-      departments: [this.budgetToEdit ? this.budgetToEdit.template.departments : null],
-      specialties: [this.budgetToEdit ? this.budgetToEdit.template.specialties : null]
+      departments: [this.budgetToEdit ? this.budgetToEdit.template.departments : null, Validators.required],
+      specialties: [this.budgetToEdit ? this.budgetToEdit.template.specialties : null, Validators.required]
     });
     this.budgetForm = this.fb.group({
       endDate: [this.budgetToEdit?.endDate ? new Date(this.budgetToEdit.endDate) : null, Validators.required],
