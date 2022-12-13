@@ -50,4 +50,4 @@ Los entornos disponibles para este proyecto son:
 
 **Nota**: Solo para el entorno `dev` se permite recibir por variable de entorno (`API_BASE_URL`) la URL del backend donde se encuentra el API. Esta imagen es muy util si se quiere probar la app contra un backend propio: `docker run -d -it -p 80:80/tcp --env API_BASE_URL=http://localhost:8080/example/api --name Concenet_Front-dev webfront/Concenet_Front-dev:latest`
 
-**Nota**: CD/CI
+**Nota**: CD/CI. Pipeline por cada env con webhook asociado
