@@ -11,12 +11,16 @@ import DepartmentDTO from '@data/models/organization/department-dto';
 import FacilityDTO from '@data/models/organization/facility-dto';
 import SpecialtyDTO from '@data/models/organization/specialty-dto';
 import TemplatesTimelineDTO, { TemplatesTimelineItemsDTO } from '@data/models/templates/templates-timeline-dto';
+import VariablesDTO from '@data/models/variables-dto';
 import { BrandService } from '@data/services/brand.service';
 import { DepartmentService } from '@data/services/deparment.service';
 import { FacilityService } from '@data/services/facility.sevice';
 import { SpecialtyService } from '@data/services/specialty.service';
 import { TemplatesTimelineService } from '@data/services/templates-timeline.service';
+import { VariablesService } from '@data/services/variables.service';
 import { ComponentToExtendForCustomDialog, CustomDialogFooterConfigI, CustomDialogService } from '@jenga/custom-dialog';
+// eslint-disable-next-line max-len
+import { TextEditorWrapperConfigI } from '@modules/feature-modules/text-editor-wrapper/interfaces/text-editor-wrapper-config.interface';
 import { TranslateService } from '@ngx-translate/core';
 import { ConfirmDialogService } from '@shared/services/confirm-dialog.service';
 import { GlobalMessageService } from '@shared/services/global-message.service';
@@ -54,7 +58,10 @@ export class CreateEditTimelineComponent extends ComponentToExtendForCustomDialo
     unselectAll: marker('common.unselectAll'),
     timelinesItems: marker('administration.templates.clientTimeline.items'),
     newItem: marker('common.newItem'),
-    itemConcept: marker('administration.templates.clientTimeline.itemConcept')
+    itemConcept: marker('administration.templates.clientTimeline.itemConcept'),
+    closed: marker('administration.templates.clientTimeline.closed'),
+    insertText: marker('common.insertTextHere'),
+    landingMessage: marker('administration.templates.clientTimeline.landingMessage')
   };
   public timelineForm: UntypedFormGroup;
   public brandsAsyncList: Observable<BrandDTO[]>;
@@ -65,6 +72,12 @@ export class CreateEditTimelineComponent extends ComponentToExtendForCustomDialo
   public timelineToEdit: TemplatesTimelineDTO = null;
   public startDate: Date;
   public endDate: Date;
+  public showingLandingMessageEditor: number;
+  public textEditorToolbarOptions: TextEditorWrapperConfigI = {
+    addHtmlModificationOption: true,
+    addMacroListOption: true,
+    macroListOptions: []
+  };
   constructor(
     private fb: UntypedFormBuilder,
     private spinnerService: ProgressSpinnerDialogService,
@@ -77,7 +90,8 @@ export class CreateEditTimelineComponent extends ComponentToExtendForCustomDialo
     private facilitySevice: FacilityService,
     private departmentService: DepartmentService,
     private specialtyService: SpecialtyService,
-    private customDialogService: CustomDialogService
+    private customDialogService: CustomDialogService,
+    private variablesService: VariablesService
   ) {
     super(
       CreateEditTimelineComponentModalEnum.ID,
@@ -99,6 +113,7 @@ export class CreateEditTimelineComponent extends ComponentToExtendForCustomDialo
     if (this.timelineToEdit) {
       this.MODAL_TITLE = marker('administration.templates.clientTimeline.edit');
     }
+    this.getVariable();
     this.initializeForm();
     this.getListOptions();
   }
@@ -174,6 +189,20 @@ export class CreateEditTimelineComponent extends ComponentToExtendForCustomDialo
     };
   }
 
+  public showLandingMessageEditor(i: number) {
+    if (this.showingLandingMessageEditor !== i) {
+      this.showingLandingMessageEditor = i;
+    } else {
+      this.showingLandingMessageEditor = null;
+    }
+  }
+
+  public textEditorContentChanged(html: string, itemForm: UntypedFormGroup) {
+    itemForm.get('messageLanding').setValue(html);
+    itemForm.get('messageLanding').markAsDirty();
+    itemForm.get('messageLanding').markAsTouched();
+  }
+
   public dropTimelineItem(event: CdkDragDrop<TemplatesTimelineItemsDTO[]>) {
     const list = this.templateTimelineItems.value;
     moveItemInArray(list, event.previousIndex, event.currentIndex);
@@ -230,7 +259,10 @@ export class CreateEditTimelineComponent extends ComponentToExtendForCustomDialo
       list = list.reduce((prev, act) => [...prev, ...act[type]], []);
     }
     const actualValue = control.value ? control.value : [];
-    return haveArraysSameValues(actualValue.map((item: any) => item.id).sort(), list.map((item: any) => item.id).sort());
+    return haveArraysSameValues(
+      actualValue.map((item: any) => (item?.id ? item.id : null)).sort(),
+      list.map((item: any) => (item?.id ? item.id : null)).sort()
+    );
   }
 
   public getOptionsAfterSelection(type: 'specialties' | 'departments' | 'facilities' | 'brands') {
@@ -412,6 +444,12 @@ export class CreateEditTimelineComponent extends ComponentToExtendForCustomDialo
       });
   };
 
+  private getVariable(): void {
+    this.variablesService.searchVariables().subscribe((res) => {
+      this.textEditorToolbarOptions.macroListOptions = res.map((item: VariablesDTO) => item.name);
+    });
+  }
+
   private initializeForm(): void {
     const timelineItems: UntypedFormGroup[] = [];
     if (this.timelineToEdit?.templateTimelineItems?.length > 0) {
@@ -421,7 +459,9 @@ export class CreateEditTimelineComponent extends ComponentToExtendForCustomDialo
           const timelineItem = this.fb.group({
             name: [item.name, Validators.required],
             id: [item.id],
-            orderNumber: [item.orderNumber]
+            orderNumber: [item.orderNumber],
+            closed: [item.closed],
+            messageLanding: [item.messageLanding]
           });
           timelineItems.push(timelineItem);
         });
@@ -432,8 +472,8 @@ export class CreateEditTimelineComponent extends ComponentToExtendForCustomDialo
         name: [this.timelineToEdit ? this.timelineToEdit.template.name : null, Validators.required],
         brands: [this.timelineToEdit ? this.timelineToEdit.template.brands : null, Validators.required],
         facilities: [this.timelineToEdit ? this.timelineToEdit.template.facilities : null, Validators.required],
-        departments: [this.timelineToEdit ? this.timelineToEdit.template.departments : null],
-        specialties: [this.timelineToEdit ? this.timelineToEdit.template.specialties : null]
+        departments: [this.timelineToEdit ? this.timelineToEdit.template.departments : null, Validators.required],
+        specialties: [this.timelineToEdit ? this.timelineToEdit.template.specialties : null, Validators.required]
       })
     });
   }

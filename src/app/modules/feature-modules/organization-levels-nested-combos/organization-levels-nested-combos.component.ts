@@ -92,7 +92,10 @@ export class OrganizationLevelsNestedCombosComponent implements OnInit, OnDestro
       list = list.reduce((prev, act) => [...prev, ...act[type]], []);
     }
     const actualValue = control.value ? control.value : [];
-    return haveArraysSameValues(actualValue.map((item: any) => item.id).sort(), list.map((item: any) => item.id).sort());
+    return haveArraysSameValues(
+      actualValue.map((item: any) => (item?.id ? item.id : null)).sort(),
+      list.map((item: any) => (item?.id ? item.id : null)).sort()
+    );
   }
 
   public getOptionsAfterSelection(type: 'specialties' | 'departments' | 'facilities' | 'brands') {

@@ -232,7 +232,10 @@ export class CreateEditAttachmentComponent extends ComponentToExtendForCustomDia
       list = list.reduce((prev, act) => [...prev, ...act[type]], []);
     }
     const actualValue = control.value ? control.value : [];
-    return haveArraysSameValues(actualValue.map((item: any) => item.id).sort(), list.map((item: any) => item.id).sort());
+    return haveArraysSameValues(
+      actualValue.map((item: any) => (item?.id ? item.id : null)).sort(),
+      list.map((item: any) => (item?.id ? item.id : null)).sort()
+    );
   }
 
   public getOptionsAfterSelection(type: 'specialties' | 'departments' | 'facilities' | 'brands') {
@@ -434,8 +437,8 @@ export class CreateEditAttachmentComponent extends ComponentToExtendForCustomDia
         name: [this.attachmentToEdit ? this.attachmentToEdit.template.name : null, Validators.required],
         brands: [this.attachmentToEdit ? this.attachmentToEdit.template.brands : null, Validators.required],
         facilities: [this.attachmentToEdit ? this.attachmentToEdit.template.facilities : null, Validators.required],
-        departments: [this.attachmentToEdit ? this.attachmentToEdit.template.departments : null],
-        specialties: [this.attachmentToEdit ? this.attachmentToEdit.template.specialties : null]
+        departments: [this.attachmentToEdit ? this.attachmentToEdit.template.departments : null, Validators.required],
+        specialties: [this.attachmentToEdit ? this.attachmentToEdit.template.specialties : null, Validators.required]
       })
     });
   }
