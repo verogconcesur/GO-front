@@ -326,11 +326,11 @@ export class CreateEditFacilityComponent extends ComponentToExtendForCustomDialo
       ]
     });
     this.facilityForm.controls.country.valueChanges.subscribe((x) => {
-      this.form.province.setValue('');
+      this.form.province.setValue(null);
       this.getProvinceListOptions();
     });
     this.facilityForm.controls.province.valueChanges.subscribe((x) => {
-      this.form.town.setValue('');
+      this.form.town.setValue(null);
       this.getTownListOptions();
     });
   };
