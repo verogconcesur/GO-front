@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { Component, OnDestroy, OnInit, ViewEncapsulation } from '@angular/core';
 import { AbstractControl, UntypedFormBuilder, UntypedFormGroup, Validators } from '@angular/forms';
 import { ConcenetError } from '@app/types/error';
@@ -241,8 +242,10 @@ export class CreateEditFacilityComponent extends ComponentToExtendForCustomDialo
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   public hasAllSelected(control: AbstractControl, list: any[]): boolean {
     const actualValue = control.value ? control.value : [];
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    return haveArraysSameValues(actualValue.map((item: any) => item.id).sort(), list.map((item: any) => item.id).sort());
+    return haveArraysSameValues(
+      actualValue.map((item: any) => (item?.id ? item.id : null)).sort(),
+      list.map((item: any) => (item?.id ? item.id : null)).sort()
+    );
   }
 
   private getListOptions(): void {
@@ -326,11 +329,11 @@ export class CreateEditFacilityComponent extends ComponentToExtendForCustomDialo
       ]
     });
     this.facilityForm.controls.country.valueChanges.subscribe((x) => {
-      this.form.province.setValue('');
+      this.form.province.setValue(null);
       this.getProvinceListOptions();
     });
     this.facilityForm.controls.province.valueChanges.subscribe((x) => {
-      this.form.town.setValue('');
+      this.form.town.setValue(null);
       this.getTownListOptions();
     });
   };

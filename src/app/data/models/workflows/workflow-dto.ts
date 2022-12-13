@@ -16,4 +16,5 @@ export default interface WorkflowDTO extends TreeNode {
   brands?: BrandDTO[];
   departments?: DepartmentDTO[];
   specialties?: SpecialtyDTO[];
+  allowAllMovements?: boolean;
 }
