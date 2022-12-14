@@ -59,6 +59,7 @@
         "file-saver": "^2.0.5",
         "jquery": "^3.6.0",
         "lodash.clonedeep": "^4.5.0",
+        "messageformat": "^2.3.0",
         "miragejs": "^0.1.45",
         "moment": "^2.29.4",
         "ngx-extended-pdf-viewer": "^15.0.12",
