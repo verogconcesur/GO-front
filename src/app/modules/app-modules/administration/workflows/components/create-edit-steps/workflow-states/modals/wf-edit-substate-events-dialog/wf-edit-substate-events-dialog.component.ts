@@ -1,5 +1,6 @@
 import { Component, EventEmitter, Input, OnChanges, OnInit, Output, SimpleChanges, ViewChild } from '@angular/core';
-import { FormBuilder, UntypedFormGroup, ValidatorFn } from '@angular/forms';
+import { FormBuilder, FormControl, UntypedFormArray, UntypedFormControl, UntypedFormGroup, ValidatorFn } from '@angular/forms';
+import { MatChipInputEvent } from '@angular/material/chips';
 import { MatMenuTrigger } from '@angular/material/menu';
 import { marker } from '@biesbjerg/ngx-translate-extract-marker';
 import TreeNode from '@data/interfaces/tree-node';
@@ -9,6 +10,7 @@ import CardColumnTabItemDTO from '@data/models/cards/card-column-tab-item-dto';
 import TemplatesCommonDTO from '@data/models/templates/templates-common-dto';
 import RoleDTO from '@data/models/user-permissions/role-dto';
 import WorkflowRoleDTO from '@data/models/workflow-admin/workflow-role-dto';
+import WorkflowEventMailDTO, { WorkflowEventMailReceiverDTO } from '@data/models/workflows/workflow-event-mail-dto';
 import WorkflowMoveDTO from '@data/models/workflows/workflow-move-dto';
 import WorkflowStateDTO from '@data/models/workflows/workflow-state-dto';
 import WorkflowSubstateDTO from '@data/models/workflows/workflow-substate-dto';
@@ -24,6 +26,7 @@ import CombinedRequiredFieldsValidator from '@shared/validators/combined-require
 import { forkJoin, Observable, of } from 'rxjs';
 import { catchError, finalize, map, take } from 'rxjs/operators';
 import { WEditSubstateFormAuxService } from '../wf-edit-substate-dialog/aux-service/wf-edit-substate-aux.service';
+import { COMMA, ENTER } from '@angular/cdk/keycodes';
 export const enum WfEditSubstateEventsComponentModalEnum {
   ID = 'edit-state-dialog-id',
   PANEL_CLASS = 'edit-state-dialog',
@@ -47,12 +50,14 @@ export class WfEditSubstateEventsDialogComponent extends ComponentToExtendForCus
     roles?: WorkflowRoleDTO[];
   };
   @Output() formIntialized: EventEmitter<boolean> = new EventEmitter();
-  public labels = {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  public labels: any = {
     whoSeeThisMovement: marker('workflows.whoSeeThisMovement'),
     roles: marker('common.roles'),
     role: marker('common.role'),
     all: marker('common.all'),
     events: marker('common.events'),
+    emails: marker('common.emails'),
     sendMail: marker('workflows.sendMail'),
     sendMailAuto: marker('workflows.sendMailAuto'),
     sendMailTemplate: marker('workflows.sendMailTemplate'),
@@ -75,8 +80,15 @@ export class WfEditSubstateEventsDialogComponent extends ComponentToExtendForCus
     extraMovement: marker('workflows.extraMovement'),
     requiredMovementExtraDescription: marker('workflows.requiredMovementExtraDescription'),
     movementExtraAutoDescription: marker('workflows.movementExtraAutoDescription'),
-    workflowSubstateTargetExtra: marker('workflows.workflowSubstateTargetExtra')
+    workflowSubstateTargetExtra: marker('workflows.workflowSubstateTargetExtra'),
+    CLIENT: marker('workflows.receiver.client'),
+    ADVISER: marker('workflows.receiver.adviser'),
+    ASIGNED: marker('workflows.receiver.asigned'),
+    FOLLOWERS: marker('workflows.receiver.followers'),
+    ROLE: marker('workflows.receiver.role'),
+    OTHER: marker('workflows.receiver.other')
   };
+  public receiverTypes = ['CLIENT', 'ADVISER', 'ASIGNED', 'FOLLOWERS', 'ROLE', 'OTHER'];
   public form: UntypedFormGroup;
   public state: WorkflowStateDTO;
   public substate: WorkflowSubstateDTO;
@@ -87,6 +99,7 @@ export class WfEditSubstateEventsDialogComponent extends ComponentToExtendForCus
   public templatesList: TemplatesCommonDTO[];
   public fieldsList: CardColumnTabItemDTO[];
   public allStatesAndSubstates: TreeNode[];
+  readonly separatorKeysCodes = [ENTER, COMMA] as const;
 
   constructor(
     private fb: FormBuilder,
@@ -167,6 +180,49 @@ export class WfEditSubstateEventsDialogComponent extends ComponentToExtendForCus
   }
 
   public initForm(data: WorkflowMoveDTO): void {
+    //DGDC QUITAR
+    data = {
+      ...data,
+      sendMail: true,
+      workflowEventMails: [
+        {
+          id: 1,
+          sendMailAuto: true,
+          sendMailTemplate: {
+            id: 8
+          },
+          workflowEventMailReceivers: [
+            {
+              id: null,
+              receiverType: 'ROLE',
+              role: { id: 10, name: 'Rol Maria Prueba Borrado', permissions: [] }
+            },
+            {
+              id: null,
+              receiverType: 'OTHER',
+              emails: 'd@d.com,a@a.com'
+            }
+          ]
+        },
+        {
+          id: 2,
+          sendMailAuto: false,
+          sendMailTemplate: {
+            id: 8
+          },
+          workflowEventMailReceivers: [
+            {
+              id: null,
+              receiverType: 'ASIGNED'
+            },
+            {
+              id: null,
+              receiverType: 'ADVISER'
+            }
+          ]
+        }
+      ]
+    };
     let typeMoveExtra = {};
     let validatorsExtra: ValidatorFn[] = [];
     if (this.eventType === 'MOV') {
@@ -216,14 +272,46 @@ export class WfEditSubstateEventsDialogComponent extends ComponentToExtendForCus
       {
         //Mandar email
         sendMail: [data?.sendMail ? true : false],
-        sendMailAuto: [data?.sendMailAuto ? true : false],
-        sendMailReceiverRole: [
-          data?.sendMailReceiverRole ? this.roles.find((role) => role.id === data.sendMailReceiverRole.id) : null
-        ],
-        sendMailReceiverType: [data?.sendMailReceiverType ? data.sendMailReceiverType : null],
-        sendMailTemplate: [
-          data?.sendMailTemplate ? this.templatesList.find((template) => template.id === data.sendMailTemplate.id) : null
-        ],
+        workflowEventMails: data?.workflowEventMails?.length
+          ? this.fb.array(
+              data.workflowEventMails.map((wem: WorkflowEventMailDTO) =>
+                this.fb.group({
+                  id: [wem.id ? wem.id : null],
+                  sendMailAuto: [wem.sendMailAuto ? wem.sendMailAuto : false],
+                  sendMailTemplate: [
+                    wem?.sendMailTemplate && this.templatesList
+                      ? this.templatesList.find((template) => template.id === wem.sendMailTemplate.id)
+                      : null
+                  ],
+                  receiverTypes: [
+                    wem?.workflowEventMailReceivers?.length
+                      ? wem.workflowEventMailReceivers.map((receiver: WorkflowEventMailReceiverDTO) => receiver.receiverType)
+                      : []
+                  ],
+                  receiverEmails: [
+                    wem?.workflowEventMailReceivers?.length
+                      ? wem.workflowEventMailReceivers.reduce((prev: string[], curr: WorkflowEventMailReceiverDTO) => {
+                          if (curr.receiverType === 'OTHER' && curr.emails) {
+                            prev = [...prev, ...curr.emails.split(',')];
+                          }
+                          return prev;
+                        }, [])
+                      : []
+                  ],
+                  receiverRole: [
+                    wem?.workflowEventMailReceivers?.length
+                      ? wem.workflowEventMailReceivers.reduce((prev: RoleDTO, curr: WorkflowEventMailReceiverDTO) => {
+                          if (curr.receiverType === 'ROLE' && curr.role) {
+                            prev = this.roles.find((role: WorkflowRoleDTO) => role.id === curr.role.id);
+                          }
+                          return prev;
+                        }, null)
+                      : []
+                  ]
+                })
+              )
+            )
+          : this.fb.array([]),
         //Asignar peso a la ficha
         requiredSize: [data?.requiredSize ? true : false],
         //Asignar usuario - excluyente
@@ -269,7 +357,7 @@ export class WfEditSubstateEventsDialogComponent extends ComponentToExtendForCus
       }
     );
     this.formIntialized.emit(true);
-    // console.log(this.form, this.form.value);
+    console.log(this.form, this.form.value);
   }
 
   public allRolesSelected(): boolean {
@@ -291,6 +379,10 @@ export class WfEditSubstateEventsDialogComponent extends ComponentToExtendForCus
         return prev;
       }, false)
     );
+  }
+
+  public showTypeSelector(control: UntypedFormControl, type: 'ROLE' | 'OTHER'): boolean {
+    return control.getRawValue().receiverTypes.indexOf(type) >= 0;
   }
 
   public setAllRoles(selected: boolean): void {
@@ -401,6 +493,47 @@ export class WfEditSubstateEventsDialogComponent extends ComponentToExtendForCus
         }
       ]
     };
+  }
+
+  public removeEmail(email: string, control: UntypedFormControl): void {
+    console.log(email, control);
+  }
+
+  public addEmail(event: MatChipInputEvent, control: UntypedFormControl): void {
+    console.log(event, control);
+    const value = (event.value || '').trim();
+    if (value) {
+      // this.keywords.push(value);
+    }
+    event.chipInput.clear();
+  }
+
+  public getMailEventTitle(mailEvent: UntypedFormControl): string {
+    const value = mailEvent.getRawValue();
+    let title = `${this.translateService.instant('userProfile.email')} ( `;
+    if (value.sendMailAuto) {
+      title += `${this.translateService.instant(marker('common.auto'))} # `;
+    } else {
+      title += `${this.translateService.instant(marker('common.manual'))} # `;
+    }
+    if (value.sendMailTemplate?.name) {
+      title += `${value.sendMailTemplate?.name} # `;
+    } else {
+      title += '_____ # ';
+    }
+    if (value.receiverTypes?.length) {
+      title += `${value.receiverTypes.map((type: string) => this.translateService.instant(this.labels[type])).join(', ')} )`;
+    } else {
+      title += '_____ )';
+    }
+    return title;
+  }
+
+  public getWfEventsMailsFormArray(): UntypedFormArray {
+    if (this.form?.controls?.workflowEventMails) {
+      return this.form.controls.workflowEventMails as UntypedFormArray;
+    }
+    return this.fb.array([]);
   }
 
   private async getTemplatesAndFields(): Promise<boolean> {
