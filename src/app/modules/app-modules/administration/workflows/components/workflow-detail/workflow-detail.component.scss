@@ -25,7 +25,7 @@
       .edit-name-icon {
         transition: opacity 0.5s ease;
         color: mat-color($primary, 900);
-        opacity: 0;
+        opacity: 1;
       }
       &:hover {
         .edit-name-icon {

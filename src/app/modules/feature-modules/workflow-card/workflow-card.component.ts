@@ -75,7 +75,7 @@ export class WorkflowCardComponent implements OnInit {
         slot = tabItem.tabItemConfigAction;
         break;
       case 'INPUT':
-        slot = tabItem.tabItemConfigInput.variable;
+        slot = tabItem.tabItemConfigInput.cardTabItemInstance;
         break;
       case 'LINK':
         slot = tabItem.tabItemConfigLink;
@@ -100,14 +100,15 @@ export class WorkflowCardComponent implements OnInit {
         break;
     }
     const datePipe = new DatePipe('en-EN');
-    switch (slot.attributeName) {
+    const attrname = slot?.attributeName ? slot.attributeName : '';
+    switch (attrname) {
       case 'dueOutDateTime':
         return this.translateService.instant('workflows.dueOutDateTime', {
           date: datePipe.transform(slot.value, 'dd/MM'),
           time: datePipe.transform(slot.value, 'HH:mm')
         });
       default:
-        return slot.value;
+        return slot?.value ? slot.value : null;
     }
   }
 

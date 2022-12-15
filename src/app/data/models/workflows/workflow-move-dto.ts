@@ -5,6 +5,7 @@ import FacilityDTO from '../organization/facility-dto';
 import SpecialtyDTO from '../organization/specialty-dto';
 import TemplatesCommunicationDTO from '../templates/templates-communication-dto';
 import RoleDTO from '../user-permissions/role-dto';
+import WorkflowEventMailDTO from './workflow-event-mail-dto';
 import WorkflowSubstateDTO from './workflow-substate-dto';
 
 export default interface WorkflowMoveDTO {
@@ -19,10 +20,7 @@ export default interface WorkflowMoveDTO {
   requiredUser: boolean;
   roles: RoleDTO[];
   sendMail: boolean;
-  sendMailAuto: boolean;
-  sendMailReceiverRole: RoleDTO;
-  sendMailReceiverType: 'USER' | 'CLIENT';
-  sendMailTemplate: TemplatesCommunicationDTO;
+  workflowEventMails: WorkflowEventMailDTO[];
   shortcut: boolean;
   shortcutColor: string;
   shortcutName: string;

@@ -16,7 +16,7 @@ export interface TemplateComunicationItemsDTO {
 }
 export default interface TemplatesCommunicationDTO {
   id: number;
-  template: {
+  template?: {
     brands: BrandDTO[];
     departments: DepartmentDTO[];
     facilities: FacilityDTO[];
@@ -25,8 +25,8 @@ export default interface TemplatesCommunicationDTO {
     specialties: SpecialtyDTO[];
     templateType: string;
   };
-  text: string;
-  variables: VariablesDTO[];
+  text?: string;
+  variables?: VariablesDTO[];
   processedTemplate?: string;
   comunicationType: string;
   templateComunicationItems: TemplateComunicationItemsDTO[];
