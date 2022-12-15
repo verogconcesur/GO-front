@@ -3,16 +3,19 @@ import DepartmentDTO from '../organization/department-dto';
 import FacilityDTO from '../organization/facility-dto';
 import SpecialtyDTO from '../organization/specialty-dto';
 import VariablesDTO from '../variables-dto';
-
-export interface TemplateCommunicationItemDTO {
+import MessageChannelDTO from './message-channels-dto';
+export const CommunicationTypes: { value: string; label: string }[] = [
+  { value: 'USER', label: 'common.communicationTypes.user' },
+  { value: 'CUSTOMER', label: 'common.communicationTypes.customer' }
+];
+export interface TemplateComunicationItemsDTO {
   id: number;
-  messageChannel: { id: number; name: string };
+  text: string;
   processedSubject: string;
   processedText: string;
   subject: string;
-  text: string;
+  messageChannel: MessageChannelDTO;
 }
-
 export default interface TemplatesCommunicationDTO {
   id: number;
   template?: {
@@ -27,5 +30,6 @@ export default interface TemplatesCommunicationDTO {
   text?: string;
   variables?: VariablesDTO[];
   processedTemplate?: string;
-  templateComunicationItems?: TemplateCommunicationItemDTO[];
+  comunicationType: string;
+  templateComunicationItems: TemplateComunicationItemsDTO[];
 }

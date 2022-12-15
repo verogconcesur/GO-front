@@ -49,11 +49,13 @@
             },
             "communications": {
                 "add": "Nueva plantilla de Comunicación",
+                "communicationType": "Tipo de comunicación",
                 "create": "Crear plantilla de comunicación",
                 "delete": "Eliminar plantilla de comunicación",
                 "deleteConfirmation": "¿Realmente quieres eliminar esta plantilla?",
                 "edit": "Editar plantilla de comunicación",
                 "name": "Nombre de plantilla de comunicación",
+                "subject": "Asunto",
                 "text": "Notas",
                 "title": "Comunicación"
             },
@@ -177,6 +179,10 @@
         "clientMessages": "Mensajes cliente",
         "close": "Cerrar",
         "comments": "Comentarios",
+        "communicationTypes": {
+            "customer": "Cliente",
+            "user": "Usuario"
+        },
         "completed": "Finalizada",
         "concept": "Concepto",
         "country": "País",

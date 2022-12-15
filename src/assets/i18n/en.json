@@ -49,11 +49,13 @@
             },
             "communications": {
                 "add": "New communication template",
+                "communicationType": "Communication type",
                 "create": "Create communication template",
                 "delete": "Delete communication template",
                 "deleteConfirmation": "Do you really want to delete this communication template?",
                 "edit": "Edit communication template",
                 "name": "Communication's template name",
+                "subject": "Subject",
                 "text": "Notes",
                 "title": "Communication"
             },
@@ -177,6 +179,10 @@
         "clientMessages": "Client messages",
         "close": "Close",
         "comments": "Comments",
+        "communicationTypes": {
+            "customer": "Customer",
+            "user": "User"
+        },
         "completed": "Finished",
         "concept": "Concept",
         "country": "Country",
