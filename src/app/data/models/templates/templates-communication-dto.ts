@@ -4,6 +4,15 @@ import FacilityDTO from '../organization/facility-dto';
 import SpecialtyDTO from '../organization/specialty-dto';
 import VariablesDTO from '../variables-dto';
 
+export interface TemplateCommunicationItemDTO {
+  id: number;
+  messageChannel: { id: number; name: string };
+  processedSubject: string;
+  processedText: string;
+  subject: string;
+  text: string;
+}
+
 export default interface TemplatesCommunicationDTO {
   id: number;
   template?: {
@@ -18,4 +27,5 @@ export default interface TemplatesCommunicationDTO {
   text?: string;
   variables?: VariablesDTO[];
   processedTemplate?: string;
+  templateComunicationItems?: TemplateCommunicationItemDTO[];
 }

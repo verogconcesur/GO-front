@@ -225,7 +225,6 @@ export class WfEditSubstateEventsDialogComponent extends ComponentToExtendForCus
         ])
       ];
     }
-    // console.log(data, this.templatesList);
     this.form = this.fb.group(
       {
         //Mandar email
@@ -414,7 +413,6 @@ export class WfEditSubstateEventsDialogComponent extends ComponentToExtendForCus
     const workflowEventMailReceivers: WorkflowEventMailReceiverDTO[] = mailEvent.receiverTypes.map((type: string) => {
       switch (type) {
         case 'ROLE':
-          console.log(mailEvent.receiverRole);
           if (mailEvent.receiverRole) {
             return {
               receiverType: 'ROLE',

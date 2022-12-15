@@ -26,7 +26,7 @@ export class WorkflowNavbarComponent implements OnInit, OnDestroy {
   public currentUrl = '';
   public currentView: RouteConstants | string = null;
   public idWorkflowRouteParam: number = null;
-  public workflowList: WorkflowDTO[] = [];
+  public workflowList: WorkflowDTO[] = null;
   public workflowForm: UntypedFormGroup;
   // public workflowGroupOptions: Observable<WorkflowListByFacilityDTO[]>;
   public workflowOptions: Observable<WorkflowDTO[]>;
@@ -37,6 +37,7 @@ export class WorkflowNavbarComponent implements OnInit, OnDestroy {
   public labels = {
     selectWorkflow: marker('workflows.select'),
     filterWorkflow: marker('workflows.filter'),
+    noWorkflows: marker('workflows.noWorkflows'),
     filterFacility: marker('workflows.filterFacilities')
   };
 
@@ -216,7 +217,7 @@ export class WorkflowNavbarComponent implements OnInit, OnDestroy {
               workflowSelectedByIdParam = workflow;
             }
           });
-          this.workflowList = data;
+          this.workflowList = data ? data : [];
           this.workflowOptions = this.workflowForm.get('workflowSearch')?.valueChanges.pipe(
             startWith(''),
             map((value) => this.filterWorkflow(value || ''))
