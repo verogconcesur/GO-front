@@ -5,6 +5,7 @@ import { Env } from '@app/types/env';
 import { ConcenetError } from '@app/types/error';
 import PaginationRequestI from '@data/interfaces/pagination-request';
 import PaginationResponseI from '@data/interfaces/pagination-response';
+import MessageChannelDTO from '@data/models/templates/message-channels-dto';
 import TemplatesCommonDTO from '@data/models/templates/templates-common-dto';
 import TemplatesCommunicationDTO from '@data/models/templates/templates-communication-dto';
 import TemplatesFilterDTO from '@data/models/templates/templates-filter-dto';
@@ -19,6 +20,7 @@ export class TemplatesCommunicationService {
   private readonly POST_COMMUNICATIONS_PATH = '/api/templatecomunications';
   private readonly SEARCH_COMMUNICATIONS_PATH = '/api/templates/search';
   private readonly TEMPLATE_TYPE = 'COMUNICATION';
+  private readonly MESSAGES_CHANNELS_PATH = '/api/messageschannels';
 
   constructor(@Inject(ENV) private env: Env, private http: HttpClient) {}
 
@@ -56,5 +58,11 @@ export class TemplatesCommunicationService {
     return this.http
       .delete<void>(`${this.env.apiBaseUrl}${this.POST_COMMUNICATIONS_PATH}/${budgetId}`)
       .pipe(catchError((error) => throwError(error.error as ConcenetError)));
+  }
+
+  public getMessageChannels(): Observable<MessageChannelDTO[]> {
+    return this.http
+      .get<MessageChannelDTO[]>(`${this.env.apiBaseUrl}${this.MESSAGES_CHANNELS_PATH}`)
+      .pipe(catchError((error) => throwError(error as ConcenetError)));
   }
 }
