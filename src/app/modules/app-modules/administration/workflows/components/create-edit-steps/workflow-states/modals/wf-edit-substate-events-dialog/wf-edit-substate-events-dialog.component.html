@@ -36,7 +36,12 @@
             <div class="event__config__section__wrapper">
                 <div [ngClass]="{ bordered: form.get('sendMail')?.value }">
                     <div>
-                        <mat-checkbox color="primary" formControlName="sendMail">{{ labels.sendMail | translate }} </mat-checkbox>
+                        <mat-checkbox color="primary" formControlName="sendMail"
+                            >{{ labels.sendMail | translate }}
+                            <button mat-button *ngIf="form.get('sendMail')?.value" (click)="addWorkflowEventMails()">
+                                <mat-icon>add</mat-icon>
+                            </button></mat-checkbox
+                        >
                     </div>
                     <mat-accordion formArrayName="workflowEventMails" *ngIf="form.get('sendMail')?.value">
                         <mat-expansion-panel *ngFor="let mailEvent of getWfEventsMailsFormArray().controls; let i = index">
@@ -96,27 +101,15 @@
                                     </mat-error>
                                 </mat-form-field>
                                 <!-- emails -->
-                                <mat-form-field class="select-wrapper" appearance="outline" floatLabel="always">
-                                    <mat-label>{{ labels.emails | translate }}</mat-label>
-                                    <mat-chip-list [id]="'chipList-' + i">
-                                        <mat-chip
-                                            *ngFor="let email of mailEvent.controls?.receiverEmails"
-                                            (removed)="removeEmail(email, mailEvent)"
-                                        >
-                                            {{ email }}
-                                            <button matChipRemove>
-                                                <mat-icon>cancel</mat-icon>
-                                            </button>
-                                        </mat-chip>
-                                        <input
-                                            placeholder="Email..."
-                                            [matChipInputFor]="'chipList-' + i"
-                                            [matChipInputSeparatorKeyCodes]="separatorKeysCodes"
-                                            [matChipInputAddOnBlur]="true"
-                                            (matChipInputTokenEnd)="addEmail($event, mailEvent)"
-                                        />
-                                    </mat-chip-list>
-                                </mat-form-field>
+                                <app-mat-chips-input-form-field
+                                    *ngIf="showTypeSelector(mailEvent, 'OTHER')"
+                                    [matFormLabel]="labels.emails"
+                                    [inputPlaceholder]="labels.emails"
+                                    [fControl]="mailEvent.controls?.receiverEmails"
+                                    [matFormFieldClasses]="'w100'"
+                                    [inputPattern]="emailPattern"
+                                    [errorPatternMessage]="labels.errorPatternMessage"
+                                ></app-mat-chips-input-form-field>
                             </section>
                         </mat-expansion-panel>
                     </mat-accordion>
