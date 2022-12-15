@@ -414,6 +414,7 @@ export class WfEditSubstateEventsDialogComponent extends ComponentToExtendForCus
     const workflowEventMailReceivers: WorkflowEventMailReceiverDTO[] = mailEvent.receiverTypes.map((type: string) => {
       switch (type) {
         case 'ROLE':
+          console.log(mailEvent.receiverRole);
           if (mailEvent.receiverRole) {
             return {
               receiverType: 'ROLE',
@@ -441,7 +442,7 @@ export class WfEditSubstateEventsDialogComponent extends ComponentToExtendForCus
       id: mailEvent.id ? mailEvent.id : null,
       sendMailAuto: mailEvent.sendMailAuto,
       sendMailTemplate: mailEvent.sendMailTemplate,
-      workflowEventMailReceivers: workflowEventMailReceivers as WorkflowEventMailReceiverDTO[]
+      workflowEventMailReceivers: (workflowEventMailReceivers as WorkflowEventMailReceiverDTO[]).filter((d) => d)
     };
     return workflowEventMail;
   }
@@ -455,7 +456,9 @@ export class WfEditSubstateEventsDialogComponent extends ComponentToExtendForCus
       workflowEventMails: value.sendMail
         ? value.workflowEventMails
             .map((data: any) => this.getWorkflowEventMail(data))
-            .filter((data: any) => data.sendMailTemplate && data.workflowEventMailReceivers?.length)
+            .filter(
+              (data: any) => data && data.sendMailTemplate && data.workflowEventMailReceivers?.filter((d: any) => d)?.length
+            )
         : []
     };
     return formValue;
