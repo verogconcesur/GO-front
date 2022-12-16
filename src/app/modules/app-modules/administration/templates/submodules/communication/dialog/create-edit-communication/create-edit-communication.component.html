@@ -53,7 +53,7 @@
                                 id="{{ 'textEditorSubject' + item.value.messageChannel.id }}"
                                 textEditorId="{{ 'textEditorSubject' + item.value.messageChannel.id }}"
                                 [initialValue]="item?.value?.subject"
-                                [textEditorConfig]="textEditorToolbarOptions"
+                                [textEditorConfig]="textEditorToolbarOnlyMacroOptions"
                                 [placeholder]="labels.insertText | translate"
                                 (contentChanged)="textEditorContentChanged($event, item.controls.subject, true)"
                             ></app-text-editor-wrapper>
@@ -64,7 +64,11 @@
                                 id="{{ 'textEditor' + item.value.messageChannel.id }}"
                                 textEditorId="{{ 'textEditor' + item.value.messageChannel.id }}"
                                 [initialValue]="item?.value?.text"
-                                [textEditorConfig]="textEditorToolbarOptions"
+                                [textEditorConfig]="
+                                    item.value.messageChannel.id === 3
+                                        ? textEditorToolbarOnlyMacroOptions
+                                        : textEditorToolbarOptions
+                                "
                                 [placeholder]="labels.insertText | translate"
                                 (contentChanged)="
                                     textEditorContentChanged($event, item.controls.text, item.value.messageChannel.id === 3)

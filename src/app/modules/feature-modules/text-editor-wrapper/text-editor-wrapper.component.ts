@@ -42,10 +42,10 @@ export class TextEditorWrapperComponent implements OnInit, AfterViewInit {
     } else {
       const misc: any[] = ['fullscreen'];
       let extra: any = {};
-      if (this.textEditorConfig && this.textEditorConfig.addHtmlModificationOption) {
+      if (this.textEditorConfig && this.textEditorConfig.addHtmlModificationOption && !this.textEditorConfig.onlyMacroOption) {
         misc.push('codeview');
       }
-      if (this.textEditorConfig && this.textEditorConfig.addMacroListOption) {
+      if (this.textEditorConfig && (this.textEditorConfig.addMacroListOption || this.textEditorConfig.onlyMacroOption)) {
         misc.push(['macroList']);
         extra = {
           ...extra,
@@ -88,13 +88,18 @@ export class TextEditorWrapperComponent implements OnInit, AfterViewInit {
         };
       }
       misc.push('help');
-      const toolbar: any[] = [
-        // [groupName, [list of button]]
-        ['style', ['style', 'bold', 'italic', 'underline', 'clear']],
-        ['font', ['fontname', 'color']], //'fontsize'
-        ['para', ['ul', 'ol', 'paragraph']],
-        ['insert', ['table', 'link', 'picture', 'video']]
-      ];
+      let toolbar: any[];
+      if (this.textEditorConfig.onlyMacroOption) {
+        toolbar = [];
+      } else {
+        toolbar = [
+          // [groupName, [list of button]]
+          ['style', ['style', 'bold', 'italic', 'underline', 'clear']],
+          ['font', ['fontname', 'color']], //'fontsize'
+          ['para', ['ul', 'ol', 'paragraph']],
+          ['insert', ['table', 'link', 'picture', 'video']]
+        ];
+      }
       if (misc && misc.length) {
         toolbar.push(['misc', misc]);
       }
