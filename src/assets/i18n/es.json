@@ -558,7 +558,7 @@
         "newState": "Nuevo estado",
         "newSubstate": "Nuevo subestado",
         "newWorkflow": "Nuevo workflow",
-        "noWorkflows": "Este usuario no tiene acceso a ninguno workflow",
+        "noWorkflows": "Este usuario no tiene acceso a ningún workflow",
         "numCards": "{num} {num, plural, =0{fichas} one{ficha} other{fichas}}",
         "originalSubstate": "Subestado de origen",
         "peopleWorking": "{num} {num, plural, =0{personas trabajando} one{persona trabajando} other{personas trabajando}}",
