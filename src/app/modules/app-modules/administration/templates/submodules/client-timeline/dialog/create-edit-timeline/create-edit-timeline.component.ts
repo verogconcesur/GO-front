@@ -219,7 +219,9 @@ export class CreateEditTimelineComponent extends ComponentToExtendForCustomDialo
     const timelineItem = this.fb.group({
       name: ['', Validators.required],
       id: [null],
-      orderNumber: [this.templateTimelineItems.length]
+      orderNumber: [this.templateTimelineItems.length],
+      closed: [false],
+      messageLanding: ['']
     });
     this.templateTimelineItems.push(timelineItem);
   }

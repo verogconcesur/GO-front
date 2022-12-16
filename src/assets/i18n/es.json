@@ -294,6 +294,10 @@
     "customer": {
         "searchDialog": "Buscador de cliente"
     },
+    "emails": {
+        "receivers": "Destinatarios",
+        "subject": "Asunto"
+    },
     "errors": {
         "avoidReloadUnsavedChanges": "Recarga de datos abortada puesto que hay cambios sin guardar.",
         "dateFormat": "La fecha debe tener este formato: {format}",
@@ -554,6 +558,7 @@
         "newState": "Nuevo estado",
         "newSubstate": "Nuevo subestado",
         "newWorkflow": "Nuevo workflow",
+        "noWorkflows": "Este usuario no tiene acceso a ninguno workflow",
         "numCards": "{num} {num, plural, =0{fichas} one{ficha} other{fichas}}",
         "originalSubstate": "Subestado de origen",
         "peopleWorking": "{num} {num, plural, =0{personas trabajando} one{persona trabajando} other{personas trabajando}}",

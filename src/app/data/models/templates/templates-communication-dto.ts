@@ -11,6 +11,8 @@ export const CommunicationTypes: { value: string; label: string }[] = [
 export interface TemplateComunicationItemsDTO {
   id: number;
   text: string;
+  processedSubject: string;
+  processedText: string;
   subject: string;
   messageChannel: MessageChannelDTO;
 }

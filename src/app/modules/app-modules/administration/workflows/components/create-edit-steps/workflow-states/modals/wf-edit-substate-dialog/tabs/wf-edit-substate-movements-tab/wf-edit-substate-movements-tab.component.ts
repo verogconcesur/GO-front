@@ -231,7 +231,8 @@ export class WfEditSubstateMovementsTabComponent extends WfEditSubstateAbstractT
               this.fb.group({
                 id: [wem.id ? wem.id : null],
                 sendMailAuto: [wem.sendMailAuto ? wem.sendMailAuto : false],
-                sendMailTemplate: [wem?.sendMailTemplate ? wem.sendMailTemplate : null]
+                sendMailTemplate: [wem?.sendMailTemplate ? wem.sendMailTemplate : null],
+                workflowEventMailReceivers: [wem?.workflowEventMailReceivers ? wem.workflowEventMailReceivers : []]
               })
             )
           )

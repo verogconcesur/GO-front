@@ -50,6 +50,9 @@
           margin-bottom: -13px;
           width: 100%;
         }
+        .delete-button {
+          color: mat-color($primary, statusError);
+        }
       }
     }
   }
