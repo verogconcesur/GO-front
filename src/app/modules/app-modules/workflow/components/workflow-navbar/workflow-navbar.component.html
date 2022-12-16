@@ -1,6 +1,9 @@
 <div class="workflow-navbar" fxLayoutAlign="space-between center">
     <div class="workflow-navbar__searcher smaller-mat-form-fields">
-        <form [formGroup]="workflowForm">
+        <h2 class="workflow-navbar__searcher__no-workflows" *ngIf="workflowList?.length === 0">
+            {{ labels.noWorkflows | translate }}
+        </h2>
+        <form [formGroup]="workflowForm" *ngIf="workflowList?.length">
             <mat-form-field
                 appearance="outline"
                 floatLabel="always"

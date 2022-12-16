@@ -49,11 +49,13 @@
             },
             "communications": {
                 "add": "Nueva plantilla de Comunicación",
+                "communicationType": "Tipo de comunicación",
                 "create": "Crear plantilla de comunicación",
                 "delete": "Eliminar plantilla de comunicación",
                 "deleteConfirmation": "¿Realmente quieres eliminar esta plantilla?",
                 "edit": "Editar plantilla de comunicación",
                 "name": "Nombre de plantilla de comunicación",
+                "subject": "Asunto",
                 "text": "Notas",
                 "title": "Comunicación"
             },
@@ -166,6 +168,7 @@
         "apply": "Aplicar",
         "askForConfirmation": "¿Desea continuar?",
         "attachments": "Adjuntos",
+        "auto": "Auto",
         "back": "Atrás",
         "brands": "Marcas",
         "budget": "Presupuesto",
@@ -176,6 +179,10 @@
         "clientMessages": "Mensajes cliente",
         "close": "Cerrar",
         "comments": "Comentarios",
+        "communicationTypes": {
+            "customer": "Cliente",
+            "user": "Usuario"
+        },
         "completed": "Finalizada",
         "concept": "Concepto",
         "country": "País",
@@ -219,6 +226,7 @@
         "insertTextHere": "Introduzca el texto aquí.",
         "line": "Línea",
         "logo": "Logo",
+        "manual": "Manual",
         "messages": "Mensajes",
         "more": "Más",
         "move": "Mover",
@@ -285,6 +293,10 @@
     },
     "customer": {
         "searchDialog": "Buscador de cliente"
+    },
+    "emails": {
+        "receivers": "Destinatarios",
+        "subject": "Asunto"
     },
     "errors": {
         "avoidReloadUnsavedChanges": "Recarga de datos abortada puesto que hay cambios sin guardar.",
@@ -546,11 +558,20 @@
         "newState": "Nuevo estado",
         "newSubstate": "Nuevo subestado",
         "newWorkflow": "Nuevo workflow",
+        "noWorkflows": "Este usuario no tiene acceso a ningún workflow",
         "numCards": "{num} {num, plural, =0{fichas} one{ficha} other{fichas}}",
         "originalSubstate": "Subestado de origen",
         "peopleWorking": "{num} {num, plural, =0{personas trabajando} one{persona trabajando} other{personas trabajando}}",
         "publishWarn": "¿Esta seguro de que desea publicar este workflow?",
         "published": "Publicado",
+        "receiver": {
+            "adviser": "Asesor",
+            "asigned": "Asignado",
+            "client": "Cliente",
+            "followers": "Seguidores",
+            "other": "Otros",
+            "role": "Rol"
+        },
         "requiredFields": "Rellenar campos",
         "requiredFieldsList": "Listado de campos requeridos",
         "requiredHistoryComment": "Requerir la inserción por parte del usuario de un comentario visible desde el historial al realizar el movimiento",

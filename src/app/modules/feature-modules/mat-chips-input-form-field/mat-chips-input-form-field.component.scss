@@ -1,0 +1,8 @@
+mat-form-field {
+  &.w100 {
+    width: 100%;
+  }
+  .chip-input::after {
+    content: '...';
+  }
+}

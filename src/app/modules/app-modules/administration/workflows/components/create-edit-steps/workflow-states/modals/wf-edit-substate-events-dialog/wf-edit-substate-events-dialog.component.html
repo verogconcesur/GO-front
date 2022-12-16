@@ -36,69 +36,88 @@
             <div class="event__config__section__wrapper">
                 <div [ngClass]="{ bordered: form.get('sendMail')?.value }">
                     <div>
-                        <mat-checkbox color="primary" formControlName="sendMail">{{ labels.sendMail | translate }} </mat-checkbox>
+                        <mat-checkbox color="primary" formControlName="sendMail"
+                            >{{ labels.sendMail | translate }}
+                            <button mat-button *ngIf="form.get('sendMail')?.value" (click)="addWorkflowEventMails()">
+                                <mat-icon>add</mat-icon>
+                            </button></mat-checkbox
+                        >
                     </div>
-                    <div *ngIf="form.get('sendMail')?.value">
-                        <mat-checkbox color="primary" formControlName="sendMailAuto"
-                            >{{ labels.sendMailAuto | translate }}
-                        </mat-checkbox>
-                    </div>
-
-                    <mat-form-field
-                        class="select-wrapper"
-                        appearance="outline"
-                        floatLabel="always"
-                        *ngIf="form.get('sendMail').value"
-                    >
-                        <mat-label>{{ labels.sendMailTemplate | translate }}</mat-label>
-                        <mat-select formControlName="sendMailTemplate">
-                            <mat-option *ngFor="let template of templatesList" [value]="template">{{
-                                template.name | translate
-                            }}</mat-option>
-                        </mat-select>
-                        <mat-error *ngIf="form.controls?.sendMailTemplate.invalid">
-                            <span *ngIf="form.controls.sendMailTemplate.errors.required">{{ labels.required | translate }}</span>
-                        </mat-error>
-                    </mat-form-field>
-
-                    <mat-form-field
-                        class="select-wrapper"
-                        appearance="outline"
-                        floatLabel="always"
-                        *ngIf="form.get('sendMail').value"
-                    >
-                        <mat-label>{{ labels.sendMailReceiverType | translate }}</mat-label>
-                        <mat-select formControlName="sendMailReceiverType">
-                            <mat-option *ngFor="let type of ['USER', 'CLIENT']" [value]="type">
-                                <span *ngIf="type === 'CLIENT'">{{ labels.client | translate }}</span>
-                                <span *ngIf="type === 'USER'">{{ labels.user | translate }}</span>
-                            </mat-option>
-                        </mat-select>
-                        <mat-error *ngIf="form.controls?.sendMailReceiverType.invalid">
-                            <span *ngIf="form.controls.sendMailReceiverType.errors.required">{{
-                                labels.required | translate
-                            }}</span>
-                        </mat-error>
-                    </mat-form-field>
-
-                    <mat-form-field
-                        class="select-wrapper"
-                        appearance="outline"
-                        floatLabel="always"
-                        *ngIf="form.get('sendMail').value && form.get('sendMailReceiverType').value === 'USER'"
-                    >
-                        <mat-label>{{ labels.sendMailReceiverRole | translate }}</mat-label>
-                        <mat-select formControlName="sendMailReceiverRole">
-                            <mat-option *ngFor="let role of roles" [value]="role">
-                                {{ role.name }}
-                            </mat-option>
-                        </mat-select>
-                        <mat-error *ngIf="form.controls?.sendMailReceiverRole.invalid">
-                            <span *ngIf="form.controls.sendMailReceiverRole.errors.required">{{
-                                labels.required | translate
-                            }}</span>
-                        </mat-error>
-                    </mat-form-field>
+                    <mat-accordion formArrayName="workflowEventMails" *ngIf="form.get('sendMail')?.value">
+                        <mat-expansion-panel *ngFor="let mailEvent of getWfEventsMailsFormArray().controls; let i = index">
+                            <mat-expansion-panel-header>
+                                <mat-panel-title>
+                                    {{ getMailEventTitle(mailEvent) }}
+                                    <button mat-button class="delete-button" (click)="deleteEmailEvent(i)">
+                                        <mat-icon>delete_outline</mat-icon>
+                                    </button></mat-panel-title
+                                >
+                            </mat-expansion-panel-header>
+                            <section [formGroupName]="i">
+                                <!-- Send mail auto -->
+                                <mat-checkbox color="primary" formControlName="sendMailAuto"
+                                    >{{ labels.sendMailAuto | translate }}
+                                </mat-checkbox>
+                                <!-- Template -->
+                                <mat-form-field class="select-wrapper" appearance="outline" floatLabel="always">
+                                    <mat-label>{{ labels.sendMailTemplate | translate }}</mat-label>
+                                    <mat-select formControlName="sendMailTemplate">
+                                        <mat-option *ngFor="let template of templatesList" [value]="template">{{
+                                            template.name | translate
+                                        }}</mat-option>
+                                    </mat-select>
+                                    <mat-error *ngIf="mailEvent.controls?.sendMailTemplate.invalid">
+                                        <span *ngIf="mailEvent.controls.sendMailTemplate.errors.required">{{
+                                            labels.required | translate
+                                        }}</span>
+                                    </mat-error>
+                                </mat-form-field>
+                                <!-- Receivers -->
+                                <mat-form-field class="select-wrapper" appearance="outline" floatLabel="always">
+                                    <mat-label>{{ labels.sendMailReceiverType | translate }}</mat-label>
+                                    <mat-select formControlName="receiverTypes" multiple>
+                                        <mat-option *ngFor="let type of receiverTypes" [value]="type">
+                                            {{ labels[type] | translate }}
+                                        </mat-option>
+                                    </mat-select>
+                                    <mat-error *ngIf="mailEvent.controls?.receiverTypes.invalid">
+                                        <span *ngIf="mailEvent.controls.receiverTypes.errors.required">{{
+                                            labels.required | translate
+                                        }}</span>
+                                    </mat-error>
+                                </mat-form-field>
+                                <!-- Rol -->
+                                <mat-form-field
+                                    class="select-wrapper"
+                                    appearance="outline"
+                                    floatLabel="always"
+                                    *ngIf="showTypeSelector(mailEvent, 'ROLE')"
+                                >
+                                    <mat-label>{{ labels.sendMailReceiverRole | translate }}</mat-label>
+                                    <mat-select formControlName="receiverRole">
+                                        <mat-option *ngFor="let role of roles" [value]="role">
+                                            {{ role.name }}
+                                        </mat-option>
+                                    </mat-select>
+                                    <mat-error *ngIf="mailEvent.controls?.receiverRole.invalid">
+                                        <span *ngIf="mailEvent.controls.receiverRole.errors.required">{{
+                                            labels.required | translate
+                                        }}</span>
+                                    </mat-error>
+                                </mat-form-field>
+                                <!-- emails -->
+                                <app-mat-chips-input-form-field
+                                    *ngIf="showTypeSelector(mailEvent, 'OTHER')"
+                                    [matFormLabel]="labels.emails"
+                                    [inputPlaceholder]="labels.emails"
+                                    [fControl]="mailEvent.controls?.receiverEmails"
+                                    [matFormFieldClasses]="'w100'"
+                                    [inputPattern]="emailPattern"
+                                    [errorPatternMessage]="labels.errorPatternMessage"
+                                ></app-mat-chips-input-form-field>
+                            </section>
+                        </mat-expansion-panel>
+                    </mat-accordion>
                 </div>
 
                 <div>
