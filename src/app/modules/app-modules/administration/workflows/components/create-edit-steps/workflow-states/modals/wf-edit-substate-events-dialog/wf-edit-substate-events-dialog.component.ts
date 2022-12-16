@@ -330,6 +330,22 @@ export class WfEditSubstateEventsDialogComponent extends ComponentToExtendForCus
     );
   }
 
+  public deleteEmailEvent(position: number): void {
+    if (this.form?.controls?.workflowEventMails) {
+      this.confirmDialogService
+        .open({
+          title: this.translateService.instant(marker('common.warning')),
+          message: this.translateService.instant(marker('common.deleteConfirmation'))
+        })
+        .pipe(take(1))
+        .subscribe((ok) => {
+          if (ok) {
+            (this.form.controls.workflowEventMails as UntypedFormArray).removeAt(position);
+          }
+        });
+    }
+  }
+
   public allRolesSelected(): boolean {
     return this.form.get('roles')?.value.reduce((prev: boolean, curr: RoleDTO) => {
       if (prev && !curr.selected) {

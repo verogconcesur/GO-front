@@ -46,7 +46,12 @@
                     <mat-accordion formArrayName="workflowEventMails" *ngIf="form.get('sendMail')?.value">
                         <mat-expansion-panel *ngFor="let mailEvent of getWfEventsMailsFormArray().controls; let i = index">
                             <mat-expansion-panel-header>
-                                <mat-panel-title> {{ getMailEventTitle(mailEvent) }} </mat-panel-title>
+                                <mat-panel-title>
+                                    {{ getMailEventTitle(mailEvent) }}
+                                    <button mat-button class="delete-button" (click)="deleteEmailEvent(i)">
+                                        <mat-icon>delete_outline</mat-icon>
+                                    </button></mat-panel-title
+                                >
                             </mat-expansion-panel-header>
                             <section [formGroupName]="i">
                                 <!-- Send mail auto -->
