@@ -13,4 +13,6 @@ export default interface WorkflowEventMailDTO {
   sendMailAuto: boolean;
   sendMailTemplate: TemplatesCommunicationDTO;
   workflowEventMailReceivers: WorkflowEventMailReceiverDTO[];
+  processedEmail?: string;
+  templateComunication?: TemplatesCommunicationDTO;
 }

@@ -17,7 +17,7 @@ export default interface WorkflowSubstateEventDTO {
   movementExtraConfirm?: boolean;
   requiredMovementExtra?: boolean;
   sendMail?: boolean;
-  workflowEventMails: WorkflowEventMailDTO[];
+  workflowEventMails?: WorkflowEventMailDTO[];
   signDocument?: boolean;
   signDocumentTemplate?: TemplatesCommunicationDTO;
   historyComment?: string;

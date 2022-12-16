@@ -294,6 +294,10 @@
     "customer": {
         "searchDialog": "Customer searcher"
     },
+    "emails": {
+        "receivers": "To",
+        "subject": "Subject"
+    },
     "errors": {
         "avoidReloadUnsavedChanges": "Data reload aborted as there are unsaved changes.",
         "dateFormat": "The date must have this format: {format}",
@@ -554,6 +558,7 @@
         "newState": "New state",
         "newSubstate": "New substate",
         "newWorkflow": "New workflow",
+        "noWorkflows": "This user has no access to any workflow",
         "numCards": "{num} {num, plural, =0{cards} one{card} other{cards}}",
         "originalSubstate": "Original substate",
         "peopleWorking": "{num} {num, plural, =0{people working} one{person working} other{people working}}",

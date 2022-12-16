@@ -1,7 +1,8 @@
 import { Component, Inject, OnInit } from '@angular/core';
-import { FormBuilder, UntypedFormGroup, Validators } from '@angular/forms';
+import { FormBuilder, UntypedFormArray, UntypedFormControl, UntypedFormGroup, Validators } from '@angular/forms';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { marker } from '@biesbjerg/ngx-translate-extract-marker';
+import WorkflowEventMailDTO from '@data/models/workflows/workflow-event-mail-dto';
 import WorkflowSubstateEventDTO from '@data/models/workflows/workflow-substate-event-dto';
 import WorkflowSubstateUserDTO from '@data/models/workflows/workflow-substate-user-dto';
 // eslint-disable-next-line max-len
@@ -50,12 +51,17 @@ export class WorkflowCardMovementPreparationComponent implements OnInit {
     taskPlaceholder: marker('prepareMovement.taskPlaceholder'),
     taskHistoricLabel: marker('prepareMovement.taskHistoricLabel'),
     taskHistoricalPlaceholder: marker('prepareMovement.taskHistoricalPlaceholder'),
-    extraMovement: marker('prepareMovement.extraMovement')
+    extraMovement: marker('prepareMovement.extraMovement'),
+    emails: marker('common.emails'),
+    errorPatternMessage: marker('errors.emailPattern'),
+    subject: marker('emails.subject'),
+    receivers: marker('emails.receivers')
   };
   public tabsToShow: ('IN' | 'OUT' | 'MOV')[] = [];
   public tabToShow: 'IN' | 'OUT' | 'MOV';
   public sendToOtherWorkflow = false;
   public mainUserSelector = false;
+  public emailPattern = '^[a-z0-9._%+-]+@[a-z0-9.-]+\\.[a-z]{2,4}$';
 
   constructor(
     public dialogRef: MatDialogRef<WorkflowCardMovementPreparationComponent>,
@@ -190,15 +196,7 @@ export class WorkflowCardMovementPreparationComponent implements OnInit {
         this.preparationInForm.addControl('movementExtraConfirm', this.fb.control(this.preparationIn.movementExtraAuto, []));
       }
       if (this.preparationIn.sendMail) {
-        this.preparationInForm.addControl(
-          'template',
-          this.fb.control(
-            this.preparationIn.templateComunication?.processedTemplate
-              ? this.preparationIn.templateComunication.processedTemplate
-              : '',
-            [Validators.required]
-          )
-        );
+        this.addMailFormControl(this.preparationInForm, this.preparationIn);
       }
     }
     if (this.preparationOut) {
@@ -221,15 +219,7 @@ export class WorkflowCardMovementPreparationComponent implements OnInit {
         this.preparationOutForm.addControl('movementExtraConfirm', this.fb.control(this.preparationOut.movementExtraAuto, []));
       }
       if (this.preparationOut.sendMail) {
-        this.preparationOutForm.addControl(
-          'template',
-          this.fb.control(
-            this.preparationOut.templateComunication?.processedTemplate
-              ? this.preparationOut.templateComunication.processedTemplate
-              : '',
-            [Validators.required]
-          )
-        );
+        this.addMailFormControl(this.preparationOutForm, this.preparationOut);
       }
     }
     if (this.preparationMov) {
@@ -252,18 +242,49 @@ export class WorkflowCardMovementPreparationComponent implements OnInit {
         this.preparationMovForm.addControl('movementExtraConfirm', this.fb.control(this.preparationMov.movementExtraAuto, []));
       }
       if (this.preparationMov.sendMail) {
-        this.preparationMovForm.addControl(
-          'template',
-          this.fb.control(
-            this.preparationMov.templateComunication?.processedTemplate
-              ? this.preparationMov.templateComunication.processedTemplate
-              : '',
-            [Validators.required]
-          )
-        );
+        this.addMailFormControl(this.preparationMovForm, this.preparationMov);
       }
     }
+    // console.log(this.preparationInForm);
+    // console.log(this.preparationOutForm);
+    // console.log(this.preparationMovForm);
     this.formsCreated = true;
+  }
+
+  public addMailFormControl = (fControl: UntypedFormGroup, mov: WorkflowSubstateEventDTO): void => {
+    fControl.addControl(
+      'mailEvents',
+      this.fb.array(
+        mov.workflowEventMails.map((em: WorkflowEventMailDTO) =>
+          this.fb.group({
+            id: [em.id, Validators.required],
+            processedEmail: [em.processedEmail ? em.processedEmail.split(',') : []],
+            //DGDC En algún momento puden que venga información también de sms y landing (habrá que verificar cuál es el canal)
+            subject: [em.templateComunication?.templateComunicationItems[0]?.processedSubject, Validators.required],
+            template: [em.templateComunication?.templateComunicationItems[0]?.processedText, Validators.required]
+          })
+        )
+      )
+    );
+  };
+
+  public getMailEventTitle(mailEvent: UntypedFormControl, i: number, l: number): string {
+    let title = this.translateService.instant(this.labels.template);
+    if (l > 1) {
+      title += ` - ${i + 1}`;
+    }
+    return title;
+  }
+
+  public getWfEventsMailsFormArray(form: 'IN' | 'OUT' | 'MOV'): UntypedFormArray {
+    if (form === 'IN' && this.preparationInForm?.controls?.mailEvents) {
+      return this.preparationInForm.controls.mailEvents as UntypedFormArray;
+    } else if (form === 'OUT' && this.preparationOutForm?.controls?.mailEvents) {
+      return this.preparationOutForm.controls.mailEvents as UntypedFormArray;
+    } else if (form === 'MOV' && this.preparationMovForm?.controls?.mailEvents) {
+      return this.preparationMovForm.controls.mailEvents as UntypedFormArray;
+    }
+    return this.fb.array([]);
   }
 
   public findUserIn(user: WorkflowSubstateUserDTO, users: WorkflowSubstateUserDTO[]): WorkflowSubstateUserDTO {
@@ -315,13 +336,14 @@ export class WorkflowCardMovementPreparationComponent implements OnInit {
   }
 
   public save(): void {
-    this.dialogRef.close({
+    const data = {
       task: this.taskForm ? this.taskForm.value : null,
       user: this.userForm ? this.userForm.value : null,
       in: this.preparationInForm ? this.preparationInForm.value : null,
       out: this.preparationOutForm ? this.preparationOutForm.value : null,
       mov: this.preparationMovForm ? this.preparationMovForm.value : null
-    });
+    };
+    this.dialogRef.close(data);
   }
 
   public disableSaveButton(): boolean {
