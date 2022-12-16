@@ -144,7 +144,21 @@ export class WokflowBoardColumnComponent implements OnInit {
   }
 
   public getUserName(wUser: WorkflowSubstateUserDTO): string {
-    return `${wUser.user.name} ${wUser.user.firstName} ${wUser.user.lastName}`;
+    if (wUser.user.fullName) {
+      return wUser.user.fullName;
+    } else {
+      let fullName = '';
+      if (wUser.user.name) {
+        fullName = `${wUser.user.name} `;
+      }
+      if (wUser.user.firstName) {
+        fullName = `${wUser.user.firstName} `;
+      }
+      if (wUser.user.lastName) {
+        fullName = `${wUser.user.lastName} `;
+      }
+      return fullName;
+    }
   }
 
   public getCardsFilteredByUser(user: WorkflowSubstateUserDTO, cards: WorkflowCardDTO[]): WorkflowCardDTO[] {

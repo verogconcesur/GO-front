@@ -1,5 +1,7 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { Component, EventEmitter, Input, OnChanges, OnInit, Output, SimpleChanges, ViewChild } from '@angular/core';
-import { FormBuilder, UntypedFormGroup, ValidatorFn } from '@angular/forms';
+import { FormBuilder, FormControl, UntypedFormArray, UntypedFormControl, UntypedFormGroup, ValidatorFn } from '@angular/forms';
+import { MatChipInputEvent } from '@angular/material/chips';
 import { MatMenuTrigger } from '@angular/material/menu';
 import { marker } from '@biesbjerg/ngx-translate-extract-marker';
 import TreeNode from '@data/interfaces/tree-node';
@@ -9,6 +11,7 @@ import CardColumnTabItemDTO from '@data/models/cards/card-column-tab-item-dto';
 import TemplatesCommonDTO from '@data/models/templates/templates-common-dto';
 import RoleDTO from '@data/models/user-permissions/role-dto';
 import WorkflowRoleDTO from '@data/models/workflow-admin/workflow-role-dto';
+import WorkflowEventMailDTO, { WorkflowEventMailReceiverDTO } from '@data/models/workflows/workflow-event-mail-dto';
 import WorkflowMoveDTO from '@data/models/workflows/workflow-move-dto';
 import WorkflowStateDTO from '@data/models/workflows/workflow-state-dto';
 import WorkflowSubstateDTO from '@data/models/workflows/workflow-substate-dto';
@@ -47,12 +50,14 @@ export class WfEditSubstateEventsDialogComponent extends ComponentToExtendForCus
     roles?: WorkflowRoleDTO[];
   };
   @Output() formIntialized: EventEmitter<boolean> = new EventEmitter();
-  public labels = {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  public labels: any = {
     whoSeeThisMovement: marker('workflows.whoSeeThisMovement'),
     roles: marker('common.roles'),
     role: marker('common.role'),
     all: marker('common.all'),
     events: marker('common.events'),
+    emails: marker('common.emails'),
     sendMail: marker('workflows.sendMail'),
     sendMailAuto: marker('workflows.sendMailAuto'),
     sendMailTemplate: marker('workflows.sendMailTemplate'),
@@ -75,8 +80,16 @@ export class WfEditSubstateEventsDialogComponent extends ComponentToExtendForCus
     extraMovement: marker('workflows.extraMovement'),
     requiredMovementExtraDescription: marker('workflows.requiredMovementExtraDescription'),
     movementExtraAutoDescription: marker('workflows.movementExtraAutoDescription'),
-    workflowSubstateTargetExtra: marker('workflows.workflowSubstateTargetExtra')
+    workflowSubstateTargetExtra: marker('workflows.workflowSubstateTargetExtra'),
+    CLIENT: marker('workflows.receiver.client'),
+    ADVISER: marker('workflows.receiver.adviser'),
+    ASIGNED: marker('workflows.receiver.asigned'),
+    FOLLOWERS: marker('workflows.receiver.followers'),
+    ROLE: marker('workflows.receiver.role'),
+    OTHER: marker('workflows.receiver.other'),
+    errorPatternMessage: marker('errors.emailPattern')
   };
+  public receiverTypes = ['CLIENT', 'ADVISER', 'ASIGNED', 'FOLLOWERS', 'ROLE', 'OTHER'];
   public form: UntypedFormGroup;
   public state: WorkflowStateDTO;
   public substate: WorkflowSubstateDTO;
@@ -87,6 +100,7 @@ export class WfEditSubstateEventsDialogComponent extends ComponentToExtendForCus
   public templatesList: TemplatesCommonDTO[];
   public fieldsList: CardColumnTabItemDTO[];
   public allStatesAndSubstates: TreeNode[];
+  public emailPattern = '^[a-z0-9._%+-]+@[a-z0-9.-]+\\.[a-z]{2,4}$';
 
   constructor(
     private fb: FormBuilder,
@@ -211,19 +225,50 @@ export class WfEditSubstateEventsDialogComponent extends ComponentToExtendForCus
         ])
       ];
     }
-    // console.log(data, this.templatesList);
     this.form = this.fb.group(
       {
         //Mandar email
         sendMail: [data?.sendMail ? true : false],
-        sendMailAuto: [data?.sendMailAuto ? true : false],
-        sendMailReceiverRole: [
-          data?.sendMailReceiverRole ? this.roles.find((role) => role.id === data.sendMailReceiverRole.id) : null
-        ],
-        sendMailReceiverType: [data?.sendMailReceiverType ? data.sendMailReceiverType : null],
-        sendMailTemplate: [
-          data?.sendMailTemplate ? this.templatesList.find((template) => template.id === data.sendMailTemplate.id) : null
-        ],
+        workflowEventMails: data?.workflowEventMails?.length
+          ? this.fb.array(
+              data.workflowEventMails.map((wem: WorkflowEventMailDTO) =>
+                this.fb.group({
+                  id: [wem.id ? wem.id : null],
+                  sendMailAuto: [wem.sendMailAuto ? wem.sendMailAuto : false],
+                  sendMailTemplate: [
+                    wem?.sendMailTemplate && this.templatesList
+                      ? this.templatesList.find((template) => template.id === wem.sendMailTemplate.id)
+                      : null
+                  ],
+                  receiverTypes: [
+                    wem?.workflowEventMailReceivers?.length
+                      ? wem.workflowEventMailReceivers.map((receiver: WorkflowEventMailReceiverDTO) => receiver.receiverType)
+                      : []
+                  ],
+                  receiverEmails: [
+                    wem?.workflowEventMailReceivers?.length
+                      ? wem.workflowEventMailReceivers.reduce((prev: string[], curr: WorkflowEventMailReceiverDTO) => {
+                          if (curr.receiverType === 'OTHER' && curr.emails) {
+                            prev = [...prev, ...curr.emails.split(',')];
+                          }
+                          return prev;
+                        }, [])
+                      : []
+                  ],
+                  receiverRole: [
+                    wem?.workflowEventMailReceivers?.length
+                      ? wem.workflowEventMailReceivers.reduce((prev: RoleDTO, curr: WorkflowEventMailReceiverDTO) => {
+                          if (curr.receiverType === 'ROLE' && curr.role) {
+                            prev = this.roles.find((role: WorkflowRoleDTO) => role.id === curr.role.id);
+                          }
+                          return prev;
+                        }, null)
+                      : []
+                  ]
+                })
+              )
+            )
+          : this.fb.array([]),
         //Asignar peso a la ficha
         requiredSize: [data?.requiredSize ? true : false],
         //Asignar usuario - excluyente
@@ -272,6 +317,35 @@ export class WfEditSubstateEventsDialogComponent extends ComponentToExtendForCus
     // console.log(this.form, this.form.value);
   }
 
+  public addWorkflowEventMails(): void {
+    (this.form.get('workflowEventMails') as UntypedFormArray).push(
+      this.fb.group({
+        id: [null],
+        sendMailAuto: [false],
+        sendMailTemplate: [null],
+        receiverTypes: [[]],
+        receiverEmails: [[]],
+        receiverRole: [[]]
+      })
+    );
+  }
+
+  public deleteEmailEvent(position: number): void {
+    if (this.form?.controls?.workflowEventMails) {
+      this.confirmDialogService
+        .open({
+          title: this.translateService.instant(marker('common.warning')),
+          message: this.translateService.instant(marker('common.deleteConfirmation'))
+        })
+        .pipe(take(1))
+        .subscribe((ok) => {
+          if (ok) {
+            (this.form.controls.workflowEventMails as UntypedFormArray).removeAt(position);
+          }
+        });
+    }
+  }
+
   public allRolesSelected(): boolean {
     return this.form.get('roles')?.value.reduce((prev: boolean, curr: RoleDTO) => {
       if (prev && !curr.selected) {
@@ -291,6 +365,10 @@ export class WfEditSubstateEventsDialogComponent extends ComponentToExtendForCus
         return prev;
       }, false)
     );
+  }
+
+  public showTypeSelector(control: UntypedFormControl, type: 'ROLE' | 'OTHER'): boolean {
+    return control.getRawValue().receiverTypes.indexOf(type) >= 0;
   }
 
   public setAllRoles(selected: boolean): void {
@@ -347,12 +425,61 @@ export class WfEditSubstateEventsDialogComponent extends ComponentToExtendForCus
     return of(true);
   }
 
-  public onSubmitCustomDialog(): Observable<boolean> {
-    const formValue = {
-      ...this.form.value,
-      requiredFieldsList: this.form.value.requiredFields ? this.form.value.requiredFieldsList : [],
-      roles: this.form.get('roles')?.value.filter((role: RoleDTO) => role.selected)
+  public getWorkflowEventMail(mailEvent: any): WorkflowEventMailDTO {
+    const workflowEventMailReceivers: WorkflowEventMailReceiverDTO[] = mailEvent.receiverTypes.map((type: string) => {
+      switch (type) {
+        case 'ROLE':
+          if (mailEvent.receiverRole) {
+            return {
+              receiverType: 'ROLE',
+              role: mailEvent.receiverRole
+            };
+          } else {
+            return null;
+          }
+        case 'OTHER':
+          if (mailEvent.receiverEmails?.length) {
+            return {
+              receiverType: 'OTHER',
+              emails: mailEvent.receiverEmails.join(',')
+            };
+          } else {
+            return null;
+          }
+        default:
+          return {
+            receiverType: type
+          };
+      }
+    });
+    const workflowEventMail = {
+      id: mailEvent.id ? mailEvent.id : null,
+      sendMailAuto: mailEvent.sendMailAuto,
+      sendMailTemplate: mailEvent.sendMailTemplate,
+      workflowEventMailReceivers: (workflowEventMailReceivers as WorkflowEventMailReceiverDTO[]).filter((d) => d)
     };
+    return workflowEventMail;
+  }
+
+  public getFormValue(): any {
+    const value = this.form.value;
+    const formValue = {
+      ...value,
+      requiredFieldsList: this.form.value.requiredFields ? this.form.value.requiredFieldsList : [],
+      roles: this.form.get('roles')?.value.filter((role: RoleDTO) => role.selected),
+      workflowEventMails: value.sendMail
+        ? value.workflowEventMails
+            .map((data: any) => this.getWorkflowEventMail(data))
+            .filter(
+              (data: any) => data && data.sendMailTemplate && data.workflowEventMailReceivers?.filter((d: any) => d)?.length
+            )
+        : []
+    };
+    return formValue;
+  }
+
+  public onSubmitCustomDialog(): Observable<boolean> {
+    const formValue = this.getFormValue();
     const spinner = this.spinnerService.show();
     if (this.eventType === 'MOV') {
       return this.wStatesService
@@ -401,6 +528,34 @@ export class WfEditSubstateEventsDialogComponent extends ComponentToExtendForCus
         }
       ]
     };
+  }
+
+  public getMailEventTitle(mailEvent: UntypedFormControl): string {
+    const value = mailEvent.getRawValue();
+    let title = `${this.translateService.instant('userProfile.email')} ( `;
+    if (value.sendMailAuto) {
+      title += `${this.translateService.instant(marker('common.auto'))} # `;
+    } else {
+      title += `${this.translateService.instant(marker('common.manual'))} # `;
+    }
+    if (value.sendMailTemplate?.name) {
+      title += `${value.sendMailTemplate?.name} # `;
+    } else {
+      title += '_____ # ';
+    }
+    if (value.receiverTypes?.length) {
+      title += `${value.receiverTypes.map((type: string) => this.translateService.instant(this.labels[type])).join(', ')} )`;
+    } else {
+      title += '_____ )';
+    }
+    return title;
+  }
+
+  public getWfEventsMailsFormArray(): UntypedFormArray {
+    if (this.form?.controls?.workflowEventMails) {
+      return this.form.controls.workflowEventMails as UntypedFormArray;
+    }
+    return this.fb.array([]);
   }
 
   private async getTemplatesAndFields(): Promise<boolean> {
