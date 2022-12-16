@@ -56,6 +56,11 @@ export class CreateEditCommunicationComponent extends ComponentToExtendForCustom
     addMacroListOption: true,
     macroListOptions: []
   };
+  public textEditorToolbarOnlyMacroOptions: TextEditorWrapperConfigI = {
+    onlyMacroOption: true,
+    addMacroListOption: true,
+    macroListOptions: []
+  };
   public listVariables: VariablesDTO[];
   public communicationForm: UntypedFormGroup;
   public communicationTemplateForm: UntypedFormGroup;
@@ -244,6 +249,7 @@ export class CreateEditCommunicationComponent extends ComponentToExtendForCustom
   private getVariable(): void {
     this.variablesService.searchVariables().subscribe((res) => {
       this.textEditorToolbarOptions.macroListOptions = res.map((item: VariablesDTO) => item.name);
+      this.textEditorToolbarOnlyMacroOptions.macroListOptions = this.textEditorToolbarOptions.macroListOptions;
       this.listVariables = res;
     });
   }
