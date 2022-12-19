@@ -26,6 +26,8 @@ import { EntitiesSearcherDialogModule } from '@modules/feature-modules/entities-
 import { ItemTitleComponent } from './subcomponents/workflow-column-customizable-custom/items/item-title/item-title.component';
 import { ItemTextComponent } from './subcomponents/workflow-column-customizable-custom/items/item-text/item-text.component';
 import { ItemInputComponent } from './subcomponents/workflow-column-customizable-custom/items/item-input/item-input.component';
+import { ModalCustomerModule } from '@modules/feature-modules/modal-customer/modal-customer.module';
+import { ModalVehicleModule } from '@modules/feature-modules/modal-vehicle/modal-vehicle.module';
 @NgModule({
   declarations: [
     WorkflowCardDetailsComponent,
@@ -54,7 +56,9 @@ import { ItemInputComponent } from './subcomponents/workflow-column-customizable
     WorkflowCardDetailsRoutingModule,
     TextEditorWrapperModule,
     WorkflowCardTasksModule,
-    EntitiesSearcherDialogModule
+    EntitiesSearcherDialogModule,
+    ModalCustomerModule,
+    ModalVehicleModule
   ]
 })
 export class WorkflowCardDetailsModule {}

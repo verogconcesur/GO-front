@@ -32,4 +32,9 @@
             <mat-icon>error_outline</mat-icon><span>{{ getErrorMsg() }}</span>
         </div>
     </div>
+    <div class="entities-searcher__button" fxLayout="row" fxLayoutAlign="center end">
+        <button mat-stroked-button *ngIf="showCreateEntity()" (click)="createEntity()">
+            {{ getCreateEntityButtonLabel() | translate }}
+        </button>
+    </div>
 </div>

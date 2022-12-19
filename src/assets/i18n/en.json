@@ -298,6 +298,29 @@
         "receivers": "To",
         "subject": "Subject"
     },
+    "entities": {
+        "customers": {
+            "create": "Create customer",
+            "edit": "Edit customer",
+            "email": "Email",
+            "firstName": "First name",
+            "lastName": "Second name",
+            "name": "Name",
+            "phone": "Phone",
+            "reference": "Reference"
+        },
+        "vehicles": {
+            "chassis": "Chassis",
+            "create": "Create vehicle",
+            "description": "Description",
+            "edit": "Edit vehicle",
+            "licensePlate": "License plate",
+            "make": "Brand",
+            "model": "Model",
+            "vehicleId": "Vehicle Id",
+            "vin": "Vin"
+        }
+    },
     "errors": {
         "avoidReloadUnsavedChanges": "Data reload aborted as there are unsaved changes.",
         "dateFormat": "The date must have this format: {format}",
