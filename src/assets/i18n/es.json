@@ -298,6 +298,29 @@
         "receivers": "Destinatarios",
         "subject": "Asunto"
     },
+    "entities": {
+        "customers": {
+            "create": "Crear cliente",
+            "edit": "Editar cliente",
+            "email": "Email",
+            "firstName": "Primer apellido",
+            "lastName": "Segundo apellido",
+            "name": "Nombre",
+            "phone": "Teléfono",
+            "reference": "Referencia"
+        },
+        "vehicles": {
+            "chasis": "Chasis",
+            "create": "Crear vehículo",
+            "description": "Descripción",
+            "edit": "Editar vehículo",
+            "licensePlate": "Matrícula",
+            "make": "Marca",
+            "model": "Modelo",
+            "vehicleId": "Id del vehículo",
+            "vin": "Vin"
+        }
+    },
     "errors": {
         "avoidReloadUnsavedChanges": "Recarga de datos abortada puesto que hay cambios sin guardar.",
         "dateFormat": "La fecha debe tener este formato: {format}",

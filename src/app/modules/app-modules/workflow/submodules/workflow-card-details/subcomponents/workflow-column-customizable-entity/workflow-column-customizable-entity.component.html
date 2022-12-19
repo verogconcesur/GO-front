@@ -8,6 +8,12 @@
         {{ labels.noDataToShow | translate }}
     </h3>
 </div>
-<button mat-stroked-button class="w-colunm-entity-change-button" *ngIf="showChangeOrAsignEntity()" (click)="changeEntity()">
-    {{ getChangeOrAsignEntityButtonLabel() | translate }}
-</button>
+<div class="w-colunm-entity-change-button" fxLayout="row" fxLayoutAlign="space-between end">
+    <button mat-stroked-button *ngIf="showEditEntity()" (click)="editEntity()">
+        {{ getEditEntityButtonLabel() | translate }}
+    </button>
+
+    <button mat-stroked-button *ngIf="showChangeOrAsignEntity()" (click)="changeEntity()">
+        {{ getChangeOrAsignEntityButtonLabel() | translate }}
+    </button>
+</div>

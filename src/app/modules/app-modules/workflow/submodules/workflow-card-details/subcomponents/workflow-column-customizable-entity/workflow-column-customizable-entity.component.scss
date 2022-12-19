@@ -1,5 +1,7 @@
 @import 'utils/theme';
-
+:host {
+  position: relative;
+}
 .w-colunm-entity {
   overflow-y: auto;
   height: 100%;
@@ -9,6 +11,9 @@
   margin: 30px 10px;
   &:first-child {
     margin-top: 20px;
+  }
+  &:last-child {
+    margin-bottom: 60px;
   }
   &__label {
     font-weight: 600;
@@ -26,8 +31,11 @@
 
 .w-colunm-entity-change-button {
   position: absolute;
-  bottom: 20px;
-  right: 23px;
+  padding: 20px;
+  bottom: 0;
+  left: 0;
+  width: calc(100% - 15px);
+  background-color: mat-contrast($primary, statusSuccess);
 }
 
 .no-data {

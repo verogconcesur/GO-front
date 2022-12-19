@@ -16,6 +16,7 @@
             <app-workflow-column-customizable-entity
                 *ngIf="showColumn('CUSTOMIZABLE_ENTITY')"
                 [tab]="tabToShow"
+                [cardInstance]="cardInstance"
                 (setShowLoading)="setShowLoading($event)"
             ></app-workflow-column-customizable-entity>
             <app-workflow-column-customizable-custom
