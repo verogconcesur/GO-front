@@ -24,6 +24,12 @@
                     </mat-option>
                 </mat-autocomplete>
             </mat-form-field>
+
+            <div class="entity__head__search__button" fxLayout="row" fxLayoutAlign="center end">
+                <button mat-stroked-button *ngIf="showCreateEntity()" (click)="createEntity()">
+                    {{ getCreateEntityButtonLabel() | translate }}
+                </button>
+            </div>
         </form>
         <div class="entity__head__error" fxLayout="row" fxLayoutAlign="center center" *ngIf="showError()">
             <mat-icon>error_outline</mat-icon><span>{{ getErrorMsg() }}</span>
