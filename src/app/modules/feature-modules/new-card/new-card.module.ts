@@ -6,10 +6,12 @@ import { StepWorkflowComponent } from './components/step-workflow/step-workflow.
 import { StepColumnComponent } from './components/step-column/step-column.component';
 import { EntityComponent } from './components/entity/entity.component';
 import { InformationComponent } from './components/information/information.component';
+import { ModalCustomerModule } from '../modal-customer/modal-customer.module';
+import { ModalVehicleModule } from '../modal-vehicle/modal-vehicle.module';
 
 @NgModule({
   declarations: [NewCardComponent, StepWorkflowComponent, StepColumnComponent, EntityComponent, InformationComponent],
-  imports: [CommonModule, SharedModule],
+  imports: [CommonModule, SharedModule, ModalCustomerModule, ModalVehicleModule],
   exports: [NewCardComponent]
 })
 export class NewCardModule {}

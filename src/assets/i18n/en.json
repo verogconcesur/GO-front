@@ -307,10 +307,11 @@
             "lastName": "Second name",
             "name": "Name",
             "phone": "Phone",
-            "reference": "Reference"
+            "reference": "Reference",
+            "socialSecurityId": "Identity document"
         },
         "vehicles": {
-            "chassis": "Chassis",
+            "chasis": "Chasis",
             "create": "Create vehicle",
             "description": "Description",
             "edit": "Edit vehicle",

@@ -34,6 +34,7 @@ export class ModalCustomerComponent extends ComponentToExtendForCustomDialog imp
     lastName: marker('entities.customers.lastName'),
     phone: marker('entities.customers.phone'),
     email: marker('entities.customers.email'),
+    socialSecurityId: marker('entities.customers.socialSecurityId'),
     emailError: marker('errors.emailPattern'),
     data: marker('userProfile.data')
   };
@@ -129,6 +130,7 @@ export class ModalCustomerComponent extends ComponentToExtendForCustomDialog imp
       firstName: [this.customerToEdit ? this.customerToEdit.firstName : null],
       secondName: [this.customerToEdit ? this.customerToEdit.secondName : null],
       email: [this.customerToEdit ? this.customerToEdit.email : null, [Validators.email]],
+      socialSecurityId: [this.customerToEdit ? this.customerToEdit.socialSecurityId : null],
       phone: [this.customerToEdit ? this.customerToEdit.phone : null]
     });
   };

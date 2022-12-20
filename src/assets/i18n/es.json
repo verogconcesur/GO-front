@@ -307,7 +307,8 @@
             "lastName": "Segundo apellido",
             "name": "Nombre",
             "phone": "Teléfono",
-            "reference": "Referencia"
+            "reference": "Referencia",
+            "socialSecurityId": "Documento de identidad"
         },
         "vehicles": {
             "chasis": "Chasis",
