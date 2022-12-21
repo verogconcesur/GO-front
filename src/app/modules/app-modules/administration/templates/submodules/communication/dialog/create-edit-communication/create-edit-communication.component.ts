@@ -1,6 +1,14 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { Component, OnDestroy, OnInit } from '@angular/core';
-import { FormArray, FormControl, UntypedFormBuilder, UntypedFormGroup, Validators } from '@angular/forms';
+import {
+  AbstractControl,
+  FormArray,
+  FormControl,
+  FormGroup,
+  UntypedFormBuilder,
+  UntypedFormGroup,
+  Validators
+} from '@angular/forms';
 import { marker } from '@biesbjerg/ngx-translate-extract-marker';
 import BrandDTO from '@data/models/organization/brand-dto';
 import DepartmentDTO from '@data/models/organization/department-dto';
@@ -109,7 +117,24 @@ export class CreateEditCommunicationComponent extends ComponentToExtendForCustom
   }
 
   ngOnDestroy(): void {}
-
+  public getTabLabel(item: FormGroup): string {
+    const validator = item.controls.text.validator ? item.controls.text.validator({} as AbstractControl) : null;
+    if (validator && validator.required) {
+      return item.value.messageChannel.name + '*';
+    } else {
+      return item.value.messageChannel.name;
+    }
+  }
+  public changeComunicationType(): void {
+    if (
+      this.communicationForm.get('comunicationType') &&
+      this.communicationForm.get('comunicationType').value === this.communicationTypes[1].value
+    ) {
+      this.communicationForm.get('templateComunicationItems').get('0').get('text').setValidators([Validators.required]);
+    } else {
+      this.communicationForm.get('templateComunicationItems').get('0').get('text').setValidators([]);
+    }
+  }
   public confirmCloseCustomDialog(): Observable<boolean> {
     if (this.communicationForm.touched && this.communicationForm.dirty) {
       return this.confirmDialogService.open({
@@ -263,7 +288,7 @@ export class CreateEditCommunicationComponent extends ComponentToExtendForCustom
         departments: [this.communicationToEdit ? this.communicationToEdit.template.departments : null, Validators.required],
         specialties: [this.communicationToEdit ? this.communicationToEdit.template.specialties : null, Validators.required]
       }),
-      comunicationType: [this.communicationToEdit ? this.communicationToEdit.comunicationType : '', Validators.required],
+      comunicationType: [this.communicationToEdit ? this.communicationToEdit.comunicationType : null],
       variables: [this.communicationToEdit ? this.communicationToEdit.variables : []],
       templateComunicationItems: this.fb.array([])
     });
@@ -283,5 +308,6 @@ export class CreateEditCommunicationComponent extends ComponentToExtendForCustom
         })
       );
     });
+    this.changeComunicationType();
   }
 }
