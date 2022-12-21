@@ -75,7 +75,6 @@ export class GenericTreeNodeSearcherComponent implements OnInit, OnChanges {
     if (data) {
       this.dataSource.data = data;
       this.treeControl.dataNodes = data;
-      this.treeControl.expandAll();
     }
   }
 

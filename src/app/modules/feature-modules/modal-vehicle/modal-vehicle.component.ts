@@ -15,7 +15,7 @@ import { catchError, finalize, map } from 'rxjs/operators';
 export const enum CreateEditVehicleComponentModalEnum {
   ID = 'create-edit-vehicle-dialog-id',
   PANEL_CLASS = 'create-edit-vehicle-dialog',
-  TITLE = 'entities.vehicle.create'
+  TITLE = 'entities.vehicles.create'
 }
 
 @Component({
