@@ -1,4 +1,5 @@
 {
+    ", ": "",
     "administration": {
         "brands": "Brands",
         "cards": "Cards",
@@ -415,11 +416,16 @@
             "title": "Departments"
         },
         "facilities": {
+            "code": "Code",
             "create": "Create facility",
             "delete": "Delete facility",
             "deleteConfirmation": "Do you really want to delete this facility?",
             "edit": "Edit facility",
+            "enterpriseId": "Enterprise Identifier",
+            "integration": "Integration",
             "numFacilities": "{numItems} {numItems, plural, =0{facilities} one{facility} other{facilities}}",
+            "requireConfigApiExt": "requires external API configuration",
+            "storeId": "Store Identifier",
             "title": "Facilities"
         },
         "specialties": {
@@ -495,6 +501,7 @@
     "userProfile": {
         "brand": "Brand",
         "changePassword": "Change password",
+        "code": "Code",
         "data": "General data",
         "department": "Department",
         "edit": "Edit profile",

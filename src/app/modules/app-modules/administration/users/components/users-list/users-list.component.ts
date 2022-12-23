@@ -100,7 +100,7 @@ export class UsersListComponent implements OnInit {
         component: CreateEditUserComponent,
         extendedComponentData: user ? user : null,
         disableClose: true,
-        width: '700px'
+        width: '900px'
       })
       .pipe(take(1))
       .subscribe((response) => {

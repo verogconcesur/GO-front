@@ -44,7 +44,7 @@ export class WorkflowCardColumnComponent implements OnInit {
       .syncCard(this.cardInstance.cardInstanceWorkflow.id)
       .pipe(take(1))
       .subscribe((data) => {
-        this.prepareAndMoveService.reloadData$.next('MOVES_IN_THIS_WORKFLOW');
+        this.prepareAndMoveService.reloadData$.next('MOVES_IN_OTHER_WORKFLOWS');
       });
   }
 
