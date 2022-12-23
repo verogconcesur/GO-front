@@ -1,5 +1,6 @@
 import BrandDTO from './brand-dto';
 import TownDTO from '../location/town-dto';
+import WorkflowSubstateDTO from '../workflows/workflow-substate-dto';
 
 export default interface FacilityDTO {
   id: number;
@@ -13,4 +14,9 @@ export default interface FacilityDTO {
   numDepartments?: number;
   postalCode?: string;
   town?: TownDTO;
+  requireConfigApiExt?: boolean;
+  code?: string;
+  enterpriseId?: string;
+  storeId?: string;
+  workflowSubstate?: WorkflowSubstateDTO;
 }

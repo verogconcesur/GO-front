@@ -1,4 +1,5 @@
 {
+    ", ": "",
     "administration": {
         "brands": "Marcas",
         "cards": "Tarjetas",
@@ -415,11 +416,16 @@
             "title": "Departamentos"
         },
         "facilities": {
+            "code": "Código",
             "create": "Crear instalación",
             "delete": "Eliminar instalación",
             "deleteConfirmation": "¿Realmente quiere eliminar esta instalación?",
             "edit": "Editar instalación",
+            "enterpriseId": "Identificador de empresa",
+            "integration": "Integración",
             "numFacilities": "{numItems} {numItems, plural, =0{instalaciones} one{instalación} other{instalaciones}}",
+            "requireConfigApiExt": "Requiere configuración de API externa",
+            "storeId": "Identificador de tienda",
             "title": "Instalaciones"
         },
         "specialties": {
@@ -495,6 +501,7 @@
     "userProfile": {
         "brand": "Marca",
         "changePassword": "Cambiar contraseña",
+        "code": "Código",
         "data": "Datos generales",
         "department": "Departamento",
         "edit": "Editar perfil",
