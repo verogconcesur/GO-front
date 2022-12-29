@@ -151,10 +151,10 @@ export class CreateEditCommunicationComponent extends ComponentToExtendForCustom
     const variablesOnText = this.listVariables.filter((variable) => {
       let variableUsed = false;
       formValue.templateComunicationItems.forEach((item: TemplateComunicationItemsDTO) => {
-        if (item.text.indexOf(variable.name) !== -1) {
+        if (item.text && item.text.indexOf(variable.name) !== -1) {
           variableUsed = true;
         }
-        if (item.subject.indexOf(variable.name) !== -1) {
+        if (item.subject && item.subject.indexOf(variable.name) !== -1) {
           variableUsed = true;
         }
       });
