@@ -1,4 +1,5 @@
 {
+    ", ": "",
     "administration": {
         "brands": "Marcas",
         "cards": "Tarjetas",
@@ -298,6 +299,30 @@
         "receivers": "Destinatarios",
         "subject": "Asunto"
     },
+    "entities": {
+        "customers": {
+            "create": "Crear cliente",
+            "edit": "Editar cliente",
+            "email": "Email",
+            "firstName": "Primer apellido",
+            "lastName": "Segundo apellido",
+            "name": "Nombre",
+            "phone": "Teléfono",
+            "reference": "Referencia",
+            "socialSecurityId": "Documento de identidad"
+        },
+        "vehicles": {
+            "chasis": "Chasis",
+            "create": "Crear vehículo",
+            "description": "Descripción",
+            "edit": "Editar vehículo",
+            "licensePlate": "Matrícula",
+            "make": "Marca",
+            "model": "Modelo",
+            "vehicleId": "Id del vehículo",
+            "vin": "Vin"
+        }
+    },
     "errors": {
         "avoidReloadUnsavedChanges": "Recarga de datos abortada puesto que hay cambios sin guardar.",
         "dateFormat": "La fecha debe tener este formato: {format}",
@@ -391,11 +416,16 @@
             "title": "Departamentos"
         },
         "facilities": {
+            "code": "Código",
             "create": "Crear instalación",
             "delete": "Eliminar instalación",
             "deleteConfirmation": "¿Realmente quiere eliminar esta instalación?",
             "edit": "Editar instalación",
+            "enterpriseId": "Identificador de empresa",
+            "integration": "Integración",
             "numFacilities": "{numItems} {numItems, plural, =0{instalaciones} one{instalación} other{instalaciones}}",
+            "requireConfigApiExt": "Requiere configuración de API externa",
+            "storeId": "Identificador de tienda",
             "title": "Instalaciones"
         },
         "specialties": {
@@ -471,6 +501,7 @@
     "userProfile": {
         "brand": "Marca",
         "changePassword": "Cambiar contraseña",
+        "code": "Código",
         "data": "Datos generales",
         "department": "Departamento",
         "edit": "Editar perfil",

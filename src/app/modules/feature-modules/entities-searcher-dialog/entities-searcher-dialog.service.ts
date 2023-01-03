@@ -22,7 +22,7 @@ export class EntitiesSearcherDialogService implements OnDestroy {
       this.dialog
         .open(EntitiesSearcherDialogComponent, {
           width: '500px',
-          height: '200px',
+          height: '240px',
           panelClass: 'entities-searcher',
           disableClose: true,
           data: { workflowId, mode }

@@ -177,22 +177,17 @@ export class WorkflowNavbarComponent implements OnInit, OnDestroy {
   }
 
   public syncData(): void {
-    if (!this.facilitiesSelected?.length && this.workflowSelected?.facilities?.length === 1) {
-      this.facilitiesSelected = this.workflowSelected.facilities;
-    }
-    if (this.workflowSelected && this.facilitiesSelected?.length === 1) {
-      this.workflowService
-        .syncData(this.workflowSelected.id, this.facilitiesSelected[0].id)
-        .pipe(take(1))
-        .subscribe(
-          (data) => {
-            this.prepareAndMoveService.reloadData$.next('MOVES_IN_THIS_WORKFLOW');
-          },
-          (error) => {
-            console.error(error);
-          }
-        );
-    }
+    this.workflowService
+      .syncData(this.workflowSelected.id)
+      .pipe(take(1))
+      .subscribe(
+        (data) => {
+          this.prepareAndMoveService.reloadData$.next('MOVES_IN_THIS_WORKFLOW');
+        },
+        (error) => {
+          console.error(error);
+        }
+      );
   }
 
   private initForms(): void {

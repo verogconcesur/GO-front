@@ -93,12 +93,7 @@
                 </mat-select>
             </mat-form-field>
         </form>
-        <button
-            mat-icon-button
-            class="responsive__tablet_or_more"
-            *ngIf="workflowSelected && !workflowSelected?.manualCreateCard"
-            (click)="syncData()"
-        >
+        <button mat-icon-button class="responsive__tablet_or_more" *ngIf="workflowSelected" (click)="syncData()">
             <mat-icon>sync</mat-icon>
         </button>
     </div>

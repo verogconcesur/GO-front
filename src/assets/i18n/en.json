@@ -1,4 +1,5 @@
 {
+    ", ": "",
     "administration": {
         "brands": "Brands",
         "cards": "Cards",
@@ -298,6 +299,30 @@
         "receivers": "To",
         "subject": "Subject"
     },
+    "entities": {
+        "customers": {
+            "create": "Create customer",
+            "edit": "Edit customer",
+            "email": "Email",
+            "firstName": "First name",
+            "lastName": "Second name",
+            "name": "Name",
+            "phone": "Phone",
+            "reference": "Reference",
+            "socialSecurityId": "Identity document"
+        },
+        "vehicles": {
+            "chasis": "Chasis",
+            "create": "Create vehicle",
+            "description": "Description",
+            "edit": "Edit vehicle",
+            "licensePlate": "License plate",
+            "make": "Brand",
+            "model": "Model",
+            "vehicleId": "Vehicle Id",
+            "vin": "Vin"
+        }
+    },
     "errors": {
         "avoidReloadUnsavedChanges": "Data reload aborted as there are unsaved changes.",
         "dateFormat": "The date must have this format: {format}",
@@ -391,11 +416,16 @@
             "title": "Departments"
         },
         "facilities": {
+            "code": "Code",
             "create": "Create facility",
             "delete": "Delete facility",
             "deleteConfirmation": "Do you really want to delete this facility?",
             "edit": "Edit facility",
+            "enterpriseId": "Enterprise Identifier",
+            "integration": "Integration",
             "numFacilities": "{numItems} {numItems, plural, =0{facilities} one{facility} other{facilities}}",
+            "requireConfigApiExt": "requires external API configuration",
+            "storeId": "Store Identifier",
             "title": "Facilities"
         },
         "specialties": {
@@ -471,6 +501,7 @@
     "userProfile": {
         "brand": "Brand",
         "changePassword": "Change password",
+        "code": "Code",
         "data": "General data",
         "department": "Department",
         "edit": "Edit profile",

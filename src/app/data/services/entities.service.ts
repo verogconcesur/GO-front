@@ -14,9 +14,10 @@ import { catchError } from 'rxjs/operators';
   providedIn: 'root'
 })
 export class EntitiesService {
-  private readonly GET_VEHICLES_PATH = '/api/vehicles/search';
-  private readonly GET_CUSTOMERS_PATH = '/api/customers/search';
+  private readonly GET_VEHICLES_PATH = '/api/vehicles/';
+  private readonly GET_CUSTOMERS_PATH = '/api/customers/';
   private readonly GET_USERS_PATH = '/api/users/listByFilter';
+  private readonly SEARCH_PATH = 'search';
 
   constructor(@Inject(ENV) private env: Env, private http: HttpClient) {}
 
@@ -27,7 +28,7 @@ export class EntitiesService {
    */
   public searchVehicles(search: BasicFilterDTO): Observable<VehicleEntityDTO[]> {
     return this.http
-      .post<VehicleEntityDTO[]>(`${this.env.apiBaseUrl}${this.GET_VEHICLES_PATH}`, search)
+      .post<VehicleEntityDTO[]>(`${this.env.apiBaseUrl}${this.GET_VEHICLES_PATH}${this.SEARCH_PATH}`, search)
       .pipe(catchError((error) => throwError(error.error as ConcenetError)));
   }
   /**
@@ -47,7 +48,51 @@ export class EntitiesService {
    */
   public searchCustomers(search: BasicFilterDTO): Observable<CustomerEntityDTO[]> {
     return this.http
-      .post<CustomerEntityDTO[]>(`${this.env.apiBaseUrl}${this.GET_CUSTOMERS_PATH}`, search)
+      .post<CustomerEntityDTO[]>(`${this.env.apiBaseUrl}${this.GET_CUSTOMERS_PATH}${this.SEARCH_PATH}`, search)
+      .pipe(catchError((error) => throwError(error.error as ConcenetError)));
+  }
+
+  /**
+   * Find customer
+   *
+   * @returns CustomerEntityDTO
+   */
+  public getCustomer(idCustomer: number): Observable<CustomerEntityDTO> {
+    return this.http
+      .get<CustomerEntityDTO>(`${this.env.apiBaseUrl}${this.GET_CUSTOMERS_PATH}${idCustomer}`)
+      .pipe(catchError((error) => throwError(error.error as ConcenetError)));
+  }
+
+  /**
+   * Create customer
+   *
+   * @returns CustomerEntityDTO
+   */
+  public createCustomer(customer: CustomerEntityDTO): Observable<CustomerEntityDTO> {
+    return this.http
+      .post<CustomerEntityDTO>(`${this.env.apiBaseUrl}${this.GET_CUSTOMERS_PATH}`, customer)
+      .pipe(catchError((error) => throwError(error.error as ConcenetError)));
+  }
+
+  /**
+   * Find Vehicle
+   *
+   * @returns VehicleEntityDTO
+   */
+  public getVehicle(idVehicle: number): Observable<VehicleEntityDTO> {
+    return this.http
+      .get<VehicleEntityDTO>(`${this.env.apiBaseUrl}${this.GET_VEHICLES_PATH}${idVehicle}`)
+      .pipe(catchError((error) => throwError(error.error as ConcenetError)));
+  }
+
+  /**
+   * Create Vehicle
+   *
+   * @returns VehicleEntityDTO
+   */
+  public createVehicle(vehicle: VehicleEntityDTO): Observable<VehicleEntityDTO> {
+    return this.http
+      .post<VehicleEntityDTO>(`${this.env.apiBaseUrl}${this.GET_VEHICLES_PATH}`, vehicle)
       .pipe(catchError((error) => throwError(error.error as ConcenetError)));
   }
 }

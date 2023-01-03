@@ -4,9 +4,12 @@
   &__head {
     padding: 10px 0;
     &__search {
+      max-width: 500px;
       mat-form-field {
         width: 100%;
-        max-width: 500px;
+      }
+      &__button {
+        margin-top: 20px;
       }
     }
     &__error {
