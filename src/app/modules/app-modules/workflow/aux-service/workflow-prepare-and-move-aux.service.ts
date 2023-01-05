@@ -98,7 +98,8 @@ export class WorkflowPrepareAndMoveService {
           ) {
             this.dialog
               .open(WorkflowCardMovementPreparationComponent, {
-                maxWidth: '650px',
+                maxWidth: '655px',
+                maxHeight: '95vh',
                 data: {
                   destinationName,
                   preparation: data,
