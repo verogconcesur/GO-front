@@ -131,7 +131,9 @@
             "ADD_DOC": "Añadir documento",
             "ASIG_USER": "Asignar usuario",
             "CHANGE_STATE": "Cambiar estado",
-            "EDIT_INFO": "Editar información"
+            "EDIT_INFO": "Editar información",
+            "INCOMING_CALL": "Llamada entrante",
+            "OUTCOMING_CALL": "Llamada saliente"
         },
         "modal": {
             "cancelConfirmation": "¿Está seguro que desea salir de la ventana de tarjeta?",
