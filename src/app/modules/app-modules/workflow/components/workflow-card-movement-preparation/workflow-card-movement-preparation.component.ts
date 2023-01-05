@@ -294,7 +294,7 @@ export class WorkflowCardMovementPreparationComponent implements OnInit {
   public getMovementExtraLabel(preparation: WorkflowSubstateEventDTO): string {
     return this.translateService.instant(marker('prepareMovement.extraMovementQuestion'), {
       // eslint-disable-next-line max-len
-      destination: `<b>${preparation.workflowSubstateTargetExtra.workflowState.name} - ${preparation.workflowSubstateTargetExtra.name}</b>`
+      destination: `<b>${preparation.workflowSubstateTargetExtra?.workflowState?.name} - ${preparation.workflowSubstateTargetExtra?.name}</b>`
     });
   }
 
