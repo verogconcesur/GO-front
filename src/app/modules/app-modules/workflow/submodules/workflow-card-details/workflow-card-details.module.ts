@@ -28,6 +28,7 @@ import { ItemTextComponent } from './subcomponents/workflow-column-customizable-
 import { ItemInputComponent } from './subcomponents/workflow-column-customizable-custom/items/item-input/item-input.component';
 import { ModalCustomerModule } from '@modules/feature-modules/modal-customer/modal-customer.module';
 import { ModalVehicleModule } from '@modules/feature-modules/modal-vehicle/modal-vehicle.module';
+import { MessageClientDialogComponent } from './subcomponents/message-client-dialog/message-client-dialog.component';
 @NgModule({
   declarations: [
     WorkflowCardDetailsComponent,
@@ -46,7 +47,8 @@ import { ModalVehicleModule } from '@modules/feature-modules/modal-vehicle/modal
     MoveCardDialogComponent,
     ItemTitleComponent,
     ItemTextComponent,
-    ItemInputComponent
+    ItemInputComponent,
+    MessageClientDialogComponent
   ],
   imports: [
     CommonModule,

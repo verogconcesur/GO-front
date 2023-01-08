@@ -133,6 +133,11 @@
             "CHANGE_STATE": "Cambiar estado",
             "EDIT_INFO": "Editar información"
         },
+        "messages": {
+            "chanels": "Canales",
+            "communicationTemplate": "Plantilla de comunicación",
+            "title": "Mensaje Cliente"
+        },
         "modal": {
             "cancelConfirmation": "¿Está seguro que desea salir de la ventana de tarjeta?",
             "cardName": "Nombre de Ficha",
@@ -197,6 +202,7 @@
             "TEXT": "Texto de párrafo",
             "TITLE": "Titular"
         },
+        "customer": "Cliente",
         "data": "Datos",
         "dateEnd": "Fecha de fin",
         "dateIni": "Fecha de inicio",

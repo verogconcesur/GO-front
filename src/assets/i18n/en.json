@@ -133,6 +133,11 @@
             "CHANGE_STATE": "Change state",
             "EDIT_INFO": "Edit info"
         },
+        "messages": {
+            "chanels": "Channels",
+            "communicationTemplate": "Comunication template",
+            "title": "Message Client"
+        },
         "modal": {
             "cancelConfirmation": "Are you sure you want to exit the card window?",
             "cardName": "Card Name",
@@ -197,6 +202,7 @@
             "TEXT": "Paragraph text",
             "TITLE": "Headline"
         },
+        "customer": "Customer",
         "data": "Data",
         "dateEnd": "Final date",
         "dateIni": "Initial date",
