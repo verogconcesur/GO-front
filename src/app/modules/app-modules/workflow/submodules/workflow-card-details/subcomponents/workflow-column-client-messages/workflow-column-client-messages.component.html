@@ -1,3 +1,22 @@
-<div style="display: flex; justify-content: center; align-items: center; width: 100%; min-height: 200px">
-    <h2>Sección en construcción.</h2>
+<div class="card-messages">
+    <div class="card-messages__wrapper">
+        <div
+            class="card-messages__wrapper__message"
+            *ngFor="let message of messages"
+            [ngClass]="{ client: message.sender !== 'CUSTOMER' }"
+        >
+            <div class="fullname">
+                {{ getUserFullname(message) }}
+            </div>
+            <div class="icons" *ngIf="message.sender === 'USER'">
+                <mat-icon *ngIf="checkMessageChannel(message, 1)">person_pin</mat-icon>
+                <mat-icon *ngIf="checkMessageChannel(message, 2)">alternate_email</mat-icon>
+                <mat-icon *ngIf="checkMessageChannel(message, 3)">message</mat-icon>
+            </div>
+            <div class="date">
+                {{ message.dateComment | date : "dd/MM/yy, HH:mm" }}
+            </div>
+            <div class="message" [innerHtml]="message.comment"></div>
+        </div>
+    </div>
 </div>

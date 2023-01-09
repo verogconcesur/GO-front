@@ -151,10 +151,10 @@ export class CreateEditCommunicationComponent extends ComponentToExtendForCustom
     const variablesOnText = this.listVariables.filter((variable) => {
       let variableUsed = false;
       formValue.templateComunicationItems.forEach((item: TemplateComunicationItemsDTO) => {
-        if (item.text.indexOf(variable.name) !== -1) {
+        if (item.text && item.text.indexOf(variable.name) !== -1) {
           variableUsed = true;
         }
-        if (item.subject.indexOf(variable.name) !== -1) {
+        if (item.subject && item.subject.indexOf(variable.name) !== -1) {
           variableUsed = true;
         }
       });
@@ -234,6 +234,9 @@ export class CreateEditCommunicationComponent extends ComponentToExtendForCustom
     if (html !== form.value) {
       if (plain) {
         html = this.convertToPlain(html);
+      }
+      if (html === '' || html === ' ' || html === '<p></p>' || html === '<p><br></p>') {
+        html = null;
       }
       form.setValue(html, { emitEvent: true });
       this.communicationForm.markAsDirty();
