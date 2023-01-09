@@ -1,0 +1,240 @@
+@import 'utils/core';
+
+.canvasDropZone {
+  width: 100%;
+  height: 50px;
+  &.zone1 {
+    background-color: red;
+  }
+  &.zone2 {
+    background-color: blue;
+  }
+}
+
+.modal {
+  width: 95%;
+  height: 95vh;
+  border: 1px solid gray;
+  border-radius: 10px;
+  margin: 2.5vh 0 0 2.5%;
+  &__header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px;
+    h1 {
+      margin: 0;
+      padding: 0;
+    }
+  }
+  &__content {
+    padding: 5px;
+    height: 84%;
+    background-color: rgb(207, 207, 207);
+    .firma_canvas_wrapper {
+      margin-bottom: 5px;
+    }
+    .mat-expansion-panel-content {
+      padding-top: 0 !important;
+    }
+    .mat-expansion-panel-body {
+      padding-top: 10px !important;
+    }
+    mat-accordion {
+      width: 100%;
+      height: 97%;
+      &.fields-accordion {
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-start;
+      }
+      mat-expansion-panel {
+        padding: 0 5px;
+        max-height: 100%;
+        .firma_canvas_wrapper {
+          width: 100%;
+          display: flex;
+          justify-content: center;
+          align-items: center;
+        }
+        &.campos {
+          width: 40%;
+        }
+        &.pdf {
+          width: 60%;
+          background-color: rgb(243, 243, 243);
+          pdf-viewer {
+            height: 75vh;
+          }
+        }
+      }
+
+      @include respond-to(1225px) {
+        &.fields-accordion {
+          display: flex;
+          flex-direction: column;
+          justify-content: center;
+          align-items: center;
+        }
+        mat-expansion-panel {
+          &.campos {
+            width: 100%;
+          }
+          &.pdf {
+            width: 100%;
+            pdf-viewer {
+              height: 65vh;
+            }
+          }
+        }
+      }
+    }
+    .fields-wrapper {
+      width: 98%;
+      height: 69vh;
+      overflow-y: auto;
+      padding: 0 14px 0 0;
+      .field {
+        width: 100%;
+        margin-bottom: 15px !important;
+        &.no-panel {
+          display: flex;
+          justify-content: space-between;
+          align-items: center;
+          padding: 10px 5px 0 5px;
+          margin: 5px 0;
+          box-shadow: 0 3px 1px -2px #12121233, 0 2px 2px #12121224, 0 1px 5px #1212121f;
+        }
+      }
+      textarea {
+        width: 80%;
+      }
+    }
+  }
+  &__footer {
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    padding: 10px;
+    .save-btn {
+      width: 120px;
+    }
+  }
+
+  pdf-viewer {
+    height: 100%;
+  }
+}
+
+//TODO: DGDC QUITAR
+.ng2-pdf-viewer-container {
+  background-color: rgb(207, 207, 207);
+}
+.canvasWrapper.ui-droppable {
+  position: relative;
+}
+#itemsToDragWrapper {
+  height: 25%;
+  width: 100%;
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+}
+.itemToDrag {
+  margin: 20px;
+  height: auto;
+  width: fit-content;
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+  &.dropped {
+    margin: 0;
+    position: absolute !important;
+    z-index: 5000;
+  }
+  .resizable {
+    // width: 100%;
+    // height: 100%;
+    height: 50px;
+    width: 100px;
+    border: 2px solid rgba(3, 5, 112, 0.767);
+    border-radius: 5px;
+  }
+
+  &__texto,
+  &__firma,
+  &__dibujo {
+    margin: 2px;
+    width: calc(100% - 6px);
+    height: calc(100% - 6px);
+    background-color: rgba(25, 28, 221, 0.349);
+    border-radius: 5px;
+    display: flex;
+    justify-content: center;
+    color: white;
+    align-items: center;
+  }
+}
+
+.p5Canvas {
+  border: 1px solid rgb(119, 119, 118) !important;
+}
+.paint-zone {
+  width: 700px;
+  height: auto;
+  position: relative;
+  margin-left: 10px;
+  // border: 2px solid rgb(145, 36, 3);
+  &__controls {
+    // position: absolute;
+    // top: -50px;
+    // left: 0;
+    width: 100%;
+    height: 50px;
+    display: flex;
+    align-items: center;
+    background-color: #ddd;
+    padding: 0 5px;
+    .type,
+    .size,
+    .color {
+      margin: 0 5px;
+    }
+    .type {
+      input {
+        display: none;
+        &:checked + label {
+          background-color: #111;
+          color: #eee;
+          border-radius: 50%;
+        }
+      }
+      label {
+        width: 30px;
+        height: 30px;
+        display: inline-block;
+        text-align: center;
+        line-height: 30px;
+        margin: 0 2px;
+        cursor: pointer;
+      }
+    }
+    .size {
+      input {
+        height: 10px;
+      }
+    }
+    .color {
+      label {
+        margin-right: 5px;
+      }
+    }
+    .actions {
+      flex: 1;
+      text-align: right;
+      button {
+        margin: 0 4px;
+      }
+    }
+  }
+}
