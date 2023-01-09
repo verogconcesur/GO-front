@@ -449,7 +449,7 @@ export class CreateEditFacilityComponent extends ComponentToExtendForCustomDialo
         this.facilityToEdit && this.facilityToEdit.workflowSubstate ? this.facilityToEdit.workflowSubstate : null
       ]
     });
-    this.requiredConfigChange(this.facilityToEdit.requireConfigApiExt);
+    this.requiredConfigChange(this.facilityToEdit?.requireConfigApiExt);
     this.facilityForm.controls.country.valueChanges.subscribe((x) => {
       this.form.province.setValue(null);
       this.getProvinceListOptions();

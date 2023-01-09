@@ -132,7 +132,9 @@
             "ADD_DOC": "Add document",
             "ASIG_USER": "Assign user",
             "CHANGE_STATE": "Change state",
-            "EDIT_INFO": "Edit info"
+            "EDIT_INFO": "Edit info",
+            "INCOMING_CALL": "Incoming call",
+            "OUTCOMING_CALL": "Outcoming call"
         },
         "messages": {
             "chanels": "Channels",
