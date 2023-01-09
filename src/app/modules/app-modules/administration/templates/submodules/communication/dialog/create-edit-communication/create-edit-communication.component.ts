@@ -235,6 +235,9 @@ export class CreateEditCommunicationComponent extends ComponentToExtendForCustom
       if (plain) {
         html = this.convertToPlain(html);
       }
+      if (html === '' || html === ' ' || html === '<p></p>' || html === '<p><br></p>') {
+        html = null;
+      }
       form.setValue(html, { emitEvent: true });
       this.communicationForm.markAsDirty();
       this.communicationForm.markAsTouched();

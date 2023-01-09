@@ -315,6 +315,9 @@ export class WorkflowCardMovementPreparationComponent implements OnInit {
 
   public textEditorContentChanged(html: string, form: UntypedFormGroup) {
     if (html !== form.controls.template.value) {
+      if (html === '' || html === ' ' || html === '<p></p>' || html === '<p><br></p>') {
+        html = null;
+      }
       form.get('template').setValue(html, { emitEvent: true });
       form.get('template').markAsDirty();
       form.get('template').markAsTouched();

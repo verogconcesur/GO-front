@@ -20,6 +20,7 @@ export class CardMessagesService {
   private readonly TEMPLATE = '/template';
   private readonly CHANNELS = '/channels';
   private readonly SEND = '/send';
+  private readonly BUDGET = '/budget';
 
   constructor(@Inject(ENV) private env: Env, private http: HttpClient) {}
 
@@ -87,6 +88,21 @@ export class CardMessagesService {
           this.SEND
         }/${cardWfId}${this.CHANNELS}/${ids.join(',')}`,
         messages
+      )
+      .pipe(catchError((error) => throwError(error.error as ConcenetError)));
+  }
+
+  /**
+   * Envía el presupuesto al cliente
+   *
+   * @returns unknown
+   */
+  public sendBudgetMessageClient(cardWfId: number, tabId: number): Observable<unknown> {
+    return this.http
+      .post<unknown>(
+        // eslint-disable-next-line max-len
+        `${this.env.apiBaseUrl}${this.GET_CARD_INSTANCE_PATH}${this.GET_DETAIL_PATH}${this.GET_MESSAGES_PATH}${this.SEND}/${cardWfId}${this.BUDGET}/${tabId}`,
+        {}
       )
       .pipe(catchError((error) => throwError(error.error as ConcenetError)));
   }

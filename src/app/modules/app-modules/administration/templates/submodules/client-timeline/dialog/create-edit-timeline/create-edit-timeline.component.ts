@@ -198,6 +198,9 @@ export class CreateEditTimelineComponent extends ComponentToExtendForCustomDialo
   }
 
   public textEditorContentChanged(html: string, itemForm: UntypedFormGroup) {
+    if (html === '' || html === ' ' || html === '<p></p>' || html === '<p><br></p>') {
+      html = null;
+    }
     itemForm.get('messageLanding').setValue(html);
     itemForm.get('messageLanding').markAsDirty();
     itemForm.get('messageLanding').markAsTouched();

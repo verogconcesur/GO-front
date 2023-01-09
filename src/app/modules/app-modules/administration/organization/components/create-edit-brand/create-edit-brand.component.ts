@@ -189,6 +189,9 @@ export class CreateEditBrandComponent extends ComponentToExtendForCustomDialog i
   };
 
   public textEditorContentChanged(type: 'header' | 'footer', html: string) {
+    if (html === '' || html === ' ' || html === '<p></p>' || html === '<p><br></p>') {
+      html = null;
+    }
     if (type === 'header' && html !== this.form.header.value) {
       this.brandForm.get('header').setValue(html, { emitEvent: true });
       this.brandForm.get('header').markAsDirty();

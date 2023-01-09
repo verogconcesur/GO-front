@@ -135,7 +135,7 @@ export class MessageClientDialogComponent extends ComponentToExtendForCustomDial
               this.fb.group({
                 messageChannelId: [message.messageChannelId],
                 messageRender: [message.messageRender, [Validators.required]],
-                subjectRender: [message.subjectRender, message.subjectRender ? [Validators.required] : []]
+                subjectRender: [message.subjectRender, message.messageChannelId === 2 ? [Validators.required] : []]
               })
             );
           });
@@ -216,6 +216,9 @@ export class MessageClientDialogComponent extends ComponentToExtendForCustomDial
     if (html !== form.value) {
       if (plain) {
         html = this.convertToPlain(html);
+      }
+      if (html === '' || html === ' ' || html === '<p></p>' || html === '<p><br></p>') {
+        html = null;
       }
       form.setValue(html, { emitEvent: true });
     }
