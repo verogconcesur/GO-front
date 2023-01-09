@@ -69,7 +69,8 @@ export class CardInstanceBudgetsComponent implements OnInit {
   }
   public enableSendButton(): boolean {
     return (
-      this.formBudgets.getRawValue().find((budget) => budget.accepted) &&
+      this.formBudgets.getRawValue() &&
+      this.formBudgets.getRawValue().length &&
       !this.formBudgets.getRawValue().find((budget) => budget.editMode)
     );
   }
