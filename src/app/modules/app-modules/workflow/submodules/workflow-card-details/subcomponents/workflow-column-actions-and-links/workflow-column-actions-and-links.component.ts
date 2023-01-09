@@ -9,10 +9,15 @@ import CardInstanceDTO from '@data/models/cards/card-instance-dto';
 import WorkflowCardTabItemDTO from '@data/models/workflows/workflow-card-tab-item-dto';
 import WorkflowMoveDTO from '@data/models/workflows/workflow-move-dto';
 import { CardService } from '@data/services/cards.service';
+import { CustomDialogService } from '@jenga/custom-dialog';
 import { WorkflowPrepareAndMoveService } from '@modules/app-modules/workflow/aux-service/workflow-prepare-and-move-aux.service';
 import { TranslateService } from '@ngx-translate/core';
 import { GlobalMessageService } from '@shared/services/global-message.service';
 import { take } from 'rxjs/operators';
+import {
+  MessageClientDialogComponent,
+  MessageClientDialogComponentModalEnum
+} from '../message-client-dialog/message-client-dialog.component';
 import { MoveCardDialogComponent } from '../move-card-dialog/move-card-dialog.component';
 
 @Component({
@@ -41,7 +46,8 @@ export class WorkflowColumnActionsAndLinksComponent implements OnInit {
     private globalMessageService: GlobalMessageService,
     private translateService: TranslateService,
     private dialog: MatDialog,
-    private prepareAndMoveService: WorkflowPrepareAndMoveService
+    private prepareAndMoveService: WorkflowPrepareAndMoveService,
+    private customDialogService: CustomDialogService
   ) {}
 
   ngOnInit(): void {
@@ -100,7 +106,21 @@ export class WorkflowColumnActionsAndLinksComponent implements OnInit {
           console.log('SIGN_DOC');
           break;
         case 'MESSAGE_CLIENT':
-          console.log('MESSAGE_CLIENT');
+          this.customDialogService
+            .open({
+              component: MessageClientDialogComponent,
+              extendedComponentData: this.cardInstance,
+              id: MessageClientDialogComponentModalEnum.ID,
+              panelClass: MessageClientDialogComponentModalEnum.PANEL_CLASS,
+              disableClose: true,
+              width: '700px'
+            })
+            .pipe(take(1))
+            .subscribe((response) => {
+              if (response) {
+                this.prepareAndMoveService.reloadData$.next('MOVES_IN_OTHER_WORKFLOWS');
+              }
+            });
           break;
       }
     }

@@ -60,6 +60,7 @@
             ></app-workflow-column-comments>
             <app-workflow-column-client-messages
                 [style]="{ display: showColumn('CLIENT_MESSAGES') ? '' : 'none' }"
+                (setShowLoading)="setShowLoading($event)"
             ></app-workflow-column-client-messages>
         </div>
         <!-- Columna acciones -->

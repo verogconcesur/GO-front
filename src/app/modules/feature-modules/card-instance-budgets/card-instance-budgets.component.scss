@@ -1,8 +1,11 @@
 @import 'utils/core';
 @import 'utils/theme';
 .budgets {
+  height: 100%;
   &__main {
     padding: 15px;
+    height: calc(100% - 110px);
+    overflow-y: auto;
     &__header {
       &__item {
         font-weight: 600;
@@ -28,5 +31,9 @@
         cursor: pointer;
       }
     }
+  }
+  &__button {
+    padding: 25px;
+    height: 80px;
   }
 }

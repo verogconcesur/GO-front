@@ -266,6 +266,9 @@ export class CreateEditFacilityComponent extends ComponentToExtendForCustomDialo
   };
 
   public textEditorContentChanged(type: 'header' | 'footer', html: string) {
+    if (html === '' || html === ' ' || html === '<p></p>' || html === '<p><br></p>') {
+      html = null;
+    }
     if (type === 'header' && html !== this.form.header.value) {
       this.facilityForm.get('header').setValue(html, { emitEvent: true });
       this.facilityForm.get('header').markAsDirty();
