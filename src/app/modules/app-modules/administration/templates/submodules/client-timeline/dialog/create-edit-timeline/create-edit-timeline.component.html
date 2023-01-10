@@ -88,8 +88,8 @@
                                     <div class="timeline-item__message" *ngIf="showingLandingMessageEditor === i">
                                         <app-text-editor-wrapper
                                             *ngIf="textEditorToolbarOptions.macroListOptions.length"
-                                            id="textEditor"
-                                            textEditorId="textEditor"
+                                            id="{{ 'textEditor' + i }}"
+                                            textEditorId="{{ 'textEditor' + i }}"
                                             [initialValue]="itemForm.get('messageLanding').value"
                                             [textEditorConfig]="textEditorToolbarOptions"
                                             [placeholder]="labels.insertText | translate"
