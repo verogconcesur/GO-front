@@ -194,6 +194,9 @@ export class CreateEditDepartmentComponent extends ComponentToExtendForCustomDia
   };
 
   public textEditorContentChanged(type: 'header' | 'footer', html: string) {
+    if (html === '' || html === ' ' || html === '<p></p>' || html === '<p><br></p>') {
+      html = null;
+    }
     if (type === 'header' && html !== this.form.header.value) {
       this.departmentForm.get('header').setValue(html, { emitEvent: true });
       this.departmentForm.get('header').markAsDirty();

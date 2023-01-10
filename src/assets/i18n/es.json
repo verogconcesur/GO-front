@@ -82,7 +82,8 @@
         "budgets": {
             "addLines": "Añadir lineas de presupuesto",
             "deleteConfirmation": "¿Está seguro que desea eliminar esta linea de presupuesto?",
-            "saveConfirmation": "¿Está seguro que desea guardar esta linea de presupuesto?"
+            "saveConfirmation": "¿Está seguro que desea guardar esta linea de presupuesto?",
+            "sendConfirmation": "¿Está seguro que desea enviar el presupuesto al cliente?"
         }
     },
     "cards": {
@@ -134,6 +135,11 @@
             "EDIT_INFO": "Editar información",
             "INCOMING_CALL": "Llamada entrante",
             "OUTCOMING_CALL": "Llamada saliente"
+        },
+        "messages": {
+            "chanels": "Canales",
+            "communicationTemplate": "Plantilla de comunicación",
+            "title": "Mensaje Cliente"
         },
         "modal": {
             "cancelConfirmation": "¿Está seguro que desea salir de la ventana de tarjeta?",
@@ -199,6 +205,7 @@
             "TEXT": "Texto de párrafo",
             "TITLE": "Titular"
         },
+        "customer": "Cliente",
         "data": "Datos",
         "dateEnd": "Fecha de fin",
         "dateIni": "Fecha de inicio",

@@ -45,7 +45,7 @@ export class TextEditorWrapperComponent implements OnInit, AfterViewInit {
       if (this.textEditorConfig && this.textEditorConfig.addHtmlModificationOption && !this.textEditorConfig.onlyMacroOption) {
         misc.push('codeview');
       }
-      if (this.textEditorConfig && (this.textEditorConfig.addMacroListOption || this.textEditorConfig.onlyMacroOption)) {
+      if (this.textEditorConfig && this.textEditorConfig.addMacroListOption) {
         misc.push(['macroList']);
         extra = {
           ...extra,
