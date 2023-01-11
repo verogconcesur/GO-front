@@ -224,7 +224,7 @@ export class CreateEditTimelineComponent extends ComponentToExtendForCustomDialo
       id: [null],
       orderNumber: [this.templateTimelineItems.length],
       closed: [false],
-      messageLanding: ['']
+      messageLanding: ['', [Validators.required]]
     });
     this.templateTimelineItems.push(timelineItem);
   }
@@ -466,7 +466,7 @@ export class CreateEditTimelineComponent extends ComponentToExtendForCustomDialo
             id: [item.id],
             orderNumber: [item.orderNumber],
             closed: [item.closed],
-            messageLanding: [item.messageLanding]
+            messageLanding: [item.messageLanding, [Validators.required]]
           });
           timelineItems.push(timelineItem);
         });

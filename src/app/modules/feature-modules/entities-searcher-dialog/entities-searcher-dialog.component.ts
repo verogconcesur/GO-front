@@ -176,24 +176,30 @@ export class EntitiesSearcherDialogComponent implements OnInit {
       case 'CUSTOMER':
         const customer = entity as CustomerEntityDTO;
         let textOptionCustomer = customer.fullName;
-        if (customer.email.toLowerCase().trim().includes(this.searchForm.get('search').value.toLowerCase().trim())) {
+        if (
+          customer.email &&
+          customer.email.toLowerCase().trim().includes(this.searchForm.get('search').value.toLowerCase().trim())
+        ) {
           textOptionCustomer = textOptionCustomer + '/' + customer.email;
         }
-        if (customer.phone.toLowerCase().trim().includes(this.searchForm.get('search').value.toLowerCase().trim())) {
+        if (
+          customer.phone &&
+          customer.phone.toLowerCase().trim().includes(this.searchForm.get('search').value.toLowerCase().trim())
+        ) {
           textOptionCustomer = textOptionCustomer + '/' + customer.phone;
         }
         return textOptionCustomer;
       case 'VEHICLE':
         const vehicle = entity as VehicleEntityDTO;
         let textOptionVehicle = vehicle.licensePlate;
-        if (vehicle.vin.toLowerCase().trim().includes(this.searchForm.get('search').value.toLowerCase().trim())) {
+        if (vehicle.vin && vehicle.vin.toLowerCase().trim().includes(this.searchForm.get('search').value.toLowerCase().trim())) {
           textOptionVehicle = textOptionVehicle + '/' + vehicle.vin;
         }
         return textOptionVehicle;
       case 'USER':
         const user = entity as UserEntityDTO;
         let textOptionUser = user.fullName;
-        if (user.email.toLowerCase().trim().includes(this.searchForm.get('search').value.toLowerCase().trim())) {
+        if (user.email && user.email.toLowerCase().trim().includes(this.searchForm.get('search').value.toLowerCase().trim())) {
           textOptionUser = textOptionUser + '/' + user.email;
         }
         return textOptionUser;
