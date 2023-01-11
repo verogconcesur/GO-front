@@ -1,4 +1,5 @@
 {
+    ", ": "",
     "administration": {
         "brands": "Marcas",
         "cards": "Tarjetas",
@@ -32,17 +33,20 @@
             },
             "checklists": {
                 "check": "Check",
-                "config": "Configuración de checklist",
+                "config": "Configuración del checklist",
                 "create": "Crear checklist",
                 "deleteConfirmation": "¿Realmente quieres eliminar esta plantilla?",
-                "freeDraw": "",
-                "image": "",
-                "itemsInTemplate": "",
-                "new": "",
-                "sign": "",
-                "text": "",
+                "dropHere": "Suelta el archivo PDF de la plantilla aquí.",
+                "freeDraw": "Dibujo libre",
+                "image": "Imagen",
+                "includeFile": "Incluir PDF en la plantilla",
+                "itemsInTemplate": "Elementos en la plantilla",
+                "name": "Nombre del checklist",
+                "new": "Nuevo checklist",
+                "sign": "Firma",
+                "text": "Texto",
                 "title": "Checklists",
-                "var": ""
+                "var": "Variable"
             },
             "clientTimeline": {
                 "add": "Nueva plantilla de timeline de cliente",
@@ -346,6 +350,7 @@
         "dateFormat": "La fecha debe tener este formato: {format}",
         "emailPattern": "El texto introducido debe ser un email.",
         "extensionChanged": "La extensión del archivo ha cambiado.",
+        "fileFormat": "El archivo debe ser de tipo: {format}",
         "fileNameCharacters": "Hay caracteres inválidos",
         "fileNameExtension": "El nombre debe contener un punto y una extensión",
         "ifContinueLosingChanges": "Si continua perderá los cambios realizados",
@@ -354,7 +359,8 @@
         "noDataToShow": "No hay información disponible",
         "required": "Este campo es obligatorio.",
         "saveTabBeforeChange": "Debe guardar la información de la pestaña actual antes de poder abrir otra.",
-        "unknown": "Error desconocido"
+        "unknown": "Error desconocido",
+        "uploadOnlyOneFile": "Solo está permitido cargar un único archivo"
     },
     "login": {
         "description": "Por favor, introduzca sus credenciales",

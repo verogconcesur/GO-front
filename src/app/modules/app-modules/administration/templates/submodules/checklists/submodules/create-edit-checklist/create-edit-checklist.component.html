@@ -1,88 +1,145 @@
 <div class="checklist-config">
     <div class="checklist-config__column checklist-config__config">
         <h1>{{ getTitle() }}</h1>
-        <mat-accordion [multi]="true">
-            <mat-expansion-panel [expanded]="true">
-                <mat-expansion-panel-header>
-                    <mat-panel-title> {{ labels.cheklistConfig | translate }}</mat-panel-title>
-                </mat-expansion-panel-header>
-                <p>This is the primary content of the panel.</p>
-            </mat-expansion-panel>
-            <mat-expansion-panel [expanded]="true">
-                <mat-expansion-panel-header>
-                    <mat-panel-title> {{ labels.itemsInTemplate | translate }} </mat-panel-title>
-                </mat-expansion-panel-header>
-                <mat-accordion [multi]="true" [displayMode]="'flat'">
-                    <mat-expansion-panel>
-                        <mat-expansion-panel-header>
-                            <mat-panel-title> 1 Firma</mat-panel-title>
-                            <mat-panel-description>Firma cliente - Página 1,3,6 </mat-panel-description>
-                        </mat-expansion-panel-header>
-                        <p>Configuración del elemento</p>
-                    </mat-expansion-panel>
-                    <mat-expansion-panel>
-                        <mat-expansion-panel-header>
-                            <mat-panel-title> 2 Dibujo libre</mat-panel-title>
-                            <mat-panel-description>Dibujo sobre carrocería - Página 8 </mat-panel-description>
-                        </mat-expansion-panel-header>
-                        <p>Configuración del elemento</p>
-                    </mat-expansion-panel>
-                </mat-accordion>
-            </mat-expansion-panel>
-        </mat-accordion>
+        <div class="checklist-config__config__accordion">
+            <mat-accordion [multi]="true">
+                <mat-expansion-panel [expanded]="true">
+                    <mat-expansion-panel-header>
+                        <mat-panel-title> {{ labels.cheklistConfig | translate }}</mat-panel-title>
+                    </mat-expansion-panel-header>
+                    <form [formGroup]="checklistForm" class="checklist-config__form smaller-mat-form-fields">
+                        <!-- General Data -->
+                        <div class="template-data__section">
+                            <!-- <div class="template-data__section__title first-child">
+                            {{ labels.data | translate }}
+                        </div> -->
+                            <div class="template-data__section__group grid-group" formGroupName="template">
+                                <!-- Name -->
+                                <mat-form-field appearance="outline" floatLabel="always" class="first-item">
+                                    <mat-label>{{ labels.name | translate }}</mat-label>
+                                    <input matInput formControlName="name" />
+                                    <mat-error
+                                        class="template-data__error"
+                                        *ngIf="
+                                            checklistForm.get('template.name').invalid &&
+                                            checklistForm.get('template.name').touched
+                                        "
+                                    >
+                                        {{ labels.nameRequired | translate }}
+                                    </mat-error>
+                                </mat-form-field>
+                                <app-organization-levels-nested-combos
+                                    #OrganizationLevelsNestedCombos
+                                    [form]="checklistForm.get('template')"
+                                ></app-organization-levels-nested-combos>
+                            </div>
+                            <div class="template-data__section__group">
+                                <!-- Include pdf in template -->
+                                <section>
+                                    <mat-checkbox formControlName="includeFile">{{
+                                        labels.includeFile | translate
+                                    }}</mat-checkbox>
+                                </section>
+                            </div>
+                        </div>
+                    </form>
+                </mat-expansion-panel>
+                <mat-expansion-panel [expanded]="true">
+                    <mat-expansion-panel-header>
+                        <mat-panel-title> {{ labels.itemsInTemplate | translate }} </mat-panel-title>
+                    </mat-expansion-panel-header>
+                    <mat-accordion [multi]="true" [displayMode]="'flat'">
+                        <mat-expansion-panel>
+                            <mat-expansion-panel-header>
+                                <mat-panel-title> 1 Firma </mat-panel-title>
+                                <mat-panel-description>Firma cliente - Página 1,3,6 </mat-panel-description>
+                            </mat-expansion-panel-header>
+
+                            Configuración del elemento
+                        </mat-expansion-panel>
+                        <mat-expansion-panel>
+                            <mat-expansion-panel-header>
+                                <mat-panel-title> 2 Dibujo libre</mat-panel-title>
+                                <mat-panel-description>Dibujo sobre carrocería - Página 8 </mat-panel-description>
+                            </mat-expansion-panel-header>
+                            Configuración del elemento
+                        </mat-expansion-panel>
+                    </mat-accordion>
+                </mat-expansion-panel>
+            </mat-accordion>
+        </div>
     </div>
     <div class="checklist-config__column checklist-config__pdf">
-        <ngx-extended-pdf-viewer
-            id="checklistPDF"
-            [src]="'/assets/pdfs/contratos.pdf'"
-            height="80vh"
-            [handTool]="false"
-            [useBrowserLocale]="true"
-            [zoom]="'page-fit'"
-            [zoomLevels]="['page-fit']"
-            [textLayer]="true"
-            [showZoomButtons]="false"
-            [showHandToolButton]="false"
-            [showPresentationModeButton]="false"
-            [showRotateButton]="false"
-            [showFindButton]="false"
-            [showPrintButton]="false"
-            [showSpreadButton]="false"
-            [showDownloadButton]="false"
-            [showOpenFileButton]="true"
-            [(page)]="page"
-            (pdfLoaded)="pdfLoadedFn($event)"
-            (textLayerRendered)="configCanvas($event)"
-        >
-        </ngx-extended-pdf-viewer>
+        <ng-container *ngIf="fileTemplateBase64 | async as base64; else dropZone">
+            <ngx-extended-pdf-viewer
+                id="checklistPDF"
+                [base64Src]="base64"
+                height="80vh"
+                [handTool]="false"
+                [useBrowserLocale]="true"
+                [zoom]="'page-fit'"
+                [zoomLevels]="['page-fit']"
+                [textLayer]="true"
+                [showZoomButtons]="false"
+                [showHandToolButton]="false"
+                [showPresentationModeButton]="false"
+                [showRotateButton]="false"
+                [showFindButton]="false"
+                [showPrintButton]="false"
+                [showSpreadButton]="false"
+                [showDownloadButton]="false"
+                [showOpenFileButton]="false"
+                [(page)]="page"
+                (pdfLoaded)="pdfLoadedFn($event)"
+                (zoomChange)="pdfZoomChange($event)"
+                (textLayerRendered)="configCanvas($event)"
+            >
+            </ngx-extended-pdf-viewer>
+        </ng-container>
+        <ng-template #dropZone>
+            <div class="checklist-config__pdf__drop-zone" appDropZone (fileDropped)="fileDropped($event)">
+                <button mat-icon-button color="primary" class="add-pdf-template-btn" (click)="fileDropRef.click()">
+                    <mat-icon>add</mat-icon>
+                </button>
+                {{ labels.dropHere | translate }}
+            </div>
+        </ng-template>
+        <input
+            type="file"
+            style="display: none"
+            #fileDropRef
+            id="fileDropRef"
+            (change)="fileBrowseHandler($event.target.files)"
+        />
     </div>
+
     <div class="checklist-config__column checklist-config__items">
-        <div class="checklistItemToDrag">
+        <div class="checklistItemToDrag undropped">
             <div class="resizable">
                 <div class="checklistItemToDrag__text">{{ labels.text | translate }}</div>
             </div>
         </div>
-        <div class="checklistItemToDrag">
+        <div class="checklistItemToDrag undropped">
             <div class="resizable">
                 <div class="checklistItemToDrag__sign">{{ labels.sign | translate }}</div>
             </div>
         </div>
-        <div class="checklistItemToDrag">
+        <div class="checklistItemToDrag undropped">
             <div class="resizable">
                 <div class="checklistItemToDrag__draw">{{ labels.freeDraw | translate }}</div>
             </div>
         </div>
-        <div class="checklistItemToDrag">
+        <div class="checklistItemToDrag undropped">
             <div class="resizable">
                 <div class="checklistItemToDrag__check">{{ labels.check | translate }}</div>
             </div>
         </div>
-        <div class="checklistItemToDrag">
+        <div class="checklistItemToDrag undropped">
             <div class="resizable">
                 <div class="checklistItemToDrag__var">{{ labels.var | translate }}</div>
             </div>
         </div>
-        <div class="checklistItemToDrag">
+        <div class="checklistItemToDrag undropped">
             <div class="resizable">
                 <div class="checklistItemToDrag__image">{{ labels.image | translate }}</div>
             </div>
