@@ -48,10 +48,8 @@
   }
 
   // Content
-  .mat-expanded {
-    .mat-expansion-panel-content {
-      padding-top: 16px;
-    }
+  .mat-expanded > .mat-expansion-panel-content {
+    padding-top: 16px;
   }
 
   mat-expansion-panel.no-padding {

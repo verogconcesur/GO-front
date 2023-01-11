@@ -1,5 +1,4 @@
 {
-    ", ": "",
     "administration": {
         "brands": "Marcas",
         "cards": "Tarjetas",
@@ -32,8 +31,18 @@
                 "title": "Presupuestos"
             },
             "checklists": {
+                "check": "Check",
+                "config": "Configuración de checklist",
                 "create": "Crear checklist",
-                "title": "Checklists"
+                "deleteConfirmation": "¿Realmente quieres eliminar esta plantilla?",
+                "freeDraw": "",
+                "image": "",
+                "itemsInTemplate": "",
+                "new": "",
+                "sign": "",
+                "text": "",
+                "title": "Checklists",
+                "var": ""
             },
             "clientTimeline": {
                 "add": "Nueva plantilla de timeline de cliente",

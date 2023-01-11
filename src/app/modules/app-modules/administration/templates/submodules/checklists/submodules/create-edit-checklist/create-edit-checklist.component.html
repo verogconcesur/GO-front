@@ -1,233 +1,91 @@
-<!-- <ngx-extended-pdf-viewer
-    id="pruebaPDF"
-    [src]="'/assets/pdfs/Bootstrap-vs-Material-Design-vs-Prime-vs-Tailwind.pdf'"
-    height="75%"
-    [handTool]="false"
-    [useBrowserLocale]="true"
-    [useBrowserLocale]="true"
-    [showZoomButtons]="false"
-    [zoom]="'page-fit'"
-    [zoomLevels]="['page-fit']"
-    [textLayer]="true"
-    [showHandToolButton]="true"
-    [showPresentationModeButton]="true"
-    [(page)]="page"
-    [(pageLabel)]="pageLabel"
-    (pdfLoaded)="pdfLoadedFn($event)"
-    (textLayerRendered)="textLayerRenderedFn($event)"
->
-</ngx-extended-pdf-viewer> -->
-<div class="modal">
-    <div class="modal__header">
-        <h1>Nombre documento</h1>
-        <div class="paint-zone">
-            <div class="paint-zone__controls">
-                <div class="type">
-                    <input type="radio" name="pen-type" id="pen-pencil" class="pen-pencil" checked />
-                    <label for="pen-pencil" (click)="pencilType = 'pencil'">
-                        <mat-icon>edit</mat-icon>
-                    </label>
-                    <input type="radio" name="pen-type" id="pen-brush" class="pen-brush" />
-                    <label for="pen-brush" (click)="pencilType = 'brush'">
-                        <mat-icon>brush</mat-icon>
-                    </label>
-                </div>
-                <div class="size">
-                    <label for="pen-siez">Size</label>
-                    <input type="range" id="pen-size" class="pen-size" min="1" max="50" value="5" />
-                </div>
-                <div class="color">
-                    <label for="pen-color">Color</label>
-                    <input type="color" id="pen-color" class="pen-color" value="#000" />
-                </div>
-                <div class="actions">
-                    <button mat-raised-button class="reset-canvas" *ngIf="!eraserActive" (click)="eraser()">Borrar</button>
-                    <button mat-raised-button class="reset-canvas" *ngIf="eraserActive" (click)="eraser()">Escribir</button>
-                </div>
-            </div>
-            <div id="paint-zone__canvas-wrapper" class="paint-zone__canvas-wrapper"></div>
-        </div>
-        <button mat-stroked-button>
-            <mat-icon>close</mat-icon>
-        </button>
-    </div>
-    <mat-divider></mat-divider>
-    <div class="modal__content">
-        <mat-accordion class="fields-accordion" [hideToggle]="!smallModal" [multi]="!smallModal" [displayMode]="'flat'">
-            <mat-expansion-panel #camposPanel class="campos" [expanded]="true" [disabled]="!smallModal">
+<div class="checklist-config">
+    <div class="checklist-config__column checklist-config__config">
+        <h1>{{ getTitle() }}</h1>
+        <mat-accordion [multi]="true">
+            <mat-expansion-panel [expanded]="true">
                 <mat-expansion-panel-header>
-                    <mat-panel-title> Campos </mat-panel-title>
+                    <mat-panel-title> {{ labels.cheklistConfig | translate }}</mat-panel-title>
                 </mat-expansion-panel-header>
-                <div class="fields-wrapper">
-                    <mat-accordion [multi]="true" [displayMode]="'flat'">
-                        <!-- Firma cliente -->
-                        <mat-expansion-panel class="field">
-                            <mat-expansion-panel-header>
-                                <mat-panel-title> Firma cliente </mat-panel-title>
-                            </mat-expansion-panel-header>
-                            <div id="firma_canvas_wrapper" class="firma_canvas_wrapper"></div>
-                            <div
-                                style="width: 100%; display: flex; justify-content: space-between; align-items: center"
-                                class="smaller-mat-form-fields"
-                            >
-                                <button mat-raised-button color="primary" class="save-canvas" (click)="insertSign()">
-                                    Insetar firma
-                                </button>
-                                <mat-form-field appearance="outline">
-                                    <mat-label>Mostrar en página</mat-label>
-                                    <mat-select [ngModel]="page" (selectionChange)="changePage($event.value); pdfPanel.open()">
-                                        <mat-option *ngFor="let p of [1, 2, 3]" [value]="p">
-                                            {{ p }}
-                                        </mat-option>
-                                    </mat-select>
-                                </mat-form-field>
-                            </div>
-                        </mat-expansion-panel>
-                        <!-- Nombre cliente -->
-                        <div class="field no-panel smaller-mat-form-fields">
-                            <mat-form-field appearance="outline">
-                                <mat-label>Nombre cliente</mat-label>
-                                <input matInput type="text" [(ngModel)]="nombreCliente" />
-                            </mat-form-field>
-                            <mat-form-field appearance="outline">
-                                <mat-label>Mostrar en página</mat-label>
-                                <mat-select [ngModel]="page" (selectionChange)="changePage($event.value); pdfPanel.open()">
-                                    <mat-option *ngFor="let p of [1]" [value]="p">
-                                        {{ p }}
-                                    </mat-option>
-                                </mat-select>
-                            </mat-form-field>
-                        </div>
-                        <!-- Bilateral -->
-                        <div class="field no-panel smaller-mat-form-fields">
-                            <mat-checkbox [(ngModel)]="bilateral"> Es bilateral </mat-checkbox>
-                            <mat-form-field appearance="outline">
-                                <mat-label>Mostrar en página</mat-label>
-                                <mat-select [ngModel]="page" (selectionChange)="changePage($event.value); pdfPanel.open()">
-                                    <mat-option *ngFor="let p of [1, 4]" [value]="p">
-                                        {{ p }}
-                                    </mat-option>
-                                </mat-select>
-                            </mat-form-field>
-                        </div>
-                        <!-- Vivos -->
-                        <div class="field no-panel smaller-mat-form-fields">
-                            <mat-checkbox [(ngModel)]="vivos">
-                                Es entre vivos, por no depender del fallecimiento de aquéllos de cuya voluntad
-                                emanan.</mat-checkbox
-                            >
-                            <mat-form-field appearance="outline">
-                                <mat-label>Mostrar en página</mat-label>
-                                <mat-select [ngModel]="page" (selectionChange)="changePage($event.value); pdfPanel.open()">
-                                    <mat-option *ngFor="let p of [1, 4]" [value]="p">
-                                        {{ p }}
-                                    </mat-option>
-                                </mat-select>
-                            </mat-form-field>
-                        </div>
-                        <!-- Patrimonial -->
-                        <div class="field no-panel smaller-mat-form-fields">
-                            <mat-checkbox [(ngModel)]="patrimonial"> Es patrimonial </mat-checkbox>
-                            <mat-form-field appearance="outline">
-                                <mat-label>Mostrar en página</mat-label>
-                                <mat-select [ngModel]="page" (selectionChange)="changePage($event.value); pdfPanel.open()">
-                                    <mat-option *ngFor="let p of [1, 4]" [value]="p">
-                                        {{ p }}
-                                    </mat-option>
-                                </mat-select>
-                            </mat-form-field>
-                        </div>
-                        <!-- Dibujo -->
-                        <div class="field no-panel smaller-mat-form-fields">
-                            Dibujo libre
-                            <button
-                                mat-raised-button
-                                color="primary"
-                                class="save-canvas"
-                                (click)="changePage(7); pdfPanel.open()"
-                            >
-                                Mostrar en página 7
-                            </button>
-                        </div>
-                        <!-- Observaciones -->
-                        <mat-expansion-panel class="field" [expanded]="false">
-                            <mat-expansion-panel-header>
-                                <mat-panel-title> Observaciones </mat-panel-title>
-                            </mat-expansion-panel-header>
-                            <div
-                                style="width: 100%; display: flex; justify-content: space-between; align-items: center"
-                                class="smaller-mat-form-fields"
-                            >
-                                <textarea [(ngModel)]="texto"></textarea>
-                                <mat-form-field appearance="outline">
-                                    <mat-label>Mostrar en página</mat-label>
-                                    <mat-select [ngModel]="page" (selectionChange)="changePage($event.value); pdfPanel.open()">
-                                        <mat-option *ngFor="let p of [10]" [value]="p">
-                                            {{ p }}
-                                        </mat-option>
-                                    </mat-select>
-                                </mat-form-field>
-                            </div>
-                        </mat-expansion-panel>
-                    </mat-accordion>
-                </div>
+                <p>This is the primary content of the panel.</p>
             </mat-expansion-panel>
-            <mat-expansion-panel #pdfPanel class="pdf" [expanded]="!smallModal ? true : false" [disabled]="!smallModal">
-                <mat-expansion-panel-header [ngClass]="{ hidden: !smallModal }">
-                    <mat-panel-title> Vista preliminar pdf </mat-panel-title>
+            <mat-expansion-panel [expanded]="true">
+                <mat-expansion-panel-header>
+                    <mat-panel-title> {{ labels.itemsInTemplate | translate }} </mat-panel-title>
                 </mat-expansion-panel-header>
-                <!-- <pdf-viewer
-                    id="pruebaPDF"
-                    [src]="'/assets/pdfs/contratos.pdf'"
-                    [render-text]="true"
-                    [original-size]="false"
-                    [fit-to-page]="true"
-                    (after-load-complete)="pdfLoadedFn($event)"
-                    (page-rendered)="configCanvas($event)"
-                ></pdf-viewer> -->
-                <ngx-extended-pdf-viewer
-                    id="pruebaPDF"
-                    [src]="'/assets/pdfs/contratos.pdf'"
-                    height="80vh"
-                    [handTool]="false"
-                    [useBrowserLocale]="true"
-                    [useBrowserLocale]="true"
-                    [showZoomButtons]="false"
-                    [zoom]="'page-fit'"
-                    [zoomLevels]="['page-fit']"
-                    [textLayer]="true"
-                    [showHandToolButton]="true"
-                    [showPresentationModeButton]="true"
-                    [(page)]="page"
-                    (pdfLoaded)="pdfLoadedFn($event)"
-                    (textLayerRendered)="configCanvas($event)"
-                    [(formData)]="formData"
-                >
-                </ngx-extended-pdf-viewer>
+                <mat-accordion [multi]="true" [displayMode]="'flat'">
+                    <mat-expansion-panel>
+                        <mat-expansion-panel-header>
+                            <mat-panel-title> 1 Firma</mat-panel-title>
+                            <mat-panel-description>Firma cliente - Página 1,3,6 </mat-panel-description>
+                        </mat-expansion-panel-header>
+                        <p>Configuración del elemento</p>
+                    </mat-expansion-panel>
+                    <mat-expansion-panel>
+                        <mat-expansion-panel-header>
+                            <mat-panel-title> 2 Dibujo libre</mat-panel-title>
+                            <mat-panel-description>Dibujo sobre carrocería - Página 8 </mat-panel-description>
+                        </mat-expansion-panel-header>
+                        <p>Configuración del elemento</p>
+                    </mat-expansion-panel>
+                </mat-accordion>
             </mat-expansion-panel>
         </mat-accordion>
     </div>
-    <mat-divider></mat-divider>
-    <div class="modal__footer">
-        <button mat-flat-button color="primary" class="save-btn">Guardar</button>
+    <div class="checklist-config__column checklist-config__pdf">
+        <ngx-extended-pdf-viewer
+            id="checklistPDF"
+            [src]="'/assets/pdfs/contratos.pdf'"
+            height="80vh"
+            [handTool]="false"
+            [useBrowserLocale]="true"
+            [zoom]="'page-fit'"
+            [zoomLevels]="['page-fit']"
+            [textLayer]="true"
+            [showZoomButtons]="false"
+            [showHandToolButton]="false"
+            [showPresentationModeButton]="false"
+            [showRotateButton]="false"
+            [showFindButton]="false"
+            [showPrintButton]="false"
+            [showSpreadButton]="false"
+            [showDownloadButton]="false"
+            [showOpenFileButton]="true"
+            [(page)]="page"
+            (pdfLoaded)="pdfLoadedFn($event)"
+            (textLayerRendered)="configCanvas($event)"
+        >
+        </ngx-extended-pdf-viewer>
     </div>
-</div>
-<div id="itemsToDragWrapper">
-    <!-- <div class="itemToDrag itemToDrag_texto" cdkDrag 
-    (cdkDragDropped)="changePosition($event,field)">Texto</div> -->
-
-    <div class="itemToDrag">
-        <div class="resizable"><div class="itemToDrag__texto">Texto</div></div>
+    <div class="checklist-config__column checklist-config__items">
+        <div class="checklistItemToDrag">
+            <div class="resizable">
+                <div class="checklistItemToDrag__text">{{ labels.text | translate }}</div>
+            </div>
+        </div>
+        <div class="checklistItemToDrag">
+            <div class="resizable">
+                <div class="checklistItemToDrag__sign">{{ labels.sign | translate }}</div>
+            </div>
+        </div>
+        <div class="checklistItemToDrag">
+            <div class="resizable">
+                <div class="checklistItemToDrag__draw">{{ labels.freeDraw | translate }}</div>
+            </div>
+        </div>
+        <div class="checklistItemToDrag">
+            <div class="resizable">
+                <div class="checklistItemToDrag__check">{{ labels.check | translate }}</div>
+            </div>
+        </div>
+        <div class="checklistItemToDrag">
+            <div class="resizable">
+                <div class="checklistItemToDrag__var">{{ labels.var | translate }}</div>
+            </div>
+        </div>
+        <div class="checklistItemToDrag">
+            <div class="resizable">
+                <div class="checklistItemToDrag__image">{{ labels.image | translate }}</div>
+            </div>
+        </div>
     </div>
-    <div class="itemToDrag">
-        <div class="resizable"><div class="itemToDrag__firma" data-extra="{dato1: 'dato1', dato2: 'dato2'}">Firma</div></div>
-    </div>
-    <div class="itemToDrag">
-        <div class="resizable"><div class="itemToDrag__dibujo">Dibujo libre</div></div>
-    </div>
-
-    <!-- [dndDraggable]="draggable.data" [dndEffectAllowed]="draggable.effectAllowed" [dndDisableIf]="draggable.disable"
-    (dndStart)="onDragStart($event)" (dndCopied)="onDraggableCopied($event)" (dndLinked)="onDraggableLinked($event)"
-    (dndMoved)="onDraggableMoved($event)" (dndCanceled)="onDragCanceled($event)" (dndEnd)="onDragEnd($event)" -->
-    <button mat-raised-button color="primary" (click)="save()">Save</button>
 </div>
