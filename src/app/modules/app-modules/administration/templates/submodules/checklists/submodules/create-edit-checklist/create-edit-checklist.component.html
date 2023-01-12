@@ -114,34 +114,47 @@
     </div>
 
     <div class="checklist-config__column checklist-config__items">
-        <div class="checklistItemToDrag undropped">
-            <div class="resizable">
-                <div class="checklistItemToDrag__text">{{ labels.text | translate }}</div>
+        <!-- 'SIGN' | 'TEXT' | 'VARIABLE' | 'CHECK' | 'DRAWING' | 'IMAGE'; -->
+        <div class="checklistItemToDrag undropped" id="checklistItemToDrag__text" data-type="TEXT">
+            <div class="resizable" style="height: 50px; width: 100px">
+                <div class="checklistItemToDrag__text">
+                    <label>{{ labels.text | translate }}</label>
+                </div>
             </div>
         </div>
-        <div class="checklistItemToDrag undropped">
-            <div class="resizable">
-                <div class="checklistItemToDrag__sign">{{ labels.sign | translate }}</div>
+        <div class="checklistItemToDrag undropped" id="checklistItemToDrag__sign" data-type="SIGN">
+            <div class="resizable" style="height: 50px; width: 100px">
+                <div class="checklistItemToDrag__sign">
+                    <label>{{ labels.sign | translate }}</label>
+                </div>
             </div>
         </div>
-        <div class="checklistItemToDrag undropped">
-            <div class="resizable">
-                <div class="checklistItemToDrag__draw">{{ labels.freeDraw | translate }}</div>
+        <div class="checklistItemToDrag undropped" id="checklistItemToDrag__drawing" data-type="DRAWING">
+            <div class="resizable" style="height: 50px; width: 100px">
+                <div class="checklistItemToDrag__drawing">
+                    <label>{{ labels.freeDraw | translate }}</label>
+                </div>
             </div>
         </div>
-        <div class="checklistItemToDrag undropped">
-            <div class="resizable">
-                <div class="checklistItemToDrag__check">{{ labels.check | translate }}</div>
+        <div class="checklistItemToDrag undropped" id="checklistItemToDrag__check" data-type="CHECK">
+            <div class="resizable" style="height: 50px; width: 100px">
+                <div class="checklistItemToDrag__check">
+                    <label>{{ labels.check | translate }}</label>
+                </div>
             </div>
         </div>
-        <div class="checklistItemToDrag undropped">
-            <div class="resizable">
-                <div class="checklistItemToDrag__var">{{ labels.var | translate }}</div>
+        <div class="checklistItemToDrag undropped" id="checklistItemToDrag__variable" data-type="VARIABLE">
+            <div class="resizable" style="height: 50px; width: 100px">
+                <div class="checklistItemToDrag__variable">
+                    <label>{{ labels.var | translate }}</label>
+                </div>
             </div>
         </div>
-        <div class="checklistItemToDrag undropped">
-            <div class="resizable">
-                <div class="checklistItemToDrag__image">{{ labels.image | translate }}</div>
+        <div class="checklistItemToDrag undropped" id="checklistItemToDrag__image" data-type="IMAGE">
+            <div class="resizable" style="height: 50px; width: 100px">
+                <div class="checklistItemToDrag__image">
+                    <label>{{ labels.image | translate }}</label>
+                </div>
             </div>
         </div>
     </div>

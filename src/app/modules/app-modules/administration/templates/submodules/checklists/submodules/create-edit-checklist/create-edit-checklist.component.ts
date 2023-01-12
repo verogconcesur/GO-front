@@ -2,8 +2,8 @@
 /* eslint-disable max-len */
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { Component, ViewEncapsulation, OnInit } from '@angular/core';
-import { UntypedFormBuilder, UntypedFormGroup, Validators } from '@angular/forms';
-import TemplatesChecklistsDTO from '@data/models/templates/templates-checklists-dto';
+import { UntypedFormArray, UntypedFormBuilder, UntypedFormGroup, Validators } from '@angular/forms';
+import TemplatesChecklistsDTO, { TemplateChecklistItemDTO } from '@data/models/templates/templates-checklists-dto';
 import { TranslateService } from '@ngx-translate/core';
 import { marker } from '@biesbjerg/ngx-translate-extract-marker';
 import { ConfirmDialogService } from '@shared/services/confirm-dialog.service';
@@ -40,8 +40,8 @@ export class CreateEditChecklistComponent implements OnInit {
     dropHere: marker('administration.templates.checklists.dropHere')
   };
   private pdfLoaded = false;
-  private canvasSetted: string[] = [];
   private checklistToEdit: TemplatesChecklistsDTO = null;
+  private uniqueIdOrder = 1;
 
   constructor(
     private fb: UntypedFormBuilder,
@@ -82,9 +82,22 @@ export class CreateEditChecklistComponent implements OnInit {
   }
 
   public pdfZoomChange($event: any) {
-    console.log('zoom change', $event);
-    this.canvasSetted = [];
     this.configCanvas();
+    this.repaintItemsInTemplate();
+  }
+
+  public repaintItemsInTemplate(page?: number): void {
+    if (this.checklistForm?.value?.templateChecklistItems?.length > 0) {
+      setTimeout(() => {
+        this.checklistForm.value.templateChecklistItems.forEach((item: TemplateChecklistItemDTO) => {
+          if (page && item.numPage === page) {
+            this.printItemInPdfPage(item);
+          } else if (!page) {
+            this.printItemInPdfPage(item);
+          }
+        });
+      });
+    }
   }
 
   public pdfLoadedFn($event: any) {
@@ -94,101 +107,194 @@ export class CreateEditChecklistComponent implements OnInit {
     // this.configCanvas();
   }
 
+  //Method to change the page manually
   public changePage(page: number) {
-    console.log(page);
     if (page && this.page !== page) {
       this.page = page;
     }
   }
 
-  public save() {
-    const dataToSave: any = {};
-    Array.from(document.getElementById('checklistPDF').getElementsByClassName('page')).forEach((page: Element) => {
-      const pageNumber = page.getAttribute('data-page-number');
-      const pageW = $(page).width();
-      const pageH = $(page).height();
-      dataToSave['page-' + pageNumber] = [];
-      Array.from(page.getElementsByClassName('dropped')).forEach((dropped: any) => {
-        let extraData = dropped
-          .getElementsByClassName('resizable')
-          .item(0)
-          .getElementsByTagName('div')
-          .item(0)
-          .getAttribute('data-extra');
-        extraData = extraData ? extraData : {};
-        dataToSave['page-' + pageNumber].push({
-          page: {
-            width: pageW,
-            height: pageH
-          },
-          position: {
-            topPx: dropped.style.top,
-            leftPx: dropped.style.left,
-            top: this.pxToPercentage(pageH, parseInt(dropped.style.top.split('px').join(), 10)),
-            left: this.pxToPercentage(pageW, parseInt(dropped.style.left.split('px').join(), 10))
-          },
-          itemToInsert: {
-            id: dropped.getElementsByClassName('resizable').item(0).getElementsByTagName('div').item(0).getAttribute('class'),
-            data: extraData,
-            widthPx: $(dropped).width(),
-            heightPx: $(dropped).height(),
-            width: this.pxToPercentage(pageW, $(dropped).width()),
-            height: this.pxToPercentage(pageH, $(dropped).height())
-          }
-        });
-      });
-    });
-    console.log(dataToSave);
-    // this.setDrawZone(dataToSave);
-  }
-
   public configCanvas($event?: any): void {
-    console.log('config canvas', $event);
+    // console.log('config canvas', $event);
     if (this.pdfLoaded) {
       Array.from(document.getElementById('checklistPDF').getElementsByClassName('page')).forEach((page: Element) => {
         const pageNumber = page.getAttribute('data-page-number');
         const loaded = page.getAttribute('data-loaded');
-        if (loaded && this.canvasSetted.indexOf(pageNumber) === -1) {
+        if (loaded && $('.canvasDropZone-page' + pageNumber).length === 0) {
           const canvas = page.getElementsByClassName('canvasWrapper').item(0); //.getElementsByTagName('canvas').item(0);
           canvas.classList.add('canvasDropZone-page' + pageNumber);
           setTimeout(() => {
             $('.canvasDropZone-page' + pageNumber).droppable({
               drop: (event, ui) => {
                 const item = ui.draggable;
-                console.log(ui.offset, $('.canvasDropZone-page' + pageNumber).offset());
+                const offset = ui.offset;
                 if (!item.hasClass('dropped')) {
-                  const uniqueId = new Date().getTime();
-                  const newItem = item.clone();
-                  newItem.removeClass('undropped');
-                  newItem.addClass('dropped');
-                  newItem.attr('id', uniqueId);
-                  newItem.children('.resizable').resizable({
-                    handles: 'ne, se, sw, nw',
-                    stop: (e, rui) => {
-                      console.log('div_height', rui.size.height);
-                      console.log('div_width', rui.size.width);
-                    }
-                  });
-                  newItem.appendTo($('.canvasDropZone-page' + pageNumber));
-                  newItem.draggable({
-                    containment: $('.canvasDropZone-page' + pageNumber)
-                  });
-                  //Los +20 es porque la tarjeta tiene un margin de 20, lo mejor sería quitarlo
-                  newItem.css({
-                    top: ui.offset.top + 20 - $('.canvasDropZone-page' + pageNumber).offset().top,
-                    left: ui.offset.left + 20 - $('.canvasDropZone-page' + pageNumber).offset().left
-                  });
+                  this.newItemDropped(item, offset, pageNumber);
                 } else {
-                  console.log('dropping item', ui);
+                  this.pdfItemMoved(item, offset, pageNumber);
                   return true;
                 }
               }
             });
-            this.canvasSetted.push(pageNumber);
+            this.repaintItemsInTemplate(parseInt(pageNumber, 10));
           });
         }
       });
     }
+  }
+
+  // public save() {
+  //   const dataToSave: any = {};
+  //   Array.from(document.getElementById('checklistPDF').getElementsByClassName('page')).forEach((page: Element) => {
+  //     const pageNumber = page.getAttribute('data-page-number');
+  //     const pageW = $(page).width();
+  //     const pageH = $(page).height();
+  //     dataToSave['page-' + pageNumber] = [];
+  //     Array.from(page.getElementsByClassName('dropped')).forEach((dropped: any) => {
+  //       let extraData = dropped
+  //         .getElementsByClassName('resizable')
+  //         .item(0)
+  //         .getElementsByTagName('div')
+  //         .item(0)
+  //         .getAttribute('data-extra');
+  //       extraData = extraData ? extraData : {};
+  //       dataToSave['page-' + pageNumber].push({
+  //         page: {
+  //           width: pageW,
+  //           height: pageH
+  //         },
+  //         position: {
+  //           topPx: dropped.style.top,
+  //           leftPx: dropped.style.left,
+  //           top: this.pxToPercentage(pageH, parseInt(dropped.style.top.split('px').join(), 10)),
+  //           left: this.pxToPercentage(pageW, parseInt(dropped.style.left.split('px').join(), 10))
+  //         },
+  //         itemToInsert: {
+  //           id: dropped.getElementsByClassName('resizable').item(0).getElementsByTagName('div').item(0).getAttribute('class'),
+  //           data: extraData,
+  //           widthPx: $(dropped).width(),
+  //           heightPx: $(dropped).height(),
+  //           width: this.pxToPercentage(pageW, $(dropped).width()),
+  //           height: this.pxToPercentage(pageH, $(dropped).height())
+  //         }
+  //       });
+  //     });
+  //   });
+  //   console.log(dataToSave);
+  //   // this.setDrawZone(dataToSave);
+  // }
+
+  //Private methods
+
+  private newItemDropped(
+    item: JQuery<HTMLElement>,
+    offset: {
+      top: number;
+      left: number;
+    },
+    pageNumber: number | string
+  ): void {
+    this.uniqueIdOrder++;
+    const pageWidthAndHeight = this.getPageWidthAndHeight(`${pageNumber}`);
+    //Los +20 es porque la tarjeta tiene un margin de 20
+    let top = offset.top + 20 - $('.canvasDropZone-page' + pageNumber).offset().top;
+    let left = offset.left + 20 - $('.canvasDropZone-page' + pageNumber).offset().left;
+    top = top >= 0 ? top : 0;
+    left = left >= 0 ? left : 0;
+    const fbGroug = this.fb.group({
+      id: [null],
+      numPage: [parseInt(`${pageNumber}`, 10), Validators.required],
+      lowerLeftX: [this.pxToPercentage(pageWidthAndHeight.width, left), Validators.required],
+      lowerLeftY: [this.pxToPercentage(pageWidthAndHeight.height, top), Validators.required],
+      height: [this.pxToPercentage(pageWidthAndHeight.height, item[0].offsetHeight), Validators.required],
+      width: [this.pxToPercentage(pageWidthAndHeight.width, item[0].offsetWidth), Validators.required],
+      typeItem: [item.data('type'), Validators.required],
+      typeSign: [null],
+      staticValue: [item.data('type') === 'VARIABLE'],
+      orderNumber: [this.uniqueIdOrder, Validators.required],
+      label: [null, Validators.required],
+      sincronizedItems: [[]],
+      itemVal: this.fb.group({
+        booleanValue: [null],
+        fileValue: this.fb.group({
+          content: [null],
+          id: [null],
+          name: [null],
+          size: [null],
+          thumbnail: [null],
+          type: [null]
+        }),
+        id: [null],
+        textValue: [null]
+      }),
+      variable: this.fb.group({
+        attributeName: [null],
+        entityName: [null],
+        id: [null],
+        dataType: [null],
+        value: [null],
+        name: [null],
+        contentSource: this.fb.group({
+          contentType: this.fb.group({
+            id: [null],
+            name: [null],
+            type: [null]
+          }),
+          id: [null],
+          name: [null]
+        })
+      })
+    });
+    (this.checklistForm.get('templateChecklistItems') as UntypedFormArray).push(fbGroug);
+    this.printItemInPdfPage(fbGroug.value);
+  }
+
+  private pdfItemMoved(
+    item: JQuery<HTMLElement>,
+    offset: {
+      top: number;
+      left: number;
+    },
+    pageNumber: number | string
+  ): void {
+    const pageWidthAndHeight = this.getPageWidthAndHeight(`${pageNumber}`);
+    let top = offset.top - $('.canvasDropZone-page' + pageNumber).offset().top;
+    let left = offset.left - $('.canvasDropZone-page' + pageNumber).offset().left;
+    top = top >= 0 ? top : 0;
+    left = left >= 0 ? left : 0;
+    const index = this.checklistForm
+      .get('templateChecklistItems')
+      .value.findIndex(
+        (templateChecklistItem: TemplateChecklistItemDTO) => templateChecklistItem.orderNumber === item.data('id')
+      );
+    (this.checklistForm.get('templateChecklistItems') as UntypedFormArray)
+      .at(index)
+      .get('lowerLeftX')
+      .setValue(this.pxToPercentage(pageWidthAndHeight.width, left));
+    (this.checklistForm.get('templateChecklistItems') as UntypedFormArray)
+      .at(index)
+      .get('lowerLeftY')
+      .setValue(this.pxToPercentage(pageWidthAndHeight.height, top));
+  }
+
+  private pdfItemResized(ui: JQueryUI.ResizableUIParams): void {
+    const id = ui.originalElement.data('id');
+    const index = this.checklistForm
+      .get('templateChecklistItems')
+      .value.findIndex((templateChecklistItem: TemplateChecklistItemDTO) => templateChecklistItem.orderNumber === id);
+    const pageWidthAndHeight = this.getPageWidthAndHeight(
+      `${(this.checklistForm.get('templateChecklistItems') as UntypedFormArray).at(index).get('numPage').value}`
+    );
+    // height: [this.pxToPercentage(pageWidthAndHeight.height, item[0].offsetHeight), Validators.required],
+    // width: [this.pxToPercentage(pageWidthAndHeight.width, item[0].offsetWidth), Validators.required],
+    (this.checklistForm.get('templateChecklistItems') as UntypedFormArray)
+      .at(index)
+      .get('width')
+      .setValue(this.pxToPercentage(pageWidthAndHeight.width, ui.size.width));
+    (this.checklistForm.get('templateChecklistItems') as UntypedFormArray)
+      .at(index)
+      .get('height')
+      .setValue(this.pxToPercentage(pageWidthAndHeight.height, ui.size.height));
   }
 
   private pxToPercentage(cien: number, x: number) {
@@ -197,10 +303,25 @@ export class CreateEditChecklistComponent implements OnInit {
     return (100 * x) / cien;
   }
 
+  private getPageWidthAndHeight(pageNumber: string): { width: number; height: number } {
+    const pageWidthAndHeight = {
+      width: 0,
+      height: 0
+    };
+    Array.from(document.getElementById('checklistPDF').getElementsByClassName('page')).forEach((page: Element) => {
+      if (pageNumber === `${page.getAttribute('data-page-number')}`) {
+        pageWidthAndHeight.width = $(page).width();
+        pageWidthAndHeight.height = $(page).height();
+      }
+    });
+    return pageWidthAndHeight;
+  }
+
   private initForm() {
     const checklistItems: UntypedFormGroup[] = [];
     if (this.checklistToEdit) {
       console.log('Hacer algo aquí', this.checklistToEdit);
+      //calcular order number
     }
     this.checklistForm = this.fb.group({
       id: [null],
@@ -227,7 +348,39 @@ export class CreateEditChecklistComponent implements OnInit {
         type: ['application/pdf']
       })
     });
-    console.log(this.checklistForm);
+  }
+
+  private printItemInPdfPage(templateItem: TemplateChecklistItemDTO): void {
+    const item = $(`#checklistItemToDrag__${templateItem.typeItem.toLowerCase()}`);
+    const pageWidthAndHeight = this.getPageWidthAndHeight(`${templateItem.numPage}`);
+    const pageNumber = `${templateItem.numPage}`;
+    const uniqueId = templateItem.orderNumber;
+    const id = `item_${uniqueId}`;
+    const newItem = item.clone();
+    console.log(pageNumber, $('.canvasDropZone-page' + pageNumber));
+    newItem.removeClass('undropped');
+    newItem.addClass('dropped');
+    newItem.attr('id', id);
+    newItem.attr('data-id', uniqueId);
+    newItem.children('.resizable').resizable({
+      handles: 'ne, se, sw, nw',
+      stop: (e, rui) => {
+        this.pdfItemResized(rui);
+      }
+    });
+    newItem.children('.resizable').attr('data-id', uniqueId);
+    newItem.draggable({
+      containment: $('.canvasDropZone-page' + pageNumber)
+    });
+    newItem.css({
+      top: (pageWidthAndHeight.height * templateItem.lowerLeftY) / 100 + 'px',
+      left: (pageWidthAndHeight.width * templateItem.lowerLeftX) / 100 + 'px'
+    });
+    newItem.children().css({
+      width: (pageWidthAndHeight.width * templateItem.width) / 100 + 'px',
+      height: (pageWidthAndHeight.height * templateItem.height) / 100 + 'px'
+    });
+    newItem.appendTo($('.canvasDropZone-page' + pageNumber));
   }
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any

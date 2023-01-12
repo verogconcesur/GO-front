@@ -82,6 +82,7 @@
 }
 
 .checklistItemToDrag {
+  // Si modificamos este margin hay que cambiarlo también en la función drop
   margin: 20px;
   height: auto;
   width: fit-content;
@@ -96,16 +97,16 @@
   .resizable {
     // width: 100%;
     // height: 100%;
-    height: 50px;
-    width: 100px;
+    height: 100%;
+    width: 100%;
     border: 2px solid rgba(3, 5, 112, 0.767);
     border-radius: 5px;
   }
 
   &__text,
   &__sign,
-  &__draw,
-  &__var,
+  &__drawing,
+  &__variable,
   &__check,
   &__image {
     margin: 2px;
