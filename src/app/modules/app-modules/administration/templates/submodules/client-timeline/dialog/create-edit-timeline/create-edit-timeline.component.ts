@@ -197,8 +197,13 @@ export class CreateEditTimelineComponent extends ComponentToExtendForCustomDialo
     }
   }
 
+  public convertToPlain(html: string) {
+    const tempDivElement = document.createElement('div');
+    tempDivElement.innerHTML = html;
+    return tempDivElement.textContent || tempDivElement.innerText || '';
+  }
   public textEditorContentChanged(html: string, itemForm: UntypedFormGroup) {
-    if (html === '' || html === ' ' || html === '<p></p>' || html === '<p><br></p>') {
+    if (html === '' || html === ' ' || this.convertToPlain(html) === '' || this.convertToPlain(html) === ' ') {
       html = null;
     }
     itemForm.get('messageLanding').setValue(html);
