@@ -172,6 +172,9 @@ export class CreateEditCommunicationComponent extends ComponentToExtendForCustom
       facilities: formValue.template.facilities.map((fac: FacilityDTO) => ({ id: fac.id })),
       specialties: formValue.template.specialties.map((spe: SpecialtyDTO) => ({ id: spe.id }))
     };
+    formValue. templateComunicationItems = formValue.templateComunicationItems.filter(
+      (item: TemplateComunicationItemsDTO) => item.text
+    );
     const spinner = this.spinnerService.show();
     return this.communicationService.addOrEditCommunication(formValue).pipe(
       map((response) => {
@@ -235,7 +238,7 @@ export class CreateEditCommunicationComponent extends ComponentToExtendForCustom
       if (plain) {
         html = this.convertToPlain(html);
       }
-      if (html === '' || html === ' ' || html === '<p></p>' || html === '<p><br></p>') {
+      if (html === '' || html === ' ' || this.convertToPlain(html) === '' || this.convertToPlain(html) === ' ') {
         html = null;
       }
       form.setValue(html, { emitEvent: true });
