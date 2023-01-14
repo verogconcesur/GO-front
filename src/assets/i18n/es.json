@@ -233,6 +233,7 @@
         "events": "Eventos",
         "externalLinks": "Enlaces externos",
         "field": "Campo",
+        "fieldsType": "Elementos de tipo",
         "fileName": "Nombre de archivo",
         "filter": "Filtro",
         "filterAction": "Filtrar",
@@ -247,6 +248,7 @@
         "information": "Información",
         "insert": "Insertar",
         "insertTextHere": "Introduzca el texto aquí.",
+        "items": "Elementos",
         "line": "Línea",
         "logo": "Logo",
         "manual": "Manual",
@@ -283,6 +285,7 @@
         "selectImageFile": "Selecciona una imagen",
         "send": "Enviar",
         "shortcut": "Enlace externo",
+        "showPage": "Mostrar página",
         "state": "Estado",
         "substate": "Subestado",
         "successOperation": "Operación realizada con éxito.",
@@ -467,6 +470,7 @@
         "lastPage": "Última página",
         "nextPage": "Siguiente página",
         "pageOf": "Página {num1} de {num2}",
+        "pages": "Páginas",
         "prevPage": "Página previa"
     },
     "pdf": {

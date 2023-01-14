@@ -48,22 +48,74 @@
                     <mat-expansion-panel-header>
                         <mat-panel-title> {{ labels.itemsInTemplate | translate }} </mat-panel-title>
                     </mat-expansion-panel-header>
-                    <mat-accordion [multi]="true" [displayMode]="'flat'">
-                        <mat-expansion-panel>
+                    <!-- Group by type -->
+                    <mat-accordion [multi]="true">
+                        <mat-expansion-panel *ngFor="let groupByType of itemListToShow; let i = index">
                             <mat-expansion-panel-header>
-                                <mat-panel-title> 1 Firma </mat-panel-title>
-                                <mat-panel-description>Firma cliente - Página 1,3,6 </mat-panel-description>
+                                <mat-panel-title>
+                                    {{ labels.fieldsType | translate }}: {{ groupByType.typeLabel }}
+                                </mat-panel-title>
+                                <mat-panel-description fxLayoutAlign="space-between center">
+                                    <div fxLayout="column" fxLayoutAlign="flex-start center">
+                                        <!-- <label> {{ labels.pages | translate }}: {{ groupByType.numPages.join(",") }} </label> -->
+                                        <label> Id's: {{ groupByType.orderNumbers.join(",") }} </label>
+                                    </div>
+                                    <!-- Show in page -->
+                                    <div class="smaller-mat-form-fields">
+                                        {{ labels.showInPage | translate }}:
+                                        <mat-form-field style="width: 45px; margin-left: 5px" (click)="$event.stopPropagation()">
+                                            <mat-select [ngModel]="page" (selectionChange)="changePage($event.value)">
+                                                <mat-option *ngFor="let p of groupByType.numPages" [value]="p">
+                                                    {{ p }}
+                                                </mat-option>
+                                            </mat-select>
+                                        </mat-form-field>
+                                    </div>
+                                </mat-panel-description>
                             </mat-expansion-panel-header>
+                            <!-- Group by sync -->
+                            <mat-accordion [multi]="true" [displayMode]="'flat'">
+                                <mat-expansion-panel *ngFor="let syncGroup of groupByType.syncGroups; let i = index">
+                                    <mat-expansion-panel-header>
+                                        <mat-panel-title fxLayoutAlign="flex-start center">
+                                            <div
+                                                class="checklistItemToDrag__orderNumber"
+                                                *ngFor="let ordN of syncGroup.sincronizedItems"
+                                                (click)="
+                                                    $event.stopPropagation();
+                                                    changePage(groupByType.orderNumberPageAssociation[ordN])
+                                                "
+                                            >
+                                                {{ ordN }}
+                                            </div>
+                                        </mat-panel-title>
+                                        <mat-panel-description fxLayoutAlign="space-between center">
+                                            <div (click)="$event.stopPropagation()">
+                                                <input
+                                                    type="color"
+                                                    class="inputColor"
+                                                    matInput
+                                                    [formControl]="syncGroup.bgColor"
+                                                    (change)="changeColorItems(syncGroup)"
+                                                />
+                                            </div>
+                                            <label> {{ labels.pages | translate }}: {{ syncGroup.numPages.join(",") }} </label>
+                                        </mat-panel-description>
+                                    </mat-expansion-panel-header>
 
-                            Configuración del elemento
+                                    <section class="checklist-config__config__item" [ngSwitch]="groupByType.typeItem">
+                                        <ng-container *ngSwitchCase="'TEXT'"> TEXT </ng-container>
+                                        <ng-container *ngSwitchCase="'SIGN'"> SIGN </ng-container>
+                                        <ng-container *ngSwitchCase="'VARIABLE'"> VARIABLE </ng-container>
+                                        <ng-container *ngSwitchCase="'CHECK'"> CHECK </ng-container>
+                                        <ng-container *ngSwitchCase="'DRAWING'"> DRAWING </ng-container>
+                                        <ng-container *ngSwitchCase="'IMAGE'"> IMAGE </ng-container>
+                                    </section>
+                                </mat-expansion-panel>
+                                <label *ngIf="itemListToShow?.length === 0">{{ labels.noData | translate }}</label>
+                            </mat-accordion>
                         </mat-expansion-panel>
-                        <mat-expansion-panel>
-                            <mat-expansion-panel-header>
-                                <mat-panel-title> 2 Dibujo libre</mat-panel-title>
-                                <mat-panel-description>Dibujo sobre carrocería - Página 8 </mat-panel-description>
-                            </mat-expansion-panel-header>
-                            Configuración del elemento
-                        </mat-expansion-panel>
+                        <label *ngIf="itemListToShow?.length === 0">{{ labels.noData | translate }}</label>
                     </mat-accordion>
                 </mat-expansion-panel>
             </mat-accordion>
@@ -116,43 +168,43 @@
     <div class="checklist-config__column checklist-config__items">
         <!-- 'SIGN' | 'TEXT' | 'VARIABLE' | 'CHECK' | 'DRAWING' | 'IMAGE'; -->
         <div class="checklistItemToDrag undropped" id="checklistItemToDrag__text" data-type="TEXT">
-            <div class="resizable" style="height: 50px; width: 100px">
-                <div class="checklistItemToDrag__text">
+            <div class="resizable" style="height: 50px; width: 124px">
+                <div class="checklistItemToDrag__text checklistItemToDrag__label">
                     <label>{{ labels.text | translate }}</label>
                 </div>
             </div>
         </div>
         <div class="checklistItemToDrag undropped" id="checklistItemToDrag__sign" data-type="SIGN">
-            <div class="resizable" style="height: 50px; width: 100px">
-                <div class="checklistItemToDrag__sign">
+            <div class="resizable" style="height: 50px; width: 124px">
+                <div class="checklistItemToDrag__sign checklistItemToDrag__label">
                     <label>{{ labels.sign | translate }}</label>
                 </div>
             </div>
         </div>
         <div class="checklistItemToDrag undropped" id="checklistItemToDrag__drawing" data-type="DRAWING">
-            <div class="resizable" style="height: 50px; width: 100px">
-                <div class="checklistItemToDrag__drawing">
-                    <label>{{ labels.freeDraw | translate }}</label>
+            <div class="resizable" style="height: 50px; width: 124px">
+                <div class="checklistItemToDrag__drawing checklistItemToDrag__label">
+                    <label>{{ labels.drawing | translate }}</label>
                 </div>
             </div>
         </div>
         <div class="checklistItemToDrag undropped" id="checklistItemToDrag__check" data-type="CHECK">
-            <div class="resizable" style="height: 50px; width: 100px">
-                <div class="checklistItemToDrag__check">
+            <div class="resizable" style="height: 50px; width: 124px">
+                <div class="checklistItemToDrag__check checklistItemToDrag__label">
                     <label>{{ labels.check | translate }}</label>
                 </div>
             </div>
         </div>
         <div class="checklistItemToDrag undropped" id="checklistItemToDrag__variable" data-type="VARIABLE">
-            <div class="resizable" style="height: 50px; width: 100px">
-                <div class="checklistItemToDrag__variable">
-                    <label>{{ labels.var | translate }}</label>
+            <div class="resizable" style="height: 50px; width: 124px">
+                <div class="checklistItemToDrag__variable checklistItemToDrag__label">
+                    <label>{{ labels.variable | translate }}</label>
                 </div>
             </div>
         </div>
         <div class="checklistItemToDrag undropped" id="checklistItemToDrag__image" data-type="IMAGE">
-            <div class="resizable" style="height: 50px; width: 100px">
-                <div class="checklistItemToDrag__image">
+            <div class="resizable" style="height: 50px; width: 124px">
+                <div class="checklistItemToDrag__image checklistItemToDrag__label">
                     <label>{{ labels.image | translate }}</label>
                 </div>
             </div>

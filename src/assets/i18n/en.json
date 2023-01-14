@@ -233,6 +233,7 @@
         "events": "Events",
         "externalLinks": "External links",
         "field": "Field",
+        "fieldsType": "Field's type",
         "fileName": "File name",
         "filter": "Filter",
         "filterAction": "Filter",
@@ -247,6 +248,7 @@
         "information": "Information",
         "insert": "Insert",
         "insertTextHere": "Insert text here.",
+        "items": "Items",
         "line": "Line",
         "logo": "Logo",
         "manual": "Manual",
@@ -283,6 +285,7 @@
         "selectImageFile": "Select image file",
         "send": "Send",
         "shortcut": "Link",
+        "showPage": "Show page",
         "state": "State",
         "substate": "Substate",
         "successOperation": "Success operation.",
@@ -467,6 +470,7 @@
         "lastPage": "Last page",
         "nextPage": "Next Page",
         "pageOf": "Page {num1} of {num2}",
+        "pages": "Pages",
         "prevPage": "Previous page"
     },
     "pdf": {

@@ -2,8 +2,20 @@
 /* eslint-disable max-len */
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { Component, ViewEncapsulation, OnInit } from '@angular/core';
-import { UntypedFormArray, UntypedFormBuilder, UntypedFormGroup, Validators } from '@angular/forms';
-import TemplatesChecklistsDTO, { TemplateChecklistItemDTO } from '@data/models/templates/templates-checklists-dto';
+import {
+  FormArray,
+  FormControl,
+  FormGroup,
+  UntypedFormArray,
+  UntypedFormBuilder,
+  UntypedFormGroup,
+  Validators
+} from '@angular/forms';
+import TemplatesChecklistsDTO, {
+  AuxChecklistItemsGroupBySyncDTO,
+  AuxChecklistItemsGroupByTypeDTO,
+  TemplateChecklistItemDTO
+} from '@data/models/templates/templates-checklists-dto';
 import { TranslateService } from '@ngx-translate/core';
 import { marker } from '@biesbjerg/ngx-translate-extract-marker';
 import { ConfirmDialogService } from '@shared/services/confirm-dialog.service';
@@ -24,24 +36,30 @@ export class CreateEditChecklistComponent implements OnInit {
   public page: number;
   public checklistForm: UntypedFormGroup;
   public fileTemplateBase64 = new Subject<any>();
-  public labels = {
+  public labels: any = {
     newCheckList: marker('administration.templates.checklists.new'),
     cheklistConfig: marker('administration.templates.checklists.config'),
     itemsInTemplate: marker('administration.templates.checklists.itemsInTemplate'),
     text: marker('administration.templates.checklists.text'),
     sign: marker('administration.templates.checklists.sign'),
-    freeDraw: marker('administration.templates.checklists.freeDraw'),
+    drawing: marker('administration.templates.checklists.freeDraw'),
     check: marker('administration.templates.checklists.check'),
-    var: marker('administration.templates.checklists.var'),
+    variable: marker('administration.templates.checklists.var'),
     image: marker('administration.templates.checklists.image'),
     name: marker('administration.templates.checklists.name'),
     nameRequired: marker('userProfile.nameRequired'),
     includeFile: marker('administration.templates.checklists.includeFile'),
-    dropHere: marker('administration.templates.checklists.dropHere')
+    dropHere: marker('administration.templates.checklists.dropHere'),
+    noData: marker('errors.noDataToShow'),
+    pages: marker('pagination.pages'),
+    fieldsType: marker('common.fieldsType'),
+    items: marker('common.items'),
+    showInPage: marker('common.showPage')
   };
   private pdfLoaded = false;
   private checklistToEdit: TemplatesChecklistsDTO = null;
-  private uniqueIdOrder = 1;
+  private uniqueIdOrder = 0;
+  public itemListToShow: AuxChecklistItemsGroupByTypeDTO[] = [];
 
   constructor(
     private fb: UntypedFormBuilder,
@@ -63,12 +81,79 @@ export class CreateEditChecklistComponent implements OnInit {
     return this.translateService.instant(this.labels.newCheckList);
   }
 
+  public setItemListToShow(): void {
+    const items: TemplateChecklistItemDTO[] = this.checklistForm?.get('templateChecklistItems').value;
+    const groupByType: AuxChecklistItemsGroupByTypeDTO[] = [];
+    items.forEach((item: TemplateChecklistItemDTO, index) => {
+      const group = groupByType.find((g: AuxChecklistItemsGroupByTypeDTO) => g.typeItem === item.typeItem);
+      if (group) {
+        if (group.numPages.indexOf(item.numPage) === -1) {
+          group.numPages.push(item.numPage);
+        }
+        group.orderNumbers.push(item.orderNumber);
+        group.orderNumberPageAssociation[item.orderNumber] = item.numPage;
+        group.numPages.sort();
+        group.syncGroups.push({
+          numPages: [item.numPage],
+          bgColor: new FormControl('#050896', [Validators.required]),
+          sincronizedItems: [item.orderNumber],
+          typeItem: item.typeItem,
+          typeSign: item.typeSign,
+          variable: item.variable,
+          syncronized: false,
+          templateChecklistItems: this.fb.array([
+            (this.checklistForm.get('templateChecklistItems') as UntypedFormArray).at(index)
+          ])
+        });
+      } else {
+        const orderNumberPageAssociation: any = {};
+        orderNumberPageAssociation[item.orderNumber] = item.numPage;
+        groupByType.push({
+          typeItem: item.typeItem,
+          typeLabel: this.translateService.instant(this.labels[item.typeItem.toLowerCase()]),
+          numPages: [item.numPage],
+          orderNumbers: [item.orderNumber],
+          orderNumberPageAssociation,
+          syncGroups: [
+            {
+              numPages: [item.numPage],
+              bgColor: new FormControl('#050896', [Validators.required]),
+              sincronizedItems: [item.orderNumber],
+              typeItem: item.typeItem,
+              typeSign: item.typeSign,
+              variable: item.variable,
+              syncronized: false,
+              templateChecklistItems: this.fb.array([
+                (this.checklistForm.get('templateChecklistItems') as UntypedFormArray).at(index)
+              ])
+            }
+          ]
+        });
+      }
+    });
+    console.log(groupByType);
+    this.itemListToShow = groupByType;
+  }
+
   public fileBrowseHandler(item: FileList): void {
     this.getFile(item);
   }
 
   public fileDropped(item: FileList): void {
     this.getFile(item);
+  }
+
+  public changeColorItems(syncGroup: AuxChecklistItemsGroupBySyncDTO): void {
+    console.log(syncGroup);
+    syncGroup.sincronizedItems.forEach((id) => {
+      $(`#item_${id}`)
+        .children('.resizable')
+        .children('.checklistItemToDrag__label')
+        .css({
+          backgroundColor: this.colorToRgba(syncGroup.bgColor.value, '0.65'),
+          color: this.getFontColor(syncGroup.bgColor.value)
+        });
+    });
   }
 
   public eraseTemplatePDF(): void {
@@ -126,6 +211,7 @@ export class CreateEditChecklistComponent implements OnInit {
           setTimeout(() => {
             $('.canvasDropZone-page' + pageNumber).droppable({
               drop: (event, ui) => {
+                console.log('Drop in canvas --- problema en firefox');
                 const item = ui.draggable;
                 const offset = ui.offset;
                 if (!item.hasClass('dropped')) {
@@ -212,6 +298,7 @@ export class CreateEditChecklistComponent implements OnInit {
       typeSign: [null],
       staticValue: [item.data('type') === 'VARIABLE'],
       orderNumber: [this.uniqueIdOrder, Validators.required],
+      frontIdGroup: [null],
       label: [null, Validators.required],
       sincronizedItems: [[]],
       itemVal: this.fb.group({
@@ -247,6 +334,7 @@ export class CreateEditChecklistComponent implements OnInit {
     });
     (this.checklistForm.get('templateChecklistItems') as UntypedFormArray).push(fbGroug);
     this.printItemInPdfPage(fbGroug.value);
+    this.setItemListToShow();
   }
 
   private pdfItemMoved(
@@ -357,14 +445,18 @@ export class CreateEditChecklistComponent implements OnInit {
     const uniqueId = templateItem.orderNumber;
     const id = `item_${uniqueId}`;
     const newItem = item.clone();
-    console.log(pageNumber, $('.canvasDropZone-page' + pageNumber));
     newItem.removeClass('undropped');
     newItem.addClass('dropped');
     newItem.attr('id', id);
     newItem.attr('data-id', uniqueId);
+    newItem
+      .children('.resizable')
+      .children('.checklistItemToDrag__label')
+      .prepend(`<div class="checklistItemToDrag__orderNumber">${uniqueId}</div> `);
     newItem.children('.resizable').resizable({
       handles: 'ne, se, sw, nw',
       stop: (e, rui) => {
+        console.log('STOP RESIZE -- problema en firefox');
         this.pdfItemResized(rui);
       }
     });
@@ -418,5 +510,30 @@ export class CreateEditChecklistComponent implements OnInit {
     this.checklistForm.markAsDirty();
     this.checklistForm.markAsTouched();
     this.fileTemplateBase64.next(base64.split(';base64,')[1]);
+  }
+
+  private colorToRgba(color: string, alpha: string) {
+    if (color.charAt(0) === '#') {
+      color = color.substring(1, 7);
+      const r = parseInt(color.substring(0, 2), 16); // hexToR
+      const g = parseInt(color.substring(2, 4), 16); // hexToG
+      const b = parseInt(color.substring(4, 6), 16); // hexToB
+      return `rgba(${r},${g},${b},${alpha})`;
+    }
+    return color;
+  }
+
+  private getFontColor(baseColor: string): string {
+    const lightColor = '#fff';
+    const darkColor = '#000';
+    if (baseColor) {
+      const bgColor = baseColor;
+      const color = bgColor.charAt(0) === '#' ? bgColor.substring(1, 7) : bgColor;
+      const r = parseInt(color.substring(0, 2), 16); // hexToR
+      const g = parseInt(color.substring(2, 4), 16); // hexToG
+      const b = parseInt(color.substring(4, 6), 16); // hexToB
+      return r * 0.299 + g * 0.587 + b * 0.114 > 186 ? darkColor : lightColor;
+    }
+    return darkColor;
   }
 }
