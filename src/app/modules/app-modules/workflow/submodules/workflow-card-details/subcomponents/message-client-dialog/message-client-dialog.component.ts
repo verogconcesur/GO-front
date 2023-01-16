@@ -199,7 +199,7 @@ export class MessageClientDialogComponent extends ComponentToExtendForCustomDial
       rightSideButtons: [
         {
           type: 'submit',
-          label: marker('common.save'),
+          label: marker('common.send'),
           design: 'raised',
           color: 'primary',
           disabledFn: () => !(this.messageForm && this.messageForm.touched && this.messageForm.dirty && this.messageForm.valid)
