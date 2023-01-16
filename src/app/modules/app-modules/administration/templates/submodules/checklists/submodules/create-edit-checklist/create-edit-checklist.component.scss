@@ -13,14 +13,14 @@
   &__config {
     width: calc(42% - 110px);
     &__accordion {
-      max-height: calc(80vh - 47px);
+      max-height: calc(76vh - 47px);
       overflow-y: auto;
     }
   }
   &__pdf {
     width: calc(58% - 110px);
     &__drop-zone {
-      height: 80vh;
+      height: 76vh;
       width: 100%;
       display: flex;
       justify-content: center;
@@ -98,10 +98,10 @@
 
 .checklist-footer {
   width: 100%;
-  min-height: 75px;
+  min-height: 65px;
   position: absolute;
   bottom: 0;
-  padding: 20px;
+  padding: 5px 20px;
   background-color: mat-contrast($primary, 400);
   &__error {
     color: mat-color($primary, statusError);
