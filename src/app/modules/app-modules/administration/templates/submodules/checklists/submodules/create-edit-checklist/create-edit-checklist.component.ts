@@ -1,16 +1,8 @@
 /* eslint-disable @typescript-eslint/member-ordering */
 /* eslint-disable max-len */
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { Component, ViewEncapsulation, OnInit } from '@angular/core';
-import {
-  FormArray,
-  FormControl,
-  FormGroup,
-  UntypedFormArray,
-  UntypedFormBuilder,
-  UntypedFormGroup,
-  Validators
-} from '@angular/forms';
+import { Component, ViewEncapsulation, OnInit, ElementRef, ViewChild } from '@angular/core';
+import { FormControl, UntypedFormArray, UntypedFormBuilder, UntypedFormGroup, Validators } from '@angular/forms';
 import TemplatesChecklistsDTO, {
   AuxChecklistItemsGroupBySyncDTO,
   AuxChecklistItemsGroupByTypeDTO,
@@ -25,6 +17,15 @@ import $ from 'jquery';
 import 'jqueryui';
 import { NGXLogger } from 'ngx-logger';
 import { Subject } from 'rxjs';
+import { VariablesService } from '@data/services/variables.service';
+import VariablesDTO from '@data/models/variables-dto';
+import { finalize, take } from 'rxjs/operators';
+import WorkflowCardSlotDTO from '@data/models/workflows/workflow-card-slot-dto';
+import { CreateEditChecklistAuxService } from './create-edit-checklist-aux.service';
+import { Router } from '@angular/router';
+import { RouteConstants } from '@app/constants/route.constants';
+import { TemplatesChecklistsService } from '@data/services/templates-checklists.service';
+import { ConcenetError } from '@app/types/error';
 
 @Component({
   selector: 'app-create-edit-checklist',
@@ -33,15 +34,26 @@ import { Subject } from 'rxjs';
   encapsulation: ViewEncapsulation.None
 })
 export class CreateEditChecklistComponent implements OnInit {
+  @ViewChild('fileDropRef')
+  fileDropRef: ElementRef;
   public page: number;
   public checklistForm: UntypedFormGroup;
   public fileTemplateBase64 = new Subject<any>();
+  public pdfNumPages = 0;
+  public pages: number[] = [];
+  public itemListToShow: AuxChecklistItemsGroupByTypeDTO[] = [];
+  public expansionPanelOpened: any = {};
+  public listVariables: WorkflowCardSlotDTO[] = [];
+  public pagesSelectedToAddItem: FormControl = new FormControl(null);
   public labels: any = {
     newCheckList: marker('administration.templates.checklists.new'),
     cheklistConfig: marker('administration.templates.checklists.config'),
     itemsInTemplate: marker('administration.templates.checklists.itemsInTemplate'),
     text: marker('administration.templates.checklists.text'),
     sign: marker('administration.templates.checklists.sign'),
+    signType: marker('administration.templates.checklists.signType'),
+    SIGN_USER: marker('administration.templates.checklists.SIGN_USER'),
+    SIGN_CLIENT: marker('administration.templates.checklists.SIGN_CLIENT'),
     drawing: marker('administration.templates.checklists.freeDraw'),
     check: marker('administration.templates.checklists.check'),
     variable: marker('administration.templates.checklists.var'),
@@ -54,12 +66,17 @@ export class CreateEditChecklistComponent implements OnInit {
     pages: marker('pagination.pages'),
     fieldsType: marker('common.fieldsType'),
     items: marker('common.items'),
-    showInPage: marker('common.showPage')
+    showInPage: marker('common.showPage'),
+    label: marker('common.label'),
+    deleteFile: marker('common.deleteFile'),
+    syncronization: marker('administration.templates.checklists.syncronization'),
+    copyItemInPage: marker('administration.templates.checklists.copyItemInPage'),
+    cancel: marker('common.cancel'),
+    save: marker('common.save')
   };
   private pdfLoaded = false;
   private checklistToEdit: TemplatesChecklistsDTO = null;
   private uniqueIdOrder = 0;
-  public itemListToShow: AuxChecklistItemsGroupByTypeDTO[] = [];
 
   constructor(
     private fb: UntypedFormBuilder,
@@ -67,10 +84,20 @@ export class CreateEditChecklistComponent implements OnInit {
     private confirmDialogService: ConfirmDialogService,
     private translateService: TranslateService,
     private globalMessageService: GlobalMessageService,
-    private logger: NGXLogger
+    private logger: NGXLogger,
+    private variablesService: VariablesService,
+    private createEditChecklistAuxService: CreateEditChecklistAuxService,
+    private router: Router,
+    private templatesChecklistsService: TemplatesChecklistsService
   ) {}
 
   ngOnInit(): void {
+    this.variablesService
+      .searchVariablesSlots()
+      .pipe(take(1))
+      .subscribe((res) => {
+        this.listVariables = res;
+      });
     this.initForm();
   }
 
@@ -82,7 +109,7 @@ export class CreateEditChecklistComponent implements OnInit {
   }
 
   public setItemListToShow(): void {
-    const items: TemplateChecklistItemDTO[] = this.checklistForm?.get('templateChecklistItems').value;
+    const items: TemplateChecklistItemDTO[] = this.checklistForm?.get('templateChecklistItems').getRawValue();
     const groupByType: AuxChecklistItemsGroupByTypeDTO[] = [];
     items.forEach((item: TemplateChecklistItemDTO, index) => {
       const group = groupByType.find((g: AuxChecklistItemsGroupByTypeDTO) => g.typeItem === item.typeItem);
@@ -93,18 +120,28 @@ export class CreateEditChecklistComponent implements OnInit {
         group.orderNumbers.push(item.orderNumber);
         group.orderNumberPageAssociation[item.orderNumber] = item.numPage;
         group.numPages.sort();
-        group.syncGroups.push({
-          numPages: [item.numPage],
-          bgColor: new FormControl('#050896', [Validators.required]),
-          sincronizedItems: [item.orderNumber],
-          typeItem: item.typeItem,
-          typeSign: item.typeSign,
-          variable: item.variable,
-          syncronized: false,
-          templateChecklistItems: this.fb.array([
+        //Comprobamos si ya está asignado a otro grupo
+        const syncGroupFound = group.syncGroups.find(
+          (g: AuxChecklistItemsGroupBySyncDTO) => g.sincronizedItems.indexOf(item.orderNumber) >= 0
+        );
+        if (syncGroupFound) {
+          (syncGroupFound.templateChecklistItems as UntypedFormArray).push(
             (this.checklistForm.get('templateChecklistItems') as UntypedFormArray).at(index)
-          ])
-        });
+          );
+        } else {
+          group.syncGroups.push({
+            numPages: [item.numPage],
+            sincronizedItems: item.sincronizedItems?.length ? item.sincronizedItems : [item.orderNumber],
+            selectedItem: item.orderNumber,
+            typeItem: item.typeItem,
+            typeSign: item.typeSign,
+            variable: item.variable,
+            syncronized: false,
+            templateChecklistItems: this.fb.array([
+              (this.checklistForm.get('templateChecklistItems') as UntypedFormArray).at(index)
+            ])
+          });
+        }
       } else {
         const orderNumberPageAssociation: any = {};
         orderNumberPageAssociation[item.orderNumber] = item.numPage;
@@ -117,8 +154,8 @@ export class CreateEditChecklistComponent implements OnInit {
           syncGroups: [
             {
               numPages: [item.numPage],
-              bgColor: new FormControl('#050896', [Validators.required]),
-              sincronizedItems: [item.orderNumber],
+              sincronizedItems: item.sincronizedItems?.length ? item.sincronizedItems : [item.orderNumber],
+              selectedItem: item.orderNumber,
               typeItem: item.typeItem,
               typeSign: item.typeSign,
               variable: item.variable,
@@ -131,7 +168,6 @@ export class CreateEditChecklistComponent implements OnInit {
         });
       }
     });
-    console.log(groupByType);
     this.itemListToShow = groupByType;
   }
 
@@ -143,27 +179,32 @@ export class CreateEditChecklistComponent implements OnInit {
     this.getFile(item);
   }
 
-  public changeColorItems(syncGroup: AuxChecklistItemsGroupBySyncDTO): void {
-    console.log(syncGroup);
-    syncGroup.sincronizedItems.forEach((id) => {
-      $(`#item_${id}`)
-        .children('.resizable')
-        .children('.checklistItemToDrag__label')
-        .css({
-          backgroundColor: this.colorToRgba(syncGroup.bgColor.value, '0.65'),
-          color: this.getFontColor(syncGroup.bgColor.value)
-        });
-    });
-  }
-
   public eraseTemplatePDF(): void {
-    this.checklistForm.get('templateFile').get('id').setValue(null);
-    this.checklistForm.get('templateFile').get('thumbnail').setValue(null);
-    this.checklistForm.get('templateFile').get('name').setValue(null);
-    this.checklistForm.get('templateFile').get('type').setValue(null);
-    this.checklistForm.get('templateFile').get('size').setValue(null);
-    this.checklistForm.get('templateFile').get('content').setValue(null);
-    this.fileTemplateBase64.next(null);
+    this.confirmDialogService
+      .open({
+        title: this.translateService.instant(marker('common.warning')),
+        message: this.translateService.instant(marker('administration.templates.checklists.deleteFileConfirmation'))
+      })
+      .pipe(take(1))
+      .subscribe((ok: boolean) => {
+        if (ok) {
+          this.fileDropRef.nativeElement.value = '';
+          this.checklistForm.get('templateFile').get('id').setValue(null);
+          this.checklistForm.get('templateFile').get('thumbnail').setValue(null);
+          this.checklistForm.get('templateFile').get('name').setValue(null);
+          this.checklistForm.get('templateFile').get('type').setValue(null);
+          this.checklistForm.get('templateFile').get('size').setValue(null);
+          this.checklistForm.get('templateFile').get('content').setValue(null);
+          while ((this.checklistForm.get('templateChecklistItems') as UntypedFormArray).length !== 0) {
+            (this.checklistForm.get('templateChecklistItems') as UntypedFormArray).removeAt(0);
+          }
+          this.pdfNumPages = 0;
+          this.pages = [];
+          this.fileTemplateBase64.next(null);
+          this.refreshItemsAndPdf();
+          this.updateValueAndValidityForm();
+        }
+      });
   }
 
   public pdfZoomChange($event: any) {
@@ -171,14 +212,26 @@ export class CreateEditChecklistComponent implements OnInit {
     this.repaintItemsInTemplate();
   }
 
+  public refreshItemsAndPdf(): void {
+    this.setItemListToShow();
+    this.repaintItemsInTemplate();
+  }
+
   public repaintItemsInTemplate(page?: number): void {
+    if (!page) {
+      $('.checklistItemToDrag.dropped').remove();
+    }
     if (this.checklistForm?.value?.templateChecklistItems?.length > 0) {
       setTimeout(() => {
-        this.checklistForm.value.templateChecklistItems.forEach((item: TemplateChecklistItemDTO) => {
+        this.checklistForm.value.templateChecklistItems.forEach((item: TemplateChecklistItemDTO, index: number) => {
           if (page && item.numPage === page) {
-            this.printItemInPdfPage(item);
+            this.printItemInPdfPage(
+              (this.checklistForm.get('templateChecklistItems') as UntypedFormArray).at(index) as UntypedFormGroup
+            );
           } else if (!page) {
-            this.printItemInPdfPage(item);
+            this.printItemInPdfPage(
+              (this.checklistForm.get('templateChecklistItems') as UntypedFormArray).at(index) as UntypedFormGroup
+            );
           }
         });
       });
@@ -186,10 +239,10 @@ export class CreateEditChecklistComponent implements OnInit {
   }
 
   public pdfLoadedFn($event: any) {
-    console.log('pdf loaded', $event);
+    this.pdfNumPages = $event.pagesCount;
+    this.pages = [...Array(this.pdfNumPages).keys()].map((x) => ++x);
     $('.checklistItemToDrag.undropped').draggable({ revert: true, containment: $('.checklist-config') });
     this.pdfLoaded = true;
-    // this.configCanvas();
   }
 
   //Method to change the page manually
@@ -211,7 +264,6 @@ export class CreateEditChecklistComponent implements OnInit {
           setTimeout(() => {
             $('.canvasDropZone-page' + pageNumber).droppable({
               drop: (event, ui) => {
-                console.log('Drop in canvas --- problema en firefox');
                 const item = ui.draggable;
                 const offset = ui.offset;
                 if (!item.hasClass('dropped')) {
@@ -229,46 +281,247 @@ export class CreateEditChecklistComponent implements OnInit {
     }
   }
 
-  // public save() {
-  //   const dataToSave: any = {};
-  //   Array.from(document.getElementById('checklistPDF').getElementsByClassName('page')).forEach((page: Element) => {
-  //     const pageNumber = page.getAttribute('data-page-number');
-  //     const pageW = $(page).width();
-  //     const pageH = $(page).height();
-  //     dataToSave['page-' + pageNumber] = [];
-  //     Array.from(page.getElementsByClassName('dropped')).forEach((dropped: any) => {
-  //       let extraData = dropped
-  //         .getElementsByClassName('resizable')
-  //         .item(0)
-  //         .getElementsByTagName('div')
-  //         .item(0)
-  //         .getAttribute('data-extra');
-  //       extraData = extraData ? extraData : {};
-  //       dataToSave['page-' + pageNumber].push({
-  //         page: {
-  //           width: pageW,
-  //           height: pageH
-  //         },
-  //         position: {
-  //           topPx: dropped.style.top,
-  //           leftPx: dropped.style.left,
-  //           top: this.pxToPercentage(pageH, parseInt(dropped.style.top.split('px').join(), 10)),
-  //           left: this.pxToPercentage(pageW, parseInt(dropped.style.left.split('px').join(), 10))
-  //         },
-  //         itemToInsert: {
-  //           id: dropped.getElementsByClassName('resizable').item(0).getElementsByTagName('div').item(0).getAttribute('class'),
-  //           data: extraData,
-  //           widthPx: $(dropped).width(),
-  //           heightPx: $(dropped).height(),
-  //           width: this.pxToPercentage(pageW, $(dropped).width()),
-  //           height: this.pxToPercentage(pageH, $(dropped).height())
-  //         }
-  //       });
-  //     });
-  //   });
-  //   console.log(dataToSave);
-  //   // this.setDrawZone(dataToSave);
-  // }
+  public getChecklistItemByOrderNumber(ordNumber: number): UntypedFormGroup {
+    let fg: UntypedFormGroup = null;
+    if (ordNumber && this.checklistForm.get('templateChecklistItems')) {
+      (this.checklistForm.get('templateChecklistItems') as UntypedFormArray).controls.forEach((form: UntypedFormGroup) => {
+        if (form.get('orderNumber').value === ordNumber) {
+          fg = form;
+          return fg;
+        }
+      });
+    }
+    return fg;
+  }
+
+  public getLabelForOrderNumber(ordNumber: number): string {
+    let label = this.getChecklistItemByOrderNumber(ordNumber).get('label').value;
+    if (label) {
+      label = `: ${label}`;
+    }
+    return label;
+  }
+
+  public deleteChecklistItem(ordNumber: number): void {
+    this.confirmDialogService
+      .open({
+        title: this.translateService.instant(marker('common.warning')),
+        message: this.translateService.instant(marker('common.deleteConfirmation'))
+      })
+      .pipe(take(1))
+      .subscribe((ok: boolean) => {
+        if (ok) {
+          (this.checklistForm.get('templateChecklistItems') as UntypedFormArray).removeAt(
+            (this.checklistForm.get('templateChecklistItems') as UntypedFormArray).value.findIndex(
+              (f: TemplateChecklistItemDTO) => f.orderNumber === ordNumber
+            )
+          );
+          this.uniqueIdOrder--;
+          (this.checklistForm.get('templateChecklistItems') as UntypedFormArray).controls.forEach(
+            (f: UntypedFormGroup, index: number) => {
+              f.get('orderNumber').setValue(index + 1);
+              let syncronizedItems: number[] = f.get('sincronizedItems').value;
+              syncronizedItems = syncronizedItems
+                .map((n) => {
+                  if (n === ordNumber) {
+                    return null;
+                  } else if (n > ordNumber) {
+                    return n - 1;
+                  }
+                  return n;
+                })
+                .filter((n) => n && n > 0);
+              f.get('sincronizedItems').setValue(syncronizedItems);
+            }
+          );
+          this.refreshItemsAndPdf();
+        }
+      });
+  }
+
+  public syncronizationChange(
+    opened: boolean,
+    groupByType: AuxChecklistItemsGroupByTypeDTO,
+    syncGroup: AuxChecklistItemsGroupBySyncDTO
+  ): void {
+    if (!opened) {
+      const itemEdited = syncGroup.selectedItem;
+      const syncronizedItems = this.getChecklistItemByOrderNumber(syncGroup.selectedItem).get('sincronizedItems').value;
+      groupByType.syncGroups.forEach((sg: AuxChecklistItemsGroupBySyncDTO) => {
+        (sg.templateChecklistItems as UntypedFormArray).controls.forEach((fg: UntypedFormGroup) => {
+          if (fg.get('orderNumber').value !== itemEdited) {
+            const itemOrderNumber = fg.get('orderNumber').value;
+            const syncronizedItemsAux = fg.get('sincronizedItems').value;
+            if (syncronizedItems.indexOf(itemOrderNumber) >= 0) {
+              // Si está sincronizado con el editado debemos igualarlos
+              this.getChecklistItemByOrderNumber(itemOrderNumber).get('sincronizedItems').setValue(syncronizedItems);
+            } else if (syncronizedItemsAux.filter((element: number) => syncronizedItems.includes(element)).length > 0) {
+              // Si el elemento itereado estaba sincronizado con alguno de los items del editado debemos quitarlos
+              syncronizedItemsAux
+                .filter((element: number) => syncronizedItems.includes(element))
+                .forEach((n: number) => {
+                  syncronizedItemsAux.splice(syncronizedItemsAux.indexOf(n), 1);
+                });
+              this.getChecklistItemByOrderNumber(itemOrderNumber).get('sincronizedItems').setValue(syncronizedItemsAux);
+            }
+          }
+        });
+      });
+      this.setItemListToShow();
+    }
+  }
+
+  public typeSignChange(syncGroup: AuxChecklistItemsGroupBySyncDTO): void {
+    const itemEdited = syncGroup.selectedItem;
+    let syncronizedItems: number[] = this.getChecklistItemByOrderNumber(itemEdited).get('sincronizedItems').value;
+    if (syncronizedItems.length > 1) {
+      syncronizedItems = syncronizedItems.splice(syncronizedItems.indexOf(itemEdited), 1);
+      syncronizedItems.forEach((n) => {
+        this.getChecklistItemByOrderNumber(n).get('sincronizedItems').setValue(syncronizedItems);
+      });
+      this.getChecklistItemByOrderNumber(itemEdited).get('sincronizedItems').setValue([itemEdited]);
+      this.setItemListToShow();
+    }
+    this.updateValueAndValidityForm();
+  }
+
+  public updateValueAndValidityForm(): void {
+    this.checklistForm.get('templateChecklistItems').updateValueAndValidity();
+    this.checklistForm.updateValueAndValidity();
+  }
+
+  public getSyncronizableItems(
+    groupByType: AuxChecklistItemsGroupByTypeDTO,
+    syncGroup: AuxChecklistItemsGroupBySyncDTO
+  ): number[] {
+    if (groupByType.typeItem !== 'SIGN' && groupByType.orderNumbers.length > 1) {
+      return groupByType.orderNumbers;
+    } else if (
+      groupByType.typeItem === 'SIGN' &&
+      groupByType.orderNumbers.length > 1 &&
+      this.getChecklistItemByOrderNumber(syncGroup.selectedItem).get('typeSign').value
+    ) {
+      const arr: number[] = [];
+      groupByType.orderNumbers.forEach((n: number) => {
+        if (
+          this.getChecklistItemByOrderNumber(n).get('typeSign').value ===
+          this.getChecklistItemByOrderNumber(syncGroup.selectedItem).get('typeSign').value
+        ) {
+          arr.push(n);
+        }
+      });
+      return arr;
+    }
+    return [];
+  }
+
+  public getSyncGroupLabel(syncGroup: AuxChecklistItemsGroupBySyncDTO): string {
+    let str = '';
+    const fg: UntypedFormGroup = this.getChecklistItemByOrderNumber(syncGroup.selectedItem);
+    if (fg.get('typeItem').value === 'SIGN' && fg.get('typeSign').value) {
+      str = this.translateService.instant(this.labels[fg.get('typeSign').value]);
+    }
+    if (fg.get('label').value) {
+      str += str
+        ? `: ${this.getChecklistItemByOrderNumber(syncGroup.selectedItem).get('label').value}`
+        : this.getChecklistItemByOrderNumber(syncGroup.selectedItem).get('label').value;
+    }
+    return str;
+  }
+
+  public duplicateItemIn(opened: boolean, syncGroup: AuxChecklistItemsGroupBySyncDTO): void {
+    if (!opened) {
+      const fg = this.getChecklistItemByOrderNumber(syncGroup.selectedItem);
+      this.pagesSelectedToAddItem.value.forEach((n: number) => {
+        this.uniqueIdOrder++;
+        const result = this.createEditChecklistAuxService.copyItemForPage(fg.getRawValue(), n, this.uniqueIdOrder);
+        (this.checklistForm.get('templateChecklistItems') as UntypedFormArray).push(result);
+      });
+      this.pagesSelectedToAddItem.setValue([]);
+      this.refreshItemsAndPdf();
+    }
+  }
+
+  public cancel(): void {
+    this.confirmDialogService
+      .open({
+        title: this.translateService.instant(marker('common.warning')),
+        message: this.translateService.instant(marker('common.unsavedChangesExit'))
+      })
+      .pipe(take(1))
+      .subscribe((ok: boolean) => {
+        if (ok) {
+          this.router.navigate([RouteConstants.ADMINISTRATION, RouteConstants.TEMPLATES, RouteConstants.CHECKLISTS]);
+        }
+      });
+  }
+
+  public isSaveDisabled(): boolean {
+    this.updateValueAndValidityForm();
+    return this.checklistForm.invalid;
+  }
+
+  public getErrorMessages(): string[] {
+    const errores = [];
+    if (this.checklistForm.invalid) {
+      if (this.checklistForm.get('templateFile').invalid) {
+        errores.push(this.translateService.instant(marker('administration.templates.checklists.templateFileError')));
+      }
+      if (this.checklistForm.get('template').invalid) {
+        errores.push(this.translateService.instant(marker('administration.templates.checklists.configError')));
+      }
+      if (this.checklistForm.get('templateChecklistItems').invalid) {
+        const itemsWithErrors: number[] = [];
+        (this.checklistForm.get('templateChecklistItems') as UntypedFormArray).controls.forEach((fg: UntypedFormGroup) => {
+          if (fg.invalid) {
+            itemsWithErrors.push(fg.get('orderNumber').value);
+          }
+        });
+        const items = itemsWithErrors.join(', ');
+        errores.push(
+          this.translateService.instant(marker('administration.templates.checklists.itemsConfigError'), {
+            items: itemsWithErrors.join(', ')
+          })
+        );
+      }
+    }
+    return errores;
+  }
+
+  public save(): void {
+    this.confirmDialogService
+      .open({
+        title: this.translateService.instant(marker('common.warning')),
+        message: this.translateService.instant(marker('common.askForConfirmation'))
+      })
+      .pipe(take(1))
+      .subscribe((ok: boolean) => {
+        if (ok) {
+          const spinner = this.spinnerService.show();
+          this.templatesChecklistsService
+            .addOrEditChecklist(this.checklistForm.getRawValue())
+            .pipe(
+              take(1),
+              finalize(() => this.spinnerService.hide(spinner))
+            )
+            .subscribe({
+              next: (response) => {
+                this.globalMessageService.showSuccess({
+                  message: this.translateService.instant(marker('common.successOperation')),
+                  actionText: this.translateService.instant(marker('common.close'))
+                });
+                this.router.navigate([RouteConstants.ADMINISTRATION, RouteConstants.TEMPLATES, RouteConstants.CHECKLISTS]);
+              },
+              error: (error: ConcenetError) => {
+                this.globalMessageService.showError({
+                  message: this.translateService.instant(error.message),
+                  actionText: this.translateService.instant(marker('common.close'))
+                });
+              }
+            });
+        }
+      });
+  }
 
   //Private methods
 
@@ -281,59 +534,9 @@ export class CreateEditChecklistComponent implements OnInit {
     pageNumber: number | string
   ): void {
     this.uniqueIdOrder++;
-    const pageWidthAndHeight = this.getPageWidthAndHeight(`${pageNumber}`);
-    //Los +20 es porque la tarjeta tiene un margin de 20
-    let top = offset.top + 20 - $('.canvasDropZone-page' + pageNumber).offset().top;
-    let left = offset.left + 20 - $('.canvasDropZone-page' + pageNumber).offset().left;
-    top = top >= 0 ? top : 0;
-    left = left >= 0 ? left : 0;
-    const fbGroug = this.fb.group({
-      id: [null],
-      numPage: [parseInt(`${pageNumber}`, 10), Validators.required],
-      lowerLeftX: [this.pxToPercentage(pageWidthAndHeight.width, left), Validators.required],
-      lowerLeftY: [this.pxToPercentage(pageWidthAndHeight.height, top), Validators.required],
-      height: [this.pxToPercentage(pageWidthAndHeight.height, item[0].offsetHeight), Validators.required],
-      width: [this.pxToPercentage(pageWidthAndHeight.width, item[0].offsetWidth), Validators.required],
-      typeItem: [item.data('type'), Validators.required],
-      typeSign: [null],
-      staticValue: [item.data('type') === 'VARIABLE'],
-      orderNumber: [this.uniqueIdOrder, Validators.required],
-      frontIdGroup: [null],
-      label: [null, Validators.required],
-      sincronizedItems: [[]],
-      itemVal: this.fb.group({
-        booleanValue: [null],
-        fileValue: this.fb.group({
-          content: [null],
-          id: [null],
-          name: [null],
-          size: [null],
-          thumbnail: [null],
-          type: [null]
-        }),
-        id: [null],
-        textValue: [null]
-      }),
-      variable: this.fb.group({
-        attributeName: [null],
-        entityName: [null],
-        id: [null],
-        dataType: [null],
-        value: [null],
-        name: [null],
-        contentSource: this.fb.group({
-          contentType: this.fb.group({
-            id: [null],
-            name: [null],
-            type: [null]
-          }),
-          id: [null],
-          name: [null]
-        })
-      })
-    });
+    const fbGroug = this.createEditChecklistAuxService.newChecklistItemDropped(item, offset, pageNumber, this.uniqueIdOrder);
     (this.checklistForm.get('templateChecklistItems') as UntypedFormArray).push(fbGroug);
-    this.printItemInPdfPage(fbGroug.value);
+    this.printItemInPdfPage(fbGroug);
     this.setItemListToShow();
   }
 
@@ -345,7 +548,7 @@ export class CreateEditChecklistComponent implements OnInit {
     },
     pageNumber: number | string
   ): void {
-    const pageWidthAndHeight = this.getPageWidthAndHeight(`${pageNumber}`);
+    const pageWidthAndHeight = this.createEditChecklistAuxService.getPageWidthAndHeight(`${pageNumber}`);
     let top = offset.top - $('.canvasDropZone-page' + pageNumber).offset().top;
     let left = offset.left - $('.canvasDropZone-page' + pageNumber).offset().left;
     top = top >= 0 ? top : 0;
@@ -358,11 +561,11 @@ export class CreateEditChecklistComponent implements OnInit {
     (this.checklistForm.get('templateChecklistItems') as UntypedFormArray)
       .at(index)
       .get('lowerLeftX')
-      .setValue(this.pxToPercentage(pageWidthAndHeight.width, left));
+      .setValue(this.createEditChecklistAuxService.pxToPercentage(pageWidthAndHeight.width, left), { emit: true });
     (this.checklistForm.get('templateChecklistItems') as UntypedFormArray)
       .at(index)
       .get('lowerLeftY')
-      .setValue(this.pxToPercentage(pageWidthAndHeight.height, top));
+      .setValue(this.createEditChecklistAuxService.pxToPercentage(pageWidthAndHeight.height, top), { emit: true });
   }
 
   private pdfItemResized(ui: JQueryUI.ResizableUIParams): void {
@@ -370,79 +573,28 @@ export class CreateEditChecklistComponent implements OnInit {
     const index = this.checklistForm
       .get('templateChecklistItems')
       .value.findIndex((templateChecklistItem: TemplateChecklistItemDTO) => templateChecklistItem.orderNumber === id);
-    const pageWidthAndHeight = this.getPageWidthAndHeight(
+    const pageWidthAndHeight = this.createEditChecklistAuxService.getPageWidthAndHeight(
       `${(this.checklistForm.get('templateChecklistItems') as UntypedFormArray).at(index).get('numPage').value}`
     );
-    // height: [this.pxToPercentage(pageWidthAndHeight.height, item[0].offsetHeight), Validators.required],
-    // width: [this.pxToPercentage(pageWidthAndHeight.width, item[0].offsetWidth), Validators.required],
     (this.checklistForm.get('templateChecklistItems') as UntypedFormArray)
       .at(index)
       .get('width')
-      .setValue(this.pxToPercentage(pageWidthAndHeight.width, ui.size.width));
+      .setValue(this.createEditChecklistAuxService.pxToPercentage(pageWidthAndHeight.width, ui.size.width), { emit: true });
     (this.checklistForm.get('templateChecklistItems') as UntypedFormArray)
       .at(index)
       .get('height')
-      .setValue(this.pxToPercentage(pageWidthAndHeight.height, ui.size.height));
-  }
-
-  private pxToPercentage(cien: number, x: number) {
-    // cien => 100%
-    // x => return
-    return (100 * x) / cien;
-  }
-
-  private getPageWidthAndHeight(pageNumber: string): { width: number; height: number } {
-    const pageWidthAndHeight = {
-      width: 0,
-      height: 0
-    };
-    Array.from(document.getElementById('checklistPDF').getElementsByClassName('page')).forEach((page: Element) => {
-      if (pageNumber === `${page.getAttribute('data-page-number')}`) {
-        pageWidthAndHeight.width = $(page).width();
-        pageWidthAndHeight.height = $(page).height();
-      }
-    });
-    return pageWidthAndHeight;
+      .setValue(this.createEditChecklistAuxService.pxToPercentage(pageWidthAndHeight.height, ui.size.height), { emit: true });
   }
 
   private initForm() {
-    const checklistItems: UntypedFormGroup[] = [];
-    if (this.checklistToEdit) {
-      console.log('Hacer algo aquí', this.checklistToEdit);
-      //calcular order number
-    }
-    this.checklistForm = this.fb.group({
-      id: [null],
-      includeFile: [false],
-      //TemplatesCommonDTO;
-      template: this.fb.group({
-        id: [null],
-        name: [null, Validators.required],
-        facilities: [[], Validators.required],
-        brands: [[], Validators.required],
-        departments: [[]],
-        specialties: [[]],
-        templateType: ['CHECKLISTS']
-      }),
-      //TemplateChecklistItemDTO[];
-      templateChecklistItems: this.fb.array(checklistItems, [Validators.required]),
-      //AttachmentDTO;
-      templateFile: this.fb.group({
-        content: [null],
-        id: [null],
-        name: [null],
-        size: [null],
-        thumbnail: [null],
-        type: ['application/pdf']
-      })
-    });
+    this.checklistForm = this.createEditChecklistAuxService.createChecklistForm(this.checklistToEdit);
   }
 
-  private printItemInPdfPage(templateItem: TemplateChecklistItemDTO): void {
-    const item = $(`#checklistItemToDrag__${templateItem.typeItem.toLowerCase()}`);
-    const pageWidthAndHeight = this.getPageWidthAndHeight(`${templateItem.numPage}`);
-    const pageNumber = `${templateItem.numPage}`;
-    const uniqueId = templateItem.orderNumber;
+  private printItemInPdfPage(templateItemFG: UntypedFormGroup): void {
+    const item = $(`#checklistItemToDrag__${templateItemFG.get('typeItem').value.toLowerCase()}`);
+    const pageWidthAndHeight = this.createEditChecklistAuxService.getPageWidthAndHeight(`${templateItemFG.get('numPage').value}`);
+    const pageNumber = `${templateItemFG.get('numPage').value}`;
+    const uniqueId = templateItemFG.get('orderNumber').value;
     const id = `item_${uniqueId}`;
     const newItem = item.clone();
     newItem.removeClass('undropped');
@@ -456,7 +608,6 @@ export class CreateEditChecklistComponent implements OnInit {
     newItem.children('.resizable').resizable({
       handles: 'ne, se, sw, nw',
       stop: (e, rui) => {
-        console.log('STOP RESIZE -- problema en firefox');
         this.pdfItemResized(rui);
       }
     });
@@ -465,12 +616,12 @@ export class CreateEditChecklistComponent implements OnInit {
       containment: $('.canvasDropZone-page' + pageNumber)
     });
     newItem.css({
-      top: (pageWidthAndHeight.height * templateItem.lowerLeftY) / 100 + 'px',
-      left: (pageWidthAndHeight.width * templateItem.lowerLeftX) / 100 + 'px'
+      top: (pageWidthAndHeight.height * templateItemFG.get('lowerLeftY').value) / 100 + 'px',
+      left: (pageWidthAndHeight.width * templateItemFG.get('lowerLeftX').value) / 100 + 'px'
     });
     newItem.children().css({
-      width: (pageWidthAndHeight.width * templateItem.width) / 100 + 'px',
-      height: (pageWidthAndHeight.height * templateItem.height) / 100 + 'px'
+      width: (pageWidthAndHeight.width * templateItemFG.get('width').value) / 100 + 'px',
+      height: (pageWidthAndHeight.height * templateItemFG.get('height').value) / 100 + 'px'
     });
     newItem.appendTo($('.canvasDropZone-page' + pageNumber));
   }
@@ -510,30 +661,5 @@ export class CreateEditChecklistComponent implements OnInit {
     this.checklistForm.markAsDirty();
     this.checklistForm.markAsTouched();
     this.fileTemplateBase64.next(base64.split(';base64,')[1]);
-  }
-
-  private colorToRgba(color: string, alpha: string) {
-    if (color.charAt(0) === '#') {
-      color = color.substring(1, 7);
-      const r = parseInt(color.substring(0, 2), 16); // hexToR
-      const g = parseInt(color.substring(2, 4), 16); // hexToG
-      const b = parseInt(color.substring(4, 6), 16); // hexToB
-      return `rgba(${r},${g},${b},${alpha})`;
-    }
-    return color;
-  }
-
-  private getFontColor(baseColor: string): string {
-    const lightColor = '#fff';
-    const darkColor = '#000';
-    if (baseColor) {
-      const bgColor = baseColor;
-      const color = bgColor.charAt(0) === '#' ? bgColor.substring(1, 7) : bgColor;
-      const r = parseInt(color.substring(0, 2), 16); // hexToR
-      const g = parseInt(color.substring(2, 4), 16); // hexToG
-      const b = parseInt(color.substring(4, 6), 16); // hexToB
-      return r * 0.299 + g * 0.587 + b * 0.114 > 186 ? darkColor : lightColor;
-    }
-    return darkColor;
   }
 }

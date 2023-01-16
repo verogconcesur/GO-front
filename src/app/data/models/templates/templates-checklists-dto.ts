@@ -25,7 +25,6 @@ export interface TemplateChecklistItemDTO {
   typeSign: null | 'SIGN_USER' | 'SIGN_CLIENT';
   variable: WorkflowCardSlotDTO;
   width: number;
-  frontIdGroup?: number;
 }
 
 export interface AuxChecklistItemsGroupByTypeDTO {
@@ -39,8 +38,8 @@ export interface AuxChecklistItemsGroupByTypeDTO {
 }
 export interface AuxChecklistItemsGroupBySyncDTO {
   numPages: number[];
-  bgColor: FormControl;
   sincronizedItems: number[]; //orderNumbers
+  selectedItem: number;
   typeItem: 'SIGN' | 'TEXT' | 'VARIABLE' | 'CHECK' | 'DRAWING' | 'IMAGE';
   typeSign: null | 'SIGN_USER' | 'SIGN_CLIENT';
   variable: WorkflowCardSlotDTO;

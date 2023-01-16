@@ -1,6 +1,17 @@
 <div class="checklist-config">
     <div class="checklist-config__column checklist-config__config">
-        <h1>{{ getTitle() }}</h1>
+        <div fxLayoutAlign="space-between center">
+            <h1>{{ getTitle() }}</h1>
+            <button
+                mat-raised-button
+                color="warn"
+                class="delete-file-button"
+                (click)="eraseTemplatePDF()"
+                *ngIf="checklistForm.get('templateFile').get('content').value"
+            >
+                {{ labels.deleteFile | translate }}
+            </button>
+        </div>
         <div class="checklist-config__config__accordion">
             <mat-accordion [multi]="true">
                 <mat-expansion-panel [expanded]="true">
@@ -50,7 +61,12 @@
                     </mat-expansion-panel-header>
                     <!-- Group by type -->
                     <mat-accordion [multi]="true">
-                        <mat-expansion-panel *ngFor="let groupByType of itemListToShow; let i = index">
+                        <mat-expansion-panel
+                            *ngFor="let groupByType of itemListToShow; let i = index"
+                            (opened)="expansionPanelOpened['group-' + groupByType.typeItem] = true"
+                            (closed)="expansionPanelOpened['group-' + groupByType.typeItem] = false"
+                            [expanded]="expansionPanelOpened['group-' + groupByType.typeItem]"
+                        >
                             <mat-expansion-panel-header>
                                 <mat-panel-title>
                                     {{ labels.fieldsType | translate }}: {{ groupByType.typeLabel }}
@@ -75,41 +91,123 @@
                             </mat-expansion-panel-header>
                             <!-- Group by sync -->
                             <mat-accordion [multi]="true" [displayMode]="'flat'">
-                                <mat-expansion-panel *ngFor="let syncGroup of groupByType.syncGroups; let i = index">
+                                <mat-expansion-panel
+                                    *ngFor="let syncGroup of groupByType.syncGroups; let i = index"
+                                    (opened)="expansionPanelOpened['sync-' + syncGroup.sincronizedItems.join('-')] = true"
+                                    (closed)="expansionPanelOpened['sync-' + syncGroup.sincronizedItems.join('-')] = false"
+                                    [expanded]="expansionPanelOpened['sync-' + syncGroup.sincronizedItems.join('-')]"
+                                >
                                     <mat-expansion-panel-header>
                                         <mat-panel-title fxLayoutAlign="flex-start center">
                                             <div
                                                 class="checklistItemToDrag__orderNumber"
+                                                [ngClass]="{ selected: syncGroup.selectedItem === ordN }"
                                                 *ngFor="let ordN of syncGroup.sincronizedItems"
                                                 (click)="
                                                     $event.stopPropagation();
-                                                    changePage(groupByType.orderNumberPageAssociation[ordN])
+                                                    changePage(groupByType.orderNumberPageAssociation[ordN]);
+                                                    syncGroup.selectedItem = ordN
                                                 "
                                             >
                                                 {{ ordN }}
                                             </div>
                                         </mat-panel-title>
                                         <mat-panel-description fxLayoutAlign="space-between center">
-                                            <div (click)="$event.stopPropagation()">
-                                                <input
-                                                    type="color"
-                                                    class="inputColor"
-                                                    matInput
-                                                    [formControl]="syncGroup.bgColor"
-                                                    (change)="changeColorItems(syncGroup)"
-                                                />
-                                            </div>
-                                            <label> {{ labels.pages | translate }}: {{ syncGroup.numPages.join(",") }} </label>
+                                            <label> {{ getSyncGroupLabel(syncGroup) }} </label>
+                                            <label> Pág: {{ syncGroup.numPages.join(",") }} </label>
                                         </mat-panel-description>
                                     </mat-expansion-panel-header>
-
-                                    <section class="checklist-config__config__item" [ngSwitch]="groupByType.typeItem">
-                                        <ng-container *ngSwitchCase="'TEXT'"> TEXT </ng-container>
-                                        <ng-container *ngSwitchCase="'SIGN'"> SIGN </ng-container>
-                                        <ng-container *ngSwitchCase="'VARIABLE'"> VARIABLE </ng-container>
-                                        <ng-container *ngSwitchCase="'CHECK'"> CHECK </ng-container>
-                                        <ng-container *ngSwitchCase="'DRAWING'"> DRAWING </ng-container>
-                                        <ng-container *ngSwitchCase="'IMAGE'"> IMAGE </ng-container>
+                                    <form
+                                        [formGroup]="getChecklistItemByOrderNumber(syncGroup.selectedItem)"
+                                        *ngIf="getChecklistItemByOrderNumber(syncGroup.selectedItem)"
+                                        class="smaller-mat-form-fields"
+                                    >
+                                        <!-- Common section -->
+                                        <section fxLayoutAlign="space-between center">
+                                            <!-- Label -->
+                                            <mat-form-field style="width: 80%" appearance="outline" floatLabel="always">
+                                                <mat-label>{{ labels.label | translate }}</mat-label>
+                                                <input matInput formControlName="label" (change)="updateValueAndValidityForm()" />
+                                            </mat-form-field>
+                                            <mat-icon
+                                                class="delete-item-button"
+                                                (click)="deleteChecklistItem(syncGroup.selectedItem)"
+                                                >delete</mat-icon
+                                            >
+                                        </section>
+                                        <section class="checklist-config__config__item">
+                                            <section *ngIf="groupByType.typeItem === 'SIGN'">
+                                                <mat-form-field appearance="outline" floatLabel="always" style="width: 100%">
+                                                    <mat-label>{{ labels.signType | translate }}*</mat-label>
+                                                    <mat-select
+                                                        formControlName="typeSign"
+                                                        (selectionChange)="typeSignChange(syncGroup)"
+                                                    >
+                                                        <mat-option
+                                                            *ngFor="let typeSign of ['SIGN_USER', 'SIGN_CLIENT']"
+                                                            [value]="typeSign"
+                                                            >{{ labels[typeSign] | translate }}</mat-option
+                                                        >
+                                                    </mat-select>
+                                                </mat-form-field>
+                                            </section>
+                                            <section *ngIf="groupByType.typeItem === 'VARIABLE'">
+                                                <mat-form-field appearance="outline" floatLabel="always" style="width: 100%">
+                                                    <mat-label>{{ labels.variable | translate }}*</mat-label>
+                                                    <mat-select
+                                                        formControlName="variable"
+                                                        (selectionChange)="updateValueAndValidityForm()"
+                                                    >
+                                                        <mat-option *ngFor="let variable of listVariables" [value]="variable">{{
+                                                            variable.name
+                                                        }}</mat-option>
+                                                    </mat-select>
+                                                </mat-form-field>
+                                            </section>
+                                            <section
+                                                *ngIf="
+                                                    groupByType.typeItem === 'TEXT' ||
+                                                    groupByType.typeItem === 'CHECK' ||
+                                                    groupByType.typeItem === 'SIGN'
+                                                "
+                                            >
+                                                <!-- SYNCRONIZATION FOR CHECKS, TEXTS AND SIGNS -->
+                                                <mat-form-field
+                                                    appearance="outline"
+                                                    floatLabel="always"
+                                                    style="width: 100%"
+                                                    *ngIf="getSyncronizableItems(groupByType, syncGroup).length > 1"
+                                                >
+                                                    <mat-label>{{ labels.syncronization | translate }}</mat-label>
+                                                    <mat-select
+                                                        formControlName="sincronizedItems"
+                                                        multiple
+                                                        (openedChange)="syncronizationChange($event, groupByType, syncGroup)"
+                                                    >
+                                                        <mat-option
+                                                            *ngFor="
+                                                                let ordNumber of getSyncronizableItems(groupByType, syncGroup)
+                                                            "
+                                                            [disabled]="ordNumber === syncGroup.selectedItem"
+                                                            [value]="ordNumber"
+                                                            >{{ ordNumber }}{{ getLabelForOrderNumber(ordNumber) }}</mat-option
+                                                        >
+                                                    </mat-select>
+                                                </mat-form-field>
+                                            </section>
+                                        </section>
+                                    </form>
+                                    <section class="smaller-mat-form-fields">
+                                        <mat-form-field style="width: 100%">
+                                            <mat-label>{{ labels.copyItemInPage | translate }}</mat-label>
+                                            <mat-select
+                                                multiple
+                                                [formControl]="pagesSelectedToAddItem"
+                                                (openedChange)="duplicateItemIn($event, syncGroup)"
+                                            >
+                                                <mat-option *ngFor="let page of pages" [value]="page">{{ page }}</mat-option>
+                                            </mat-select>
+                                        </mat-form-field>
                                     </section>
                                 </mat-expansion-panel>
                                 <label *ngIf="itemListToShow?.length === 0">{{ labels.noData | translate }}</label>
@@ -132,7 +230,7 @@
                 [zoom]="'page-fit'"
                 [zoomLevels]="['page-fit']"
                 [textLayer]="true"
-                [showZoomButtons]="false"
+                [showZoomButtons]="true"
                 [showHandToolButton]="false"
                 [showPresentationModeButton]="false"
                 [showRotateButton]="false"
@@ -210,4 +308,14 @@
             </div>
         </div>
     </div>
+</div>
+<!-- Footer -->
+<div class="checklist-footer" fxLayoutAlign="space-between center">
+    <button mat-stroked-button color="warn" (click)="cancel()">{{ labels.cancel | translate }}</button>
+    <div class="checklist-footer__error" fxLayout="column" fxLayoutAlign="flex-start center">
+        <label *ngFor="let error of getErrorMessages()">{{ error }}</label>
+    </div>
+    <button mat-flat-button color="primary" (click)="save()" [disabled]="isSaveDisabled()">
+        {{ labels.save | translate }}
+    </button>
 </div>

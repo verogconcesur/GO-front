@@ -84,6 +84,28 @@
     width: 35px;
     height: 35px;
   }
+
+  .delete-item-button {
+    color: mat-color($primary, statusError);
+    margin-bottom: 20px;
+    cursor: pointer;
+  }
+
+  .delete-file-button {
+    margin-bottom: 12px;
+  }
+}
+
+.checklist-footer {
+  width: 100%;
+  min-height: 75px;
+  position: absolute;
+  bottom: 0;
+  padding: 20px;
+  background-color: mat-contrast($primary, 400);
+  &__error {
+    color: mat-color($primary, statusError);
+  }
 }
 
 .checklistItemToDrag {
@@ -144,5 +166,8 @@
     display: flex;
     justify-content: center;
     align-items: center;
+    &.selected {
+      background-color: #0020ffea;
+    }
   }
 }
