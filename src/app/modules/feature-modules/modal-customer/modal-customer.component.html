@@ -34,6 +34,11 @@
                     <mat-form-field appearance="outline" floatLabel="always">
                         <mat-label>{{ labels.socialSecurityId | translate }}</mat-label>
                         <input matInput formControlName="socialSecurityId" />
+                        <mat-error *ngIf="customerForm.controls?.socialSecurityId.invalid">
+                            <span *ngIf="customerForm.controls.socialSecurityId.errors.required">{{
+                                labels.required | translate
+                            }}</span>
+                        </mat-error>
                     </mat-form-field>
                     <!-- Phone -->
                     <mat-form-field appearance="outline" floatLabel="always">

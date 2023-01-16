@@ -89,6 +89,8 @@ export class EntityComponent implements OnInit {
                 message: this.translateService.instant(marker('common.successOperation')),
                 actionText: this.translateService.instant(marker('common.close'))
               });
+              this.searchForm.get('search').setValue(response);
+              this.selectEntity();
             }
           });
         break;
@@ -108,6 +110,8 @@ export class EntityComponent implements OnInit {
                 message: this.translateService.instant(marker('common.successOperation')),
                 actionText: this.translateService.instant(marker('common.close'))
               });
+              this.searchForm.get('search').setValue(response);
+              this.selectEntity();
             }
           });
         break;

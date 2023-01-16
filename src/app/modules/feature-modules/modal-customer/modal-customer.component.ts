@@ -36,6 +36,7 @@ export class ModalCustomerComponent extends ComponentToExtendForCustomDialog imp
     email: marker('entities.customers.email'),
     socialSecurityId: marker('entities.customers.socialSecurityId'),
     emailError: marker('errors.emailPattern'),
+    required: marker('errors.required'),
     data: marker('userProfile.data')
   };
   public minLength = 3;
@@ -83,7 +84,7 @@ export class ModalCustomerComponent extends ComponentToExtendForCustomDialog imp
     }
   }
 
-  public onSubmitCustomDialog(): Observable<boolean | BrandDTO> {
+  public onSubmitCustomDialog(): Observable<boolean | CustomerEntityDTO> {
     const formValue = this.customerForm.value;
     const spinner = this.spinnerService.show();
     return this.entitiesService.createCustomer(formValue).pipe(
@@ -130,7 +131,7 @@ export class ModalCustomerComponent extends ComponentToExtendForCustomDialog imp
       firstName: [this.customerToEdit ? this.customerToEdit.firstName : null],
       secondName: [this.customerToEdit ? this.customerToEdit.secondName : null],
       email: [this.customerToEdit ? this.customerToEdit.email : null, [Validators.email]],
-      socialSecurityId: [this.customerToEdit ? this.customerToEdit.socialSecurityId : null],
+      socialSecurityId: [this.customerToEdit ? this.customerToEdit.socialSecurityId : null, [Validators.required]],
       phone: [this.customerToEdit ? this.customerToEdit.phone : null]
     });
   };
