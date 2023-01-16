@@ -1,3 +1,5 @@
+@import 'utils/core';
+@import 'utils/theme';
 .wc-movement-preparation {
   &__header {
     position: relative;
@@ -39,5 +41,15 @@
 
   .w100 {
     width: 100%;
+  }
+  .mat-tab-page-sections {
+    margin-top: 10px;
+    &__title {
+      color: mat-contrast($primary, 100);
+      font-size: 0.75rem;
+      font-weight: 600;
+      padding-bottom: 2px;
+      text-transform: uppercase;
+    }
   }
 }

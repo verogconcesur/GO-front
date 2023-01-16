@@ -17,9 +17,7 @@
     border-right-width: 3px;
   }
   &__anchor-column {
-    max-width: 50vw;
-    width: 397px;
-    min-width: 397px;
+    max-width: 50%;
     position: relative;
     transition: max-width 0.3s ease-in-out;
     transition: min-width 0.3s ease-in-out;
@@ -27,6 +25,10 @@
       max-width: 15px;
       min-width: 15px;
       overflow-x: hidden;
+    }
+    &__container {
+      width: 100%;
+      overflow-x: auto;
     }
   }
 
@@ -50,7 +52,8 @@
     //   display: flex;
     // }
     mat-icon {
-      right: -7px;
+      width: 15px;
+      right: 3px;
       position: absolute;
     }
   }
