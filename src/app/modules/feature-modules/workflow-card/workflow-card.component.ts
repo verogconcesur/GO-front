@@ -48,6 +48,21 @@ export class WorkflowCardComponent implements OnInit {
     this.getCardSize();
   }
 
+  public extraInfoValue(): string {
+    let extraInfo = '';
+    if (this.card.information) {
+      extraInfo = this.card.information;
+    }
+    if (
+      this.card.cardInstanceWorkflows &&
+      this.card.cardInstanceWorkflows.length &&
+      this.card.cardInstanceWorkflows[0].information
+    ) {
+      extraInfo = this.card.cardInstanceWorkflows[0].information;
+    }
+    return extraInfo;
+  }
+
   public getColors(): string[] {
     return this.card?.colors?.length ? this.card.colors : [];
   }

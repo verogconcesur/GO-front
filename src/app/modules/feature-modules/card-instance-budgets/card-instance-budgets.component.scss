@@ -1,10 +1,9 @@
 @import 'utils/core';
 @import 'utils/theme';
 .budgets {
-  height: 100%;
   &__main {
-    padding: 15px;
-    height: calc(100% - 110px);
+    padding: 10px;
+    height: calc(100% - 120px);
     overflow-y: auto;
     &__header {
       &__item {
@@ -33,7 +32,7 @@
     }
   }
   &__button {
-    padding: 25px;
+    padding: 20px;
     height: 80px;
   }
 }

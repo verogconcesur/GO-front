@@ -4,17 +4,11 @@
 }
 .w-colunm-entity {
   overflow-y: auto;
-  height: 100%;
+  height: calc(100% - 40px);
+  margin: 20px 10px;
 }
 .w-colunm-entity-data {
   text-transform: uppercase;
-  margin: 30px 10px;
-  &:first-child {
-    margin-top: 20px;
-  }
-  &:last-child {
-    margin-bottom: 60px;
-  }
   &__label {
     font-weight: 600;
     font-size: 0.85em;
@@ -42,7 +36,7 @@
   font-weight: bold;
   display: flex;
   justify-content: center;
-  align-items: center;
+  align-items: end;
   margin: 20px 0;
   width: 100%;
 }
