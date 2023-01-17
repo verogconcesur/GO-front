@@ -64,19 +64,7 @@ export class ChecklistsComponent extends AdministrationCommonHeaderSectionClassT
   }
 
   public editAction(checklist: TemplatesChecklistsDTO): void {
-    const spinner = this.spinnerService.show();
-    this.checklistService
-      .addOrEditChecklist(checklist)
-      .pipe(
-        take(1),
-        finalize(() => this.spinnerService.hide(spinner))
-      )
-      .subscribe((b: TemplatesChecklistsDTO) => {
-        //timeout necesario porque hay casos en los que no llega a mostrar la modal
-        setTimeout(() => {
-          this.openCreateEditChecklistDialog(b);
-        });
-      });
+    this.openCreateEditChecklistDialog(checklist);
   }
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any

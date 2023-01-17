@@ -111,7 +111,7 @@ export class CreateEditChecklistAuxService {
         width: [this.pxToPercentage(pageWidthAndHeight.width, item[0].offsetWidth), Validators.required],
         typeItem: [item.data('type'), Validators.required],
         typeSign: [null],
-        staticValue: [item.data('type') === 'VARIABLE'],
+        staticValue: [false],
         orderNumber: [uniqueIdOrder, Validators.required],
         label: [null, Validators.required],
         sincronizedItems: [[uniqueIdOrder]],

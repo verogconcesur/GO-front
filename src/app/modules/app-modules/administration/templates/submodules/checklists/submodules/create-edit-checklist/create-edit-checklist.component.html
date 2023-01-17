@@ -7,7 +7,7 @@
                 color="warn"
                 class="delete-file-button"
                 (click)="eraseTemplatePDF()"
-                *ngIf="checklistForm.get('templateFile').get('content').value"
+                *ngIf="checklistForm?.get('templateFile').get('content').value"
             >
                 {{ labels.deleteFile | translate }}
             </button>
@@ -18,7 +18,11 @@
                     <mat-expansion-panel-header>
                         <mat-panel-title> {{ labels.cheklistConfig | translate }}</mat-panel-title>
                     </mat-expansion-panel-header>
-                    <form [formGroup]="checklistForm" class="checklist-config__form smaller-mat-form-fields">
+                    <form
+                        [formGroup]="checklistForm"
+                        *ngIf="checklistForm"
+                        class="checklist-config__form smaller-mat-form-fields"
+                    >
                         <!-- General Data -->
                         <div class="template-data__section">
                             <!-- <div class="template-data__section__title first-child">

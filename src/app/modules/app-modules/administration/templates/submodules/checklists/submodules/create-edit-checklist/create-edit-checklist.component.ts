@@ -1,8 +1,9 @@
+/* eslint-disable arrow-body-style */
 /* eslint-disable @typescript-eslint/member-ordering */
 /* eslint-disable max-len */
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { Component, ViewEncapsulation, OnInit, ElementRef, ViewChild } from '@angular/core';
-import { FormControl, UntypedFormArray, UntypedFormBuilder, UntypedFormGroup, Validators } from '@angular/forms';
+import { FormControl, UntypedFormArray, UntypedFormBuilder, UntypedFormGroup } from '@angular/forms';
 import TemplatesChecklistsDTO, {
   AuxChecklistItemsGroupBySyncDTO,
   AuxChecklistItemsGroupByTypeDTO,
@@ -15,14 +16,12 @@ import { GlobalMessageService } from '@shared/services/global-message.service';
 import { ProgressSpinnerDialogService } from '@shared/services/progress-spinner-dialog.service';
 import $ from 'jquery';
 import 'jqueryui';
-import { NGXLogger } from 'ngx-logger';
 import { Subject } from 'rxjs';
 import { VariablesService } from '@data/services/variables.service';
-import VariablesDTO from '@data/models/variables-dto';
 import { finalize, take } from 'rxjs/operators';
 import WorkflowCardSlotDTO from '@data/models/workflows/workflow-card-slot-dto';
 import { CreateEditChecklistAuxService } from './create-edit-checklist-aux.service';
-import { Router } from '@angular/router';
+import { ActivatedRoute, ActivatedRouteSnapshot, Router } from '@angular/router';
 import { RouteConstants } from '@app/constants/route.constants';
 import { TemplatesChecklistsService } from '@data/services/templates-checklists.service';
 import { ConcenetError } from '@app/types/error';
@@ -84,11 +83,11 @@ export class CreateEditChecklistComponent implements OnInit {
     private confirmDialogService: ConfirmDialogService,
     private translateService: TranslateService,
     private globalMessageService: GlobalMessageService,
-    private logger: NGXLogger,
     private variablesService: VariablesService,
     private createEditChecklistAuxService: CreateEditChecklistAuxService,
     private router: Router,
-    private templatesChecklistsService: TemplatesChecklistsService
+    private templatesChecklistsService: TemplatesChecklistsService,
+    private route: ActivatedRoute
   ) {}
 
   ngOnInit(): void {
@@ -98,7 +97,31 @@ export class CreateEditChecklistComponent implements OnInit {
       .subscribe((res) => {
         this.listVariables = res;
       });
-    this.initForm();
+
+    if (this.route?.snapshot?.params?.id) {
+      const spinner = this.spinnerService.show();
+      this.templatesChecklistsService
+        .findChecklistById(this.route.snapshot.params.id)
+        .pipe(
+          take(1),
+          finalize(() => this.spinnerService.hide(spinner))
+        )
+        .subscribe({
+          next: (response: TemplatesChecklistsDTO) => {
+            this.checklistToEdit = response;
+            this.initForm();
+          },
+          error: (error: ConcenetError) => {
+            this.globalMessageService.showError({
+              message: this.translateService.instant(error.message),
+              actionText: this.translateService.instant(marker('common.close'))
+            });
+            this.router.navigate([RouteConstants.ADMINISTRATION, RouteConstants.TEMPLATES, RouteConstants.CHECKLISTS]);
+          }
+        });
+    } else {
+      this.initForm();
+    }
   }
 
   public getTitle(): string {
@@ -457,11 +480,17 @@ export class CreateEditChecklistComponent implements OnInit {
   }
 
   public isSaveDisabled(): boolean {
+    if (!this.checklistForm) {
+      return true;
+    }
     this.updateValueAndValidityForm();
     return this.checklistForm.invalid;
   }
 
   public getErrorMessages(): string[] {
+    if (!this.checklistForm) {
+      return [];
+    }
     const errores = [];
     if (this.checklistForm.invalid) {
       if (this.checklistForm.get('templateFile').invalid) {
@@ -498,8 +527,32 @@ export class CreateEditChecklistComponent implements OnInit {
       .subscribe((ok: boolean) => {
         if (ok) {
           const spinner = this.spinnerService.show();
+          const data: any = this.checklistForm.getRawValue();
+          const template: any = data.template;
+          template.brands = template.brands.map((item: any) => {
+            return { id: item.id };
+          });
+          template.departments = template.departments.map((item: any) => {
+            return { id: item.id };
+          });
+          template.facilities = template.facilities.map((item: any) => {
+            return { id: item.id };
+          });
+          template.specialties = template.specialties.map((item: any) => {
+            return { id: item.id };
+          });
+          data.template = template;
+          data.templateChecklistItems.map((item: any) => {
+            item.staticValue = false;
+            item.itemVal = null;
+            item.sincronizedItems = item.sincronizedItems.length === 1 ? null : item.sincronizedItems;
+            if (item.typeItem === 'VARIABLE') {
+              item.variable = { id: item.variable.id };
+            }
+            return item;
+          });
           this.templatesChecklistsService
-            .addOrEditChecklist(this.checklistForm.getRawValue())
+            .addOrEditChecklist(data)
             .pipe(
               take(1),
               finalize(() => this.spinnerService.hide(spinner))

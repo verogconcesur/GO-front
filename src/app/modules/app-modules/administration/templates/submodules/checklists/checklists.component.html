@@ -2,7 +2,7 @@
     <div class="items-list-container">
         <mat-card class="mat-template-card" *ngFor="let item of dataSource">
             <div fxLayout="row" fxLayoutAlign="space-between center">
-                <div class="mat-item-card__title">{{ item.template?.name }}</div>
+                <div class="mat-item-card__title">{{ item.name }}</div>
                 <div class="mat-item-card__icons">
                     <mat-icon fontSet="concenet" (click)="editAction(item)">edit</mat-icon>
                     <mat-icon fontSet="concenet" (click)="deleteChecklist(item.id)">delete</mat-icon>
