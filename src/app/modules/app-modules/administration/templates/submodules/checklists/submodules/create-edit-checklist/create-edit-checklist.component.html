@@ -168,11 +168,26 @@
                                                     </mat-select>
                                                 </mat-form-field>
                                             </section>
+                                            <!-- Static value -->
                                             <section
                                                 *ngIf="
-                                                    groupByType.typeItem === 'TEXT' ||
-                                                    groupByType.typeItem === 'CHECK' ||
-                                                    groupByType.typeItem === 'SIGN'
+                                                    (groupByType.typeItem === 'TEXT' || groupByType.typeItem === 'IMAGE') &&
+                                                    getChecklistItemByOrderNumber(syncGroup.selectedItem).get('sincronizedItems')
+                                                        .value.length === 1
+                                                "
+                                                class="section-checkbox"
+                                            >
+                                                <mat-checkbox formControlName="staticValue">{{
+                                                    labels.staticValue | translate
+                                                }}</mat-checkbox>
+                                            </section>
+                                            <section
+                                                *ngIf="
+                                                    (groupByType.typeItem === 'TEXT' ||
+                                                        groupByType.typeItem === 'CHECK' ||
+                                                        groupByType.typeItem === 'SIGN') &&
+                                                    !getChecklistItemByOrderNumber(syncGroup.selectedItem).get('staticValue')
+                                                        .value
                                                 "
                                             >
                                                 <!-- SYNCRONIZATION FOR CHECKS, TEXTS AND SIGNS -->
@@ -224,11 +239,11 @@
         </div>
     </div>
     <div class="checklist-config__column checklist-config__pdf">
-        <ng-container *ngIf="fileTemplateBase64 | async as base64; else dropZone">
+        <ng-container class="checklist-config__pdf__viewer" *ngIf="fileTemplateBase64 | async as base64; else dropZone">
             <ngx-extended-pdf-viewer
                 id="checklistPDF"
                 [base64Src]="base64"
-                height="80vh"
+                height="99%"
                 [handTool]="false"
                 [useBrowserLocale]="true"
                 [zoom]="'page-fit'"

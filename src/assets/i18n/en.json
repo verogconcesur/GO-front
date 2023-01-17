@@ -51,6 +51,7 @@
                 "new": "New checklist",
                 "sign": "Sign",
                 "signType": "Sing type",
+                "staticValue": "Item with static value (only available if the item has not been syncronized with other items)",
                 "syncronization": "Syncronized items",
                 "templateFileError": "Load a PDF file",
                 "text": "Text",

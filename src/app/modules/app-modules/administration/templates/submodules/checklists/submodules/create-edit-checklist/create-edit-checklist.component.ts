@@ -71,7 +71,8 @@ export class CreateEditChecklistComponent implements OnInit {
     syncronization: marker('administration.templates.checklists.syncronization'),
     copyItemInPage: marker('administration.templates.checklists.copyItemInPage'),
     cancel: marker('common.cancel'),
-    save: marker('common.save')
+    save: marker('common.save'),
+    staticValue: marker('administration.templates.checklists.staticValue')
   };
   private pdfLoaded = false;
   private checklistToEdit: TemplatesChecklistsDTO = null;
@@ -109,7 +110,18 @@ export class CreateEditChecklistComponent implements OnInit {
         .subscribe({
           next: (response: TemplatesChecklistsDTO) => {
             this.checklistToEdit = response;
+            this.uniqueIdOrder = this.checklistToEdit.templateChecklistItems?.reduce(
+              (prev: number, curr: TemplateChecklistItemDTO) => {
+                if (curr.orderNumber > prev) {
+                  prev = curr.orderNumber;
+                }
+                return prev;
+              },
+              0
+            );
             this.initForm();
+            this.fileTemplateBase64.next(this.checklistForm.get('templateFile').get('content').value);
+            this.refreshItemsAndPdf();
           },
           error: (error: ConcenetError) => {
             this.globalMessageService.showError({
@@ -125,6 +137,9 @@ export class CreateEditChecklistComponent implements OnInit {
   }
 
   public getTitle(): string {
+    if (this.checklistToEdit) {
+      return this.checklistForm.value.template.name;
+    }
     if (this.checklistForm?.value?.template?.name) {
       return this.translateService.instant(this.labels.newCheckList) + ': ' + this.checklistForm.value.template.name;
     }
@@ -641,6 +656,7 @@ export class CreateEditChecklistComponent implements OnInit {
 
   private initForm() {
     this.checklistForm = this.createEditChecklistAuxService.createChecklistForm(this.checklistToEdit);
+    this.updateValueAndValidityForm();
   }
 
   private printItemInPdfPage(templateItemFG: UntypedFormGroup): void {

@@ -51,6 +51,7 @@
                 "new": "Nuevo checklist",
                 "sign": "Firma",
                 "signType": "Tipo de firma",
+                "staticValue": "Valor estático (opción configurable si no ha sido sincronizado con otros elementos)",
                 "syncronization": "Elementos sincronizados",
                 "templateFileError": "Cargue un fichero PDF válido",
                 "text": "Texto",

@@ -13,14 +13,18 @@
   &__config {
     width: calc(42% - 110px);
     &__accordion {
-      max-height: calc(76vh - 47px);
+      max-height: calc(100vh - 210px);
       overflow-y: auto;
     }
   }
   &__pdf {
     width: calc(58% - 110px);
+    height: calc(100vh - 160px);
+    &__viewer {
+      max-height: 100%;
+    }
     &__drop-zone {
-      height: 76vh;
+      height: 99%;
       width: 100%;
       display: flex;
       justify-content: center;
@@ -93,6 +97,10 @@
 
   .delete-file-button {
     margin-bottom: 12px;
+  }
+
+  .section-checkbox {
+    margin-bottom: 20px;
   }
 }
 
