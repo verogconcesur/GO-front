@@ -6,6 +6,14 @@ import { TemplatesComponent } from './templates.component';
 
 const routes: Routes = [
   {
+    path: RouteConstants.CREATE_EDIT_CHECKLIST,
+    canActivate: [AuthGuardService],
+    loadChildren: () =>
+      import('./submodules/checklists/submodules/create-edit-checklist/create-edit-checklist.module').then(
+        (m) => m.CreateEditChecklistModule
+      )
+  },
+  {
     path: RouteConstants.EMPTY,
     component: TemplatesComponent,
     canActivate: [AuthGuardService],

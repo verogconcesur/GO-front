@@ -1,0 +1,194 @@
+@import 'utils/core';
+@import 'utils/theme';
+
+.checklist-config {
+  width: calc(100% - 20px);
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  padding: 10px 5px;
+  &__column {
+    margin: 0 5px;
+  }
+  &__config {
+    width: calc(42% - 110px);
+    &__accordion {
+      max-height: calc(100vh - 210px);
+      overflow-y: auto;
+    }
+  }
+  &__pdf {
+    width: calc(58% - 110px);
+    height: calc(100vh - 160px);
+    &__viewer {
+      max-height: 100%;
+    }
+    &__drop-zone {
+      height: 99%;
+      width: 100%;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      position: relative;
+      border: 2px dotted mat-color($primary, statusSuccess);
+      background-color: lighten(mat-color($primary, statusSuccess), 40%);
+      border-radius: 10px;
+      .add-pdf-template-btn {
+        position: absolute;
+        top: 10px;
+        left: 10px;
+      }
+    }
+  }
+  &__items {
+    display: flex;
+    justify-content: center;
+    flex-direction: column;
+    align-items: center;
+    width: 200px;
+  }
+  &__form {
+    width: 100%;
+    .template-data__section {
+      &__title {
+        margin: 0 0 5px 0;
+        &.first-child {
+          margin-top: 0px;
+        }
+      }
+      &__info {
+        margin: 0 0 5px 0;
+        line-height: 38px;
+      }
+      &__group {
+        &.grid-group {
+          display: grid;
+          justify-items: center;
+          gap: 1rem;
+          grid-template-columns: repeat(auto-fit, minmax(11rem, 1fr));
+          margin-bottom: 10px;
+          app-organization-levels-nested-combos {
+            display: contents;
+          }
+        }
+        &__title {
+          padding-bottom: 0px;
+          text-transform: uppercase;
+          margin-bottom: 0px;
+          padding-right: 0.5rem;
+          &::after {
+            content: ':';
+          }
+        }
+      }
+    }
+  }
+
+  .inputColor {
+    width: 35px;
+    height: 35px;
+  }
+
+  .delete-item-button {
+    color: mat-color($primary, statusError);
+    margin-bottom: 20px;
+    cursor: pointer;
+  }
+
+  .delete-file-button {
+    margin-bottom: 12px;
+  }
+
+  .section-margin-bottom {
+    margin-bottom: 20px;
+  }
+
+  .image-input-preview {
+    width: 150px;
+    height: 100px;
+    border: 1px solid mat-color($primary, 700);
+    overflow: hidden;
+    border-radius: 5px;
+    img {
+      width: 100%;
+      height: 100%;
+      inline-size: auto;
+    }
+  }
+}
+
+.checklist-footer {
+  width: 100%;
+  min-height: 65px;
+  position: absolute;
+  bottom: 0;
+  padding: 5px 20px;
+  background-color: mat-contrast($primary, 400);
+  &__error {
+    color: mat-color($primary, statusError);
+  }
+}
+
+.checklistItemToDrag {
+  // Si modificamos este margin hay que cambiarlo también en la función drop
+  margin: 20px;
+  height: auto;
+  width: fit-content;
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+  &.dropped {
+    margin: 0;
+    position: absolute !important;
+    z-index: 5000;
+  }
+  .resizable {
+    // width: 100%;
+    // height: 100%;
+    height: 100%;
+    width: 100%;
+    border: 2px solid rgba(3, 5, 112, 0.767);
+    border-radius: 5px;
+  }
+
+  &__text,
+  &__sign,
+  &__drawing,
+  &__variable,
+  &__check,
+  &__image {
+    margin: 2px;
+    width: calc(100% - 4px);
+    height: calc(100% - 4px);
+    background-color: rgba(25, 28, 221, 0.349);
+    border-radius: 5px;
+    display: flex;
+    justify-content: center;
+    color: white;
+    align-items: center;
+    cursor: grab;
+    label {
+      &::before {
+        content: ' ';
+        padding-left: 5px;
+      }
+      overflow: hidden;
+      max-width: calc(100% - 30px);
+    }
+  }
+
+  &__orderNumber {
+    background-color: rgba(6, 8, 153, 0.918);
+    padding: 5px;
+    border: 1px solid white;
+    color: white;
+    border-radius: 15px;
+    min-width: 17px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    &.selected {
+      background-color: #0020ffea;
+    }
+  }
+}
