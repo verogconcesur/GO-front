@@ -55,6 +55,7 @@ export enum RouteConstants {
   COMMUNICATIONS = 'communications',
   BUDGETS = 'budgets',
   CHECKLISTS = 'checklists',
+  CREATE_EDIT_CHECKLIST = 'create-edit-checklist',
   ATTACHMENTS = 'attachments',
   CLIENT_TIMELINE = 'client-timeline',
 
