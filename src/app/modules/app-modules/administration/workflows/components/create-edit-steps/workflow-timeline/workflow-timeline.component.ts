@@ -131,6 +131,14 @@ export class WorkflowTimelineComponent extends WorkflowStepAbstractClass {
     this.form.markAsTouched();
     this.form.markAsDirty();
   }
+  public removeTemplate() {
+    this.templateForm.setValue(null);
+    this.form.get('templateTimelineDTO').setValue(null);
+    const formArray = this.form.get('workflowSubstateTimelineItems') as FormArray;
+    while (formArray.length > 0) {
+      formArray.removeAt(0);
+    }
+  }
   public changeTemplate() {
     if (this.templateForm.value) {
       const spinner = this.spinnerService.show();
