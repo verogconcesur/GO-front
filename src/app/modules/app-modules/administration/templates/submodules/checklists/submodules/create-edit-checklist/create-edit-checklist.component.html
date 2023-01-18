@@ -175,45 +175,85 @@
                                                     getChecklistItemByOrderNumber(syncGroup.selectedItem).get('sincronizedItems')
                                                         .value.length === 1
                                                 "
-                                                class="section-checkbox"
+                                                class="section-margin-bottom"
                                             >
                                                 <mat-checkbox formControlName="staticValue">{{
                                                     labels.staticValue | translate
                                                 }}</mat-checkbox>
                                             </section>
+                                            <!-- Static value TEXT-->
                                             <section
                                                 *ngIf="
-                                                    (groupByType.typeItem === 'TEXT' ||
-                                                        groupByType.typeItem === 'CHECK' ||
-                                                        groupByType.typeItem === 'SIGN') &&
-                                                    !getChecklistItemByOrderNumber(syncGroup.selectedItem).get('staticValue')
-                                                        .value
+                                                    groupByType.typeItem === 'TEXT' &&
+                                                    getChecklistItemByOrderNumber(syncGroup.selectedItem).get('staticValue').value
                                                 "
+                                                formGroupName="itemVal"
+                                                class="section-margin-bottom"
                                             >
-                                                <!-- SYNCRONIZATION FOR CHECKS, TEXTS AND SIGNS -->
-                                                <mat-form-field
-                                                    appearance="outline"
-                                                    floatLabel="always"
-                                                    style="width: 100%"
-                                                    *ngIf="getSyncronizableItems(groupByType, syncGroup).length > 1"
-                                                >
-                                                    <mat-label>{{ labels.syncronization | translate }}</mat-label>
-                                                    <mat-select
-                                                        formControlName="sincronizedItems"
-                                                        multiple
-                                                        (openedChange)="syncronizationChange($event, groupByType, syncGroup)"
-                                                    >
-                                                        <mat-option
-                                                            *ngFor="
-                                                                let ordNumber of getSyncronizableItems(groupByType, syncGroup)
-                                                            "
-                                                            [disabled]="ordNumber === syncGroup.selectedItem"
-                                                            [value]="ordNumber"
-                                                            >{{ ordNumber }}{{ getLabelForOrderNumber(ordNumber) }}</mat-option
-                                                        >
-                                                    </mat-select>
+                                                <mat-form-field appearance="outline" floatLabel="always" style="width: 100%">
+                                                    <mat-label>{{ labels.staticValueInput | translate }} *</mat-label>
+                                                    <input matInput formControlName="textValue" />
                                                 </mat-form-field>
                                             </section>
+                                        </section>
+                                        <!-- Static value IMAGE-->
+                                        <section
+                                            *ngIf="
+                                                groupByType.typeItem === 'IMAGE' &&
+                                                getChecklistItemByOrderNumber(syncGroup.selectedItem).get('staticValue').value
+                                            "
+                                            fxLayoutAlign="space-between center"
+                                            class="section-margin-bottom"
+                                        >
+                                            <button
+                                                mat-raised-button
+                                                color="primary"
+                                                class="add-static-image-btn"
+                                                (click)="staticImage.click()"
+                                            >
+                                                <label>{{ labels.staticValueImage | translate }} *</label>
+                                            </button>
+                                            <div class="image-input-preview" fxLayoutAlign="center center">
+                                                <img [src]="getImagePreviewBase64(syncGroup.selectedItem)" />
+                                            </div>
+                                            <input
+                                                type="file"
+                                                style="display: none"
+                                                #staticImage
+                                                accept="image/*"
+                                                id="staticImage"
+                                                (change)="addStaticImage($event.target.files, syncGroup.selectedItem)"
+                                            />
+                                        </section>
+                                        <section
+                                            *ngIf="
+                                                (groupByType.typeItem === 'TEXT' ||
+                                                    groupByType.typeItem === 'CHECK' ||
+                                                    groupByType.typeItem === 'SIGN') &&
+                                                !getChecklistItemByOrderNumber(syncGroup.selectedItem).get('staticValue').value
+                                            "
+                                        >
+                                            <!-- SYNCRONIZATION FOR CHECKS, TEXTS AND SIGNS -->
+                                            <mat-form-field
+                                                appearance="outline"
+                                                floatLabel="always"
+                                                style="width: 100%"
+                                                *ngIf="getSyncronizableItems(groupByType, syncGroup).length > 1"
+                                            >
+                                                <mat-label>{{ labels.syncronization | translate }}</mat-label>
+                                                <mat-select
+                                                    formControlName="sincronizedItems"
+                                                    multiple
+                                                    (openedChange)="syncronizationChange($event, groupByType, syncGroup)"
+                                                >
+                                                    <mat-option
+                                                        *ngFor="let ordNumber of getSyncronizableItems(groupByType, syncGroup)"
+                                                        [disabled]="ordNumber === syncGroup.selectedItem"
+                                                        [value]="ordNumber"
+                                                        >{{ ordNumber }}{{ getLabelForOrderNumber(ordNumber) }}</mat-option
+                                                    >
+                                                </mat-select>
+                                            </mat-form-field>
                                         </section>
                                     </form>
                                     <section class="smaller-mat-form-fields">
@@ -277,6 +317,7 @@
             type="file"
             style="display: none"
             #fileDropRef
+            accept=".pdf"
             id="fileDropRef"
             (change)="fileBrowseHandler($event.target.files)"
         />

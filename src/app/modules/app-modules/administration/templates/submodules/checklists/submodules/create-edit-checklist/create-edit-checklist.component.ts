@@ -35,6 +35,8 @@ import { ConcenetError } from '@app/types/error';
 export class CreateEditChecklistComponent implements OnInit {
   @ViewChild('fileDropRef')
   fileDropRef: ElementRef;
+  @ViewChild('staticImage')
+  staticImage: ElementRef;
   public page: number;
   public checklistForm: UntypedFormGroup;
   public fileTemplateBase64 = new Subject<any>();
@@ -72,7 +74,9 @@ export class CreateEditChecklistComponent implements OnInit {
     copyItemInPage: marker('administration.templates.checklists.copyItemInPage'),
     cancel: marker('common.cancel'),
     save: marker('common.save'),
-    staticValue: marker('administration.templates.checklists.staticValue')
+    staticValue: marker('administration.templates.checklists.staticValue'),
+    staticValueInput: marker('administration.templates.checklists.staticValueInput'),
+    staticValueImage: marker('administration.templates.checklists.staticValueImage')
   };
   private pdfLoaded = false;
   private checklistToEdit: TemplatesChecklistsDTO = null;
@@ -215,6 +219,20 @@ export class CreateEditChecklistComponent implements OnInit {
 
   public fileDropped(item: FileList): void {
     this.getFile(item);
+  }
+
+  public addStaticImage(item: FileList, itemOrderNumber: number): void {
+    this.getImageFile(item, itemOrderNumber);
+  }
+
+  public getImagePreviewBase64(itemOrderNumber: number): string {
+    const fg: UntypedFormGroup = this.getChecklistItemByOrderNumber(itemOrderNumber);
+    if (fg?.get('itemVal')?.get('fileValue')?.get('type')?.value && fg?.get('itemVal')?.get('fileValue')?.get('content')?.value) {
+      return `data:${fg.get('itemVal').get('fileValue').get('type').value};base64,${
+        fg.get('itemVal').get('fileValue').get('content').value
+      }`;
+    }
+    return '';
   }
 
   public eraseTemplatePDF(): void {
@@ -470,7 +488,7 @@ export class CreateEditChecklistComponent implements OnInit {
   public duplicateItemIn(opened: boolean, syncGroup: AuxChecklistItemsGroupBySyncDTO): void {
     if (!opened) {
       const fg = this.getChecklistItemByOrderNumber(syncGroup.selectedItem);
-      this.pagesSelectedToAddItem.value.forEach((n: number) => {
+      this.pagesSelectedToAddItem.value?.forEach((n: number) => {
         this.uniqueIdOrder++;
         const result = this.createEditChecklistAuxService.copyItemForPage(fg.getRawValue(), n, this.uniqueIdOrder);
         (this.checklistForm.get('templateChecklistItems') as UntypedFormArray).push(result);
@@ -558,11 +576,14 @@ export class CreateEditChecklistComponent implements OnInit {
           });
           data.template = template;
           data.templateChecklistItems.map((item: any) => {
-            item.staticValue = false;
-            item.itemVal = null;
-            item.sincronizedItems = item.sincronizedItems.length === 1 ? null : item.sincronizedItems;
+            item.sincronizedItems = item.sincronizedItems.length === 1 || item.staticValue ? null : item.sincronizedItems;
             if (item.typeItem === 'VARIABLE') {
               item.variable = { id: item.variable.id };
+            }
+            if (item.staticValue && item.typeItem === 'TEXT') {
+              item.itemVal.fileValue = null;
+            } else if (!item.staticValue) {
+              item.itemVal = null;
             }
             return item;
           });
@@ -730,5 +751,35 @@ export class CreateEditChecklistComponent implements OnInit {
     this.checklistForm.markAsDirty();
     this.checklistForm.markAsTouched();
     this.fileTemplateBase64.next(base64.split(';base64,')[1]);
+  }
+
+  private async getImageFile(files: FileList, itemOrderNumber: number): Promise<void> {
+    if (files.length !== 1) {
+      this.globalMessageService.showError({
+        message: this.translateService.instant(marker('errors.uploadOnlyOneFile')),
+        actionText: this.translateService.instant(marker('common.close'))
+      });
+      return null;
+    }
+    const file = files[0];
+    if (file.type.toLowerCase().indexOf('image') === -1) {
+      console.log(file.type.toLowerCase());
+      this.globalMessageService.showError({
+        message: this.translateService.instant(marker('errors.fileFormat'), {
+          format: this.translateService.instant(marker('common.image'))
+        }),
+        actionText: this.translateService.instant(marker('common.close'))
+      });
+      return null;
+    }
+    const base64 = await this.getBase64(file);
+    const fg: UntypedFormGroup = this.getChecklistItemByOrderNumber(itemOrderNumber);
+    fg.get('itemVal').get('fileValue').get('name').setValue(file.name);
+    fg.get('itemVal').get('fileValue').get('type').setValue(file.type);
+    fg.get('itemVal').get('fileValue').get('size').setValue(file.size);
+    fg.get('itemVal').get('fileValue').get('content').setValue(base64.split(';base64,')[1], { emit: true });
+    this.checklistForm.markAsDirty();
+    this.checklistForm.markAsTouched();
+    this.staticImage.nativeElement.value = '';
   }
 }
