@@ -1,11 +1,12 @@
-<div class="budgets" fxFill>
+<div class="budgets" fxFill *ngIf="formBudgets">
     <div class="budgets__main">
         <div class="budgets__main__header">
             <div class="budgets__main__header__item" fxLayout="row">
-                <div fxFlex="20" fxLayoutAlign="center center" fxFill>{{ labels.okClient | translate }}</div>
+                <div fxFlex="10" fxLayoutAlign="center center" fxFill>{{ labels.okClient | translate }}</div>
                 <div fxFlex="30" fxLayoutAlign="center center" fxFill>{{ labels.line | translate }}</div>
-                <div fxFlex="30" fxLayoutAlign="center center" fxFill>{{ labels.amount | translate }}</div>
-                <div fxFlex="20" fxLayoutAlign="center center" fxFill>{{ labels.actions | translate }}</div>
+                <div fxFlex="20" fxLayoutAlign="center center" fxFill>{{ labels.amount | translate }}</div>
+                <div fxFlex="30" fxLayoutAlign="center center" fxFill>{{ labels.attachments | translate }}</div>
+                <div fxFlex="10" fxLayoutAlign="center center" fxFill>{{ labels.actions | translate }}</div>
             </div>
         </div>
         <div class="budgets__main__container" fxLayout="column">
@@ -15,7 +16,7 @@
                 fxLayout="row"
                 [formGroup]="budget"
             >
-                <div fxFlex="20" fxLayoutAlign="center center">
+                <div fxFlex="10" fxLayoutAlign="center center">
                     <mat-checkbox formControlName="accepted" [disabled]="budgetDisabled(budget)"></mat-checkbox>
                 </div>
                 <div fxFlex="30" fxLayoutAlign="center center">
@@ -23,16 +24,26 @@
                         <input type="text" matInput formControlName="description" [readonly]="budgetDisabled(budget)" />
                     </mat-form-field>
                 </div>
-                <div fxFlex="30" fxLayoutAlign="center center">
+                <div fxFlex="20" fxLayoutAlign="center center">
                     <mat-form-field appearance="outline" floatLabel="always">
                         <input appTwoDigitDecimal matInput formControlName="amount" [readonly]="budgetDisabled(budget)" />
                         <span matSuffix>€</span>
                         <mat-error *ngIf="budget.get('amount').invalid">
-                            <span>{{ labels.maxLengthError | translate: { length: maxAmount.toString().length } }}</span>
+                            <span>{{ labels.maxLengthError | translate : { length: maxAmount.toString().length } }}</span>
                         </mat-error>
                     </mat-form-field>
                 </div>
-                <div fxFlex="20" fxLayoutAlign="center center">
+                <div fxFlex="30" fxLayoutAlign="center center">
+                    <mat-form-field appearance="outline" floatLabel="always">
+                        <mat-label>{{ labels.attachments | translate }}</mat-label>
+                        <mat-select formControlName="attachments" multiple [disabled]="budgetDisabled(budget)">
+                            <mat-option *ngFor="let attachment of attachmentsList" [value]="attachment">{{
+                                attachment.name
+                            }}</mat-option>
+                        </mat-select>
+                    </mat-form-field>
+                </div>
+                <div fxFlex="10" fxLayoutAlign="center center">
                     <button mat-icon-button color="primary" (click)="cancelBudget(budget, i)" *ngIf="!budgetDisabled(budget)">
                         <mat-icon style="cursor: pointer">close</mat-icon>
                     </button>
@@ -64,8 +75,16 @@
                 </div>
             </div>
         </div>
-        <div class="budgets__main__create" fxLayout="row" fxLayoutAlign="end none" *ngIf="!editing && !cardInstanceBudgetsConfig.disableBudgetsAdditionAction">
+        <div
+            class="budgets__main__create"
+            fxLayout="row"
+            fxLayoutAlign="end none"
+            *ngIf="!editing && !cardInstanceBudgetsConfig.disableBudgetsAdditionAction"
+        >
             <span class="budgets__main__create__item" (click)="newLine()">+ {{ labels.newLine | translate }}</span>
         </div>
+    </div>
+    <div class="budgets__button" fxLayout="row" fxLayoutAlign="end end">
+        <button mat-stroked-button [disabled]="!enableSendButton()" (click)="sendBudgets()">{{ labels.send | translate }}</button>
     </div>
 </div>

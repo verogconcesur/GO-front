@@ -56,16 +56,20 @@ export class WorkflowBudgetsComponent extends WorkflowStepAbstractClass {
   }
 
   public selectItem(template: TemplatesCommonDTO): void {
-    const spinner = this.spinnerService.show();
-    this.budgetService
-      .findById(template.id)
-      .pipe(take(1))
-      .subscribe((budget: TemplatesBudgetDetailsDTO) => {
-        this.form.markAsTouched();
-        this.form.markAsDirty();
-        this.form.get('budget').setValue(budget);
-        this.spinnerService.hide(spinner);
-      });
+    if (this.form.get('budget').value && this.form.get('budget').value.template.id === template.id) {
+      this.form.get('budget').setValue(null);
+    } else {
+      const spinner = this.spinnerService.show();
+      this.budgetService
+        .findById(template.id)
+        .pipe(take(1))
+        .subscribe((budget: TemplatesBudgetDetailsDTO) => {
+          this.form.markAsTouched();
+          this.form.markAsDirty();
+          this.form.get('budget').setValue(budget);
+          this.spinnerService.hide(spinner);
+        });
+    }
   }
 
   public async getWorkflowStepData(): Promise<boolean> {

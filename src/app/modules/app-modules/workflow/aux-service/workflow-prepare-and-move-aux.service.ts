@@ -3,6 +3,7 @@ import { Injectable } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { ConcenetError } from '@app/types/error';
 import { marker } from '@biesbjerg/ngx-translate-extract-marker';
+import { TemplateComunicationItemsDTO } from '@data/models/templates/templates-communication-dto';
 import WorkflowCardDTO from '@data/models/workflows/workflow-card-dto';
 import WorkflowEventMailDTO from '@data/models/workflows/workflow-event-mail-dto';
 import WorkflowMoveDTO from '@data/models/workflows/workflow-move-dto';
@@ -98,7 +99,8 @@ export class WorkflowPrepareAndMoveService {
           ) {
             this.dialog
               .open(WorkflowCardMovementPreparationComponent, {
-                maxWidth: '650px',
+                maxWidth: '655px',
+                maxHeight: '95vh',
                 data: {
                   destinationName,
                   preparation: data,
@@ -120,9 +122,12 @@ export class WorkflowPrepareAndMoveService {
                     user: WorkflowSubstateUserDTO;
                     mailEvents: {
                       id: number;
-                      processedEmail: string[];
-                      subject: string;
-                      template: string;
+                      items: {
+                        id: number;
+                        processedEmail: string[];
+                        subject: string;
+                        template: string;
+                      }[];
                     }[];
                     historyComment: string;
                     movementExtraConfirm: boolean;
@@ -132,9 +137,12 @@ export class WorkflowPrepareAndMoveService {
                     user: WorkflowSubstateUserDTO;
                     mailEvents: {
                       id: number;
-                      processedEmail: string[];
-                      subject: string;
-                      template: string;
+                      items: {
+                        id: number;
+                        processedEmail: string[];
+                        subject: string;
+                        template: string;
+                      }[];
                     }[];
                     historyComment: string;
                     movementExtraConfirm: boolean;
@@ -144,9 +152,12 @@ export class WorkflowPrepareAndMoveService {
                     user: WorkflowSubstateUserDTO;
                     mailEvents: {
                       id: number;
-                      processedEmail: string[];
-                      subject: string;
-                      template: string;
+                      items: {
+                        id: number;
+                        processedEmail: string[];
+                        subject: string;
+                        template: string;
+                      }[];
                     }[];
                     historyComment: string;
                     movementExtraConfirm: boolean;
@@ -173,10 +184,20 @@ export class WorkflowPrepareAndMoveService {
                       events.out.workflowEventMails.map((e: WorkflowEventMailDTO) => {
                         const eventData = res.out.mailEvents.find((d) => d.id === e.id);
                         if (eventData) {
-                          e.processedEmail = eventData.processedEmail.join(',');
-                          //DGDC En algún momento puden que venga información también de sms y landing (habrá que verificar cuál es el canal)
-                          e.templateComunication.templateComunicationItems[0].processedSubject = eventData.subject;
-                          e.templateComunication.templateComunicationItems[0].processedText = eventData.template;
+                          e.templateComunication.templateComunicationItems = e.templateComunication.templateComunicationItems.map(
+                            (templateItem: TemplateComunicationItemsDTO) => {
+                              const itemData = eventData.items.find((itemAux) => templateItem.id === itemAux.id);
+                              e.processedEmail =
+                                itemData.processedEmail && itemData.processedEmail.length
+                                  ? itemData.processedEmail.join(',')
+                                  : e.processedEmail;
+                              templateItem.processedEmail = itemData.processedEmail.join(',');
+                              //DGDC En algún momento puden que venga información también de sms y landing (habrá que verificar cuál es el canal)
+                              templateItem.processedSubject = itemData.subject;
+                              templateItem.processedText = itemData.template;
+                              return templateItem;
+                            }
+                          );
                           return e;
                         } else {
                           return e;
@@ -204,10 +225,20 @@ export class WorkflowPrepareAndMoveService {
                       events.in.workflowEventMails.map((e: WorkflowEventMailDTO) => {
                         const eventData = res.in.mailEvents.find((d) => d.id === e.id);
                         if (eventData) {
-                          e.processedEmail = eventData.processedEmail.join(',');
-                          //DGDC En algún momento puden que venga información también de sms y landing (habrá que verificar cuál es el canal)
-                          e.templateComunication.templateComunicationItems[0].processedSubject = eventData.subject;
-                          e.templateComunication.templateComunicationItems[0].processedText = eventData.template;
+                          e.templateComunication.templateComunicationItems = e.templateComunication.templateComunicationItems.map(
+                            (templateItem: TemplateComunicationItemsDTO) => {
+                              const itemData = eventData.items.find((itemAux) => templateItem.id === itemAux.id);
+                              e.processedEmail =
+                                itemData.processedEmail && itemData.processedEmail.length
+                                  ? itemData.processedEmail.join(',')
+                                  : e.processedEmail;
+                              templateItem.processedEmail = itemData.processedEmail.join(',');
+                              //DGDC En algún momento puden que venga información también de sms y landing (habrá que verificar cuál es el canal)
+                              templateItem.processedSubject = itemData.subject;
+                              templateItem.processedText = itemData.template;
+                              return templateItem;
+                            }
+                          );
                           return e;
                         } else {
                           return e;
@@ -235,10 +266,20 @@ export class WorkflowPrepareAndMoveService {
                       events.mov.workflowEventMails.map((e: WorkflowEventMailDTO) => {
                         const eventData = res.mov.mailEvents.find((d) => d.id === e.id);
                         if (eventData) {
-                          e.processedEmail = eventData.processedEmail.join(',');
-                          //DGDC En algún momento puden que venga información también de sms y landing (habrá que verificar cuál es el canal)
-                          e.templateComunication.templateComunicationItems[0].processedSubject = eventData.subject;
-                          e.templateComunication.templateComunicationItems[0].processedText = eventData.template;
+                          e.templateComunication.templateComunicationItems = e.templateComunication.templateComunicationItems.map(
+                            (templateItem: TemplateComunicationItemsDTO) => {
+                              const itemData = eventData.items.find((itemAux) => templateItem.id === itemAux.id);
+                              e.processedEmail =
+                                itemData.processedEmail && itemData.processedEmail.length
+                                  ? itemData.processedEmail.join(',')
+                                  : e.processedEmail;
+                              templateItem.processedEmail = itemData.processedEmail.join(',');
+                              //DGDC En algún momento puden que venga información también de sms y landing (habrá que verificar cuál es el canal)
+                              templateItem.processedSubject = itemData.subject;
+                              templateItem.processedText = itemData.template;
+                              return templateItem;
+                            }
+                          );
                           return e;
                         } else {
                           return e;

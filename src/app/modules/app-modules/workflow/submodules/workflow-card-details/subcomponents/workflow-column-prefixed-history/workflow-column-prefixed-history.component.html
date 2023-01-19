@@ -108,16 +108,35 @@
             </div>
             <div class="history-info">
                 <div class="history-info__line">
-                    <div class="history-info__workflow">{{ labels.workflows | translate }} {{ item.workflow.name }}</div>
+                    <div
+                        class="history-info__workflow"
+                        *ngIf="item?.eventHistoryType !== 'INCOMING_CALL' && item?.eventHistoryType !== 'OUTCOMING_CALL'"
+                    >
+                        {{ labels.workflows | translate }} {{ item.workflow.name }}
+                    </div>
+                    <div
+                        class="history-info__workflow"
+                        *ngIf="
+                            item?.switchboardDataCall &&
+                            (item?.eventHistoryType === 'INCOMING_CALL' || item?.eventHistoryType === 'OUTCOMING_CALL')
+                        "
+                    >
+                        {{ item.switchboardDataCall.serviceName }}
+                    </div>
                     <div class="history-info__user">{{ item.user.fullName }}</div>
                 </div>
                 <div class="history-info__line">
                     <div class="history-info__description">
                         <mat-icon *ngIf="item?.eventHistoryType === 'CHANGE_STATE'">redo</mat-icon>
                         <mat-icon *ngIf="item?.eventHistoryType === 'ASIG_USER'"> transfer_within_a_station</mat-icon>
+                        <mat-icon *ngIf="item?.eventHistoryType === 'INCOMING_CALL'"> phone_callback</mat-icon>
+                        <mat-icon *ngIf="item?.eventHistoryType === 'OUTCOMING_CALL'"> phone_forwarded</mat-icon>
+                        <mat-icon *ngIf="item?.eventHistoryType === 'EDIT_INFO'"> edit</mat-icon>
+                        <mat-icon *ngIf="item?.eventHistoryType === 'ADD_DOC'"> attach_file</mat-icon>
+                        <mat-icon *ngIf="item?.eventHistoryType === 'ADD_COMMENT'"> insert_comment</mat-icon>
                         <div [innerHtml]="getHistoryDescription(item) | safeHtml"></div>
                     </div>
-                    <div class="history-info__date">{{ item.dateEvent | date: "dd/MM/yy, HH:mm" }}</div>
+                    <div class="history-info__date">{{ item.dateEvent | date : "dd/MM/yy, HH:mm" }}</div>
                 </div>
                 <div class="history-info__line">
                     <div class="history-info__comment" *ngIf="item.comments" [innerHtml]="item.comments | safeHtml"></div>

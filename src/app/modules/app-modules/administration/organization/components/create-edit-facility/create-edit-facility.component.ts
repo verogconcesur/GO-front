@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { Component, OnDestroy, OnInit, ViewEncapsulation } from '@angular/core';
+import { Component, OnDestroy, OnInit, ViewChild, ViewEncapsulation } from '@angular/core';
 import { AbstractControl, UntypedFormBuilder, UntypedFormGroup, Validators } from '@angular/forms';
 import { ConcenetError } from '@app/types/error';
 import { marker } from '@biesbjerg/ngx-translate-extract-marker';
@@ -22,6 +22,12 @@ import TownDTO from '@data/models/location/town-dto';
 import BrandDTO from '@data/models/organization/brand-dto';
 import { BrandService } from '@data/services/brand.service';
 import { haveArraysSameValues } from '@shared/utils/array-comparation-function';
+import { CommonModule } from '@angular/common';
+import { MatMenuTrigger } from '@angular/material/menu';
+import TreeNode from '@data/interfaces/tree-node';
+import WorkflowSubstateDTO from '@data/models/workflows/workflow-substate-dto';
+import { WorkflowAdministrationStatesSubstatesService } from '@data/services/workflow-administration-states-substates.service';
+import WorkflowStateDTO from '@data/models/workflows/workflow-state-dto';
 
 export const enum CreateEditFacilityComponentModalEnum {
   ID = 'create-edit-facility-dialog-id',
@@ -36,12 +42,19 @@ export const enum CreateEditFacilityComponentModalEnum {
   encapsulation: ViewEncapsulation.None
 })
 export class CreateEditFacilityComponent extends ComponentToExtendForCustomDialog implements OnInit, OnDestroy {
+  @ViewChild('menuTrigger') trigger: MatMenuTrigger;
   public labels = {
     title: marker('organizations.facilities.create'),
     name: marker('userProfile.name'),
     createFacility: marker('organizations.facilities.create'),
     editFacility: marker('organizations.facilities.edit'),
     address: marker('common.address'),
+    integration: marker('organizations.facilities.integration'),
+    requireConfigApiExt: marker('organizations.facilities.requireConfigApiExt'),
+    code: marker('organizations.facilities.code'),
+    enterpriseId: marker('organizations.facilities.enterpriseId'),
+    storeId: marker('organizations.facilities.storeId'),
+    workflowSubstate: marker('common.substate'),
     postalCode: marker('common.postalCode'),
     brands: marker('common.brands'),
     cif: marker('common.cif'),
@@ -53,6 +66,7 @@ export class CreateEditFacilityComponent extends ComponentToExtendForCustomDialo
     emails: marker('common.emails'),
     header: marker('common.header'),
     nameRequired: marker('userProfile.nameRequired'),
+    select: marker('common.select'),
     footer: marker('common.footer'),
     insertText: marker('common.insertTextHere'),
     required: marker('errors.required'),
@@ -69,6 +83,7 @@ export class CreateEditFacilityComponent extends ComponentToExtendForCustomDialo
   public countryList: CountryDTO[] = [];
   public provinceList: ProvinceDTO[] = [];
   public townList: TownDTO[] = [];
+  public substateList: WorkflowSubstateDTO[] = [];
   public facilityForm: UntypedFormGroup;
   public facilityToEdit: FacilityDTO = null;
   public textEditorToolbarOptions: TextEditorWrapperConfigI = {
@@ -76,6 +91,7 @@ export class CreateEditFacilityComponent extends ComponentToExtendForCustomDialo
     // addMacroListOption: false,
     // macroListOptions: ['una', 'dos']
   };
+  public treeData: TreeNode[] = [];
 
   constructor(
     private fb: UntypedFormBuilder,
@@ -87,6 +103,7 @@ export class CreateEditFacilityComponent extends ComponentToExtendForCustomDialo
     private spinnerService: ProgressSpinnerDialogService,
     private customDialogService: CustomDialogService,
     private globalMessageService: GlobalMessageService,
+    private substatesService: WorkflowAdministrationStatesSubstatesService,
     private logger: NGXLogger
   ) {
     super(
@@ -110,7 +127,23 @@ export class CreateEditFacilityComponent extends ComponentToExtendForCustomDialo
   }
 
   ngOnDestroy(): void {}
-
+  public requiredConfigChange(checked: boolean): void {
+    if (checked) {
+      this.facilityForm.get('code').setValidators([Validators.required]);
+      this.facilityForm.get('enterpriseId').setValidators([Validators.required]);
+      this.facilityForm.get('storeId').setValidators([Validators.required]);
+      this.facilityForm.get('workflowSubstate').setValidators([Validators.required]);
+    } else {
+      this.facilityForm.get('code').setValidators([]);
+      this.facilityForm.get('enterpriseId').setValidators([]);
+      this.facilityForm.get('storeId').setValidators([]);
+      this.facilityForm.get('workflowSubstate').setValidators([]);
+      this.facilityForm.get('code').setValue(null);
+      this.facilityForm.get('enterpriseId').setValue(null);
+      this.facilityForm.get('storeId').setValue(null);
+      this.facilityForm.get('workflowSubstate').setValue(null);
+    }
+  }
   public confirmCloseCustomDialog(): Observable<boolean> {
     if (this.facilityForm?.touched && this.facilityForm?.dirty) {
       return this.confirmDialogService.open({
@@ -120,6 +153,15 @@ export class CreateEditFacilityComponent extends ComponentToExtendForCustomDialo
     } else {
       return of(true);
     }
+  }
+  public selectAttribute(node: WorkflowSubstateDTO): void {
+    this.facilityForm.get('workflowSubstate').setValue(
+      this.substateList.find((substate: WorkflowSubstateDTO) => substate.id === node.id),
+      { emitEvent: false }
+    );
+    this.facilityForm.get('workflowSubstate').markAsDirty();
+    this.facilityForm.get('workflowSubstate').markAsTouched();
+    this.trigger.closeMenu();
   }
 
   public onSubmitCustomDialog(): Observable<boolean | FacilityDTO> {
@@ -137,7 +179,12 @@ export class CreateEditFacilityComponent extends ComponentToExtendForCustomDialo
         name: formValue.name,
         numDepartments: formValue.numDepartments,
         postalCode: formValue.postalCode,
-        town: formValue.town
+        town: formValue.town,
+        requireConfigApiExt: formValue.requireConfigApiExt,
+        code: formValue.code,
+        enterpriseId: formValue.enterpriseId,
+        storeId: formValue.storeId,
+        workflowSubstate: formValue.workflowSubstate
       })
       .pipe(
         map((response) => {
@@ -217,8 +264,15 @@ export class CreateEditFacilityComponent extends ComponentToExtendForCustomDialo
         }
       });
   };
-
+  public convertToPlain(html: string) {
+    const tempDivElement = document.createElement('div');
+    tempDivElement.innerHTML = html;
+    return tempDivElement.textContent || tempDivElement.innerText || '';
+  }
   public textEditorContentChanged(type: 'header' | 'footer', html: string) {
+    if (html === '' || html === ' ' || this.convertToPlain(html) === '' || this.convertToPlain(html) === ' ') {
+      html = null;
+    }
     if (type === 'header' && html !== this.form.header.value) {
       this.facilityForm.get('header').setValue(html, { emitEvent: true });
       this.facilityForm.get('header').markAsDirty();
@@ -279,6 +333,68 @@ export class CreateEditFacilityComponent extends ComponentToExtendForCustomDialo
     );
     this.getProvinceListOptions(true);
     this.getTownListOptions(true);
+    this.substatesService
+      .getAllStatesAndSubstates()
+      .pipe(take(1))
+      .subscribe((res) => {
+        const substateList: WorkflowSubstateDTO[] = [];
+        res.forEach((state: WorkflowStateDTO) => {
+          state.workflowSubstates.forEach((substate: WorkflowSubstateDTO) => {
+            if (substate.entryPoint) {
+              substate.workflowState = { ...state, ...{ workflowSubstates: [] } };
+              substateList.push(substate);
+            }
+          });
+        });
+        this.substateList = substateList;
+        const selectedSubstate = this.facilityForm.get('workflowSubstate').value;
+        if (selectedSubstate) {
+          this.facilityForm.get('workflowSubstate').setValue(
+            substateList.find((substate: WorkflowSubstateDTO) => substate.id === selectedSubstate.id),
+            { emitEvent: false }
+          );
+        }
+        this.createTreeWorkflows(res);
+      });
+  }
+  private createTreeWorkflows(states: WorkflowStateDTO[]): void {
+    const treeNode: TreeNode[] = [];
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const otherWorkflows: any = {};
+    const workflowsIdsFound: number[] = [];
+    states.forEach((state: WorkflowStateDTO) => {
+      if (workflowsIdsFound.indexOf(state.workflow.id) === -1) {
+        //Es un workflow nuevo
+        workflowsIdsFound.push(state.workflow.id);
+        const dataToPush = {
+          name: `${this.translateService.instant('cards.workflows')}: ${state.workflow.name}`,
+          children: [
+            {
+              name: `${this.translateService.instant('common.state')}: ${state.name}`,
+              children: [...state.workflowSubstates.filter((substate: WorkflowSubstateDTO) => substate.entryPoint)]
+            }
+          ]
+        };
+        //Primero compruebo que tengamos subestados dentro del estado
+        if (dataToPush.children?.length && dataToPush.children[0]?.children?.length) {
+          //Es otro workflow
+          otherWorkflows[state.workflow.id] = dataToPush;
+        }
+      } else {
+        const dataToPush = {
+          name: `${this.translateService.instant('common.state')}: ${state.name}`,
+          children: [...state.workflowSubstates.filter((substate: WorkflowSubstateDTO) => substate.entryPoint)]
+        };
+        //compruebo que tengamos subestados dentro del estado
+        if (dataToPush.children.length) {
+          otherWorkflows[state.workflow.id].children.push(dataToPush);
+        }
+      }
+    });
+    Object.keys(otherWorkflows).forEach((k) => {
+      treeNode.push(otherWorkflows[k]);
+    });
+    this.treeData = treeNode;
   }
   private getProvinceListOptions(initialLoad = false): void {
     this.provinceList = [];
@@ -326,8 +442,18 @@ export class CreateEditFacilityComponent extends ComponentToExtendForCustomDialo
       province: [this.facilityToEdit && this.facilityToEdit.town?.province ? this.facilityToEdit.town.province : null],
       country: [
         this.facilityToEdit && this.facilityToEdit.town?.province?.country ? this.facilityToEdit.town.province.country : null
+      ],
+      requireConfigApiExt: [
+        this.facilityToEdit && this.facilityToEdit.requireConfigApiExt ? this.facilityToEdit.requireConfigApiExt : false
+      ],
+      code: [this.facilityToEdit && this.facilityToEdit.code ? this.facilityToEdit.code : null],
+      enterpriseId: [this.facilityToEdit && this.facilityToEdit.enterpriseId ? this.facilityToEdit.enterpriseId : null],
+      storeId: [this.facilityToEdit && this.facilityToEdit.storeId ? this.facilityToEdit.storeId : null],
+      workflowSubstate: [
+        this.facilityToEdit && this.facilityToEdit.workflowSubstate ? this.facilityToEdit.workflowSubstate : null
       ]
     });
+    this.requiredConfigChange(this.facilityToEdit?.requireConfigApiExt);
     this.facilityForm.controls.country.valueChanges.subscribe((x) => {
       this.form.province.setValue(null);
       this.getProvinceListOptions();

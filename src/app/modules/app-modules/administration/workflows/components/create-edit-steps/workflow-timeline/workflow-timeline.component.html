@@ -13,12 +13,18 @@
                     template.name
                 }}</mat-option>
             </mat-select>
+            <button matSuffix mat-icon-button aria-label="Clear" (click)="removeTemplate()">
+                <mat-icon>close</mat-icon>
+            </button>
             <mat-error *ngIf="templateForm?.invalid">
                 <span *ngIf="templateForm?.errors?.required">{{ labels.required | translate }}</span>
             </mat-error>
         </mat-form-field>
     </div>
-    <div class="timeline-container__section" *ngIf="form && form.value && form.value.templateTimelineDTO">
+    <div
+        class="timeline-container__section"
+        *ngIf="templateForm && templateForm.value && form && form.value && form.value.templateTimelineDTO"
+    >
         <div class="timeline-container__section__title">
             <h1>{{ labels.timelineStates | translate }}</h1>
         </div>

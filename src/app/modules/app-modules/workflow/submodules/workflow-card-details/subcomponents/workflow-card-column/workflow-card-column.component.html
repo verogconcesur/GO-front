@@ -16,6 +16,7 @@
             <app-workflow-column-customizable-entity
                 *ngIf="showColumn('CUSTOMIZABLE_ENTITY')"
                 [tab]="tabToShow"
+                [cardInstance]="cardInstance"
                 (setShowLoading)="setShowLoading($event)"
             ></app-workflow-column-customizable-entity>
             <app-workflow-column-customizable-custom
@@ -59,6 +60,7 @@
             ></app-workflow-column-comments>
             <app-workflow-column-client-messages
                 [style]="{ display: showColumn('CLIENT_MESSAGES') ? '' : 'none' }"
+                (setShowLoading)="setShowLoading($event)"
             ></app-workflow-column-client-messages>
         </div>
         <!-- Columna acciones -->

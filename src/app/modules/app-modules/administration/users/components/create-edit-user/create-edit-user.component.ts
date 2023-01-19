@@ -41,6 +41,7 @@ export class CreateEditUserComponent extends ComponentToExtendForCustomDialog im
     name: marker('userProfile.name'),
     firstName: marker('userProfile.firstName'),
     lastName: marker('userProfile.lastName2'),
+    code: marker('userProfile.code'),
     userName: marker('userProfile.userName'),
     email: marker('userProfile.email'),
     role: marker('userProfile.role'),
@@ -230,6 +231,7 @@ export class CreateEditUserComponent extends ComponentToExtendForCustomDialog im
         firstName: [this.userToEdit ? this.userToEdit.firstName : null],
         lastName: [this.userToEdit ? this.userToEdit.lastName : null],
         email: [this.userToEdit ? this.userToEdit.email : null, [Validators.email]],
+        code: [this.userToEdit ? this.userToEdit.code : null],
         userName: [this.userToEdit ? this.userToEdit.userName : null, Validators.required],
         role: [this.userToEdit ? this.userToEdit.role : null, Validators.required],
         newPassword: [

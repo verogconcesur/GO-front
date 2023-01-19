@@ -6,12 +6,12 @@ import CustomerEntityDTO from '@data/models/entities/customer-entity-dto';
 import UserEntityDTO from '@data/models/entities/user-entity-dto';
 import VehicleEntityDTO from '@data/models/entities/vehicle-entity-dto';
 import { EntitiesService } from '@data/services/entities.service';
-import { ComponentToExtendForCustomDialog } from '@jenga/custom-dialog';
+import { CustomDialogService } from '@jenga/custom-dialog';
 import { TranslateService } from '@ngx-translate/core';
-import { ConfirmDialogService } from '@shared/services/confirm-dialog.service';
 import { GlobalMessageService } from '@shared/services/global-message.service';
-import { ProgressSpinnerDialogService } from '@shared/services/progress-spinner-dialog.service';
-import { Observable, of } from 'rxjs';
+import { take } from 'rxjs/operators';
+import { CreateEditCustomerComponentModalEnum, ModalCustomerComponent } from '../modal-customer/modal-customer.component';
+import { CreateEditVehicleComponentModalEnum, ModalVehicleComponent } from '../modal-vehicle/modal-vehicle.component';
 
 @Component({
   selector: 'app-entities-searcher-dialog',
@@ -25,6 +25,8 @@ export class EntitiesSearcherDialogComponent implements OnInit {
     userSearcher: marker('user.searchDialog'),
     vehicleSearcher: marker('vehicle.searchDialog'),
     customerSearcher: marker('customer.searchDialog'),
+    createCustomer: marker('entities.customers.create'),
+    createVehicle: marker('entities.vehicles.create'),
     search: marker('common.search'),
     userNotFound: marker('newCard.errors.userNotFound'),
     vehicleNotFound: marker('newCard.errors.vehicleNotFound'),
@@ -39,11 +41,10 @@ export class EntitiesSearcherDialogComponent implements OnInit {
   constructor(
     private dialogRef: MatDialogRef<EntitiesSearcherDialogComponent>,
     private fb: UntypedFormBuilder,
-    private spinnerService: ProgressSpinnerDialogService,
-    private confirmDialogService: ConfirmDialogService,
     private entitiesService: EntitiesService,
     private translateService: TranslateService,
     private globalMessageService: GlobalMessageService,
+    private customDialogService: CustomDialogService,
     @Inject(MAT_DIALOG_DATA) public dialogData: { workflowId: number; mode: 'USER' | 'CUSTOMER' | 'VEHICLE' }
   ) {}
 
@@ -69,6 +70,68 @@ export class EntitiesSearcherDialogComponent implements OnInit {
         return this.labels.vehicleSearcher;
       default:
         return '';
+    }
+  }
+  public showCreateEntity(): boolean {
+    if (this.mode === 'CUSTOMER' || this.mode === 'VEHICLE') {
+      return true;
+    }
+    return false;
+  }
+  public getCreateEntityButtonLabel(): string {
+    switch (this.mode) {
+      case 'CUSTOMER':
+        return this.labels.createCustomer;
+      case 'VEHICLE':
+        return this.labels.createVehicle;
+      default:
+        return '';
+    }
+  }
+  public createEntity() {
+    switch (this.mode) {
+      case 'CUSTOMER':
+        this.customDialogService
+          .open({
+            id: CreateEditCustomerComponentModalEnum.ID,
+            panelClass: CreateEditCustomerComponentModalEnum.PANEL_CLASS,
+            component: ModalCustomerComponent,
+            disableClose: true,
+            width: '900px'
+          })
+          .pipe(take(1))
+          .subscribe((response) => {
+            if (response) {
+              this.globalMessageService.showSuccess({
+                message: this.translateService.instant(marker('common.successOperation')),
+                actionText: this.translateService.instant(marker('common.close'))
+              });
+              this.searchForm.get('search').setValue(response);
+              this.selectEntity();
+            }
+          });
+        break;
+      case 'VEHICLE':
+        this.customDialogService
+          .open({
+            id: CreateEditVehicleComponentModalEnum.ID,
+            panelClass: CreateEditVehicleComponentModalEnum.PANEL_CLASS,
+            component: ModalVehicleComponent,
+            disableClose: true,
+            width: '900px'
+          })
+          .pipe(take(1))
+          .subscribe((response) => {
+            if (response) {
+              this.globalMessageService.showSuccess({
+                message: this.translateService.instant(marker('common.successOperation')),
+                actionText: this.translateService.instant(marker('common.close'))
+              });
+              this.searchForm.get('search').setValue(response);
+              this.selectEntity();
+            }
+          });
+        break;
     }
   }
 
@@ -117,24 +180,30 @@ export class EntitiesSearcherDialogComponent implements OnInit {
       case 'CUSTOMER':
         const customer = entity as CustomerEntityDTO;
         let textOptionCustomer = customer.fullName;
-        if (customer.email.toLowerCase().trim().includes(this.searchForm.get('search').value.toLowerCase().trim())) {
+        if (
+          customer.email &&
+          customer.email.toLowerCase().trim().includes(this.searchForm.get('search').value.toLowerCase().trim())
+        ) {
           textOptionCustomer = textOptionCustomer + '/' + customer.email;
         }
-        if (customer.phone.toLowerCase().trim().includes(this.searchForm.get('search').value.toLowerCase().trim())) {
+        if (
+          customer.phone &&
+          customer.phone.toLowerCase().trim().includes(this.searchForm.get('search').value.toLowerCase().trim())
+        ) {
           textOptionCustomer = textOptionCustomer + '/' + customer.phone;
         }
         return textOptionCustomer;
       case 'VEHICLE':
         const vehicle = entity as VehicleEntityDTO;
         let textOptionVehicle = vehicle.licensePlate;
-        if (vehicle.vin.toLowerCase().trim().includes(this.searchForm.get('search').value.toLowerCase().trim())) {
+        if (vehicle.vin && vehicle.vin.toLowerCase().trim().includes(this.searchForm.get('search').value.toLowerCase().trim())) {
           textOptionVehicle = textOptionVehicle + '/' + vehicle.vin;
         }
         return textOptionVehicle;
       case 'USER':
         const user = entity as UserEntityDTO;
         let textOptionUser = user.fullName;
-        if (user.email.toLowerCase().trim().includes(this.searchForm.get('search').value.toLowerCase().trim())) {
+        if (user.email && user.email.toLowerCase().trim().includes(this.searchForm.get('search').value.toLowerCase().trim())) {
           textOptionUser = textOptionUser + '/' + user.email;
         }
         return textOptionUser;
