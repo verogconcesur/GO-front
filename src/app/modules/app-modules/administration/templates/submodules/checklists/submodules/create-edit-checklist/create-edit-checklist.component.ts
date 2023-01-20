@@ -16,7 +16,7 @@ import { GlobalMessageService } from '@shared/services/global-message.service';
 import { ProgressSpinnerDialogService } from '@shared/services/progress-spinner-dialog.service';
 import $ from 'jquery';
 import 'jqueryui';
-import { Subject } from 'rxjs';
+import { forkJoin, Subject } from 'rxjs';
 import { VariablesService } from '@data/services/variables.service';
 import { finalize, take } from 'rxjs/operators';
 import WorkflowCardSlotDTO from '@data/models/workflows/workflow-card-slot-dto';
@@ -96,24 +96,19 @@ export class CreateEditChecklistComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
-    this.variablesService
-      .searchVariablesSlots()
-      .pipe(take(1))
-      .subscribe((res) => {
-        this.listVariables = res;
-      });
+    const variablesRequest = this.variablesService.searchVariablesSlots();
 
     if (this.route?.snapshot?.params?.id) {
       const spinner = this.spinnerService.show();
-      this.templatesChecklistsService
-        .findChecklistById(this.route.snapshot.params.id)
+      forkJoin([variablesRequest, this.templatesChecklistsService.findChecklistById(this.route.snapshot.params.id)])
         .pipe(
           take(1),
           finalize(() => this.spinnerService.hide(spinner))
         )
-        .subscribe({
-          next: (response: TemplatesChecklistsDTO) => {
-            this.checklistToEdit = response;
+        .subscribe(
+          (responses: [WorkflowCardSlotDTO[], TemplatesChecklistsDTO]) => {
+            this.listVariables = responses[0];
+            this.checklistToEdit = responses[1];
             this.uniqueIdOrder = this.checklistToEdit.templateChecklistItems?.reduce(
               (prev: number, curr: TemplateChecklistItemDTO) => {
                 if (curr.orderNumber > prev) {
@@ -127,15 +122,18 @@ export class CreateEditChecklistComponent implements OnInit {
             this.fileTemplateBase64.next(this.checklistForm.get('templateFile').get('content').value);
             this.refreshItemsAndPdf();
           },
-          error: (error: ConcenetError) => {
+          (errors) => {
             this.globalMessageService.showError({
-              message: this.translateService.instant(error.message),
+              message: this.translateService.instant(errors[1]?.message),
               actionText: this.translateService.instant(marker('common.close'))
             });
             this.router.navigate([RouteConstants.ADMINISTRATION, RouteConstants.TEMPLATES, RouteConstants.CHECKLISTS]);
           }
-        });
+        );
     } else {
+      variablesRequest.pipe(take(1)).subscribe((res) => {
+        this.listVariables = res;
+      });
       this.initForm();
     }
   }
@@ -676,7 +674,7 @@ export class CreateEditChecklistComponent implements OnInit {
   }
 
   private initForm() {
-    this.checklistForm = this.createEditChecklistAuxService.createChecklistForm(this.checklistToEdit);
+    this.checklistForm = this.createEditChecklistAuxService.createChecklistForm(this.checklistToEdit, this.listVariables);
     this.updateValueAndValidityForm();
   }
 
@@ -763,7 +761,6 @@ export class CreateEditChecklistComponent implements OnInit {
     }
     const file = files[0];
     if (file.type.toLowerCase().indexOf('image') === -1) {
-      console.log(file.type.toLowerCase());
       this.globalMessageService.showError({
         message: this.translateService.instant(marker('errors.fileFormat'), {
           format: this.translateService.instant(marker('common.image'))
