@@ -47,6 +47,15 @@ export interface AuxChecklistItemsGroupBySyncDTO {
   templateChecklistItems: UntypedFormArray;
 }
 
+export interface SignDocumentExchangeDTO {
+  attachment: AttachmentDTO;
+  procesedFile: AttachmentDTO;
+  signDocumentMode: 'TEMPLATE' | 'UPLOAD' | 'ATTACHMENT';
+  tabId: number;
+  templateChecklist: TemplatesChecklistsDTO;
+  upload: AttachmentDTO;
+}
+
 export default interface TemplatesChecklistsDTO {
   id: number;
   includeFile: boolean;

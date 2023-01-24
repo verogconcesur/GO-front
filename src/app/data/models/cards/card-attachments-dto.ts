@@ -14,4 +14,6 @@ export interface CardAttachmentsDTO {
     name: string;
     orderNumber: number;
   };
+  tabId?: number;
+  tabName?: string;
 }

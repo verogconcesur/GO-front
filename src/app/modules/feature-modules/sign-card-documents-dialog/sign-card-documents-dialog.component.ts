@@ -6,7 +6,8 @@ import { ConfirmDialogService } from '@shared/services/confirm-dialog.service';
 import { TranslateService } from '@ngx-translate/core';
 import { marker } from '@biesbjerg/ngx-translate-extract-marker';
 import { take } from 'rxjs/operators';
-import TemplatesChecklistsDTO, { TemplateChecklistItemDTO } from '@data/models/templates/templates-checklists-dto';
+import TemplatesChecklistsDTO, { SignDocumentExchangeDTO } from '@data/models/templates/templates-checklists-dto';
+import { AttachmentDTO } from '@data/models/cards/card-attachments-dto';
 
 @Component({
   selector: 'app-sign-card-documents-dialog',
@@ -17,6 +18,7 @@ export class SignCardDocumentsDialogComponent implements OnInit {
   public stepIndex = 0;
   public wCardId: number;
   public template: TemplatesChecklistsDTO;
+  public pdf: SignDocumentExchangeDTO;
   public labels = {
     noDataToShow: marker('errors.noDataToShow')
   };
@@ -60,10 +62,41 @@ export class SignCardDocumentsDialogComponent implements OnInit {
   public templateSelected(template: TemplatesChecklistsDTO): void {
     this.template = template;
     if (this.template.includeFile) {
-      this.stepIndex = 2;
+      this.pdf = {
+        attachment: null,
+        procesedFile: null,
+        signDocumentMode: 'TEMPLATE',
+        tabId: null,
+        templateChecklist: this.template,
+        upload: null
+      };
+      this.preparePdfStep();
     } else {
       this.stepIndex = 1;
     }
+  }
+
+  public fileSelected(event: { file: AttachmentDTO; tabId: number }): void {
+    if (event.file.id) {
+      this.pdf = {
+        attachment: event.file,
+        procesedFile: null,
+        signDocumentMode: 'ATTACHMENT',
+        tabId: event.tabId,
+        templateChecklist: this.template,
+        upload: null
+      };
+    } else {
+      this.pdf = {
+        attachment: null,
+        procesedFile: null,
+        signDocumentMode: 'UPLOAD',
+        tabId: null,
+        templateChecklist: this.template,
+        upload: event.file
+      };
+    }
+    this.preparePdfStep();
   }
 
   public closeDialog(): void {
@@ -87,5 +120,9 @@ export class SignCardDocumentsDialogComponent implements OnInit {
           }
         }
       });
+  }
+
+  private preparePdfStep(): void {
+    this.stepIndex = 2;
   }
 }
