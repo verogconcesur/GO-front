@@ -12,14 +12,14 @@
   .sign-documents-modal {
     background-color: mat-contrast($primary, 500);
     border-radius: 20px;
-    width: 1090px;
+    width: $desktop-large;
     height: calc(100vh - 20px);
     overflow: hidden;
     max-height: 960px;
     position: relative;
-    @include respond-to($desktop) {
+    @include respond-to(calc($desktop-large + 100px)) {
       width: calc(100vw - 20px);
-      max-width: 1090px;
+      max-width: $desktop-large;
     }
     &.small-modal {
       width: 480px;

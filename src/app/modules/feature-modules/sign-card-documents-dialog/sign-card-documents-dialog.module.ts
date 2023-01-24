@@ -8,6 +8,7 @@ import { SignDocumentTemplateSelectorComponent } from './subcomponents/sign-docu
 import { SignDocumentAddFileComponent } from './subcomponents/sign-document-add-file/sign-document-add-file.component';
 import { SignDocumentChecklistComponent } from './subcomponents/sign-document-checklist/sign-document-checklist.component';
 import { SignDocumentSaveLocationComponent } from './subcomponents/sign-document-save-location/sign-document-save-location.component';
+import { NgxExtendedPdfViewerModule } from 'ngx-extended-pdf-viewer';
 
 @NgModule({
   declarations: [
@@ -17,6 +18,6 @@ import { SignDocumentSaveLocationComponent } from './subcomponents/sign-document
     SignDocumentChecklistComponent,
     SignDocumentSaveLocationComponent
   ],
-  imports: [CommonModule, SharedModule, SignCardDocumentsDialogRoutingModule]
+  imports: [CommonModule, SharedModule, SignCardDocumentsDialogRoutingModule, NgxExtendedPdfViewerModule]
 })
 export class SignCardDocumentsDialogModule {}
