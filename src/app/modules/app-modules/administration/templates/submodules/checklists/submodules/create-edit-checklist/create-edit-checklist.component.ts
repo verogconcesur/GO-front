@@ -578,7 +578,7 @@ export class CreateEditChecklistComponent implements OnInit {
             if (item.typeItem === 'VARIABLE') {
               item.variable = { id: item.variable.id };
             }
-            if (item.staticValue && item.typeItem === 'TEXT') {
+            if (item.staticValue && item.typeItem !== 'SIGN' && item.typeItem !== 'DRAWING' && item.typeItem !== 'IMAGE') {
               item.itemVal.fileValue = null;
             } else if (!item.staticValue) {
               item.itemVal = null;

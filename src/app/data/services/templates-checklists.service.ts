@@ -15,8 +15,10 @@ import { catchError } from 'rxjs/operators';
   providedIn: 'root'
 })
 export class TemplatesChecklistsService {
+  private readonly CARD_INSTANCE_PATH = '/api/cardInstanceWorkflow/detail';
   private readonly SEARCH_COMMUNICATIONS_PATH = '/api/templates/search';
   private readonly TEMPLATE_CHECKLIST_PATH = '/api/templatechecklists';
+  private readonly TEMPLATE_CHECKLIST = '/templateChecklist';
   private readonly TEMPLATE_TYPE = 'CHECKLISTS';
 
   constructor(@Inject(ENV) private env: Env, private http: HttpClient) {}
@@ -36,6 +38,12 @@ export class TemplatesChecklistsService {
   public findChecklistById(id: number): Observable<TemplatesChecklistsDTO> {
     return this.http
       .get<TemplatesChecklistsDTO>(`${this.env.apiBaseUrl}${this.TEMPLATE_CHECKLIST_PATH}/${id}`)
+      .pipe(catchError((error) => throwError(error as ConcenetError)));
+  }
+
+  public getTemplatesChecklistByWCardId(id: number): Observable<TemplatesChecklistsDTO[]> {
+    return this.http
+      .get<TemplatesChecklistsDTO[]>(`${this.env.apiBaseUrl}${this.CARD_INSTANCE_PATH}/${id}${this.TEMPLATE_CHECKLIST}`)
       .pipe(catchError((error) => throwError(error as ConcenetError)));
   }
 
