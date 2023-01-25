@@ -7,21 +7,63 @@
   justify-content: center;
   align-items: flex-start;
   padding: 10px 5px;
-  &__column {
-    margin: 0 5px;
+  &__no-data {
+    width: 100%;
+    position: absolute;
+    top: 70px;
   }
-  &__config {
-    width: calc(40% - 10px);
-    &__accordion {
-      max-height: calc(100vh - 210px);
-      overflow-y: auto;
-    }
-  }
-  &__pdf {
-    width: calc(60% - 10px);
-    height: calc(100vh - 160px);
-    &__viewer {
-      max-height: 100%;
+  &__accordion {
+    width: 100%;
+    mat-accordion {
+      width: 100%;
+      height: calc(100vh - 160px);
+      &.main-accordion {
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-start;
+      }
+      mat-expansion-panel {
+        padding: 0 5px;
+        max-height: 100%;
+        .firma_canvas_wrapper {
+          width: 100%;
+          display: flex;
+          justify-content: center;
+          align-items: center;
+        }
+        &.expansion-panel-fields {
+          width: 40%;
+          padding: 0;
+          & > .mat-expansion-panel-content {
+            background-color: mat-contrast($primary, 500);
+          }
+        }
+        &.expansion-panel-pdf {
+          width: 60%;
+          background-color: rgb(243, 243, 243);
+        }
+        .fields-wrapper {
+          max-height: calc(100vh - 230px);
+          overflow-y: auto;
+        }
+      }
+
+      @include respond-to(1000px) {
+        &.main-accordion {
+          display: flex;
+          flex-direction: column;
+          justify-content: center;
+          align-items: center;
+        }
+        mat-expansion-panel {
+          &.expansion-panel-fields {
+            width: 100%;
+          }
+          &.expansion-panel-pdf {
+            width: 100%;
+          }
+        }
+      }
     }
   }
   &__form {
@@ -82,6 +124,10 @@
       inline-size: auto;
     }
   }
+
+  .opacity0 {
+    opacity: 0;
+  }
 }
 
 .checklist-footer {
@@ -98,13 +144,37 @@
 
 .checklistItemToDrag {
   // Si modificamos este margin hay que cambiarlo también en la función drop
-  margin: 20px;
+  position: absolute;
   height: auto;
   width: fit-content;
   display: flex;
   justify-content: flex-start;
   align-items: center;
 
+  &.undropped {
+    opacity: 0;
+  }
+  &__box {
+    margin: 2px;
+    width: calc(100% - 4px);
+    height: calc(100% - 4px);
+    border: 1px solid rgba(25, 28, 221, 0.349);
+    border-radius: 5px;
+    display: flex;
+    justify-content: center;
+    color: white;
+    align-items: center;
+    position: relative;
+
+    .checklistItemToDrag__orderNumber {
+      position: absolute;
+      font-size: 0.75em;
+      top: -20px;
+      left: -20px;
+      background-color: rgba(6, 8, 153, 0.473);
+      min-width: 15px;
+    }
+  }
   &__orderNumber {
     background-color: rgba(6, 8, 153, 0.918);
     padding: 5px;

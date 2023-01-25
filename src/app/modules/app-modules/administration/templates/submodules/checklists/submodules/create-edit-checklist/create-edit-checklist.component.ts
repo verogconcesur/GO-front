@@ -580,7 +580,7 @@ export class CreateEditChecklistComponent implements OnInit {
             }
             if (item.staticValue && item.typeItem !== 'SIGN' && item.typeItem !== 'DRAWING' && item.typeItem !== 'IMAGE') {
               item.itemVal.fileValue = null;
-            } else if (!item.staticValue) {
+            } else if (!item.staticValue && item.typeItem !== 'VARIABLE') {
               item.itemVal = null;
             }
             return item;
@@ -771,6 +771,7 @@ export class CreateEditChecklistComponent implements OnInit {
     }
     const base64 = await this.getBase64(file);
     const fg: UntypedFormGroup = this.getChecklistItemByOrderNumber(itemOrderNumber);
+    fg.get('itemVal').get('fileValue').get('id').setValue(null);
     fg.get('itemVal').get('fileValue').get('name').setValue(file.name);
     fg.get('itemVal').get('fileValue').get('type').setValue(file.type);
     fg.get('itemVal').get('fileValue').get('size').setValue(file.size);

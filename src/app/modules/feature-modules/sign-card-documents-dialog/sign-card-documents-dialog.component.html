@@ -17,7 +17,12 @@
                 (fileSelected)="fileSelected($event)"
                 *ngSwitchCase="1"
             ></app-sign-document-add-file>
-            <app-sign-document-checklist [wCardId]="wCardId" [pdf]="pdf" *ngSwitchCase="2"></app-sign-document-checklist>
+            <app-sign-document-checklist
+                [wCardId]="wCardId"
+                [pdf]="pdf"
+                (setTitle)="setPdfName($event)"
+                *ngSwitchCase="2"
+            ></app-sign-document-checklist>
             <app-sign-document-save-location *ngSwitchCase="3"></app-sign-document-save-location>
         </div>
         <div class="sign-documents-modal__wrapper" *ngIf="!wCardId">

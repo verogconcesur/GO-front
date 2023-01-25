@@ -19,6 +19,7 @@ export class SignCardDocumentsDialogComponent implements OnInit {
   public wCardId: number;
   public template: TemplatesChecklistsDTO;
   public pdf: SignDocumentExchangeDTO;
+  public pdfName: string;
   public labels = {
     noDataToShow: marker('errors.noDataToShow')
   };
@@ -52,11 +53,15 @@ export class SignCardDocumentsDialogComponent implements OnInit {
       case 1:
         return marker('cards.eventType.ADD_DOC');
       case 2:
-        return 'Nombre documento';
+        return this.pdfName;
       case 3:
         return marker('common.saveFile');
     }
     return '';
+  }
+
+  public setPdfName(pdfname: string): void {
+    this.pdfName = pdfname;
   }
 
   public templateSelected(template: TemplatesChecklistsDTO): void {

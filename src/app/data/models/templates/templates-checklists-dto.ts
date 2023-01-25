@@ -25,6 +25,8 @@ export interface TemplateChecklistItemDTO {
   typeSign: null | 'SIGN_USER' | 'SIGN_CLIENT';
   variable: WorkflowCardSlotDTO;
   width: number;
+  auxOrderNumber?: number;
+  auxSincronizedItems?: number[];
 }
 
 export interface AuxChecklistItemsGroupByTypeDTO {
