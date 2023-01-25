@@ -14,13 +14,12 @@ import {
   AfterViewInit,
   ViewEncapsulation
 } from '@angular/core';
-import { FormControl, UntypedFormArray, UntypedFormBuilder, UntypedFormGroup } from '@angular/forms';
+import { UntypedFormArray, UntypedFormBuilder, UntypedFormGroup } from '@angular/forms';
 import TemplatesChecklistsDTO, {
   AuxChecklistItemsGroupBySyncDTO,
   AuxChecklistItemsGroupByTypeDTO,
   SignDocumentExchangeDTO,
-  TemplateChecklistItemDTO,
-  TemplateChecklistItemValDTO
+  TemplateChecklistItemDTO
 } from '@data/models/templates/templates-checklists-dto';
 import { TranslateService } from '@ngx-translate/core';
 import { marker } from '@biesbjerg/ngx-translate-extract-marker';
@@ -32,12 +31,13 @@ import 'jqueryui';
 import { Subject } from 'rxjs';
 import { finalize, take } from 'rxjs/operators';
 import { SignDocumentAuxService } from './sign-document-aux.service';
-import { ActivatedRoute, ActivatedRouteSnapshot, Router } from '@angular/router';
+import { Router } from '@angular/router';
 import { RouteConstants } from '@app/constants/route.constants';
 import { TemplatesChecklistsService } from '@data/services/templates-checklists.service';
 import { ConcenetError } from '@app/types/error';
 import { NGXLogger } from 'ngx-logger';
 import { MatExpansionPanel } from '@angular/material/expansion';
+import { AttachmentDTO, CardAttachmentsDTO } from '@data/models/cards/card-attachments-dto';
 
 @Component({
   selector: 'app-sign-document-checklist',
@@ -60,17 +60,21 @@ export class SignDocumentChecklistComponent implements OnInit, AfterViewInit {
   public fileTemplateBase64 = new Subject<any>();
   public pdfNumPages = 0;
   public pdfLoaded = false;
+  public renderingItems = true;
   public pages: number[] = [];
   public itemListToShow: AuxChecklistItemsGroupByTypeDTO[] = [];
   public expansionPanelOpened: any = {};
   public auxOrderRelationRealOrder: any = {};
   public realOrderRelationAuxOrder: any = {};
+  public selectedItemToUploadImage: number;
+  public attachmentsByGroup: CardAttachmentsDTO[] = [];
   public labels: any = {
     newCheckList: marker('administration.templates.checklists.new'),
     cheklistConfig: marker('administration.templates.checklists.config'),
     itemsInTemplate: marker('administration.templates.checklists.itemsInTemplate'),
     insertTextHere: marker('common.insertTextHere'),
     pdfPreview: marker('administration.templates.checklists.pdfPreview'),
+    uploadImage: marker('common.uploadImage'),
     loadingPdfWait: marker('administration.templates.checklists.loadingPdfWait'),
     text: marker('administration.templates.checklists.text'),
     sign: marker('administration.templates.checklists.sign'),
@@ -98,7 +102,8 @@ export class SignDocumentChecklistComponent implements OnInit, AfterViewInit {
     save: marker('common.save'),
     staticValue: marker('administration.templates.checklists.staticValue'),
     staticValueInput: marker('administration.templates.checklists.staticValueInput'),
-    staticValueImage: marker('administration.templates.checklists.staticValueImage')
+    staticValueImage: marker('administration.templates.checklists.staticValueImage'),
+    selectCardAttachmentImage: marker('administration.templates.checklists.selectCardAttachmentImage')
   };
   private checklistToEdit: TemplatesChecklistsDTO = null;
   private formDataIdValueMapByPdf: { [fieldName: string]: string | number | boolean } = {};
@@ -172,18 +177,16 @@ export class SignDocumentChecklistComponent implements OnInit, AfterViewInit {
                 fg.get('itemVal').get('textValue').setValue(data[k]);
                 this.formDataIdValueMapByPdf[n] = data[k];
               } else if (fg.get('typeItem').value === 'CHECK') {
-                console.log('Modificando ', n, 'valor', data[k]);
                 fg.get('itemVal')
                   .get('booleanValue')
                   .setValue(data[k] === 'Yes' ? true : null);
                 this.formDataIdValueMapByPdf[n] = data[k] === 'Yes' ? true : null;
               }
             });
-          this.updateValueAndValidityForm();
         }
       }
     });
-
+    this.updateValueAndValidityForm();
     this.repaintItemsInTemplate();
   }
 
@@ -193,6 +196,7 @@ export class SignDocumentChecklistComponent implements OnInit, AfterViewInit {
   }
 
   ngOnInit(): void {
+    this.getImageAttachments();
     this.preparePdf();
   }
 
@@ -272,8 +276,32 @@ export class SignDocumentChecklistComponent implements OnInit, AfterViewInit {
     this.itemListToShow = groupByType;
   }
 
-  public addStaticImage(item: FileList, itemOrderNumber: number): void {
-    this.getImageFile(item, itemOrderNumber);
+  public addStaticImage(item: FileList): void {
+    this.getImageFile(item, this.selectedItemToUploadImage);
+  }
+
+  public imageAttachmentSelected(event: { value: AttachmentDTO }, selectedItemToUploadImage: number) {
+    const file: AttachmentDTO = event.value;
+    const fg: UntypedFormGroup = this.getChecklistItemByOrderNumber(selectedItemToUploadImage);
+    fg.get('itemVal').get('fileValue').get('id').setValue(null);
+    fg.get('itemVal')
+      .get('fileValue')
+      .get('name')
+      .setValue(file?.name ? file.name : null);
+    fg.get('itemVal')
+      .get('fileValue')
+      .get('type')
+      .setValue(file?.type ? file.type : null);
+    fg.get('itemVal')
+      .get('fileValue')
+      .get('size')
+      .setValue(file?.size ? file.size : null);
+    fg.get('itemVal')
+      .get('fileValue')
+      .get('content')
+      .setValue(file?.content ? file.content : null, { emit: true });
+    this.updateValueAndValidityForm();
+    this.repaintItemsInTemplate();
   }
 
   public getImagePreviewBase64(itemOrderNumber: number): string {
@@ -310,6 +338,8 @@ export class SignDocumentChecklistComponent implements OnInit, AfterViewInit {
           }
         });
       });
+    } else {
+      this.renderingItems = false;
     }
   }
 
@@ -329,6 +359,7 @@ export class SignDocumentChecklistComponent implements OnInit, AfterViewInit {
   public configCanvas($event?: any): void {
     // console.log('config canvas', $event);
     if (this.pdfLoaded) {
+      this.renderingItems = true;
       Array.from(document.getElementById('checklistPDF').getElementsByClassName('page')).forEach((page: Element) => {
         const pageNumber = page.getAttribute('data-page-number');
         const loaded = page.getAttribute('data-loaded');
@@ -501,6 +532,18 @@ export class SignDocumentChecklistComponent implements OnInit, AfterViewInit {
     this.updateValueAndValidityForm();
   }
 
+  private printItemImageInPdf(jItem: JQuery<HTMLElement>, templateItemFG: UntypedFormGroup): void {
+    const item: TemplateChecklistItemDTO = templateItemFG.getRawValue();
+    if ((item.typeItem === 'IMAGE' || item.typeItem === 'SIGN') && item.itemVal.fileValue.content) {
+      jItem.css({
+        'background-repeat': 'no-repeat',
+        'background-position': 'center',
+        'background-size': 'contain',
+        'background-image': `url("data:${item.itemVal.fileValue.type};base64,${item.itemVal.fileValue.content}")`
+      });
+    }
+  }
+
   private printItemInPdfPage(templateItemFG: UntypedFormGroup): void {
     const item = $(`#checklistItemToDrag`);
     const pageWidthAndHeight = this.signDocumentAuxService.getPageWidthAndHeight(`${templateItemFG.get('numPage').value}`);
@@ -517,6 +560,7 @@ export class SignDocumentChecklistComponent implements OnInit, AfterViewInit {
         width: (pageWidthAndHeight.width * templateItemFG.get('width').value) / 100 + 'px',
         height: (pageWidthAndHeight.height * templateItemFG.get('height').value) / 100 + 'px'
       });
+      this.printItemImageInPdf(newItem, templateItemFG);
     } else {
       const newItem = item.clone();
       newItem.removeClass('undropped');
@@ -536,8 +580,10 @@ export class SignDocumentChecklistComponent implements OnInit, AfterViewInit {
         width: (pageWidthAndHeight.width * templateItemFG.get('width').value) / 100 + 'px',
         height: (pageWidthAndHeight.height * templateItemFG.get('height').value) / 100 + 'px'
       });
+      this.printItemImageInPdf(newItem, templateItemFG);
       newItem.appendTo($('.canvasDropZone-page' + pageNumber));
     }
+    this.renderingItems = false;
   }
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -571,12 +617,14 @@ export class SignDocumentChecklistComponent implements OnInit, AfterViewInit {
     }
     const base64 = await this.getBase64(file);
     const fg: UntypedFormGroup = this.getChecklistItemByOrderNumber(itemOrderNumber);
+    fg.get('itemVal').get('fileValue').get('id').setValue(null);
     fg.get('itemVal').get('fileValue').get('name').setValue(file.name);
     fg.get('itemVal').get('fileValue').get('type').setValue(file.type);
     fg.get('itemVal').get('fileValue').get('size').setValue(file.size);
     fg.get('itemVal').get('fileValue').get('content').setValue(base64.split(';base64,')[1], { emit: true });
     this.checklistForm.markAsDirty();
     this.checklistForm.markAsTouched();
+    this.repaintItemsInTemplate();
     this.staticImage.nativeElement.value = '';
   }
 
@@ -616,6 +664,34 @@ export class SignDocumentChecklistComponent implements OnInit, AfterViewInit {
           this.fileTemplateBase64.next(data.procesedFile.content);
           this.initForm();
           this.refreshItemsAndPdf();
+        },
+        error: (error) => {
+          this.logger.error(error);
+          this.globalMessageService.showError({
+            message: error.message,
+            actionText: this.translateService.instant(marker('common.close'))
+          });
+        }
+      });
+  }
+
+  private getImageAttachments(): void {
+    const spinner = this.spinnerService.show();
+    this.templatesChecklistsService
+      .getAttachmentsChecklistByWCardId(this.wCardId)
+      .pipe(
+        take(1),
+        finalize(() => this.spinnerService.hide(spinner))
+      )
+      .subscribe({
+        next: (data) => {
+          this.attachmentsByGroup = data
+            .map((d) => {
+              d.tabName = d.templateAttachmentItem.name;
+              d.attachments = d.attachments.filter((a) => a.type.toLowerCase().indexOf('image') >= 0);
+              return d;
+            })
+            .filter((d) => d.attachments.length > 0);
         },
         error: (error) => {
           this.logger.error(error);

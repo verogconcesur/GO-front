@@ -8,9 +8,22 @@
   align-items: flex-start;
   padding: 10px 5px;
   &__no-data {
-    width: 100%;
+    width: 105%;
     position: absolute;
-    top: 70px;
+    flex-direction: column;
+    display: flex;
+    place-content: flex-start;
+    align-items: center;
+    height: 100%;
+    top: 0;
+    z-index: 150;
+    padding-top: 50px;
+    color: mat-color($primary, 900);
+    background-color: rgba(mat-contrast($primary, 200), 0.5);
+    &.opacity0 {
+      z-index: -5;
+      pointer-events: none;
+    }
   }
   &__accordion {
     width: 100%;
@@ -100,6 +113,22 @@
           }
         }
       }
+    }
+  }
+
+  &__pdf {
+    position: relative;
+    &__spinner {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: 150;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      pointer-events: none;
     }
   }
 

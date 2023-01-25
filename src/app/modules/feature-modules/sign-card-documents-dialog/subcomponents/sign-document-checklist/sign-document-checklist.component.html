@@ -1,6 +1,9 @@
 <div class="checklist-sign">
-    <div class="checklist-sign__no-data" [ngClass]="{ opacity0: pdfLoaded }" fxLayoutAlign="center flex-start">
-        <label>{{ labels.loadingPdfWait | translate }}.</label>
+    <div class="checklist-sign__no-data" [ngClass]="{ opacity0: pdfLoaded }">
+        <h2>{{ labels.loadingPdfWait | translate }}.</h2>
+        <div fxLayoutAlign="center center" style="width: 100%">
+            <mat-spinner matSuffix class="spinner" diameter="50"></mat-spinner>
+        </div>
     </div>
     <div class="checklist-sign__accordion" [ngClass]="{ opacity0: !pdfLoaded }">
         <mat-accordion class="main-accordion" [hideToggle]="!smallModal" [multi]="!smallModal" [displayMode]="'flat'">
@@ -101,35 +104,42 @@
                                                 getLabelForOrderNumber(syncGroup.selectedItem)
                                             }}</mat-checkbox>
                                         </section>
-                                        <!-- Static value IMAGE-->
-                                        <!-- <section
-                                            *ngIf="
-                                                groupByType.typeItem === 'IMAGE' &&
-                                                getChecklistItemByOrderNumber(syncGroup.selectedItem).get('staticValue').value
-                                            "
-                                            fxLayoutAlign="space-between center"
-                                            class="section-margin-bottom"
-                                        >
-                                            <button
-                                                mat-raised-button
-                                                color="primary"
-                                                class="add-static-image-btn"
-                                                (click)="staticImage.click()"
-                                            >
-                                                <label>{{ labels.staticValueImage | translate }} *</label>
-                                            </button>
-                                            <div class="image-input-preview" fxLayoutAlign="center center">
-                                                <img [src]="getImagePreviewBase64(syncGroup.selectedItem)" />
+                                        <section *ngIf="groupByType.typeItem === 'IMAGE'" class="section-margin-bottom">
+                                            <mat-form-field appearance="outline" style="width: 100%">
+                                                <mat-label>{{ labels.selectCardAttachmentImage | translate }}</mat-label>
+                                                <mat-select
+                                                    (selectionChange)="imageAttachmentSelected($event, syncGroup.selectedItem)"
+                                                >
+                                                    <mat-option></mat-option>
+                                                    <mat-optgroup
+                                                        *ngFor="let group of attachmentsByGroup"
+                                                        [label]="group.tabName"
+                                                    >
+                                                        <mat-option
+                                                            *ngFor="let attachment of group.attachments"
+                                                            [value]="attachment"
+                                                        >
+                                                            {{ attachment.name }}
+                                                        </mat-option>
+                                                    </mat-optgroup>
+                                                </mat-select>
+                                            </mat-form-field>
+                                            <div fxLayoutAlign="space-between center">
+                                                <button
+                                                    mat-raised-button
+                                                    color="primary"
+                                                    class="add-static-image-btn"
+                                                    (click)="
+                                                        selectedItemToUploadImage = syncGroup.selectedItem; staticImage.click()
+                                                    "
+                                                >
+                                                    <label>{{ labels.uploadImage | translate }}</label>
+                                                </button>
+                                                <div class="image-input-preview" fxLayoutAlign="center center">
+                                                    <img [src]="getImagePreviewBase64(syncGroup.selectedItem)" />
+                                                </div>
                                             </div>
-                                            <input
-                                                type="file"
-                                                style="display: none"
-                                                #staticImage
-                                                accept="image/*"
-                                                id="staticImage"
-                                                (change)="addStaticImage($event.target.files, syncGroup.selectedItem)"
-                                            />
-                                        </section> -->
+                                        </section>
                                         <!-- <section
                                             *ngIf="
                                                 (groupByType.typeItem === 'TEXT' ||
@@ -168,10 +178,18 @@
                     </mat-accordion>
                 </div>
             </mat-expansion-panel>
-            <mat-expansion-panel class="expansion-panel-pdf" [expanded]="!smallModal ? true : false" [disabled]="!smallModal">
+            <mat-expansion-panel
+                class="expansion-panel-pdf checklist-sign__pdf"
+                [expanded]="!smallModal ? true : false"
+                [disabled]="!smallModal"
+            >
                 <mat-expansion-panel-header [ngClass]="{ hidden: !smallModal }">
                     <mat-panel-title> {{ labels.pdfPreview | translate }}</mat-panel-title>
                 </mat-expansion-panel-header>
+
+                <div *ngIf="renderingItems" class="checklist-sign__pdf__spinner">
+                    <mat-spinner matSuffix class="spinner" diameter="50"></mat-spinner>
+                </div>
                 <!-- Pdf preview -->
                 <ng-container class="checklist-sign__pdf__viewer" *ngIf="fileTemplateBase64 | async as base64">
                     <ngx-extended-pdf-viewer
@@ -204,6 +222,15 @@
         </mat-accordion>
     </div>
 </div>
+
+<input
+    type="file"
+    style="display: none"
+    #staticImage
+    accept="image/*"
+    id="staticImage"
+    (change)="addStaticImage($event.target.files)"
+/>
 <div class="checklistItemToDrag undropped" id="checklistItemToDrag">
     <div class="resizable" style="height: 50px; width: 124px">
         <div class="checklistItemToDrag__box checklistItemToDrag__label"></div>
