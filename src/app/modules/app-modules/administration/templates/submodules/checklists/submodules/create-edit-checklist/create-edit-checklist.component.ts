@@ -16,7 +16,7 @@ import { GlobalMessageService } from '@shared/services/global-message.service';
 import { ProgressSpinnerDialogService } from '@shared/services/progress-spinner-dialog.service';
 import $ from 'jquery';
 import 'jqueryui';
-import { Subject } from 'rxjs';
+import { forkJoin, Subject } from 'rxjs';
 import { VariablesService } from '@data/services/variables.service';
 import { finalize, take } from 'rxjs/operators';
 import WorkflowCardSlotDTO from '@data/models/workflows/workflow-card-slot-dto';
@@ -96,24 +96,19 @@ export class CreateEditChecklistComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
-    this.variablesService
-      .searchVariablesSlots()
-      .pipe(take(1))
-      .subscribe((res) => {
-        this.listVariables = res;
-      });
+    const variablesRequest = this.variablesService.searchVariablesSlots();
 
     if (this.route?.snapshot?.params?.id) {
       const spinner = this.spinnerService.show();
-      this.templatesChecklistsService
-        .findChecklistById(this.route.snapshot.params.id)
+      forkJoin([variablesRequest, this.templatesChecklistsService.findChecklistById(this.route.snapshot.params.id)])
         .pipe(
           take(1),
           finalize(() => this.spinnerService.hide(spinner))
         )
-        .subscribe({
-          next: (response: TemplatesChecklistsDTO) => {
-            this.checklistToEdit = response;
+        .subscribe(
+          (responses: [WorkflowCardSlotDTO[], TemplatesChecklistsDTO]) => {
+            this.listVariables = responses[0];
+            this.checklistToEdit = responses[1];
             this.uniqueIdOrder = this.checklistToEdit.templateChecklistItems?.reduce(
               (prev: number, curr: TemplateChecklistItemDTO) => {
                 if (curr.orderNumber > prev) {
@@ -127,15 +122,18 @@ export class CreateEditChecklistComponent implements OnInit {
             this.fileTemplateBase64.next(this.checklistForm.get('templateFile').get('content').value);
             this.refreshItemsAndPdf();
           },
-          error: (error: ConcenetError) => {
+          (errors) => {
             this.globalMessageService.showError({
-              message: this.translateService.instant(error.message),
+              message: this.translateService.instant(errors[1]?.message),
               actionText: this.translateService.instant(marker('common.close'))
             });
             this.router.navigate([RouteConstants.ADMINISTRATION, RouteConstants.TEMPLATES, RouteConstants.CHECKLISTS]);
           }
-        });
+        );
     } else {
+      variablesRequest.pipe(take(1)).subscribe((res) => {
+        this.listVariables = res;
+      });
       this.initForm();
     }
   }
@@ -311,29 +309,32 @@ export class CreateEditChecklistComponent implements OnInit {
   public configCanvas($event?: any): void {
     // console.log('config canvas', $event);
     if (this.pdfLoaded) {
-      Array.from(document.getElementById('checklistPDF').getElementsByClassName('page')).forEach((page: Element) => {
-        const pageNumber = page.getAttribute('data-page-number');
-        const loaded = page.getAttribute('data-loaded');
-        if (loaded && $('.canvasDropZone-page' + pageNumber).length === 0) {
-          const canvas = page.getElementsByClassName('canvasWrapper').item(0); //.getElementsByTagName('canvas').item(0);
-          canvas.classList.add('canvasDropZone-page' + pageNumber);
-          setTimeout(() => {
-            $('.canvasDropZone-page' + pageNumber).droppable({
-              drop: (event, ui) => {
-                const item = ui.draggable;
-                const offset = ui.offset;
-                if (!item.hasClass('dropped')) {
-                  this.newItemDropped(item, offset, pageNumber);
-                } else {
-                  this.pdfItemMoved(item, offset, pageNumber);
-                  return true;
+      const arr = document.getElementById('checklistPDF')?.getElementsByClassName('page');
+      if (arr) {
+        Array.from(arr).forEach((page: Element) => {
+          const pageNumber = page.getAttribute('data-page-number');
+          const loaded = page.getAttribute('data-loaded');
+          if (loaded && $('.canvasDropZone-page' + pageNumber).length === 0) {
+            const canvas = page.getElementsByClassName('canvasWrapper').item(0); //.getElementsByTagName('canvas').item(0);
+            canvas.classList.add('canvasDropZone-page' + pageNumber);
+            setTimeout(() => {
+              $('.canvasDropZone-page' + pageNumber).droppable({
+                drop: (event, ui) => {
+                  const item = ui.draggable;
+                  const offset = ui.offset;
+                  if (!item.hasClass('dropped')) {
+                    this.newItemDropped(item, offset, pageNumber);
+                  } else {
+                    this.pdfItemMoved(item, offset, pageNumber);
+                    return true;
+                  }
                 }
-              }
+              });
+              this.repaintItemsInTemplate(parseInt(pageNumber, 10));
             });
-            this.repaintItemsInTemplate(parseInt(pageNumber, 10));
-          });
-        }
-      });
+          }
+        });
+      }
     }
   }
 
@@ -580,7 +581,7 @@ export class CreateEditChecklistComponent implements OnInit {
             if (item.typeItem === 'VARIABLE') {
               item.variable = { id: item.variable.id };
             }
-            if (item.staticValue && item.typeItem === 'TEXT') {
+            if (item.staticValue && item.typeItem !== 'SIGN' && item.typeItem !== 'DRAWING' && item.typeItem !== 'IMAGE') {
               item.itemVal.fileValue = null;
             } else if (!item.staticValue) {
               item.itemVal = null;
@@ -676,7 +677,7 @@ export class CreateEditChecklistComponent implements OnInit {
   }
 
   private initForm() {
-    this.checklistForm = this.createEditChecklistAuxService.createChecklistForm(this.checklistToEdit);
+    this.checklistForm = this.createEditChecklistAuxService.createChecklistForm(this.checklistToEdit, this.listVariables);
     this.updateValueAndValidityForm();
   }
 
@@ -763,7 +764,6 @@ export class CreateEditChecklistComponent implements OnInit {
     }
     const file = files[0];
     if (file.type.toLowerCase().indexOf('image') === -1) {
-      console.log(file.type.toLowerCase());
       this.globalMessageService.showError({
         message: this.translateService.instant(marker('errors.fileFormat'), {
           format: this.translateService.instant(marker('common.image'))
@@ -774,6 +774,7 @@ export class CreateEditChecklistComponent implements OnInit {
     }
     const base64 = await this.getBase64(file);
     const fg: UntypedFormGroup = this.getChecklistItemByOrderNumber(itemOrderNumber);
+    fg.get('itemVal').get('fileValue').get('id').setValue(null);
     fg.get('itemVal').get('fileValue').get('name').setValue(file.name);
     fg.get('itemVal').get('fileValue').get('type').setValue(file.type);
     fg.get('itemVal').get('fileValue').get('size').setValue(file.size);

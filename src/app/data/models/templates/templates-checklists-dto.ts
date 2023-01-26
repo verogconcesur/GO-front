@@ -25,6 +25,8 @@ export interface TemplateChecklistItemDTO {
   typeSign: null | 'SIGN_USER' | 'SIGN_CLIENT';
   variable: WorkflowCardSlotDTO;
   width: number;
+  auxOrderNumber?: number;
+  auxSincronizedItems?: number[];
 }
 
 export interface AuxChecklistItemsGroupByTypeDTO {
@@ -45,6 +47,15 @@ export interface AuxChecklistItemsGroupBySyncDTO {
   variable: WorkflowCardSlotDTO;
   syncronized: boolean;
   templateChecklistItems: UntypedFormArray;
+}
+
+export interface SignDocumentExchangeDTO {
+  attachment: AttachmentDTO;
+  procesedFile: AttachmentDTO;
+  signDocumentMode: 'TEMPLATE' | 'UPLOAD' | 'ATTACHMENT';
+  tabId: number;
+  templateChecklist: TemplatesChecklistsDTO;
+  upload: AttachmentDTO;
 }
 
 export default interface TemplatesChecklistsDTO {

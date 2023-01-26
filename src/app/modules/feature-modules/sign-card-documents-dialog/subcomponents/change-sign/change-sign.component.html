@@ -1,0 +1,32 @@
+<div class="paint-zone" fxLayout="column" fxLayoutAlign="flex-start, center">
+    <div class="paint-zone__header">
+        <button mat-icon-button class="opacity-04" (click)="cancelAction()">
+            <mat-icon>close</mat-icon>
+        </button>
+    </div>
+    <div class="paint-zone__controls">
+        <div class="type">
+            <input type="radio" name="pen-type" id="change-sign-pen-pencil" checked />
+            <label for="pen-pencil" (click)="pencilType = 'pencil'">
+                <mat-icon>edit</mat-icon>
+            </label>
+            <input type="radio" name="pen-type" id="change-sign-pen-eraser" />
+            <label for="pen-eraser" (click)="pencilType = 'eraser'">
+                <mat-icon>edit_off</mat-icon>
+            </label>
+        </div>
+        <div class="size">
+            <input type="range" id="change-sign-pen-size" min="1" max="30" value="3" />
+        </div>
+        <div class="color">
+            <input type="color" id="change-sign-pen-color" value="#000" />
+        </div>
+    </div>
+    <div id="paint-zone__canvas-wrapper" class="paint-zone__canvas-wrapper"></div>
+
+    <div class="paint-zone__footer">
+        <button mat-flat-button color="primary" (click)="confirmAction()">
+            {{ labels.save | translate }}
+        </button>
+    </div>
+</div>
