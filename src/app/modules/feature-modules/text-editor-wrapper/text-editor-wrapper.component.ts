@@ -146,6 +146,17 @@ export class TextEditorWrapperComponent implements OnInit, AfterViewInit {
             }
             this.sumernoteHtmlContent = html;
             this.contentChanged.emit(html);
+          },
+          onChangeCodeview: (contents: any) => {
+            let html = contents;
+            if (
+              html.indexOf('<!--SummernoteStyles-->') === -1 &&
+              (html.indexOf('<table') >= 0 || html.indexOf('< table') >= 0 || html.indexOf('<a') >= 0 || html.indexOf('< a') >= 0)
+            ) {
+              html = `${this.summernoteStyles} ${html}`;
+            }
+            this.sumernoteHtmlContent = html;
+            this.contentChanged.emit(html);
           }
         }
       };
