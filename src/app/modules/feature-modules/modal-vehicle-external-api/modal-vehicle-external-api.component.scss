@@ -1,0 +1,55 @@
+@import 'utils/core';
+@import 'utils/theme';
+
+.create-edit-vehicle-content {
+  width: 100%;
+  padding-right: 15px;
+  &__form {
+    width: 100%;
+    .vehicle-data__section {
+      margin-bottom: 10px;
+      &__title {
+        margin: 0 0 10px 0;
+        color: mat-color($primary, 500);
+        font-size: 1rem;
+        font-weight: 600;
+        &.first-child {
+          margin-top: 0px;
+        }
+      }
+      &__group {
+        &__search {
+          &__button {
+            margin-top: 6px;
+          }
+        }
+        &__error {
+          width: 100%;
+          max-width: 500px;
+          height: 60px;
+          border-radius: 6px;
+          background-color: rgba(mat-color($primary, statusError), 0.1);
+          color: mat-color($primary, statusError);
+          margin: 15px 0;
+          mat-icon {
+            padding-right: 10px;
+          }
+        }
+        mat-form-field {
+          margin-right: 20px;
+        }
+        &__item {
+          margin-top: 5px;
+          &__label {
+            font-weight: 600;
+          }
+        }
+        section {
+          display: inline-block;
+          margin-right: 10px;
+          width: 200px;
+        }
+      }
+    }
+  }
+}
