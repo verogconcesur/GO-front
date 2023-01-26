@@ -12,7 +12,8 @@ import {
   Output,
   HostListener,
   AfterViewInit,
-  ViewEncapsulation
+  ViewEncapsulation,
+  OnDestroy
 } from '@angular/core';
 import { UntypedFormArray, UntypedFormBuilder, UntypedFormGroup } from '@angular/forms';
 import TemplatesChecklistsDTO, {
@@ -28,6 +29,7 @@ import { GlobalMessageService } from '@shared/services/global-message.service';
 import { ProgressSpinnerDialogService } from '@shared/services/progress-spinner-dialog.service';
 import $ from 'jquery';
 import 'jqueryui';
+import p5 from 'p5';
 import { Subject } from 'rxjs';
 import { finalize, take } from 'rxjs/operators';
 import { SignDocumentAuxService } from './sign-document-aux.service';
@@ -38,11 +40,6 @@ import { ConcenetError } from '@app/types/error';
 import { NGXLogger } from 'ngx-logger';
 import { MatExpansionPanel } from '@angular/material/expansion';
 import { AttachmentDTO, CardAttachmentsDTO } from '@data/models/cards/card-attachments-dto';
-import { CustomDialogService } from '@jenga/custom-dialog';
-import {
-  InsertSignComponentModalEnum,
-  ModalInsertSignComponent
-} from '@modules/feature-modules/modal-insert-sign/modal-insert-sign.component';
 
 @Component({
   selector: 'app-sign-document-checklist',
@@ -50,10 +47,11 @@ import {
   styleUrls: ['./sign-document-checklist.component.scss'],
   encapsulation: ViewEncapsulation.None
 })
-export class SignDocumentChecklistComponent implements OnInit, AfterViewInit {
+export class SignDocumentChecklistComponent implements OnInit, AfterViewInit, OnDestroy {
   @Input() wCardId: number;
   @Input() pdf: SignDocumentExchangeDTO;
   @Output() setTitle: EventEmitter<string> = new EventEmitter();
+  @Output() saveAction: EventEmitter<SignDocumentExchangeDTO> = new EventEmitter();
   @ViewChild('staticImage')
   staticImage: ElementRef;
   @ViewChild('fieldsPanel')
@@ -73,6 +71,8 @@ export class SignDocumentChecklistComponent implements OnInit, AfterViewInit {
   public realOrderRelationAuxOrder: any = {};
   public selectedItemToUploadImage: number;
   public attachmentsByGroup: CardAttachmentsDTO[] = [];
+  public showChangeSign = false;
+  public changeSignToOrderNumber: number = null;
   public labels: any = {
     newCheckList: marker('administration.templates.checklists.new'),
     cheklistConfig: marker('administration.templates.checklists.config'),
@@ -115,6 +115,8 @@ export class SignDocumentChecklistComponent implements OnInit, AfterViewInit {
   private formDataIdValueMapByPdf: { [fieldName: string]: string | number | boolean } = {};
   private formDataIdValueMapByForm: { [fieldName: string]: string | number | boolean } = {};
   private formDataIdValueMapByForNgxPdf: { [fieldName: string]: string | number | boolean } = {};
+  private p5s: { [auxOrderNumber: number]: p5 } = {};
+  private p5sDraws: { [auxOrderNumber: number]: string } = {};
 
   constructor(
     private fb: UntypedFormBuilder,
@@ -125,8 +127,7 @@ export class SignDocumentChecklistComponent implements OnInit, AfterViewInit {
     private signDocumentAuxService: SignDocumentAuxService,
     private router: Router,
     private templatesChecklistsService: TemplatesChecklistsService,
-    private logger: NGXLogger,
-    private customDialogService: CustomDialogService
+    private logger: NGXLogger
   ) {}
 
   public get formData(): { [fieldName: string]: string | number | boolean } {
@@ -209,6 +210,10 @@ export class SignDocumentChecklistComponent implements OnInit, AfterViewInit {
 
   ngAfterViewInit(): void {
     this.checkWindowSize(window.innerWidth);
+  }
+
+  ngOnDestroy(): void {
+    this.removeP5s();
   }
 
   public checkWindowSize(width: number): void {
@@ -307,43 +312,54 @@ export class SignDocumentChecklistComponent implements OnInit, AfterViewInit {
       .get('fileValue')
       .get('content')
       .setValue(file?.content ? file.content : null, { emit: true });
+    fg.get('itemVal')
+      .get('fileValue')
+      .get('thumbnail')
+      .setValue(file?.thumbnail ? file.thumbnail : null, { emit: true });
     this.updateValueAndValidityForm();
-    this.repaintItemsInTemplate();
+
+    const id = `item_${selectedItemToUploadImage}`;
+    const jQItem = $(`#${id}`);
+    this.printItemImageInPdf(jQItem, fg);
   }
 
   public getImagePreviewBase64(itemOrderNumber: number): string {
     const fg: UntypedFormGroup = this.getChecklistItemByOrderNumber(itemOrderNumber);
-    if (fg?.get('itemVal')?.get('fileValue')?.get('type')?.value && fg?.get('itemVal')?.get('fileValue')?.get('content')?.value) {
+    if (
+      fg?.get('itemVal')?.get('fileValue')?.get('type')?.value &&
+      (fg?.get('itemVal')?.get('fileValue')?.get('content')?.value ||
+        fg?.get('itemVal')?.get('fileValue')?.get('thumbnail')?.value)
+    ) {
       return `data:${fg.get('itemVal').get('fileValue').get('type').value};base64,${
         fg.get('itemVal').get('fileValue').get('content').value
+          ? fg.get('itemVal').get('fileValue').get('content').value
+          : fg?.get('itemVal')?.get('fileValue')?.get('thumbnail')?.value
       }`;
     }
     return '';
   }
 
   public pdfZoomChange($event: any) {
-    this.configCanvas();
+    setTimeout(() => this.configCanvas(), 200);
   }
 
   public refreshItemsAndPdf(): void {
-    this.setItemListToShow();
     this.repaintItemsInTemplate();
   }
 
   public repaintItemsInTemplate(page?: number): void {
+    this.removeP5s();
     if (this.checklistForm?.value?.templateChecklistItems?.length > 0) {
-      setTimeout(() => {
-        this.checklistForm.value.templateChecklistItems.forEach((item: TemplateChecklistItemDTO, index: number) => {
-          if (page && item.numPage === page) {
-            this.printItemInPdfPage(
-              (this.checklistForm.get('templateChecklistItems') as UntypedFormArray).at(index) as UntypedFormGroup
-            );
-          } else if (!page) {
-            this.printItemInPdfPage(
-              (this.checklistForm.get('templateChecklistItems') as UntypedFormArray).at(index) as UntypedFormGroup
-            );
-          }
-        });
+      this.checklistForm.value.templateChecklistItems.forEach((item: TemplateChecklistItemDTO, index: number) => {
+        if (page && item.numPage === page) {
+          this.printItemInPdfPage(
+            (this.checklistForm.get('templateChecklistItems') as UntypedFormArray).at(index) as UntypedFormGroup
+          );
+        } else if (!page) {
+          this.printItemInPdfPage(
+            (this.checklistForm.get('templateChecklistItems') as UntypedFormArray).at(index) as UntypedFormGroup
+          );
+        }
       });
     } else {
       this.renderingItems = false;
@@ -367,16 +383,19 @@ export class SignDocumentChecklistComponent implements OnInit, AfterViewInit {
     // console.log('config canvas', $event);
     if (this.pdfLoaded) {
       this.renderingItems = true;
-      Array.from(document.getElementById('checklistPDF').getElementsByClassName('page')).forEach((page: Element) => {
-        const pageNumber = page.getAttribute('data-page-number');
-        const loaded = page.getAttribute('data-loaded');
-        if (loaded && $('.canvasDropZone-page' + pageNumber).length === 0) {
-          const canvas = page.getElementsByClassName('canvasWrapper').item(0); //.getElementsByTagName('canvas').item(0);
-          canvas.classList.add('canvasDropZone-page' + pageNumber);
-        }
-      });
+      const arr = document.getElementById('checklistPDF')?.getElementsByClassName('page');
+      if (arr) {
+        Array.from(arr).forEach((page: Element) => {
+          const pageNumber = page.getAttribute('data-page-number');
+          const loaded = page.getAttribute('data-loaded');
+          if (loaded && $('.canvasDropZone-page' + pageNumber).length === 0) {
+            const canvas = page.getElementsByClassName('canvasWrapper').item(0); //.getElementsByTagName('canvas').item(0);
+            canvas.classList.add('canvasDropZone-page' + pageNumber);
+          }
+        });
+      }
     }
-    setTimeout(() => this.repaintItemsInTemplate());
+    setTimeout(() => this.repaintItemsInTemplate(), 100);
   }
 
   public getChecklistItemByOrderNumber(ordNumber: number): UntypedFormGroup {
@@ -476,85 +495,58 @@ export class SignDocumentChecklistComponent implements OnInit, AfterViewInit {
       .pipe(take(1))
       .subscribe((ok: boolean) => {
         if (ok) {
-          const spinner = this.spinnerService.show();
-          const data: any = this.checklistForm.getRawValue();
-          const template: any = data.template;
-          template.brands = template.brands.map((item: any) => {
-            return { id: item.id };
-          });
-          template.departments = template.departments.map((item: any) => {
-            return { id: item.id };
-          });
-          template.facilities = template.facilities.map((item: any) => {
-            return { id: item.id };
-          });
-          template.specialties = template.specialties.map((item: any) => {
-            return { id: item.id };
-          });
-          data.template = template;
-          data.templateChecklistItems.map((item: any) => {
-            item.sincronizedItems =
-              item.sincronizedItems.length === 1 || item.staticValue
-                ? null
-                : [...item.sincronizedItems].map((n) => this.auxOrderRelationRealOrder[n]);
-            if (item.typeItem === 'VARIABLE') {
-              item.variable = { id: item.variable.id };
-            }
-            if (item.staticValue && item.typeItem !== 'SIGN' && item.typeItem !== 'DRAWING' && item.typeItem !== 'IMAGE') {
-              item.itemVal.fileValue = null;
-            } else if (!item.staticValue) {
-              item.itemVal = null;
-            }
-            return item;
-          });
-          this.templatesChecklistsService
-            .addOrEditChecklist(data)
-            .pipe(
-              take(1),
-              finalize(() => this.spinnerService.hide(spinner))
-            )
-            .subscribe({
-              next: (response) => {
-                this.globalMessageService.showSuccess({
-                  message: this.translateService.instant(marker('common.successOperation')),
-                  actionText: this.translateService.instant(marker('common.close'))
-                });
-                this.router.navigate([RouteConstants.ADMINISTRATION, RouteConstants.TEMPLATES, RouteConstants.CHECKLISTS]);
-              },
-              error: (error: ConcenetError) => {
-                this.globalMessageService.showError({
-                  message: this.translateService.instant(error.message),
-                  actionText: this.translateService.instant(marker('common.close'))
-                });
+          console.log(this.signDocumentExchange, this.checklistForm.getRawValue(), this.p5sDraws);
+          const itemsModified = this.checklistForm.getRawValue().templateChecklistItems;
+          this.signDocumentExchange.templateChecklist.templateChecklistItems.forEach((item: TemplateChecklistItemDTO) => {
+            const found = itemsModified.find((aux: TemplateChecklistItemDTO) => aux.orderNumber === item.orderNumber);
+            if (found) {
+              console.log(found);
+              item.itemVal = found.itemVal;
+              if (item.typeItem === 'DRAWING' && this.p5sDraws[found.auxOrderNumber]) {
+                item.itemVal.fileValue.content = this.p5sDraws[found.auxOrderNumber].split(';base64,')[1];
+                item.itemVal.fileValue.type = this.p5sDraws[found.auxOrderNumber].split(';base64,')[0].split('data:')[1];
+                item.itemVal.fileValue.name = `${+new Date()}_draw.png`;
+              } else {
+                item.itemVal.fileValue = item.itemVal.fileValue.content ? item.itemVal.fileValue : null;
               }
-            });
+              if (
+                item.itemVal?.fileValue?.content &&
+                item.typeItem === 'SIGN' &&
+                item.sincronizedItems.length > 1 &&
+                item.sincronizedItems.indexOf(item.orderNumber) > 0
+              ) {
+                item.itemVal.fileValue.content = null;
+              }
+            }
+          });
+          this.saveAction.emit(this.signDocumentExchange);
         }
       });
   }
 
   public changeSign(auxOrderNumber: number): void {
-    this.customDialogService
-      .open({
-        id: InsertSignComponentModalEnum.ID,
-        panelClass: InsertSignComponentModalEnum.PANEL_CLASS,
-        component: ModalInsertSignComponent,
-        disableClose: true,
-        width: '95%',
-        maxWidth: '550px'
-      })
-      .pipe(take(1))
-      .subscribe((response) => {
-        if (response) {
-          const fg: UntypedFormGroup = this.getChecklistItemByOrderNumber(auxOrderNumber);
-          fg.get('itemVal').get('fileValue').get('id').setValue(null);
-          fg.get('itemVal').get('fileValue').get('name').setValue(`${+new Date()}_sign.png`);
-          fg.get('itemVal').get('fileValue').get('type').setValue(response.split('data:')[1].split(';base64')[0]);
-          fg.get('itemVal').get('fileValue').get('size').setValue(null);
-          fg.get('itemVal').get('fileValue').get('content').setValue(response.split(';base64,')[1], { emit: true });
-          this.updateValueAndValidityForm();
-          this.repaintItemsInTemplate();
-        }
-      });
+    this.changeSignToOrderNumber = auxOrderNumber;
+    this.showChangeSign = true;
+  }
+
+  public changeSignAction(dataUrl: string): void {
+    const fg: UntypedFormGroup = this.getChecklistItemByOrderNumber(this.changeSignToOrderNumber);
+    fg.get('sincronizedItems').value.forEach((n: number) => {
+      const fgAux: UntypedFormGroup = this.getChecklistItemByOrderNumber(n);
+      fgAux.get('itemVal').get('fileValue').get('id').setValue(null);
+      fgAux.get('itemVal').get('fileValue').get('name').setValue(`${+new Date()}_sign.png`);
+      fgAux.get('itemVal').get('fileValue').get('type').setValue(dataUrl.split('data:')[1].split(';base64')[0]);
+      fgAux.get('itemVal').get('fileValue').get('size').setValue(null);
+      fgAux.get('itemVal').get('fileValue').get('content').setValue(dataUrl.split(';base64,')[1]);
+    });
+    this.showChangeSign = false;
+    this.updateValueAndValidityForm();
+
+    fg.get('sincronizedItems').value.forEach((n: number) => {
+      const id = `item_${n}`;
+      const jQItem = $(`#${id}`);
+      this.printItemImageInPdf(jQItem, this.getChecklistItemByOrderNumber(n));
+    });
   }
 
   //Private methods
@@ -566,59 +558,137 @@ export class SignDocumentChecklistComponent implements OnInit, AfterViewInit {
 
   private printItemImageInPdf(jItem: JQuery<HTMLElement>, templateItemFG: UntypedFormGroup): void {
     const item: TemplateChecklistItemDTO = templateItemFG.getRawValue();
-    if ((item.typeItem === 'IMAGE' || item.typeItem === 'SIGN') && item.itemVal.fileValue.content) {
+    if (
+      (item.typeItem === 'IMAGE' || item.typeItem === 'SIGN') &&
+      (item.itemVal.fileValue.content || item.itemVal.fileValue.thumbnail)
+    ) {
       jItem.css({
         'background-repeat': 'no-repeat',
         'background-position': 'center',
         'background-size': 'contain',
-        'background-image': `url("data:${item.itemVal.fileValue.type};base64,${item.itemVal.fileValue.content}")`
+        'background-image': `url("data:${item.itemVal.fileValue.type};base64,${
+          item.itemVal.fileValue.content ? item.itemVal.fileValue.content : item.itemVal.fileValue.thumbnail
+        }")`
       });
     }
   }
 
   private printItemInPdfPage(templateItemFG: UntypedFormGroup): void {
-    const item = $(`#checklistItemToDrag`);
+    const itemToClone = $(`#checklistItemToDrag`);
     const pageWidthAndHeight = this.signDocumentAuxService.getPageWidthAndHeight(`${templateItemFG.get('numPage').value}`);
     const pageNumber = `${templateItemFG.get('numPage').value}`;
     const uniqueId = templateItemFG.get('auxOrderNumber').value;
     const id = `item_${uniqueId}`;
+    const id_resizable = `item_resizable_${uniqueId}`;
+    let item: JQuery<HTMLElement> = null;
     if ($(`#${id}`).length) {
-      const newItem = $(`#${id}`);
-      newItem.css({
+      item = $(`#${id}`);
+      item.css({
         top: (pageWidthAndHeight.height * templateItemFG.get('lowerLeftY').value) / 100 + 'px',
         left: (pageWidthAndHeight.width * templateItemFG.get('lowerLeftX').value) / 100 + 'px'
       });
-      newItem.children().css({
+      item.children().css({
         width: (pageWidthAndHeight.width * templateItemFG.get('width').value) / 100 + 'px',
         height: (pageWidthAndHeight.height * templateItemFG.get('height').value) / 100 + 'px'
       });
-      this.printItemImageInPdf(newItem, templateItemFG);
     } else {
-      const newItem = item.clone();
-      newItem.removeClass('undropped');
-      newItem.addClass('dropped');
-      newItem.attr('id', id);
-      newItem.attr('data-id', uniqueId);
-      newItem
+      item = itemToClone.clone();
+      item.removeClass('undropped');
+      item.addClass('dropped');
+      item.attr('id', id);
+      item.attr('data-id', uniqueId);
+      item
         .children('.resizable')
         .children('.checklistItemToDrag__label')
         .prepend(`<div class="checklistItemToDrag__orderNumber">${uniqueId}</div> `);
-      newItem.children('.resizable').attr('data-id', uniqueId);
-      newItem.css({
+      item.children('.resizable').attr('id', id_resizable);
+      item.children('.resizable').attr('data-id', uniqueId);
+      item.css({
         top: (pageWidthAndHeight.height * templateItemFG.get('lowerLeftY').value) / 100 + 'px',
         left: (pageWidthAndHeight.width * templateItemFG.get('lowerLeftX').value) / 100 + 'px'
       });
-      newItem.children().css({
+      item.children().css({
         width: (pageWidthAndHeight.width * templateItemFG.get('width').value) / 100 + 'px',
         height: (pageWidthAndHeight.height * templateItemFG.get('height').value) / 100 + 'px'
       });
-      this.printItemImageInPdf(newItem, templateItemFG);
-      newItem.appendTo($('.canvasDropZone-page' + pageNumber));
+      item.appendTo($('.canvasDropZone-page' + pageNumber));
+    }
+    this.printItemImageInPdf(item, templateItemFG);
+    if (templateItemFG.get('typeItem').value === 'DRAWING' && $(`#${id_resizable}`).length) {
+      setTimeout(
+        () =>
+          new p5((p: p5) =>
+            this.setDrawZone(
+              p,
+              uniqueId,
+              id,
+              id_resizable,
+              item,
+              (pageWidthAndHeight.width * templateItemFG.get('width').value) / 100,
+              (pageWidthAndHeight.height * templateItemFG.get('height').value) / 100
+            )
+          ),
+        150
+      );
     }
     this.renderingItems = false;
   }
 
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  private setDrawZone = (
+    p: p5,
+    auxOrderNumber: number,
+    id: string,
+    id_resizable: string,
+    item: JQuery<HTMLElement>,
+    width: number,
+    height: number
+  ): void => {
+    if (item.length) {
+      item.css({
+        'z-index': 1000
+      });
+      p.setup = () => {
+        p.createCanvas(width, height).parent(id_resizable);
+      };
+      if (this.p5sDraws[auxOrderNumber]) {
+        p.loadImage(this.p5sDraws[auxOrderNumber], (newImage) => {
+          p.clear(255, 255, 255, 1);
+          p.image(newImage, 0, 0, p.width, p.height);
+        });
+      }
+      p.mouseDragged = (event) => {
+        let type = 'pencil';
+        if ($('#sign-document-pen-eraser:checked').length) {
+          type = 'eraser';
+        }
+        const size = parseInt($('#sign-document-pen-size').val().toString(), 10);
+        const color = $('#sign-document-pen-color').val().toString();
+        p.fill(color);
+        p.stroke(color);
+        if (type === 'eraser') {
+          p.erase();
+          p.strokeWeight(30);
+          p.line(p.pmouseX, p.pmouseY, p.mouseX, p.mouseY);
+        } else {
+          p.noErase();
+          if (type === 'pencil') {
+            p.strokeWeight(size);
+            p.line(p.pmouseX, p.pmouseY, p.mouseX, p.mouseY);
+          } else {
+            p.ellipse(p.mouseX, p.mouseY, size, size);
+          }
+        }
+      };
+      p.mouseReleased = (event) => {
+        const { canvas } = p.get() as unknown as {
+          canvas: HTMLCanvasElement;
+        };
+        this.p5sDraws[auxOrderNumber] = canvas.toDataURL();
+      };
+      this.p5s[auxOrderNumber] = p;
+    }
+  };
+
   private getBase64(file: File): Promise<any> {
     const reader = new FileReader();
     return new Promise((resolve) => {
@@ -656,7 +726,9 @@ export class SignDocumentChecklistComponent implements OnInit, AfterViewInit {
     fg.get('itemVal').get('fileValue').get('content').setValue(base64.split(';base64,')[1], { emit: true });
     this.checklistForm.markAsDirty();
     this.checklistForm.markAsTouched();
-    this.repaintItemsInTemplate();
+    const id = `item_${itemOrderNumber}`;
+    const jQItem = $(`#${id}`);
+    this.printItemImageInPdf(jQItem, fg);
     this.staticImage.nativeElement.value = '';
   }
 
@@ -671,7 +743,7 @@ export class SignDocumentChecklistComponent implements OnInit, AfterViewInit {
       .subscribe({
         next: (data) => {
           this.signDocumentExchange = data;
-          this.checklistToEdit = this.signDocumentExchange.templateChecklist;
+          this.checklistToEdit = { ...this.signDocumentExchange.templateChecklist };
           this.checklistToEdit.templateChecklistItems = [...this.checklistToEdit.templateChecklistItems].filter((item) => {
             if (item.staticValue) {
               return false;
@@ -695,6 +767,7 @@ export class SignDocumentChecklistComponent implements OnInit, AfterViewInit {
           this.setTitle.emit(this.signDocumentExchange.templateChecklist.templateFile.name);
           this.fileTemplateBase64.next(data.procesedFile.content);
           this.initForm();
+          this.setItemListToShow();
           this.refreshItemsAndPdf();
         },
         error: (error) => {
@@ -721,6 +794,10 @@ export class SignDocumentChecklistComponent implements OnInit, AfterViewInit {
             .map((d) => {
               d.tabName = d.templateAttachmentItem.name;
               d.attachments = d.attachments.filter((a) => a.type.toLowerCase().indexOf('image') >= 0);
+              // d.attachments.map((a) => {
+              //   a.content = a.content ? a.content : a.thumbnail;
+              //   return a;
+              // });
               return d;
             })
             .filter((d) => d.attachments.length > 0);
@@ -733,5 +810,13 @@ export class SignDocumentChecklistComponent implements OnInit, AfterViewInit {
           });
         }
       });
+  }
+
+  private removeP5s(): void {
+    Object.keys(this.p5s).forEach((k) => {
+      this.p5s[parseInt(k, 10)].remove();
+    });
+    this.p5s = [];
+    $('.p5Canvas').remove();
   }
 }

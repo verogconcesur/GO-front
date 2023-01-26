@@ -130,6 +130,20 @@
       align-items: center;
       pointer-events: none;
     }
+    .paint-zone-controls {
+      margin-top: -10px;
+      width: 100%;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+  }
+
+  &__footer {
+    position: absolute;
+    bottom: 0;
+    right: 0;
+    margin: 20px;
   }
 
   .inputColor {
@@ -158,6 +172,17 @@
     opacity: 0;
   }
 }
+.change-sign-wrapper {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: rgba(mat-contrast($primary, 200), 0.5);
+}
 
 .checklist-footer {
   width: 100%;
@@ -179,6 +204,16 @@
   display: flex;
   justify-content: flex-start;
   align-items: center;
+
+  .resizable {
+    position: relative;
+    .p5Canvas {
+      position: absolute;
+      top: 0;
+      left: 0;
+      z-index: 1500;
+    }
+  }
 
   &.undropped {
     opacity: 0;

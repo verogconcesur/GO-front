@@ -309,29 +309,32 @@ export class CreateEditChecklistComponent implements OnInit {
   public configCanvas($event?: any): void {
     // console.log('config canvas', $event);
     if (this.pdfLoaded) {
-      Array.from(document.getElementById('checklistPDF').getElementsByClassName('page')).forEach((page: Element) => {
-        const pageNumber = page.getAttribute('data-page-number');
-        const loaded = page.getAttribute('data-loaded');
-        if (loaded && $('.canvasDropZone-page' + pageNumber).length === 0) {
-          const canvas = page.getElementsByClassName('canvasWrapper').item(0); //.getElementsByTagName('canvas').item(0);
-          canvas.classList.add('canvasDropZone-page' + pageNumber);
-          setTimeout(() => {
-            $('.canvasDropZone-page' + pageNumber).droppable({
-              drop: (event, ui) => {
-                const item = ui.draggable;
-                const offset = ui.offset;
-                if (!item.hasClass('dropped')) {
-                  this.newItemDropped(item, offset, pageNumber);
-                } else {
-                  this.pdfItemMoved(item, offset, pageNumber);
-                  return true;
+      const arr = document.getElementById('checklistPDF')?.getElementsByClassName('page');
+      if (arr) {
+        Array.from(arr).forEach((page: Element) => {
+          const pageNumber = page.getAttribute('data-page-number');
+          const loaded = page.getAttribute('data-loaded');
+          if (loaded && $('.canvasDropZone-page' + pageNumber).length === 0) {
+            const canvas = page.getElementsByClassName('canvasWrapper').item(0); //.getElementsByTagName('canvas').item(0);
+            canvas.classList.add('canvasDropZone-page' + pageNumber);
+            setTimeout(() => {
+              $('.canvasDropZone-page' + pageNumber).droppable({
+                drop: (event, ui) => {
+                  const item = ui.draggable;
+                  const offset = ui.offset;
+                  if (!item.hasClass('dropped')) {
+                    this.newItemDropped(item, offset, pageNumber);
+                  } else {
+                    this.pdfItemMoved(item, offset, pageNumber);
+                    return true;
+                  }
                 }
-              }
+              });
+              this.repaintItemsInTemplate(parseInt(pageNumber, 10));
             });
-            this.repaintItemsInTemplate(parseInt(pageNumber, 10));
-          });
-        }
-      });
+          }
+        });
+      }
     }
   }
 
@@ -580,7 +583,7 @@ export class CreateEditChecklistComponent implements OnInit {
             }
             if (item.staticValue && item.typeItem !== 'SIGN' && item.typeItem !== 'DRAWING' && item.typeItem !== 'IMAGE') {
               item.itemVal.fileValue = null;
-            } else if (!item.staticValue && item.typeItem !== 'VARIABLE') {
+            } else if (!item.staticValue) {
               item.itemVal = null;
             }
             return item;

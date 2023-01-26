@@ -36,7 +36,7 @@ export class ModalInsertSignComponent extends ComponentToExtendForCustomDialog i
   }
 
   public configDrawingZone = (p: p5, id: string): void => {
-    this.p5Sign = p;
+    console.log('configDrawingZone => ModalInsertSignComponent');
     p.setup = () => {
       p.createCanvas(500, 250).parent(id);
     };
@@ -67,9 +67,13 @@ export class ModalInsertSignComponent extends ComponentToExtendForCustomDialog i
         }
       }
     };
+    this.p5Sign = p;
   };
 
-  ngOnDestroy(): void {}
+  ngOnDestroy(): void {
+    this.p5Sign.remove();
+    this.p5Sign = null;
+  }
 
   //Abstract methods
   public confirmCloseCustomDialog(): Observable<boolean> {

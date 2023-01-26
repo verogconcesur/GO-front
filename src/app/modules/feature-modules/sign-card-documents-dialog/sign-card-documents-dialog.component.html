@@ -20,10 +20,11 @@
             <app-sign-document-checklist
                 [wCardId]="wCardId"
                 [pdf]="pdf"
+                (saveAction)="pdfSignedEvent($event)"
                 (setTitle)="setPdfName($event)"
                 *ngSwitchCase="2"
             ></app-sign-document-checklist>
-            <app-sign-document-save-location *ngSwitchCase="3"></app-sign-document-save-location>
+            <app-sign-document-save-location [wCardId]="wCardId" [pdf]="pdf" *ngSwitchCase="3"></app-sign-document-save-location>
         </div>
         <div class="sign-documents-modal__wrapper" *ngIf="!wCardId">
             {{ labels.noDataToShow | translate }}

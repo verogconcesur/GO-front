@@ -112,12 +112,15 @@ export class SignDocumentAuxService {
       width: 0,
       height: 0
     };
-    Array.from(document.getElementById('checklistPDF').getElementsByClassName('page')).forEach((page: Element) => {
-      if (pageNumber === `${page.getAttribute('data-page-number')}`) {
-        pageWidthAndHeight.width = $(page).width();
-        pageWidthAndHeight.height = $(page).height();
-      }
-    });
+    const arr = document.getElementById('checklistPDF')?.getElementsByClassName('page');
+    if (arr) {
+      Array.from(arr).forEach((page: Element) => {
+        if (pageNumber === `${page.getAttribute('data-page-number')}`) {
+          pageWidthAndHeight.width = $(page).width();
+          pageWidthAndHeight.height = $(page).height();
+        }
+      });
+    }
     return pageWidthAndHeight;
   }
 }

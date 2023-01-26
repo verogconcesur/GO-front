@@ -104,6 +104,12 @@ export class SignCardDocumentsDialogComponent implements OnInit {
     this.preparePdfStep();
   }
 
+  public pdfSignedEvent(pdf: SignDocumentExchangeDTO): void {
+    console.log(pdf);
+    this.pdf = pdf;
+    this.stepIndex = 3;
+  }
+
   public closeDialog(): void {
     this.confirmDialogService
       .open({

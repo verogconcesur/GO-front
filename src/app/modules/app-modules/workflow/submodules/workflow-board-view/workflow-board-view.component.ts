@@ -1,5 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { Component, ElementRef, HostListener, NgZone, OnDestroy, OnInit, ViewChild } from '@angular/core';
+import { ChildActivationEnd, NavigationEnd, Router } from '@angular/router';
 import { ConcenetError } from '@app/types/error';
 import { marker } from '@biesbjerg/ngx-translate-extract-marker';
 import FacilityDTO from '@data/models/organization/facility-dto';
@@ -33,7 +34,7 @@ export class WorkflowBoardViewComponent implements OnInit {
   @ViewChild('ScrollColumns') scrollColumns: ElementRef;
   @ViewChild('AnchorColumn') anchorColumns: ElementRef;
   @ViewChild('AnchorStateColumn') anchorStateColumn: WokflowBoardColumnComponent;
-
+  public showBoardView = true;
   public facilities: FacilityDTO[] = [];
   public workflow: WorkflowDTO = null;
   public wStatesData: WorkflowStateDTO[];
@@ -58,7 +59,9 @@ export class WorkflowBoardViewComponent implements OnInit {
     private logger: NGXLogger,
     private translateService: TranslateService,
     private dragAndDropService: WorkflowDragAndDropService,
-    private prepareAndMoveService: WorkflowPrepareAndMoveService
+    private prepareAndMoveService: WorkflowPrepareAndMoveService,
+
+    private router: Router
   ) {}
 
   @HostListener('window:resize', ['$event']) onResize = (event: { target: { innerWidth: number } }) => {
@@ -106,6 +109,18 @@ export class WorkflowBoardViewComponent implements OnInit {
           this.prepareAndMoveService.reloadData$.next(null);
         }
       });
+
+    this.router.events.pipe(untilDestroyed(this)).subscribe((event: any) => {
+      if (event instanceof NavigationEnd || event instanceof ChildActivationEnd) {
+        if (this.router.url.indexOf('(card:wcId') > 0 && this.showBoardView) {
+          console.log('Hide board view');
+          this.showBoardView = false;
+        } else if (this.router.url.indexOf('(card:wcId') === -1 && !this.showBoardView) {
+          console.log('Show board view');
+          this.showBoardView = true;
+        }
+      }
+    });
   }
 
   public toggleAnchorState = () => (this.showAnchorState = !this.showAnchorState);

@@ -95,6 +95,20 @@
                                                 ></textarea>
                                             </mat-form-field>
                                         </section>
+                                        <section *ngIf="groupByType.typeItem === 'DRAWING'" class="section-margin-bottom">
+                                            <button
+                                                mat-raised-button
+                                                color="primary"
+                                                (click)="
+                                                    changePage(groupByType.orderNumberPageAssociation[syncGroup.selectedItem])
+                                                "
+                                            >
+                                                <label
+                                                    >{{ labels.showInPage | translate }}:
+                                                    {{ groupByType.orderNumberPageAssociation[syncGroup.selectedItem] }}</label
+                                                >
+                                            </button>
+                                        </section>
                                         <section
                                             *ngIf="groupByType.typeItem === 'CHECK'"
                                             formGroupName="itemVal"
@@ -176,6 +190,28 @@
                 <div *ngIf="renderingItems" class="checklist-sign__pdf__spinner">
                     <mat-spinner matSuffix class="spinner" diameter="50"></mat-spinner>
                 </div>
+                <div class="paint-zone-controls">
+                    <div class="type">
+                        <input type="radio" name="pen-type" id="sign-document-pen-pencil" class="pen-pencil" checked />
+                        <label for="pen-pencil">
+                            <mat-icon>edit</mat-icon>
+                        </label>
+                        <!-- <input type="radio" name="pen-type" id="sign-document-pen-brush" class="pen-brush" />
+                        <label for="pen-brush">
+                            <mat-icon>brush</mat-icon>
+                        </label> -->
+                        <input type="radio" name="pen-type" id="sign-document-pen-eraser" class="pen-eraser" />
+                        <label for="pen-eraser">
+                            <mat-icon>edit_off</mat-icon>
+                        </label>
+                    </div>
+                    <div class="size">
+                        <input type="range" id="sign-document-pen-size" class="pen-size" min="1" max="30" value="3" />
+                    </div>
+                    <div class="color">
+                        <input type="color" id="sign-document-pen-color" class="pen-color" value="#000" />
+                    </div>
+                </div>
                 <!-- Pdf preview -->
                 <ng-container class="checklist-sign__pdf__viewer" *ngIf="fileTemplateBase64 | async as base64">
                     <ngx-extended-pdf-viewer
@@ -198,7 +234,6 @@
                         [showOpenFileButton]="false"
                         [(page)]="page"
                         (pdfLoaded)="pdfLoadedFn($event)"
-                        (zoomChange)="pdfZoomChange($event)"
                         (textLayerRendered)="configCanvas($event)"
                         [(formData)]="formData"
                     >
@@ -207,8 +242,16 @@
             </mat-expansion-panel>
         </mat-accordion>
     </div>
+    <div class="checklist-sign__footer">
+        <button mat-flat-button color="primary" (click)="save()">
+            {{ labels.save | translate }}
+        </button>
+    </div>
 </div>
 
+<div class="change-sign-wrapper" *ngIf="showChangeSign">
+    <app-change-sign (saveEvent)="changeSignAction($event)" (closeEvent)="showChangeSign = false"></app-change-sign>
+</div>
 <input
     type="file"
     style="display: none"

@@ -165,7 +165,7 @@ export class TextEditorWrapperComponent implements OnInit, AfterViewInit {
 
   ngAfterViewInit(): void {
     setTimeout(() => {
-      this.summernoteNode = document.getElementById(this.textEditorId).getElementsByClassName('note-editable').item(0);
+      this.summernoteNode = document.getElementById(this.textEditorId)?.getElementsByClassName('note-editable')?.item(0);
       this.addJqueryFn();
     }, 100);
   }
