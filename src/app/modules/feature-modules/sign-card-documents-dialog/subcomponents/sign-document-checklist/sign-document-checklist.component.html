@@ -234,6 +234,7 @@
                         [showOpenFileButton]="false"
                         [(page)]="page"
                         (pdfLoaded)="pdfLoadedFn($event)"
+                        (zoomChange)="pdfZoomChange($event)"
                         (textLayerRendered)="configCanvas($event)"
                         [(formData)]="formData"
                     >
