@@ -118,7 +118,9 @@
                                         </mat-panel-title>
                                         <mat-panel-description fxLayoutAlign="space-between center">
                                             <label> {{ getSyncGroupLabel(syncGroup) }} </label>
-                                            <label> Pág: {{ syncGroup.numPages.join(",") }} </label>
+                                            <label>
+                                                {{ labels.showInPage | translate }}: {{ syncGroup.numPages.join(",") }}
+                                            </label>
                                         </mat-panel-description>
                                     </mat-expansion-panel-header>
                                     <form
