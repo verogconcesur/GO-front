@@ -202,6 +202,7 @@
             "sign": "Firmar documento"
         },
         "add": "Añadir",
+        "addSign": "Dibujar firma",
         "address": "Dirección",
         "adviser": "Asesor",
         "all": "Todos",
@@ -215,6 +216,7 @@
         "brands": "Marcas",
         "budget": "Presupuesto",
         "cancel": "Cancelar",
+        "changeSign": "Cambiar firma",
         "cif": "CIF",
         "cleanFilter": "Limpiar filtros",
         "client": "Cliente",
@@ -227,6 +229,7 @@
         },
         "completed": "Finalizada",
         "concept": "Concepto",
+        "confirm": "Aceptar",
         "country": "País",
         "create": "Crear",
         "createdOn": "Creado el",

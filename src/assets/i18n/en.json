@@ -202,6 +202,7 @@
             "sign": "Sign document"
         },
         "add": "Add",
+        "addSign": "Draw sign",
         "address": "Address",
         "adviser": "Adviser",
         "all": "All",
@@ -215,6 +216,7 @@
         "brands": "Brands",
         "budget": "Budget",
         "cancel": "Cancel",
+        "changeSign": "Change sign",
         "cif": "CIF",
         "cleanFilter": "Clean filter",
         "client": "Client",
@@ -227,6 +229,7 @@
         },
         "completed": "Finished",
         "concept": "Concept",
+        "confirm": "Submit",
         "country": "Country",
         "create": "Create",
         "createdOn": "Created on",

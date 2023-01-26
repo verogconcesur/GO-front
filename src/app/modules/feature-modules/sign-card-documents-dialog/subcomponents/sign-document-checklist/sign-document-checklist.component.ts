@@ -38,6 +38,11 @@ import { ConcenetError } from '@app/types/error';
 import { NGXLogger } from 'ngx-logger';
 import { MatExpansionPanel } from '@angular/material/expansion';
 import { AttachmentDTO, CardAttachmentsDTO } from '@data/models/cards/card-attachments-dto';
+import { CustomDialogService } from '@jenga/custom-dialog';
+import {
+  InsertSignComponentModalEnum,
+  ModalInsertSignComponent
+} from '@modules/feature-modules/modal-insert-sign/modal-insert-sign.component';
 
 @Component({
   selector: 'app-sign-document-checklist',
@@ -100,6 +105,7 @@ export class SignDocumentChecklistComponent implements OnInit, AfterViewInit {
     copyItemInPage: marker('administration.templates.checklists.copyItemInPage'),
     cancel: marker('common.cancel'),
     save: marker('common.save'),
+    changeSign: marker('common.changeSign'),
     staticValue: marker('administration.templates.checklists.staticValue'),
     staticValueInput: marker('administration.templates.checklists.staticValueInput'),
     staticValueImage: marker('administration.templates.checklists.staticValueImage'),
@@ -119,7 +125,8 @@ export class SignDocumentChecklistComponent implements OnInit, AfterViewInit {
     private signDocumentAuxService: SignDocumentAuxService,
     private router: Router,
     private templatesChecklistsService: TemplatesChecklistsService,
-    private logger: NGXLogger
+    private logger: NGXLogger,
+    private customDialogService: CustomDialogService
   ) {}
 
   public get formData(): { [fieldName: string]: string | number | boolean } {
@@ -521,6 +528,31 @@ export class SignDocumentChecklistComponent implements OnInit, AfterViewInit {
                 });
               }
             });
+        }
+      });
+  }
+
+  public changeSign(auxOrderNumber: number): void {
+    this.customDialogService
+      .open({
+        id: InsertSignComponentModalEnum.ID,
+        panelClass: InsertSignComponentModalEnum.PANEL_CLASS,
+        component: ModalInsertSignComponent,
+        disableClose: true,
+        width: '95%',
+        maxWidth: '550px'
+      })
+      .pipe(take(1))
+      .subscribe((response) => {
+        if (response) {
+          const fg: UntypedFormGroup = this.getChecklistItemByOrderNumber(auxOrderNumber);
+          fg.get('itemVal').get('fileValue').get('id').setValue(null);
+          fg.get('itemVal').get('fileValue').get('name').setValue(`${+new Date()}_sign.png`);
+          fg.get('itemVal').get('fileValue').get('type').setValue(response.split('data:')[1].split(';base64')[0]);
+          fg.get('itemVal').get('fileValue').get('size').setValue(null);
+          fg.get('itemVal').get('fileValue').get('content').setValue(response.split(';base64,')[1], { emit: true });
+          this.updateValueAndValidityForm();
+          this.repaintItemsInTemplate();
         }
       });
   }
