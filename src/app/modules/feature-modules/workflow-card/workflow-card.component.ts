@@ -11,6 +11,7 @@ import WorkflowSubstateDTO from '@data/models/workflows/workflow-substate-dto';
 import { WorkflowDragAndDropService } from '@modules/app-modules/workflow/aux-service/workflow-drag-and-drop.service';
 import { TasksModalComponent } from '@modules/feature-modules/workflow-card-tasks/tasks-modal/tasks-modal.component';
 import { TranslateService } from '@ngx-translate/core';
+import { replacerFunc } from '@shared/utils/replacer-function';
 
 @Component({
   selector: 'app-workflow-card',
@@ -34,7 +35,7 @@ export class WorkflowCardComponent implements OnInit {
     dueOutDateTime: marker('workflows.dueOutDateTime')
   };
   public cardInfoExpanded = false;
-  public readonly dragStartDelay = 100; //To prevent drag a card on tablet when user is scrolling
+  public readonly dragStartDelay = 300; //To prevent drag a card on tablet when user is scrolling
 
   constructor(
     private translateService: TranslateService,
@@ -159,7 +160,7 @@ export class WorkflowCardComponent implements OnInit {
           {
             relativeTo: this.route,
             state: {
-              relativeTo: JSON.stringify(this.route, this.replacerFunc),
+              relativeTo: JSON.stringify(this.route, replacerFunc),
               card: JSON.stringify(this.card)
             }
           }
@@ -234,18 +235,4 @@ export class WorkflowCardComponent implements OnInit {
       setTimeout(() => this.dragAndDropService.draggingCard$.next(null));
     }
   }
-
-  private replacerFunc = () => {
-    const visited = new WeakSet();
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any, prefer-arrow/prefer-arrow-functions
-    return (key: string, value: any) => {
-      if (typeof value === 'object' && value !== null) {
-        if (visited.has(value)) {
-          return;
-        }
-        visited.add(value);
-      }
-      return value;
-    };
-  };
 }
