@@ -4,10 +4,19 @@ import { EntitiesSearcherDialogComponent } from './entities-searcher-dialog.comp
 import { SharedModule } from '@shared/shared.module';
 import { ModalCustomerModule } from '../modal-customer/modal-customer.module';
 import { ModalVehicleModule } from '../modal-vehicle/modal-vehicle.module';
+import { ModalCustomerExternalApiModule } from '../modal-customer-external-api/modal-customer-external-api.module';
+import { ModalVehicleExternalApiModule } from '../modal-vehicle-external-api/modal-vehicle-external-api.module';
 
 @NgModule({
   declarations: [EntitiesSearcherDialogComponent],
-  imports: [CommonModule, SharedModule, ModalCustomerModule, ModalVehicleModule],
+  imports: [
+    CommonModule,
+    SharedModule,
+    ModalCustomerModule,
+    ModalVehicleModule,
+    ModalCustomerExternalApiModule,
+    ModalVehicleExternalApiModule
+  ],
   exports: []
 })
 export class EntitiesSearcherDialogModule {}

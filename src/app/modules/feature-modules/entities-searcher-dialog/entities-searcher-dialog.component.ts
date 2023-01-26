@@ -10,7 +10,15 @@ import { CustomDialogService } from '@jenga/custom-dialog';
 import { TranslateService } from '@ngx-translate/core';
 import { GlobalMessageService } from '@shared/services/global-message.service';
 import { take } from 'rxjs/operators';
+import {
+  CreateEditCustomerExternalApiComponentModalEnum,
+  ModalCustomerExternalApiComponent
+} from '../modal-customer-external-api/modal-customer-external-api.component';
 import { CreateEditCustomerComponentModalEnum, ModalCustomerComponent } from '../modal-customer/modal-customer.component';
+import {
+  CreateEditVehicleExternalApiComponentModalEnum,
+  ModalVehicleExternalApiComponent
+} from '../modal-vehicle-external-api/modal-vehicle-external-api.component';
 import { CreateEditVehicleComponentModalEnum, ModalVehicleComponent } from '../modal-vehicle/modal-vehicle.component';
 
 @Component({
@@ -20,6 +28,7 @@ import { CreateEditVehicleComponentModalEnum, ModalVehicleComponent } from '../m
 })
 export class EntitiesSearcherDialogComponent implements OnInit {
   public workflowId: number;
+  public facilityId: number;
   public mode: 'USER' | 'CUSTOMER' | 'VEHICLE';
   public labels = {
     userSearcher: marker('user.searchDialog'),
@@ -27,6 +36,8 @@ export class EntitiesSearcherDialogComponent implements OnInit {
     customerSearcher: marker('customer.searchDialog'),
     createCustomer: marker('entities.customers.create'),
     createVehicle: marker('entities.vehicles.create'),
+    importCustomer: marker('entities.customers.import'),
+    importVehicle: marker('entities.vehicles.import'),
     search: marker('common.search'),
     userNotFound: marker('newCard.errors.userNotFound'),
     vehicleNotFound: marker('newCard.errors.vehicleNotFound'),
@@ -45,12 +56,13 @@ export class EntitiesSearcherDialogComponent implements OnInit {
     private translateService: TranslateService,
     private globalMessageService: GlobalMessageService,
     private customDialogService: CustomDialogService,
-    @Inject(MAT_DIALOG_DATA) public dialogData: { workflowId: number; mode: 'USER' | 'CUSTOMER' | 'VEHICLE' }
+    @Inject(MAT_DIALOG_DATA) public dialogData: { workflowId: number; facilityId: number; mode: 'USER' | 'CUSTOMER' | 'VEHICLE' }
   ) {}
 
   ngOnInit(): void {
     if (this.dialogData) {
       this.workflowId = this.dialogData.workflowId ? this.dialogData.workflowId : null;
+      this.facilityId = this.dialogData.facilityId ? this.dialogData.facilityId : null;
       this.mode = this.dialogData.mode;
     }
     this.initializeForm();
@@ -88,49 +100,105 @@ export class EntitiesSearcherDialogComponent implements OnInit {
         return '';
     }
   }
-  public createEntity() {
+  public getImportEntityButtonLabel(): string {
     switch (this.mode) {
       case 'CUSTOMER':
-        this.customDialogService
-          .open({
-            id: CreateEditCustomerComponentModalEnum.ID,
-            panelClass: CreateEditCustomerComponentModalEnum.PANEL_CLASS,
-            component: ModalCustomerComponent,
-            disableClose: true,
-            width: '900px'
-          })
-          .pipe(take(1))
-          .subscribe((response) => {
-            if (response) {
-              this.globalMessageService.showSuccess({
-                message: this.translateService.instant(marker('common.successOperation')),
-                actionText: this.translateService.instant(marker('common.close'))
-              });
-              this.searchForm.get('search').setValue(response);
-              this.selectEntity();
-            }
-          });
+        return this.labels.importCustomer;
+      case 'VEHICLE':
+        return this.labels.importVehicle;
+      default:
+        return '';
+    }
+  }
+  public createEntity(importEntity?: boolean) {
+    switch (this.mode) {
+      case 'CUSTOMER':
+        if (importEntity) {
+          this.customDialogService
+            .open({
+              id: CreateEditCustomerExternalApiComponentModalEnum.ID,
+              panelClass: CreateEditCustomerExternalApiComponentModalEnum.PANEL_CLASS,
+              component: ModalCustomerExternalApiComponent,
+              disableClose: true,
+              extendedComponentData: { facility: this.facilityId },
+              width: '900px'
+            })
+            .pipe(take(1))
+            .subscribe((response) => {
+              if (response) {
+                this.globalMessageService.showSuccess({
+                  message: this.translateService.instant(marker('common.successOperation')),
+                  actionText: this.translateService.instant(marker('common.close'))
+                });
+                this.searchForm.get('search').setValue(response);
+                this.selectEntity();
+              }
+            });
+        } else {
+          this.customDialogService
+            .open({
+              id: CreateEditCustomerComponentModalEnum.ID,
+              panelClass: CreateEditCustomerComponentModalEnum.PANEL_CLASS,
+              component: ModalCustomerComponent,
+              disableClose: true,
+              width: '900px'
+            })
+            .pipe(take(1))
+            .subscribe((response) => {
+              if (response) {
+                this.globalMessageService.showSuccess({
+                  message: this.translateService.instant(marker('common.successOperation')),
+                  actionText: this.translateService.instant(marker('common.close'))
+                });
+                this.searchForm.get('search').setValue(response);
+                this.selectEntity();
+              }
+            });
+        }
         break;
       case 'VEHICLE':
-        this.customDialogService
-          .open({
-            id: CreateEditVehicleComponentModalEnum.ID,
-            panelClass: CreateEditVehicleComponentModalEnum.PANEL_CLASS,
-            component: ModalVehicleComponent,
-            disableClose: true,
-            width: '900px'
-          })
-          .pipe(take(1))
-          .subscribe((response) => {
-            if (response) {
-              this.globalMessageService.showSuccess({
-                message: this.translateService.instant(marker('common.successOperation')),
-                actionText: this.translateService.instant(marker('common.close'))
-              });
-              this.searchForm.get('search').setValue(response);
-              this.selectEntity();
-            }
-          });
+        if (importEntity) {
+          this.customDialogService
+            .open({
+              id: CreateEditVehicleExternalApiComponentModalEnum.ID,
+              panelClass: CreateEditVehicleExternalApiComponentModalEnum.PANEL_CLASS,
+              component: ModalVehicleExternalApiComponent,
+              disableClose: true,
+              extendedComponentData: { facility: this.facilityId },
+              width: '900px'
+            })
+            .pipe(take(1))
+            .subscribe((response) => {
+              if (response) {
+                this.globalMessageService.showSuccess({
+                  message: this.translateService.instant(marker('common.successOperation')),
+                  actionText: this.translateService.instant(marker('common.close'))
+                });
+                this.searchForm.get('search').setValue(response);
+                this.selectEntity();
+              }
+            });
+        } else {
+          this.customDialogService
+            .open({
+              id: CreateEditVehicleComponentModalEnum.ID,
+              panelClass: CreateEditVehicleComponentModalEnum.PANEL_CLASS,
+              component: ModalVehicleComponent,
+              disableClose: true,
+              width: '900px'
+            })
+            .pipe(take(1))
+            .subscribe((response) => {
+              if (response) {
+                this.globalMessageService.showSuccess({
+                  message: this.translateService.instant(marker('common.successOperation')),
+                  actionText: this.translateService.instant(marker('common.close'))
+                });
+                this.searchForm.get('search').setValue(response);
+                this.selectEntity();
+              }
+            });
+        }
         break;
     }
   }

@@ -16,6 +16,7 @@ export class EntitiesSearcherDialogService implements OnDestroy {
 
   public openEntitySearcher(
     workflowId: number,
+    facilityId: number,
     mode: 'USER' | 'CUSTOMER' | 'VEHICLE'
   ): Promise<UserDTO | VehicleEntityDTO | CustomerEntityDTO> {
     return new Promise((resolve, reject) => {
@@ -25,7 +26,7 @@ export class EntitiesSearcherDialogService implements OnDestroy {
           height: '240px',
           panelClass: 'entities-searcher',
           disableClose: true,
-          data: { workflowId, mode }
+          data: { workflowId, facilityId, mode }
         })
         .afterClosed()
         .subscribe((data: UserDTO | VehicleEntityDTO | CustomerEntityDTO) => {
