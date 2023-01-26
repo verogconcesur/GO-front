@@ -1,0 +1,89 @@
+<div class="create-edit-customer-content" fxLayout="column" fxLayoutAlign="center center">
+    <div *ngIf="!isModalModeActive()">
+        <div class="create-edit-customer-content__title mat-display-2">{{ labels.title | translate }}</div>
+    </div>
+    <div class="create-edit-customer-content__form">
+        <form [formGroup]="searchForm" class="smaller-mat-form-fields">
+            <div class="customer-data__section">
+                <div class="customer-data__section__group">
+                    <div class="customer-data__section__group__search" fxLayout="row">
+                        <mat-form-field appearance="outline" class="smaller-mat-form-fields__button-height">
+                            <input
+                                type="text"
+                                matInput
+                                [placeholder]="labels.socialSecurityId | translate"
+                                formControlName="search"
+                                [matAutocomplete]="auto"
+                            />
+                            <button mat-icon-button aria-label="Search" type="button" matSuffix>
+                                <mat-icon>search</mat-icon>
+                            </button>
+                            <mat-autocomplete
+                                autoActiveFirstOption="false"
+                                #auto="matAutocomplete"
+                                (optionSelected)="selectEntity($event.option.value)"
+                            >
+                                <mat-option *ngFor="let customer of customerList" [value]="customer">
+                                    {{ transformOptionLabel(customer) }}
+                                </mat-option>
+                            </mat-autocomplete>
+                            <mat-error *ngIf="searchForm.controls.search.invalid && searchForm.controls.search.touched"
+                                >{{ labels.minLength | translate : { length: this.minLength } }}
+                            </mat-error>
+                        </mat-form-field>
+                        <div class="customer-data__section__group__search__button">
+                            <button
+                                mat-flat-button
+                                color="primary"
+                                (click)="search()"
+                                [disabled]="searchForm.controls.search.invalid"
+                            >
+                                {{ labels.search | translate }}
+                            </button>
+                        </div>
+                    </div>
+                    <div
+                        class="customer-data__section__group__error"
+                        fxLayout="row"
+                        fxLayoutAlign="center center"
+                        *ngIf="showError()"
+                    >
+                        <mat-icon>error_outline</mat-icon><span>{{ labels.customerNotFound | translate }}</span>
+                    </div>
+                </div>
+            </div>
+        </form>
+        <div class="customer-data__section" *ngIf="customerSelected">
+            <div class="customer-data__section__title first-child">
+                {{ labels.data | translate }}
+            </div>
+            <div class="customer-data__section__group" fxLayout="column">
+                <div class="customer-data__section__group__item" fxLayout="column">
+                    <span class="customer-data__section__group__item__label">{{ labels.reference | translate | uppercase }}</span>
+                    <span>{{ customerSelected.reference ? customerSelected.reference : "---" }}</span>
+                </div>
+                <div class="customer-data__section__group__item" fxLayout="column">
+                    <span class="customer-data__section__group__item__label">{{ labels.name | translate | uppercase }}</span>
+                    <span>{{ customerSelected.fullName ? customerSelected.fullName : "---" }}</span>
+                </div>
+                <div class="customer-data__section__group__item" fxLayout="column">
+                    <span class="customer-data__section__group__item__label">{{
+                        labels.socialSecurityId | translate | uppercase
+                    }}</span>
+                    <span>{{ customerSelected.socialSecurityId ? customerSelected.socialSecurityId : "---" }}</span>
+                </div>
+                <div class="customer-data__section__group__item" fxLayout="column">
+                    <span class="customer-data__section__group__item__label">{{ labels.phone | translate | uppercase }}</span>
+                    <span>{{ customerSelected.mobile ? customerSelected.mobile : "---" }}</span>
+                </div>
+                <div class="customer-data__section__group__item" fxLayout="column">
+                    <span class="customer-data__section__group__item__label">{{ labels.email | translate | uppercase }}</span>
+                    <span>{{ customerSelected.email ? customerSelected.email : "---" }}</span>
+                </div>
+            </div>
+        </div>
+        <div class="create-edit-customer-content__buttons">
+            <!-- TODO: buttons used when the component is not opened with customDialogService -->
+        </div>
+    </div>
+</div>

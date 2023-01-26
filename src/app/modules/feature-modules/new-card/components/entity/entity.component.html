@@ -25,9 +25,12 @@
                 </mat-autocomplete>
             </mat-form-field>
 
-            <div class="entity__head__search__button" fxLayout="row" fxLayoutAlign="center end">
+            <div class="entity__head__search__button" fxLayout="row" fxLayoutAlign="space-around end">
                 <button mat-stroked-button *ngIf="showCreateEntity()" (click)="createEntity()">
                     {{ getCreateEntityButtonLabel() | translate }}
+                </button>
+                <button mat-stroked-button *ngIf="showCreateEntity()" (click)="createEntity(true)">
+                    {{ getImportEntityButtonLabel() | translate }}
                 </button>
             </div>
         </form>

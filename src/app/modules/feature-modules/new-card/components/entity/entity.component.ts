@@ -9,9 +9,17 @@ import { CardService } from '@data/services/cards.service';
 import { EntitiesService } from '@data/services/entities.service';
 import { CustomDialogService } from '@jenga/custom-dialog';
 import {
+  CreateEditCustomerExternalApiComponentModalEnum,
+  ModalCustomerExternalApiComponent
+} from '@modules/feature-modules/modal-customer-external-api/modal-customer-external-api.component';
+import {
   CreateEditCustomerComponentModalEnum,
   ModalCustomerComponent
 } from '@modules/feature-modules/modal-customer/modal-customer.component';
+import {
+  CreateEditVehicleExternalApiComponentModalEnum,
+  ModalVehicleExternalApiComponent
+} from '@modules/feature-modules/modal-vehicle-external-api/modal-vehicle-external-api.component';
 import {
   CreateEditVehicleComponentModalEnum,
   ModalVehicleComponent
@@ -33,6 +41,8 @@ export class EntityComponent implements OnInit {
     search: marker('common.search'),
     createCustomer: marker('entities.customers.create'),
     createVehicle: marker('entities.vehicles.create'),
+    importCustomer: marker('entities.customers.import'),
+    importVehicle: marker('entities.vehicles.import'),
     userNotFound: marker('newCard.errors.userNotFound'),
     vehicleNotFound: marker('newCard.errors.vehicleNotFound'),
     customerNotFound: marker('newCard.errors.customerNotFound'),
@@ -71,49 +81,105 @@ export class EntityComponent implements OnInit {
         return '';
     }
   }
-  public createEntity() {
+  public getImportEntityButtonLabel(): string {
     switch (this.formTab.get('contentSourceId').value) {
       case 1:
-        this.customDialogService
-          .open({
-            id: CreateEditCustomerComponentModalEnum.ID,
-            panelClass: CreateEditCustomerComponentModalEnum.PANEL_CLASS,
-            component: ModalCustomerComponent,
-            disableClose: true,
-            width: '900px'
-          })
-          .pipe(take(1))
-          .subscribe((response) => {
-            if (response) {
-              this.globalMessageService.showSuccess({
-                message: this.translateService.instant(marker('common.successOperation')),
-                actionText: this.translateService.instant(marker('common.close'))
-              });
-              this.searchForm.get('search').setValue(response);
-              this.selectEntity();
-            }
-          });
+        return this.labels.importCustomer;
+      case 2:
+        return this.labels.importVehicle;
+      default:
+        return '';
+    }
+  }
+  public createEntity(importEntity?: boolean) {
+    switch (this.formTab.get('contentSourceId').value) {
+      case 1:
+        if (importEntity) {
+          this.customDialogService
+            .open({
+              id: CreateEditCustomerExternalApiComponentModalEnum.ID,
+              panelClass: CreateEditCustomerExternalApiComponentModalEnum.PANEL_CLASS,
+              component: ModalCustomerExternalApiComponent,
+              disableClose: true,
+              extendedComponentData: { facility: this.formWorkflow.controls.facility.value.id },
+              width: '900px'
+            })
+            .pipe(take(1))
+            .subscribe((response) => {
+              if (response) {
+                this.globalMessageService.showSuccess({
+                  message: this.translateService.instant(marker('common.successOperation')),
+                  actionText: this.translateService.instant(marker('common.close'))
+                });
+                this.searchForm.get('search').setValue(response);
+                this.selectEntity();
+              }
+            });
+        } else {
+          this.customDialogService
+            .open({
+              id: CreateEditCustomerComponentModalEnum.ID,
+              panelClass: CreateEditCustomerComponentModalEnum.PANEL_CLASS,
+              component: ModalCustomerComponent,
+              disableClose: true,
+              width: '900px'
+            })
+            .pipe(take(1))
+            .subscribe((response) => {
+              if (response) {
+                this.globalMessageService.showSuccess({
+                  message: this.translateService.instant(marker('common.successOperation')),
+                  actionText: this.translateService.instant(marker('common.close'))
+                });
+                this.searchForm.get('search').setValue(response);
+                this.selectEntity();
+              }
+            });
+        }
         break;
       case 2:
-        this.customDialogService
-          .open({
-            id: CreateEditVehicleComponentModalEnum.ID,
-            panelClass: CreateEditVehicleComponentModalEnum.PANEL_CLASS,
-            component: ModalVehicleComponent,
-            disableClose: true,
-            width: '900px'
-          })
-          .pipe(take(1))
-          .subscribe((response) => {
-            if (response) {
-              this.globalMessageService.showSuccess({
-                message: this.translateService.instant(marker('common.successOperation')),
-                actionText: this.translateService.instant(marker('common.close'))
-              });
-              this.searchForm.get('search').setValue(response);
-              this.selectEntity();
-            }
-          });
+        if (importEntity) {
+          this.customDialogService
+            .open({
+              id: CreateEditVehicleExternalApiComponentModalEnum.ID,
+              panelClass: CreateEditVehicleExternalApiComponentModalEnum.PANEL_CLASS,
+              component: ModalVehicleExternalApiComponent,
+              disableClose: true,
+              extendedComponentData: { facility: this.formWorkflow.controls.facility.value.id },
+              width: '900px'
+            })
+            .pipe(take(1))
+            .subscribe((response) => {
+              if (response) {
+                this.globalMessageService.showSuccess({
+                  message: this.translateService.instant(marker('common.successOperation')),
+                  actionText: this.translateService.instant(marker('common.close'))
+                });
+                this.searchForm.get('search').setValue(response);
+                this.selectEntity();
+              }
+            });
+        } else {
+          this.customDialogService
+            .open({
+              id: CreateEditVehicleComponentModalEnum.ID,
+              panelClass: CreateEditVehicleComponentModalEnum.PANEL_CLASS,
+              component: ModalVehicleComponent,
+              disableClose: true,
+              width: '900px'
+            })
+            .pipe(take(1))
+            .subscribe((response) => {
+              if (response) {
+                this.globalMessageService.showSuccess({
+                  message: this.translateService.instant(marker('common.successOperation')),
+                  actionText: this.translateService.instant(marker('common.close'))
+                });
+                this.searchForm.get('search').setValue(response);
+                this.selectEntity();
+              }
+            });
+        }
         break;
     }
   }
