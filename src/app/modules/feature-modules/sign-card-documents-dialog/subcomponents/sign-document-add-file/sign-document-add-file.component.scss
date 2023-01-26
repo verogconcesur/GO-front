@@ -1,0 +1,25 @@
+@import 'utils/core';
+@import 'utils/theme';
+.template-add-file {
+  &__selector {
+    mat-form-field {
+      width: 100%;
+    }
+    &__drop-zone {
+      height: 200px;
+      width: 99%;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      position: relative;
+      border: 2px dotted mat-color($primary, statusSuccess);
+      background-color: lighten(mat-color($primary, statusSuccess), 40%);
+      border-radius: 10px;
+      .add-pdf-template-btn {
+        position: absolute;
+        top: 10px;
+        left: 10px;
+      }
+    }
+  }
+}

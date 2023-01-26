@@ -1,0 +1,14 @@
+@import 'utils/core';
+@import 'utils/theme';
+.paint-zone {
+  &__controls {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+  &__canvas-wrapper {
+    background-color: rgba(mat-contrast($primary, 200), 0.5);
+    border-radius: 10px;
+  }
+}

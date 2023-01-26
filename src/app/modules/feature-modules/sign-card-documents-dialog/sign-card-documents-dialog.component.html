@@ -1,0 +1,33 @@
+<div class="sign-documents" fxLayoutAlign="center center">
+    <div class="sign-documents-modal" [ngSwitch]="stepIndex" [ngClass]="{ 'small-modal': stepIndex !== 2 }">
+        <div class="sign-documents-modal__header" fxLayoutAlign="space-between center">
+            <h2>{{ getTitle() | translate }}</h2>
+            <button mat-icon-button class="sign-documents-modal__header__close-btn opacity-04" (click)="closeDialog()">
+                <mat-icon>close</mat-icon>
+            </button>
+        </div>
+        <div class="sign-documents-modal__wrapper" *ngIf="wCardId">
+            <app-sign-document-template-selector
+                [wCardId]="wCardId"
+                (templateSelected)="templateSelected($event)"
+                *ngSwitchCase="0"
+            ></app-sign-document-template-selector>
+            <app-sign-document-add-file
+                [wCardId]="wCardId"
+                (fileSelected)="fileSelected($event)"
+                *ngSwitchCase="1"
+            ></app-sign-document-add-file>
+            <app-sign-document-checklist
+                [wCardId]="wCardId"
+                [pdf]="pdf"
+                (saveAction)="pdfSignedEvent($event)"
+                (setTitle)="setPdfName($event)"
+                *ngSwitchCase="2"
+            ></app-sign-document-checklist>
+            <app-sign-document-save-location [wCardId]="wCardId" [pdf]="pdf" *ngSwitchCase="3"></app-sign-document-save-location>
+        </div>
+        <div class="sign-documents-modal__wrapper" *ngIf="!wCardId">
+            {{ labels.noDataToShow | translate }}
+        </div>
+    </div>
+</div>
