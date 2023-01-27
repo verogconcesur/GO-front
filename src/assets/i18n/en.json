@@ -358,6 +358,7 @@
             "edit": "Edit customer",
             "email": "Email",
             "firstName": "First name",
+            "import": "Import customer",
             "lastName": "Second name",
             "name": "Name",
             "phone": "Phone",
@@ -365,13 +366,23 @@
             "socialSecurityId": "Identity document"
         },
         "vehicles": {
+            "addStock": "Add inventary",
             "chasis": "Chasis",
+            "commissionNumber": "Commission number",
             "create": "Create vehicle",
             "description": "Description",
             "edit": "Edit vehicle",
+            "import": "Import vehicle",
+            "inventory": "Inventory",
+            "inventoryType": "Inventory type",
+            "inventoryVehicleStatus": "",
             "licensePlate": "License plate",
             "make": "Brand",
+            "missInfo": "Missing information",
             "model": "Model",
+            "select": "Select vehicle",
+            "stockId": "Inventary Id",
+            "vehicle": "Vehicle",
             "vehicleId": "Vehicle Id",
             "vin": "Vin"
         }
