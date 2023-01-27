@@ -358,6 +358,7 @@
             "edit": "Editar cliente",
             "email": "Email",
             "firstName": "Primer apellido",
+            "import": "Importar cliente",
             "lastName": "Segundo apellido",
             "name": "Nombre",
             "phone": "Teléfono",
@@ -365,13 +366,23 @@
             "socialSecurityId": "Documento de identidad"
         },
         "vehicles": {
+            "addStock": "Añadir inventario",
             "chasis": "Chasis",
+            "commissionNumber": "Número de comisión",
             "create": "Crear vehículo",
             "description": "Descripción",
             "edit": "Editar vehículo",
+            "import": "Importar vehículo",
+            "inventory": "Inventario",
+            "inventoryType": "Tipo de inventario",
+            "inventoryVehicleStatus": "Estado",
             "licensePlate": "Matrícula",
             "make": "Marca",
+            "missInfo": "Sin información",
             "model": "Modelo",
+            "select": "Seleccionar vehículo",
+            "stockId": "Id del inventario",
+            "vehicle": "Vehículo",
             "vehicleId": "Id del vehículo",
             "vin": "Vin"
         }

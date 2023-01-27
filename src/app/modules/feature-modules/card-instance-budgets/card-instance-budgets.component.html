@@ -36,9 +36,14 @@
                 <div fxFlex="30" fxLayoutAlign="center center">
                     <mat-form-field appearance="outline" floatLabel="always">
                         <mat-label>{{ labels.attachments | translate }}</mat-label>
-                        <mat-select formControlName="attachments" multiple [disabled]="budgetDisabled(budget)">
+                        <mat-select
+                            formControlName="attachments"
+                            multiple
+                            [disabled]="budgetDisabled(budget)"
+                            [compareWith]="compareAttachments"
+                            >>
                             <mat-option *ngFor="let attachment of attachmentsList" [value]="attachment">{{
-                                attachment.name
+                                attachment.file.name
                             }}</mat-option>
                         </mat-select>
                     </mat-form-field>
