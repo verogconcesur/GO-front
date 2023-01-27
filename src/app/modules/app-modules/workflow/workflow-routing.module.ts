@@ -1,3 +1,4 @@
+/* eslint-disable max-len */
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 import { RouteConstants } from '@app/constants/route.constants';
@@ -31,6 +32,14 @@ const routes: Routes = [
           import('./submodules/workflow-table-view/workflow-table-view.module').then((m) => m.WorkflowTableViewModule)
       },
       {
+        path: `${RouteConstants.WORKFLOW_ID}/${RouteConstants.WORKFLOWS_BOARD_VIEW}/${RouteConstants.WORKFLOWS_CARD_SIGN}/${RouteConstants.ID_CARD}`,
+        canActivate: [AuthGuardService],
+        loadChildren: () =>
+          import('../../feature-modules/sign-card-documents-dialog/sign-card-documents-dialog.module').then(
+            (m) => m.SignCardDocumentsDialogModule
+          )
+      },
+      {
         path: `${RouteConstants.WORKFLOW_ID}/${RouteConstants.WORKFLOWS_BOARD_VIEW}`,
         canActivate: [AuthGuardService],
         component: WorkflowComponent,
@@ -38,11 +47,27 @@ const routes: Routes = [
           import('./submodules/workflow-board-view/workflow-board-view.module').then((m) => m.WorkflowBoardViewModule)
       },
       {
+        path: `${RouteConstants.WORKFLOW_ID}/${RouteConstants.WORKFLOWS_CALENDAR_VIEW}/${RouteConstants.WORKFLOWS_CARD_SIGN}/${RouteConstants.ID_CARD}`,
+        canActivate: [AuthGuardService],
+        loadChildren: () =>
+          import('../../feature-modules/sign-card-documents-dialog/sign-card-documents-dialog.module').then(
+            (m) => m.SignCardDocumentsDialogModule
+          )
+      },
+      {
         path: `${RouteConstants.WORKFLOW_ID}/${RouteConstants.WORKFLOWS_CALENDAR_VIEW}`,
         canActivate: [AuthGuardService],
         component: WorkflowComponent,
         loadChildren: () =>
           import('./submodules/workflow-calendar-view/workflow-calendar-view.module').then((m) => m.WorkflowCalendarViewModule)
+      },
+      {
+        path: `${RouteConstants.WORKFLOW_ID}/${RouteConstants.WORKFLOWS_TABLE_VIEW}/${RouteConstants.WORKFLOWS_CARD_SIGN}/${RouteConstants.ID_CARD}`,
+        canActivate: [AuthGuardService],
+        loadChildren: () =>
+          import('../../feature-modules/sign-card-documents-dialog/sign-card-documents-dialog.module').then(
+            (m) => m.SignCardDocumentsDialogModule
+          )
       },
       {
         path: `${RouteConstants.WORKFLOW_ID}/${RouteConstants.WORKFLOWS_TABLE_VIEW}`,
