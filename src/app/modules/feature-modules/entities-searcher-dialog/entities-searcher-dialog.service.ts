@@ -18,18 +18,17 @@ export class EntitiesSearcherDialogService implements OnDestroy {
     workflowId: number,
     facilityId: number,
     mode: 'USER' | 'CUSTOMER' | 'VEHICLE'
-  ): Promise<UserDTO | VehicleEntityDTO | CustomerEntityDTO> {
+  ): Promise<{ entity: UserDTO | VehicleEntityDTO | CustomerEntityDTO; vehicleInventoryId: number }> {
     return new Promise((resolve, reject) => {
       this.dialog
         .open(EntitiesSearcherDialogComponent, {
-          width: '500px',
-          height: '240px',
+          width: '600px',
           panelClass: 'entities-searcher',
           disableClose: true,
           data: { workflowId, facilityId, mode }
         })
         .afterClosed()
-        .subscribe((data: UserDTO | VehicleEntityDTO | CustomerEntityDTO) => {
+        .subscribe((data: { entity: UserDTO | VehicleEntityDTO | CustomerEntityDTO; vehicleInventoryId: number }) => {
           resolve(data);
         });
     });
