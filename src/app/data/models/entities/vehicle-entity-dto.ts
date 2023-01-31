@@ -15,6 +15,7 @@ export default interface VehicleEntityDTO {
   inventories: InventoryVehicle[];
 }
 export interface InventoryVehicle {
+  id: number;
   commissionNumber: string;
   inventoryType: string;
   status: string;

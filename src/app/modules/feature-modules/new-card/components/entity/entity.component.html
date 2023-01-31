@@ -45,6 +45,19 @@
         >
             <mat-icon>error_outline</mat-icon><span>{{ labels.required | translate }}</span>
         </div>
+        <div class="entity__head__content smaller-mat-form-fields" [formGroup]="formTab" *ngIf="showInventory()">
+            <mat-form-field appearance="outline" floatLabel="always">
+                <mat-label>{{ labels.inventory | translate }}</mat-label>
+                <mat-select formControlName="vehicleInventoryId" (selectionChange)="selectInventory()">
+                    <mat-option *ngFor="let inventory of inventoryList" [value]="inventory.id">{{
+                        inventory.vehicleStockId
+                    }}</mat-option>
+                </mat-select>
+                <button matSuffix mat-icon-button aria-label="Clear" (click)="removeInventory(); $event.stopPropagation()">
+                    <mat-icon>close</mat-icon>
+                </button>
+            </mat-form-field>
+        </div>
         <div class="entity__head__content" fxLayout="column" *ngIf="showContent()">
             <div *ngFor="let tabItem of tabItems.controls" class="entity__head__content__item" fxLayout="column">
                 <span class="entity__head__content__item__label capitalize">{{ tabItem.value.label }}</span>

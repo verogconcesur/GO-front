@@ -1,10 +1,10 @@
 import { Component, Inject, OnInit } from '@angular/core';
-import { FormGroup, UntypedFormBuilder } from '@angular/forms';
+import { FormGroup, UntypedFormBuilder, Validators } from '@angular/forms';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { marker } from '@biesbjerg/ngx-translate-extract-marker';
 import CustomerEntityDTO from '@data/models/entities/customer-entity-dto';
 import UserEntityDTO from '@data/models/entities/user-entity-dto';
-import VehicleEntityDTO from '@data/models/entities/vehicle-entity-dto';
+import VehicleEntityDTO, { InventoryVehicle } from '@data/models/entities/vehicle-entity-dto';
 import { EntitiesService } from '@data/services/entities.service';
 import { CustomDialogService } from '@jenga/custom-dialog';
 import { TranslateService } from '@ngx-translate/core';
@@ -37,17 +37,24 @@ export class EntitiesSearcherDialogComponent implements OnInit {
     createCustomer: marker('entities.customers.create'),
     createVehicle: marker('entities.vehicles.create'),
     importCustomer: marker('entities.customers.import'),
+    inventory: marker('entities.vehicles.inventory'),
+    vehicle: marker('entities.vehicles.vehicle'),
+    customer: marker('entities.customers.customer'),
+    user: marker('entities.user.user'),
     importVehicle: marker('entities.vehicles.import'),
     search: marker('common.search'),
     userNotFound: marker('newCard.errors.userNotFound'),
     vehicleNotFound: marker('newCard.errors.vehicleNotFound'),
     customerNotFound: marker('newCard.errors.customerNotFound'),
     dataNotFound: marker('newCard.errors.dataNotFound'),
-    required: marker('errors.required')
+    required: marker('errors.required'),
+    save: marker('common.save')
   };
   public searchForm: FormGroup;
+  public entityForm: FormGroup;
   public searching = false;
   public entityList: VehicleEntityDTO[] | UserEntityDTO[] | CustomerEntityDTO[] = [];
+  public inventoryList: InventoryVehicle[] = [];
 
   constructor(
     private dialogRef: MatDialogRef<EntitiesSearcherDialogComponent>,
@@ -71,7 +78,9 @@ export class EntitiesSearcherDialogComponent implements OnInit {
   public close(): void {
     this.dialogRef.close();
   }
-
+  public save(): void {
+    this.dialogRef.close(this.entityForm.getRawValue());
+  }
   public getTitle(): string {
     switch (this.mode) {
       case 'USER':
@@ -239,8 +248,12 @@ export class EntitiesSearcherDialogComponent implements OnInit {
 
   public selectEntity(): void {
     const entity: VehicleEntityDTO | UserEntityDTO | CustomerEntityDTO = this.searchForm.get('search').value;
+    this.entityForm.get('entity').setValue(entity);
+    this.entityForm.get('vehicleInventoryId').setValue(null);
+    if (this.mode === 'VEHICLE') {
+      this.inventoryList = (entity as VehicleEntityDTO).inventories ? (entity as VehicleEntityDTO).inventories : [];
+    }
     this.searchForm.get('search').setValue('');
-    this.dialogRef.close(entity);
   }
 
   public transformOptionLabel(entity: CustomerEntityDTO | VehicleEntityDTO | UserEntityDTO): string {
@@ -287,6 +300,28 @@ export class EntitiesSearcherDialogComponent implements OnInit {
     );
   }
 
+  public showInventory(): boolean {
+    return this.mode === 'VEHICLE' && this.inventoryList.length > 0;
+  }
+  public removeInventory(): void {
+    this.entityForm.get('vehicleInventoryId').setValue(null);
+  }
+  public getLabel(): string {
+    switch (this.mode) {
+      case 'CUSTOMER':
+        return this.translateService.instant(this.labels.customer);
+      case 'VEHICLE':
+        return this.translateService.instant(this.labels.vehicle);
+      case 'USER':
+        return this.translateService.instant(this.labels.user);
+      default:
+        return this.translateService.instant(this.labels.user);
+    }
+  }
+  public getEntityValue(): string {
+    const entity = this.entityForm.get('entity').value;
+    return this.transformOptionLabel(entity);
+  }
   public getErrorMsg(): string {
     switch (this.mode) {
       case 'CUSTOMER':
@@ -303,6 +338,10 @@ export class EntitiesSearcherDialogComponent implements OnInit {
   public initializeForm(): void {
     this.searchForm = this.fb.group({
       search: ['']
+    });
+    this.entityForm = this.fb.group({
+      entity: [null, Validators.required],
+      vehicleInventoryId: [null]
     });
     this.searchForm.get('search').valueChanges.subscribe((res) => {
       this.searchAction();

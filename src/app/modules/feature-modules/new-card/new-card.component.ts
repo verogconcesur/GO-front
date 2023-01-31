@@ -102,6 +102,7 @@ export class NewCardComponent implements OnInit {
               vehicleId: null,
               customerId: null,
               information: null,
+              vehicleInventoryId: null,
               userId: null
             },
             cardInstanceWorkflowUsers: []
@@ -196,13 +197,21 @@ export class NewCardComponent implements OnInit {
     step
       .getRawValue()
       .tabs.forEach(
-        (tab: { contentSourceId: number; customerId: number; vehicleId: number; userId: number; information: string }) => {
+        (tab: {
+          contentSourceId: number;
+          customerId: number;
+          vehicleId: number;
+          vehicleInventoryId: number;
+          userId: number;
+          information: string;
+        }) => {
           switch (tab.contentSourceId) {
             case 1:
               cardBody.cardInstance.customerId = tab.customerId;
               break;
             case 2:
               cardBody.cardInstance.vehicleId = tab.vehicleId;
+              cardBody.cardInstance.vehicleInventoryId = tab.vehicleInventoryId;
               break;
             case 3:
               cardBody.cardInstance.userId = tab.userId;
@@ -239,6 +248,7 @@ export class NewCardComponent implements OnInit {
         customerId: [''],
         vehicleId: [''],
         userId: [''],
+        vehicleInventoryId: [''],
         information: ['', Validators.required]
       });
       (arrayForm as UntypedFormArray).push(tabForm);
@@ -261,6 +271,7 @@ export class NewCardComponent implements OnInit {
           customerId: [''],
           vehicleId: [''],
           userId: [''],
+          vehicleInventoryId: [''],
           information: ['']
         });
         (arrayForm as UntypedFormArray).push(tabForm);
