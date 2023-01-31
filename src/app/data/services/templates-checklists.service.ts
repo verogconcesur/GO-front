@@ -23,8 +23,9 @@ export class TemplatesChecklistsService {
   private readonly TEMPLATE_ATTACHMENTS = '/attachments';
   private readonly TEMPLATE_SIGN_DOCUMENT = '/signDocument';
   private readonly CARD_INSTANCE_WORKFLOW = '/cardInstanceWorkflow';
+  private readonly ATTACHMENTS = '/attachments';
+  private readonly CATEGORY = '/category';
   private readonly TEMPLATE_TYPE = 'CHECKLISTS';
-
   constructor(@Inject(ENV) private env: Env, private http: HttpClient) {}
 
   public searchChecklistsTemplates(
@@ -84,6 +85,22 @@ export class TemplatesChecklistsService {
       .post<SignDocumentExchangeDTO>(
         // eslint-disable-next-line max-len
         `${this.env.apiBaseUrl}${this.TEMPLATE_CHECKLIST_PATH}${this.CARD_INSTANCE_WORKFLOW}/${wcid}${this.TEMPLATE_SIGN_DOCUMENT}`,
+        signFile
+      )
+      .pipe(catchError((error) => throwError(error.error as ConcenetError)));
+  }
+
+  public saveDocument(
+    wcid: number,
+    attId: number,
+    catId: number,
+    signFile: SignDocumentExchangeDTO
+  ): Observable<SignDocumentExchangeDTO> {
+    return this.http
+      .post<SignDocumentExchangeDTO>(
+        // eslint-disable-next-line max-len
+        `${this.env.apiBaseUrl}${this.TEMPLATE_CHECKLIST_PATH}${this.CARD_INSTANCE_WORKFLOW}/${wcid}${this.ATTACHMENTS}/${attId}${this.CATEGORY}` +
+          `/${catId}${this.TEMPLATE_SIGN_DOCUMENT}`,
         signFile
       )
       .pipe(catchError((error) => throwError(error.error as ConcenetError)));

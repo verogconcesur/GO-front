@@ -1,1 +1,45 @@
-<p>sign-document-save-location works!</p>
+<div class="sign-document-save-container" *ngIf="pdfForm">
+    <form [formGroup]="pdfForm">
+        <mat-form-field floatLabel="always">
+            <mat-label>{{ labels.name | translate }}</mat-label>
+            <input matInput formControlName="name" />
+            <mat-error *ngIf="pdfForm.controls.name.invalid && pdfForm.controls.name.touched">
+                <div [hidden]="!pdfForm.controls.name.errors.required">
+                    {{ labels.required | translate }}
+                </div>
+                <div [hidden]="!pdfForm.controls.name.errors.maxlength">
+                    {{ labels.errorMaxLength | translate : { length: maxLength } }}
+                </div>
+                <div [hidden]="!pdfForm.controls.name.errors.minlength">
+                    {{ labels.errorMinLength | translate : { length: minLength } }}
+                </div>
+                <div [hidden]="!pdfForm.controls.name.errors.filename">
+                    {{ labels.errorFilenameName | translate }}
+                </div>
+                <div [hidden]="!pdfForm.controls.name.errors.extension">
+                    {{ labels.errorFilenameExtension | translate }}
+                </div>
+            </mat-error>
+        </mat-form-field>
+    </form>
+    <div class="sign-document-save-container__directory" fxLayout="column" fxLayoutAlign="start start">
+        <div class="sign-document-save-container__directory__title">
+            {{ this.labels.selectDirectory | translate }}
+        </div>
+        <div
+            class="sign-document-save-container__directory__item"
+            *ngFor="let directory of attachmentsByGroup"
+            fxLayout="row"
+            fxLayoutAlign="center center"
+            [ngClass]="{ selected: directorySelected(directory) }"
+            (click)="selectDirectory(directory)"
+        >
+            <span>{{ directory.templateAttachmentItem.name }}</span>
+        </div>
+        <div class="sign-document-save-container__directory__button" fxLayout="row" fxLayoutAlign="end center">
+            <button mat-flat-button color="primary" [disabled]="pdfForm.invalid" (click)="save()">
+                {{ labels.save | translate }}
+            </button>
+        </div>
+    </div>
+</div>

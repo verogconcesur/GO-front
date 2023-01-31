@@ -1,3 +1,6 @@
+import CardColumnTabDTO from './card-column-tab-dto';
+import CardInstanceDTO from './card-instance-dto';
+
 export interface AttachmentDTO {
   content: string;
   id: number;
@@ -16,4 +19,15 @@ export interface CardAttachmentsDTO {
   };
   tabId?: number;
   tabName?: string;
+}
+export interface CardBudgetAttachmentsDTO {
+  tab: CardColumnTabDTO;
+  cardInstance: CardInstanceDTO;
+  file: AttachmentDTO;
+  templateAttachmentItem: {
+    id: number;
+    name: string;
+    orderNumber: number;
+  };
+  id?: number;
 }

@@ -110,27 +110,38 @@ export class SignCardDocumentsDialogComponent implements OnInit {
     this.stepIndex = 3;
   }
 
-  public closeDialog(): void {
-    this.confirmDialogService
-      .open({
-        title: this.translateService.instant(marker('common.warning')),
-        message: `${this.translateService.instant(marker('errors.ifContinueLosingChanges'))}. ${this.translateService.instant(
-          marker('common.askForConfirmation')
-        )}`
-      })
-      .pipe(take(1))
-      .subscribe((ok: boolean) => {
-        if (ok) {
-          if (this.relativeTo) {
-            this.router.navigate([{ outlets: { card: null } }], {
-              relativeTo: this.relativeTo
-            });
-          } else {
-            const currentUrl = window.location.hash.split('#/').join('/').split('/(cardSign:')[0] + ')';
-            this.router.navigateByUrl(currentUrl);
+  public closeDialog(autoExit?: boolean): void {
+    if (autoExit) {
+      if (this.relativeTo) {
+        this.router.navigate([{ outlets: { card: null } }], {
+          relativeTo: this.relativeTo
+        });
+      } else {
+        const currentUrl = window.location.hash.split('#/').join('/').split('/(cardSign:')[0] + ')';
+        this.router.navigateByUrl(currentUrl);
+      }
+    } else {
+      this.confirmDialogService
+        .open({
+          title: this.translateService.instant(marker('common.warning')),
+          message: `${this.translateService.instant(marker('errors.ifContinueLosingChanges'))}. ${this.translateService.instant(
+            marker('common.askForConfirmation')
+          )}`
+        })
+        .pipe(take(1))
+        .subscribe((ok: boolean) => {
+          if (ok) {
+            if (this.relativeTo) {
+              this.router.navigate([{ outlets: { card: null } }], {
+                relativeTo: this.relativeTo
+              });
+            } else {
+              const currentUrl = window.location.hash.split('#/').join('/').split('/(cardSign:')[0] + ')';
+              this.router.navigateByUrl(currentUrl);
+            }
           }
-        }
-      });
+        });
+    }
   }
 
   private preparePdfStep(): void {
