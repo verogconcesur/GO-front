@@ -1,18 +1,12 @@
-import { Component, OnInit } from '@angular/core';
+import { Component } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { Router } from '@angular/router';
 import { PermissionConstants } from '@app/constants/permission.constants';
 import { RouteConstants } from '@app/constants/route.constants';
-import FacilityDTO from '@data/models/organization/facility-dto';
 import { AuthenticationService } from '@app/security/authentication.service';
 import { marker } from '@biesbjerg/ngx-translate-extract-marker';
-import WorkflowDTO from '@data/models/workflows/workflow-dto';
-import { WorkflowsService } from '@data/services/workflows.service';
 import { NewCardComponent, NewCardComponentModalEnum } from '@modules/feature-modules/new-card/new-card.component';
-import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
-import { FormBuilder, UntypedFormGroup } from '@angular/forms';
-import WorkflowCardDTO from '@data/models/workflows/workflow-card-dto';
-import { finalize, take } from 'rxjs/operators';
+import { UntilDestroy } from '@ngneat/until-destroy';
 
 @UntilDestroy()
 @Component({
@@ -22,6 +16,8 @@ import { finalize, take } from 'rxjs/operators';
 })
 export class NavbarComponent {
   public readonly WORKFLOW_PATH = RouteConstants.WORKFLOWS;
+  public readonly CLIENTS_PATH = RouteConstants.CUSTOMERS;
+  public readonly VEHICLES_PATH = RouteConstants.VEHICLES;
   public labels = {
     title: marker('app.title'),
     workflow: marker('app.menu.workflow'),

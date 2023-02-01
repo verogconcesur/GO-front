@@ -366,7 +366,8 @@
             "name": "Nombre",
             "phone": "Teléfono",
             "reference": "Referencia",
-            "socialSecurityId": "Documento de identidad"
+            "socialSecurityId": "Documento de identidad",
+            "title": "Clientes"
         },
         "user": {
             "user": "Usuario"
@@ -386,6 +387,7 @@
             "make": "Marca",
             "missInfo": "Sin información",
             "model": "Modelo",
+            "title": "Vehículos",
             "select": "Seleccionar vehículo",
             "stockId": "Id del inventario",
             "vehicle": "Vehículo",
