@@ -85,7 +85,7 @@ export class AuthenticationService implements OnDestroy {
    * @param token token to be stored
    */
   setToken(token: string): void {
-    sessionStorage.setItem(this.ACCESS_TOKEN, token);
+    localStorage.setItem(this.ACCESS_TOKEN, token);
   }
 
   /**
@@ -94,14 +94,14 @@ export class AuthenticationService implements OnDestroy {
    * @returns saved token
    */
   getToken(): string {
-    return sessionStorage.getItem(this.ACCESS_TOKEN);
+    return localStorage.getItem(this.ACCESS_TOKEN);
   }
 
   /**
    * Remove the saved token
    */
   removeToken(): void {
-    sessionStorage.removeItem(this.ACCESS_TOKEN);
+    localStorage.removeItem(this.ACCESS_TOKEN);
   }
 
   /**
@@ -110,7 +110,7 @@ export class AuthenticationService implements OnDestroy {
    * @param time token expires_in
    */
   setExpiresIn(time: string) {
-    sessionStorage.setItem(this.EXPIRES_IN, time);
+    localStorage.setItem(this.EXPIRES_IN, time);
   }
 
   /**
@@ -119,14 +119,14 @@ export class AuthenticationService implements OnDestroy {
    * @returns the token expires_in
    */
   getExpiresIn() {
-    return parseInt(sessionStorage.getItem(this.EXPIRES_IN), 10);
+    return parseInt(localStorage.getItem(this.EXPIRES_IN), 10);
   }
 
   /**
    * Remove the saved expires_in
    */
   removeExpiresIn() {
-    sessionStorage.removeItem(this.EXPIRES_IN);
+    localStorage.removeItem(this.EXPIRES_IN);
   }
 
   /**
@@ -135,7 +135,7 @@ export class AuthenticationService implements OnDestroy {
    * @param timestamp token token_timestamp
    */
   setTokenTimestamp(timestamp: number) {
-    sessionStorage.setItem(this.TOKEN_TIMESTAMP, timestamp.toString());
+    localStorage.setItem(this.TOKEN_TIMESTAMP, timestamp.toString());
   }
 
   /**
@@ -144,14 +144,14 @@ export class AuthenticationService implements OnDestroy {
    * @returns the token_timestamp
    */
   getTokenTimestamp() {
-    return parseInt(sessionStorage.getItem(this.TOKEN_TIMESTAMP), 10);
+    return parseInt(localStorage.getItem(this.TOKEN_TIMESTAMP), 10);
   }
 
   /**
    * Remove the saved token_timestamp
    */
   removeTokenTimestamp() {
-    sessionStorage.removeItem(this.TOKEN_TIMESTAMP);
+    localStorage.removeItem(this.TOKEN_TIMESTAMP);
   }
 
   /**
@@ -160,14 +160,14 @@ export class AuthenticationService implements OnDestroy {
    * @returns the userId
    */
   getUserId() {
-    return sessionStorage.getItem(this.USER_ID);
+    return localStorage.getItem(this.USER_ID);
   }
 
   /**
    * Remove the userId
    */
   removeUserId() {
-    sessionStorage.removeItem(this.USER_ID);
+    localStorage.removeItem(this.USER_ID);
   }
 
   /**
@@ -176,14 +176,14 @@ export class AuthenticationService implements OnDestroy {
    * @returns the userFullName
    */
   getUserFullName() {
-    return sessionStorage.getItem(this.USER_FULL_NAME);
+    return localStorage.getItem(this.USER_FULL_NAME);
   }
 
   /**
    * Remove the userFullName
    */
   removeUserFullName() {
-    sessionStorage.removeItem(this.USER_FULL_NAME);
+    localStorage.removeItem(this.USER_FULL_NAME);
   }
 
   /**
@@ -192,14 +192,14 @@ export class AuthenticationService implements OnDestroy {
    * @returns the userRole
    */
   getUserRole(): RoleDTO {
-    return JSON.parse(sessionStorage.getItem(this.USER_ROLE));
+    return JSON.parse(localStorage.getItem(this.USER_ROLE));
   }
 
   /**
    * Remove the userRole
    */
   removeUserRole() {
-    sessionStorage.removeItem(this.USER_ROLE);
+    localStorage.removeItem(this.USER_ROLE);
   }
 
   /**
@@ -208,7 +208,7 @@ export class AuthenticationService implements OnDestroy {
    * @returns an array with user permissions
    */
   getUserPermissions(): PermissionsDTO[] {
-    const permissions = JSON.parse(sessionStorage.getItem(this.USER_PERMISSIONS));
+    const permissions = JSON.parse(localStorage.getItem(this.USER_PERMISSIONS));
     return permissions ? permissions : [];
   }
 
@@ -216,7 +216,7 @@ export class AuthenticationService implements OnDestroy {
    * Remove the userRole
    */
   removeUserPermissions() {
-    sessionStorage.removeItem(this.USER_PERMISSIONS);
+    localStorage.removeItem(this.USER_PERMISSIONS);
   }
 
   /**
@@ -241,10 +241,10 @@ export class AuthenticationService implements OnDestroy {
    */
   setLoggedUser(loginData: LoginDTO): void {
     this.setTokenData(loginData);
-    sessionStorage.setItem(this.USER_ID, loginData.user.id.toString());
-    sessionStorage.setItem(this.USER_FULL_NAME, loginData.user.fullName);
-    sessionStorage.setItem(this.USER_ROLE, JSON.stringify(loginData.user.role));
-    sessionStorage.setItem(this.USER_PERMISSIONS, JSON.stringify(loginData.user.permissions));
+    localStorage.setItem(this.USER_ID, loginData.user.id.toString());
+    localStorage.setItem(this.USER_FULL_NAME, loginData.user.fullName);
+    localStorage.setItem(this.USER_ROLE, JSON.stringify(loginData.user.role));
+    localStorage.setItem(this.USER_PERMISSIONS, JSON.stringify(loginData.user.permissions));
   }
 
   setTokenData(loginData: LoginDTO): void {
@@ -252,9 +252,9 @@ export class AuthenticationService implements OnDestroy {
       clearTimeout(this.tokenTimeout);
       this.tokenTimeout = null;
     }
-    sessionStorage.setItem(this.ACCESS_TOKEN, loginData.access_token);
-    sessionStorage.setItem(this.EXPIRES_IN, loginData.expires_in.toString());
-    sessionStorage.setItem(this.TOKEN_TIMESTAMP, (+new Date()).toString());
+    localStorage.setItem(this.ACCESS_TOKEN, loginData.access_token);
+    localStorage.setItem(this.EXPIRES_IN, loginData.expires_in.toString());
+    localStorage.setItem(this.TOKEN_TIMESTAMP, (+new Date()).toString());
     this.keepTokenAlive();
   }
 
