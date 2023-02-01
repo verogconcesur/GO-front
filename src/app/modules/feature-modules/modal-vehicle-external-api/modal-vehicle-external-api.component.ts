@@ -6,6 +6,7 @@ import VehicleEntityDTO, { InventoryVehicle } from '@data/models/entities/vehicl
 import VehicleFilterDTO, { VehicleInventoryTypes, VehicleStatus } from '@data/models/entities/vehicle-filter-dto';
 import FacilityDTO from '@data/models/organization/facility-dto';
 import { EntitiesService } from '@data/services/entities.service';
+import { FacilityService } from '@data/services/facility.sevice';
 import { ComponentToExtendForCustomDialog, CustomDialogFooterConfigI } from '@jenga/custom-dialog';
 import { TranslateService } from '@ngx-translate/core';
 import { ConfirmDialogService } from '@shared/services/confirm-dialog.service';
@@ -30,6 +31,7 @@ export class ModalVehicleExternalApiComponent extends ComponentToExtendForCustom
     title: marker('entities.vehicles.import'),
     dataNotFound: marker('newCard.errors.dataNotFound'),
     vehicleNotFound: marker('newCard.errors.vehicleNotFound'),
+    facility: marker('userProfile.facility'),
     licensePlate: marker('entities.vehicles.licensePlate'),
     vehicle: marker('entities.vehicles.vehicle'),
     inventory: marker('entities.vehicles.inventory'),
@@ -49,6 +51,7 @@ export class ModalVehicleExternalApiComponent extends ComponentToExtendForCustom
   public minLength = 3;
   public facilityId: number;
   public vehicleList: VehicleEntityDTO[] = [];
+  public facilityList: FacilityDTO[] = [];
   public vehicleSelected: VehicleEntityDTO;
   public inventorySelected: InventoryVehicle;
   public vehicleForm: FormGroup;
@@ -62,7 +65,8 @@ export class ModalVehicleExternalApiComponent extends ComponentToExtendForCustom
     private confirmDialogService: ConfirmDialogService,
     private translateService: TranslateService,
     private globalMessageService: GlobalMessageService,
-    private entitiesService: EntitiesService
+    private entitiesService: EntitiesService,
+    private facilityService: FacilityService
   ) {
     super(
       CreateEditVehicleExternalApiComponentModalEnum.ID,
@@ -78,6 +82,12 @@ export class ModalVehicleExternalApiComponent extends ComponentToExtendForCustom
 
   ngOnInit(): void {
     this.facilityId = this.extendedComponentData.facility;
+    this.facilityService
+      .getFacilitiesWithExternalApi()
+      .pipe(take(1))
+      .subscribe((res) => {
+        this.facilityList = res;
+      });
     this.initializeForm();
   }
 
@@ -92,8 +102,13 @@ export class ModalVehicleExternalApiComponent extends ComponentToExtendForCustom
       this.inventorySelected = null;
       this.vehicleList = [];
       const searchData = this.searchForm.getRawValue();
+      if (searchData.facilityId) {
+        this.vehicleForm.get('facilityId').setValue(searchData.facilityId);
+      } else {
+        this.vehicleForm.get('facilityId').setValue(this.facilityId);
+      }
       const searchBody: VehicleFilterDTO = {
-        facilityId: searchData.facilityId,
+        facilityId: searchData.facilityId ? searchData.facilityId : this.facilityId,
         commissionNumber: searchData.commissionNumber ? searchData.commissionNumber : null,
         inventoryType: searchData.inventoryType ? searchData.inventoryType : null,
         inventoryVehicleStatus: searchData.inventoryVehicleStatus ? searchData.inventoryVehicleStatus : null,
@@ -130,10 +145,19 @@ export class ModalVehicleExternalApiComponent extends ComponentToExtendForCustom
   }
   public requiredStockChange(checked: boolean) {
     if (checked) {
-      this.searchForm.get('inventoryType').setValue(this.inventoryTypes[0]);
+      this.searchForm.get('inventoryType').setValidators([Validators.required]);
+      this.searchForm.get('inventoryType').updateValueAndValidity();
+      this.searchForm.get('facilityId').setValidators([Validators.required]);
+      this.searchForm.get('facilityId').updateValueAndValidity();
     } else {
       this.searchForm.get('inventoryType').setValue(null);
+      this.searchForm.get('inventoryType').setValidators([]);
+      this.searchForm.get('inventoryType').updateValueAndValidity();
+      this.searchForm.get('facilityId').setValue(null);
+      this.searchForm.get('facilityId').setValidators([]);
+      this.searchForm.get('facilityId').updateValueAndValidity();
       this.searchForm.get('commissionNumber').setValue(null);
+      this.changeCommissionNumber();
       this.searchForm.get('inventoryVehicleStatus').setValue(null);
     }
   }
@@ -195,7 +219,7 @@ export class ModalVehicleExternalApiComponent extends ComponentToExtendForCustom
     const spinner = this.spinnerService.show();
     const formData = this.vehicleForm.getRawValue();
     const body: VehicleBodyApiDTO = {
-      facilityId: formData.facilityId,
+      facilityId: formData.facilityId ? formData.facilityId : this.facilityId,
       vehicleId: formData.vehicle ? formData.vehicle.vehicleId : null,
       stockId: formData.inventory ? formData.inventory.vehicleStockId : null
     };
@@ -237,7 +261,7 @@ export class ModalVehicleExternalApiComponent extends ComponentToExtendForCustom
   }
   private initializeForm = (): void => {
     this.searchForm = this.fb.group({
-      facilityId: [this.facilityId],
+      facilityId: [null],
       requireStock: [false],
       commissionNumber: [''],
       inventoryType: [''],

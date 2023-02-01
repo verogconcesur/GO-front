@@ -22,6 +22,20 @@
                                 labels.addStock | translate
                             }}</mat-checkbox>
                         </section>
+                        <!-- Facility -->
+                        <mat-form-field appearance="outline" floatLabel="always" *ngIf="searchForm.controls.requireStock.value">
+                            <mat-label>{{ labels.facility | translate }}</mat-label>
+                            <mat-select formControlName="facilityId">
+                                <mat-option *ngFor="let facility of facilityList" [value]="facility.id">{{
+                                    facility.name
+                                }}</mat-option>
+                            </mat-select>
+                            <mat-error *ngIf="searchForm.controls?.facilityId.invalid">
+                                <span *ngIf="searchForm.controls.facilityId.errors.required">{{
+                                    labels.required | translate
+                                }}</span>
+                            </mat-error>
+                        </mat-form-field>
                         <!-- commissionNumber -->
                         <mat-form-field appearance="outline" floatLabel="always" *ngIf="searchForm.controls.requireStock.value">
                             <mat-label>{{ labels.commissionNumber | translate }}</mat-label>
@@ -53,6 +67,11 @@
                             <mat-select formControlName="inventoryType">
                                 <mat-option *ngFor="let type of inventoryTypes" [value]="type">{{ type }}</mat-option>
                             </mat-select>
+                            <mat-error *ngIf="searchForm.controls?.inventoryType.invalid">
+                                <span *ngIf="searchForm.controls.inventoryType.errors.required">{{
+                                    labels.required | translate
+                                }}</span>
+                            </mat-error>
                         </mat-form-field>
                         <div class="customer-data__section__group__search__button">
                             <button mat-flat-button color="primary" (click)="search()" [disabled]="searchForm.invalid">

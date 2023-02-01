@@ -372,7 +372,7 @@
             "user": "User"
         },
         "vehicles": {
-            "addStock": "Add inventary",
+            "addStock": "Search on inventary",
             "chasis": "Chasis",
             "commissionNumber": "Commission number",
             "create": "Create vehicle",
