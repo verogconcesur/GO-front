@@ -1,8 +1,10 @@
 @import 'utils/core';
+@import 'utils/theme';
 
 .message-client-content {
   width: 100%;
   padding-right: 15px;
+  position: relative;
   &__form {
     width: 100%;
     .message-data__section {
@@ -29,6 +31,34 @@
           width: 200px;
         }
       }
+    }
+  }
+
+  .attachments-info {
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+    margin: 5px 0;
+    button {
+      min-width: 130px;
+      margin-right: 5px;
+    }
+  }
+  .attachment-selector {
+    position: absolute;
+    height: 100%;
+    width: 100%;
+    background-color: mat-contrast($primary, 400);
+    z-index: 10;
+    .close-attachments-btn {
+      position: absolute;
+      bottom: 20px;
+      left: 20px;
+    }
+    .add-attachments-btn {
+      position: absolute;
+      bottom: 20px;
+      right: 20px;
     }
   }
 }

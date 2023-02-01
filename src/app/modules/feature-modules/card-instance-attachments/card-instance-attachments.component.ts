@@ -24,9 +24,11 @@ import { RenameAttachmentComponent } from './subcomponets/rename-attachment/rena
 export class CardInstanceAttachmentsComponent implements OnInit, OnChanges {
   @Input() cardInstanceAttachmentsConfig: CardInstanceAttachmentsConfig;
   @Input() data: CardAttachmentsDTO[] = [];
+  @Input() selected: AttachmentDTO[] = [];
   @Input() cardInstanceWorkflowId: number = null;
   @Input() tabId: number = null;
   @Output() reload: EventEmitter<boolean> = new EventEmitter<boolean>();
+  @Output() selectionChange: EventEmitter<AttachmentDTO[]> = new EventEmitter<AttachmentDTO[]>();
   public selectedAttachments: AttachmentDTO[] = [];
   public hoverTemplate: CardAttachmentsDTO;
   public hoverTemplateFrom: 'cdk' | 'appDropZone';
@@ -47,10 +49,18 @@ export class CardInstanceAttachmentsComponent implements OnInit, OnChanges {
     private pdfViewerService: PdfViewerService
   ) {}
 
-  ngOnInit(): void {}
+  ngOnInit(): void {
+    if (this.selected) {
+      this.selectedAttachments = this.selected;
+    }
+  }
 
   ngOnChanges(changes: SimpleChanges): void {
-    this.selectedAttachments = [];
+    if (this.selected) {
+      this.selectedAttachments = this.selected;
+    } else {
+      this.selectedAttachments = [];
+    }
   }
 
   public selectItem(item: AttachmentDTO): void {
@@ -59,6 +69,8 @@ export class CardInstanceAttachmentsComponent implements OnInit, OnChanges {
     } else {
       this.selectedAttachments.push(item);
     }
+    this.selected = this.selectedAttachments;
+    this.selectionChange.emit(this.selectedAttachments);
   }
 
   public isItemSelected(item: AttachmentDTO): boolean {
