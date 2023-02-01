@@ -38,6 +38,11 @@ export enum RouteConstants {
   //Administration
   ADMINISTRATION = 'administration',
 
+  //Customers
+  CUSTOMERS = 'customers',
+
+  VEHICLES = 'vehicles',
+
   //Users
   USERS = 'users',
 
