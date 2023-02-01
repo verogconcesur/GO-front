@@ -95,7 +95,7 @@
             },
             "title": "Plantillas"
         },
-        "title": "Concenet",
+        "title": "Go",
         "users": "Usuarios",
         "viewProfile": "Ver perfil",
         "workflows": "Workflows"
@@ -109,7 +109,7 @@
             "vehicles": "Vehículos",
             "workflow": "Workflow"
         },
-        "title": "Concenet"
+        "title": "Go"
     },
     "cardDetail": {
         "budgets": {
