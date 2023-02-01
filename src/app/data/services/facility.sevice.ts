@@ -20,6 +20,7 @@ export class FacilityService {
   private facilitiesByBrand: any = {};
   private readonly GET_FACILITY = '/api/facilities/';
   private readonly GET_FACILITIES_PATH = '/api/facilities/findAll/';
+  private readonly GET_FACILITY_INTEGRATION = '/api/facilities/findAllWithIntegration';
   private readonly DELETE_FACILITY_PATH = '/api/facilities';
   private readonly DUPLICATE_FACILITY_PATH = '/api/facilities/duplicate';
 
@@ -87,6 +88,12 @@ export class FacilityService {
         .get<FacilityDTO[]>(`${this.env.apiBaseUrl}${this.GET_FACILITIES_PATH}`)
         .pipe(catchError((error) => throwError(error.error as ConcenetError)));
     }
+  }
+
+  public getFacilitiesWithExternalApi(): Observable<FacilityDTO[]> {
+    return this.http
+      .get<FacilityDTO[]>(`${this.env.apiBaseUrl}${this.GET_FACILITY_INTEGRATION}`)
+      .pipe(catchError((error) => throwError(error.error as ConcenetError)));
   }
 
   public getFacilitiesById(id: number): Observable<FacilityDTO> {
