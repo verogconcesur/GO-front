@@ -357,6 +357,7 @@
     "entities": {
         "customers": {
             "create": "Crear cliente",
+            "customer": "Cliente",
             "edit": "Editar cliente",
             "email": "Email",
             "firstName": "Primer apellido",
@@ -366,6 +367,9 @@
             "phone": "Teléfono",
             "reference": "Referencia",
             "socialSecurityId": "Documento de identidad"
+        },
+        "user": {
+            "user": "Usuario"
         },
         "vehicles": {
             "addStock": "Añadir inventario",

@@ -32,13 +32,23 @@
         </div>
         <div class="newCard__content__form" fxLayoutAlign="left">
             <app-step1-workflow
-                *ngIf="stepIndex === 1"
+                [hidden]="stepIndex !== 1"
                 [formWorkflow]="formWorkflow"
                 [title]="labels.createCard | translate"
                 [currentWorkflowId]="currentWorkflowId"
             ></app-step1-workflow>
-            <app-step-column *ngIf="stepIndex === 2" [formStep]="formStep1" [formWorkflow]="formWorkflow"></app-step-column>
-            <app-step-column *ngIf="stepIndex === 3" [formStep]="formStep2" [formWorkflow]="formWorkflow"></app-step-column>
+            <app-step-column
+                [hidden]="stepIndex !== 2"
+                *ngIf="formStep1"
+                [formStep]="formStep1"
+                [formWorkflow]="formWorkflow"
+            ></app-step-column>
+            <app-step-column
+                [hidden]="stepIndex !== 3"
+                *ngIf="formStep2"
+                [formStep]="formStep2"
+                [formWorkflow]="formWorkflow"
+            ></app-step-column>
         </div>
         <mat-divider></mat-divider>
         <div class="newCard__content__buttons" fxLayout="row" fxLayoutAlign="space-between center">
