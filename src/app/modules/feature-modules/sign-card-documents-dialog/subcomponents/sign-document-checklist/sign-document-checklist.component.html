@@ -222,7 +222,6 @@
                         [useBrowserLocale]="true"
                         [zoom]="'page-fit'"
                         [zoomLevels]="['page-fit']"
-                        [textLayer]="true"
                         [showZoomButtons]="true"
                         [showHandToolButton]="false"
                         [showPresentationModeButton]="false"
@@ -233,12 +232,15 @@
                         [showDownloadButton]="false"
                         [showOpenFileButton]="false"
                         [(page)]="page"
+                        (pageRendered)="pageRendered($event)"
                         (pdfLoaded)="pdfLoadedFn($event)"
-                        (zoomChange)="pdfZoomChange($event)"
-                        (textLayerRendered)="configCanvas($event)"
+                        [textLayer]="false"
                         [(formData)]="formData"
                     >
                     </ngx-extended-pdf-viewer>
+
+                    <!-- (zoomChange)="pdfZoomChange($event)" -->
+                    <!-- (textLayerRendered)="textLayerRendered($event)" -->
                 </ng-container>
             </mat-expansion-panel>
         </mat-accordion>

@@ -1,13 +1,10 @@
 import { Component, ElementRef, EventEmitter, Input, OnInit, Output, ViewChild } from '@angular/core';
-import { FormControl } from '@angular/forms';
-import { ConcenetError } from '@app/types/error';
 import { marker } from '@biesbjerg/ngx-translate-extract-marker';
 import { AttachmentDTO, CardAttachmentsDTO } from '@data/models/cards/card-attachments-dto';
 import { TemplatesChecklistsService } from '@data/services/templates-checklists.service';
 import { TranslateService } from '@ngx-translate/core';
 import { GlobalMessageService } from '@shared/services/global-message.service';
 import { ProgressSpinnerDialogService } from '@shared/services/progress-spinner-dialog.service';
-import { group } from 'console';
 import { NGXLogger } from 'ngx-logger';
 import { finalize, take } from 'rxjs/operators';
 

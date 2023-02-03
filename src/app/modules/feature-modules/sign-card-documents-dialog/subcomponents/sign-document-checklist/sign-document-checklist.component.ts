@@ -36,7 +36,6 @@ import { SignDocumentAuxService } from './sign-document-aux.service';
 import { Router } from '@angular/router';
 import { RouteConstants } from '@app/constants/route.constants';
 import { TemplatesChecklistsService } from '@data/services/templates-checklists.service';
-import { ConcenetError } from '@app/types/error';
 import { NGXLogger } from 'ngx-logger';
 import { MatExpansionPanel } from '@angular/material/expansion';
 import { AttachmentDTO, CardAttachmentsDTO } from '@data/models/cards/card-attachments-dto';
@@ -74,8 +73,6 @@ export class SignDocumentChecklistComponent implements OnInit, AfterViewInit, On
   public showChangeSign = false;
   public changeSignToOrderNumber: number = null;
   public labels: any = {
-    newCheckList: marker('administration.templates.checklists.new'),
-    cheklistConfig: marker('administration.templates.checklists.config'),
     itemsInTemplate: marker('administration.templates.checklists.itemsInTemplate'),
     insertTextHere: marker('common.insertTextHere'),
     pdfPreview: marker('administration.templates.checklists.pdfPreview'),
@@ -90,25 +87,12 @@ export class SignDocumentChecklistComponent implements OnInit, AfterViewInit, On
     check: marker('administration.templates.checklists.check'),
     variable: marker('administration.templates.checklists.var'),
     image: marker('administration.templates.checklists.image'),
-    name: marker('administration.templates.checklists.name'),
-    nameRequired: marker('userProfile.nameRequired'),
-    includeFile: marker('administration.templates.checklists.includeFile'),
-    dropHere: marker('administration.templates.checklists.dropHere'),
     noData: marker('errors.noDataToShow'),
     pages: marker('pagination.pages'),
-    fieldsType: marker('common.fieldsType'),
     items: marker('common.items'),
     showInPage: marker('common.showPage'),
-    label: marker('common.label'),
-    deleteFile: marker('common.deleteFile'),
-    syncronization: marker('administration.templates.checklists.syncronization'),
-    copyItemInPage: marker('administration.templates.checklists.copyItemInPage'),
-    cancel: marker('common.cancel'),
     save: marker('common.save'),
     changeSign: marker('common.changeSign'),
-    staticValue: marker('administration.templates.checklists.staticValue'),
-    staticValueInput: marker('administration.templates.checklists.staticValueInput'),
-    staticValueImage: marker('administration.templates.checklists.staticValueImage'),
     selectCardAttachmentImage: marker('administration.templates.checklists.selectCardAttachmentImage')
   };
   private checklistToEdit: TemplatesChecklistsDTO = null;
@@ -339,16 +323,37 @@ export class SignDocumentChecklistComponent implements OnInit, AfterViewInit, On
     return '';
   }
 
-  public pdfZoomChange($event: any) {
-    setTimeout(() => this.configCanvas(), 200);
+  public pdfLoadedFn($event: any) {
+    console.log('pdfLoaded', $event);
+    this.pdfNumPages = $event.pagesCount;
+    this.pages = [...Array(this.pdfNumPages).keys()].map((x) => ++x);
+    this.pdfLoaded = true;
   }
 
-  public refreshItemsAndPdf(): void {
-    this.repaintItemsInTemplate();
+  //Method to change the page manually
+  public changePage(page: number) {
+    if (page && this.page !== page) {
+      this.page = page;
+    }
+  }
+
+  // public pdfZoomChange($event: any): void {
+  //   console.log('zoom change', $event);
+  //   this.configCanvas();
+  // }
+
+  // public textLayerRendered($event: any): void {
+  //   console.log('textLayerRendered', $event);
+  //   this.configCanvas();
+  // }
+
+  public pageRendered(event: { pageNumber: number }): void {
+    console.log('pageRendered', event);
+    this.configCanvas(event.pageNumber);
   }
 
   public repaintItemsInTemplate(page?: number): void {
-    this.removeP5s();
+    // this.removeP5s();
     if (this.checklistForm?.value?.templateChecklistItems?.length > 0) {
       this.checklistForm.value.templateChecklistItems.forEach((item: TemplateChecklistItemDTO, index: number) => {
         if (page && item.numPage === page) {
@@ -366,36 +371,23 @@ export class SignDocumentChecklistComponent implements OnInit, AfterViewInit, On
     }
   }
 
-  public pdfLoadedFn($event: any) {
-    this.pdfNumPages = $event.pagesCount;
-    this.pages = [...Array(this.pdfNumPages).keys()].map((x) => ++x);
-    this.pdfLoaded = true;
-  }
-
-  //Method to change the page manually
-  public changePage(page: number) {
-    if (page && this.page !== page) {
-      this.page = page;
-    }
-  }
-
-  public configCanvas($event?: any): void {
-    // console.log('config canvas', $event);
+  public configCanvas(pgNumber?: number): void {
     if (this.pdfLoaded) {
       this.renderingItems = true;
       const arr = document.getElementById('checklistPDF')?.getElementsByClassName('page');
+      console.log(arr);
       if (arr) {
         Array.from(arr).forEach((page: Element) => {
           const pageNumber = page.getAttribute('data-page-number');
           const loaded = page.getAttribute('data-loaded');
-          if (loaded && $('.canvasDropZone-page' + pageNumber).length === 0) {
+          if (loaded && document.getElementsByClassName('canvasDropZone-page' + pageNumber).length === 0) {
             const canvas = page.getElementsByClassName('canvasWrapper').item(0); //.getElementsByTagName('canvas').item(0);
             canvas.classList.add('canvasDropZone-page' + pageNumber);
           }
         });
       }
     }
-    setTimeout(() => this.repaintItemsInTemplate(), 100);
+    this.repaintItemsInTemplate(pgNumber ? pgNumber : null);
   }
 
   public getChecklistItemByOrderNumber(ordNumber: number): UntypedFormGroup {
@@ -768,7 +760,7 @@ export class SignDocumentChecklistComponent implements OnInit, AfterViewInit, On
           this.fileTemplateBase64.next(data.procesedFile.content);
           this.initForm();
           this.setItemListToShow();
-          this.refreshItemsAndPdf();
+          this.repaintItemsInTemplate();
         },
         error: (error) => {
           this.logger.error(error);
@@ -817,6 +809,7 @@ export class SignDocumentChecklistComponent implements OnInit, AfterViewInit, On
       this.p5s[parseInt(k, 10)].remove();
     });
     this.p5s = [];
+    this.p5sDraws = {};
     $('.p5Canvas').remove();
   }
 }
