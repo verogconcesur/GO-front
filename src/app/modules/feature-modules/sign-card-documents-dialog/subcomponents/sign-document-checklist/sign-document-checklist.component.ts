@@ -36,7 +36,6 @@ import { SignDocumentAuxService } from './sign-document-aux.service';
 import { Router } from '@angular/router';
 import { RouteConstants } from '@app/constants/route.constants';
 import { TemplatesChecklistsService } from '@data/services/templates-checklists.service';
-import { ConcenetError } from '@app/types/error';
 import { NGXLogger } from 'ngx-logger';
 import { MatExpansionPanel } from '@angular/material/expansion';
 import { AttachmentDTO, CardAttachmentsDTO } from '@data/models/cards/card-attachments-dto';
@@ -56,6 +55,7 @@ export class SignDocumentChecklistComponent implements OnInit, AfterViewInit, On
   staticImage: ElementRef;
   @ViewChild('fieldsPanel')
   fieldsPanel: MatExpansionPanel;
+  public itemToClone: JQuery<HTMLElement> = null;
   public smallModal = false;
   public signDocumentExchange: SignDocumentExchangeDTO;
   public page: number;
@@ -63,7 +63,7 @@ export class SignDocumentChecklistComponent implements OnInit, AfterViewInit, On
   public fileTemplateBase64 = new Subject<any>();
   public pdfNumPages = 0;
   public pdfLoaded = false;
-  public renderingItems = true;
+  public renderingDrawingItems = false;
   public pages: number[] = [];
   public itemListToShow: AuxChecklistItemsGroupByTypeDTO[] = [];
   public expansionPanelOpened: any = {};
@@ -74,8 +74,6 @@ export class SignDocumentChecklistComponent implements OnInit, AfterViewInit, On
   public showChangeSign = false;
   public changeSignToOrderNumber: number = null;
   public labels: any = {
-    newCheckList: marker('administration.templates.checklists.new'),
-    cheklistConfig: marker('administration.templates.checklists.config'),
     itemsInTemplate: marker('administration.templates.checklists.itemsInTemplate'),
     insertTextHere: marker('common.insertTextHere'),
     pdfPreview: marker('administration.templates.checklists.pdfPreview'),
@@ -90,33 +88,22 @@ export class SignDocumentChecklistComponent implements OnInit, AfterViewInit, On
     check: marker('administration.templates.checklists.check'),
     variable: marker('administration.templates.checklists.var'),
     image: marker('administration.templates.checklists.image'),
-    name: marker('administration.templates.checklists.name'),
-    nameRequired: marker('userProfile.nameRequired'),
-    includeFile: marker('administration.templates.checklists.includeFile'),
-    dropHere: marker('administration.templates.checklists.dropHere'),
     noData: marker('errors.noDataToShow'),
     pages: marker('pagination.pages'),
-    fieldsType: marker('common.fieldsType'),
     items: marker('common.items'),
     showInPage: marker('common.showPage'),
-    label: marker('common.label'),
-    deleteFile: marker('common.deleteFile'),
-    syncronization: marker('administration.templates.checklists.syncronization'),
-    copyItemInPage: marker('administration.templates.checklists.copyItemInPage'),
-    cancel: marker('common.cancel'),
     save: marker('common.save'),
     changeSign: marker('common.changeSign'),
-    staticValue: marker('administration.templates.checklists.staticValue'),
-    staticValueInput: marker('administration.templates.checklists.staticValueInput'),
-    staticValueImage: marker('administration.templates.checklists.staticValueImage'),
     selectCardAttachmentImage: marker('administration.templates.checklists.selectCardAttachmentImage')
   };
   private checklistToEdit: TemplatesChecklistsDTO = null;
   private formDataIdValueMapByPdf: { [fieldName: string]: string | number | boolean } = {};
   private formDataIdValueMapByForm: { [fieldName: string]: string | number | boolean } = {};
   private formDataIdValueMapByForNgxPdf: { [fieldName: string]: string | number | boolean } = {};
+  private formDataIdValueMapByForNgxPdfToSend: { [fieldName: string]: string | number | boolean } = {};
   private p5s: { [auxOrderNumber: number]: p5 } = {};
   private p5sDraws: { [auxOrderNumber: number]: string } = {};
+  private changeCounter = 0;
 
   constructor(
     private fb: UntypedFormBuilder,
@@ -146,6 +133,7 @@ export class SignDocumentChecklistComponent implements OnInit, AfterViewInit, On
             ?.textValue
             ? item.itemVal?.textValue
             : null;
+          this.changeCounter = 1;
         });
       } else if (item.typeItem === 'CHECK' && this.formDataIdValueMapByForm[item.auxOrderNumber] !== item.itemVal?.booleanValue) {
         item.sincronizedItems.forEach((auxOrderNumber) => {
@@ -160,10 +148,18 @@ export class SignDocumentChecklistComponent implements OnInit, AfterViewInit, On
             ?.booleanValue
             ? 'Yes'
             : null;
+          this.changeCounter = 1;
         });
       }
     });
-    return { ...this.formDataIdValueMapByForNgxPdf };
+    if (this.changeCounter > 0) {
+      this.changeCounter--;
+      this.formDataIdValueMapByForNgxPdfToSend = { ...this.formDataIdValueMapByForNgxPdf };
+      // return { ...this.formDataIdValueMapByForNgxPdf };
+      // return this.formDataIdValueMapByForNgxPdf;
+    }
+    // return this.formDataIdValueMapByForNgxPdf;
+    return this.formDataIdValueMapByForNgxPdfToSend;
   }
 
   public set formData(data: { [fieldName: string]: string | number | boolean }) {
@@ -195,7 +191,7 @@ export class SignDocumentChecklistComponent implements OnInit, AfterViewInit, On
       }
     });
     this.updateValueAndValidityForm();
-    this.repaintItemsInTemplate();
+    // this.repaintItemsInTemplate();
   }
 
   @HostListener('window:resize', ['$event'])
@@ -210,10 +206,18 @@ export class SignDocumentChecklistComponent implements OnInit, AfterViewInit, On
 
   ngAfterViewInit(): void {
     this.checkWindowSize(window.innerWidth);
+    this.itemToClone = $(`#checklistItemToDrag`);
   }
 
   ngOnDestroy(): void {
-    this.removeP5s();
+    this.removeP5s(true);
+  }
+
+  public getPdfMinHeight(): string {
+    if (this.smallModal) {
+      return '75vh';
+    }
+    return 'auto';
   }
 
   public checkWindowSize(width: number): void {
@@ -339,33 +343,6 @@ export class SignDocumentChecklistComponent implements OnInit, AfterViewInit, On
     return '';
   }
 
-  public pdfZoomChange($event: any) {
-    setTimeout(() => this.configCanvas(), 200);
-  }
-
-  public refreshItemsAndPdf(): void {
-    this.repaintItemsInTemplate();
-  }
-
-  public repaintItemsInTemplate(page?: number): void {
-    this.removeP5s();
-    if (this.checklistForm?.value?.templateChecklistItems?.length > 0) {
-      this.checklistForm.value.templateChecklistItems.forEach((item: TemplateChecklistItemDTO, index: number) => {
-        if (page && item.numPage === page) {
-          this.printItemInPdfPage(
-            (this.checklistForm.get('templateChecklistItems') as UntypedFormArray).at(index) as UntypedFormGroup
-          );
-        } else if (!page) {
-          this.printItemInPdfPage(
-            (this.checklistForm.get('templateChecklistItems') as UntypedFormArray).at(index) as UntypedFormGroup
-          );
-        }
-      });
-    } else {
-      this.renderingItems = false;
-    }
-  }
-
   public pdfLoadedFn($event: any) {
     this.pdfNumPages = $event.pagesCount;
     this.pages = [...Array(this.pdfNumPages).keys()].map((x) => ++x);
@@ -379,23 +356,48 @@ export class SignDocumentChecklistComponent implements OnInit, AfterViewInit, On
     }
   }
 
-  public configCanvas($event?: any): void {
-    // console.log('config canvas', $event);
+  public pdfZoomChange($event: any): void {
+    this.removeP5s();
+  }
+
+  public pageRendered(event: { pageNumber: number }): void {
+    // console.log('page rendered', event);
+    this.configCanvas(event.pageNumber);
+  }
+
+  public repaintItemsInTemplate(page?: number): void {
+    if (this.checklistForm?.value?.templateChecklistItems?.length > 0) {
+      this.checklistForm.value.templateChecklistItems.forEach((item: TemplateChecklistItemDTO, index: number) => {
+        if (page && item.numPage === page) {
+          this.printItemInPdfPage(
+            (this.checklistForm.get('templateChecklistItems') as UntypedFormArray).at(index) as UntypedFormGroup
+          );
+        } else if (!page) {
+          this.printItemInPdfPage(
+            (this.checklistForm.get('templateChecklistItems') as UntypedFormArray).at(index) as UntypedFormGroup
+          );
+        }
+      });
+    } else {
+      this.renderingDrawingItems = false;
+    }
+  }
+
+  public configCanvas(pgNumber?: number): void {
     if (this.pdfLoaded) {
-      this.renderingItems = true;
       const arr = document.getElementById('checklistPDF')?.getElementsByClassName('page');
       if (arr) {
         Array.from(arr).forEach((page: Element) => {
           const pageNumber = page.getAttribute('data-page-number');
           const loaded = page.getAttribute('data-loaded');
-          if (loaded && $('.canvasDropZone-page' + pageNumber).length === 0) {
+          if (loaded && document.getElementsByClassName('canvasDropZone-page' + pageNumber).length === 0) {
             const canvas = page.getElementsByClassName('canvasWrapper').item(0); //.getElementsByTagName('canvas').item(0);
             canvas.classList.add('canvasDropZone-page' + pageNumber);
           }
         });
       }
     }
-    setTimeout(() => this.repaintItemsInTemplate(), 100);
+    this.repaintItemsInTemplate(pgNumber ? pgNumber : null);
   }
 
   public getChecklistItemByOrderNumber(ordNumber: number): UntypedFormGroup {
@@ -495,12 +497,11 @@ export class SignDocumentChecklistComponent implements OnInit, AfterViewInit, On
       .pipe(take(1))
       .subscribe((ok: boolean) => {
         if (ok) {
-          console.log(this.signDocumentExchange, this.checklistForm.getRawValue(), this.p5sDraws);
+          // console.log(this.signDocumentExchange, this.checklistForm.getRawValue(), this.p5sDraws);
           const itemsModified = this.checklistForm.getRawValue().templateChecklistItems;
           this.signDocumentExchange.templateChecklist.templateChecklistItems.forEach((item: TemplateChecklistItemDTO) => {
             const found = itemsModified.find((aux: TemplateChecklistItemDTO) => aux.orderNumber === item.orderNumber);
             if (found) {
-              console.log(found);
               item.itemVal = found.itemVal;
               if (item.typeItem === 'DRAWING' && this.p5sDraws[found.auxOrderNumber]) {
                 item.itemVal.fileValue.content = this.p5sDraws[found.auxOrderNumber].split(';base64,')[1];
@@ -512,8 +513,8 @@ export class SignDocumentChecklistComponent implements OnInit, AfterViewInit, On
               if (
                 item.itemVal?.fileValue?.content &&
                 item.typeItem === 'SIGN' &&
-                item.sincronizedItems.length > 1 &&
-                item.sincronizedItems.indexOf(item.orderNumber) > 0
+                item.sincronizedItems?.length > 1 &&
+                item.sincronizedItems?.indexOf(item.orderNumber) > 0
               ) {
                 item.itemVal.fileValue.content = null;
               }
@@ -574,7 +575,6 @@ export class SignDocumentChecklistComponent implements OnInit, AfterViewInit, On
   }
 
   private printItemInPdfPage(templateItemFG: UntypedFormGroup): void {
-    const itemToClone = $(`#checklistItemToDrag`);
     const pageWidthAndHeight = this.signDocumentAuxService.getPageWidthAndHeight(`${templateItemFG.get('numPage').value}`);
     const pageNumber = `${templateItemFG.get('numPage').value}`;
     const uniqueId = templateItemFG.get('auxOrderNumber').value;
@@ -592,7 +592,7 @@ export class SignDocumentChecklistComponent implements OnInit, AfterViewInit, On
         height: (pageWidthAndHeight.height * templateItemFG.get('height').value) / 100 + 'px'
       });
     } else {
-      item = itemToClone.clone();
+      item = this.itemToClone.clone();
       item.removeClass('undropped');
       item.addClass('dropped');
       item.attr('id', id);
@@ -614,24 +614,19 @@ export class SignDocumentChecklistComponent implements OnInit, AfterViewInit, On
       item.appendTo($('.canvasDropZone-page' + pageNumber));
     }
     this.printItemImageInPdf(item, templateItemFG);
-    if (templateItemFG.get('typeItem').value === 'DRAWING' && $(`#${id_resizable}`).length) {
-      setTimeout(
-        () =>
-          new p5((p: p5) =>
-            this.setDrawZone(
-              p,
-              uniqueId,
-              id,
-              id_resizable,
-              item,
-              (pageWidthAndHeight.width * templateItemFG.get('width').value) / 100,
-              (pageWidthAndHeight.height * templateItemFG.get('height').value) / 100
-            )
-          ),
-        150
+    if (templateItemFG.get('typeItem').value === 'DRAWING' && !this.p5s[uniqueId] && $(`#${id_resizable}`).length) {
+      this.p5s[uniqueId] = new p5((p: p5) =>
+        this.setDrawZone(
+          p,
+          uniqueId,
+          id,
+          id_resizable,
+          item,
+          (pageWidthAndHeight.width * templateItemFG.get('width').value) / 100,
+          (pageWidthAndHeight.height * templateItemFG.get('height').value) / 100
+        )
       );
     }
-    this.renderingItems = false;
   }
 
   private setDrawZone = (
@@ -651,9 +646,12 @@ export class SignDocumentChecklistComponent implements OnInit, AfterViewInit, On
         p.createCanvas(width, height).parent(id_resizable);
       };
       if (this.p5sDraws[auxOrderNumber]) {
+        this.renderingDrawingItems = true;
         p.loadImage(this.p5sDraws[auxOrderNumber], (newImage) => {
           p.clear(255, 255, 255, 1);
           p.image(newImage, 0, 0, p.width, p.height);
+
+          this.renderingDrawingItems = false;
         });
       }
       p.mouseDragged = (event) => {
@@ -685,7 +683,6 @@ export class SignDocumentChecklistComponent implements OnInit, AfterViewInit, On
         };
         this.p5sDraws[auxOrderNumber] = canvas.toDataURL();
       };
-      this.p5s[auxOrderNumber] = p;
     }
   };
 
@@ -768,7 +765,7 @@ export class SignDocumentChecklistComponent implements OnInit, AfterViewInit, On
           this.fileTemplateBase64.next(data.procesedFile.content);
           this.initForm();
           this.setItemListToShow();
-          this.refreshItemsAndPdf();
+          this.repaintItemsInTemplate();
         },
         error: (error) => {
           this.logger.error(error);
@@ -812,11 +809,18 @@ export class SignDocumentChecklistComponent implements OnInit, AfterViewInit, On
       });
   }
 
-  private removeP5s(): void {
+  private removeP5s(removeDraws?: boolean): void {
     Object.keys(this.p5s).forEach((k) => {
-      this.p5s[parseInt(k, 10)].remove();
+      const p5Canvas = this.p5s[parseInt(k, 10)];
+      p5Canvas.mouseDragged = (event) => {};
+      p5Canvas.mouseReleased = (event) => {};
+      p5Canvas.remove();
+      this.p5s[parseInt(k, 10)] = null;
     });
     this.p5s = [];
     $('.p5Canvas').remove();
+    if (removeDraws) {
+      this.p5sDraws = {};
+    }
   }
 }

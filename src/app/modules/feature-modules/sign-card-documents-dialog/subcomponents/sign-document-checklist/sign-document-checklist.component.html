@@ -177,6 +177,13 @@
                         <label *ngIf="itemListToShow?.length === 0">{{ labels.noData | translate }}</label>
                     </mat-accordion>
                 </div>
+
+                <div class="change-sign-wrapper" *ngIf="showChangeSign">
+                    <app-change-sign
+                        (saveEvent)="changeSignAction($event)"
+                        (closeEvent)="showChangeSign = false"
+                    ></app-change-sign>
+                </div>
             </mat-expansion-panel>
             <mat-expansion-panel
                 class="expansion-panel-pdf checklist-sign__pdf"
@@ -187,7 +194,7 @@
                     <mat-panel-title> {{ labels.pdfPreview | translate }}</mat-panel-title>
                 </mat-expansion-panel-header>
 
-                <div *ngIf="renderingItems" class="checklist-sign__pdf__spinner">
+                <div *ngIf="renderingDrawingItems" class="checklist-sign__pdf__spinner">
                     <mat-spinner matSuffix class="spinner" diameter="50"></mat-spinner>
                 </div>
                 <div class="paint-zone-controls">
@@ -218,11 +225,11 @@
                         id="checklistPDF"
                         [base64Src]="base64"
                         height="96%"
+                        [minHeight]="getPdfMinHeight()"
                         [handTool]="false"
                         [useBrowserLocale]="true"
                         [zoom]="'page-fit'"
                         [zoomLevels]="['page-fit']"
-                        [textLayer]="true"
                         [showZoomButtons]="true"
                         [showHandToolButton]="false"
                         [showPresentationModeButton]="false"
@@ -233,12 +240,14 @@
                         [showDownloadButton]="false"
                         [showOpenFileButton]="false"
                         [(page)]="page"
+                        (pageRendered)="pageRendered($event)"
                         (pdfLoaded)="pdfLoadedFn($event)"
                         (zoomChange)="pdfZoomChange($event)"
-                        (textLayerRendered)="configCanvas($event)"
+                        [textLayer]="false"
                         [(formData)]="formData"
                     >
                     </ngx-extended-pdf-viewer>
+                    <!-- (textLayerRendered)="textLayerRendered($event)" -->
                 </ng-container>
             </mat-expansion-panel>
         </mat-accordion>
@@ -250,9 +259,6 @@
     </div>
 </div>
 
-<div class="change-sign-wrapper" *ngIf="showChangeSign">
-    <app-change-sign (saveEvent)="changeSignAction($event)" (closeEvent)="showChangeSign = false"></app-change-sign>
-</div>
 <input
     type="file"
     style="display: none"

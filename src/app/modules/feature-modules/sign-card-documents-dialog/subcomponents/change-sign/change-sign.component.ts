@@ -79,6 +79,8 @@ export class ChangeSignComponent implements OnInit, OnDestroy, AfterViewInit {
 
   ngOnDestroy(): void {
     console.log('Ondestroy change sign component');
+    this.p5Sign.mouseDragged = (event) => {};
+    this.p5Sign.mouseReleased = (event) => {};
     this.p5Sign.remove();
     this.p5Sign = null;
   }
