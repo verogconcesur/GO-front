@@ -31,6 +31,7 @@ export class WorkflowColumnActionsAndLinksComponent implements OnInit {
   @Input() tab: CardColumnTabDTO = null;
   @Input() cardInstance: CardInstanceDTO;
   @Input() card: CardDTO;
+  @Input() idUser: number = null;
   public actions: WorkflowCardTabItemDTO[];
   public links: WorkflowCardTabItemDTO[];
   public shortCuts: WorkflowMoveDTO[];
@@ -130,22 +131,45 @@ export class WorkflowColumnActionsAndLinksComponent implements OnInit {
   }
 
   public signDocument(): void {
-    this.router.navigate(
+    let view = RouteConstants.WORKFLOWS_BOARD_VIEW;
+    if (this.router.url.indexOf(RouteConstants.WORKFLOWS_CALENDAR_VIEW) >= 0) {
+      view = RouteConstants.WORKFLOWS_CALENDAR_VIEW;
+    } else if (this.router.url.indexOf(RouteConstants.WORKFLOWS_TABLE_VIEW) >= 0) {
+      view = RouteConstants.WORKFLOWS_TABLE_VIEW;
+    }
+    this.router.navigateByUrl(
       [
-        {
-          outlets: {
-            cardSign: [RouteConstants.WORKFLOWS_ID_CARD, this.idCard]
-          }
-        }
-      ],
+        '',
+        RouteConstants.DASHBOARD,
+        RouteConstants.WORKFLOWS,
+        this.cardInstance.workflowId,
+        view,
+        RouteConstants.WORKFLOWS_CARD_SIGN,
+        this.cardInstance.cardInstanceWorkflow.id,
+        this.idUser ? this.idUser : 'null'
+      ].join('/'),
       {
-        relativeTo: this.route,
         state: {
-          relativeTo: JSON.stringify(this.route, replacerFunc),
           card: JSON.stringify(this.card)
         }
       }
     );
+    // this.router.navigate(
+    //   [
+    //     {
+    //       outlets: {
+    //         cardSign: [RouteConstants.WORKFLOWS_ID_CARD, this.idCard]
+    //       }
+    //     }
+    //   ],
+    //   {
+    //     relativeTo: this.route,
+    //     state: {
+    //       relativeTo: JSON.stringify(this.route, replacerFunc),
+    //       card: JSON.stringify(this.card)
+    //     }
+    //   }
+    // );
   }
 
   public btnClickShortcut(move: WorkflowMoveDTO): void {
