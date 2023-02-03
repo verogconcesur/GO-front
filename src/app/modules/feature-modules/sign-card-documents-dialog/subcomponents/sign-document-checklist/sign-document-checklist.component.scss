@@ -47,6 +47,7 @@
         &.expansion-panel-fields {
           width: 40%;
           padding: 0;
+          position: relative;
           & > .mat-expansion-panel-content {
             background-color: mat-contrast($primary, 500);
           }

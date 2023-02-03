@@ -177,6 +177,13 @@
                         <label *ngIf="itemListToShow?.length === 0">{{ labels.noData | translate }}</label>
                     </mat-accordion>
                 </div>
+
+                <div class="change-sign-wrapper" *ngIf="showChangeSign">
+                    <app-change-sign
+                        (saveEvent)="changeSignAction($event)"
+                        (closeEvent)="showChangeSign = false"
+                    ></app-change-sign>
+                </div>
             </mat-expansion-panel>
             <mat-expansion-panel
                 class="expansion-panel-pdf checklist-sign__pdf"
@@ -218,6 +225,7 @@
                         id="checklistPDF"
                         [base64Src]="base64"
                         height="96%"
+                        [minHeight]="getPdfMinHeight()"
                         [handTool]="false"
                         [useBrowserLocale]="true"
                         [zoom]="'page-fit'"
@@ -251,9 +259,6 @@
     </div>
 </div>
 
-<div class="change-sign-wrapper" *ngIf="showChangeSign">
-    <app-change-sign (saveEvent)="changeSignAction($event)" (closeEvent)="showChangeSign = false"></app-change-sign>
-</div>
 <input
     type="file"
     style="display: none"

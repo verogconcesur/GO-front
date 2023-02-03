@@ -100,8 +100,10 @@ export class SignDocumentChecklistComponent implements OnInit, AfterViewInit, On
   private formDataIdValueMapByPdf: { [fieldName: string]: string | number | boolean } = {};
   private formDataIdValueMapByForm: { [fieldName: string]: string | number | boolean } = {};
   private formDataIdValueMapByForNgxPdf: { [fieldName: string]: string | number | boolean } = {};
+  private formDataIdValueMapByForNgxPdfToSend: { [fieldName: string]: string | number | boolean } = {};
   private p5s: { [auxOrderNumber: number]: p5 } = {};
   private p5sDraws: { [auxOrderNumber: number]: string } = {};
+  private changeCounter = 0;
 
   constructor(
     private fb: UntypedFormBuilder,
@@ -131,6 +133,7 @@ export class SignDocumentChecklistComponent implements OnInit, AfterViewInit, On
             ?.textValue
             ? item.itemVal?.textValue
             : null;
+          this.changeCounter = 1;
         });
       } else if (item.typeItem === 'CHECK' && this.formDataIdValueMapByForm[item.auxOrderNumber] !== item.itemVal?.booleanValue) {
         item.sincronizedItems.forEach((auxOrderNumber) => {
@@ -145,10 +148,18 @@ export class SignDocumentChecklistComponent implements OnInit, AfterViewInit, On
             ?.booleanValue
             ? 'Yes'
             : null;
+          this.changeCounter = 1;
         });
       }
     });
-    return { ...this.formDataIdValueMapByForNgxPdf };
+    if (this.changeCounter > 0) {
+      this.changeCounter--;
+      this.formDataIdValueMapByForNgxPdfToSend = { ...this.formDataIdValueMapByForNgxPdf };
+      // return { ...this.formDataIdValueMapByForNgxPdf };
+      // return this.formDataIdValueMapByForNgxPdf;
+    }
+    // return this.formDataIdValueMapByForNgxPdf;
+    return this.formDataIdValueMapByForNgxPdfToSend;
   }
 
   public set formData(data: { [fieldName: string]: string | number | boolean }) {
@@ -180,7 +191,7 @@ export class SignDocumentChecklistComponent implements OnInit, AfterViewInit, On
       }
     });
     this.updateValueAndValidityForm();
-    this.repaintItemsInTemplate();
+    // this.repaintItemsInTemplate();
   }
 
   @HostListener('window:resize', ['$event'])
@@ -200,6 +211,13 @@ export class SignDocumentChecklistComponent implements OnInit, AfterViewInit, On
 
   ngOnDestroy(): void {
     this.removeP5s(true);
+  }
+
+  public getPdfMinHeight(): string {
+    if (this.smallModal) {
+      return '75vh';
+    }
+    return 'auto';
   }
 
   public checkWindowSize(width: number): void {
@@ -343,6 +361,7 @@ export class SignDocumentChecklistComponent implements OnInit, AfterViewInit, On
   }
 
   public pageRendered(event: { pageNumber: number }): void {
+    // console.log('page rendered', event);
     this.configCanvas(event.pageNumber);
   }
 
@@ -620,7 +639,6 @@ export class SignDocumentChecklistComponent implements OnInit, AfterViewInit, On
     height: number
   ): void => {
     if (item.length) {
-      console.log('this.setDrawZone');
       item.css({
         'z-index': 1000
       });
