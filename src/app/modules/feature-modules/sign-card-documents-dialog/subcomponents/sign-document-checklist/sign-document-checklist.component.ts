@@ -55,6 +55,7 @@ export class SignDocumentChecklistComponent implements OnInit, AfterViewInit, On
   staticImage: ElementRef;
   @ViewChild('fieldsPanel')
   fieldsPanel: MatExpansionPanel;
+  public itemToClone: JQuery<HTMLElement> = null;
   public smallModal = false;
   public signDocumentExchange: SignDocumentExchangeDTO;
   public page: number;
@@ -62,7 +63,7 @@ export class SignDocumentChecklistComponent implements OnInit, AfterViewInit, On
   public fileTemplateBase64 = new Subject<any>();
   public pdfNumPages = 0;
   public pdfLoaded = false;
-  public renderingItems = true;
+  public renderingDrawingItems = false;
   public pages: number[] = [];
   public itemListToShow: AuxChecklistItemsGroupByTypeDTO[] = [];
   public expansionPanelOpened: any = {};
@@ -194,10 +195,11 @@ export class SignDocumentChecklistComponent implements OnInit, AfterViewInit, On
 
   ngAfterViewInit(): void {
     this.checkWindowSize(window.innerWidth);
+    this.itemToClone = $(`#checklistItemToDrag`);
   }
 
   ngOnDestroy(): void {
-    this.removeP5s();
+    this.removeP5s(true);
   }
 
   public checkWindowSize(width: number): void {
@@ -324,7 +326,6 @@ export class SignDocumentChecklistComponent implements OnInit, AfterViewInit, On
   }
 
   public pdfLoadedFn($event: any) {
-    console.log('pdfLoaded', $event);
     this.pdfNumPages = $event.pagesCount;
     this.pages = [...Array(this.pdfNumPages).keys()].map((x) => ++x);
     this.pdfLoaded = true;
@@ -337,23 +338,15 @@ export class SignDocumentChecklistComponent implements OnInit, AfterViewInit, On
     }
   }
 
-  // public pdfZoomChange($event: any): void {
-  //   console.log('zoom change', $event);
-  //   this.configCanvas();
-  // }
-
-  // public textLayerRendered($event: any): void {
-  //   console.log('textLayerRendered', $event);
-  //   this.configCanvas();
-  // }
+  public pdfZoomChange($event: any): void {
+    this.removeP5s();
+  }
 
   public pageRendered(event: { pageNumber: number }): void {
-    console.log('pageRendered', event);
     this.configCanvas(event.pageNumber);
   }
 
   public repaintItemsInTemplate(page?: number): void {
-    // this.removeP5s();
     if (this.checklistForm?.value?.templateChecklistItems?.length > 0) {
       this.checklistForm.value.templateChecklistItems.forEach((item: TemplateChecklistItemDTO, index: number) => {
         if (page && item.numPage === page) {
@@ -367,15 +360,13 @@ export class SignDocumentChecklistComponent implements OnInit, AfterViewInit, On
         }
       });
     } else {
-      this.renderingItems = false;
+      this.renderingDrawingItems = false;
     }
   }
 
   public configCanvas(pgNumber?: number): void {
     if (this.pdfLoaded) {
-      this.renderingItems = true;
       const arr = document.getElementById('checklistPDF')?.getElementsByClassName('page');
-      console.log(arr);
       if (arr) {
         Array.from(arr).forEach((page: Element) => {
           const pageNumber = page.getAttribute('data-page-number');
@@ -487,12 +478,11 @@ export class SignDocumentChecklistComponent implements OnInit, AfterViewInit, On
       .pipe(take(1))
       .subscribe((ok: boolean) => {
         if (ok) {
-          console.log(this.signDocumentExchange, this.checklistForm.getRawValue(), this.p5sDraws);
+          // console.log(this.signDocumentExchange, this.checklistForm.getRawValue(), this.p5sDraws);
           const itemsModified = this.checklistForm.getRawValue().templateChecklistItems;
           this.signDocumentExchange.templateChecklist.templateChecklistItems.forEach((item: TemplateChecklistItemDTO) => {
             const found = itemsModified.find((aux: TemplateChecklistItemDTO) => aux.orderNumber === item.orderNumber);
             if (found) {
-              console.log(found);
               item.itemVal = found.itemVal;
               if (item.typeItem === 'DRAWING' && this.p5sDraws[found.auxOrderNumber]) {
                 item.itemVal.fileValue.content = this.p5sDraws[found.auxOrderNumber].split(';base64,')[1];
@@ -504,8 +494,8 @@ export class SignDocumentChecklistComponent implements OnInit, AfterViewInit, On
               if (
                 item.itemVal?.fileValue?.content &&
                 item.typeItem === 'SIGN' &&
-                item.sincronizedItems.length > 1 &&
-                item.sincronizedItems.indexOf(item.orderNumber) > 0
+                item.sincronizedItems?.length > 1 &&
+                item.sincronizedItems?.indexOf(item.orderNumber) > 0
               ) {
                 item.itemVal.fileValue.content = null;
               }
@@ -566,7 +556,6 @@ export class SignDocumentChecklistComponent implements OnInit, AfterViewInit, On
   }
 
   private printItemInPdfPage(templateItemFG: UntypedFormGroup): void {
-    const itemToClone = $(`#checklistItemToDrag`);
     const pageWidthAndHeight = this.signDocumentAuxService.getPageWidthAndHeight(`${templateItemFG.get('numPage').value}`);
     const pageNumber = `${templateItemFG.get('numPage').value}`;
     const uniqueId = templateItemFG.get('auxOrderNumber').value;
@@ -584,7 +573,7 @@ export class SignDocumentChecklistComponent implements OnInit, AfterViewInit, On
         height: (pageWidthAndHeight.height * templateItemFG.get('height').value) / 100 + 'px'
       });
     } else {
-      item = itemToClone.clone();
+      item = this.itemToClone.clone();
       item.removeClass('undropped');
       item.addClass('dropped');
       item.attr('id', id);
@@ -606,24 +595,19 @@ export class SignDocumentChecklistComponent implements OnInit, AfterViewInit, On
       item.appendTo($('.canvasDropZone-page' + pageNumber));
     }
     this.printItemImageInPdf(item, templateItemFG);
-    if (templateItemFG.get('typeItem').value === 'DRAWING' && $(`#${id_resizable}`).length) {
-      setTimeout(
-        () =>
-          new p5((p: p5) =>
-            this.setDrawZone(
-              p,
-              uniqueId,
-              id,
-              id_resizable,
-              item,
-              (pageWidthAndHeight.width * templateItemFG.get('width').value) / 100,
-              (pageWidthAndHeight.height * templateItemFG.get('height').value) / 100
-            )
-          ),
-        150
+    if (templateItemFG.get('typeItem').value === 'DRAWING' && !this.p5s[uniqueId] && $(`#${id_resizable}`).length) {
+      this.p5s[uniqueId] = new p5((p: p5) =>
+        this.setDrawZone(
+          p,
+          uniqueId,
+          id,
+          id_resizable,
+          item,
+          (pageWidthAndHeight.width * templateItemFG.get('width').value) / 100,
+          (pageWidthAndHeight.height * templateItemFG.get('height').value) / 100
+        )
       );
     }
-    this.renderingItems = false;
   }
 
   private setDrawZone = (
@@ -636,6 +620,7 @@ export class SignDocumentChecklistComponent implements OnInit, AfterViewInit, On
     height: number
   ): void => {
     if (item.length) {
+      console.log('this.setDrawZone');
       item.css({
         'z-index': 1000
       });
@@ -643,9 +628,12 @@ export class SignDocumentChecklistComponent implements OnInit, AfterViewInit, On
         p.createCanvas(width, height).parent(id_resizable);
       };
       if (this.p5sDraws[auxOrderNumber]) {
+        this.renderingDrawingItems = true;
         p.loadImage(this.p5sDraws[auxOrderNumber], (newImage) => {
           p.clear(255, 255, 255, 1);
           p.image(newImage, 0, 0, p.width, p.height);
+
+          this.renderingDrawingItems = false;
         });
       }
       p.mouseDragged = (event) => {
@@ -677,7 +665,6 @@ export class SignDocumentChecklistComponent implements OnInit, AfterViewInit, On
         };
         this.p5sDraws[auxOrderNumber] = canvas.toDataURL();
       };
-      this.p5s[auxOrderNumber] = p;
     }
   };
 
@@ -804,12 +791,18 @@ export class SignDocumentChecklistComponent implements OnInit, AfterViewInit, On
       });
   }
 
-  private removeP5s(): void {
+  private removeP5s(removeDraws?: boolean): void {
     Object.keys(this.p5s).forEach((k) => {
-      this.p5s[parseInt(k, 10)].remove();
+      const p5Canvas = this.p5s[parseInt(k, 10)];
+      p5Canvas.mouseDragged = (event) => {};
+      p5Canvas.mouseReleased = (event) => {};
+      p5Canvas.remove();
+      this.p5s[parseInt(k, 10)] = null;
     });
     this.p5s = [];
-    this.p5sDraws = {};
     $('.p5Canvas').remove();
+    if (removeDraws) {
+      this.p5sDraws = {};
+    }
   }
 }

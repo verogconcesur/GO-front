@@ -187,7 +187,7 @@
                     <mat-panel-title> {{ labels.pdfPreview | translate }}</mat-panel-title>
                 </mat-expansion-panel-header>
 
-                <div *ngIf="renderingItems" class="checklist-sign__pdf__spinner">
+                <div *ngIf="renderingDrawingItems" class="checklist-sign__pdf__spinner">
                     <mat-spinner matSuffix class="spinner" diameter="50"></mat-spinner>
                 </div>
                 <div class="paint-zone-controls">
@@ -234,12 +234,11 @@
                         [(page)]="page"
                         (pageRendered)="pageRendered($event)"
                         (pdfLoaded)="pdfLoadedFn($event)"
+                        (zoomChange)="pdfZoomChange($event)"
                         [textLayer]="false"
                         [(formData)]="formData"
                     >
                     </ngx-extended-pdf-viewer>
-
-                    <!-- (zoomChange)="pdfZoomChange($event)" -->
                     <!-- (textLayerRendered)="textLayerRendered($event)" -->
                 </ng-container>
             </mat-expansion-panel>

@@ -17,6 +17,7 @@ export class WorkflowCardColumnComponent implements OnInit {
   @Input() column: CardColumnDTO;
   @Input() showTabs = true;
   @Input() containerClass: 'column1' | 'column2' | 'messages' | 'actions' | '' = '';
+  @Input() idUser: number = null;
 
   public showLoading = false;
   public tabToShow: CardColumnTabDTO = null;
