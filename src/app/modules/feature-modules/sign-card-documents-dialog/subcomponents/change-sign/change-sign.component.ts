@@ -34,7 +34,7 @@ export class ChangeSignComponent implements OnInit, OnDestroy, AfterViewInit {
   public configDrawingZone = (p: p5, id: string): void => {
     console.log('configDrawingZone => changeSignComponent');
     p.setup = () => {
-      p.createCanvas(500, 250).parent(id);
+      p.createCanvas(400, 250).parent(id);
     };
     p.mouseDragged = (event) => {
       let type = 'pencil';
