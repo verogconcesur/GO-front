@@ -100,7 +100,7 @@ export class MyProfileComponent extends ComponentToExtendForCustomDialog impleme
   public getSignSrc(): string {
     const profile = this.profileForm.getRawValue();
     if (profile.signature && profile.signatureContentType) {
-      return `url("data:${profile.signatureContentType};base64,${profile.signature}")`;
+      return `data:${profile.signatureContentType};base64,${profile.signature}`;
     }
     return null;
   }
