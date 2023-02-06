@@ -1,37 +1,42 @@
+<<<<<<< HEAD
 /* eslint-disable @typescript-eslint/member-ordering */
-/* eslint-disable max-len */
+=======
+>>>>>>> 3435b6e92e217588c84f65f0aebc17d32e8a53c3
 import { Component, OnInit } from '@angular/core';
 import { PageEvent } from '@angular/material/paginator';
+import { Router } from '@angular/router';
 import { marker } from '@biesbjerg/ngx-translate-extract-marker';
 import PaginationResponseI from '@data/interfaces/pagination-response';
-import VehicleEntityDTO from '@data/models/entities/vehicle-entity-dto';
-import { EntitiesService } from '@data/services/entities.service';
+import CustomerEntityDTO from '@data/models/entities/customer-entity-dto';
 import { CustomDialogService } from '@jenga/custom-dialog';
-import {
-  CreateEditVehicleComponentModalEnum,
-  ModalVehicleComponent
-} from '@modules/feature-modules/modal-vehicle/modal-vehicle.component';
 import { TranslateService } from '@ngx-translate/core';
 import { GlobalMessageService } from '@shared/services/global-message.service';
 import { ProgressSpinnerDialogService } from '@shared/services/progress-spinner-dialog.service';
 import { NGXLogger } from 'ngx-logger';
+<<<<<<< HEAD
 import { Observable, of } from 'rxjs';
 import { finalize, map, take } from 'rxjs/operators';
+=======
+import { finalize, take } from 'rxjs/operators';
+>>>>>>> 3435b6e92e217588c84f65f0aebc17d32e8a53c3
+import { EntitiesService } from '../../../../../data/services/entities.service';
+import {
+  CreateEditCustomerComponentModalEnum,
+  ModalCustomerComponent
+} from '../../../../feature-modules/modal-customer/modal-customer.component';
 
 @Component({
-  selector: 'app-vehicles-list',
-  templateUrl: './vehicles-list.component.html',
-  styleUrls: ['./vehicles-list.component.scss']
+  selector: 'app-clients-list',
+  templateUrl: './clients-list.component.html',
+  styleUrls: ['./clients-list.component.scss']
 })
-export class VehiclesListComponent implements OnInit {
+export class ClientsListComponent implements OnInit {
   public labels = {
-    licensePlate: marker('entities.vehicles.licensePlate'),
-    make: marker('entities.vehicles.make'),
-    chasis: marker('entities.vehicles.chasis'),
-    model: marker('entities.vehicles.model'),
-    vehicleId: marker('entities.vehicles.vehicleId'),
-    description: marker('entities.vehicles.description'),
-    vin: marker('entities.vehicles.vin'),
+    fullName: marker('users.fullName'),
+    socialSecurityId: marker('entities.customers.socialSecurityId'),
+    reference: marker('entities.customers.reference'),
+    phone: marker('entities.customers.phone'),
+    email: marker('entities.customers.email'),
     actions: marker('common.actions'),
     noDataToShow: marker('errors.noDataToShow')
   };
@@ -42,31 +47,32 @@ export class VehiclesListComponent implements OnInit {
     page: 0,
     ariaLabel: 'Select page'
   };
-
-  public displayedColumns = ['licensePlate', 'make', 'vin', 'description', 'model', 'vehicleId', 'chasis', 'actions'];
-  public dataSource: VehicleEntityDTO[] = [];
-  private filterValue: VehicleEntityDTO;
+  public displayedColumns = ['fullName', 'socialSecurityId', 'reference', 'phone', 'email', 'actions'];
+  public dataSource: CustomerEntityDTO[] = [];
+  private filterValue: CustomerEntityDTO;
   private textSearchValue = '';
+
   constructor(
     private entitiesService: EntitiesService,
     private customDialogService: CustomDialogService,
     private logger: NGXLogger,
     private globalMessageService: GlobalMessageService,
     private translateService: TranslateService,
-    private spinnerService: ProgressSpinnerDialogService
+    private spinnerService: ProgressSpinnerDialogService,
+    private router: Router
   ) {}
 
   ngOnInit(): void {
-    this.getVehicles();
+    this.getCustomer();
   }
 
-  public openCreateEditVehicleDialog = (vehicle?: VehicleEntityDTO): void => {
+  public openCreateEditClientDialog = (client?: CustomerEntityDTO): void => {
     this.customDialogService
       .open({
-        id: CreateEditVehicleComponentModalEnum.ID,
-        panelClass: CreateEditVehicleComponentModalEnum.PANEL_CLASS,
-        component: ModalVehicleComponent,
-        extendedComponentData: vehicle ? vehicle : null,
+        id: CreateEditCustomerComponentModalEnum.ID,
+        panelClass: CreateEditCustomerComponentModalEnum.PANEL_CLASS,
+        component: ModalCustomerComponent,
+        extendedComponentData: client ? client : null,
         disableClose: true,
         width: '900px'
       })
@@ -77,12 +83,12 @@ export class VehiclesListComponent implements OnInit {
             message: this.translateService.instant(marker('common.successOperation')),
             actionText: this.translateService.instant(marker('common.close'))
           });
-          this.getVehicles();
+          this.getCustomer();
         }
       });
   };
 
-  public getVehicles = (pageEvent?: PageEvent): void => {
+  public getCustomer = (pageEvent?: PageEvent): void => {
     const spinner = this.spinnerService.show();
     if (pageEvent) {
       this.paginationConfig.page = pageEvent.pageIndex;
@@ -91,7 +97,7 @@ export class VehiclesListComponent implements OnInit {
       this.paginationConfig.page = 0;
     }
     this.entitiesService
-      .searchVehiclesPag(
+      .searchCustomerPag(
         {
           ...this.transformFilterValue(this.filterValue),
           email: '',
@@ -104,7 +110,7 @@ export class VehiclesListComponent implements OnInit {
       )
       .pipe(finalize(() => this.spinnerService.hide(spinner)))
       .subscribe(
-        (response: PaginationResponseI<VehicleEntityDTO>) => {
+        (response: PaginationResponseI<CustomerEntityDTO>) => {
           this.paginationConfig.length = response.totalElements;
           this.dataSource = response.content;
         },
@@ -119,34 +125,35 @@ export class VehiclesListComponent implements OnInit {
   };
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  private transformFilterValue = (filterValue: VehicleEntityDTO): any => ({
-    chasis: filterValue?.chasis,
-    vehicleId: filterValue?.vehicleId,
-    model: filterValue?.model,
-    make: filterValue?.make,
-    description: filterValue?.description,
-    id: filterValue?.id,
-    licensePlate: filterValue?.licensePlate,
+  private transformFilterValue = (filterValue: CustomerEntityDTO): any => ({
+    fullname: filterValue?.fullName,
+    email: filterValue?.email,
+    phone: filterValue?.phone,
+    socialSecurityId: filterValue?.socialSecurityId,
     reference: filterValue?.reference,
-    vin: filterValue?.vin
+    name: filterValue?.name,
+    firstName: filterValue?.firstName,
+    secondName: filterValue?.secondName,
+    id: filterValue?.id
   });
+<<<<<<< HEAD
 
-  public showFilterOptionSelected = (opt?: VehicleEntityDTO | string): void => {
+  public showFilterOptionSelected = (opt?: CustomerEntityDTO | string): void => {
     if (opt && typeof opt !== 'string') {
-      this.textSearchValue = opt.licensePlate.toLowerCase();
+      this.textSearchValue = opt.name.toLowerCase();
     } else {
       opt = opt ? opt : '';
       this.textSearchValue = opt.toString().toLowerCase();
     }
-    this.getVehicles();
+    this.getCustomer();
   };
 
   //Invoked on search input
-  public getFilteredData = (text: string): Observable<{ content: VehicleEntityDTO[] }> => {
+  public getFilteredData = (text: string): Observable<{ content: CustomerEntityDTO[] }> => {
     this.textSearchValue = text;
     if (text.length >= 3) {
       return this.entitiesService
-        .searchVehiclesPag(
+        .searchCustomerPag(
           {
             search: this.textSearchValue
           },
@@ -157,7 +164,7 @@ export class VehiclesListComponent implements OnInit {
         )
         .pipe(
           take(1),
-          map((response: PaginationResponseI<VehicleEntityDTO>) => ({
+          map((response: PaginationResponseI<CustomerEntityDTO>) => ({
             content: response.content,
             optionLabelFn: this.optionLabelFn
           }))
@@ -169,12 +176,15 @@ export class VehiclesListComponent implements OnInit {
       });
     }
   };
-  public optionLabelFn = (option: VehicleEntityDTO): string => {
+
+  public optionLabelFn = (option: CustomerEntityDTO): string => {
     if (option) {
-      let licensePlate = '';
-      licensePlate += option.licensePlate ? option.licensePlate : '';
-      return licensePlate;
+      let fullName = '';
+      fullName += option.fullName ? option.fullName : '';
+      return fullName;
     }
     return '';
   };
+=======
+>>>>>>> 3435b6e92e217588c84f65f0aebc17d32e8a53c3
 }

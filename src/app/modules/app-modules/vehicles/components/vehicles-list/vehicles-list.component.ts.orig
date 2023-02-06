@@ -1,4 +1,7 @@
+<<<<<<< HEAD
 /* eslint-disable @typescript-eslint/member-ordering */
+=======
+>>>>>>> 3435b6e92e217588c84f65f0aebc17d32e8a53c3
 /* eslint-disable max-len */
 import { Component, OnInit } from '@angular/core';
 import { PageEvent } from '@angular/material/paginator';
@@ -15,8 +18,12 @@ import { TranslateService } from '@ngx-translate/core';
 import { GlobalMessageService } from '@shared/services/global-message.service';
 import { ProgressSpinnerDialogService } from '@shared/services/progress-spinner-dialog.service';
 import { NGXLogger } from 'ngx-logger';
+<<<<<<< HEAD
 import { Observable, of } from 'rxjs';
 import { finalize, map, take } from 'rxjs/operators';
+=======
+import { finalize, take } from 'rxjs/operators';
+>>>>>>> 3435b6e92e217588c84f65f0aebc17d32e8a53c3
 
 @Component({
   selector: 'app-vehicles-list',
@@ -130,6 +137,7 @@ export class VehiclesListComponent implements OnInit {
     reference: filterValue?.reference,
     vin: filterValue?.vin
   });
+<<<<<<< HEAD
 
   public showFilterOptionSelected = (opt?: VehicleEntityDTO | string): void => {
     if (opt && typeof opt !== 'string') {
@@ -177,4 +185,6 @@ export class VehiclesListComponent implements OnInit {
     }
     return '';
   };
+=======
+>>>>>>> 3435b6e92e217588c84f65f0aebc17d32e8a53c3
 }

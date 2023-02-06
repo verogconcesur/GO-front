@@ -1,7 +1,10 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { marker } from '@biesbjerg/ngx-translate-extract-marker';
+<<<<<<< HEAD
 import CustomerEntityDTO from '@data/models/entities/customer-entity-dto';
 import { Observable } from 'rxjs';
+=======
+>>>>>>> 3435b6e92e217588c84f65f0aebc17d32e8a53c3
 import { ClientsListComponent } from '../components/clients-list/clients-list.component';
 
 @Component({
@@ -24,6 +27,7 @@ export class ClientsComponent implements OnInit {
   buttonCreateAction(): void {
     this.clientsListComponent.openCreateEditClientDialog();
   }
+<<<<<<< HEAD
   public getFilteredData = (text: string): Observable<{ content: CustomerEntityDTO[] } | null> =>
     this.clientsListComponent.getFilteredData(text);
 
@@ -31,4 +35,6 @@ export class ClientsComponent implements OnInit {
   public buttonSearchAction(option: any): void {
     return this.clientsListComponent.showFilterOptionSelected(option);
   }
+=======
+>>>>>>> 3435b6e92e217588c84f65f0aebc17d32e8a53c3
 }
