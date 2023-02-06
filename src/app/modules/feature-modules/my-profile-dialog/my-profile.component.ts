@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { marker } from '@biesbjerg/ngx-translate-extract-marker';
-import { ComponentToExtendForCustomDialog, CustomDialogFooterConfigI } from '@jenga/custom-dialog';
+import { ComponentToExtendForCustomDialog, CustomDialogFooterConfigI, CustomDialogService } from '@jenga/custom-dialog';
 import { Observable, of, throwError } from 'rxjs';
 import { UntypedFormGroup, UntypedFormBuilder, Validators } from '@angular/forms';
 import { ProgressSpinnerDialogService } from '@shared/services/progress-spinner-dialog.service';
@@ -12,6 +12,7 @@ import { passwordPattern } from '@app/constants/patterns.constants';
 import { UserService } from '@data/services/user.service';
 import { GlobalMessageService } from '@shared/services/global-message.service';
 import { catchError, finalize, map } from 'rxjs/operators';
+import { InsertSignComponentModalEnum, ModalInsertSignComponent } from '../modal-insert-sign/modal-insert-sign.component';
 
 export const enum MyProfileComponentModalEnum {
   ID = 'my-profile-dialog-id',
@@ -61,6 +62,7 @@ export class MyProfileComponent extends ComponentToExtendForCustomDialog impleme
     private fb: UntypedFormBuilder,
     private spinnerService: ProgressSpinnerDialogService,
     private confirmDialogService: ConfirmDialogService,
+    private customDialogService: CustomDialogService,
     private translateService: TranslateService,
     private userService: UserService,
     private globalMessageService: GlobalMessageService
@@ -76,6 +78,31 @@ export class MyProfileComponent extends ComponentToExtendForCustomDialog impleme
   ngOnInit() {
     this.userDetails = this.extendedComponentData;
     this.initializeForm();
+  }
+
+  public editSign(): void {
+    this.customDialogService
+      .open({
+        component: ModalInsertSignComponent,
+        id: InsertSignComponentModalEnum.ID,
+        panelClass: InsertSignComponentModalEnum.PANEL_CLASS,
+        disableClose: true,
+        width: '500px'
+      })
+      .subscribe((data) => {
+        this.profileForm.get('signature').setValue(data.split('base64,')[1]);
+        this.profileForm.get('signatureContentType').setValue(data.split(';base64,')[0].split('data:')[1]);
+        this.profileForm.markAsDirty();
+        this.profileForm.markAsTouched();
+      });
+  }
+
+  public getSignSrc(): string {
+    const profile = this.profileForm.getRawValue();
+    if (profile.signature && profile.signatureContentType) {
+      return `url("data:${profile.signatureContentType};base64,${profile.signature}")`;
+    }
+    return null;
   }
 
   public confirmCloseCustomDialog(): Observable<boolean> {
@@ -101,7 +128,9 @@ export class MyProfileComponent extends ComponentToExtendForCustomDialog impleme
       email: formValue.email,
       currentPass: null,
       newPass: null,
-      newPassConfirmation: null
+      newPassConfirmation: null,
+      signature: formValue.signature,
+      signatureContentType: formValue.signatureContentType
     };
     if (
       this.showPasswordFields &&
@@ -233,8 +262,9 @@ export class MyProfileComponent extends ComponentToExtendForCustomDialog impleme
                 : '',
             disabled: true
           }
-        ]
-        // firma: [null, Validators.required]
+        ],
+        signature: [null],
+        signatureContentType: [null]
       },
       {
         validators: ConfirmPasswordValidator.mustMatch('newPassword', 'newPasswordConfirmation')

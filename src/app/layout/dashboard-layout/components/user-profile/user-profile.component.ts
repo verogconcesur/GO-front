@@ -97,6 +97,13 @@ export class UserProfileComponent implements OnInit {
       });
   }
 
+  public getSignBase64Image(): string {
+    if (this.userDetails?.signature && this.userDetails?.signatureContentType) {
+      return `url("data:${this.userDetails.signatureContentType} ;base64,${this.userDetails.signature}")`;
+    }
+    return '';
+  }
+
   public doLogout(): void {
     this.authenticationService.logout();
     this.router.navigate([RouteConstants.LOGIN]);
