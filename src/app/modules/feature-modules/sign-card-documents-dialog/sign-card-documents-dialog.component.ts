@@ -116,25 +116,24 @@ export class SignCardDocumentsDialogComponent implements OnInit {
   public closeDialog(autoExit?: boolean): void {
     if (autoExit) {
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      const state: any = this.location.getState();
-      if (state?.navigationId !== 1) {
-        this.location.back();
-      } else {
-        this.router.navigateByUrl(
-          `${this.router.url.split(RouteConstants.WORKFLOWS_CARD_SIGN + '/')[0]}(card:wcId/${this.wCardId}/wuId/${
-            this.wCardUserId
-          })`
-        );
-      }
-      // if (this.relativeTo) {
-      //   this.router.navigate([{ outlets: { card: null } }], {
-      //     relativeTo: this.relativeTo
-      //   });
+      // const state: any = this.location.getState();
+      // if (state?.navigationId !== 1) {
+      //   this.location.back();
       // } else {
-      //   const currentUrl = window.location.hash.split('#/').join('/').split(`/${RouteConstants.WORKFLOWS_CARD_SIGN}`)[0];
-      //   console.log(currentUrl);
-      //   this.router.navigateByUrl(currentUrl);
+      //   this.router.navigateByUrl(
+      //     `${this.router.url.split(RouteConstants.WORKFLOWS_CARD_SIGN + '/')[0]}(card:wcId/${this.wCardId}/wuId/${
+      //       this.wCardUserId
+      //     })`
+      //   );
       // }
+      if (this.relativeTo) {
+        this.router.navigate([{ outlets: { card: null } }], {
+          relativeTo: this.relativeTo
+        });
+      } else {
+        const currentUrl = window.location.hash.split('#/').join('/').split('/(cardSign:')[0] + ')';
+        this.router.navigateByUrl(currentUrl);
+      }
     } else {
       this.confirmDialogService
         .open({
@@ -147,24 +146,24 @@ export class SignCardDocumentsDialogComponent implements OnInit {
         .subscribe((ok: boolean) => {
           if (ok) {
             // eslint-disable-next-line @typescript-eslint/no-explicit-any
-            const state: any = this.location.getState();
-            if (state?.navigationId !== 1) {
-              this.location.back();
-            } else {
-              this.router.navigateByUrl(
-                `${this.router.url.split(RouteConstants.WORKFLOWS_CARD_SIGN + '/')[0]}(card:wcId/${this.wCardId}/wuId/${
-                  this.wCardUserId
-                })`
-              );
-            }
-            // if (this.relativeTo) {
-            //   this.router.navigate([{ outlets: { card: null } }], {
-            //     relativeTo: this.relativeTo
-            //   });
+            // const state: any = this.location.getState();
+            // if (state?.navigationId !== 1) {
+            //   this.location.back();
             // } else {
-            //   const currentUrl = window.location.hash.split('#/').join('/').split(`/${RouteConstants.WORKFLOWS_CARD_SIGN}`)[0];
-            //   this.router.navigateByUrl(currentUrl);
+            //   this.router.navigateByUrl(
+            //     `${this.router.url.split(RouteConstants.WORKFLOWS_CARD_SIGN + '/')[0]}(card:wcId/${this.wCardId}/wuId/${
+            //       this.wCardUserId
+            //     })`
+            //   );
             // }
+            if (this.relativeTo) {
+              this.router.navigate([{ outlets: { card: null } }], {
+                relativeTo: this.relativeTo
+              });
+            } else {
+              const currentUrl = window.location.hash.split('#/').join('/').split('/(cardSign:')[0] + ')';
+              this.router.navigateByUrl(currentUrl);
+            }
           }
         });
     }
