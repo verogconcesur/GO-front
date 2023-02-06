@@ -22,6 +22,16 @@ const routes: Routes = [
         loadChildren: () => import('./modules/app-modules/workflow/workflow.module').then((m) => m.WorkflowModule)
       },
       {
+        path: RouteConstants.CUSTOMERS,
+        canActivate: [AuthGuardService],
+        loadChildren: () => import('./modules/app-modules/clients/clients/clients.module').then((m) => m.ClientsModule)
+      },
+      {
+        path: RouteConstants.VEHICLES,
+        canActivate: [AuthGuardService],
+        loadChildren: () => import('./modules/app-modules/vehicles/vehicles/vehicles.module').then((m) => m.VehiclesModule)
+      },
+      {
         path: RouteConstants.EMPTY,
         canActivate: [AuthGuardService],
         redirectTo: RouteConstants.WORKFLOWS

@@ -32,7 +32,7 @@ const routes: Routes = [
           import('./submodules/workflow-table-view/workflow-table-view.module').then((m) => m.WorkflowTableViewModule)
       },
       {
-        path: `${RouteConstants.WORKFLOW_ID}/${RouteConstants.WORKFLOWS_BOARD_VIEW}/${RouteConstants.WORKFLOWS_CARD_SIGN}/${RouteConstants.ID_CARD}`,
+        path: `${RouteConstants.WORKFLOW_ID}/${RouteConstants.WORKFLOWS_BOARD_VIEW}/${RouteConstants.WORKFLOWS_CARD_SIGN}/${RouteConstants.ID_CARD}/${RouteConstants.ID_USER}`,
         canActivate: [AuthGuardService],
         loadChildren: () =>
           import('../../feature-modules/sign-card-documents-dialog/sign-card-documents-dialog.module').then(
@@ -47,7 +47,7 @@ const routes: Routes = [
           import('./submodules/workflow-board-view/workflow-board-view.module').then((m) => m.WorkflowBoardViewModule)
       },
       {
-        path: `${RouteConstants.WORKFLOW_ID}/${RouteConstants.WORKFLOWS_CALENDAR_VIEW}/${RouteConstants.WORKFLOWS_CARD_SIGN}/${RouteConstants.ID_CARD}`,
+        path: `${RouteConstants.WORKFLOW_ID}/${RouteConstants.WORKFLOWS_CALENDAR_VIEW}/${RouteConstants.WORKFLOWS_CARD_SIGN}/${RouteConstants.ID_CARD}/${RouteConstants.ID_USER}`,
         canActivate: [AuthGuardService],
         loadChildren: () =>
           import('../../feature-modules/sign-card-documents-dialog/sign-card-documents-dialog.module').then(
@@ -62,7 +62,7 @@ const routes: Routes = [
           import('./submodules/workflow-calendar-view/workflow-calendar-view.module').then((m) => m.WorkflowCalendarViewModule)
       },
       {
-        path: `${RouteConstants.WORKFLOW_ID}/${RouteConstants.WORKFLOWS_TABLE_VIEW}/${RouteConstants.WORKFLOWS_CARD_SIGN}/${RouteConstants.ID_CARD}`,
+        path: `${RouteConstants.WORKFLOW_ID}/${RouteConstants.WORKFLOWS_TABLE_VIEW}/${RouteConstants.WORKFLOWS_CARD_SIGN}/${RouteConstants.ID_CARD}/${RouteConstants.ID_USER}`,
         canActivate: [AuthGuardService],
         loadChildren: () =>
           import('../../feature-modules/sign-card-documents-dialog/sign-card-documents-dialog.module').then(

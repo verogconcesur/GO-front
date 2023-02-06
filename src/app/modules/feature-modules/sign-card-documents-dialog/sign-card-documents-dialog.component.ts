@@ -8,6 +8,7 @@ import { marker } from '@biesbjerg/ngx-translate-extract-marker';
 import { take } from 'rxjs/operators';
 import TemplatesChecklistsDTO, { SignDocumentExchangeDTO } from '@data/models/templates/templates-checklists-dto';
 import { AttachmentDTO } from '@data/models/cards/card-attachments-dto';
+import { RouteConstants } from '@app/constants/route.constants';
 
 @Component({
   selector: 'app-sign-card-documents-dialog',
@@ -17,6 +18,7 @@ import { AttachmentDTO } from '@data/models/cards/card-attachments-dto';
 export class SignCardDocumentsDialogComponent implements OnInit {
   public stepIndex = 0;
   public wCardId: number;
+  public wCardUserId: number;
   public template: TemplatesChecklistsDTO;
   public pdf: SignDocumentExchangeDTO;
   public pdfName: string;
@@ -43,6 +45,7 @@ export class SignCardDocumentsDialogComponent implements OnInit {
     }
     if (this.route?.snapshot?.params?.idCard) {
       this.wCardId = parseInt(this.route?.snapshot?.params?.idCard, 10);
+      this.wCardUserId = parseInt(this.route?.snapshot?.params?.idUser, 10);
     }
   }
 
@@ -112,6 +115,17 @@ export class SignCardDocumentsDialogComponent implements OnInit {
 
   public closeDialog(autoExit?: boolean): void {
     if (autoExit) {
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      // const state: any = this.location.getState();
+      // if (state?.navigationId !== 1) {
+      //   this.location.back();
+      // } else {
+      //   this.router.navigateByUrl(
+      //     `${this.router.url.split(RouteConstants.WORKFLOWS_CARD_SIGN + '/')[0]}(card:wcId/${this.wCardId}/wuId/${
+      //       this.wCardUserId
+      //     })`
+      //   );
+      // }
       if (this.relativeTo) {
         this.router.navigate([{ outlets: { card: null } }], {
           relativeTo: this.relativeTo
@@ -131,6 +145,17 @@ export class SignCardDocumentsDialogComponent implements OnInit {
         .pipe(take(1))
         .subscribe((ok: boolean) => {
           if (ok) {
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
+            // const state: any = this.location.getState();
+            // if (state?.navigationId !== 1) {
+            //   this.location.back();
+            // } else {
+            //   this.router.navigateByUrl(
+            //     `${this.router.url.split(RouteConstants.WORKFLOWS_CARD_SIGN + '/')[0]}(card:wcId/${this.wCardId}/wuId/${
+            //       this.wCardUserId
+            //     })`
+            //   );
+            // }
             if (this.relativeTo) {
               this.router.navigate([{ outlets: { card: null } }], {
                 relativeTo: this.relativeTo

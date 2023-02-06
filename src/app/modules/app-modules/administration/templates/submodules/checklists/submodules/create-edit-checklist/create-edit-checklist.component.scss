@@ -9,6 +9,12 @@
   padding: 10px 5px;
   &__column {
     margin: 0 5px;
+    &__title {
+      text-overflow: ellipsis;
+      overflow-x: hidden;
+      overflow-y: hidden;
+      white-space: nowrap;
+    }
   }
   &__config {
     width: calc(42% - 110px);

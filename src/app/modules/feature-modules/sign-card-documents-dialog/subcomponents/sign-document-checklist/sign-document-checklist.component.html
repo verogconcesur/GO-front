@@ -24,11 +24,10 @@
                                 <mat-panel-title>
                                     {{ groupByType.typeLabel }}
                                 </mat-panel-title>
-                                <mat-panel-description fxLayoutAlign="space-between center">
-                                    <div fxLayout="column" fxLayoutAlign="flex-start center">
-                                        <!-- <label> {{ labels.pages | translate }}: {{ groupByType.numPages.join(",") }} </label> -->
-                                        <label> Id's: {{ groupByType.orderNumbers.join(",") }} </label>
-                                    </div>
+                                <mat-panel-description fxLayoutAlign="flex-end center">
+                                    <!-- <div fxLayout="column" fxLayoutAlign="flex-start center">
+                                        <label> Id's: {{ groupByType.orderNumbers.join(", ") }} </label>
+                                    </div> -->
                                     <!-- Show in page -->
                                     <div class="smaller-mat-form-fields">
                                         {{ labels.showInPage | translate }}:
@@ -51,7 +50,7 @@
                                     [expanded]="expansionPanelOpened['sync-' + syncGroup.sincronizedItems.join('-')]"
                                 >
                                     <mat-expansion-panel-header>
-                                        <mat-panel-title fxLayoutAlign="flex-start center">
+                                        <mat-panel-title fxLayoutAlign="flex-start center" class="panel-title-clickable-ids">
                                             <div
                                                 class="checklistItemToDrag__orderNumber"
                                                 [ngClass]="{ selected: syncGroup.selectedItem === ordN }"
@@ -65,7 +64,7 @@
                                                 {{ ordN }}
                                             </div>
                                         </mat-panel-title>
-                                        <mat-panel-description fxLayoutAlign="flex-start center">
+                                        <mat-panel-description fxLayoutAlign="flex-end center">
                                             <label> {{ getSyncGroupLabel(syncGroup) }} </label>
                                         </mat-panel-description>
                                     </mat-expansion-panel-header>
@@ -128,7 +127,11 @@
                                                 >
                                                     <label>{{ labels.changeSign | translate }}</label>
                                                 </button>
-                                                <div class="image-input-preview" fxLayoutAlign="center center">
+                                                <div
+                                                    class="image-input-preview"
+                                                    fxLayoutAlign="center center"
+                                                    (click)="changeSign(syncGroup.selectedItem)"
+                                                >
                                                     <img [src]="getImagePreviewBase64(syncGroup.selectedItem)" />
                                                 </div>
                                             </div>
@@ -177,6 +180,13 @@
                         <label *ngIf="itemListToShow?.length === 0">{{ labels.noData | translate }}</label>
                     </mat-accordion>
                 </div>
+
+                <div class="change-sign-wrapper" *ngIf="showChangeSign">
+                    <app-change-sign
+                        (saveEvent)="changeSignAction($event)"
+                        (closeEvent)="showChangeSign = false"
+                    ></app-change-sign>
+                </div>
             </mat-expansion-panel>
             <mat-expansion-panel
                 class="expansion-panel-pdf checklist-sign__pdf"
@@ -187,7 +197,7 @@
                     <mat-panel-title> {{ labels.pdfPreview | translate }}</mat-panel-title>
                 </mat-expansion-panel-header>
 
-                <div *ngIf="renderingItems" class="checklist-sign__pdf__spinner">
+                <div *ngIf="renderingDrawingItems" class="checklist-sign__pdf__spinner">
                     <mat-spinner matSuffix class="spinner" diameter="50"></mat-spinner>
                 </div>
                 <div class="paint-zone-controls">
@@ -218,11 +228,11 @@
                         id="checklistPDF"
                         [base64Src]="base64"
                         height="96%"
+                        [minHeight]="getPdfMinHeight()"
                         [handTool]="false"
                         [useBrowserLocale]="true"
                         [zoom]="'page-fit'"
                         [zoomLevels]="['page-fit']"
-                        [textLayer]="true"
                         [showZoomButtons]="true"
                         [showHandToolButton]="false"
                         [showPresentationModeButton]="false"
@@ -233,12 +243,14 @@
                         [showDownloadButton]="false"
                         [showOpenFileButton]="false"
                         [(page)]="page"
+                        (pageRendered)="pageRendered($event)"
                         (pdfLoaded)="pdfLoadedFn($event)"
                         (zoomChange)="pdfZoomChange($event)"
-                        (textLayerRendered)="configCanvas($event)"
+                        [textLayer]="false"
                         [(formData)]="formData"
                     >
                     </ngx-extended-pdf-viewer>
+                    <!-- (textLayerRendered)="textLayerRendered($event)" -->
                 </ng-container>
             </mat-expansion-panel>
         </mat-accordion>
@@ -250,9 +262,6 @@
     </div>
 </div>
 
-<div class="change-sign-wrapper" *ngIf="showChangeSign">
-    <app-change-sign (saveEvent)="changeSignAction($event)" (closeEvent)="showChangeSign = false"></app-change-sign>
-</div>
 <input
     type="file"
     style="display: none"
