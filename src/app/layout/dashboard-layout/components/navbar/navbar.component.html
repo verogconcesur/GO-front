@@ -18,8 +18,10 @@
                 <button mat-button [routerLink]="WORKFLOW_PATH" routerLinkActive="active">
                     {{ labels.workflow | translate }}
                 </button>
-                <button mat-button>{{ labels.clients | translate }}</button>
-                <button mat-button>{{ labels.vehicles | translate }}</button>
+                <button mat-button [routerLink]="CLIENTS_PATH" routerLinkActive="active">{{ labels.clients | translate }}</button>
+                <button mat-button [routerLink]="VEHICLES_PATH" routerLinkActive="active">
+                    {{ labels.vehicles | translate }}
+                </button>
                 <button mat-button>{{ labels.advanceSearch | translate }}</button>
                 <button mat-button *ngIf="isAdmin()" (click)="navigateToAdministration()">
                     {{ labels.administration | translate }}
@@ -61,10 +63,10 @@
     <button mat-menu-item>
         <span>{{ labels.workflow | translate }}</span>
     </button>
-    <button mat-menu-item>
+    <button mat-menu-item [routerLink]="CLIENTS_PATH">
         <span>{{ labels.clients | translate }}</span>
     </button>
-    <button mat-menu-item>
+    <button mat-menu-item [routerLink]="VEHICLES_PATH">
         <span>{{ labels.vehicles | translate }}</span>
     </button>
     <button mat-menu-item>

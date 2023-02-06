@@ -1,0 +1,21 @@
+<div class="vehicles-container">
+    <div class="vehicles-container__header">
+        <app-administration-common-header-section
+            #vehiclesHeader
+            [searchType]="'search'"
+            [buttonLabel]="labels.createVehicle"
+            [showFilterButton]="false"
+            [areFiltersSettedAndActive]="false"
+<<<<<<< HEAD
+            [searchFn]="getFilteredData"
+            [title]="'entities.vehicles.title'"
+            (buttonCreateAction)="buttonCreateAction()"
+            (buttonSearchAction)="buttonSearchAction($event)"
+=======
+            [title]="'entities.vehicles.title'"
+            (buttonCreateAction)="buttonCreateAction()"
+>>>>>>> 3435b6e92e217588c84f65f0aebc17d32e8a53c3
+        ></app-administration-common-header-section>
+    </div>
+    <app-vehicles-list #vehiclesList></app-vehicles-list>
+</div>
