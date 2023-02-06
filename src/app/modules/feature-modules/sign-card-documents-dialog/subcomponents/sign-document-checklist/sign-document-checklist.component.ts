@@ -516,7 +516,7 @@ export class SignDocumentChecklistComponent implements OnInit, AfterViewInit, On
                 item.sincronizedItems?.length > 1 &&
                 item.sincronizedItems?.indexOf(item.orderNumber) > 0
               ) {
-                item.itemVal.fileValue.content = null;
+                item.itemVal.fileValue = null;
               }
             }
           });
