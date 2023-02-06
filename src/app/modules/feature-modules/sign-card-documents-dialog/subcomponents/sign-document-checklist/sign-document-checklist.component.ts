@@ -299,7 +299,10 @@ export class SignDocumentChecklistComponent implements OnInit, AfterViewInit, On
   public imageAttachmentSelected(event: { value: AttachmentDTO }, selectedItemToUploadImage: number) {
     const file: AttachmentDTO = event.value;
     const fg: UntypedFormGroup = this.getChecklistItemByOrderNumber(selectedItemToUploadImage);
-    fg.get('itemVal').get('fileValue').get('id').setValue(null);
+    fg.get('itemVal')
+      .get('fileValue')
+      .get('id')
+      .setValue(file.id ? file.id : null);
     fg.get('itemVal')
       .get('fileValue')
       .get('name')
@@ -508,7 +511,10 @@ export class SignDocumentChecklistComponent implements OnInit, AfterViewInit, On
                 item.itemVal.fileValue.type = this.p5sDraws[found.auxOrderNumber].split(';base64,')[0].split('data:')[1];
                 item.itemVal.fileValue.name = `${+new Date()}_draw.png`;
               } else {
-                item.itemVal.fileValue = item.itemVal.fileValue.content ? item.itemVal.fileValue : null;
+                item.itemVal.fileValue =
+                  item.itemVal.fileValue.content || (item.itemVal.fileValue.id && item.itemVal.fileValue.thumbnail)
+                    ? item.itemVal.fileValue
+                    : null;
               }
               if (
                 item.itemVal?.fileValue?.content &&
@@ -565,7 +571,7 @@ export class SignDocumentChecklistComponent implements OnInit, AfterViewInit, On
     ) {
       jItem.css({
         'background-repeat': 'no-repeat',
-        'background-position': 'center',
+        'background-position': 'left bottom',
         'background-size': 'contain',
         'background-image': `url("data:${item.itemVal.fileValue.type};base64,${
           item.itemVal.fileValue.content ? item.itemVal.fileValue.content : item.itemVal.fileValue.thumbnail
