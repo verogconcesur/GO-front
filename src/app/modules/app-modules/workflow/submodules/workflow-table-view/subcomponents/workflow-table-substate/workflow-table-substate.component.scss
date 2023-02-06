@@ -1,0 +1,71 @@
+@import 'utils/core';
+@import 'utils/theme';
+.list-view-state {
+  max-height: 300px;
+  overflow-y: auto;
+  .mat-table .mat-header-row .mat-header-cell {
+    background-color: mat-contrast($primary, statusNeutral);
+  }
+  .tableValue {
+    width: 100%;
+    word-break: break-word;
+    white-space: break-spaces;
+  }
+  .table-workflows {
+    &__actions {
+      height: 50px;
+      &__tasks {
+        font-size: 0.85em;
+        color: lighten(mat-contrast($primary, 50), 20%);
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        border-radius: 4px;
+        padding: 2px 5px;
+        cursor: pointer;
+        mat-icon {
+          padding-left: 5px;
+        }
+        &.completed {
+          background-color: mat-color($primary, statusSuccess);
+          color: mat-contrast($primary, 400);
+        }
+      }
+      &__detail {
+        margin: 0 5px;
+        cursor: pointer;
+      }
+      &__colors {
+        width: 6px;
+        height: 100%;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        flex-direction: column;
+        &__color {
+          border-radius: 8px;
+          width: 6px;
+          &.x-1 {
+            height: 100%;
+          }
+          &.x-2 {
+            height: 46%;
+          }
+          &.x-3 {
+            height: 30%;
+          }
+          &.x-4 {
+            height: 22%;
+          }
+        }
+      }
+    }
+  }
+}
+.no-data {
+  height: 60px;
+  &__msg {
+    font-size: 1rem;
+    font-weight: 800;
+  }
+}
