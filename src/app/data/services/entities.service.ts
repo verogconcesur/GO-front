@@ -3,6 +3,8 @@ import { Inject, Injectable } from '@angular/core';
 import { ENV } from '@app/constants/global.constants';
 import { Env } from '@app/types/env';
 import { ConcenetError } from '@app/types/error';
+import PaginationRequestI from '@data/interfaces/pagination-request';
+import PaginationResponseI from '@data/interfaces/pagination-response';
 import BasicFilterDTO from '@data/models/basic-filter-dto';
 import CustomerEntityApiDTO from '@data/models/entities/customer-entity-api-dto';
 import CustomerEntityDTO from '@data/models/entities/customer-entity-dto';
@@ -11,6 +13,7 @@ import UserEntityDTO from '@data/models/entities/user-entity-dto';
 import VehicleBodyApiDTO from '@data/models/entities/vehicle-body-api-dto';
 import VehicleEntityDTO from '@data/models/entities/vehicle-entity-dto';
 import VehicleFilterDTO from '@data/models/entities/vehicle-filter-dto';
+import { getPaginationUrlGetParams } from '@data/utils/pagination-aux';
 import { Observable, throwError } from 'rxjs';
 import { catchError } from 'rxjs/operators';
 
@@ -24,6 +27,7 @@ export class EntitiesService {
   private readonly SEARCH_PATH = 'search';
   private readonly SEARCH__EXTERNAL_API_PATH = 'searchExternalApi';
   private readonly SAVE__EXTERNAL_API_PATH = 'saveExternalApi/';
+  private readonly SEARCH_PATH_PAG = 'searchPaged';
 
   constructor(@Inject(ENV) private env: Env, private http: HttpClient) {}
 
@@ -37,6 +41,19 @@ export class EntitiesService {
       .post<VehicleEntityDTO[]>(`${this.env.apiBaseUrl}${this.GET_VEHICLES_PATH}${this.SEARCH_PATH}`, search)
       .pipe(catchError((error) => throwError(error.error as ConcenetError)));
   }
+
+  public searchVehiclesPag(
+    search: BasicFilterDTO,
+    pagination?: PaginationRequestI
+  ): Observable<PaginationResponseI<VehicleEntityDTO>> {
+    return this.http
+      .post<PaginationResponseI<VehicleEntityDTO>>(
+        `${this.env.apiBaseUrl}${this.GET_VEHICLES_PATH}${this.SEARCH_PATH_PAG}${getPaginationUrlGetParams(pagination, true)}`,
+        search
+      )
+      .pipe(catchError((error) => throwError(error as ConcenetError)));
+  }
+
   /**
    * Search users
    *
@@ -57,6 +74,19 @@ export class EntitiesService {
       .post<CustomerEntityDTO[]>(`${this.env.apiBaseUrl}${this.GET_CUSTOMERS_PATH}${this.SEARCH_PATH}`, search)
       .pipe(catchError((error) => throwError(error.error as ConcenetError)));
   }
+
+  public searchCustomerPag(
+    search: BasicFilterDTO,
+    pagination?: PaginationRequestI
+  ): Observable<PaginationResponseI<CustomerEntityDTO>> {
+    return this.http
+      .post<PaginationResponseI<CustomerEntityDTO>>(
+        `${this.env.apiBaseUrl}${this.GET_CUSTOMERS_PATH}${this.SEARCH_PATH_PAG}${getPaginationUrlGetParams(pagination, true)}`,
+        search
+      )
+      .pipe(catchError((error) => throwError(error as ConcenetError)));
+  }
+
   /**
    * Search vehicles Api
    *

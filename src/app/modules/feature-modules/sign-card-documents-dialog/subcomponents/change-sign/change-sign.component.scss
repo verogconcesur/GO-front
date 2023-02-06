@@ -5,6 +5,7 @@
   border-radius: 15px;
   padding: 10px;
   z-index: 1501;
+  touch-action: none;
   &__header {
     width: 100%;
     display: flex;

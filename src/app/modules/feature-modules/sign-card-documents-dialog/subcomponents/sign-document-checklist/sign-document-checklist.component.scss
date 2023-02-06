@@ -60,6 +60,10 @@
           max-height: calc(100vh - 230px);
           overflow-y: auto;
         }
+        .panel-title-clickable-ids {
+          max-width: calc(100% - 145px);
+          overflow-y: auto;
+        }
       }
 
       @include respond-to(1000px) {
