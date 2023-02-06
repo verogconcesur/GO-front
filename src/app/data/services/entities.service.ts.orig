@@ -43,7 +43,11 @@ export class EntitiesService {
   }
 
   public searchVehiclesPag(
+<<<<<<< HEAD
     search: BasicFilterDTO,
+=======
+    search: VehicleEntityDTO,
+>>>>>>> 3435b6e92e217588c84f65f0aebc17d32e8a53c3
     pagination?: PaginationRequestI
   ): Observable<PaginationResponseI<VehicleEntityDTO>> {
     return this.http
@@ -76,7 +80,11 @@ export class EntitiesService {
   }
 
   public searchCustomerPag(
+<<<<<<< HEAD
     search: BasicFilterDTO,
+=======
+    search: CustomerEntityDTO,
+>>>>>>> 3435b6e92e217588c84f65f0aebc17d32e8a53c3
     pagination?: PaginationRequestI
   ): Observable<PaginationResponseI<CustomerEntityDTO>> {
     return this.http

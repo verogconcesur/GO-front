@@ -1,7 +1,10 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { marker } from '@biesbjerg/ngx-translate-extract-marker';
+<<<<<<< HEAD
 import VehicleEntityDTO from '@data/models/entities/vehicle-entity-dto';
 import { Observable } from 'rxjs';
+=======
+>>>>>>> 3435b6e92e217588c84f65f0aebc17d32e8a53c3
 import { VehiclesListComponent } from '../components/vehicles-list/vehicles-list.component';
 
 @Component({
@@ -24,6 +27,7 @@ export class VehiclesComponent implements OnInit {
   buttonCreateAction() {
     this.vehiclesListComponent.openCreateEditVehicleDialog();
   }
+<<<<<<< HEAD
   public getFilteredData = (text: string): Observable<{ content: VehicleEntityDTO[] } | null> =>
     this.vehiclesListComponent.getFilteredData(text);
 
@@ -31,4 +35,6 @@ export class VehiclesComponent implements OnInit {
   public buttonSearchAction(option: any): void {
     return this.vehiclesListComponent.showFilterOptionSelected(option);
   }
+=======
+>>>>>>> 3435b6e92e217588c84f65f0aebc17d32e8a53c3
 }

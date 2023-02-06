@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/member-ordering */
 import { Component, OnInit } from '@angular/core';
 import { PageEvent } from '@angular/material/paginator';
 import { Router } from '@angular/router';
@@ -9,7 +10,8 @@ import { TranslateService } from '@ngx-translate/core';
 import { GlobalMessageService } from '@shared/services/global-message.service';
 import { ProgressSpinnerDialogService } from '@shared/services/progress-spinner-dialog.service';
 import { NGXLogger } from 'ngx-logger';
-import { finalize, take } from 'rxjs/operators';
+import { Observable, of } from 'rxjs';
+import { finalize, map, take } from 'rxjs/operators';
 import { EntitiesService } from '../../../../../data/services/entities.service';
 import {
   CreateEditCustomerComponentModalEnum,
@@ -127,4 +129,52 @@ export class ClientsListComponent implements OnInit {
     secondName: filterValue?.secondName,
     id: filterValue?.id
   });
+
+  public showFilterOptionSelected = (opt?: CustomerEntityDTO | string): void => {
+    if (opt && typeof opt !== 'string') {
+      this.textSearchValue = opt.name.toLowerCase();
+    } else {
+      opt = opt ? opt : '';
+      this.textSearchValue = opt.toString().toLowerCase();
+    }
+    this.getCustomer();
+  };
+
+  //Invoked on search input
+  public getFilteredData = (text: string): Observable<{ content: CustomerEntityDTO[] }> => {
+    this.textSearchValue = text;
+    if (text.length >= 3) {
+      return this.entitiesService
+        .searchCustomerPag(
+          {
+            search: this.textSearchValue
+          },
+          {
+            page: 0,
+            size: 20
+          }
+        )
+        .pipe(
+          take(1),
+          map((response: PaginationResponseI<CustomerEntityDTO>) => ({
+            content: response.content,
+            optionLabelFn: this.optionLabelFn
+          }))
+        );
+    } else {
+      return of({
+        content: [],
+        optionLabelFn: this.optionLabelFn
+      });
+    }
+  };
+
+  public optionLabelFn = (option: CustomerEntityDTO): string => {
+    if (option) {
+      let fullName = '';
+      fullName += option.fullName ? option.fullName : '';
+      return fullName;
+    }
+    return '';
+  };
 }
