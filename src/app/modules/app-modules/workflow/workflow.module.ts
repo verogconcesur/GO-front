@@ -21,7 +21,6 @@ import { MatChipsInputFormFieldModule } from '@modules/feature-modules/mat-chips
     WorkflowComponent,
     WorkflowNavbarComponent,
     WorkflowCalendarViewComponent,
-    WorkflowTableViewComponent,
     WorkflowNavbarFilterComponent,
     WorkflowNavbarFilterFormComponent,
     WorkflowCardMovementPreparationComponent
