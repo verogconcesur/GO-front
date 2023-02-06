@@ -1,0 +1,24 @@
+@import 'utils/core';
+@import 'utils/theme';
+.list-view-state {
+  width: 100%;
+  &__title {
+    padding-top: 15px;
+    &__label {
+      span {
+        width: 100%;
+        word-break: break-word;
+        white-space: break-spaces;
+        font-size: 1.2rem;
+        font-weight: 800;
+      }
+    }
+  }
+  &__buttons {
+    padding-bottom: 5px;
+    &__button {
+      margin-right: 5px;
+      cursor: pointer;
+    }
+  }
+}

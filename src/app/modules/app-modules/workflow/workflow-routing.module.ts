@@ -79,12 +79,12 @@ const routes: Routes = [
       {
         path: RouteConstants.OTHER,
         canActivate: [AuthGuardService],
-        redirectTo: RouteConstants.WORKFLOWS_BOARD_VIEW
+        redirectTo: RouteConstants.WORKFLOWS_TABLE_VIEW
       },
       {
         path: RouteConstants.EMPTY,
         canActivate: [AuthGuardService],
-        redirectTo: RouteConstants.WORKFLOWS_BOARD_VIEW
+        redirectTo: RouteConstants.WORKFLOWS_TABLE_VIEW
       }
     ]
   }
