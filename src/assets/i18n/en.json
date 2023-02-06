@@ -366,7 +366,8 @@
             "name": "Name",
             "phone": "Phone",
             "reference": "Reference",
-            "socialSecurityId": "Identity document"
+            "socialSecurityId": "Identity document",
+            "title": "Customers"
         },
         "user": {
             "user": "User"
@@ -386,6 +387,7 @@
             "make": "Brand",
             "missInfo": "Missing information",
             "model": "Model",
+            "title": "Vehicles",
             "select": "Select vehicle",
             "stockId": "Inventary Id",
             "vehicle": "Vehicle",

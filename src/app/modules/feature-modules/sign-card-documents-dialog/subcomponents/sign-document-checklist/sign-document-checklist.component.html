@@ -24,11 +24,10 @@
                                 <mat-panel-title>
                                     {{ groupByType.typeLabel }}
                                 </mat-panel-title>
-                                <mat-panel-description fxLayoutAlign="space-between center">
-                                    <div fxLayout="column" fxLayoutAlign="flex-start center">
-                                        <!-- <label> {{ labels.pages | translate }}: {{ groupByType.numPages.join(",") }} </label> -->
-                                        <label> Id's: {{ groupByType.orderNumbers.join(",") }} </label>
-                                    </div>
+                                <mat-panel-description fxLayoutAlign="flex-end center">
+                                    <!-- <div fxLayout="column" fxLayoutAlign="flex-start center">
+                                        <label> Id's: {{ groupByType.orderNumbers.join(", ") }} </label>
+                                    </div> -->
                                     <!-- Show in page -->
                                     <div class="smaller-mat-form-fields">
                                         {{ labels.showInPage | translate }}:
@@ -51,7 +50,7 @@
                                     [expanded]="expansionPanelOpened['sync-' + syncGroup.sincronizedItems.join('-')]"
                                 >
                                     <mat-expansion-panel-header>
-                                        <mat-panel-title fxLayoutAlign="flex-start center">
+                                        <mat-panel-title fxLayoutAlign="flex-start center" class="panel-title-clickable-ids">
                                             <div
                                                 class="checklistItemToDrag__orderNumber"
                                                 [ngClass]="{ selected: syncGroup.selectedItem === ordN }"
@@ -65,7 +64,7 @@
                                                 {{ ordN }}
                                             </div>
                                         </mat-panel-title>
-                                        <mat-panel-description fxLayoutAlign="flex-start center">
+                                        <mat-panel-description fxLayoutAlign="flex-end center">
                                             <label> {{ getSyncGroupLabel(syncGroup) }} </label>
                                         </mat-panel-description>
                                     </mat-expansion-panel-header>
@@ -128,7 +127,11 @@
                                                 >
                                                     <label>{{ labels.changeSign | translate }}</label>
                                                 </button>
-                                                <div class="image-input-preview" fxLayoutAlign="center center">
+                                                <div
+                                                    class="image-input-preview"
+                                                    fxLayoutAlign="center center"
+                                                    (click)="changeSign(syncGroup.selectedItem)"
+                                                >
                                                     <img [src]="getImagePreviewBase64(syncGroup.selectedItem)" />
                                                 </div>
                                             </div>

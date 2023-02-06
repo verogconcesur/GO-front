@@ -640,7 +640,8 @@ export class SignDocumentChecklistComponent implements OnInit, AfterViewInit, On
   ): void => {
     if (item.length) {
       item.css({
-        'z-index': 1000
+        'z-index': 1000,
+        'touch-action': 'none'
       });
       p.setup = () => {
         p.createCanvas(width, height).parent(id_resizable);
