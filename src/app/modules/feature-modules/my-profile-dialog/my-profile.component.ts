@@ -263,8 +263,8 @@ export class MyProfileComponent extends ComponentToExtendForCustomDialog impleme
             disabled: true
           }
         ],
-        signature: [null],
-        signatureContentType: [null]
+        signature: [this.userDetails.signature ? this.userDetails.signature : null],
+        signatureContentType: [this.userDetails.signatureContentType ? this.userDetails.signatureContentType : null]
       },
       {
         validators: ConfirmPasswordValidator.mustMatch('newPassword', 'newPasswordConfirmation')
