@@ -9,10 +9,7 @@
 }
 .w-colunm-entity-data {
   text-transform: uppercase;
-  margin-top: 15px;
-  &:first-child {
-    margin-top: 0;
-  }
+  padding-bottom: 30px;
   &__label {
     font-weight: 600;
     font-size: 0.85em;
