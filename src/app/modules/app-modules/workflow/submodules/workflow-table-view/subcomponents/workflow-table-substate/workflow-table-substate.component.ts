@@ -27,7 +27,8 @@ export class WorkflowTableSubstateComponent implements OnInit {
     employee: marker('common.employee'),
     noCards: marker('errors.noCardsToShow'),
     noFields: marker('errors.noFieldsDefined'),
-    actions: marker('common.actions')
+    actions: marker('common.actions'),
+    information: marker('common.information')
   };
   public dataSource: WorkflowDTO[] = [];
   public displayedColumns: string[];
@@ -95,6 +96,8 @@ export class WorkflowTableSubstateComponent implements OnInit {
             break;
         }
       });
+      this.displayedColumns.push('information');
+      this.headers.push({ col: 'information', label: this.translateService.instant(this.labels.information) });
       this.displayedColumns.push('tasks');
       this.headers.push({ col: 'tasks', label: this.translateService.instant(this.labels.actions) });
       this.showData = true;
@@ -186,6 +189,19 @@ export class WorkflowTableSubstateComponent implements OnInit {
       message = this.translateService.instant(this.labels.noCards);
     }
     return message;
+  }
+  public extraInfoValue(card: WorkflowCardDTO): string {
+    let extraInfo = '';
+    if (card.information) {
+      extraInfo = card.information;
+    }
+    if (card.cardInstanceWorkflows && card.cardInstanceWorkflows.length && card.cardInstanceWorkflows[0].information) {
+      extraInfo = card.cardInstanceWorkflows[0].information;
+    }
+    return extraInfo;
+  }
+  public extendExtraInfoValue(card: WorkflowCardDTO) {
+    card.expandInfo = !card.expandInfo;
   }
   public goDetailCard(card: WorkflowCardDTO): void {
     this.router.navigate(

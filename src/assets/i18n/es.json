@@ -377,7 +377,7 @@
         },
         "vehicles": {
             "addStock": "Buscar en inventario",
-            "chasis": "Chasis",
+            "chassis": "Chasis",
             "commissionNumber": "Número de comisión",
             "create": "Crear vehículo",
             "description": "Descripción",

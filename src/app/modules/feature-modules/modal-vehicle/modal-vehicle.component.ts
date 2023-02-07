@@ -34,7 +34,7 @@ export class ModalVehicleComponent extends ComponentToExtendForCustomDialog impl
     model: marker('entities.vehicles.model'),
     description: marker('entities.vehicles.description'),
     vehicleId: marker('entities.vehicles.vehicleId'),
-    chasis: marker('entities.vehicles.chasis'),
+    chassis: marker('entities.vehicles.chassis'),
     data: marker('userProfile.data')
   };
   public minLength = 3;
@@ -130,7 +130,7 @@ export class ModalVehicleComponent extends ComponentToExtendForCustomDialog impl
       model: [this.vehicleToEdit ? this.vehicleToEdit.model : null],
       description: [this.vehicleToEdit ? this.vehicleToEdit.description : null],
       vehicleId: [this.vehicleToEdit ? this.vehicleToEdit.vehicleId : null],
-      chasis: [this.vehicleToEdit ? this.vehicleToEdit.chasis : null]
+      chassis: [this.vehicleToEdit ? this.vehicleToEdit.chassis : null]
     });
   };
 }

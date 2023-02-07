@@ -3,7 +3,7 @@ export default interface VehicleEntityDTO {
   status: string;
   inventoryType: string;
   commissionNumber: string;
-  chasis: string;
+  chassis: string;
   vehicleId: string;
   model: string;
   make: string;

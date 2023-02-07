@@ -27,7 +27,7 @@ export class VehiclesListComponent implements OnInit {
   public labels = {
     licensePlate: marker('entities.vehicles.licensePlate'),
     make: marker('entities.vehicles.make'),
-    chasis: marker('entities.vehicles.chasis'),
+    chassis: marker('entities.vehicles.chassis'),
     model: marker('entities.vehicles.model'),
     vehicleId: marker('entities.vehicles.vehicleId'),
     description: marker('entities.vehicles.description'),
@@ -43,7 +43,7 @@ export class VehiclesListComponent implements OnInit {
     ariaLabel: 'Select page'
   };
 
-  public displayedColumns = ['licensePlate', 'make', 'vin', 'description', 'model', 'vehicleId', 'chasis', 'actions'];
+  public displayedColumns = ['licensePlate', 'make', 'vin', 'description', 'model', 'vehicleId', 'chassis', 'actions'];
   public dataSource: VehicleEntityDTO[] = [];
   private filterValue: VehicleEntityDTO;
   private textSearchValue = '';
@@ -120,7 +120,7 @@ export class VehiclesListComponent implements OnInit {
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   private transformFilterValue = (filterValue: VehicleEntityDTO): any => ({
-    chasis: filterValue?.chasis,
+    chassis: filterValue?.chassis,
     vehicleId: filterValue?.vehicleId,
     model: filterValue?.model,
     make: filterValue?.make,

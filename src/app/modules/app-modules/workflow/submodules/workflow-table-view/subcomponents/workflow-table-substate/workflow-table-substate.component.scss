@@ -2,14 +2,24 @@
 @import 'utils/theme';
 .list-view-state {
   max-height: 300px;
-  overflow-y: auto;
+  overflow: auto;
   .mat-table .mat-header-row .mat-header-cell {
     background-color: mat-contrast($primary, statusNeutral);
   }
   .tableValue {
-    width: 100%;
     word-break: break-word;
     white-space: break-spaces;
+  }
+  .information {
+    cursor: pointer;
+    border-radius: 5px;
+    &:hover {
+      background-color: mat-color($background, background-administration);
+    }
+    &.expanded {
+      word-break: break-word;
+      white-space: break-spaces;
+    }
   }
   .table-workflows {
     &__actions {
@@ -21,7 +31,6 @@
         justify-content: center;
         align-items: center;
         border-radius: 4px;
-        padding: 2px 5px;
         cursor: pointer;
         mat-icon {
           padding-left: 5px;
@@ -32,7 +41,6 @@
         }
       }
       &__detail {
-        margin: 0 5px;
         cursor: pointer;
       }
       &__colors {

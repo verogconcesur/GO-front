@@ -16,7 +16,9 @@ export class WorkflowTableStateComponent implements OnInit {
   public labels = {
     collapse: marker('common.collapse'),
     expand: marker('common.expand'),
-    noData: marker('errors.noDataToShow')
+    noData: marker('errors.noDataToShow'),
+    workers: marker('workflows.peopleWorking'),
+    nCards: marker('workflows.numCards')
   };
   constructor() {}
 
