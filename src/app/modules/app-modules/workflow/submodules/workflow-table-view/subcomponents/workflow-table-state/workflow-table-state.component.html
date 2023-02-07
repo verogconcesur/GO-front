@@ -3,6 +3,10 @@
         <div class="list-view-state__title__label">
             <span>{{ wState.name }}</span>
         </div>
+        <div class="list-view-state__title__info">
+            <span>{{ labels.nCards | translate : { num: wState.cardCount } }}</span>
+            <span *ngIf="wState.front">{{ labels.workers | translate : { num: wState.userCount } }}</span>
+        </div>
     </div>
     <div class="list-view-state__buttons" fxLayout="row" fxLayoutAlign="start end">
         <button class="list-view-state__buttons__button" mat-flat-button (click)="accordion.openAll()">
@@ -17,7 +21,9 @@
             <mat-expansion-panel *ngFor="let substate of wState.workflowSubstates">
                 <mat-expansion-panel-header>
                     <mat-panel-title> {{ substate.name }} </mat-panel-title>
-                    <mat-panel-description> </mat-panel-description>
+                    <mat-panel-description>
+                        <span>{{ labels.nCards | translate : { num: substate.cards.length } }}</span>
+                    </mat-panel-description>
                 </mat-expansion-panel-header>
                 <app-workflow-table-substate
                     [workflow]="workflow"
