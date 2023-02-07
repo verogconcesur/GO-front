@@ -14,6 +14,7 @@ import { untilDestroyed } from '@ngneat/until-destroy';
 import { TranslateService } from '@ngx-translate/core';
 import { GlobalMessageService } from '@shared/services/global-message.service';
 import { ProgressSpinnerDialogService } from '@shared/services/progress-spinner-dialog.service';
+import { haveArraysSameValuesIdObjects } from '@shared/utils/array-comparation-function';
 import lodash from 'lodash';
 import { NGXLogger } from 'ngx-logger';
 import { forkJoin } from 'rxjs';
@@ -30,6 +31,7 @@ export class WorkflowTableViewComponent implements OnInit {
   public showListView = true;
   public facilities: FacilityDTO[] = [];
   public workflow: WorkflowDTO = null;
+  public loadedData: { workflow: WorkflowDTO; facilities: FacilityDTO[] };
   public wStatesData: WorkflowStateDTO[];
   public wAnchorState: WorkflowStateDTO;
   public wNormalStates: WorkflowStateDTO[];
@@ -93,7 +95,7 @@ export class WorkflowTableViewComponent implements OnInit {
     const spinner = this.spinnerService.show();
 
     this.workflowService
-      .getWorkflowCards(this.workflow, this.facilities, 'BOARD')
+      .getWorkflowCards(this.workflow, this.facilities, 'TABLE')
       .pipe(take(1))
       .subscribe((data: WorkflowCardDTO[]) => {
         this.spinnerService.hide(spinner);
@@ -159,7 +161,13 @@ export class WorkflowTableViewComponent implements OnInit {
   }
 
   private getData(): void {
-    if (this.workflow) {
+    if (
+      this.workflow &&
+      (!this.loadedData ||
+        this.workflow.id !== this.loadedData.workflow.id ||
+        !haveArraysSameValuesIdObjects(this.loadedData.facilities, this.facilities))
+    ) {
+      this.loadedData = { workflow: this.workflow, facilities: this.facilities };
       const spinner = this.spinnerService.show();
       forkJoin([
         this.workflowService.getWorkflowInstances(this.workflow, this.facilities, 'TABLE', true).pipe(take(1)),

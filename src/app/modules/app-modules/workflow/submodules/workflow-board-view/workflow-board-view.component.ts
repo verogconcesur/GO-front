@@ -15,6 +15,7 @@ import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
 import { TranslateService } from '@ngx-translate/core';
 import { GlobalMessageService } from '@shared/services/global-message.service';
 import { ProgressSpinnerDialogService } from '@shared/services/progress-spinner-dialog.service';
+import { haveArraysSameValuesIdObjects } from '@shared/utils/array-comparation-function';
 import lodash from 'lodash';
 import { NGXLogger } from 'ngx-logger';
 import { forkJoin } from 'rxjs';
@@ -40,6 +41,7 @@ export class WorkflowBoardViewComponent implements OnInit {
   public wStatesData: WorkflowStateDTO[];
   public wAnchorState: WorkflowStateDTO;
   public wNormalStates: WorkflowStateDTO[];
+  public loadedData: { workflow: WorkflowDTO; facilities: FacilityDTO[] };
   public showAnchorState = true;
   public mouseDown = false;
   public startX: any;
@@ -217,7 +219,13 @@ export class WorkflowBoardViewComponent implements OnInit {
   }
 
   private getData(): void {
-    if (this.workflow) {
+    if (
+      this.workflow &&
+      (!this.loadedData ||
+        this.workflow.id !== this.loadedData.workflow.id ||
+        !haveArraysSameValuesIdObjects(this.loadedData.facilities, this.facilities))
+    ) {
+      this.loadedData = { workflow: this.workflow, facilities: this.facilities };
       const spinner = this.spinnerService.show();
       forkJoin([
         this.workflowService.getWorkflowInstances(this.workflow, this.facilities, 'BOARD', true).pipe(take(1)),
