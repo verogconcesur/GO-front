@@ -36,7 +36,6 @@ export class ModalInsertSignComponent extends ComponentToExtendForCustomDialog i
   }
 
   public configDrawingZone = (p: p5, id: string): void => {
-    console.log('configDrawingZone => ModalInsertSignComponent');
     p.setup = () => {
       p.createCanvas(500, 250).parent(id);
     };
@@ -71,8 +70,11 @@ export class ModalInsertSignComponent extends ComponentToExtendForCustomDialog i
   };
 
   ngOnDestroy(): void {
+    this.p5Sign.mouseDragged = (event) => {};
+    this.p5Sign.mouseReleased = (event) => {};
     this.p5Sign.remove();
     this.p5Sign = null;
+    $('.p5Canvas').remove();
   }
 
   //Abstract methods

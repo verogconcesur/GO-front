@@ -20,4 +20,6 @@ export default interface UserDetailsDTO {
   facilities: FacilityDTO[];
   departments: DepartmentDTO[];
   specialties: SpecialtyDTO[];
+  signature: string;
+  signatureContentType: string;
 }
