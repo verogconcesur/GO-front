@@ -21,6 +21,7 @@ export interface ResponsiveTabI {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   id: any;
   label: string;
+  newData?: boolean;
   disabled?: () => boolean;
   disabledTooltip?: string;
 }
