@@ -192,7 +192,12 @@ export class WorkflowTableSubstateComponent implements OnInit {
       [
         {
           outlets: {
-            card: [RouteConstants.WORKFLOWS_ID_CARD, card.cardInstanceWorkflows[0].id, RouteConstants.WORKFLOWS_ID_USER, '']
+            card: [
+              RouteConstants.WORKFLOWS_ID_CARD,
+              card.cardInstanceWorkflows[0].id,
+              RouteConstants.WORKFLOWS_ID_USER,
+              this.wState.front ? card.cardInstanceWorkflows[0].cardInstanceWorkflowUsers[0].id : null
+            ]
           }
         }
       ],
