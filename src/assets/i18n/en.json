@@ -377,7 +377,7 @@
         },
         "vehicles": {
             "addStock": "Search on inventary",
-            "chasis": "Chasis",
+            "chassis": "Chassis",
             "commissionNumber": "Commission number",
             "create": "Create vehicle",
             "description": "Description",
