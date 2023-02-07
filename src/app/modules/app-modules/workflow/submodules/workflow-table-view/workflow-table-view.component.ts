@@ -10,7 +10,7 @@ import WorkflowStateDTO from '@data/models/workflows/workflow-state-dto';
 import WorkflowSubstateDTO from '@data/models/workflows/workflow-substate-dto';
 import WorkflowSubstateUserDTO from '@data/models/workflows/workflow-substate-user-dto';
 import { WorkflowsService } from '@data/services/workflows.service';
-import { untilDestroyed } from '@ngneat/until-destroy';
+import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
 import { TranslateService } from '@ngx-translate/core';
 import { GlobalMessageService } from '@shared/services/global-message.service';
 import { ProgressSpinnerDialogService } from '@shared/services/progress-spinner-dialog.service';
@@ -21,7 +21,7 @@ import { forkJoin } from 'rxjs';
 import { take } from 'rxjs/operators';
 import { WorkflowFilterService } from '../../aux-service/workflow-filter.service';
 import { WorkflowPrepareAndMoveService } from '../../aux-service/workflow-prepare-and-move-aux.service';
-
+@UntilDestroy()
 @Component({
   selector: 'app-workflow-table-view',
   templateUrl: './workflow-table-view.component.html',
