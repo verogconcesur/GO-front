@@ -25,7 +25,7 @@
         <div
             class="workflow-card__info__data extra-info"
             *ngIf="extraInfoValue() && extraInfoValue() !== '' && showExtraInfo"
-            matTooltip="{{ card.information }}"
+            matTooltip="{{ extraInfoValue() }}"
             appShowIfTruncated
             matTooltipPosition="below"
             (click)="$event.stopPropagation(); expandCardInfo()"
