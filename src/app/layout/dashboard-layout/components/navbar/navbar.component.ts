@@ -1,12 +1,16 @@
-import { Component } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { Router } from '@angular/router';
 import { PermissionConstants } from '@app/constants/permission.constants';
 import { RouteConstants } from '@app/constants/route.constants';
 import { AuthenticationService } from '@app/security/authentication.service';
 import { marker } from '@biesbjerg/ngx-translate-extract-marker';
+import WarningDTO from '@data/models/notifications/warning-dto';
+import { NotificationService } from '@data/services/notifications.service';
 import { NewCardComponent, NewCardComponentModalEnum } from '@modules/feature-modules/new-card/new-card.component';
 import { UntilDestroy } from '@ngneat/until-destroy';
+import { NotificationSoundService } from '@shared/services/notification-sounds.service';
+import { take } from 'rxjs/operators';
 
 @UntilDestroy()
 @Component({
@@ -14,7 +18,7 @@ import { UntilDestroy } from '@ngneat/until-destroy';
   templateUrl: './navbar.component.html',
   styleUrls: ['./navbar.component.scss']
 })
-export class NavbarComponent {
+export class NavbarComponent implements OnInit, OnDestroy {
   public readonly WORKFLOW_PATH = RouteConstants.WORKFLOWS;
   public readonly CLIENTS_PATH = RouteConstants.CUSTOMERS;
   public readonly VEHICLES_PATH = RouteConstants.VEHICLES;
@@ -27,7 +31,45 @@ export class NavbarComponent {
     administration: marker('app.menu.administration'),
     createCard: marker('app.menu.createCard')
   };
-  constructor(private router: Router, private authService: AuthenticationService, public dialog: MatDialog) {}
+  public infoWarning: WarningDTO = null;
+  private readonly notificationTimeInterval = 20000;
+  private interval: NodeJS.Timeout;
+
+  constructor(
+    private router: Router,
+    private authService: AuthenticationService,
+    public dialog: MatDialog,
+    private notificationService: NotificationService,
+    private notificationSoundService: NotificationSoundService
+  ) {}
+
+  ngOnInit(): void {
+    this.initWarningInformationValue();
+    this.initWarningNotificationInterval();
+  }
+
+  ngOnDestroy(): void {
+    clearInterval(this.interval);
+    this.interval = null;
+  }
+
+  public initWarningNotificationInterval(): void {
+    this.interval = setInterval(() => {
+      this.notificationService
+        .getInfoWarnings(this.infoWarning)
+        .pipe(take(1))
+        .subscribe((data) => {
+          if (
+            (data?.existsNoReadMention && data.lastDateNoReadMention !== this.infoWarning.lastDateNoReadMention) ||
+            (data?.existsNoReadNotification && data.lastDateNoReadNotification !== this.infoWarning.lastDateNoReadNotification)
+          ) {
+            this.notificationSoundService.playSound('NOTIFICATION');
+          }
+          this.infoWarning = data;
+          this.authService.setWarningStatus(data);
+        });
+    }, this.notificationTimeInterval);
+  }
 
   public navigateToAdministration(): void {
     this.router.navigate([RouteConstants.ADMINISTRATION]);
@@ -44,5 +86,17 @@ export class NavbarComponent {
       panelClass: NewCardComponentModalEnum.PANEL_CLASS,
       disableClose: true
     });
+  }
+
+  public showMentions(): void {
+    this.infoWarning.existsNoReadMention = false;
+  }
+
+  public showNotifications(): void {
+    this.infoWarning.existsNoReadNotification = false;
+  }
+
+  private initWarningInformationValue(): void {
+    this.infoWarning = this.authService.getWarningStatus();
   }
 }

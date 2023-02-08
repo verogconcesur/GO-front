@@ -59,6 +59,10 @@
         background-color: rgba(mat-contrast($warn, A100), 70%);
       }
     }
+
+    .mat-icon {
+      overflow: visible;
+    }
   }
 
   // Disable styles for primary buttons
