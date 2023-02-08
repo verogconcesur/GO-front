@@ -55,11 +55,15 @@
                     </div>
                 </div>
             </div>
-            <div class="wcard-details__wrapper__messages" *ngIf="showMode !== 'individual' || tabSelected === 'messages'">
+            <div
+                class="wcard-details__wrapper__messages"
+                [style]="{ display: showMode !== 'individual' || tabSelected === 'messages' ? '' : 'none' }"
+            >
                 <app-workflow-card-column
                     containerClass="messages"
                     [cardInstance]="cardInstance"
                     [column]="columnsConfig[2]"
+                    (newCommentsEvent)="newComments($event)"
                 ></app-workflow-card-column>
             </div>
             <div class="wcard-details__wrapper__actions" *ngIf="showMode !== 'individual' || tabSelected === 'actions'">
@@ -84,7 +88,14 @@
                 <!-- <label>{{ labels.column2 | translate }}</label> -->
                 <label>{{ columnsConfig?.length ? columnsConfig[1].name : "" }}</label>
             </div>
-            <div class="tab-option" (click)="changeSelectedTab('messages')" [ngClass]="{ active: isTabSelected('messages') }">
+            <div
+                class="tab-option"
+                (click)="changeSelectedTab('messages')"
+                [ngClass]="{
+                    active: isTabSelected('messages'),
+                    'new-data': newDataInCommentsOrMessages.COMMENTS || newDataInCommentsOrMessages.CLIENT_MESSAGES
+                }"
+            >
                 <mat-icon> textsms</mat-icon>
                 <!-- <label> {{ labels.messages | translate }}</label> -->
                 <label>{{ columnsConfig?.length ? columnsConfig[2].name : "" }}</label>

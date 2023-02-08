@@ -1,15 +1,11 @@
-import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import { Component, EventEmitter, Input, OnDestroy, OnInit, Output } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { marker } from '@biesbjerg/ngx-translate-extract-marker';
-import CardColumnTabDTO from '@data/models/cards/card-column-tab-dto';
 import CardMessageDTO from '@data/models/cards/card-message';
 import MessageChannelDTO from '@data/models/templates/message-channels-dto';
-import UserDetailsDTO from '@data/models/user-permissions/user-details-dto';
 import { CardMessagesService } from '@data/services/card-messages.service';
 import { TranslateService } from '@ngx-translate/core';
-import { GlobalMessageService } from '@shared/services/global-message.service';
-import { ProgressSpinnerDialogService } from '@shared/services/progress-spinner-dialog.service';
-import { forkJoin, Observable } from 'rxjs';
+import { NotificationSoundService } from '@shared/services/notification-sounds.service';
 import { take } from 'rxjs/operators';
 
 @Component({
@@ -17,33 +13,56 @@ import { take } from 'rxjs/operators';
   templateUrl: './workflow-column-client-messages.component.html',
   styleUrls: ['./workflow-column-client-messages.component.scss']
 })
-export class WorkflowColumnClientMessagesComponent implements OnInit {
+export class WorkflowColumnClientMessagesComponent implements OnInit, OnDestroy {
   @Output() setShowLoading: EventEmitter<boolean> = new EventEmitter(false);
+  @Output() newCommentsEvent: EventEmitter<boolean> = new EventEmitter(false);
   public messages: CardMessageDTO[] = [];
   public labels = { customer: marker('common.customer') };
   public dataLoaded = false;
+  private idCard: number;
+  private interval: NodeJS.Timeout;
+  private timeBeforeMarkAsRead = 15000;
 
   constructor(
     private cardMessageService: CardMessagesService,
     private route: ActivatedRoute,
-    private globalMessageService: GlobalMessageService,
     private translateService: TranslateService,
-    private spinnerService: ProgressSpinnerDialogService
+    private notificationSoundService: NotificationSoundService
   ) {}
 
   ngOnInit(): void {
+    this.idCard = parseInt(this.route.snapshot.params.idCard, 10);
     this.getData();
+    this.interval = setInterval(() => {
+      this.getData(true);
+    }, this.timeBeforeMarkAsRead);
   }
 
-  public getData(): void {
-    if (this.route?.snapshot?.params?.idCard) {
-      this.setShowLoading.emit(true);
-      const cardInstanceWorkflowId = parseInt(this.route.snapshot.params.idCard, 10);
+  ngOnDestroy(): void {
+    clearInterval(this.interval);
+    this.interval = null;
+  }
+
+  public getData(fromInterval = false): void {
+    if (this.idCard) {
+      if (!fromInterval) {
+        this.setShowLoading.emit(true);
+      }
+      const cardInstanceWorkflowId = this.idCard;
       this.cardMessageService
         .getCardMessages(cardInstanceWorkflowId)
         .pipe(take(1))
         .subscribe((res) => {
+          if (fromInterval && this.messages.length !== res.length) {
+            this.newCommentsEvent.emit(true);
+            this.notificationSoundService.playSound('CLIENT_MESSAGES');
+          } else if (fromInterval) {
+            this.newCommentsEvent.emit(false);
+          }
           this.messages = res;
+          if (!fromInterval) {
+            this.setShowLoading.emit(false);
+          }
         });
     }
   }
