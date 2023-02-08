@@ -18,6 +18,10 @@ import {
 import { ConfirmDialogService } from '@shared/services/confirm-dialog.service';
 import { ConcenetError } from '@app/types/error';
 import { NGXLogger } from 'ngx-logger';
+import {
+  CsvFileImportationComponent,
+  CsvFileImportationComponentModalEnum
+} from '../csv-file-importation/csv-file-importation.component';
 
 @Component({
   selector: 'app-facilities',
@@ -154,6 +158,28 @@ export class FacilitiesComponent implements OnInit {
     this.router.navigate([`${RouteConstants.ADMINISTRATION}/${RouteConstants.USERS}`], {
       // state: { brands: [{ id: this.brandId }], facilities: [item] }
       state: { facilities: [item] }
+    });
+  }
+  public importAction(facility: FacilityDTO) {
+    setTimeout(() => {
+      this.customDialogService
+        .open({
+          id: CsvFileImportationComponentModalEnum.ID,
+          panelClass: CsvFileImportationComponentModalEnum.PANEL_CLASS,
+          component: CsvFileImportationComponent,
+          extendedComponentData: facility,
+          disableClose: true,
+          width: '900px'
+        })
+        .pipe(take(1))
+        .subscribe((response) => {
+          if (response) {
+            this.globalMessageService.showSuccess({
+              message: this.translateService.instant(marker('common.reviewEmail')),
+              actionText: this.translateService.instant(marker('common.close'))
+            });
+          }
+        });
     });
   }
 

@@ -10,10 +10,12 @@
             *ngFor="let item of facilities$ | async"
             [item]="item"
             [title]="item.name"
+            [importView]="true"
             [subtitle]="getSubtitle(item) | async"
             (edit)="editAction(item)"
             (delete)="deleteAction(item)"
             (duplicate)="duplicateAction(item)"
+            (import)="importAction(item)"
             (showUsers)="showUsersAction(item)"
             (click)="goTo(item)"
         ></app-organization-card>
