@@ -266,6 +266,7 @@
         "fileName": "Nombre de archivo",
         "filter": "Filtro",
         "filterAction": "Filtrar",
+        "filterByType": "Filtrar por tipo",
         "follow": "Seguir",
         "following": "Siguiendo",
         "footer": "Pie",
@@ -283,6 +284,7 @@
         "line": "Línea",
         "logo": "Logo",
         "manual": "Manual",
+        "mentions": "Menciones",
         "messages": "Mensajes",
         "more": "Más",
         "move": "Mover",
@@ -291,6 +293,7 @@
         "newItem": "Nuevo Elememto",
         "newLine": "Nueva línea",
         "next": "Siguiente",
+        "notifications": "Notificaciones",
         "okClient": "OK Cliente",
         "origin": "Origen",
         "others": "Otros",
@@ -301,6 +304,7 @@
         "price": "Precio",
         "priority": "Prioridad",
         "province": "Provincia",
+        "readen": "Leídas",
         "replacementVehicle": "Vehículo de sustitución",
         "replacements": "Recambios",
         "reset": "Restaurar",
@@ -335,6 +339,7 @@
         "typeBudget": "Añade una plantilla de presupuestos",
         "typeCard": "Tipos de ficha",
         "unfollow": "Dejar de seguir",
+        "unread": "Sin leer",
         "unsavedChangesExit": "Hay cambios en el formulario sin guardar, ¿desea salir igualmente?",
         "unselect": "Deseleccionar",
         "unselectAll": "Deseleccionar todos",
@@ -476,6 +481,17 @@
             "subState": "Subestado",
             "subStateUser": "Usuario",
             "title": "Workflow y estados"
+        }
+    },
+    "notifications": {
+        "type": {
+            "ADD_COMMENT": "Nuevo comentario",
+            "ADD_DOC": "Nuevo adjunto",
+            "ADD_MESSAGE_CLIENT": "Mensaje de cliente",
+            "CHANGE_STATE": "Cambio de estado",
+            "EDIT_INFO": "Edición",
+            "END_WORK": "Tarea finalizada",
+            "NEW_CARD": "Tarjeta nueva"
         }
     },
     "organizations": {
