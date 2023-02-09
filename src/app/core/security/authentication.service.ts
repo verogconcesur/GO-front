@@ -242,9 +242,9 @@ export class AuthenticationService implements OnDestroy {
     return warningStatus
       ? warningStatus
       : {
-          lastDateNoReadMention: +new Date() - 7 * 24 * 60 * 60 * 1000,
-          lastDateNoReadNotification: +new Date() - 7 * 24 * 60 * 60 * 1000,
-          lastDateRequest: +new Date() - 7 * 24 * 60 * 60 * 1000,
+          lastDateNoReadMention: null,
+          lastDateNoReadNotification: null,
+          lastDateRequest: null,
           existsNoReadMention: false,
           existsNoReadNotification: false,
           newNoReadMention: false,

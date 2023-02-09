@@ -1,4 +1,4 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { Router } from '@angular/router';
 import { PermissionConstants } from '@app/constants/permission.constants';
@@ -11,6 +11,8 @@ import { NewCardComponent, NewCardComponentModalEnum } from '@modules/feature-mo
 import { UntilDestroy } from '@ngneat/until-destroy';
 import { NotificationSoundService } from '@shared/services/notification-sounds.service';
 import { take } from 'rxjs/operators';
+import { MentionsComponent } from '../mentions/mentions.component';
+import { NotificationsComponent } from '../notifications/notifications.component';
 
 @UntilDestroy()
 @Component({
@@ -19,6 +21,8 @@ import { take } from 'rxjs/operators';
   styleUrls: ['./navbar.component.scss']
 })
 export class NavbarComponent implements OnInit, OnDestroy {
+  @ViewChild('notifications') notifications: NotificationsComponent;
+  @ViewChild('mentions') mentions: MentionsComponent;
   public readonly WORKFLOW_PATH = RouteConstants.WORKFLOWS;
   public readonly CLIENTS_PATH = RouteConstants.CUSTOMERS;
   public readonly VEHICLES_PATH = RouteConstants.VEHICLES;
@@ -29,7 +33,9 @@ export class NavbarComponent implements OnInit, OnDestroy {
     vehicles: marker('app.menu.vehicles'),
     advanceSearch: marker('app.menu.advanceSearch'),
     administration: marker('app.menu.administration'),
-    createCard: marker('app.menu.createCard')
+    createCard: marker('app.menu.createCard'),
+    notifications: marker('common.notifications'),
+    mentions: marker('common.mentions')
   };
   public infoWarning: WarningDTO = null;
   private readonly notificationTimeInterval = 20000;
@@ -90,10 +96,12 @@ export class NavbarComponent implements OnInit, OnDestroy {
 
   public showMentions(): void {
     this.infoWarning.existsNoReadMention = false;
+    this.mentions.getData();
   }
 
   public showNotifications(): void {
     this.infoWarning.existsNoReadNotification = false;
+    this.notifications.getData();
   }
 
   private initWarningInformationValue(): void {

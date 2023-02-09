@@ -72,4 +72,16 @@
       }
     }
   }
+
+  .navbar-warning-menu {
+    width: 280px;
+    height: 380px;
+    &__header {
+      padding: 10px 10px 0 10px;
+    }
+    &__content {
+      padding: 10px;
+      background-color: mat-contrast($primary, 500);
+    }
+  }
 }

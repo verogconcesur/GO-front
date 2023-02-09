@@ -45,10 +45,10 @@
             <app-workflow-card-searcher [format]="'icon'"></app-workflow-card-searcher>
         </button>
         <!-- END Responsive search input -->
-        <button mat-icon-button aria-label="Email" (click)="showMentions()" [matMenuTriggerFor]="appMenu">
+        <button mat-icon-button aria-label="Email" (click)="showMentions()" [matMenuTriggerFor]="mentionsMenu">
             <mat-icon fontSet="concenet" [ngClass]="{ active: infoWarning.existsNoReadMention }">comments</mat-icon>
         </button>
-        <button mat-icon-button aria-label="Notification" (click)="showNotifications()" [matMenuTriggerFor]="appMenu">
+        <button mat-icon-button aria-label="Notification" (click)="showNotifications()" [matMenuTriggerFor]="notificationsMenu">
             <mat-icon fontSet="concenet" [ngClass]="{ active: infoWarning.existsNoReadNotification }">notifications-on</mat-icon>
         </button>
 
@@ -73,4 +73,28 @@
     <button mat-menu-item (click)="navigateToAdministration()">
         <span>{{ labels.administration | translate }}</span>
     </button>
+</mat-menu>
+
+<mat-menu #notificationsMenu="matMenu">
+    <div class="navbar-warning-menu">
+        <h2 class="navbar-warning-menu__header">
+            {{ labels.notifications | translate }}
+        </h2>
+        <mat-divider></mat-divider>
+        <div class="navbar-warning-menu__content">
+            <app-notifications #notifications></app-notifications>
+        </div>
+    </div>
+</mat-menu>
+
+<mat-menu #mentionsMenu="matMenu">
+    <div class="navbar-warning-menu">
+        <h2 class="navbar-warning-menu__header">
+            {{ labels.mentions | translate }}
+        </h2>
+        <mat-divider></mat-divider>
+        <div class="navbar-warning-menu__content">
+            <app-mentions #mentions></app-mentions>
+        </div>
+    </div>
 </mat-menu>

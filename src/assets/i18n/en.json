@@ -266,6 +266,7 @@
         "fileName": "File name",
         "filter": "Filter",
         "filterAction": "Filter",
+        "filterByType": "Filter by type",
         "follow": "Follow",
         "following": "Following",
         "footer": "Footer",
@@ -283,6 +284,7 @@
         "line": "Line",
         "logo": "Logo",
         "manual": "Manual",
+        "mentions": "Mentions",
         "messages": "Messages",
         "more": "More",
         "move": "Move",
@@ -291,6 +293,7 @@
         "newItem": "New item",
         "newLine": "New line",
         "next": "Next",
+        "notifications": "Notifications",
         "okClient": "OK Client",
         "origin": "Origin",
         "others": "Others",
@@ -301,6 +304,7 @@
         "price": "Price",
         "priority": "Priority",
         "province": "Province",
+        "readen": "Readen",
         "replacementVehicle": "Replacement vehicle",
         "replacements": "Replacements",
         "reset": "Reset",
@@ -334,6 +338,7 @@
         "typeBudget": "Add a budget template",
         "typeCard": "Type card",
         "unfollow": "Unfollow",
+        "unread": "Unread",
         "unsavedChangesExit": "There are unsaved changes, do you want to continue?",
         "unselect": "Unselect",
         "unselectAll": "Unselect all",
@@ -385,14 +390,14 @@
             "import": "Import vehicle",
             "inventory": "Inventory",
             "inventoryType": "Inventory type",
-            "inventoryVehicleStatus": "",
+            "inventoryVehicleStatus": "Inventory vehicle status",
             "licensePlate": "License plate",
             "make": "Brand",
             "missInfo": "Missing information",
             "model": "Model",
-            "title": "Vehicles",
             "select": "Select vehicle",
             "stockId": "Inventary Id",
+            "title": "Vehicles",
             "vehicle": "Vehicle",
             "vehicleId": "Vehicle Id",
             "vin": "Vin"
@@ -474,6 +479,17 @@
             "subState": "Substate",
             "subStateUser": "User",
             "title": "Workflow and status"
+        }
+    },
+    "notifications": {
+        "type": {
+            "ADD_COMMENT": "New comment",
+            "ADD_DOC": "New attachment",
+            "ADD_MESSAGE_CLIENT": "Client message",
+            "CHANGE_STATE": "State changed",
+            "EDIT_INFO": "Edition",
+            "END_WORK": "Task ended",
+            "NEW_CARD": "New card"
         }
     },
     "organizations": {
