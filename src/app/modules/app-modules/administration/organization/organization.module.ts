@@ -19,6 +19,7 @@ import { OrganizationLevelsNestedCombosModule } from '@modules/feature-modules/o
 import { AdministrationCommonHeaderSectionModule } from '@modules/feature-modules/administration-common-header-section/administration-common-header-section.module';
 import { BreadCrumbsModule } from '@jenga/bread-crumbs';
 import { GenericTreeNodeSearcherModule } from '@modules/feature-modules/generic-tree-node-searcher/generic-tree-node-searcher.module';
+import { CsvFileImportationComponent } from './components/csv-file-importation/csv-file-importation.component';
 
 @NgModule({
   declarations: [
@@ -31,7 +32,8 @@ import { GenericTreeNodeSearcherModule } from '@modules/feature-modules/generic-
     CreateEditBrandComponent,
     CreateEditFacilityComponent,
     CreateEditDepartmentComponent,
-    CreateEditSpecialtyComponent
+    CreateEditSpecialtyComponent,
+    CsvFileImportationComponent
   ],
   imports: [
     CommonModule,
