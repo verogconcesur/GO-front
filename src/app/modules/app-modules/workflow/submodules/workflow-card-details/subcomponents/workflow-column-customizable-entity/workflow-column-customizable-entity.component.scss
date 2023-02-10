@@ -1,15 +1,15 @@
 @import 'utils/theme';
-
+:host {
+  position: relative;
+}
 .w-colunm-entity {
   overflow-y: auto;
-  height: 100%;
+  height: calc(100% - 40px);
+  margin: 20px 10px;
 }
 .w-colunm-entity-data {
   text-transform: uppercase;
-  margin: 30px 10px;
-  &:first-child {
-    margin-top: 20px;
-  }
+  padding-bottom: 30px;
   &__label {
     font-weight: 600;
     font-size: 0.85em;
@@ -26,15 +26,18 @@
 
 .w-colunm-entity-change-button {
   position: absolute;
-  bottom: 20px;
-  right: 23px;
+  padding: 20px;
+  bottom: 0;
+  left: 0;
+  width: calc(100% - 15px);
+  background-color: mat-contrast($primary, statusSuccess);
 }
 
 .no-data {
   font-weight: bold;
   display: flex;
   justify-content: center;
-  align-items: center;
+  align-items: end;
   margin: 20px 0;
   width: 100%;
 }

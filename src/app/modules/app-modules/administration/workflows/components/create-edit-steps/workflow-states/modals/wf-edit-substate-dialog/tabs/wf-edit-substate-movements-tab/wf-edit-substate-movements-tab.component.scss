@@ -117,7 +117,7 @@
           }
         }
         .substate-movements__column__substate__info {
-          width: 100%;
+          max-width: calc(100% - 29px);
           display: flex;
           justify-content: flex-start;
           align-items: center;

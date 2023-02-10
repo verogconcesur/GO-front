@@ -188,7 +188,15 @@ export class CreateEditBrandComponent extends ComponentToExtendForCustomDialog i
       });
   };
 
+  public convertToPlain(html: string) {
+    const tempDivElement = document.createElement('div');
+    tempDivElement.innerHTML = html;
+    return tempDivElement.textContent || tempDivElement.innerText || '';
+  }
   public textEditorContentChanged(type: 'header' | 'footer', html: string) {
+    if (html === '' || html === ' ' || this.convertToPlain(html) === '' || this.convertToPlain(html) === ' ') {
+      html = null;
+    }
     if (type === 'header' && html !== this.form.header.value) {
       this.brandForm.get('header').setValue(html, { emitEvent: true });
       this.brandForm.get('header').markAsDirty();

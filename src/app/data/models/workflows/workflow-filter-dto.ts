@@ -19,7 +19,7 @@ export default interface WorkflowFilterDTO {
 export interface WorkflowSearchFilterDTO {
   brands: BrandDTO[];
   departments: DepartmentDTO[];
-  facilities: FacilityDTO[];
+  facilities: FacilityDTO[] | number[];
   search: string;
   specialties: SpecialtyDTO[];
   status: 'DRAFT' | 'PUBLISHED';

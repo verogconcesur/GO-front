@@ -12,6 +12,7 @@ export interface TemplateComunicationItemsDTO {
   id: number;
   text: string;
   processedSubject: string;
+  processedEmail: string;
   processedText: string;
   subject: string;
   messageChannel: MessageChannelDTO;

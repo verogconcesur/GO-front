@@ -1,0 +1,60 @@
+<div class="list-view-state" *ngIf="showData">
+    <table class="table-workflows table-ellipsis" mat-table [dataSource]="wSubstate.cards">
+        <ng-container *ngFor="let head of headers; let i = index" [matColumnDef]="head.col">
+            <th mat-header-cell *matHeaderCellDef>{{ head.label }}</th>
+            <td mat-cell *matCellDef="let element">
+                <div *ngIf="!wState.front && i < headers.length - 2">
+                    <span class="tableValue">{{ getValue(element, i) }}</span>
+                </div>
+                <div *ngIf="wState.front && i === 0">
+                    <span class="tableValue">{{
+                        getUserName(element.cardInstanceWorkflows[0].cardInstanceWorkflowUsers[0].id)
+                    }}</span>
+                </div>
+                <div *ngIf="wState.front && i > 0 && i < headers.length - 2">
+                    <span class="tableValue">{{ getValue(element, i - 1) }}</span>
+                </div>
+                <div *ngIf="i === headers.length - 2">
+                    <span
+                        class="information"
+                        (click)="extendExtraInfoValue(element)"
+                        [ngClass]="{ expanded: element.expandInfo }"
+                        >{{ extraInfoValue(element) }}</span
+                    >
+                </div>
+                <div *ngIf="i === headers.length - 1">
+                    <div fxLyout="row" fxLayoutAlign="space-between center" class="table-workflows__actions">
+                        <mat-icon
+                            class="table-workflows__actions__detail"
+                            (click)="goDetailCard(element); $event.stopPropagation()"
+                            >remove_red_eye</mat-icon
+                        >
+                        <div
+                            class="table-workflows__actions__tasks"
+                            [ngClass]="{ completed: element.countCompletedTasks === element.countTotalTasks }"
+                            *ngIf="element.countTotalTasks > 0"
+                            (click)="showTasks(element); $event.stopPropagation()"
+                        >
+                            {{ element.countCompletedTasks }}/{{ element.countTotalTasks }}
+                            <mat-icon>check_box</mat-icon>
+                        </div>
+                        <div class="table-workflows__actions__colors">
+                            <div
+                                class="table-workflows__actions__colors__color"
+                                *ngFor="let color of getColors(element)"
+                                [style.background-color]="color"
+                                [ngClass]="getColorsClass(element)"
+                            ></div>
+                        </div>
+                    </div>
+                </div>
+            </td>
+        </ng-container>
+
+        <tr mat-header-row *matHeaderRowDef="displayedColumns; sticky: true"></tr>
+        <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
+    </table>
+</div>
+<div class="no-data" *ngIf="!showData" fxLyout="row" fxLayoutAlign="center center">
+    <span class="no-data__msg">{{ getErrorMsg() }}</span>
+</div>

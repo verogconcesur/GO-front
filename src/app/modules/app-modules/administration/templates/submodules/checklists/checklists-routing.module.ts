@@ -1,9 +1,33 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
-import { RouteConstants } from '@app/constants/route.constants';
+import { RouteConstants, RoutePermissionConstants } from '@app/constants/route.constants';
+import { AuthGuardService } from '@app/security/guards/authentication.guard';
 import { ChecklistsComponent } from './checklists.component';
 
-const routes: Routes = [{ path: RouteConstants.EMPTY, component: ChecklistsComponent }];
+const routes: Routes = [
+  {
+    path: RouteConstants.EMPTY,
+    canActivate: [AuthGuardService],
+    data: { permissions: RoutePermissionConstants.ADMINISTRATION },
+    children: [
+      {
+        path: RouteConstants.EMPTY,
+        canActivate: [AuthGuardService],
+        component: ChecklistsComponent
+      },
+      {
+        path: RouteConstants.OTHER,
+        pathMatch: 'full',
+        redirectTo: RouteConstants.EMPTY
+      }
+    ]
+  },
+  {
+    path: RouteConstants.OTHER,
+    pathMatch: 'full',
+    redirectTo: RouteConstants.LOGIN
+  }
+];
 
 @NgModule({
   imports: [RouterModule.forChild(routes)],

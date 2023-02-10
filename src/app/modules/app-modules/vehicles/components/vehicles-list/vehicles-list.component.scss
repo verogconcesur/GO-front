@@ -1,0 +1,25 @@
+.vehicles-wrapper {
+    min-width: 600px;
+    .table-vehicles {
+      margin-top: 43px;
+      .mat-column-licensePlate {
+        flex: 0 0 70%;
+      }
+      .mat-column-make,
+      .mat-column-vin,
+      .mat-column-description{
+        flex: 0 0 70%;
+        width: 250px;
+      }
+      .mat-column-model,
+      .mat-column-vehicleId,
+      .mat-column-chassis,
+      .mat-column-actions {
+        flex: 0 0 40%;
+      }
+      .mat-column-actions {
+        text-align: center;
+      }
+    }
+  }
+  

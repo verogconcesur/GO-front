@@ -2,6 +2,7 @@ import { Component, Inject, OnInit } from '@angular/core';
 import { FormBuilder, UntypedFormArray, UntypedFormControl, UntypedFormGroup, Validators } from '@angular/forms';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { marker } from '@biesbjerg/ngx-translate-extract-marker';
+import { TemplateComunicationItemsDTO } from '@data/models/templates/templates-communication-dto';
 import WorkflowEventMailDTO from '@data/models/workflows/workflow-event-mail-dto';
 import WorkflowSubstateEventDTO from '@data/models/workflows/workflow-substate-event-dto';
 import WorkflowSubstateUserDTO from '@data/models/workflows/workflow-substate-user-dto';
@@ -258,10 +259,17 @@ export class WorkflowCardMovementPreparationComponent implements OnInit {
         mov.workflowEventMails.map((em: WorkflowEventMailDTO) =>
           this.fb.group({
             id: [em.id, Validators.required],
-            processedEmail: [em.processedEmail ? em.processedEmail.split(',') : []],
-            //DGDC En algún momento puden que venga información también de sms y landing (habrá que verificar cuál es el canal)
-            subject: [em.templateComunication?.templateComunicationItems[0]?.processedSubject, Validators.required],
-            template: [em.templateComunication?.templateComunicationItems[0]?.processedText, Validators.required]
+            items: this.fb.array(
+              em.templateComunication.templateComunicationItems.map((tc: TemplateComunicationItemsDTO) =>
+                this.fb.group({
+                  id: [tc.id, Validators.required],
+                  messageChannel: [tc.messageChannel],
+                  processedEmail: [em.processedEmail && tc.messageChannel.id === 2 ? em.processedEmail.split(',') : []],
+                  subject: [tc.processedSubject, tc.messageChannel.id === 2 ? [Validators.required] : []],
+                  template: [tc.processedText, Validators.required]
+                })
+              )
+            )
           })
         )
       )
@@ -294,7 +302,7 @@ export class WorkflowCardMovementPreparationComponent implements OnInit {
   public getMovementExtraLabel(preparation: WorkflowSubstateEventDTO): string {
     return this.translateService.instant(marker('prepareMovement.extraMovementQuestion'), {
       // eslint-disable-next-line max-len
-      destination: `<b>${preparation.workflowSubstateTargetExtra.workflowState.name} - ${preparation.workflowSubstateTargetExtra.name}</b>`
+      destination: `<b>${preparation.workflowSubstateTargetExtra?.workflowState?.name} - ${preparation.workflowSubstateTargetExtra?.name}</b>`
     });
   }
 
@@ -313,8 +321,16 @@ export class WorkflowCardMovementPreparationComponent implements OnInit {
     }
   }
 
+  public convertToPlain(html: string) {
+    const tempDivElement = document.createElement('div');
+    tempDivElement.innerHTML = html;
+    return tempDivElement.textContent || tempDivElement.innerText || '';
+  }
   public textEditorContentChanged(html: string, form: UntypedFormGroup) {
     if (html !== form.controls.template.value) {
+      if (html === '' || html === ' ' || this.convertToPlain(html) === '' || this.convertToPlain(html) === ' ') {
+        html = null;
+      }
       form.get('template').setValue(html, { emitEvent: true });
       form.get('template').markAsDirty();
       form.get('template').markAsTouched();

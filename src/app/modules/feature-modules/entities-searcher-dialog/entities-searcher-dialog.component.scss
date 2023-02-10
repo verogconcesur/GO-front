@@ -16,12 +16,12 @@
     &__search {
       mat-form-field {
         width: 100%;
-        max-width: 500px;
+        max-width: 600px;
       }
     }
     &__error {
       width: 100%;
-      max-width: 500px;
+      max-width: 600px;
       height: 60px;
       border-radius: 6px;
       background-color: rgba(mat-color($primary, statusError), 0.1);
@@ -43,5 +43,8 @@
         }
       }
     }
+  }
+  &__button {
+    margin-top: 20px;
   }
 }

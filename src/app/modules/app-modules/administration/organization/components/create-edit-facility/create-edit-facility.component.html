@@ -18,7 +18,9 @@
                             class="facility-data__error"
                             *ngIf="facilityForm.controls.name.invalid && facilityForm.controls.name.touched"
                         >
-                            {{ labels.nameRequired | translate }} ({{ labels.minLength | translate: { length: this.minLength } }})
+                            {{ labels.nameRequired | translate }} ({{
+                                labels.minLength | translate : { length: this.minLength }
+                            }})
                         </mat-error>
                     </mat-form-field>
                     <!-- brand -->
@@ -111,6 +113,90 @@
                     </mat-form-field>
                 </div>
             </div>
+            <!-- Integration Data -->
+            <div class="facility-data__section">
+                <div class="facility-data__section__title first-child">
+                    {{ labels.integration | translate }}
+                </div>
+                <div class="facility-data__section__group">
+                    <mat-checkbox formControlName="requireConfigApiExt" (change)="requiredConfigChange($event.checked)">{{
+                        labels.requireConfigApiExt | translate
+                    }}</mat-checkbox>
+                </div>
+                <div class="facility-data__section__group grid-group">
+                    <!-- Code -->
+                    <mat-form-field
+                        appearance="outline"
+                        floatLabel="always"
+                        *ngIf="facilityForm.controls.requireConfigApiExt.value"
+                    >
+                        <mat-label>{{ labels.code | translate }}</mat-label>
+                        <input matInput formControlName="code" />
+                        <mat-error
+                            class="facility-data__error"
+                            *ngIf="facilityForm.controls.code.invalid && facilityForm.controls.code.touched"
+                        >
+                            {{ labels.required | translate }}
+                        </mat-error>
+                    </mat-form-field>
+                    <!-- EnterpriseId -->
+                    <mat-form-field
+                        appearance="outline"
+                        floatLabel="always"
+                        *ngIf="facilityForm.controls.requireConfigApiExt.value"
+                    >
+                        <mat-label>{{ labels.enterpriseId | translate }}</mat-label>
+                        <input matInput formControlName="enterpriseId" />
+                        <mat-error
+                            class="facility-data__error"
+                            *ngIf="facilityForm.controls.enterpriseId.invalid && facilityForm.controls.enterpriseId.touched"
+                        >
+                            {{ labels.required | translate }}
+                        </mat-error>
+                    </mat-form-field>
+                    <!-- StoreId -->
+                    <mat-form-field
+                        appearance="outline"
+                        floatLabel="always"
+                        *ngIf="facilityForm.controls.requireConfigApiExt.value"
+                    >
+                        <mat-label>{{ labels.storeId | translate }}</mat-label>
+                        <input matInput formControlName="storeId" />
+                        <mat-error
+                            class="facility-data__error"
+                            *ngIf="facilityForm.controls.storeId.invalid && facilityForm.controls.storeId.touched"
+                        >
+                            {{ labels.required | translate }}
+                        </mat-error>
+                    </mat-form-field>
+                </div>
+                <div class="facility-data__section__group substateList">
+                    <!-- workflowSubstate -->
+                    <mat-form-field
+                        appearance="outline"
+                        floatLabel="always"
+                        [matMenuTriggerFor]="attrSearcherMenu"
+                        *ngIf="facilityForm.controls.requireConfigApiExt.value"
+                    >
+                        <mat-label>{{ labels.workflowSubstate | translate }}</mat-label>
+                        <mat-select formControlName="workflowSubstate" [placeholder]="labels.select | translate">
+                            <mat-option style="display: none" *ngFor="let substate of substateList" [value]="substate">
+                                {{ substate.workflowState.workflow.name }}/{{ substate.workflowState.name }}/{{
+                                    substate.name
+                                }}</mat-option
+                            >
+                        </mat-select>
+                        <mat-error
+                            class="facility-data__error"
+                            *ngIf="
+                                facilityForm.controls.workflowSubstate.invalid && facilityForm.controls.workflowSubstate.touched
+                            "
+                        >
+                            {{ labels.required | translate }}
+                        </mat-error>
+                    </mat-form-field>
+                </div>
+            </div>
 
             <!-- Emails -->
             <div class="facility-data__section">
@@ -148,3 +234,12 @@
         <!-- TODO: buttons used when the component is not opened with customDialogService -->
     </div>
 </div>
+
+<button style="display: none" #menuTrigger="matMenuTrigger" [matMenuTriggerFor]="attrSearcherMenu"></button>
+<mat-menu #attrSearcherMenu="matMenu" class="attr-menu" (closed)="genericTreeNodeSearcher.resetFilter()">
+    <app-generic-tree-node-searcher
+        #genericTreeNodeSearcher
+        [originalData]="treeData"
+        (nodeSelected)="selectAttribute($event)"
+    ></app-generic-tree-node-searcher>
+</mat-menu>

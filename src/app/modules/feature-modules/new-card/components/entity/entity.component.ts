@@ -4,11 +4,30 @@ import { marker } from '@biesbjerg/ngx-translate-extract-marker';
 import CardColumnTabItemDTO from '@data/models/cards/card-column-tab-item-dto';
 import CustomerEntityDTO from '@data/models/entities/customer-entity-dto';
 import UserEntityDTO from '@data/models/entities/user-entity-dto';
-import VehicleEntityDTO from '@data/models/entities/vehicle-entity-dto';
+import VehicleEntityDTO, { InventoryVehicle } from '@data/models/entities/vehicle-entity-dto';
 import { CardService } from '@data/services/cards.service';
 import { EntitiesService } from '@data/services/entities.service';
+import { CustomDialogService } from '@jenga/custom-dialog';
+import {
+  CreateEditCustomerExternalApiComponentModalEnum,
+  ModalCustomerExternalApiComponent
+} from '@modules/feature-modules/modal-customer-external-api/modal-customer-external-api.component';
+import {
+  CreateEditCustomerComponentModalEnum,
+  ModalCustomerComponent
+} from '@modules/feature-modules/modal-customer/modal-customer.component';
+import {
+  CreateEditVehicleExternalApiComponentModalEnum,
+  ModalVehicleExternalApiComponent
+} from '@modules/feature-modules/modal-vehicle-external-api/modal-vehicle-external-api.component';
+import {
+  CreateEditVehicleComponentModalEnum,
+  ModalVehicleComponent
+} from '@modules/feature-modules/modal-vehicle/modal-vehicle.component';
 import { TranslateService } from '@ngx-translate/core';
+import { GlobalMessageService } from '@shared/services/global-message.service';
 import { ProgressSpinnerDialogService } from '@shared/services/progress-spinner-dialog.service';
+import { take } from 'rxjs/operators';
 
 @Component({
   selector: 'app-entity',
@@ -20,6 +39,11 @@ export class EntityComponent implements OnInit {
   @Input() formWorkflow: FormGroup;
   public labels = {
     search: marker('common.search'),
+    inventory: marker('entities.vehicles.inventory'),
+    createCustomer: marker('entities.customers.create'),
+    createVehicle: marker('entities.vehicles.create'),
+    importCustomer: marker('entities.customers.import'),
+    importVehicle: marker('entities.vehicles.import'),
     userNotFound: marker('newCard.errors.userNotFound'),
     vehicleNotFound: marker('newCard.errors.vehicleNotFound'),
     customerNotFound: marker('newCard.errors.customerNotFound'),
@@ -29,17 +53,138 @@ export class EntityComponent implements OnInit {
   public searchForm: FormGroup;
   public searching = false;
   public entityList: VehicleEntityDTO[] | UserEntityDTO[] | CustomerEntityDTO[] = [];
+  public inventoryList: InventoryVehicle[] = [];
   constructor(
     private fb: FormBuilder,
     private cardsService: CardService,
     private entitiesService: EntitiesService,
     private translateService: TranslateService,
-    private spinnerService: ProgressSpinnerDialogService
+    private spinnerService: ProgressSpinnerDialogService,
+    private globalMessageService: GlobalMessageService,
+    private customDialogService: CustomDialogService
   ) {}
   get tabItems(): FormArray {
     return this.formTab.get('tabItems') as FormArray;
   }
 
+  public showCreateEntity(): boolean {
+    if (this.formTab.get('contentSourceId').value === 1 || this.formTab.get('contentSourceId').value === 2) {
+      return true;
+    }
+    return false;
+  }
+  public getCreateEntityButtonLabel(): string {
+    switch (this.formTab.get('contentSourceId').value) {
+      case 1:
+        return this.labels.createCustomer;
+      case 2:
+        return this.labels.createVehicle;
+      default:
+        return '';
+    }
+  }
+  public getImportEntityButtonLabel(): string {
+    switch (this.formTab.get('contentSourceId').value) {
+      case 1:
+        return this.labels.importCustomer;
+      case 2:
+        return this.labels.importVehicle;
+      default:
+        return '';
+    }
+  }
+  public createEntity(importEntity?: boolean) {
+    switch (this.formTab.get('contentSourceId').value) {
+      case 1:
+        if (importEntity) {
+          this.customDialogService
+            .open({
+              id: CreateEditCustomerExternalApiComponentModalEnum.ID,
+              panelClass: CreateEditCustomerExternalApiComponentModalEnum.PANEL_CLASS,
+              component: ModalCustomerExternalApiComponent,
+              disableClose: true,
+              extendedComponentData: { facility: this.formWorkflow.controls.facility.value.id },
+              width: '900px'
+            })
+            .pipe(take(1))
+            .subscribe((response) => {
+              if (response) {
+                this.globalMessageService.showSuccess({
+                  message: this.translateService.instant(marker('common.successOperation')),
+                  actionText: this.translateService.instant(marker('common.close'))
+                });
+                this.searchForm.get('search').setValue(response);
+                this.selectEntity();
+              }
+            });
+        } else {
+          this.customDialogService
+            .open({
+              id: CreateEditCustomerComponentModalEnum.ID,
+              panelClass: CreateEditCustomerComponentModalEnum.PANEL_CLASS,
+              component: ModalCustomerComponent,
+              disableClose: true,
+              width: '900px'
+            })
+            .pipe(take(1))
+            .subscribe((response) => {
+              if (response) {
+                this.globalMessageService.showSuccess({
+                  message: this.translateService.instant(marker('common.successOperation')),
+                  actionText: this.translateService.instant(marker('common.close'))
+                });
+                this.searchForm.get('search').setValue(response);
+                this.selectEntity();
+              }
+            });
+        }
+        break;
+      case 2:
+        if (importEntity) {
+          this.customDialogService
+            .open({
+              id: CreateEditVehicleExternalApiComponentModalEnum.ID,
+              panelClass: CreateEditVehicleExternalApiComponentModalEnum.PANEL_CLASS,
+              component: ModalVehicleExternalApiComponent,
+              disableClose: true,
+              extendedComponentData: { facility: this.formWorkflow.controls.facility.value.id },
+              width: '900px'
+            })
+            .pipe(take(1))
+            .subscribe((response) => {
+              if (response) {
+                this.globalMessageService.showSuccess({
+                  message: this.translateService.instant(marker('common.successOperation')),
+                  actionText: this.translateService.instant(marker('common.close'))
+                });
+                this.searchForm.get('search').setValue(response);
+                this.selectEntity();
+              }
+            });
+        } else {
+          this.customDialogService
+            .open({
+              id: CreateEditVehicleComponentModalEnum.ID,
+              panelClass: CreateEditVehicleComponentModalEnum.PANEL_CLASS,
+              component: ModalVehicleComponent,
+              disableClose: true,
+              width: '900px'
+            })
+            .pipe(take(1))
+            .subscribe((response) => {
+              if (response) {
+                this.globalMessageService.showSuccess({
+                  message: this.translateService.instant(marker('common.successOperation')),
+                  actionText: this.translateService.instant(marker('common.close'))
+                });
+                this.searchForm.get('search').setValue(response);
+                this.selectEntity();
+              }
+            });
+        }
+        break;
+    }
+  }
   public searchAction() {
     if (this.searchForm.get('search').value && this.searchForm.get('search').value.length >= 3) {
       this.searching = true;
@@ -95,6 +240,8 @@ export class EntityComponent implements OnInit {
             break;
           case 2:
             this.formTab.get('vehicleId').setValue(entity.id);
+            this.formTab.get('vehicleInventoryId').setValue(null);
+            this.inventoryList = (entity as VehicleEntityDTO).inventories ? (entity as VehicleEntityDTO).inventories : [];
             break;
           case 3:
             this.formTab.get('userId').setValue(entity.id);
@@ -103,6 +250,57 @@ export class EntityComponent implements OnInit {
         this.searching = false;
         this.spinnerService.hide(spinner);
       });
+  }
+  public selectInventory(): void {
+    this.searching = true;
+    const spinner = this.spinnerService.show();
+    this.cardsService
+      .getEntityCardTabData(
+        this.formWorkflow.get('workflow').value.id,
+        this.formTab.get('id').value,
+        this.formTab.get('vehicleId').value,
+        this.formTab.get('vehicleInventoryId').value
+      )
+      .subscribe((res) => {
+        const tabItems = res as unknown as CardColumnTabItemDTO[];
+        tabItems.forEach((tabItem) => {
+          this.tabItems.controls.forEach((tabItemControl) => {
+            if (tabItemControl.get('id').value === tabItem.id) {
+              tabItemControl.get('value').setValue(tabItem.tabItemConfigVariable.variable.value);
+            }
+          });
+        });
+        this.searching = false;
+        this.spinnerService.hide(spinner);
+      });
+  }
+
+  public removeInventory(): void {
+    this.formTab.get('vehicleInventoryId').setValue(null);
+    this.searching = true;
+    const spinner = this.spinnerService.show();
+    this.cardsService
+      .getEntityCardTabData(
+        this.formWorkflow.get('workflow').value.id,
+        this.formTab.get('id').value,
+        this.formTab.get('vehicleId').value,
+        this.formTab.get('vehicleInventoryId').value
+      )
+      .subscribe((res) => {
+        const tabItems = res as unknown as CardColumnTabItemDTO[];
+        tabItems.forEach((tabItem) => {
+          this.tabItems.controls.forEach((tabItemControl) => {
+            if (tabItemControl.get('id').value === tabItem.id) {
+              tabItemControl.get('value').setValue(tabItem.tabItemConfigVariable.variable.value);
+            }
+          });
+        });
+        this.searching = false;
+        this.spinnerService.hide(spinner);
+      });
+  }
+  public showInventory(): boolean {
+    return this.formTab.get('contentSourceId').value === 2 && this.inventoryList.length > 0;
   }
   public showContent(): boolean {
     switch (this.formTab.get('contentSourceId').value) {
@@ -133,17 +331,23 @@ export class EntityComponent implements OnInit {
       case 1:
         const customer = entity as CustomerEntityDTO;
         let textOptionCustomer = customer.fullName;
-        if (customer.email.toLowerCase().trim().includes(this.searchForm.get('search').value.toLowerCase().trim())) {
+        if (
+          customer.email &&
+          customer.email.toLowerCase().trim().includes(this.searchForm.get('search').value.toLowerCase().trim())
+        ) {
           textOptionCustomer = textOptionCustomer + '/' + customer.email;
         }
-        if (customer.phone.toLowerCase().trim().includes(this.searchForm.get('search').value.toLowerCase().trim())) {
+        if (
+          customer.phone &&
+          customer.phone.toLowerCase().trim().includes(this.searchForm.get('search').value.toLowerCase().trim())
+        ) {
           textOptionCustomer = textOptionCustomer + '/' + customer.phone;
         }
         return textOptionCustomer;
       case 2:
         const vehicle = entity as VehicleEntityDTO;
         let textOptionVehicle = vehicle.licensePlate;
-        if (vehicle.vin.toLowerCase().trim().includes(this.searchForm.get('search').value.toLowerCase().trim())) {
+        if (vehicle.vin && vehicle.vin.toLowerCase().trim().includes(this.searchForm.get('search').value.toLowerCase().trim())) {
           textOptionVehicle = textOptionVehicle + '/' + vehicle.vin;
         }
         return textOptionVehicle;

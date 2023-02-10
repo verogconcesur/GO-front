@@ -1,0 +1,20 @@
+@import 'utils/core';
+@import 'utils/theme';
+.template-selector {
+  &__template {
+    .template {
+      cursor: pointer;
+      padding: 10px 5px;
+      transition: background-color 0.5s ease;
+      &__search {
+        color: mat-color($primary, 900);
+      }
+      &__included {
+        color: mat-color($primary, statusSuccess);
+      }
+      &:hover {
+        background-color: rgba(mat-color($primary, 300), 0.1);
+      }
+    }
+  }
+}

@@ -24,13 +24,13 @@
         </div>
         <div
             class="workflow-card__info__data extra-info"
-            *ngIf="card.information && showExtraInfo"
-            matTooltip="{{ card.information }}"
+            *ngIf="extraInfoValue() && extraInfoValue() !== '' && showExtraInfo"
+            matTooltip="{{ extraInfoValue() }}"
             appShowIfTruncated
             matTooltipPosition="below"
             (click)="$event.stopPropagation(); expandCardInfo()"
         >
-            {{ card.information }}
+            {{ extraInfoValue() }}
         </div>
         <div
             class="workflow-card__info__tasks"

@@ -9,7 +9,17 @@ const routes: Routes = [
   {
     path: RouteConstants.EMPTY,
     canActivate: [AuthGuardService],
-    component: WorkflowCardDetailsComponent
+    component: WorkflowCardDetailsComponent,
+    children: [
+      {
+        path: `${RouteConstants.WORKFLOWS_ID_CARD}/${RouteConstants.ID_CARD}`,
+        outlet: RouteConstants.WORKFLOWS_CARD_SIGN,
+        loadChildren: () =>
+          import('../../../../feature-modules/sign-card-documents-dialog/sign-card-documents-dialog.module').then(
+            (m) => m.SignCardDocumentsDialogModule
+          )
+      }
+    ]
   }
 ];
 

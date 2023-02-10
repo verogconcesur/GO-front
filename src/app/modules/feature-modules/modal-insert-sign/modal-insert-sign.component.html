@@ -1,0 +1,25 @@
+<div class="paint-zone" fxLayout="column" fxLayoutAlign="flex-start, center">
+    <div class="paint-zone__controls">
+        <div class="type">
+            <input type="radio" name="pen-type" id="sign-pen-pencil" class="pen-pencil" checked />
+            <label for="pen-pencil" (click)="pencilType = 'pencil'">
+                <mat-icon>edit</mat-icon>
+            </label>
+            <!-- <input type="radio" name="pen-type" id="sign-pen-brush" class="pen-brush" />
+            <label for="pen-brush" (click)="pencilType = 'brush'">
+                <mat-icon>brush</mat-icon>
+            </label> -->
+            <input type="radio" name="pen-type" id="sign-pen-eraser" class="pen-eraser" />
+            <label for="pen-eraser" (click)="pencilType = 'eraser'">
+                <mat-icon>edit_off</mat-icon>
+            </label>
+        </div>
+        <div class="size">
+            <input type="range" id="sign-pen-size" class="pen-size" min="1" max="30" value="3" />
+        </div>
+        <!-- <div class="color">
+            <input type="color" id="sign-pen-color" class="pen-color" value="#000" />
+        </div> -->
+    </div>
+    <div id="paint-zone__canvas-wrapper" class="paint-zone__canvas-wrapper"></div>
+</div>

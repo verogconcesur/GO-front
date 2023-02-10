@@ -37,14 +37,22 @@
                                 "output": "/assets/"
                             }
                         ],
-                        "styles": ["src/styles.scss", "node_modules/summernote/dist/summernote-lite.min.css"],
+                        "styles": [
+                            "src/styles.scss",
+                            "node_modules/summernote/dist/summernote-lite.min.css",
+                            "node_modules/jqueryui/jquery-ui.min.css"
+                        ],
                         "scripts": [
                             "node_modules/jquery/dist/jquery.min.js",
+                            "node_modules/jqueryui/jquery-ui.min.js",
+                            "src/assets/js/jquery/jquery-migrate-3.0.0.min.js",
                             "node_modules/summernote/dist/summernote-lite.min.js",
                             "node_modules/summernote/dist/lang/summernote-es-ES.js",
                             "src/assets/summernote-plugins/summernote-table-border-toggle.js",
                             "src/assets/summernote-plugins/summernote-table-headers.js",
-                            "src/assets/summernote-plugins/summernote-macro-list.js"
+                            "src/assets/summernote-plugins/summernote-macro-list.js",
+                            "node_modules/p5/lib/p5.min.js",
+                            "node_modules/p5/lib/addons/p5.sound.js"
                         ],
                         "stylePreprocessorOptions": {
                             "includePaths": ["src/styles"]
@@ -55,8 +63,8 @@
                         "budgets": [
                             {
                                 "type": "initial",
-                                "maximumWarning": "1mb",
-                                "maximumError": "4mb"
+                                "maximumWarning": "3mb",
+                                "maximumError": "6mb"
                             },
                             {
                                 "type": "anyComponentStyle",

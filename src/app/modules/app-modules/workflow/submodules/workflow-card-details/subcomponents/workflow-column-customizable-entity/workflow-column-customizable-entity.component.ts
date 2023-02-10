@@ -12,6 +12,19 @@ import { finalize, take } from 'rxjs/operators';
 // eslint-disable-next-line max-len
 import { EntitiesSearcherDialogService } from '@modules/feature-modules/entities-searcher-dialog/entities-searcher-dialog.service';
 import { WorkflowPrepareAndMoveService } from '@modules/app-modules/workflow/aux-service/workflow-prepare-and-move-aux.service';
+import CardInstanceDTO from '@data/models/cards/card-instance-dto';
+import { EntitiesService } from '@data/services/entities.service';
+import CustomerEntityDTO from '@data/models/entities/customer-entity-dto';
+import VehicleEntityDTO from '@data/models/entities/vehicle-entity-dto';
+import { CustomDialogService } from '@jenga/custom-dialog';
+import {
+  CreateEditCustomerComponentModalEnum,
+  ModalCustomerComponent
+} from '@modules/feature-modules/modal-customer/modal-customer.component';
+import {
+  CreateEditVehicleComponentModalEnum,
+  ModalVehicleComponent
+} from '@modules/feature-modules/modal-vehicle/modal-vehicle.component';
 
 @Component({
   selector: 'app-workflow-column-customizable-entity',
@@ -20,6 +33,7 @@ import { WorkflowPrepareAndMoveService } from '@modules/app-modules/workflow/aux
 })
 export class WorkflowColumnCustomizableEntityComponent implements OnInit, OnChanges {
   @Input() tab: CardColumnTabDTO = null;
+  @Input() cardInstance: CardInstanceDTO;
   @Output() setShowLoading: EventEmitter<boolean> = new EventEmitter(false);
   public workflowId: number;
   public idCard: number;
@@ -29,6 +43,8 @@ export class WorkflowColumnCustomizableEntityComponent implements OnInit, OnChan
     changeUser: marker('workflows.changeUser'),
     changeVehicle: marker('workflows.changeVehicle'),
     changeCustomer: marker('workflows.changeCustomer'),
+    editVehicle: marker('entities.vehicles.edit'),
+    editCustomer: marker('entities.customers.edit'),
     setUser: marker('workflows.setUser'),
     setVehicle: marker('workflows.setVehicle'),
     setCustomer: marker('workflows.setCustomer')
@@ -44,7 +60,9 @@ export class WorkflowColumnCustomizableEntityComponent implements OnInit, OnChan
     private translateService: TranslateService,
     private datePipe: DatePipe,
     private entitySearcher: EntitiesSearcherDialogService,
-    private prepareAndMoveService: WorkflowPrepareAndMoveService
+    private prepareAndMoveService: WorkflowPrepareAndMoveService,
+    private entitiesService: EntitiesService,
+    private customDialogService: CustomDialogService
   ) {}
 
   ngOnInit(): void {
@@ -57,6 +75,24 @@ export class WorkflowColumnCustomizableEntityComponent implements OnInit, OnChan
       this.dataLoaded = false;
       this.entityData = [];
       this.getData();
+    }
+  }
+
+  public showEditEntity(): boolean {
+    if (this.tab.permissionType === 'EDIT' && [1, 2].indexOf(this.tab.contentSourceId) >= 0 && this.entityData?.length) {
+      return true;
+    }
+    return false;
+  }
+
+  public getEditEntityButtonLabel(): string {
+    switch (this.tab.contentSourceId) {
+      case 1:
+        return this.labels.editCustomer;
+      case 2:
+        return this.labels.editVehicle;
+      default:
+        return '';
     }
   }
 
@@ -131,10 +167,10 @@ export class WorkflowColumnCustomizableEntityComponent implements OnInit, OnChan
     }
     this.setShowLoading.emit(true);
     this.entitySearcher
-      .openEntitySearcher(this.workflowId, mode)
+      .openEntitySearcher(this.workflowId, this.cardInstance.cardInstanceWorkflow.facilityId, mode)
       .then((data) => {
         this.cardService
-          .setEntityToTab(this.idCard, this.tab.id, data.id)
+          .setEntityToTab(this.idCard, this.tab.id, data.entity.id, data.vehicleInventoryId)
           .pipe(take(1))
           .subscribe(
             (resp) => {
@@ -151,5 +187,65 @@ export class WorkflowColumnCustomizableEntityComponent implements OnInit, OnChan
           );
       })
       .finally(() => this.setShowLoading.emit(false));
+  }
+
+  public editEntity(): void {
+    this.setShowLoading.emit(true);
+    switch (this.tab.contentSourceId) {
+      case 1:
+        //'CUSTOMER';
+        this.entitiesService
+          .getCustomer(this.cardInstance.cardInstanceWorkflow.cardInstance.customerId)
+          .subscribe((data: CustomerEntityDTO) => {
+            this.setShowLoading.emit(false);
+            this.customDialogService
+              .open({
+                id: CreateEditCustomerComponentModalEnum.ID,
+                panelClass: CreateEditCustomerComponentModalEnum.PANEL_CLASS,
+                component: ModalCustomerComponent,
+                extendedComponentData: data ? data : null,
+                disableClose: true,
+                width: '900px'
+              })
+              .pipe(take(1))
+              .subscribe((response) => {
+                if (response) {
+                  this.globalMessageService.showSuccess({
+                    message: this.translateService.instant(marker('common.successOperation')),
+                    actionText: this.translateService.instant(marker('common.close'))
+                  });
+                  this.prepareAndMoveService.reloadData$.next('MOVES_IN_OTHER_WORKFLOWS');
+                }
+              });
+          });
+        break;
+      case 2:
+        //'VEHICLE';
+        this.entitiesService
+          .getVehicle(this.cardInstance.cardInstanceWorkflow.cardInstance.vehicleId)
+          .subscribe((data: VehicleEntityDTO) => {
+            this.setShowLoading.emit(false);
+            this.customDialogService
+              .open({
+                id: CreateEditVehicleComponentModalEnum.ID,
+                panelClass: CreateEditVehicleComponentModalEnum.PANEL_CLASS,
+                component: ModalVehicleComponent,
+                extendedComponentData: data ? data : null,
+                disableClose: true,
+                width: '900px'
+              })
+              .pipe(take(1))
+              .subscribe((response) => {
+                if (response) {
+                  this.globalMessageService.showSuccess({
+                    message: this.translateService.instant(marker('common.successOperation')),
+                    actionText: this.translateService.instant(marker('common.close'))
+                  });
+                  this.prepareAndMoveService.reloadData$.next('MOVES_IN_OTHER_WORKFLOWS');
+                }
+              });
+          });
+        break;
+    }
   }
 }

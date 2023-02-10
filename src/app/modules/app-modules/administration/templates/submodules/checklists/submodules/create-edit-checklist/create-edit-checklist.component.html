@@ -1,0 +1,383 @@
+<div class="checklist-config">
+    <div class="checklist-config__column checklist-config__config">
+        <div fxLayoutAlign="space-between center">
+            <h1 class="checklist-config__column__title">{{ getTitle() }}</h1>
+            <button
+                mat-raised-button
+                color="warn"
+                class="delete-file-button"
+                (click)="eraseTemplatePDF()"
+                *ngIf="checklistForm?.get('templateFile').get('content').value"
+            >
+                {{ labels.deleteFile | translate }}
+            </button>
+        </div>
+        <div class="checklist-config__config__accordion">
+            <mat-accordion [multi]="true">
+                <mat-expansion-panel [expanded]="true">
+                    <mat-expansion-panel-header>
+                        <mat-panel-title> {{ labels.cheklistConfig | translate }}</mat-panel-title>
+                    </mat-expansion-panel-header>
+                    <form
+                        [formGroup]="checklistForm"
+                        *ngIf="checklistForm"
+                        class="checklist-config__form smaller-mat-form-fields"
+                    >
+                        <!-- General Data -->
+                        <div class="template-data__section">
+                            <!-- <div class="template-data__section__title first-child">
+                            {{ labels.data | translate }}
+                        </div> -->
+                            <div class="template-data__section__group grid-group" formGroupName="template">
+                                <!-- Name -->
+                                <mat-form-field appearance="outline" floatLabel="always" class="first-item">
+                                    <mat-label>{{ labels.name | translate }}</mat-label>
+                                    <input matInput formControlName="name" />
+                                    <mat-error
+                                        class="template-data__error"
+                                        *ngIf="
+                                            checklistForm.get('template.name').invalid &&
+                                            checklistForm.get('template.name').touched
+                                        "
+                                    >
+                                        {{ labels.nameRequired | translate }}
+                                    </mat-error>
+                                </mat-form-field>
+                                <app-organization-levels-nested-combos
+                                    #OrganizationLevelsNestedCombos
+                                    [form]="checklistForm.get('template')"
+                                ></app-organization-levels-nested-combos>
+                            </div>
+                            <div class="template-data__section__group">
+                                <!-- Include pdf in template -->
+                                <section>
+                                    <mat-checkbox formControlName="includeFile">{{
+                                        labels.includeFile | translate
+                                    }}</mat-checkbox>
+                                </section>
+                            </div>
+                        </div>
+                    </form>
+                </mat-expansion-panel>
+                <mat-expansion-panel [expanded]="true">
+                    <mat-expansion-panel-header>
+                        <mat-panel-title> {{ labels.itemsInTemplate | translate }} </mat-panel-title>
+                    </mat-expansion-panel-header>
+                    <!-- Group by type -->
+                    <mat-accordion [multi]="true">
+                        <mat-expansion-panel
+                            *ngFor="let groupByType of itemListToShow; let i = index"
+                            (opened)="expansionPanelOpened['group-' + groupByType.typeItem] = true"
+                            (closed)="expansionPanelOpened['group-' + groupByType.typeItem] = false"
+                            [expanded]="expansionPanelOpened['group-' + groupByType.typeItem]"
+                        >
+                            <mat-expansion-panel-header>
+                                <mat-panel-title>
+                                    {{ labels.fieldsType | translate }}: {{ groupByType.typeLabel }}
+                                </mat-panel-title>
+                                <mat-panel-description fxLayoutAlign="space-between center">
+                                    <div fxLayout="column" fxLayoutAlign="flex-start center">
+                                        <!-- <label> {{ labels.pages | translate }}: {{ groupByType.numPages.join(",") }} </label> -->
+                                        <label> Id's: {{ groupByType.orderNumbers.join(",") }} </label>
+                                    </div>
+                                    <!-- Show in page -->
+                                    <div class="smaller-mat-form-fields">
+                                        {{ labels.showInPage | translate }}:
+                                        <mat-form-field style="width: 45px; margin-left: 5px" (click)="$event.stopPropagation()">
+                                            <mat-select [ngModel]="page" (selectionChange)="changePage($event.value)">
+                                                <mat-option *ngFor="let p of groupByType.numPages" [value]="p">
+                                                    {{ p }}
+                                                </mat-option>
+                                            </mat-select>
+                                        </mat-form-field>
+                                    </div>
+                                </mat-panel-description>
+                            </mat-expansion-panel-header>
+                            <!-- Group by sync -->
+                            <mat-accordion [multi]="true" [displayMode]="'flat'">
+                                <mat-expansion-panel
+                                    *ngFor="let syncGroup of groupByType.syncGroups; let i = index"
+                                    (opened)="expansionPanelOpened['sync-' + syncGroup.sincronizedItems.join('-')] = true"
+                                    (closed)="expansionPanelOpened['sync-' + syncGroup.sincronizedItems.join('-')] = false"
+                                    [expanded]="expansionPanelOpened['sync-' + syncGroup.sincronizedItems.join('-')]"
+                                >
+                                    <mat-expansion-panel-header>
+                                        <mat-panel-title fxLayoutAlign="flex-start center">
+                                            <div
+                                                class="checklistItemToDrag__orderNumber"
+                                                [ngClass]="{ selected: syncGroup.selectedItem === ordN }"
+                                                *ngFor="let ordN of syncGroup.sincronizedItems"
+                                                (click)="
+                                                    $event.stopPropagation();
+                                                    changePage(groupByType.orderNumberPageAssociation[ordN]);
+                                                    syncGroup.selectedItem = ordN
+                                                "
+                                            >
+                                                {{ ordN }}
+                                            </div>
+                                        </mat-panel-title>
+                                        <mat-panel-description fxLayoutAlign="space-between center">
+                                            <label> {{ getSyncGroupLabel(syncGroup) }} </label>
+                                            <label>
+                                                {{ labels.showInPage | translate }}: {{ syncGroup.numPages.join(",") }}
+                                            </label>
+                                        </mat-panel-description>
+                                    </mat-expansion-panel-header>
+                                    <form
+                                        [formGroup]="getChecklistItemByOrderNumber(syncGroup.selectedItem)"
+                                        *ngIf="getChecklistItemByOrderNumber(syncGroup.selectedItem)"
+                                        class="smaller-mat-form-fields"
+                                    >
+                                        <!-- Common section -->
+                                        <section fxLayoutAlign="space-between center">
+                                            <!-- Label -->
+                                            <mat-form-field style="width: 80%" appearance="outline" floatLabel="always">
+                                                <mat-label>{{ labels.label | translate }}</mat-label>
+                                                <input matInput formControlName="label" (change)="updateValueAndValidityForm()" />
+                                            </mat-form-field>
+                                            <mat-icon
+                                                class="delete-item-button"
+                                                (click)="deleteChecklistItem(syncGroup.selectedItem)"
+                                                >delete</mat-icon
+                                            >
+                                        </section>
+                                        <section class="checklist-config__config__item">
+                                            <section *ngIf="groupByType.typeItem === 'SIGN'">
+                                                <mat-form-field appearance="outline" floatLabel="always" style="width: 100%">
+                                                    <mat-label>{{ labels.signType | translate }}*</mat-label>
+                                                    <mat-select
+                                                        formControlName="typeSign"
+                                                        (selectionChange)="typeSignChange(syncGroup)"
+                                                    >
+                                                        <mat-option
+                                                            *ngFor="let typeSign of ['SIGN_USER', 'SIGN_CLIENT']"
+                                                            [value]="typeSign"
+                                                            >{{ labels[typeSign] | translate }}</mat-option
+                                                        >
+                                                    </mat-select>
+                                                </mat-form-field>
+                                            </section>
+                                            <section *ngIf="groupByType.typeItem === 'VARIABLE'">
+                                                <mat-form-field appearance="outline" floatLabel="always" style="width: 100%">
+                                                    <mat-label>{{ labels.variable | translate }}*</mat-label>
+                                                    <mat-select
+                                                        formControlName="variable"
+                                                        (selectionChange)="updateValueAndValidityForm()"
+                                                    >
+                                                        <mat-option *ngFor="let variable of listVariables" [value]="variable">{{
+                                                            variable.name
+                                                        }}</mat-option>
+                                                    </mat-select>
+                                                </mat-form-field>
+                                            </section>
+                                            <!-- Static value -->
+                                            <section
+                                                *ngIf="
+                                                    (groupByType.typeItem === 'TEXT' || groupByType.typeItem === 'IMAGE') &&
+                                                    getChecklistItemByOrderNumber(syncGroup.selectedItem).get('sincronizedItems')
+                                                        .value.length === 1
+                                                "
+                                                class="section-margin-bottom"
+                                            >
+                                                <mat-checkbox formControlName="staticValue">{{
+                                                    labels.staticValue | translate
+                                                }}</mat-checkbox>
+                                            </section>
+                                            <!-- Static value TEXT-->
+                                            <section
+                                                *ngIf="
+                                                    groupByType.typeItem === 'TEXT' &&
+                                                    getChecklistItemByOrderNumber(syncGroup.selectedItem).get('staticValue').value
+                                                "
+                                                formGroupName="itemVal"
+                                                class="section-margin-bottom"
+                                            >
+                                                <mat-form-field appearance="outline" floatLabel="always" style="width: 100%">
+                                                    <mat-label>{{ labels.staticValueInput | translate }} *</mat-label>
+                                                    <input matInput formControlName="textValue" />
+                                                </mat-form-field>
+                                            </section>
+                                        </section>
+                                        <!-- Static value IMAGE-->
+                                        <section
+                                            *ngIf="
+                                                groupByType.typeItem === 'IMAGE' &&
+                                                getChecklistItemByOrderNumber(syncGroup.selectedItem).get('staticValue').value
+                                            "
+                                            fxLayoutAlign="space-between center"
+                                            class="section-margin-bottom"
+                                        >
+                                            <button
+                                                mat-raised-button
+                                                color="primary"
+                                                class="add-static-image-btn"
+                                                (click)="staticImage.click()"
+                                            >
+                                                <label>{{ labels.staticValueImage | translate }} *</label>
+                                            </button>
+                                            <div class="image-input-preview" fxLayoutAlign="center center">
+                                                <img [src]="getImagePreviewBase64(syncGroup.selectedItem)" />
+                                            </div>
+                                            <input
+                                                type="file"
+                                                style="display: none"
+                                                #staticImage
+                                                accept="image/*"
+                                                id="staticImage"
+                                                (change)="addStaticImage($event.target.files, syncGroup.selectedItem)"
+                                            />
+                                        </section>
+                                        <section
+                                            *ngIf="
+                                                (groupByType.typeItem === 'TEXT' ||
+                                                    groupByType.typeItem === 'CHECK' ||
+                                                    groupByType.typeItem === 'SIGN') &&
+                                                !getChecklistItemByOrderNumber(syncGroup.selectedItem).get('staticValue').value
+                                            "
+                                        >
+                                            <!-- SYNCRONIZATION FOR CHECKS, TEXTS AND SIGNS -->
+                                            <mat-form-field
+                                                appearance="outline"
+                                                floatLabel="always"
+                                                style="width: 100%"
+                                                *ngIf="getSyncronizableItems(groupByType, syncGroup).length > 1"
+                                            >
+                                                <mat-label>{{ labels.syncronization | translate }}</mat-label>
+                                                <mat-select
+                                                    formControlName="sincronizedItems"
+                                                    multiple
+                                                    (openedChange)="syncronizationChange($event, groupByType, syncGroup)"
+                                                >
+                                                    <mat-option
+                                                        *ngFor="let ordNumber of getSyncronizableItems(groupByType, syncGroup)"
+                                                        [disabled]="ordNumber === syncGroup.selectedItem"
+                                                        [value]="ordNumber"
+                                                        >{{ ordNumber }}{{ getLabelForOrderNumber(ordNumber) }}</mat-option
+                                                    >
+                                                </mat-select>
+                                            </mat-form-field>
+                                        </section>
+                                    </form>
+                                    <section class="smaller-mat-form-fields">
+                                        <mat-form-field style="width: 100%">
+                                            <mat-label>{{ labels.copyItemInPage | translate }}</mat-label>
+                                            <mat-select
+                                                multiple
+                                                [formControl]="pagesSelectedToAddItem"
+                                                (openedChange)="duplicateItemIn($event, syncGroup)"
+                                            >
+                                                <mat-option *ngFor="let page of pages" [value]="page">{{ page }}</mat-option>
+                                            </mat-select>
+                                        </mat-form-field>
+                                    </section>
+                                </mat-expansion-panel>
+                                <label *ngIf="itemListToShow?.length === 0">{{ labels.noData | translate }}</label>
+                            </mat-accordion>
+                        </mat-expansion-panel>
+                        <label *ngIf="itemListToShow?.length === 0">{{ labels.noData | translate }}</label>
+                    </mat-accordion>
+                </mat-expansion-panel>
+            </mat-accordion>
+        </div>
+    </div>
+    <div class="checklist-config__column checklist-config__pdf">
+        <ng-container class="checklist-config__pdf__viewer" *ngIf="fileTemplateBase64 | async as base64; else dropZone">
+            <ngx-extended-pdf-viewer
+                id="checklistPDF"
+                [base64Src]="base64"
+                height="99%"
+                [handTool]="false"
+                [useBrowserLocale]="true"
+                [zoom]="'page-fit'"
+                [zoomLevels]="['page-fit']"
+                [textLayer]="true"
+                [showZoomButtons]="true"
+                [showHandToolButton]="false"
+                [showPresentationModeButton]="false"
+                [showRotateButton]="false"
+                [showFindButton]="false"
+                [showPrintButton]="false"
+                [showSpreadButton]="false"
+                [showDownloadButton]="false"
+                [showOpenFileButton]="false"
+                [(page)]="page"
+                (pdfLoaded)="pdfLoadedFn($event)"
+                (zoomChange)="pdfZoomChange($event)"
+                (textLayerRendered)="configCanvas($event)"
+            >
+            </ngx-extended-pdf-viewer>
+        </ng-container>
+        <ng-template #dropZone>
+            <div class="checklist-config__pdf__drop-zone" appDropZone (fileDropped)="fileDropped($event)">
+                <button mat-icon-button color="primary" class="add-pdf-template-btn" (click)="fileDropRef.click()">
+                    <mat-icon>add</mat-icon>
+                </button>
+                {{ labels.dropHere | translate }}
+            </div>
+        </ng-template>
+        <input
+            type="file"
+            style="display: none"
+            #fileDropRef
+            accept=".pdf"
+            id="fileDropRef"
+            (change)="fileBrowseHandler($event.target.files)"
+        />
+    </div>
+
+    <div class="checklist-config__column checklist-config__items">
+        <!-- 'SIGN' | 'TEXT' | 'VARIABLE' | 'CHECK' | 'DRAWING' | 'IMAGE'; -->
+        <div class="checklistItemToDrag undropped" id="checklistItemToDrag__text" data-type="TEXT">
+            <div class="resizable" style="height: 50px; width: 124px">
+                <div class="checklistItemToDrag__text checklistItemToDrag__label">
+                    <label>{{ labels.text | translate }}</label>
+                </div>
+            </div>
+        </div>
+        <div class="checklistItemToDrag undropped" id="checklistItemToDrag__sign" data-type="SIGN">
+            <div class="resizable" style="height: 50px; width: 124px">
+                <div class="checklistItemToDrag__sign checklistItemToDrag__label">
+                    <label>{{ labels.sign | translate }}</label>
+                </div>
+            </div>
+        </div>
+        <div class="checklistItemToDrag undropped" id="checklistItemToDrag__drawing" data-type="DRAWING">
+            <div class="resizable" style="height: 50px; width: 124px">
+                <div class="checklistItemToDrag__drawing checklistItemToDrag__label">
+                    <label>{{ labels.drawing | translate }}</label>
+                </div>
+            </div>
+        </div>
+        <div class="checklistItemToDrag undropped" id="checklistItemToDrag__check" data-type="CHECK">
+            <div class="resizable" style="height: 50px; width: 124px">
+                <div class="checklistItemToDrag__check checklistItemToDrag__label">
+                    <label>{{ labels.check | translate }}</label>
+                </div>
+            </div>
+        </div>
+        <div class="checklistItemToDrag undropped" id="checklistItemToDrag__variable" data-type="VARIABLE">
+            <div class="resizable" style="height: 50px; width: 124px">
+                <div class="checklistItemToDrag__variable checklistItemToDrag__label">
+                    <label>{{ labels.variable | translate }}</label>
+                </div>
+            </div>
+        </div>
+        <div class="checklistItemToDrag undropped" id="checklistItemToDrag__image" data-type="IMAGE">
+            <div class="resizable" style="height: 50px; width: 124px">
+                <div class="checklistItemToDrag__image checklistItemToDrag__label">
+                    <label>{{ labels.image | translate }}</label>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- Footer -->
+<div class="checklist-footer" fxLayoutAlign="space-between center">
+    <button mat-stroked-button color="warn" (click)="cancel()">{{ labels.cancel | translate }}</button>
+    <div class="checklist-footer__error" fxLayout="column" fxLayoutAlign="flex-start center">
+        <label *ngFor="let error of getErrorMessages()">{{ error }}</label>
+    </div>
+    <button mat-flat-button color="primary" (click)="save()" [disabled]="isSaveDisabled()">
+        {{ labels.save | translate }}
+    </button>
+</div>
