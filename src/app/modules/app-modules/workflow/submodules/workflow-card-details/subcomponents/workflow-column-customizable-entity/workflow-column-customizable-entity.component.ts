@@ -167,10 +167,10 @@ export class WorkflowColumnCustomizableEntityComponent implements OnInit, OnChan
     }
     this.setShowLoading.emit(true);
     this.entitySearcher
-      .openEntitySearcher(this.workflowId, mode)
+      .openEntitySearcher(this.workflowId, this.cardInstance.cardInstanceWorkflow.facilityId, mode)
       .then((data) => {
         this.cardService
-          .setEntityToTab(this.idCard, this.tab.id, data.id)
+          .setEntityToTab(this.idCard, this.tab.id, data.entity.id, data.vehicleInventoryId)
           .pipe(take(1))
           .subscribe(
             (resp) => {

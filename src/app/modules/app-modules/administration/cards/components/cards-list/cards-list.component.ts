@@ -14,7 +14,7 @@ import { ConfirmDialogService } from '@shared/services/confirm-dialog.service';
 import { GlobalMessageService } from '@shared/services/global-message.service';
 import { ProgressSpinnerDialogService } from '@shared/services/progress-spinner-dialog.service';
 import { Observable, of } from 'rxjs';
-import { take, finalize } from 'rxjs/operators';
+import { finalize, map, take } from 'rxjs/operators';
 
 @UntilDestroy()
 @Component({
@@ -90,13 +90,29 @@ export class CardsListComponent implements OnInit {
             size: 20
           }
         )
-        .pipe(take(1));
+        .pipe(
+          take(1),
+          map((response: PaginationResponseI<CardDTO>) => ({
+            content: response.content,
+            optionLabelFn: this.optionLabelFn
+          }))
+        );
     } else {
       return of({
-        content: []
+        content: [],
+        optionLabelFn: this.optionLabelFn
       });
     }
   };
+  public optionLabelFn = (option: CardDTO): string => {
+    if (option) {
+      let name = '';
+      name += option.name ? option.name : '';
+      return name;
+    }
+    return '';
+  };
+
   public getCards = (pageEvent?: PageEvent): void => {
     const spinner = this.spinnerService.show();
     if (pageEvent) {

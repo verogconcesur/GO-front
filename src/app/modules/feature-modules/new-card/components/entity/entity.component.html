@@ -25,9 +25,12 @@
                 </mat-autocomplete>
             </mat-form-field>
 
-            <div class="entity__head__search__button" fxLayout="row" fxLayoutAlign="center end">
+            <div class="entity__head__search__button" fxLayout="row" fxLayoutAlign="space-around end">
                 <button mat-stroked-button *ngIf="showCreateEntity()" (click)="createEntity()">
                     {{ getCreateEntityButtonLabel() | translate }}
+                </button>
+                <button mat-stroked-button *ngIf="showCreateEntity()" (click)="createEntity(true)">
+                    {{ getImportEntityButtonLabel() | translate }}
                 </button>
             </div>
         </form>
@@ -41,6 +44,19 @@
             *ngIf="!searchForm.value.search && this.formTab.invalid && !this.searching"
         >
             <mat-icon>error_outline</mat-icon><span>{{ labels.required | translate }}</span>
+        </div>
+        <div class="entity__head__content smaller-mat-form-fields" [formGroup]="formTab" *ngIf="showInventory()">
+            <mat-form-field appearance="outline" floatLabel="always">
+                <mat-label>{{ labels.inventory | translate }}</mat-label>
+                <mat-select formControlName="vehicleInventoryId" (selectionChange)="selectInventory()">
+                    <mat-option *ngFor="let inventory of inventoryList" [value]="inventory.id">{{
+                        inventory.vehicleStockId
+                    }}</mat-option>
+                </mat-select>
+                <button matSuffix mat-icon-button aria-label="Clear" (click)="removeInventory(); $event.stopPropagation()">
+                    <mat-icon>close</mat-icon>
+                </button>
+            </mat-form-field>
         </div>
         <div class="entity__head__content" fxLayout="column" *ngIf="showContent()">
             <div *ngFor="let tabItem of tabItems.controls" class="entity__head__content__item" fxLayout="column">

@@ -1,6 +1,7 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
+import { RouteConstants } from '@app/constants/route.constants';
 import { ConcenetError } from '@app/types/error';
 import { marker } from '@biesbjerg/ngx-translate-extract-marker';
 import CardColumnTabDTO from '@data/models/cards/card-column-tab-dto';
@@ -13,6 +14,7 @@ import { CustomDialogService } from '@jenga/custom-dialog';
 import { WorkflowPrepareAndMoveService } from '@modules/app-modules/workflow/aux-service/workflow-prepare-and-move-aux.service';
 import { TranslateService } from '@ngx-translate/core';
 import { GlobalMessageService } from '@shared/services/global-message.service';
+import { replacerFunc } from '@shared/utils/replacer-function';
 import { take } from 'rxjs/operators';
 import {
   MessageClientDialogComponent,
@@ -29,6 +31,7 @@ export class WorkflowColumnActionsAndLinksComponent implements OnInit {
   @Input() tab: CardColumnTabDTO = null;
   @Input() cardInstance: CardInstanceDTO;
   @Input() card: CardDTO;
+  @Input() idUser: number = null;
   public actions: WorkflowCardTabItemDTO[];
   public links: WorkflowCardTabItemDTO[];
   public shortCuts: WorkflowMoveDTO[];
@@ -47,7 +50,8 @@ export class WorkflowColumnActionsAndLinksComponent implements OnInit {
     private translateService: TranslateService,
     private dialog: MatDialog,
     private prepareAndMoveService: WorkflowPrepareAndMoveService,
-    private customDialogService: CustomDialogService
+    private customDialogService: CustomDialogService,
+    private router: Router
   ) {}
 
   ngOnInit(): void {
@@ -103,7 +107,7 @@ export class WorkflowColumnActionsAndLinksComponent implements OnInit {
           console.log('ATTACH_DOC');
           break;
         case 'SIGN_DOC':
-          console.log('SIGN_DOC');
+          this.signDocument();
           break;
         case 'MESSAGE_CLIENT':
           this.customDialogService
@@ -124,6 +128,48 @@ export class WorkflowColumnActionsAndLinksComponent implements OnInit {
           break;
       }
     }
+  }
+
+  public signDocument(): void {
+    let view = RouteConstants.WORKFLOWS_BOARD_VIEW;
+    if (this.router.url.indexOf(RouteConstants.WORKFLOWS_CALENDAR_VIEW) >= 0) {
+      view = RouteConstants.WORKFLOWS_CALENDAR_VIEW;
+    } else if (this.router.url.indexOf(RouteConstants.WORKFLOWS_TABLE_VIEW) >= 0) {
+      view = RouteConstants.WORKFLOWS_TABLE_VIEW;
+    }
+    // this.router.navigateByUrl(
+    //   [
+    //     '',
+    //     RouteConstants.DASHBOARD,
+    //     RouteConstants.WORKFLOWS,
+    //     this.cardInstance.workflowId,
+    //     view,
+    //     RouteConstants.WORKFLOWS_CARD_SIGN,
+    //     this.cardInstance.cardInstanceWorkflow.id,
+    //     this.idUser ? this.idUser : 'null'
+    //   ].join('/'),
+    //   {
+    //     state: {
+    //       card: JSON.stringify(this.card)
+    //     }
+    //   }
+    // );
+    this.router.navigate(
+      [
+        {
+          outlets: {
+            cardSign: [RouteConstants.WORKFLOWS_ID_CARD, this.idCard]
+          }
+        }
+      ],
+      {
+        relativeTo: this.route,
+        state: {
+          relativeTo: JSON.stringify(this.route, replacerFunc),
+          card: JSON.stringify(this.card)
+        }
+      }
+    );
   }
 
   public btnClickShortcut(move: WorkflowMoveDTO): void {

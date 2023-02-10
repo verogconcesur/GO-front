@@ -9,20 +9,24 @@ import {
   FormControl
 } from '@angular/forms';
 import { marker } from '@biesbjerg/ngx-translate-extract-marker';
+import { AttachmentDTO, CardAttachmentsDTO } from '@data/models/cards/card-attachments-dto';
 import CardInstanceDTO from '@data/models/cards/card-instance-dto';
 import CardMessageRenderDTO from '@data/models/cards/card-message-render';
 import MessageChannelDTO from '@data/models/templates/message-channels-dto';
 import TemplatesCommonDTO from '@data/models/templates/templates-common-dto';
+import { CardAttachmentsService } from '@data/services/card-attachments.service';
 import { CardMessagesService } from '@data/services/card-messages.service';
 import { TemplatesCommunicationService } from '@data/services/templates-communication.service';
 import { ComponentToExtendForCustomDialog, CustomDialogFooterConfigI } from '@jenga/custom-dialog';
+// eslint-disable-next-line max-len
+import CardInstanceAttachmentsConfig from '@modules/feature-modules/card-instance-attachments/card-instance-attachments-config-interface';
 // eslint-disable-next-line max-len
 import { TextEditorWrapperConfigI } from '@modules/feature-modules/text-editor-wrapper/interfaces/text-editor-wrapper-config.interface';
 import { TranslateService } from '@ngx-translate/core';
 import { ConfirmDialogService } from '@shared/services/confirm-dialog.service';
 import { GlobalMessageService } from '@shared/services/global-message.service';
 import { ProgressSpinnerDialogService } from '@shared/services/progress-spinner-dialog.service';
-import { Observable, of } from 'rxjs';
+import { forkJoin, Observable, of } from 'rxjs';
 import { catchError, finalize, map, take } from 'rxjs/operators';
 
 export const enum MessageClientDialogComponentModalEnum {
@@ -43,8 +47,15 @@ export class MessageClientDialogComponent extends ComponentToExtendForCustomDial
     insertText: marker('common.insertTextHere'),
     required: marker('errors.required'),
     text: marker('administration.templates.communications.text'),
-    subject: marker('administration.templates.communications.subject')
+    subject: marker('administration.templates.communications.subject'),
+    attachments: marker('common.attachments'),
+    addAttachments: marker('common.addAttachments'),
+    confirm: marker('common.confirm')
   };
+  public showAttachmentSelector = false;
+  public cardInstanceAttachmentsConfig: CardInstanceAttachmentsConfig;
+  public attachments: CardAttachmentsDTO[] = [];
+  public attachmentsSelected: AttachmentDTO[] = [];
   public textEditorToolbarOptions: TextEditorWrapperConfigI = {
     addHtmlModificationOption: true,
     addMacroListOption: false,
@@ -66,7 +77,8 @@ export class MessageClientDialogComponent extends ComponentToExtendForCustomDial
     private translateService: TranslateService,
     private communicationService: TemplatesCommunicationService,
     private cardService: CardMessagesService,
-    private globalMessageService: GlobalMessageService
+    private globalMessageService: GlobalMessageService,
+    private cardAttachmentsService: CardAttachmentsService
   ) {
     super(
       MessageClientDialogComponentModalEnum.ID,
@@ -87,14 +99,51 @@ export class MessageClientDialogComponent extends ComponentToExtendForCustomDial
   ngOnInit(): void {
     const spinner = this.spinnerService.show();
     this.cardInstance = this.extendedComponentData;
-    this.communicationService
-      .getMessageChannels()
-      .pipe(take(1))
-      .subscribe((res) => {
-        this.messageChannels = res;
-        this.initializeForm();
-        this.spinnerService.hide(spinner);
-      });
+    forkJoin([
+      this.communicationService.getMessageChannels(),
+      this.cardAttachmentsService.getCardAttachmentsByInstance(this.cardInstance.cardInstanceWorkflow.id)
+    ])
+      .pipe(
+        take(1),
+        finalize(() => this.spinnerService.hide(spinner))
+      )
+      .subscribe(
+        (responses: [MessageChannelDTO[], CardAttachmentsDTO[]]) => {
+          this.messageChannels = responses[0];
+          this.initializeForm();
+          this.attachments = responses[1];
+          this.cardInstanceAttachmentsConfig = {
+            tabId: null,
+            wcId: this.cardInstance.cardInstanceWorkflow.id,
+            permission: 'SHOW',
+            disableAttachmentsSelection: false,
+            disableEditFileName: true,
+            disableIndividualDeleteAction: true,
+            disableIndividualDownloadAction: true,
+            disableAttachmentsAddition: true
+          };
+        },
+        (errors) => {
+          console.log(errors);
+        }
+      );
+  }
+  public attachmentSelected(attachments: AttachmentDTO[]): void {
+    this.attachmentsSelected = attachments;
+  }
+  public addAttachments(): void {
+    this.messageClientsForm.controls.forEach((fg: UntypedFormGroup) => {
+      if (fg.value.messageChannelId === 2) {
+        fg.get('attachments').setValue([...this.attachmentsSelected].map((item) => ({ id: item.id, name: item.name })));
+      }
+    });
+    this.showAttachmentSelector = false;
+  }
+  public getAttachmentsName(): string {
+    if (this.attachmentsSelected?.length) {
+      return [...this.attachmentsSelected].map((item) => item.name).join(', ');
+    }
+    return '';
   }
   public selectMessageChannel() {
     this.messageForm.get('comunicationTemplate').setValue(null);
@@ -135,7 +184,8 @@ export class MessageClientDialogComponent extends ComponentToExtendForCustomDial
               this.fb.group({
                 messageChannelId: [message.messageChannelId],
                 messageRender: [message.messageRender, [Validators.required]],
-                subjectRender: [message.subjectRender, message.messageChannelId === 2 ? [Validators.required] : []]
+                subjectRender: [message.subjectRender, message.messageChannelId === 2 ? [Validators.required] : []],
+                attachments: [message.attachments ? message.attachments : null]
               })
             );
           });

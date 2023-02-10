@@ -1,7 +1,7 @@
 <div class="checklist-config">
     <div class="checklist-config__column checklist-config__config">
         <div fxLayoutAlign="space-between center">
-            <h1>{{ getTitle() }}</h1>
+            <h1 class="checklist-config__column__title">{{ getTitle() }}</h1>
             <button
                 mat-raised-button
                 color="warn"
@@ -118,7 +118,9 @@
                                         </mat-panel-title>
                                         <mat-panel-description fxLayoutAlign="space-between center">
                                             <label> {{ getSyncGroupLabel(syncGroup) }} </label>
-                                            <label> Pág: {{ syncGroup.numPages.join(",") }} </label>
+                                            <label>
+                                                {{ labels.showInPage | translate }}: {{ syncGroup.numPages.join(",") }}
+                                            </label>
                                         </mat-panel-description>
                                     </mat-expansion-panel-header>
                                     <form

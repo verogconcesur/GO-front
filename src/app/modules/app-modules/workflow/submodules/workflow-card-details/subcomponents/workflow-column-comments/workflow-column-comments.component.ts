@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, OnInit, Output, ViewChild } from '@angular/core';
+import { Component, EventEmitter, Input, OnDestroy, OnInit, Output, ViewChild } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { ConcenetError } from '@app/types/error';
 import { marker } from '@biesbjerg/ngx-translate-extract-marker';
@@ -14,16 +14,18 @@ import { forkJoin, Observable } from 'rxjs';
 import { TextEditorWrapperConfigI } from '@modules/feature-modules/text-editor-wrapper/interfaces/text-editor-wrapper-config.interface';
 import { ProgressSpinnerDialogService } from '@shared/services/progress-spinner-dialog.service';
 import { TextEditorWrapperComponent } from '@modules/feature-modules/text-editor-wrapper/text-editor-wrapper.component';
+import { NotificationSoundService } from '@shared/services/notification-sounds.service';
 
 @Component({
   selector: 'app-workflow-column-comments',
   templateUrl: './workflow-column-comments.component.html',
   styleUrls: ['./workflow-column-comments.component.scss']
 })
-export class WorkflowColumnCommentsComponent implements OnInit {
+export class WorkflowColumnCommentsComponent implements OnInit, OnDestroy {
   @ViewChild('textEditorWrapper') textEditorWrapper: TextEditorWrapperComponent;
   @Input() tab: CardColumnTabDTO = null;
   @Output() setShowLoading: EventEmitter<boolean> = new EventEmitter(false);
+  @Output() newCommentsEvent: EventEmitter<boolean> = new EventEmitter(false);
   public labels = { insertText: marker('common.insertTextHere') };
   public comments: CardCommentDTO[] = [];
   public commentSelected: CardCommentDTO = null;
@@ -40,25 +42,39 @@ export class WorkflowColumnCommentsComponent implements OnInit {
     airMode: false,
     height: 80
   };
-  private readonly timeBeforeMarkAsRead = 10000;
+  private readonly timeBeforeMarkAsRead = 15000;
+  private interval: NodeJS.Timeout;
+  private idCard: number;
 
   constructor(
     private cardCommentsService: CardCommentsService,
     private route: ActivatedRoute,
     private globalMessageService: GlobalMessageService,
     private translateService: TranslateService,
-    private spinnerService: ProgressSpinnerDialogService
+    private spinnerService: ProgressSpinnerDialogService,
+    private notificationSoundService: NotificationSoundService
   ) {}
 
   ngOnInit(): void {
+    this.idCard = parseInt(this.route.snapshot.params.idCard, 10);
     this.getData(true);
+    this.interval = setInterval(() => {
+      this.getData(false, false, true);
+    }, this.timeBeforeMarkAsRead);
   }
 
-  public getData(usersToo?: boolean): void {
+  ngOnDestroy(): void {
+    clearInterval(this.interval);
+    this.interval = null;
+  }
+
+  public getData(usersToo = false, showLoading = true, fromInterval = false): void {
     //Cogemos el cardInstanceWorkflowId de la ruta
-    if (this.route?.snapshot?.params?.idCard) {
-      this.setShowLoading.emit(true);
-      const cardInstanceWorkflowId = parseInt(this.route.snapshot.params.idCard, 10);
+    if (this.idCard) {
+      if (showLoading) {
+        this.setShowLoading.emit(true);
+      }
+      const cardInstanceWorkflowId = this.idCard;
       const requests: Observable<CardCommentDTO[] | UserDetailsDTO[]>[] = [
         this.cardCommentsService.getCardComments(cardInstanceWorkflowId).pipe(take(1))
       ];
@@ -68,7 +84,16 @@ export class WorkflowColumnCommentsComponent implements OnInit {
       forkJoin(requests).subscribe(
         (data: [CardCommentDTO[], UserDetailsDTO[]]): void => {
           if (data[0]?.length) {
+            if (fromInterval && this.comments.length !== data[0].length) {
+              this.newCommentsEvent.emit(true);
+              this.notificationSoundService.playSound('COMMENTS');
+            } else if (fromInterval) {
+              this.newCommentsEvent.emit(false);
+            }
             this.comments = data[0];
+            if (fromInterval && this.commentSelected) {
+              this.commentSelected = data[0].find((comment) => this.commentSelected.id === comment.id);
+            }
           }
           if (data[1]?.length) {
             this.availableUsersToMention = data[1];
@@ -84,10 +109,14 @@ export class WorkflowColumnCommentsComponent implements OnInit {
           }
           // console.log(this.comments, this.availableUsersToMention, this.textEditorConfig);
           this.dataLoaded = true;
-          this.setShowLoading.emit(false);
+          if (showLoading) {
+            this.setShowLoading.emit(false);
+          }
         },
         (errors: ConcenetError) => {
-          this.setShowLoading.emit(false);
+          if (showLoading) {
+            this.setShowLoading.emit(false);
+          }
           this.globalMessageService.showError({
             message: errors.message,
             actionText: this.translateService.instant(marker('common.close'))
@@ -139,7 +168,7 @@ export class WorkflowColumnCommentsComponent implements OnInit {
   public sendComment() {
     if (this.newComment && this.newComment !== '<br>' && this.newComment !== '<p></p>') {
       const spinner = this.spinnerService.show();
-      const cardInstanceWorkflowId = parseInt(this.route.snapshot.params.idCard, 10);
+      const cardInstanceWorkflowId = this.idCard;
       const mentionedUsers: { mention: boolean; user: { id: number } }[] = [];
       Object.keys(this.availableMentions).forEach((fullName: string) => {
         if (this.newComment.indexOf('@' + fullName) >= 0) {

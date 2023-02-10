@@ -3,7 +3,7 @@
         #responsiveTab
         class="r-tabs-tab"
         *ngFor="let tab of visibleTabs"
-        [ngClass]="{ active: tab.id === tabSelected?.id, disabled: tab.disabled && tab.disabled() }"
+        [ngClass]="{ active: tab.id === tabSelected?.id, disabled: tab.disabled && tab.disabled(), 'new-data': tab.newData }"
         (click)="tabSelectedChange(tab)"
         matTooltipPosition="above"
         [matTooltip]="getTabDisabledTooltip(tab)"

@@ -19,6 +19,7 @@ import { DropFilesZonetDirective } from './directives/dropFilesZone.directive';
 import { TwoDigitDecimalDirective } from './utils/two-digit-decimal.directive';
 import { CardTabItemTypePipePipe } from './utils/card-tab-item-type-pipe.pipe';
 import { SafeHtmlPipe } from './utils/safe-inner-html.pipe';
+import { NotificationSoundService } from './services/notification-sounds.service';
 
 @NgModule({
   declarations: [

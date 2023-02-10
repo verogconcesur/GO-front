@@ -12,6 +12,23 @@
       &__createCard {
         color: mat-color($primary, 500);
       }
+      .mat-icon.active {
+        animation-name: color-notification;
+        animation-duration: 2s;
+        animation-iteration-count: infinite;
+      }
+
+      @keyframes color-notification {
+        0% {
+          color: mat-contrast($primary, 500);
+        }
+        50% {
+          color: mat-color($primary, statusWarning);
+        }
+        100% {
+          color: mat-contrast($primary, 500);
+        }
+      }
     }
     button.active .mat-button-wrapper {
       border-bottom: 1px solid mat-contrast($primary, 400);
@@ -53,6 +70,18 @@
         /* Microsoft Edge */
         color: darken(mat-contrast($primary, statusNeutral), 10%);
       }
+    }
+  }
+
+  .navbar-warning-menu {
+    width: 280px;
+    height: 380px;
+    &__header {
+      padding: 10px 10px 0 10px;
+    }
+    &__content {
+      padding: 10px;
+      background-color: mat-contrast($primary, 500);
     }
   }
 }

@@ -57,10 +57,12 @@
             <app-workflow-column-comments
                 [style]="{ display: showColumn('COMMENTS') ? '' : 'none' }"
                 (setShowLoading)="setShowLoading($event)"
+                (newCommentsEvent)="newComments($event, 'COMMENTS')"
             ></app-workflow-column-comments>
             <app-workflow-column-client-messages
                 [style]="{ display: showColumn('CLIENT_MESSAGES') ? '' : 'none' }"
                 (setShowLoading)="setShowLoading($event)"
+                (newCommentsEvent)="newComments($event, 'CLIENT_MESSAGES')"
             ></app-workflow-column-client-messages>
         </div>
         <!-- Columna acciones -->
@@ -68,6 +70,7 @@
             <app-workflow-column-actions-and-links
                 [tab]="column.tabs[0]"
                 [cardInstance]="cardInstance"
+                [idUser]="idUser"
             ></app-workflow-column-actions-and-links>
         </div>
     </div>

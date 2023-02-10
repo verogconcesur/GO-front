@@ -2,8 +2,9 @@ import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { FormArray, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ConcenetError } from '@app/types/error';
 import { marker } from '@biesbjerg/ngx-translate-extract-marker';
-import { AttachmentDTO, CardAttachmentsDTO } from '@data/models/cards/card-attachments-dto';
+import { AttachmentDTO, CardAttachmentsDTO, CardBudgetAttachmentsDTO } from '@data/models/cards/card-attachments-dto';
 import { CardBudgetsDTO } from '@data/models/cards/card-budgets-dto';
+import CardInstanceDTO from '@data/models/cards/card-instance-dto';
 import { CardAttachmentsService } from '@data/services/card-attachments.service';
 import { CardBudgetsService } from '@data/services/card-budgets.service';
 import { CardMessagesService } from '@data/services/card-messages.service';
@@ -29,6 +30,7 @@ export class CardInstanceBudgetsComponent implements OnInit {
   @Input() data: CardBudgetsDTO[] = [];
   @Input() cardInstanceWorkflowId: number = null;
   @Input() tabId: number = null;
+  @Input() cardInstance: CardInstanceDTO;
   @Output() reload: EventEmitter<boolean> = new EventEmitter<boolean>();
   public labels = {
     okClient: marker('common.okClient'),
@@ -44,7 +46,7 @@ export class CardInstanceBudgetsComponent implements OnInit {
   public formBudgets: FormArray;
   public currentBudget: CardBudgetsDTO;
   public templateLines: CardBudgetsDTO[];
-  public attachmentsList: AttachmentDTO[];
+  public attachmentsList: CardBudgetAttachmentsDTO[];
   public editing = false;
   public maxAmount = 99999999;
   constructor(
@@ -58,6 +60,9 @@ export class CardInstanceBudgetsComponent implements OnInit {
     private attachmentService: CardAttachmentsService,
     private messagesServices: CardMessagesService
   ) {}
+  public compareAttachments(object1: CardBudgetAttachmentsDTO, object2: CardBudgetAttachmentsDTO) {
+    return object1 && object2 && object1.file.id === object2.file.id;
+  }
   public cancelBudget(budget: FormGroup, index: number): void {
     if (budget.value.id) {
       budget.patchValue(this.currentBudget);
@@ -110,8 +115,18 @@ export class CardInstanceBudgetsComponent implements OnInit {
       .subscribe((ok: boolean) => {
         if (ok) {
           if (budget.value.id) {
+            const budgetData = budget.getRawValue();
+            budgetData.attachments = budgetData.attachments.map((att1: CardBudgetAttachmentsDTO) => {
+              let attachment = att1;
+              if (budgetData.attachmentsOriginal.find((att2: CardBudgetAttachmentsDTO) => att1.file.id === att2.file.id)) {
+                attachment = budgetData.attachmentsOriginal.find(
+                  (att2: CardBudgetAttachmentsDTO) => att1.file.id === att2.file.id
+                );
+              }
+              return attachment;
+            });
             this.budgetsService
-              .editLine(this.cardInstanceWorkflowId, this.tabId, budget.getRawValue())
+              .editLine(this.cardInstanceWorkflowId, this.tabId, budgetData)
               .pipe(take(1))
               .subscribe(
                 (data) => {
@@ -238,17 +253,6 @@ export class CardInstanceBudgetsComponent implements OnInit {
     this.formBudgets = this.fb.array([]);
     if (this.data && this.data.length) {
       this.data.forEach((data: CardBudgetsDTO) => {
-        data.attachments = data.attachments
-          ? data.attachments.map((attachment: AttachmentDTO) => {
-              let itemToReturn = attachment;
-              this.attachmentsList.forEach((at: AttachmentDTO) => {
-                if (at.id === attachment.id) {
-                  itemToReturn = at;
-                }
-              });
-              return itemToReturn;
-            })
-          : [];
         this.formBudgets.push(
           this.fb.group({
             id: [data.id],
@@ -257,7 +261,8 @@ export class CardInstanceBudgetsComponent implements OnInit {
             description: [data.description, [Validators.max(this.maxAmount), Validators.required]],
             editMode: [false],
             workflowId: [data.workflowId],
-            attachments: [data.attachments]
+            attachments: [data.attachments],
+            attachmentsOriginal: [data.attachments]
           })
         );
       });
@@ -285,11 +290,17 @@ export class CardInstanceBudgetsComponent implements OnInit {
       .pipe(take(1))
       .subscribe(
         (data) => {
-          let attachmentList: AttachmentDTO[] = [];
-          data.forEach((cardAttachment: CardAttachmentsDTO) => {
-            attachmentList = [...attachmentList, ...cardAttachment.attachments];
+          this.attachmentsList = [];
+          data.forEach((attachment: CardAttachmentsDTO) => {
+            attachment.attachments.forEach((att: AttachmentDTO) => {
+              this.attachmentsList.push({
+                cardInstance: this.cardInstance,
+                tab: { id: attachment.tabId },
+                file: att,
+                templateAttachmentItem: attachment.templateAttachmentItem
+              } as CardBudgetAttachmentsDTO);
+            });
           });
-          this.attachmentsList = attachmentList;
           this.initializeForms();
         },
         (error: ConcenetError) => {

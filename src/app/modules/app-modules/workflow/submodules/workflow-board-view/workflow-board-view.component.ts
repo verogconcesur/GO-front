@@ -1,5 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { Component, ElementRef, HostListener, NgZone, OnDestroy, OnInit, ViewChild } from '@angular/core';
+import { ChildActivationEnd, NavigationEnd, Router } from '@angular/router';
 import { ConcenetError } from '@app/types/error';
 import { marker } from '@biesbjerg/ngx-translate-extract-marker';
 import FacilityDTO from '@data/models/organization/facility-dto';
@@ -14,6 +15,7 @@ import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
 import { TranslateService } from '@ngx-translate/core';
 import { GlobalMessageService } from '@shared/services/global-message.service';
 import { ProgressSpinnerDialogService } from '@shared/services/progress-spinner-dialog.service';
+import { haveArraysSameValuesIdObjects } from '@shared/utils/array-comparation-function';
 import lodash from 'lodash';
 import { NGXLogger } from 'ngx-logger';
 import { forkJoin } from 'rxjs';
@@ -33,12 +35,13 @@ export class WorkflowBoardViewComponent implements OnInit {
   @ViewChild('ScrollColumns') scrollColumns: ElementRef;
   @ViewChild('AnchorColumn') anchorColumns: ElementRef;
   @ViewChild('AnchorStateColumn') anchorStateColumn: WokflowBoardColumnComponent;
-
+  public showBoardView = true;
   public facilities: FacilityDTO[] = [];
   public workflow: WorkflowDTO = null;
   public wStatesData: WorkflowStateDTO[];
   public wAnchorState: WorkflowStateDTO;
   public wNormalStates: WorkflowStateDTO[];
+  public loadedData: { workflow: WorkflowDTO; facilities: FacilityDTO[] };
   public showAnchorState = true;
   public mouseDown = false;
   public startX: any;
@@ -58,7 +61,9 @@ export class WorkflowBoardViewComponent implements OnInit {
     private logger: NGXLogger,
     private translateService: TranslateService,
     private dragAndDropService: WorkflowDragAndDropService,
-    private prepareAndMoveService: WorkflowPrepareAndMoveService
+    private prepareAndMoveService: WorkflowPrepareAndMoveService,
+
+    private router: Router
   ) {}
 
   @HostListener('window:resize', ['$event']) onResize = (event: { target: { innerWidth: number } }) => {
@@ -106,6 +111,18 @@ export class WorkflowBoardViewComponent implements OnInit {
           this.prepareAndMoveService.reloadData$.next(null);
         }
       });
+
+    this.router.events.pipe(untilDestroyed(this)).subscribe((event: any) => {
+      if (event instanceof NavigationEnd || event instanceof ChildActivationEnd) {
+        if (this.router.url.indexOf('(card:wcId') > 0 && this.showBoardView) {
+          console.log('Hide board view');
+          this.showBoardView = false;
+        } else if (this.router.url.indexOf('(card:wcId') === -1 && !this.showBoardView) {
+          console.log('Show board view');
+          this.showBoardView = true;
+        }
+      }
+    });
   }
 
   public toggleAnchorState = () => (this.showAnchorState = !this.showAnchorState);
@@ -202,7 +219,13 @@ export class WorkflowBoardViewComponent implements OnInit {
   }
 
   private getData(): void {
-    if (this.workflow) {
+    if (
+      this.workflow &&
+      (!this.loadedData ||
+        this.workflow.id !== this.loadedData.workflow.id ||
+        !haveArraysSameValuesIdObjects(this.loadedData.facilities, this.facilities))
+    ) {
+      this.loadedData = { workflow: this.workflow, facilities: this.facilities };
       const spinner = this.spinnerService.show();
       forkJoin([
         this.workflowService.getWorkflowInstances(this.workflow, this.facilities, 'BOARD', true).pipe(take(1)),

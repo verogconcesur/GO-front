@@ -2,16 +2,20 @@ import { Injectable } from '@angular/core';
 import { UntypedFormBuilder, UntypedFormGroup, Validators } from '@angular/forms';
 import { TemplateAtachmentItemsDTO } from '@data/models/templates/templates-attachment-dto';
 import TemplatesChecklistsDTO, { TemplateChecklistItemDTO } from '@data/models/templates/templates-checklists-dto';
+import WorkflowCardSlotDTO from '@data/models/workflows/workflow-card-slot-dto';
 import CombinedRequiredFieldsValidator from '@shared/validators/combined-required-fields.validator';
 import { BehaviorSubject, Observable } from 'rxjs';
 @Injectable({
   providedIn: 'root'
 })
 export class CreateEditChecklistAuxService {
+  private listVariables: WorkflowCardSlotDTO[] = null;
+
   constructor(private fb: UntypedFormBuilder) {}
 
-  public createChecklistForm(checklistToEdit?: TemplatesChecklistsDTO): UntypedFormGroup {
+  public createChecklistForm(checklistToEdit?: TemplatesChecklistsDTO, variables?: WorkflowCardSlotDTO[]): UntypedFormGroup {
     const checklistItems: UntypedFormGroup[] = [];
+    this.listVariables = variables;
     if (checklistToEdit && checklistToEdit.templateChecklistItems?.length) {
       checklistToEdit.templateChecklistItems.forEach((item: TemplateChecklistItemDTO) => {
         checklistItems.push(this.copyItemForPage(item, item.numPage, item.orderNumber, true));
@@ -77,7 +81,11 @@ export class CreateEditChecklistAuxService {
           id: [item.itemVal?.id ? item.itemVal.id : null],
           textValue: [item.itemVal?.textValue ? item.itemVal.textValue : null]
         }),
-        variable: [item.variable]
+        variable: [
+          this.listVariables && item.variable?.id
+            ? this.listVariables.find((variable: WorkflowCardSlotDTO) => variable.id === item.variable.id)
+            : item.variable
+        ]
       },
       {
         validators: [
@@ -160,12 +168,15 @@ export class CreateEditChecklistAuxService {
       width: 0,
       height: 0
     };
-    Array.from(document.getElementById('checklistPDF').getElementsByClassName('page')).forEach((page: Element) => {
-      if (pageNumber === `${page.getAttribute('data-page-number')}`) {
-        pageWidthAndHeight.width = $(page).width();
-        pageWidthAndHeight.height = $(page).height();
-      }
-    });
+    const arr = document.getElementById('checklistPDF')?.getElementsByClassName('page');
+    if (arr) {
+      Array.from(arr).forEach((page: Element) => {
+        if (pageNumber === `${page.getAttribute('data-page-number')}`) {
+          pageWidthAndHeight.width = $(page).width();
+          pageWidthAndHeight.height = $(page).height();
+        }
+      });
+    }
     return pageWidthAndHeight;
   }
 }

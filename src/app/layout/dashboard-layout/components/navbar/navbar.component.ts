@@ -1,18 +1,18 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { Router } from '@angular/router';
 import { PermissionConstants } from '@app/constants/permission.constants';
 import { RouteConstants } from '@app/constants/route.constants';
-import FacilityDTO from '@data/models/organization/facility-dto';
 import { AuthenticationService } from '@app/security/authentication.service';
 import { marker } from '@biesbjerg/ngx-translate-extract-marker';
-import WorkflowDTO from '@data/models/workflows/workflow-dto';
-import { WorkflowsService } from '@data/services/workflows.service';
+import WarningDTO from '@data/models/notifications/warning-dto';
+import { NotificationService } from '@data/services/notifications.service';
 import { NewCardComponent, NewCardComponentModalEnum } from '@modules/feature-modules/new-card/new-card.component';
-import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
-import { FormBuilder, UntypedFormGroup } from '@angular/forms';
-import WorkflowCardDTO from '@data/models/workflows/workflow-card-dto';
-import { finalize, take } from 'rxjs/operators';
+import { UntilDestroy } from '@ngneat/until-destroy';
+import { NotificationSoundService } from '@shared/services/notification-sounds.service';
+import { take } from 'rxjs/operators';
+import { MentionsComponent } from '../mentions/mentions.component';
+import { NotificationsComponent } from '../notifications/notifications.component';
 
 @UntilDestroy()
 @Component({
@@ -20,8 +20,12 @@ import { finalize, take } from 'rxjs/operators';
   templateUrl: './navbar.component.html',
   styleUrls: ['./navbar.component.scss']
 })
-export class NavbarComponent {
+export class NavbarComponent implements OnInit, OnDestroy {
+  @ViewChild('notifications') notifications: NotificationsComponent;
+  @ViewChild('mentions') mentions: MentionsComponent;
   public readonly WORKFLOW_PATH = RouteConstants.WORKFLOWS;
+  public readonly CLIENTS_PATH = RouteConstants.CUSTOMERS;
+  public readonly VEHICLES_PATH = RouteConstants.VEHICLES;
   public labels = {
     title: marker('app.title'),
     workflow: marker('app.menu.workflow'),
@@ -29,9 +33,49 @@ export class NavbarComponent {
     vehicles: marker('app.menu.vehicles'),
     advanceSearch: marker('app.menu.advanceSearch'),
     administration: marker('app.menu.administration'),
-    createCard: marker('app.menu.createCard')
+    createCard: marker('app.menu.createCard'),
+    notifications: marker('common.notifications'),
+    mentions: marker('common.mentions')
   };
-  constructor(private router: Router, private authService: AuthenticationService, public dialog: MatDialog) {}
+  public infoWarning: WarningDTO = null;
+  private readonly notificationTimeInterval = 20000;
+  private interval: NodeJS.Timeout;
+
+  constructor(
+    private router: Router,
+    private authService: AuthenticationService,
+    public dialog: MatDialog,
+    private notificationService: NotificationService,
+    private notificationSoundService: NotificationSoundService
+  ) {}
+
+  ngOnInit(): void {
+    this.initWarningInformationValue();
+    this.initWarningNotificationInterval();
+  }
+
+  ngOnDestroy(): void {
+    clearInterval(this.interval);
+    this.interval = null;
+  }
+
+  public initWarningNotificationInterval(): void {
+    this.interval = setInterval(() => {
+      this.notificationService
+        .getInfoWarnings(this.infoWarning)
+        .pipe(take(1))
+        .subscribe((data) => {
+          if (
+            (data?.existsNoReadMention && data.lastDateNoReadMention !== this.infoWarning.lastDateNoReadMention) ||
+            (data?.existsNoReadNotification && data.lastDateNoReadNotification !== this.infoWarning.lastDateNoReadNotification)
+          ) {
+            this.notificationSoundService.playSound('NOTIFICATION');
+          }
+          this.infoWarning = data;
+          this.authService.setWarningStatus(data);
+        });
+    }, this.notificationTimeInterval);
+  }
 
   public navigateToAdministration(): void {
     this.router.navigate([RouteConstants.ADMINISTRATION]);
@@ -48,5 +92,19 @@ export class NavbarComponent {
       panelClass: NewCardComponentModalEnum.PANEL_CLASS,
       disableClose: true
     });
+  }
+
+  public showMentions(): void {
+    this.infoWarning.existsNoReadMention = false;
+    this.mentions.getData();
+  }
+
+  public showNotifications(): void {
+    this.infoWarning.existsNoReadNotification = false;
+    this.notifications.getData();
+  }
+
+  private initWarningInformationValue(): void {
+    this.infoWarning = this.authService.getWarningStatus();
   }
 }

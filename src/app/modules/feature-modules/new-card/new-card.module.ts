@@ -8,10 +8,19 @@ import { EntityComponent } from './components/entity/entity.component';
 import { InformationComponent } from './components/information/information.component';
 import { ModalCustomerModule } from '../modal-customer/modal-customer.module';
 import { ModalVehicleModule } from '../modal-vehicle/modal-vehicle.module';
+import { ModalCustomerExternalApiModule } from '../modal-customer-external-api/modal-customer-external-api.module';
+import { ModalVehicleExternalApiModule } from '../modal-vehicle-external-api/modal-vehicle-external-api.module';
 
 @NgModule({
   declarations: [NewCardComponent, StepWorkflowComponent, StepColumnComponent, EntityComponent, InformationComponent],
-  imports: [CommonModule, SharedModule, ModalCustomerModule, ModalVehicleModule],
+  imports: [
+    CommonModule,
+    SharedModule,
+    ModalCustomerModule,
+    ModalVehicleModule,
+    ModalCustomerExternalApiModule,
+    ModalVehicleExternalApiModule
+  ],
   exports: [NewCardComponent]
 })
 export class NewCardModule {}

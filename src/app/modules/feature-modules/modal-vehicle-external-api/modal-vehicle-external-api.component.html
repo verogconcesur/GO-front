@@ -1,0 +1,183 @@
+<div class="create-edit-vehicle-content" fxLayout="column" fxLayoutAlign="center center">
+    <div *ngIf="!isModalModeActive()">
+        <div class="create-edit-vehicle-content__title mat-display-2">{{ labels.title | translate }}</div>
+    </div>
+    <div class="create-edit-vehicle-content__form">
+        <form [formGroup]="searchForm" class="smaller-mat-form-fields">
+            <div class="vehicle-data__section">
+                <div class="vehicle-data__section__group">
+                    <div class="vehicle-data__section__group__search">
+                        <!-- licensePlate -->
+                        <mat-form-field appearance="outline" floatLabel="always">
+                            <mat-label>{{ labels.licensePlate | translate }}</mat-label>
+                            <input matInput formControlName="licensePlate" />
+                        </mat-form-field>
+                        <!-- vin -->
+                        <mat-form-field appearance="outline" floatLabel="always">
+                            <mat-label>{{ labels.vin | translate }}</mat-label>
+                            <input matInput formControlName="vin" />
+                        </mat-form-field>
+                        <section>
+                            <mat-checkbox formControlName="requireStock" (change)="requiredStockChange($event.checked)">{{
+                                labels.addStock | translate
+                            }}</mat-checkbox>
+                        </section>
+                        <!-- Facility -->
+                        <mat-form-field appearance="outline" floatLabel="always" *ngIf="searchForm.controls.requireStock.value">
+                            <mat-label>{{ labels.facility | translate }}</mat-label>
+                            <mat-select formControlName="facilityId">
+                                <mat-option *ngFor="let facility of facilityList" [value]="facility.id">{{
+                                    facility.name
+                                }}</mat-option>
+                            </mat-select>
+                            <mat-error *ngIf="searchForm.controls?.facilityId.invalid">
+                                <span *ngIf="searchForm.controls.facilityId.errors.required">{{
+                                    labels.required | translate
+                                }}</span>
+                            </mat-error>
+                        </mat-form-field>
+                        <!-- commissionNumber -->
+                        <mat-form-field appearance="outline" floatLabel="always" *ngIf="searchForm.controls.requireStock.value">
+                            <mat-label>{{ labels.commissionNumber | translate }}</mat-label>
+                            <input matInput formControlName="commissionNumber" (blur)="changeCommissionNumber()" />
+                        </mat-form-field>
+                        <!-- inventoryStatus -->
+                        <mat-form-field appearance="outline" floatLabel="always" *ngIf="searchForm.controls.requireStock.value">
+                            <mat-label>{{ labels.inventoryVehicleStatus | translate }}</mat-label>
+                            <mat-select formControlName="inventoryVehicleStatus">
+                                <mat-option *ngFor="let status of inventoryStatus" [value]="status">{{ status }}</mat-option>
+                            </mat-select>
+                            <button
+                                matSuffix
+                                mat-icon-button
+                                aria-label="Clear"
+                                (click)="removeFilter('inventoryVehicleStatus'); $event.stopPropagation()"
+                            >
+                                <mat-icon>close</mat-icon>
+                            </button>
+                            <mat-error *ngIf="searchForm.controls?.inventoryVehicleStatus.invalid">
+                                <span *ngIf="searchForm.controls.inventoryVehicleStatus.errors.required">{{
+                                    labels.required | translate
+                                }}</span>
+                            </mat-error>
+                        </mat-form-field>
+                        <!-- inventoryType -->
+                        <mat-form-field appearance="outline" floatLabel="always" *ngIf="searchForm.controls.requireStock.value">
+                            <mat-label>{{ labels.inventoryType | translate }}</mat-label>
+                            <mat-select formControlName="inventoryType">
+                                <mat-option *ngFor="let type of inventoryTypes" [value]="type">{{ type }}</mat-option>
+                            </mat-select>
+                            <mat-error *ngIf="searchForm.controls?.inventoryType.invalid">
+                                <span *ngIf="searchForm.controls.inventoryType.errors.required">{{
+                                    labels.required | translate
+                                }}</span>
+                            </mat-error>
+                        </mat-form-field>
+                        <div class="customer-data__section__group__search__button">
+                            <button mat-flat-button color="primary" (click)="search()" [disabled]="searchForm.invalid">
+                                {{ labels.search | translate }}
+                            </button>
+                        </div>
+                    </div>
+                    <div
+                        class="vehicle-data__section__group__error"
+                        fxLayout="row"
+                        fxLayoutAlign="center center"
+                        *ngIf="showError()"
+                    >
+                        <mat-icon>error_outline</mat-icon><span>{{ labels.vehicleNotFound | translate }}</span>
+                    </div>
+                </div>
+            </div>
+        </form>
+        <form *ngIf="vehicleList && vehicleList.length > 0" [formGroup]="vehicleForm" class="smaller-mat-form-fields">
+            <div class="vehicle-data__section">
+                <div class="vehicle-data__section__title first-child">
+                    {{ labels.selectVehicle | translate }}
+                </div>
+                <div class="vehicle-data__section__group">
+                    <!-- vehicle -->
+                    <mat-form-field appearance="outline" floatLabel="always">
+                        <mat-label>{{ labels.vehicle | translate }}</mat-label>
+                        <mat-select formControlName="vehicle" (selectionChange)="selectEntity($event.value)">
+                            <mat-option *ngFor="let vehicle of vehicleList" [value]="vehicle">{{
+                                transformOptionLabel(vehicle)
+                            }}</mat-option>
+                        </mat-select>
+                        <mat-error *ngIf="vehicleForm.controls?.vehicle.invalid">
+                            <span *ngIf="vehicleForm.controls.vehicle.errors.required">{{ labels.required | translate }}</span>
+                        </mat-error>
+                    </mat-form-field>
+                    <!-- Inventory -->
+                    <mat-form-field
+                        appearance="outline"
+                        floatLabel="always"
+                        *ngIf="vehicleSelected && vehicleSelected.inventories && vehicleSelected.inventories.length > 0"
+                    >
+                        <mat-label>{{ labels.inventory | translate }}</mat-label>
+                        <mat-select formControlName="inventory" (selectionChange)="selectInventory($event.value)">
+                            <mat-option *ngFor="let inventory of vehicleSelected.inventories" [value]="inventory">{{
+                                inventory.vehicleStockId
+                            }}</mat-option>
+                        </mat-select>
+                        <mat-error *ngIf="vehicleForm.controls?.inventory.invalid">
+                            <span *ngIf="vehicleForm.controls.inventory.errors.required">{{ labels.required | translate }}</span>
+                        </mat-error>
+                    </mat-form-field>
+                </div>
+            </div>
+        </form>
+        <div class="vehicle-data__section" *ngIf="vehicleSelected">
+            <div class="vehicle-data__section__title first-child">
+                {{ labels.data | translate }}
+            </div>
+            <div class="vehicle-data__section__group" fxLayout="column">
+                <div class="vehicle-data__section__group__item" fxLayout="column">
+                    <span class="vehicle-data__section__group__item__label">{{ labels.vehicleId | translate | uppercase }}</span>
+                    <span>{{ vehicleSelected.vehicleId ? vehicleSelected.vehicleId : "---" }}</span>
+                </div>
+                <div class="vehicle-data__section__group__item" fxLayout="column">
+                    <span class="vehicle-data__section__group__item__label">{{
+                        labels.licensePlate | translate | uppercase
+                    }}</span>
+                    <span>{{ vehicleSelected.licensePlate ? vehicleSelected.licensePlate : "---" }}</span>
+                </div>
+                <div class="vehicle-data__section__group__item" fxLayout="column">
+                    <span class="vehicle-data__section__group__item__label">{{ labels.vin | translate | uppercase }}</span>
+                    <span>{{ vehicleSelected.vin ? vehicleSelected.vin : "---" }}</span>
+                </div>
+                <div class="vehicle-data__section__group__item" fxLayout="column">
+                    <span class="vehicle-data__section__group__item__label">{{
+                        labels.description | translate | uppercase
+                    }}</span>
+                    <span>{{ vehicleSelected.description ? vehicleSelected.description : "---" }}</span>
+                </div>
+                <div class="vehicle-data__section__group__item" fxLayout="column" *ngIf="inventorySelected">
+                    <span class="vehicle-data__section__group__item__label">{{ labels.stockId | translate | uppercase }}</span>
+                    <span>{{ inventorySelected.vehicleStockId ? inventorySelected.vehicleStockId : "---" }}</span>
+                </div>
+                <div class="vehicle-data__section__group__item" fxLayout="column" *ngIf="inventorySelected">
+                    <span class="vehicle-data__section__group__item__label">{{
+                        labels.commissionNumber | translate | uppercase
+                    }}</span>
+                    <span>{{ inventorySelected.commissionNumber ? inventorySelected.commissionNumber : "---" }}</span>
+                </div>
+                <div class="vehicle-data__section__group__item" fxLayout="column" *ngIf="inventorySelected">
+                    <span class="vehicle-data__section__group__item__label">{{
+                        labels.inventoryVehicleStatus | translate | uppercase
+                    }}</span>
+                    <span>{{ inventorySelected.status ? inventorySelected.status : "---" }}</span>
+                </div>
+                <div class="vehicle-data__section__group__item" fxLayout="column" *ngIf="inventorySelected">
+                    <span class="vehicle-data__section__group__item__label">{{
+                        labels.inventoryType | translate | uppercase
+                    }}</span>
+                    <span>{{ inventorySelected.inventoryType ? inventorySelected.inventoryType : "---" }}</span>
+                </div>
+            </div>
+        </div>
+        <div class="create-edit-vehicle-content__buttons">
+            <!-- TODO: buttons used when the component is not opened with customDialogService -->
+        </div>
+    </div>
+</div>

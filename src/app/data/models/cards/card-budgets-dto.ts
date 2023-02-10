@@ -1,4 +1,4 @@
-import { AttachmentDTO } from './card-attachments-dto';
+import { CardBudgetAttachmentsDTO } from './card-attachments-dto';
 
 export interface CardBudgetsDTO {
   id?: number;
@@ -7,5 +7,5 @@ export interface CardBudgetsDTO {
   amount: number;
   workflowId?: number;
   selected?: boolean;
-  attachments?: AttachmentDTO[];
+  attachments?: CardBudgetAttachmentsDTO[];
 }

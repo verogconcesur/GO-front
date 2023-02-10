@@ -24,6 +24,10 @@
     <button mat-menu-item class="mat-button" (click)="showUsers.emit(item)">
         <span>{{ labels.users | translate }}</span>
     </button>
+    <mat-divider *ngIf="importView"></mat-divider>
+    <button mat-menu-item class="mat-button" (click)="import.emit(item)" *ngIf="importView">
+        <span>{{ labels.import | translate }}</span>
+    </button>
     <mat-divider></mat-divider>
     <button mat-menu-item class="mat-button" (click)="delete.emit(item)">
         <span>{{ labels.delete | translate }}</span>

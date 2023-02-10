@@ -32,10 +32,16 @@ export enum RouteConstants {
   WORKFLOWS_CARD = 'card',
   WORKFLOWS_ID_CARD = 'wcId',
   WORKFLOWS_ID_USER = 'wuId',
+  WORKFLOWS_CARD_SIGN = 'cardSign',
   ID_USER = ':idUser',
 
   //Administration
   ADMINISTRATION = 'administration',
+
+  //Customers
+  CUSTOMERS = 'customers',
+
+  VEHICLES = 'vehicles',
 
   //Users
   USERS = 'users',

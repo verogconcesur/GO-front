@@ -13,7 +13,7 @@
                     template.name
                 }}</mat-option>
             </mat-select>
-            <button matSuffix mat-icon-button aria-label="Clear" (click)="removeTemplate()">
+            <button matSuffix mat-icon-button aria-label="Clear" (click)="removeTemplate(); $event.stopPropagation()">
                 <mat-icon>close</mat-icon>
             </button>
             <mat-error *ngIf="templateForm?.invalid">

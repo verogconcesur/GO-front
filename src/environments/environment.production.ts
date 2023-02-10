@@ -4,6 +4,6 @@ import { NgxLoggerLevel } from 'ngx-logger';
 export const environment: Env = {
   appVersion: `${require('../../package.json').version}`,
   production: true,
-  apiBaseUrl: '',
+  apiBaseUrl: 'https://go.grupoconcesur.es/concenet-rest',
   logLevel: NgxLoggerLevel.ERROR
 };
