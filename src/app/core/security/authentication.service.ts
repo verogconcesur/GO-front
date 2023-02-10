@@ -10,6 +10,7 @@ import PermissionsDTO from '@data/models/user-permissions/permissions-dto';
 import { Observable, throwError } from 'rxjs';
 import { catchError, take } from 'rxjs/operators';
 import { UserService } from '@data/services/user.service';
+import WarningDTO from '@data/models/notifications/warning-dto';
 
 @Injectable({
   providedIn: 'root'
@@ -25,6 +26,8 @@ export class AuthenticationService implements OnDestroy {
   private readonly USER_FULL_NAME = 'user_full_name';
   private readonly USER_ROLE = 'user_role';
   private readonly USER_PERMISSIONS = 'user_permissions';
+
+  private readonly WARNING_STATUS = 'warning_status';
 
   private tokenTimeout: NodeJS.Timer = null;
 
@@ -234,6 +237,29 @@ export class AuthenticationService implements OnDestroy {
     }, false);
   }
 
+  getWarningStatus(): WarningDTO {
+    const warningStatus = JSON.parse(localStorage.getItem(this.WARNING_STATUS));
+    return warningStatus
+      ? warningStatus
+      : {
+          lastDateNoReadMention: null,
+          lastDateNoReadNotification: null,
+          lastDateRequest: null,
+          existsNoReadMention: false,
+          existsNoReadNotification: false,
+          newNoReadMention: false,
+          newNoReadNotification: false
+        };
+  }
+
+  setWarningStatus(ws: WarningDTO): void {
+    localStorage.setItem(this.WARNING_STATUS, JSON.stringify(ws));
+  }
+
+  removeWarningStatus(): void {
+    localStorage.removeItem(this.WARNING_STATUS);
+  }
+
   /**
    * Stores the Logged user
    *
@@ -292,6 +318,7 @@ export class AuthenticationService implements OnDestroy {
     this.removeUserFullName();
     this.removeUserRole();
     this.removeUserPermissions();
+    this.removeWarningStatus();
     this.userService.userLogged$.next(null);
     clearTimeout(this.tokenTimeout);
   }

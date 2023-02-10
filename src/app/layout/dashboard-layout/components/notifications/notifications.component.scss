@@ -1,0 +1,54 @@
+@import 'utils/core';
+@import 'utils/theme';
+
+.nav-bar-notifications-menu {
+  position: relative;
+  width: 100%;
+  height: 310px;
+  overflow-y: auto;
+  .loading {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+  .new {
+    .notification-item {
+      border: 1px solid mat-color($primary, A700);
+    }
+  }
+  .new,
+  .old {
+    .notification-item {
+      cursor: pointer;
+      pointer-events: all;
+      background-color: mat-contrast($primary, 400);
+      margin: 10px 0;
+      border-radius: 5px;
+      padding: 10px;
+      &__wf {
+        color: mat-color($primary, 500);
+        font-weight: bold;
+      }
+      &__wf-state {
+        font-size: 0.95em;
+        font-weight: 500;
+        color: mat-contrast($primary, 50);
+      }
+      &__info {
+        font-size: 0.9em;
+        color: mat-color($foreground, secondary-text);
+        mat-icon {
+          color: mat-contrast($primary, 100);
+          height: 22px;
+          width: 25px;
+        }
+      }
+    }
+  }
+  .mat-form-field-label {
+    margin-top: -0.7em !important;
+  }
+}

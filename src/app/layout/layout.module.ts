@@ -11,6 +11,8 @@ import { UserProfileComponent } from './dashboard-layout/components/user-profile
 // eslint-disable-next-line max-len
 import { WorkflowCardSearcherComponent } from './dashboard-layout/components/workflow-card-searcher/workflow-card-searcher.component';
 import { DashboardLayoutComponent } from './dashboard-layout/dashboard-layout.component';
+import { NotificationsComponent } from './dashboard-layout/components/notifications/notifications.component';
+import { MentionsComponent } from './dashboard-layout/components/mentions/mentions.component';
 
 @NgModule({
   declarations: [
@@ -18,7 +20,9 @@ import { DashboardLayoutComponent } from './dashboard-layout/dashboard-layout.co
     NavbarComponent,
     UserProfileComponent,
     AdministrationLayoutComponent,
-    WorkflowCardSearcherComponent
+    WorkflowCardSearcherComponent,
+    NotificationsComponent,
+    MentionsComponent
   ],
   imports: [RouterModule, SharedModule, FilterDrawerModule, MyProfileDialogModule, NewCardModule, WorkflowCardModule],
   exports: [DashboardLayoutComponent],
