@@ -33,7 +33,21 @@
             content: ':';
           }
         }
+        &.substateList {
+          mat-form-field {
+            max-width: 450px;
+          }
+        }
       }
     }
+  }
+}
+.attr-menu {
+  width: 450px;
+  max-width: 450px !important;
+  .mat-menu-content,
+  .mat-menu-content:not(:empty) {
+    padding-top: 0px;
+    padding-bottom: 0px;
   }
 }

@@ -30,7 +30,7 @@
                 </div>
                 <mat-form-field appearance="outline" floatLabel="always">
                     <mat-label>{{ labels.communicationType | translate }}</mat-label>
-                    <mat-select formControlName="comunicationType">
+                    <mat-select formControlName="comunicationType" (selectionChange)="changeComunicationType()">
                         <mat-option *ngFor="let type of communicationTypes" [value]="type.value">
                             {{ type.label | translate }}</mat-option
                         >
@@ -45,7 +45,7 @@
                 </mat-form-field>
             </div>
             <mat-tab-group class="mat-tab-page-sections" mat-align-tabs="start" *ngIf="listVariables">
-                <mat-tab *ngFor="let item of comItems.controls" label="{{ item.value.messageChannel.name }}">
+                <mat-tab *ngFor="let item of comItems.controls" [label]="getTabLabel(item)">
                     <ng-template matTabContent class="template-data__section">
                         <div class="template-data__section__group" *ngIf="item.value.messageChannel.id === 2">
                             <div class="template-data__section__group__title">{{ labels.subject | translate }}</div>
@@ -53,7 +53,7 @@
                                 id="{{ 'textEditorSubject' + item.value.messageChannel.id }}"
                                 textEditorId="{{ 'textEditorSubject' + item.value.messageChannel.id }}"
                                 [initialValue]="item?.value?.subject"
-                                [textEditorConfig]="textEditorToolbarOptions"
+                                [textEditorConfig]="textEditorToolbarOnlyMacroOptions"
                                 [placeholder]="labels.insertText | translate"
                                 (contentChanged)="textEditorContentChanged($event, item.controls.subject, true)"
                             ></app-text-editor-wrapper>
@@ -64,7 +64,11 @@
                                 id="{{ 'textEditor' + item.value.messageChannel.id }}"
                                 textEditorId="{{ 'textEditor' + item.value.messageChannel.id }}"
                                 [initialValue]="item?.value?.text"
-                                [textEditorConfig]="textEditorToolbarOptions"
+                                [textEditorConfig]="
+                                    item.value.messageChannel.id === 3
+                                        ? textEditorToolbarOnlyMacroOptions
+                                        : textEditorToolbarOptions
+                                "
                                 [placeholder]="labels.insertText | translate"
                                 (contentChanged)="
                                     textEditorContentChanged($event, item.controls.text, item.value.messageChannel.id === 3)

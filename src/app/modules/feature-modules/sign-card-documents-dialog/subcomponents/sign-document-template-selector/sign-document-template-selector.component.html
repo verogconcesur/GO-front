@@ -1,0 +1,13 @@
+<div class="template-selector">
+    <h4>{{ labels.whichDocument | translate }}</h4>
+    <div class="template-selector__template">
+        <div *ngFor="let template of templates$ | async">
+            <mat-divider></mat-divider>
+            <div class="template" fxLayoutAlign="space-between center" (click)="selectTemplate(template)">
+                <div class="template__name">{{ template.template.name }}</div>
+                <mat-icon class="template__search" *ngIf="!template.includeFile">note_add</mat-icon>
+                <mat-icon class="template__included" *ngIf="template.includeFile">task</mat-icon>
+            </div>
+        </div>
+    </div>
+</div>

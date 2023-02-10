@@ -1,0 +1,113 @@
+<div class="message-client-content" fxLayout="column" fxLayoutAlign="center center" *ngIf="messageForm">
+    <div *ngIf="!isModalModeActive()">
+        <div class="message-client-content__title mat-display-2">{{ labels.title | translate }}</div>
+    </div>
+    <div class="message-client-content__form">
+        <form [formGroup]="messageForm" class="smaller-mat-form-fields">
+            <!-- General Data -->
+            <div class="message-data__section">
+                <div class="message-data__section__title first-child">{{ labels.chanels | translate }}</div>
+                <div class="message-data__section__group" fxLayout="row" fxLayoutAlign="start start">
+                    <section *ngFor="let messageChannel of messageChannelsForm.controls" [formGroup]="messageChannel">
+                        <mat-checkbox formControlName="selected" (change)="selectMessageChannel()">{{
+                            messageChannel.value.messageChannel.name
+                        }}</mat-checkbox>
+                    </section>
+                </div>
+            </div>
+            <!-- General Data -->
+            <div class="message-data__section">
+                <div class="message-data__section__group">
+                    <mat-form-field appearance="outline" floatLabel="always">
+                        <mat-label>{{ labels.communicationTemplate | translate }}</mat-label>
+                        <mat-select formControlName="comunicationTemplate" (selectionChange)="changeComunicationTemplate()">
+                            <mat-option *ngFor="let template of templateList" [value]="template.id">
+                                {{ template.name }}</mat-option
+                            >
+                        </mat-select>
+                        <mat-error
+                            *ngIf="
+                                messageForm.get('comunicationTemplate').invalid && messageForm.get('comunicationTemplate').touched
+                            "
+                        >
+                            <span>{{ labels.required | translate }}</span>
+                        </mat-error>
+                    </mat-form-field>
+                </div>
+            </div>
+            <mat-tab-group
+                class="mat-tab-page-sections"
+                mat-align-tabs="start"
+                *ngIf="messageForm.get('comunicationTemplate').value"
+            >
+                <mat-tab *ngFor="let item of messageClientsForm.controls" [label]="getTabLabel(item)">
+                    <ng-template matTabContent class="messageChannelImessage-datad__section">
+                        <div class="messageChannelImessage-datad__section__group" *ngIf="item.value.messageChannelId === 2">
+                            <div class="messageChannelImessage-datad__section__group__title">
+                                {{ labels.attachments | translate }}
+                            </div>
+                            <div class="attachments-info">
+                                <button mat-raised-button color="primary" (click)="showAttachmentSelector = true">
+                                    {{ labels.addAttachments | translate }}
+                                </button>
+                                <div class="attachments-names">
+                                    {{ getAttachmentsName() }}
+                                </div>
+                            </div>
+                        </div>
+                        <div class="messageChannelImessage-datad__section__group" *ngIf="item.value.messageChannelId === 2">
+                            <div class="messageChannelImessage-datad__section__group__title">
+                                {{ labels.subject | translate }}
+                            </div>
+                            <app-text-editor-wrapper
+                                id="{{ 'textEditorSubject' + item.value.messageChannelId }}"
+                                textEditorId="{{ 'textEditorSubject' + item.value.messageChannelId }}"
+                                [initialValue]="item?.value?.subjectRender"
+                                [textEditorConfig]="textEditorToolbarOnlyMacroOptions"
+                                [placeholder]="labels.insertText | translate"
+                                (contentChanged)="textEditorContentChanged($event, item.controls.subjectRender, true)"
+                            ></app-text-editor-wrapper>
+                        </div>
+                        <div class="messageChannelImessage-datad__section__group">
+                            <div class="messageChannelImessage-datad__section__group__title">{{ labels.text | translate }}</div>
+                            <app-text-editor-wrapper
+                                id="{{ 'textEditor' + item.value.messageChannelId }}"
+                                textEditorId="{{ 'textEditor' + item.value.messageChannelId }}"
+                                [initialValue]="item?.value?.messageRender"
+                                [textEditorConfig]="
+                                    item.value.messageChannelId === 3
+                                        ? textEditorToolbarOnlyMacroOptions
+                                        : textEditorToolbarOptions
+                                "
+                                [placeholder]="labels.insertText | translate"
+                                (contentChanged)="
+                                    textEditorContentChanged(
+                                        $event,
+                                        item.controls.messageRender,
+                                        item.value.messageChannelId === 3
+                                    )
+                                "
+                            ></app-text-editor-wrapper>
+                        </div>
+                    </ng-template>
+                </mat-tab>
+            </mat-tab-group>
+        </form>
+    </div>
+    <div class="attachment-selector" *ngIf="showAttachmentSelector">
+        <app-card-instance-attachments
+            [cardInstanceAttachmentsConfig]="cardInstanceAttachmentsConfig"
+            [data]="attachments"
+            [selected]="attachmentsSelected"
+            [tabId]="null"
+            [cardInstanceWorkflowId]="cardInstanceAttachmentsConfig.wcId"
+            (selectionChange)="attachmentSelected($event)"
+        ></app-card-instance-attachments>
+        <button class="add-attachments-btn" mat-raised-button color="primary" (click)="addAttachments()">
+            {{ labels.confirm | translate }}
+        </button>
+    </div>
+    <div class="message-client-content__buttons">
+        <!-- TODO: buttons used when the component is not opened with customDialogService -->
+    </div>
+</div>

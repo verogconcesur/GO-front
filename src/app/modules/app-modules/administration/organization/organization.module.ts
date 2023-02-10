@@ -18,6 +18,8 @@ import { CreateEditSpecialtyComponent } from './components/create-edit-specialty
 import { OrganizationLevelsNestedCombosModule } from '@modules/feature-modules/organization-levels-nested-combos/organization-levels-nested-combos.module';
 import { AdministrationCommonHeaderSectionModule } from '@modules/feature-modules/administration-common-header-section/administration-common-header-section.module';
 import { BreadCrumbsModule } from '@jenga/bread-crumbs';
+import { GenericTreeNodeSearcherModule } from '@modules/feature-modules/generic-tree-node-searcher/generic-tree-node-searcher.module';
+import { CsvFileImportationComponent } from './components/csv-file-importation/csv-file-importation.component';
 
 @NgModule({
   declarations: [
@@ -30,7 +32,8 @@ import { BreadCrumbsModule } from '@jenga/bread-crumbs';
     CreateEditBrandComponent,
     CreateEditFacilityComponent,
     CreateEditDepartmentComponent,
-    CreateEditSpecialtyComponent
+    CreateEditSpecialtyComponent,
+    CsvFileImportationComponent
   ],
   imports: [
     CommonModule,
@@ -39,7 +42,8 @@ import { BreadCrumbsModule } from '@jenga/bread-crumbs';
     BreadCrumbsModule,
     OrganizationRoutingModule,
     AdministrationCommonHeaderSectionModule,
-    OrganizationLevelsNestedCombosModule
+    OrganizationLevelsNestedCombosModule,
+    GenericTreeNodeSearcherModule
   ]
 })
 export class OrganizationModule {}

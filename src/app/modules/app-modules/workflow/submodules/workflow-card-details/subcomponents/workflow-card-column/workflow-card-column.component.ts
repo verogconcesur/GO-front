@@ -1,4 +1,4 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import CardColumnDTO from '@data/models/cards/card-column-dto';
 import CardColumnTabDTO from '@data/models/cards/card-column-tab-dto';
 import CardInstanceDTO from '@data/models/cards/card-instance-dto';
@@ -17,17 +17,28 @@ export class WorkflowCardColumnComponent implements OnInit {
   @Input() column: CardColumnDTO;
   @Input() showTabs = true;
   @Input() containerClass: 'column1' | 'column2' | 'messages' | 'actions' | '' = '';
+  @Input() idUser: number = null;
+  @Output() newCommentsEvent: EventEmitter<{ newData: boolean; column: 'COMMENTS' | 'CLIENT_MESSAGES' }> = new EventEmitter(null);
 
   public showLoading = false;
   public tabToShow: CardColumnTabDTO = null;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  private tabsInfo: { id: any; label: string; newData: boolean; type: string }[] = [];
 
   constructor(private cardService: CardService, private prepareAndMoveService: WorkflowPrepareAndMoveService) {}
 
-  ngOnInit(): void {}
+  ngOnInit(): void {
+    this.tabsInfo = [...this.column.tabs].map((tab: CardColumnTabDTO) => ({
+      id: tab.id,
+      label: tab.name,
+      newData: false,
+      type: tab.type
+    }));
+  }
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  public getTabsInfo(): { id: any; label: string }[] {
-    return [...this.column.tabs].map((tab: CardColumnTabDTO) => ({ id: tab.id, label: tab.name }));
+  public getTabsInfo(): { id: any; label: string; newData: boolean }[] {
+    return this.tabsInfo;
   }
 
   public tabChange(event: ResponsiveTabI): void {
@@ -38,13 +49,22 @@ export class WorkflowCardColumnComponent implements OnInit {
     this.showLoading = loading;
   }
 
+  public newComments(newData: boolean, column: 'COMMENTS' | 'CLIENT_MESSAGES'): void {
+    this.tabsInfo.forEach((tab) => {
+      if (tab.type === column) {
+        tab.newData = newData;
+      }
+    });
+    this.newCommentsEvent.emit({ newData, column });
+  }
+
   public syncData(): void {
     // console.log('syncdata', this.cardInstance);
     this.cardService
       .syncCard(this.cardInstance.cardInstanceWorkflow.id)
       .pipe(take(1))
       .subscribe((data) => {
-        this.prepareAndMoveService.reloadData$.next('MOVES_IN_THIS_WORKFLOW');
+        this.prepareAndMoveService.reloadData$.next('MOVES_IN_OTHER_WORKFLOWS');
       });
   }
 

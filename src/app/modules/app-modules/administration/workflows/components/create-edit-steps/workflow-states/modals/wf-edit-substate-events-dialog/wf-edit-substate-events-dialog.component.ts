@@ -263,7 +263,7 @@ export class WfEditSubstateEventsDialogComponent extends ComponentToExtendForCus
                           }
                           return prev;
                         }, null)
-                      : []
+                      : null
                   ]
                 })
               )
@@ -325,7 +325,7 @@ export class WfEditSubstateEventsDialogComponent extends ComponentToExtendForCus
         sendMailTemplate: [null],
         receiverTypes: [[]],
         receiverEmails: [[]],
-        receiverRole: [[]]
+        receiverRole: [null]
       })
     );
   }

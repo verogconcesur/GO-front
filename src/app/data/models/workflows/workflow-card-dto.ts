@@ -17,4 +17,5 @@ export default interface WorkflowCardDTO {
   countCompletedTasks?: number;
   countTotalTasks?: number;
   workflowSubstate?: WorkflowSubstateDTO;
+  expandInfo?: boolean;
 }

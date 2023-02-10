@@ -47,6 +47,14 @@
                             <span *ngIf="userForm.controls.email.errors.email">{{ labels.emailError | translate }}</span>
                         </mat-error>
                     </mat-form-field>
+                    <!-- Code -->
+                    <mat-form-field appearance="outline" floatLabel="always">
+                        <mat-label>{{ labels.code | translate }}</mat-label>
+                        <input matInput formControlName="code" />
+                        <mat-error *ngIf="userForm.controls?.code.invalid && userForm.controls?.code.touched">
+                            <span *ngIf="userForm.controls.code.errors.required">{{ labels.required | translate }}</span>
+                        </mat-error>
+                    </mat-form-field>
                     <!-- userName -->
                     <mat-form-field appearance="outline" floatLabel="always">
                         <mat-label>{{ labels.userName | translate }}</mat-label>
@@ -127,7 +135,7 @@
                 <div class="user-data__section__info" *ngIf="form.role.value">
                     <div
                         class="inlineBlock"
-                        [innerHtml]="labels.permissionsInheritFromRole | translate: { role: form.role.value.name }"
+                        [innerHtml]="labels.permissionsInheritFromRole | translate : { role: form.role.value.name }"
                     ></div>
                     <button
                         mat-button

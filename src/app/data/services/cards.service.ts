@@ -222,13 +222,18 @@ export class CardService {
   public getEntityCardTabData(
     workflowId: number,
     tabId: number,
-    entityId?: number
+    entityId?: number,
+    inventoryId?: number
   ): Observable<WorkflowCardSlotDTO[] | WorkflowCardTabItemDTO[]> {
     // eslint-disable-next-line max-len
     let url = `${this.env.apiBaseUrl}${this.GET_CARD_INSTANCE_CREATE_PATH}${workflowId}${this.GET_DETAIL_TAB_PATH}/${tabId}`;
     if (entityId) {
       // eslint-disable-next-line max-len
       url = `${this.env.apiBaseUrl}${this.GET_CARD_INSTANCE_CREATE_PATH}${workflowId}${this.GET_DETAIL_TAB_PATH}/${tabId}/${entityId}`;
+    }
+    if (inventoryId) {
+      // eslint-disable-next-line max-len
+      url = `${this.env.apiBaseUrl}${this.GET_CARD_INSTANCE_CREATE_PATH}${workflowId}${this.GET_DETAIL_TAB_PATH}/${tabId}/${entityId}/${inventoryId}`;
     }
     return this.http
       .get<WorkflowCardSlotDTO[] | WorkflowCardTabItemDTO[]>(url)
@@ -262,13 +267,19 @@ export class CardService {
    *
    * @returns WorkflowCardTabItemDTO
    */
-  public setEntityToTab(cardWfId: number, tabId: number, entityId: number): Observable<WorkflowCardTabItemDTO> {
-    return this.http
-      .get<WorkflowCardTabItemDTO>(
-        // eslint-disable-next-line max-len
-        `${this.env.apiBaseUrl}${this.GET_CARD_INSTANCE_PATH}${this.GET_DETAIL_PATH}/${cardWfId}${this.ENTITY_PATH}/${tabId}/${entityId}`
-      )
-      .pipe(catchError((error) => throwError(error.error as ConcenetError)));
+  public setEntityToTab(
+    cardWfId: number,
+    tabId: number,
+    entityId: number,
+    vehicleInventoryId?: number
+  ): Observable<WorkflowCardTabItemDTO> {
+    // eslint-disable-next-line max-len
+    let url = `${this.env.apiBaseUrl}${this.GET_CARD_INSTANCE_PATH}${this.GET_DETAIL_PATH}/${cardWfId}${this.ENTITY_PATH}/${tabId}/${entityId}`;
+    if (vehicleInventoryId) {
+      // eslint-disable-next-line max-len
+      url = `${this.env.apiBaseUrl}${this.GET_CARD_INSTANCE_PATH}${this.GET_DETAIL_PATH}/${cardWfId}${this.ENTITY_PATH}/${tabId}/${entityId}/${vehicleInventoryId}`;
+    }
+    return this.http.get<WorkflowCardTabItemDTO>(url).pipe(catchError((error) => throwError(error.error as ConcenetError)));
   }
 
   /**

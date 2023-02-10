@@ -37,6 +37,10 @@ export class WorkflowCardDetailsComponent implements OnInit {
   };
   public columnsConfig: CardColumnDTO[] = null;
   public cardInstance: CardInstanceDTO = null;
+  public newDataInCommentsOrMessages = {
+    COMMENTS: false,
+    CLIENT_MESSAGES: false
+  };
 
   constructor(
     private route: ActivatedRoute,
@@ -97,6 +101,10 @@ export class WorkflowCardDetailsComponent implements OnInit {
         this.getCardInfo();
       }
     });
+  }
+
+  public newComments(data: { newData: boolean; column: 'COMMENTS' | 'CLIENT_MESSAGES' }): void {
+    this.newDataInCommentsOrMessages[data.column] = data.newData;
   }
 
   public close(): void {

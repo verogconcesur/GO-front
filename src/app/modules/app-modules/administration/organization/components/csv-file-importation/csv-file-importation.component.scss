@@ -1,0 +1,29 @@
+@import 'utils/core';
+@import 'utils/theme';
+
+.csv-file-importation-content {
+  width: 100%;
+  padding-right: 15px;
+  &__form {
+    width: 100%;
+    .import-data__section {
+      &__title {
+        margin: 10px 0 10px 0;
+        color: mat-color($primary, 500);
+        font-size: 1rem;
+        font-weight: 600;
+        &.first-child {
+          margin-top: 0px;
+        }
+      }
+      &__group {
+        mat-form-field {
+          margin-right: 20px;
+        }
+        .fileButton {
+          margin-right: 20px;
+        }
+      }
+    }
+  }
+}

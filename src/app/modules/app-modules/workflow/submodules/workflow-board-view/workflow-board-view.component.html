@@ -1,13 +1,15 @@
 <router-outlet name="card"></router-outlet>
-<div class="board-view-wrapper" cdkDropListGroup>
+<div class="board-view-wrapper" *ngIf="showBoardView" cdkDropListGroup>
     <!-- anchor state column -->
     <div #AnchorColumn class="board-view-wrapper__anchor-column" *ngIf="wAnchorState" [ngClass]="{ hide: hideAnchorState() }">
-        <app-wokflow-board-column
-            #AnchorStateColumn
-            [workflow]="workflow"
-            [wState]="wAnchorState"
-            [divider]="false"
-        ></app-wokflow-board-column>
+        <div class="board-view-wrapper__anchor-column__container">
+            <app-wokflow-board-column
+                #AnchorStateColumn
+                [workflow]="workflow"
+                [wState]="wAnchorState"
+                [divider]="false"
+            ></app-wokflow-board-column>
+        </div>
         <div class="hide-show-button" (click)="toggleAnchorState()">
             <mat-icon *ngIf="showAnchorState">keyboard_arrow_left</mat-icon>
             <mat-icon *ngIf="!showAnchorState">keyboard_arrow_right</mat-icon>

@@ -239,7 +239,7 @@ export class WorkflowUsersComponent extends WorkflowStepAbstractClass implements
         component: CreateEditUserComponent,
         extendedComponentData: user ? user.user : null,
         disableClose: true,
-        width: '700px'
+        width: '900px'
       })
       .pipe(take(1))
       .subscribe(async (response) => {

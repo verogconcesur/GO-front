@@ -2,7 +2,9 @@
 @import 'utils/theme';
 .budgets {
   &__main {
-    padding: 15px;
+    padding: 10px;
+    height: calc(100% - 120px);
+    overflow-y: auto;
     &__header {
       &__item {
         font-weight: 600;
@@ -28,5 +30,9 @@
         cursor: pointer;
       }
     }
+  }
+  &__button {
+    padding: 20px;
+    height: 80px;
   }
 }

@@ -1,4 +1,5 @@
 {
+    ", ": "",
     "administration": {
         "brands": "Brands",
         "cards": "Cards",
@@ -31,8 +32,41 @@
                 "title": "Budgets"
             },
             "checklists": {
+                "SIGN_CLIENT": "Client sign",
+                "SIGN_USER": "User sign",
+                "addAttachmentPdf": "Add PDF file",
+                "check": "Check",
+                "config": "Config checklist",
+                "configError": "Template config error",
+                "copyItemInPage": "Copy item in pages",
                 "create": "Create checklist",
-                "title": "Checklists"
+                "deleteConfirmation": "Do you really want to delete this checklist template?",
+                "deleteFileConfirmation": "If you continue you will delete the file and all the items inserted.",
+                "dropHere": "Drop the PDF template file here",
+                "freeDraw": "Free draw",
+                "image": "Image",
+                "includeFile": "Include PDF file in template",
+                "itemsConfigError": "Errors in items: {items}",
+                "itemsInTemplate": "Items in template",
+                "loadingPdfWait": "Loading file, please wait",
+                "name": "Checklist name",
+                "new": "New checklist",
+                "pdfPreview": "Preview",
+                "selectCardAttachmentImage": "Select image file attached",
+                "selectCardAttachmentPdf": "Select PDF file attached",
+                "selectDirectory": "Select directory",
+                "selectOrAddPdf": "Select or add a PDF file",
+                "sign": "Sign",
+                "signType": "Sing type",
+                "staticValue": "Item with static value (only available if the item has not been syncronized with other items)",
+                "staticValueImage": "Add static image",
+                "staticValueInput": "Static value",
+                "syncronization": "Syncronized items",
+                "templateFileError": "Load a PDF file",
+                "text": "Text",
+                "title": "Checklists",
+                "var": "Variable",
+                "whichDocument": "Which document do you want to sign?"
             },
             "clientTimeline": {
                 "add": "New timeline template",
@@ -61,7 +95,7 @@
             },
             "title": "Templates"
         },
-        "title": "Concenet",
+        "title": "Go",
         "users": "Users",
         "viewProfile": "View profile",
         "workflows": "Workflows"
@@ -75,13 +109,14 @@
             "vehicles": "Vehicles",
             "workflow": "Workflow"
         },
-        "title": "Concenet"
+        "title": "Go"
     },
     "cardDetail": {
         "budgets": {
             "addLines": "Add budget lines",
             "deleteConfirmation": "Are you sure you want to delete this budget line?",
-            "saveConfirmation": "Are you sure you want to save this budget line?"
+            "saveConfirmation": "Are you sure you want to save this budget line?",
+            "sendConfirmation": "Are you sure you want to send budget to the client?"
         }
     },
     "cards": {
@@ -130,7 +165,14 @@
             "ADD_DOC": "Add document",
             "ASIG_USER": "Assign user",
             "CHANGE_STATE": "Change state",
-            "EDIT_INFO": "Edit info"
+            "EDIT_INFO": "Edit info",
+            "INCOMING_CALL": "Incoming call",
+            "OUTCOMING_CALL": "Outcoming call"
+        },
+        "messages": {
+            "chanels": "Channels",
+            "communicationTemplate": "Comunication template",
+            "title": "Message Client"
         },
         "modal": {
             "cancelConfirmation": "Are you sure you want to exit the card window?",
@@ -161,23 +203,28 @@
             "sign": "Sign document"
         },
         "add": "Add",
+        "addAttachments": "Add attachments",
+        "addSign": "Draw sign",
         "address": "Address",
         "adviser": "Adviser",
         "all": "All",
         "amount": "Amount",
         "apply": "Apply",
         "askForConfirmation": "Do you want to continue?",
+        "attachment": "Attachment",
         "attachments": "Attachments",
         "auto": "Auto",
         "back": "Back",
         "brands": "Brands",
         "budget": "Budget",
         "cancel": "Cancel",
+        "changeSign": "Change sign",
         "cif": "CIF",
         "cleanFilter": "Clean filter",
         "client": "Client",
         "clientMessages": "Client messages",
         "close": "Close",
+        "collapse": "Collapse substates",
         "comments": "Comments",
         "communicationTypes": {
             "customer": "Customer",
@@ -185,6 +232,7 @@
         },
         "completed": "Finished",
         "concept": "Concept",
+        "confirm": "Submit",
         "country": "Country",
         "create": "Create",
         "createdOn": "Created on",
@@ -196,23 +244,29 @@
             "TEXT": "Paragraph text",
             "TITLE": "Headline"
         },
+        "customer": "Customer",
         "data": "Data",
         "dateEnd": "Final date",
         "dateIni": "Initial date",
         "delete": "Delete",
         "deleteConfirmation": "Do you really want to delete this item?",
+        "deleteFile": "Delete file",
         "directLinks": "Short cuts",
         "download": "Download",
         "dropHere": "Drop here",
         "duplicate": "Duplicate",
         "edit": "Edit",
         "emails": "Emails",
+        "employee": "Employee",
         "events": "Events",
+        "expand": "Expand substates",
         "externalLinks": "External links",
         "field": "Field",
+        "fieldsType": "Field's type",
         "fileName": "File name",
         "filter": "Filter",
         "filterAction": "Filter",
+        "filterByType": "Filter by type",
         "follow": "Follow",
         "following": "Following",
         "footer": "Footer",
@@ -220,13 +274,17 @@
         "general": "General",
         "header": "Header",
         "history": "History",
+        "image": "Image",
         "import": "Import",
         "information": "Information",
         "insert": "Insert",
         "insertTextHere": "Insert text here.",
+        "items": "Items",
+        "label": "Label",
         "line": "Line",
         "logo": "Logo",
         "manual": "Manual",
+        "mentions": "Mentions",
         "messages": "Messages",
         "more": "More",
         "move": "Move",
@@ -235,6 +293,7 @@
         "newItem": "New item",
         "newLine": "New line",
         "next": "Next",
+        "notifications": "Notifications",
         "okClient": "OK Client",
         "origin": "Origin",
         "others": "Others",
@@ -245,13 +304,16 @@
         "price": "Price",
         "priority": "Priority",
         "province": "Province",
+        "readen": "Readen",
         "replacementVehicle": "Replacement vehicle",
         "replacements": "Replacements",
         "reset": "Reset",
+        "reviewEmail": "The file has been sent. Check the mail for the status of the operation.",
         "role": "Role",
         "roles": "Roles",
         "save": "Save",
-        "saveTab": "Sabe tab",
+        "saveFile": "Save file",
+        "saveTab": "Save tab",
         "search": "Search",
         "seeCards": "See cards",
         "seeLess": "See less",
@@ -260,6 +322,7 @@
         "selectImageFile": "Select image file",
         "send": "Send",
         "shortcut": "Link",
+        "showPage": "Show page",
         "state": "State",
         "substate": "Substate",
         "successOperation": "Success operation.",
@@ -276,9 +339,12 @@
         "typeBudget": "Add a budget template",
         "typeCard": "Type card",
         "unfollow": "Unfollow",
+        "unread": "Unread",
         "unsavedChangesExit": "There are unsaved changes, do you want to continue?",
         "unselect": "Unselect",
         "unselectAll": "Unselect all",
+        "uploadFile": "Upload file",
+        "uploadImage": "Upload image",
         "user": "User",
         "users": "Users",
         "vehicle": "Vehicle",
@@ -298,20 +364,65 @@
         "receivers": "To",
         "subject": "Subject"
     },
+    "entities": {
+        "customers": {
+            "create": "Create customer",
+            "customer": "Customer",
+            "edit": "Edit customer",
+            "email": "Email",
+            "firstName": "First name",
+            "import": "Import customer",
+            "lastName": "Second name",
+            "name": "Name",
+            "phone": "Phone",
+            "reference": "Reference",
+            "socialSecurityId": "Identity document",
+            "title": "Customers"
+        },
+        "user": {
+            "user": "User"
+        },
+        "vehicles": {
+            "addStock": "Search on inventary",
+            "chassis": "Chassis",
+            "commissionNumber": "Commission number",
+            "create": "Create vehicle",
+            "description": "Description",
+            "edit": "Edit vehicle",
+            "import": "Import vehicle",
+            "inventory": "Inventory",
+            "inventoryType": "Inventory type",
+            "inventoryVehicleStatus": "Inventory vehicle status",
+            "licensePlate": "License plate",
+            "make": "Brand",
+            "missInfo": "Missing information",
+            "model": "Model",
+            "select": "Select vehicle",
+            "stockId": "Inventary Id",
+            "title": "Vehicles",
+            "vehicle": "Vehicle",
+            "vehicleId": "Vehicle Id",
+            "vin": "Vin"
+        }
+    },
     "errors": {
         "avoidReloadUnsavedChanges": "Data reload aborted as there are unsaved changes.",
         "dateFormat": "The date must have this format: {format}",
         "emailPattern": "The text must be an email.",
         "extensionChanged": "The file extension has changed.",
+        "fileFormat": "The file must have this format: {format}",
         "fileNameCharacters": "There are invalid characters",
         "fileNameExtension": "Name must contain a dot and an extension",
         "ifContinueLosingChanges": "If you confirm you will lose the unsaved changes",
         "maxLengthError": "Max length: {length}",
         "minLength": "Min length: {length}",
+        "noCardsToShow": "The substate has no cards to show",
         "noDataToShow": "No data to show in table",
+        "noFieldsDefined": "No fields have been defined to display in the table view.",
         "required": "This field is required.",
         "saveTabBeforeChange": "You must save the tab's changes before access to another tab.",
-        "unknown": "Unknown error"
+        "unknown": "Unknown error",
+        "uploadOnlyOneFile": "You must load only one file"
     },
     "login": {
         "description": "Please enter your credentials",
@@ -372,6 +483,17 @@
             "title": "Workflow and status"
         }
     },
+    "notifications": {
+        "type": {
+            "ADD_COMMENT": "New comment",
+            "ADD_DOC": "New attachment",
+            "ADD_MESSAGE_CLIENT": "Client message",
+            "CHANGE_STATE": "State changed",
+            "EDIT_INFO": "Edition",
+            "END_WORK": "Task ended",
+            "NEW_CARD": "New card"
+        }
+    },
     "organizations": {
         "brands": {
             "create": "Create brand",
@@ -391,12 +513,22 @@
             "title": "Departments"
         },
         "facilities": {
+            "code": "Code",
             "create": "Create facility",
             "delete": "Delete facility",
             "deleteConfirmation": "Do you really want to delete this facility?",
+            "downloadTemplate": "Download template",
             "edit": "Edit facility",
+            "enterpriseId": "Enterprise Identifier",
+            "fileSelected": "File selected",
+            "import": "Import data from a document",
+            "importData": "Import information",
+            "integration": "Integration",
             "numFacilities": "{numItems} {numItems, plural, =0{facilities} one{facility} other{facilities}}",
-            "title": "Facilities"
+            "requireConfigApiExt": "requires external API configuration",
+            "storeId": "Store Identifier",
+            "title": "Facilities",
+            "workflow": "Workflow"
         },
         "specialties": {
             "create": "Create specialty",
@@ -413,6 +545,7 @@
         "lastPage": "Last page",
         "nextPage": "Next Page",
         "pageOf": "Page {num1} of {num2}",
+        "pages": "Pages",
         "prevPage": "Previous page"
     },
     "pdf": {
@@ -471,6 +604,7 @@
     "userProfile": {
         "brand": "Brand",
         "changePassword": "Change password",
+        "code": "Code",
         "data": "General data",
         "department": "Department",
         "edit": "Edit profile",

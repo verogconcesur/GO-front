@@ -1,4 +1,5 @@
 {
+    ", ": "",
     "administration": {
         "brands": "Marcas",
         "cards": "Tarjetas",
@@ -31,8 +32,41 @@
                 "title": "Presupuestos"
             },
             "checklists": {
+                "SIGN_CLIENT": "Firma de cliente",
+                "SIGN_USER": "Firma de usuario",
+                "addAttachmentPdf": "Añadir archivo PDF",
+                "check": "Check",
+                "config": "Configuración del checklist",
+                "configError": "Faltan campos sin rellenar en la configuración de la plantilla",
+                "copyItemInPage": "Duplicar elemento en las páginas",
                 "create": "Crear checklist",
-                "title": "Checklists"
+                "deleteConfirmation": "¿Realmente quieres eliminar esta plantilla?",
+                "deleteFileConfirmation": "Si continua eliminará el fichero y todos los campos insertados.",
+                "dropHere": "Suelta el archivo PDF de la plantilla aquí.",
+                "freeDraw": "Dibujo libre",
+                "image": "Imagen",
+                "includeFile": "Incluir PDF en la plantilla",
+                "itemsConfigError": "Hay errores en la configuración de los siguientes campos: {items}",
+                "itemsInTemplate": "Campos en la plantilla",
+                "loadingPdfWait": "Cargando archivo, por favor espere",
+                "name": "Nombre del checklist",
+                "new": "Nuevo checklist",
+                "pdfPreview": "Vista preliminar",
+                "selectCardAttachmentImage": "Archivos de imagen adjuntos",
+                "selectCardAttachmentPdf": "Archivos PDF adjuntos",
+                "selectDirectory": "Seleccion directorio",
+                "selectOrAddPdf": "Seleccione o añada un archivo PDF",
+                "sign": "Firma",
+                "signType": "Tipo de firma",
+                "staticValue": "Valor estático (opción configurable si no ha sido sincronizado con otros campos)",
+                "staticValueImage": "Añada imagen estática",
+                "staticValueInput": "Valor predeterminado",
+                "syncronization": "Campos sincronizados",
+                "templateFileError": "Cargue un fichero PDF válido",
+                "text": "Texto",
+                "title": "Checklists",
+                "var": "Variable",
+                "whichDocument": "¿Qué documento vas a rellenar?"
             },
             "clientTimeline": {
                 "add": "Nueva plantilla de timeline de cliente",
@@ -61,7 +95,7 @@
             },
             "title": "Plantillas"
         },
-        "title": "Concenet",
+        "title": "Go",
         "users": "Usuarios",
         "viewProfile": "Ver perfil",
         "workflows": "Workflows"
@@ -75,13 +109,14 @@
             "vehicles": "Vehículos",
             "workflow": "Workflow"
         },
-        "title": "Concenet"
+        "title": "Go"
     },
     "cardDetail": {
         "budgets": {
             "addLines": "Añadir lineas de presupuesto",
             "deleteConfirmation": "¿Está seguro que desea eliminar esta linea de presupuesto?",
-            "saveConfirmation": "¿Está seguro que desea guardar esta linea de presupuesto?"
+            "saveConfirmation": "¿Está seguro que desea guardar esta linea de presupuesto?",
+            "sendConfirmation": "¿Está seguro que desea enviar el presupuesto al cliente?"
         }
     },
     "cards": {
@@ -130,7 +165,14 @@
             "ADD_DOC": "Añadir documento",
             "ASIG_USER": "Asignar usuario",
             "CHANGE_STATE": "Cambiar estado",
-            "EDIT_INFO": "Editar información"
+            "EDIT_INFO": "Editar información",
+            "INCOMING_CALL": "Llamada entrante",
+            "OUTCOMING_CALL": "Llamada saliente"
+        },
+        "messages": {
+            "chanels": "Canales",
+            "communicationTemplate": "Plantilla de comunicación",
+            "title": "Mensaje Cliente"
         },
         "modal": {
             "cancelConfirmation": "¿Está seguro que desea salir de la ventana de tarjeta?",
@@ -161,23 +203,28 @@
             "sign": "Firmar documento"
         },
         "add": "Añadir",
+        "addAttachments": "Añadir adjuntos",
+        "addSign": "Dibujar firma",
         "address": "Dirección",
         "adviser": "Asesor",
         "all": "Todos",
         "amount": "Importe",
         "apply": "Aplicar",
         "askForConfirmation": "¿Desea continuar?",
+        "attachment": "Adjunto",
         "attachments": "Adjuntos",
         "auto": "Auto",
         "back": "Atrás",
         "brands": "Marcas",
         "budget": "Presupuesto",
         "cancel": "Cancelar",
+        "changeSign": "Cambiar firma",
         "cif": "CIF",
         "cleanFilter": "Limpiar filtros",
         "client": "Cliente",
         "clientMessages": "Mensajes cliente",
         "close": "Cerrar",
+        "collapse": "Contraer subestados",
         "comments": "Comentarios",
         "communicationTypes": {
             "customer": "Cliente",
@@ -185,6 +232,7 @@
         },
         "completed": "Finalizada",
         "concept": "Concepto",
+        "confirm": "Aceptar",
         "country": "País",
         "create": "Crear",
         "createdOn": "Creado el",
@@ -196,23 +244,29 @@
             "TEXT": "Texto de párrafo",
             "TITLE": "Titular"
         },
+        "customer": "Cliente",
         "data": "Datos",
         "dateEnd": "Fecha de fin",
         "dateIni": "Fecha de inicio",
         "delete": "Eliminar",
         "deleteConfirmation": "¿Está seguro que desea eliminar este elemento?",
+        "deleteFile": "Borrar archivo",
         "directLinks": "Accesos directos",
         "download": "Descargar",
         "dropHere": "Suelta aquí",
         "duplicate": "Duplicar",
         "edit": "Editar",
         "emails": "Emails",
+        "employee": "Empleado",
         "events": "Eventos",
+        "expand": "Expandir subestados",
         "externalLinks": "Enlaces externos",
         "field": "Campo",
+        "fieldsType": "Tipo",
         "fileName": "Nombre de archivo",
         "filter": "Filtro",
         "filterAction": "Filtrar",
+        "filterByType": "Filtrar por tipo",
         "follow": "Seguir",
         "following": "Siguiendo",
         "footer": "Pie",
@@ -220,13 +274,17 @@
         "general": "General",
         "header": "Cabecera",
         "history": "Historial",
+        "image": "Imagen",
         "import": "Importar",
         "information": "Información",
         "insert": "Insertar",
         "insertTextHere": "Introduzca el texto aquí.",
+        "items": "Elementos",
+        "label": "Descripción",
         "line": "Línea",
         "logo": "Logo",
         "manual": "Manual",
+        "mentions": "Menciones",
         "messages": "Mensajes",
         "more": "Más",
         "move": "Mover",
@@ -235,6 +293,7 @@
         "newItem": "Nuevo Elememto",
         "newLine": "Nueva línea",
         "next": "Siguiente",
+        "notifications": "Notificaciones",
         "okClient": "OK Cliente",
         "origin": "Origen",
         "others": "Otros",
@@ -245,12 +304,15 @@
         "price": "Precio",
         "priority": "Prioridad",
         "province": "Provincia",
+        "readen": "Leídas",
         "replacementVehicle": "Vehículo de sustitución",
         "replacements": "Recambios",
         "reset": "Restaurar",
+        "reviewEmail": "Se ha enviado el fichero. Revise el correo para conocer el estado de la operación.",
         "role": "Rol",
         "roles": "Roles",
         "save": "Guardar",
+        "saveFile": "Guardar archivo",
         "saveTab": "Guardar pestaña",
         "search": "Buscar",
         "seeCards": "Ver fichas",
@@ -260,6 +322,7 @@
         "selectImageFile": "Selecciona una imagen",
         "send": "Enviar",
         "shortcut": "Enlace externo",
+        "showPage": "Pág",
         "state": "Estado",
         "substate": "Subestado",
         "successOperation": "Operación realizada con éxito.",
@@ -276,9 +339,12 @@
         "typeBudget": "Añade una plantilla de presupuestos",
         "typeCard": "Tipos de ficha",
         "unfollow": "Dejar de seguir",
+        "unread": "Sin leer",
         "unsavedChangesExit": "Hay cambios en el formulario sin guardar, ¿desea salir igualmente?",
         "unselect": "Deseleccionar",
         "unselectAll": "Deseleccionar todos",
+        "uploadFile": "Subir archivo",
+        "uploadImage": "Subir imagen",
         "user": "Usuario",
         "users": "Usuarios",
         "vehicle": "Vehículo",
@@ -298,20 +364,65 @@
         "receivers": "Destinatarios",
         "subject": "Asunto"
     },
+    "entities": {
+        "customers": {
+            "create": "Crear cliente",
+            "customer": "Cliente",
+            "edit": "Editar cliente",
+            "email": "Email",
+            "firstName": "Primer apellido",
+            "import": "Importar cliente",
+            "lastName": "Segundo apellido",
+            "name": "Nombre",
+            "phone": "Teléfono",
+            "reference": "Referencia",
+            "socialSecurityId": "Documento de identidad",
+            "title": "Clientes"
+        },
+        "user": {
+            "user": "Usuario"
+        },
+        "vehicles": {
+            "addStock": "Buscar en inventario",
+            "chassis": "Chasis",
+            "commissionNumber": "Número de comisión",
+            "create": "Crear vehículo",
+            "description": "Descripción",
+            "edit": "Editar vehículo",
+            "import": "Importar vehículo",
+            "inventory": "Inventario",
+            "inventoryType": "Tipo de inventario",
+            "inventoryVehicleStatus": "Estado",
+            "licensePlate": "Matrícula",
+            "make": "Marca",
+            "missInfo": "Sin información",
+            "model": "Modelo",
+            "select": "Seleccionar vehículo",
+            "stockId": "Id del inventario",
+            "title": "Vehículos",
+            "vehicle": "Vehículo",
+            "vehicleId": "Id del vehículo",
+            "vin": "Vin"
+        }
+    },
     "errors": {
         "avoidReloadUnsavedChanges": "Recarga de datos abortada puesto que hay cambios sin guardar.",
         "dateFormat": "La fecha debe tener este formato: {format}",
         "emailPattern": "El texto introducido debe ser un email.",
         "extensionChanged": "La extensión del archivo ha cambiado.",
+        "fileFormat": "El archivo debe ser de tipo: {format}",
         "fileNameCharacters": "Hay caracteres inválidos",
         "fileNameExtension": "El nombre debe contener un punto y una extensión",
         "ifContinueLosingChanges": "Si continua perderá los cambios realizados",
         "maxLengthError": "Longitud máxima: {length}",
         "minLength": "Longitud mínima: {length}",
+        "noCardsToShow": "El subestado no tiene fichas para mostrar.",
         "noDataToShow": "No hay información disponible",
+        "noFieldsDefined": "No se han definido campos a mostrar en la vista tablero.",
         "required": "Este campo es obligatorio.",
         "saveTabBeforeChange": "Debe guardar la información de la pestaña actual antes de poder abrir otra.",
-        "unknown": "Error desconocido"
+        "unknown": "Error desconocido",
+        "uploadOnlyOneFile": "Solo está permitido cargar un único archivo"
     },
     "login": {
         "description": "Por favor, introduzca sus credenciales",
@@ -372,6 +483,17 @@
             "title": "Workflow y estados"
         }
     },
+    "notifications": {
+        "type": {
+            "ADD_COMMENT": "Nuevo comentario",
+            "ADD_DOC": "Nuevo adjunto",
+            "ADD_MESSAGE_CLIENT": "Mensaje de cliente",
+            "CHANGE_STATE": "Cambio de estado",
+            "EDIT_INFO": "Edición",
+            "END_WORK": "Tarea finalizada",
+            "NEW_CARD": "Tarjeta nueva"
+        }
+    },
     "organizations": {
         "brands": {
             "create": "Crear marca",
@@ -391,12 +513,22 @@
             "title": "Departamentos"
         },
         "facilities": {
+            "code": "Código",
             "create": "Crear instalación",
             "delete": "Eliminar instalación",
             "deleteConfirmation": "¿Realmente quiere eliminar esta instalación?",
+            "downloadTemplate": "Descargar plantilla",
             "edit": "Editar instalación",
+            "enterpriseId": "Identificador de empresa",
+            "fileSelected": "Archivo seleccionado",
+            "import": "Importar datos de un documento",
+            "importData": "Información de la importación",
+            "integration": "Integración",
             "numFacilities": "{numItems} {numItems, plural, =0{instalaciones} one{instalación} other{instalaciones}}",
-            "title": "Instalaciones"
+            "requireConfigApiExt": "Requiere configuración de API externa",
+            "storeId": "Identificador de tienda",
+            "title": "Instalaciones",
+            "workflow": "Workflow"
         },
         "specialties": {
             "create": "Crear especialidad",
@@ -413,6 +545,7 @@
         "lastPage": "Última página",
         "nextPage": "Siguiente página",
         "pageOf": "Página {num1} de {num2}",
+        "pages": "Páginas",
         "prevPage": "Página previa"
     },
     "pdf": {
@@ -471,6 +604,7 @@
     "userProfile": {
         "brand": "Marca",
         "changePassword": "Cambiar contraseña",
+        "code": "Código",
         "data": "Datos generales",
         "department": "Departamento",
         "edit": "Editar perfil",

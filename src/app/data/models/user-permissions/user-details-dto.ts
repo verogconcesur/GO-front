@@ -12,6 +12,7 @@ export default interface UserDetailsDTO {
   lastName: string;
   role: RoleDTO;
   email: string;
+  code: string;
   userName: string;
   password: string;
   permissions: PermissionsDTO[];
@@ -19,4 +20,6 @@ export default interface UserDetailsDTO {
   facilities: FacilityDTO[];
   departments: DepartmentDTO[];
   specialties: SpecialtyDTO[];
+  signature: string;
+  signatureContentType: string;
 }
