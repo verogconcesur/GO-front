@@ -203,7 +203,7 @@ export class CreateEditTimelineComponent extends ComponentToExtendForCustomDialo
     return tempDivElement.textContent || tempDivElement.innerText || '';
   }
   public textEditorContentChanged(html: string, itemForm: UntypedFormGroup) {
-    if (html === '' || html === ' ' || this.convertToPlain(html) === '' || this.convertToPlain(html) === ' ') {
+    if ((html === '' || this.convertToPlain(html) === '') && html.length < 20) {
       html = null;
     }
     itemForm.get('messageLanding').setValue(html);
