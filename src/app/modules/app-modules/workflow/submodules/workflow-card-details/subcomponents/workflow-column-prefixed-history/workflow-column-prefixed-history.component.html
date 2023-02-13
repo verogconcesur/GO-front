@@ -134,6 +134,7 @@
                         <mat-icon *ngIf="item?.eventHistoryType === 'EDIT_INFO'"> edit</mat-icon>
                         <mat-icon *ngIf="item?.eventHistoryType === 'ADD_DOC'"> attach_file</mat-icon>
                         <mat-icon *ngIf="item?.eventHistoryType === 'ADD_COMMENT'"> insert_comment</mat-icon>
+                        <mat-icon *ngIf="item?.eventHistoryType === 'MIGRATION'"> exit_to_app</mat-icon>
                         <div [innerHtml]="getHistoryDescription(item) | safeHtml"></div>
                     </div>
                     <div class="history-info__date">{{ item.dateEvent | date : "dd/MM/yy, HH:mm" }}</div>
