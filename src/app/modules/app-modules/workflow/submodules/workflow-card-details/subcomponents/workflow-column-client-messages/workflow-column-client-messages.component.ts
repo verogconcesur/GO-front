@@ -53,7 +53,7 @@ export class WorkflowColumnClientMessagesComponent implements OnInit, OnDestroy 
         .getCardMessages(cardInstanceWorkflowId)
         .pipe(take(1))
         .subscribe((res) => {
-          if (fromInterval && this.messages.length !== res.length) {
+          if (res && fromInterval && this.messages.length !== res.length) {
             this.newCommentsEvent.emit(true);
             this.notificationSoundService.playSound('CLIENT_MESSAGES');
           } else if (fromInterval) {
