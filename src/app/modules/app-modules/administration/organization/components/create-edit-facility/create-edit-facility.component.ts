@@ -270,7 +270,7 @@ export class CreateEditFacilityComponent extends ComponentToExtendForCustomDialo
     return tempDivElement.textContent || tempDivElement.innerText || '';
   }
   public textEditorContentChanged(type: 'header' | 'footer', html: string) {
-    if (html === '' || html === ' ' || this.convertToPlain(html) === '' || this.convertToPlain(html) === ' ') {
+    if ((html === '' || this.convertToPlain(html) === '') && html.length < 20) {
       html = null;
     }
     if (type === 'header' && html !== this.form.header.value) {

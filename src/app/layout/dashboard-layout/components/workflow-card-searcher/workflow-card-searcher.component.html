@@ -10,7 +10,13 @@
             />
             <mat-icon matSuffix *ngIf="searching <= 0">search</mat-icon>
             <mat-spinner matSuffix class="spinner" *ngIf="searching > 0" diameter="20"></mat-spinner>
-            <mat-autocomplete autoActiveFirstOption="false" #auto="matAutocomplete" [panelWidth]="'315px'">
+            <mat-autocomplete
+                autoActiveFirstOption="false"
+                #auto="matAutocomplete"
+                [panelWidth]="'315px'"
+                class="autocomplete-panel-class"
+                classlist="autocomplete-panel-class"
+            >
                 <mat-optgroup *ngFor="let group of filteredOptions | async" [label]="group.workflowName">
                     <mat-option
                         *ngFor="let option of group.cards"
@@ -52,7 +58,13 @@
                 />
                 <mat-icon matSuffix *ngIf="searching <= 0">search</mat-icon>
                 <mat-spinner matSuffix class="spinner" *ngIf="searching > 0" diameter="20"></mat-spinner>
-                <mat-autocomplete autoActiveFirstOption="false" #auto="matAutocomplete" [panelWidth]="'315px'">
+                <mat-autocomplete
+                    autoActiveFirstOption="false"
+                    #auto="matAutocomplete"
+                    [panelWidth]="'315px'"
+                    class="autocomplete-panel-class"
+                    classlist="autocomplete-panel-class"
+                >
                     <mat-optgroup *ngFor="let group of filteredOptions | async" [label]="group.workflowName">
                         <mat-option
                             *ngFor="let option of group.cards"

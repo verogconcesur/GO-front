@@ -158,4 +158,8 @@
       border: 0px;
     }
   }
+  .autocomplete-panel-class {
+    max-height: calc(100vh - 65px) !important;
+    height: 550px !important;
+  }
 }
