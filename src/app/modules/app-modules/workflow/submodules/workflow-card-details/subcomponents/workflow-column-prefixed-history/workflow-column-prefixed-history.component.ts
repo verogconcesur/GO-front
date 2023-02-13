@@ -24,6 +24,7 @@ export class WorkflowColumnPrefixedHistoryComponent implements OnInit, OnChanges
   public labels = {
     eventHistoryTypes: marker('cards.eventHistoryTypes'),
     workflows: marker('cards.workflows'),
+    migration: marker('cards.migration'),
     from: marker('common.from'),
     to: marker('common.to'),
     noDataToShow: marker('errors.noDataToShow')
@@ -190,8 +191,11 @@ export class WorkflowColumnPrefixedHistoryComponent implements OnInit, OnChanges
 
   public getHistoryDescription(item: CardHistoryDTO): string {
     let html = item.description;
+    if (item.eventHistoryType === 'MIGRATION') {
+      html = this.translateService.instant(this.labels.migration);
+    }
     let style = '';
-    if (html.indexOf('[') >= 0 && html.indexOf(']') >= 0) {
+    if (html && html.indexOf('[') >= 0 && html.indexOf(']') >= 0) {
       if (item.workflowSubstateTarget?.color) {
         style = `style="background-color: ${item.workflowSubstateTarget?.color}; color: ${this.getFontColor(
           item.workflowSubstateTarget?.color

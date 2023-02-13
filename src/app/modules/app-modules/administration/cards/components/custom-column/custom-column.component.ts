@@ -391,8 +391,6 @@ export class CustomColumnComponent implements OnInit {
         case 3:
           break;
         case 4:
-          this.getTemplates('BUDGET');
-          this.formTab.get('templateId').setValidators([Validators.required]);
           let tabItemsForm4 = this.formTab.get('tabItems') as FormArray;
           tabItemsForm4 = this.fb.array([]);
           break;
