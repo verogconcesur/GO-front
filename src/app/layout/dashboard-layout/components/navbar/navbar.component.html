@@ -46,10 +46,10 @@
         </button>
         <!-- END Responsive search input -->
         <button mat-icon-button aria-label="Email" (click)="showMentions()" [matMenuTriggerFor]="mentionsMenu">
-            <mat-icon fontSet="concenet" [ngClass]="{ active: infoWarning.existsNoReadMention }">comments</mat-icon>
+            <mat-icon fontSet="concenet" [ngClass]="{ active: highLightMentions() }">comments</mat-icon>
         </button>
         <button mat-icon-button aria-label="Notification" (click)="showNotifications()" [matMenuTriggerFor]="notificationsMenu">
-            <mat-icon fontSet="concenet" [ngClass]="{ active: infoWarning.existsNoReadNotification }">notifications-on</mat-icon>
+            <mat-icon fontSet="concenet" [ngClass]="{ active: highLightNotifications() }">notifications-on</mat-icon>
         </button>
 
         <!-- User Profile Component -->
