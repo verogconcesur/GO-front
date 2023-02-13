@@ -19,13 +19,7 @@ export class MentionsComponent implements OnInit {
     newMentions: marker('common.unread'),
     oldMentions: marker('common.readen')
   };
-  public mentions: {
-    new: MentionDataListDTO[];
-    old: MentionDataListDTO[];
-  } = {
-    new: [],
-    old: []
-  };
+  public mentions: MentionDataListDTO[] = [];
   public loading = false;
   private originalMentions: MentionDataListDTO[] = [];
   constructor(private authService: AuthenticationService, private mentionService: NotificationService, private router: Router) {}
@@ -34,8 +28,10 @@ export class MentionsComponent implements OnInit {
 
   public getData(): void {
     this.loading = true;
+    this.mentions = [];
     this.mentionService
-      .getMentions()
+      // .getMentions('NO_READ')
+      .getMentions('ALL')
       .pipe(
         take(1),
         finalize(() => (this.loading = false))
@@ -46,24 +42,22 @@ export class MentionsComponent implements OnInit {
       });
   }
 
-  public goToCard(item: MentionDataListDTO): void {
-    let url = `${RouteConstants.DASHBOARD}/${RouteConstants.WORKFLOWS}/${item.workflowId}/`;
-    if (this.router.url.indexOf(RouteConstants.WORKFLOWS_CALENDAR_VIEW) >= 0) {
-      url += `${RouteConstants.WORKFLOWS_CALENDAR_VIEW}`;
-    } else if (this.router.url.indexOf(RouteConstants.WORKFLOWS_TABLE_VIEW) >= 0) {
-      url += `${RouteConstants.WORKFLOWS_TABLE_VIEW}`;
-    } else {
-      url += `${RouteConstants.WORKFLOWS_BOARD_VIEW}`;
-    }
-    url += `/(${RouteConstants.WORKFLOWS_CARD}:${RouteConstants.WORKFLOWS_ID_CARD}/${item.cardInstanceWorkflowId}/${
-      RouteConstants.WORKFLOWS_ID_USER
-    }/${item.workflowSubstateFront && item.userAsignId ? item.userAsignId : 'null'})`;
-    this.router.navigateByUrl(url);
-  }
+  // public goToCard(item: MentionDataListDTO): void {
+  //   let url = `${RouteConstants.DASHBOARD}/${RouteConstants.WORKFLOWS}/${item.workflowId}/`;
+  //   if (this.router.url.indexOf(RouteConstants.WORKFLOWS_CALENDAR_VIEW) >= 0) {
+  //     url += `${RouteConstants.WORKFLOWS_CALENDAR_VIEW}`;
+  //   } else if (this.router.url.indexOf(RouteConstants.WORKFLOWS_TABLE_VIEW) >= 0) {
+  //     url += `${RouteConstants.WORKFLOWS_TABLE_VIEW}`;
+  //   } else {
+  //     url += `${RouteConstants.WORKFLOWS_BOARD_VIEW}`;
+  //   }
+  //   url += `/(${RouteConstants.WORKFLOWS_CARD}:${RouteConstants.WORKFLOWS_ID_CARD}/${item.cardInstanceWorkflowId}/${
+  //     RouteConstants.WORKFLOWS_ID_USER
+  //   }/${item.workflowSubstateFront && item.userAsignId ? item.userAsignId : 'null'})`;
+  //   this.router.navigateByUrl(url);
+  // }
 
   public filterDataToShow(): void {
-    const filtered = [...this.originalMentions];
-    this.mentions.new = filtered.filter((d) => !d.read);
-    this.mentions.old = filtered.filter((d) => d.read);
+    this.mentions = [...this.originalMentions];
   }
 }

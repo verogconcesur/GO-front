@@ -1,12 +1,8 @@
+import WorkflowCardDTO from '../workflows/workflow-card-dto';
+
 export default interface MentionDataListDTO {
-  cardInstanceWorkflowId: number;
+  cardInstanceCommentId: number;
   comment: string;
-  facilityName: string;
   read: boolean;
-  userAsignId: number;
-  workflowId: number;
-  workflowName: string;
-  workflowStateName: string;
-  workflowSubstateFront: boolean;
-  workflowSubstateName: string;
+  cardInstance: WorkflowCardDTO;
 }

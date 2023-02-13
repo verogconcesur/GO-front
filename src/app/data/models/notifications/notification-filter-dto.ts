@@ -8,5 +8,6 @@ export default interface NotificationFilterDTO {
     | 'ADD_DOC'
     | 'ADD_MESSAGE_CLIENT'
   )[];
+  readFilterType: 'READ' | 'NO_READ' | 'ALL';
   userId: number;
 }

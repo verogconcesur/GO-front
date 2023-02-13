@@ -38,15 +38,16 @@ export class NotificationsComponent implements OnInit {
   };
   public loading = false;
   public types = new FormControl('');
-  public typesList: string[] = [
-    'CHANGE_STATE',
-    'EDIT_INFO',
-    'NEW_CARD',
-    'END_WORK',
-    'ADD_COMMENT',
-    'ADD_DOC',
-    'ADD_MESSAGE_CLIENT'
-  ];
+  // public typesList: string[] = [
+  //   'CHANGE_STATE',
+  //   'EDIT_INFO',
+  //   'NEW_CARD',
+  //   'END_WORK',
+  //   'ADD_COMMENT',
+  //   'ADD_DOC',
+  //   'ADD_MESSAGE_CLIENT'
+  // ];
+  public typesList: string[] = ['NEW_CARD', 'END_WORK', 'ADD_MESSAGE_CLIENT'];
   private originalNotifications: NotificationDataListDTO[] = [];
   private notificationFilter: NotificationFilterDTO = null;
   constructor(
@@ -58,7 +59,8 @@ export class NotificationsComponent implements OnInit {
   ngOnInit(): void {
     this.notificationFilter = {
       userId: parseInt(this.authService.getUserId(), 10),
-      notificationTypes: ['CHANGE_STATE', 'EDIT_INFO', 'NEW_CARD', 'END_WORK', 'ADD_COMMENT', 'ADD_DOC', 'ADD_MESSAGE_CLIENT']
+      readFilterType: 'NO_READ',
+      notificationTypes: ['NEW_CARD', 'END_WORK', 'ADD_MESSAGE_CLIENT']
     };
   }
 

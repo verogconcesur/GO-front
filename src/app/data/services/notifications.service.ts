@@ -36,9 +36,9 @@ export class NotificationService {
       .pipe(catchError((error) => throwError(error.error as ConcenetError)));
   }
 
-  public getMentions(): Observable<MentionDataListDTO[]> {
+  public getMentions(type: 'READ' | 'NO_READ' | 'ALL'): Observable<MentionDataListDTO[]> {
     return this.http
-      .get<MentionDataListDTO[]>(`${this.env.apiBaseUrl}${this.NOTIFICATIONS_PATH}${this.LIST_MENTIONS_PATH}`)
+      .get<MentionDataListDTO[]>(`${this.env.apiBaseUrl}${this.NOTIFICATIONS_PATH}${this.LIST_MENTIONS_PATH}/${type}`)
       .pipe(catchError((error) => throwError(error.error as ConcenetError)));
   }
 }
