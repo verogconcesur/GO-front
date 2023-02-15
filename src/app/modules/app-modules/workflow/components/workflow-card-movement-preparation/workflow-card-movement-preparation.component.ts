@@ -328,7 +328,7 @@ export class WorkflowCardMovementPreparationComponent implements OnInit {
   }
   public textEditorContentChanged(html: string, form: UntypedFormGroup) {
     if (html !== form.controls.template.value) {
-      if (html === '' || html === ' ' || this.convertToPlain(html) === '' || this.convertToPlain(html) === ' ') {
+      if ((html === '' || this.convertToPlain(html) === '') && html.length < 20) {
         html = null;
       }
       form.get('template').setValue(html, { emitEvent: true });

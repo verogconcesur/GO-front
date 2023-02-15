@@ -267,7 +267,7 @@ export class MessageClientDialogComponent extends ComponentToExtendForCustomDial
       if (plain) {
         html = this.convertToPlain(html);
       }
-      if (html === '' || html === ' ' || this.convertToPlain(html) === '' || this.convertToPlain(html) === ' ') {
+      if ((html === '' || this.convertToPlain(html) === '') && html.length < 20) {
         html = null;
       }
       form.setValue(html, { emitEvent: true });

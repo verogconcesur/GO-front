@@ -25,7 +25,6 @@ export class SignDocumentSaveLocationComponent implements OnInit {
   @Output() saveComplete: EventEmitter<boolean> = new EventEmitter();
   public attachmentsByGroup: CardAttachmentsDTO[] = [];
   public pdfForm: UntypedFormGroup;
-  public maxLength = 40;
   public minLength = 3;
 
   public labels = {
@@ -97,12 +96,7 @@ export class SignDocumentSaveLocationComponent implements OnInit {
     this.pdfForm = this.fb.group({
       name: [
         this.pdf.procesedFile.name,
-        Validators.compose([
-          Validators.required,
-          Validators.maxLength(this.maxLength),
-          Validators.minLength(this.minLength),
-          FilenameValidator.validate('name')
-        ])
+        Validators.compose([Validators.required, Validators.minLength(this.minLength), FilenameValidator.validate('name')])
       ],
       attachmentDirectory: [
         this.attachmentsByGroup && this.attachmentsByGroup.length ? this.attachmentsByGroup[0] : null,

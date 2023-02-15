@@ -7,9 +7,6 @@
                 <div [hidden]="!pdfForm.controls.name.errors.required">
                     {{ labels.required | translate }}
                 </div>
-                <div [hidden]="!pdfForm.controls.name.errors.maxlength">
-                    {{ labels.errorMaxLength | translate : { length: maxLength } }}
-                </div>
                 <div [hidden]="!pdfForm.controls.name.errors.minlength">
                     {{ labels.errorMinLength | translate : { length: minLength } }}
                 </div>
