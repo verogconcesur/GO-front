@@ -1,5 +1,5 @@
 import { DatePipe } from '@angular/common';
-import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output, ViewEncapsulation } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { ActivatedRoute, Router } from '@angular/router';
 import { RouteConstants } from '@app/constants/route.constants';
@@ -11,12 +11,14 @@ import WorkflowSubstateDTO from '@data/models/workflows/workflow-substate-dto';
 import { WorkflowDragAndDropService } from '@modules/app-modules/workflow/aux-service/workflow-drag-and-drop.service';
 import { TasksModalComponent } from '@modules/feature-modules/workflow-card-tasks/tasks-modal/tasks-modal.component';
 import { TranslateService } from '@ngx-translate/core';
+import { htmlToStringConverter } from '@shared/utils/html-to-string-function';
 import { replacerFunc } from '@shared/utils/replacer-function';
 
 @Component({
   selector: 'app-workflow-card',
   templateUrl: './workflow-card.component.html',
-  styleUrls: ['./workflow-card.component.scss']
+  styleUrls: ['./workflow-card.component.scss'],
+  encapsulation: ViewEncapsulation.None
 })
 export class WorkflowCardComponent implements OnInit {
   @Input() card: WorkflowCardDTO;
@@ -28,6 +30,10 @@ export class WorkflowCardComponent implements OnInit {
   @Input() forceSize: 'size-s' | 'size-m' | 'size-l' | 'size-xl';
   @Input() showExtraInfo = true;
   @Input() navigationMode: 'relative' | 'absolute' = 'relative';
+  @Input() additionalInfo: string;
+  @Input() showAdditionalInfo = false;
+  @Input() viewedBtn = false;
+  @Output() viewedAction: EventEmitter<boolean> = new EventEmitter();
   @Output() isDraggingEvent: EventEmitter<boolean> = new EventEmitter();
   public cardSize = 'size-m';
   public cardId: number;
@@ -35,6 +41,7 @@ export class WorkflowCardComponent implements OnInit {
     dueOutDateTime: marker('workflows.dueOutDateTime')
   };
   public cardInfoExpanded = false;
+  public cardAdditionalInfoExpanded = false;
   public readonly dragStartDelay = 300; //To prevent drag a card on tablet when user is scrolling
 
   constructor(
@@ -47,6 +54,13 @@ export class WorkflowCardComponent implements OnInit {
 
   ngOnInit(): void {
     this.getCardSize();
+  }
+
+  public getAdditionalInfoString(): string {
+    if (this.additionalInfo) {
+      return htmlToStringConverter(this.additionalInfo);
+    }
+    return '';
   }
 
   public extraInfoValue(): string {
@@ -76,8 +90,12 @@ export class WorkflowCardComponent implements OnInit {
     this.cardInfoExpanded = !this.cardInfoExpanded;
   }
 
+  public expandAddiontalInfo(): void {
+    this.cardAdditionalInfoExpanded = !this.cardAdditionalInfoExpanded;
+  }
+
   public getCardSizeClass(): string {
-    if (this.cardInfoExpanded) {
+    if (this.cardInfoExpanded || this.cardAdditionalInfoExpanded) {
       return `${this.cardSize} expanded`;
     }
     return this.cardSize;

@@ -32,6 +32,18 @@
         >
             {{ extraInfoValue() }}
         </div>
+
+        <div
+            class="workflow-card__info__data extra-info"
+            *ngIf="additionalInfo && additionalInfo !== '' && showAdditionalInfo"
+            [matTooltip]="getAdditionalInfoString()"
+            appShowIfTruncated
+            matTooltipPosition="below"
+            (click)="$event.stopPropagation(); expandAddiontalInfo()"
+        >
+            {{ getAdditionalInfoString() }}
+        </div>
+
         <div
             class="workflow-card__info__tasks"
             [ngClass]="{ completed: card.countCompletedTasks === card.countTotalTasks }"
@@ -40,6 +52,10 @@
         >
             {{ card.countCompletedTasks }}/{{ card.countTotalTasks }}
             <mat-icon>check_box</mat-icon>
+        </div>
+
+        <div class="workflow-card__info__read-card" *ngIf="viewedBtn" (click)="$event.stopPropagation(); viewedAction.emit(true)">
+            <mat-icon>visibility</mat-icon>
         </div>
     </div>
 </div>
