@@ -75,7 +75,7 @@
     </button>
 </mat-menu>
 
-<mat-menu #notificationsMenu="matMenu">
+<mat-menu #notificationsMenu="matMenu" class="notification-mention-menu">
     <div class="navbar-warning-menu">
         <h2 class="navbar-warning-menu__header">
             {{ labels.notifications | translate }}
@@ -87,7 +87,7 @@
     </div>
 </mat-menu>
 
-<mat-menu #mentionsMenu="matMenu">
+<mat-menu #mentionsMenu="matMenu" class="notification-mention-menu">
     <div class="navbar-warning-menu">
         <h2 class="navbar-warning-menu__header">
             {{ labels.mentions | translate }}
