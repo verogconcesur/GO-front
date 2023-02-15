@@ -489,6 +489,7 @@
             "ADD_COMMENT": "New comment",
             "ADD_DOC": "New attachment",
             "ADD_MESSAGE_CLIENT": "Client message",
+            "ASIG_USER": "Card assigned to user",
             "CHANGE_STATE": "State changed",
             "EDIT_INFO": "Edition",
             "END_WORK": "Task ended",

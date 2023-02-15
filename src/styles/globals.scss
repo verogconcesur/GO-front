@@ -158,8 +158,15 @@
       border: 0px;
     }
   }
-  .autocomplete-panel-class {
+  .autocomplete-panel-class,
+  .notification-mention-menu {
     max-height: calc(100vh - 65px) !important;
     height: 550px !important;
+  }
+
+  .notification-mention-menu {
+    .mat-menu-content {
+      height: calc(100% - 16px);
+    }
   }
 }

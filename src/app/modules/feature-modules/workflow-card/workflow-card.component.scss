@@ -8,7 +8,7 @@
   margin: 10px 0;
   border-radius: 8px;
   box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.04);
-  height: 60px;
+  min-height: 60px;
   display: flex;
   justify-content: flex-start;
   align-items: center;
@@ -93,6 +93,13 @@
           background-color: mat-color($background, background-administration);
         }
       }
+    }
+    &__read-card {
+      position: absolute;
+      top: 5px;
+      right: 5px;
+      cursor: pointer;
+      color: mat-color($primary, A700);
     }
   }
   &.expanded .workflow-card__info .workflow-card__info__data.extra-info {
