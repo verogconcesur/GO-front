@@ -41,6 +41,9 @@
             matTooltipPosition="below"
             (click)="$event.stopPropagation(); expandAddiontalInfo()"
         >
+            <mat-icon *ngIf="additionalInfoIcon && additionalInfoIcon !== ''" style="height: 20px">{{
+                additionalInfoIcon
+            }}</mat-icon>
             {{ getAdditionalInfoString() }}
         </div>
 

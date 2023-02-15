@@ -14,41 +14,23 @@
             <mat-option *ngFor="let type of typesList" [value]="type">{{ labels[type] | translate }}</mat-option>
         </mat-select>
     </mat-form-field>
-    <div class="new">
-        <h4 class="subtitle">{{ labels.newNotifications | translate }}</h4>
-        <div class="notification-item mat-elevation-z2" *ngFor="let item of notifications.new" (click)="goToCard(item)">
-            <div class="notification-item__wf">{{ item.workflowName }} - {{ item.facilityName }}</div>
-            <div class="notification-item__wf-state">{{ item.workflowStateName }} / {{ item.workflowSubstateName }}</div>
-            <mat-divider> </mat-divider>
-            <div class="notification-item__info">
-                <mat-icon *ngIf="item.notificationType === 'CHANGE_STATE'">redo</mat-icon>
-                <mat-icon *ngIf="item.notificationType === 'EDIT_INFO'">edit</mat-icon>
-                <mat-icon *ngIf="item.notificationType === 'NEW_CARD'">fiber_new</mat-icon>
-                <mat-icon *ngIf="item.notificationType === 'END_WORK'">done_all</mat-icon>
-                <mat-icon *ngIf="item.notificationType === 'ADD_COMMENT'">insert_comment</mat-icon>
-                <mat-icon *ngIf="item.notificationType === 'ADD_DOC'">attach_file</mat-icon>
-                <mat-icon *ngIf="item.notificationType === 'ADD_MESSAGE_CLIENT'">record_voice_over</mat-icon>
-                {{ item.notification }}
-            </div>
-        </div>
+    <div class="no-data" *ngIf="!notifications || notifications.length === 0">
+        {{ labels.noDataToShow | translate }}
     </div>
-    <mat-divider style="margin-bottom: 10px"></mat-divider>
-    <div class="old">
-        <h4 class="subtitle">{{ labels.oldNotifications | translate }}</h4>
-        <div class="notification-item mat-elevation-z2" *ngFor="let item of notifications.old" (click)="goToCard(item)">
-            <div class="notification-item__wf">{{ item.workflowName }} - {{ item.facilityName }}</div>
-            <div class="notification-item__wf-state">{{ item.workflowStateName }} / {{ item.workflowSubstateName }}</div>
-            <mat-divider> </mat-divider>
-            <div class="notification-item__info">
-                <mat-icon *ngIf="item.notificationType === 'CHANGE_STATE'">redo</mat-icon>
-                <mat-icon *ngIf="item.notificationType === 'EDIT_INFO'">edit</mat-icon>
-                <mat-icon *ngIf="item.notificationType === 'NEW_CARD'">fiber_new</mat-icon>
-                <mat-icon *ngIf="item.notificationType === 'END_WORK'">done_all</mat-icon>
-                <mat-icon *ngIf="item.notificationType === 'ADD_COMMENT'">insert_comment</mat-icon>
-                <mat-icon *ngIf="item.notificationType === 'ADD_DOC'">attach_file</mat-icon>
-                <mat-icon *ngIf="item.notificationType === 'ADD_MESSAGE_CLIENT'">record_voice_over</mat-icon>
-                {{ item.notification }}
-            </div>
-        </div>
+    <div class="new">
+        <app-workflow-card
+            class="notification-item mat-elevation-z2"
+            *ngFor="let item of notifications"
+            [card]="item.cardInstance"
+            [disableDrag]="true"
+            [additionalInfo]="item.notification"
+            [additionalInfoIcon]="getItemIcon(item)"
+            [showAdditionalInfo]="true"
+            [forceSize]="'size-m'"
+            [showExtraInfo]="false"
+            [navigationMode]="'absolute'"
+            [viewedBtn]="true"
+            (viewedAction)="markAsViewed(item)"
+        ></app-workflow-card>
     </div>
 </div>

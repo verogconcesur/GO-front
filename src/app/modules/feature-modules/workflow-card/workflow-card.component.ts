@@ -31,6 +31,7 @@ export class WorkflowCardComponent implements OnInit {
   @Input() showExtraInfo = true;
   @Input() navigationMode: 'relative' | 'absolute' = 'relative';
   @Input() additionalInfo: string;
+  @Input() additionalInfoIcon: string;
   @Input() showAdditionalInfo = false;
   @Input() viewedBtn = false;
   @Output() viewedAction: EventEmitter<boolean> = new EventEmitter();
