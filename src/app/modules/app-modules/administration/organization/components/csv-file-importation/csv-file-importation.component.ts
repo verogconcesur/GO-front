@@ -141,7 +141,7 @@ export class CsvFileImportationComponent extends ComponentToExtendForCustomDialo
     reader.readAsDataURL(file);
   }
   public downloadTemplate(): void {
-    window.open('/assets/files/TemplateMigrationAlive.xlsx', '_blank');
+    window.open('/assets/files/TemplateMigration.xlsx', '_blank');
   }
   private getListOptions(): void {
     const spinner = this.spinnerService.show();
