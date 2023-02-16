@@ -21,6 +21,14 @@
                 [cardInstance]="cardInstance"
                 [editMode]="editMode"
             ></app-item-input>
+            <app-item-option
+                *ngSwitchCase="'OPTION'"
+                [tabItemForm]="itemForm"
+                [tabItem]="tabItems[i]"
+                [tab]="tab"
+                [cardInstance]="cardInstance"
+                [editMode]="editMode"
+            ></app-item-option>
         </div>
     </div>
 </div>

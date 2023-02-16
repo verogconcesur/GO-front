@@ -122,6 +122,8 @@
     "cards": {
         "column": {
             "actionConfiguration": "Configuración de las acciones",
+            "applyColor": "Aporta color a la ficha",
+            "color": "Color",
             "columnName": "Nombre de columna",
             "contentSource": "Origen del contenido",
             "contentType": "Tipo de contenido",
@@ -150,6 +152,8 @@
             "newLink": "Nuevo enlace externo",
             "newTab": "Nueva pestaña ",
             "numDecimals": "Número de decimales",
+            "overridePriority": "Sobreescribe la prioridad de la ficha",
+            "priority": "Nueva prioridad",
             "shortcutConfiguration": "Configuración de enlaces externos",
             "tabConfiguration": "Configuración de la pestaña",
             "tabList": "Pestañas de columna",

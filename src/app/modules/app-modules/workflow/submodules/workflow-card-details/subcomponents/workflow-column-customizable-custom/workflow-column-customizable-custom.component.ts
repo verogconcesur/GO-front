@@ -66,14 +66,16 @@ export class WorkflowColumnCustomizableCustomComponent implements OnInit, OnChan
             tabItem.tabItemConfigInput.dateType === 'DATE' &&
             cardTabItemInstance
           ) {
-            cardTabItemInstance.value = moment(cardTabItemInstance.value, 'DD/MM/YYYY').toDate();
+            cardTabItemInstance.value = cardTabItemInstance.value
+              ? moment(cardTabItemInstance.value, 'DD/MM/YYYY').toDate()
+              : null;
           }
           if (
             tabItem.tabItemConfigInput.dataType === 'TEMPORAL' &&
             tabItem.tabItemConfigInput.dateType === 'DATETIME' &&
             cardTabItemInstance
           ) {
-            cardTabItemInstance.value = moment(cardTabItemInstance.value, 'DD/MM/YYYY HH:mm');
+            cardTabItemInstance.value = cardTabItemInstance.value ? moment(cardTabItemInstance.value, 'DD/MM/YYYY HH:mm') : null;
           }
           if (
             tabItem.tabItemConfigInput.dataType === 'TEMPORAL' &&
@@ -81,7 +83,9 @@ export class WorkflowColumnCustomizableCustomComponent implements OnInit, OnChan
             cardTabItemInstance
           ) {
             const dateStrings = (cardTabItemInstance.value as string).split(':');
-            cardTabItemInstance.value = moment().set('hours', Number(dateStrings[0])).set('minutes', Number(dateStrings[1]));
+            cardTabItemInstance.value = cardTabItemInstance.value
+              ? moment().set('hours', Number(dateStrings[0])).set('minutes', Number(dateStrings[1]))
+              : null;
           }
           if (tabItem.tabItemConfigInput.mandatory) {
             validators.push(Validators.required);

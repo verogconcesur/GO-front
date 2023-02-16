@@ -122,6 +122,8 @@
     "cards": {
         "column": {
             "actionConfiguration": "Actions configuration",
+            "applyColor": "Adds color to the card",
+            "color": "Color",
             "columnName": "Column Name",
             "contentSource": "Content Source",
             "contentType": "Content Type",
@@ -150,6 +152,8 @@
             "newLink": "New link",
             "newTab": "New tab ",
             "numDecimals": "Number of decimals",
+            "overridePriority": "Override the priority of the tab",
+            "priority": "New priority",
             "shortcutConfiguration": "External links configuration",
             "tabConfiguration": "Tab Configuration",
             "tabList": "Column tabs",
