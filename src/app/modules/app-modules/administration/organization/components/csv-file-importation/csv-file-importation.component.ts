@@ -87,6 +87,7 @@ export class CsvFileImportationComponent extends ComponentToExtendForCustomDialo
       .importFile({
         facilityId: formValue.facility.id,
         workflowId: formValue.workflow.id,
+        historic: formValue.historic ? formValue.historic : false,
         fileToImport: formValue.file
       })
       .pipe(
