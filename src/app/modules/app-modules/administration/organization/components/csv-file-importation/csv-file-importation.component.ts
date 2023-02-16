@@ -37,7 +37,8 @@ export class CsvFileImportationComponent extends ComponentToExtendForCustomDialo
     fileSelected: marker('organizations.facilities.fileSelected'),
     downloadTemplate: marker('organizations.facilities.downloadTemplate'),
     uploadFile: marker('common.uploadFile'),
-    required: marker('errors.required')
+    required: marker('errors.required'),
+    historic: marker('organizations.facilities.historicImportFile')
   };
   public workflowList: WorkflowDTO[];
   public importForm: FormGroup;
@@ -167,6 +168,7 @@ export class CsvFileImportationComponent extends ComponentToExtendForCustomDialo
     this.importForm = this.fb.group({
       facility: [this.facility, [Validators.required]],
       workflow: [null, [Validators.required]],
+      historic: [null],
       file: [null, [Validators.required]]
     });
   }
