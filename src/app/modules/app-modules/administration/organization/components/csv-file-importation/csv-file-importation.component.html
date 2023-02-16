@@ -20,6 +20,8 @@
                             {{ labels.required | translate }}
                         </mat-error>
                     </mat-form-field>
+
+                    <mat-checkbox formControlName="historic">{{ labels.historic | translate }}</mat-checkbox>
                 </div>
                 <div class="import-data__section__group">
                     <button mat-stroked-button color="primary" class="fileButton" (click)="downloadTemplate()">

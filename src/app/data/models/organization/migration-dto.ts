@@ -4,4 +4,5 @@ export default interface MigrationDTO {
   facilityId: number;
   fileToImport: AttachmentDTO;
   workflowId: number;
+  historic?: boolean;
 }

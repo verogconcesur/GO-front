@@ -6,4 +6,6 @@ export default interface WarningDTO {
   existsNoReadNotification: boolean;
   newNoReadMention: boolean;
   newNoReadNotification: boolean;
+  frontLastHeaderMentionOpenedTime?: string | number;
+  frontLastHeaderNotificationOpenedTime?: string | number;
 }

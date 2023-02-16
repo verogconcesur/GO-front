@@ -18,6 +18,8 @@ export class NotificationService {
   private readonly INFO_WARNINGS_PATH = '/infoWarnings';
   private readonly LIST_MENTIONS_PATH = '/listMentions';
   private readonly LIST_BY_FILTER_PATH = '/listByFilter';
+  private readonly READ_MENTION_PATH = '/readMention';
+  private readonly READ_NOTIFICATION_PATH = '/readNotification';
 
   constructor(@Inject(ENV) private env: Env, private http: HttpClient) {}
 
@@ -36,9 +38,21 @@ export class NotificationService {
       .pipe(catchError((error) => throwError(error.error as ConcenetError)));
   }
 
-  public getMentions(): Observable<MentionDataListDTO[]> {
+  public getMentions(type: 'READ' | 'NO_READ' | 'ALL'): Observable<MentionDataListDTO[]> {
     return this.http
-      .get<MentionDataListDTO[]>(`${this.env.apiBaseUrl}${this.NOTIFICATIONS_PATH}${this.LIST_MENTIONS_PATH}`)
+      .get<MentionDataListDTO[]>(`${this.env.apiBaseUrl}${this.NOTIFICATIONS_PATH}${this.LIST_MENTIONS_PATH}/${type}`)
+      .pipe(catchError((error) => throwError(error.error as ConcenetError)));
+  }
+
+  public markMentionAsRead(cardInstanceCommentId: number): Observable<boolean> {
+    return this.http
+      .get<boolean>(`${this.env.apiBaseUrl}${this.NOTIFICATIONS_PATH}${this.READ_MENTION_PATH}/${cardInstanceCommentId}`)
+      .pipe(catchError((error) => throwError(error.error as ConcenetError)));
+  }
+
+  public markNotificationAsRead(notificationId: number): Observable<boolean> {
+    return this.http
+      .get<boolean>(`${this.env.apiBaseUrl}${this.NOTIFICATIONS_PATH}${this.READ_NOTIFICATION_PATH}/${notificationId}`)
       .pipe(catchError((error) => throwError(error.error as ConcenetError)));
   }
 }

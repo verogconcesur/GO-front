@@ -218,6 +218,7 @@
         "askForConfirmation": "¿Desea continuar?",
         "attachment": "Adjunto",
         "attachments": "Adjuntos",
+        "audioViewer": "Reproductor de audio",
         "auto": "Auto",
         "back": "Atrás",
         "brands": "Marcas",
@@ -280,6 +281,7 @@
         "header": "Cabecera",
         "history": "Historial",
         "image": "Imagen",
+        "imageViewer": "Visor de imagen",
         "import": "Importar",
         "information": "Información",
         "insert": "Insertar",
@@ -304,6 +306,7 @@
         "others": "Otros",
         "paragraph": "Párrafo",
         "payments": "Pagos",
+        "pdfViewer": "Visor de pdf",
         "pending": "Pendiente",
         "postalCode": "Código Postal",
         "price": "Precio",
@@ -353,6 +356,7 @@
         "user": "Usuario",
         "users": "Usuarios",
         "vehicle": "Vehículo",
+        "videoViewer": "Reproductor de vídeo",
         "warning": "Advertencia",
         "whoSees": "Quien lo ve",
         "workOrder": "Orden de trabajo",
@@ -493,6 +497,7 @@
             "ADD_COMMENT": "Nuevo comentario",
             "ADD_DOC": "Nuevo adjunto",
             "ADD_MESSAGE_CLIENT": "Mensaje de cliente",
+            "ASIG_USER": "Tarjeta asignada al usuario",
             "CHANGE_STATE": "Cambio de estado",
             "EDIT_INFO": "Edición",
             "END_WORK": "Tarea finalizada",
@@ -526,6 +531,7 @@
             "edit": "Editar instalación",
             "enterpriseId": "Identificador de empresa",
             "fileSelected": "Archivo seleccionado",
+            "historicImportFile": "Importación de históricos",
             "import": "Importar datos de un documento",
             "importData": "Información de la importación",
             "integration": "Integración",
@@ -552,9 +558,6 @@
         "pageOf": "Página {num1} de {num2}",
         "pages": "Páginas",
         "prevPage": "Página previa"
-    },
-    "pdf": {
-        "viewer": "Visor de pdf"
     },
     "prepareMovement": {
         "extraMovement": "Movimiento asociado",

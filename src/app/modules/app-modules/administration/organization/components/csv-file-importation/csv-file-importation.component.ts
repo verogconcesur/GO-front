@@ -37,7 +37,8 @@ export class CsvFileImportationComponent extends ComponentToExtendForCustomDialo
     fileSelected: marker('organizations.facilities.fileSelected'),
     downloadTemplate: marker('organizations.facilities.downloadTemplate'),
     uploadFile: marker('common.uploadFile'),
-    required: marker('errors.required')
+    required: marker('errors.required'),
+    historic: marker('organizations.facilities.historicImportFile')
   };
   public workflowList: WorkflowDTO[];
   public importForm: FormGroup;
@@ -86,6 +87,7 @@ export class CsvFileImportationComponent extends ComponentToExtendForCustomDialo
       .importFile({
         facilityId: formValue.facility.id,
         workflowId: formValue.workflow.id,
+        historic: formValue.historic ? formValue.historic : false,
         fileToImport: formValue.file
       })
       .pipe(
@@ -141,7 +143,7 @@ export class CsvFileImportationComponent extends ComponentToExtendForCustomDialo
     reader.readAsDataURL(file);
   }
   public downloadTemplate(): void {
-    window.open('/assets/files/TemplateMigrationAlive.xlsx', '_blank');
+    window.open('/assets/files/TemplateMigration.xlsx', '_blank');
   }
   private getListOptions(): void {
     const spinner = this.spinnerService.show();
@@ -167,6 +169,7 @@ export class CsvFileImportationComponent extends ComponentToExtendForCustomDialo
     this.importForm = this.fb.group({
       facility: [this.facility, [Validators.required]],
       workflow: [null, [Validators.required]],
+      historic: [null],
       file: [null, [Validators.required]]
     });
   }

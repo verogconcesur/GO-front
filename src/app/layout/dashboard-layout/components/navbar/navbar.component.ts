@@ -50,6 +50,7 @@ export class NavbarComponent implements OnInit, OnDestroy {
   ) {}
 
   ngOnInit(): void {
+    this.infoWarning = this.authService.getWarningStatus();
     this.initWarningInformationValue();
     this.initWarningNotificationInterval();
   }
@@ -65,13 +66,14 @@ export class NavbarComponent implements OnInit, OnDestroy {
         .getInfoWarnings(this.infoWarning)
         .pipe(take(1))
         .subscribe((data) => {
-          if (
-            (data?.existsNoReadMention && data.lastDateNoReadMention !== this.infoWarning.lastDateNoReadMention) ||
-            (data?.existsNoReadNotification && data.lastDateNoReadNotification !== this.infoWarning.lastDateNoReadNotification)
-          ) {
+          if (data?.newNoReadMention || data?.newNoReadNotification) {
             this.notificationSoundService.playSound('NOTIFICATION');
           }
-          this.infoWarning = data;
+          this.infoWarning = {
+            ...data,
+            frontLastHeaderMentionOpenedTime: this.infoWarning.frontLastHeaderMentionOpenedTime,
+            frontLastHeaderNotificationOpenedTime: this.infoWarning.frontLastHeaderNotificationOpenedTime
+          };
           this.authService.setWarningStatus(data);
         });
     }, this.notificationTimeInterval);
@@ -95,13 +97,33 @@ export class NavbarComponent implements OnInit, OnDestroy {
   }
 
   public showMentions(): void {
-    this.infoWarning.existsNoReadMention = false;
+    this.infoWarning.newNoReadMention = false;
+    this.infoWarning.frontLastHeaderMentionOpenedTime = this.infoWarning.lastDateNoReadMention;
+    this.authService.setWarningStatus(this.infoWarning);
     this.mentions.getData();
   }
 
   public showNotifications(): void {
-    this.infoWarning.existsNoReadNotification = false;
+    this.infoWarning.newNoReadNotification = false;
+    this.infoWarning.frontLastHeaderNotificationOpenedTime = this.infoWarning.lastDateNoReadNotification;
+    this.authService.setWarningStatus(this.infoWarning);
     this.notifications.getData();
+  }
+
+  public highLightNotifications(): boolean {
+    return (
+      this.infoWarning.newNoReadNotification ||
+      (this.infoWarning.existsNoReadNotification &&
+        this.infoWarning.frontLastHeaderNotificationOpenedTime !== this.infoWarning.lastDateNoReadNotification)
+    );
+  }
+
+  public highLightMentions(): boolean {
+    return (
+      this.infoWarning.newNoReadMention ||
+      (this.infoWarning.existsNoReadMention &&
+        this.infoWarning.frontLastHeaderMentionOpenedTime !== this.infoWarning.lastDateNoReadMention)
+    );
   }
 
   private initWarningInformationValue(): void {
