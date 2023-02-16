@@ -1,8 +1,9 @@
-import { Component, Inject, OnInit } from '@angular/core';
+import { Component, Inject, OnInit, ViewChild } from '@angular/core';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { marker } from '@biesbjerg/ngx-translate-extract-marker';
 import { AttachmentDTO } from '@data/models/cards/card-attachments-dto';
 import { TranslateService } from '@ngx-translate/core';
+import { ZoomDirective } from '@shared/directives/zoomImage.directive';
 import saveAs from 'file-saver';
 
 @Component({
@@ -11,6 +12,7 @@ import saveAs from 'file-saver';
   styleUrls: ['./media-viewer-dialog.component.scss']
 })
 export class MediaViewerDialogComponent implements OnInit {
+  @ViewChild('zoomImage') zoomImage: ZoomDirective;
   public title = '';
   public attachment: AttachmentDTO;
   public labels = {
@@ -18,7 +20,8 @@ export class MediaViewerDialogComponent implements OnInit {
     titleImage: marker('common.imageViewer'),
     titleVideo: marker('common.videoViewer'),
     titleAudio: marker('common.audioViewer'),
-    download: marker('common.download')
+    download: marker('common.download'),
+    reset: marker('common.reset')
   };
 
   constructor(
@@ -31,7 +34,6 @@ export class MediaViewerDialogComponent implements OnInit {
     if (this.dialogData) {
       this.attachment = this.dialogData;
       this.title = this.attachment.name ? this.attachment.name : this.translateService.instant(this.labels.titlePdf);
-      console.log(this.attachment);
     }
   }
 

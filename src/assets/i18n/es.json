@@ -527,6 +527,7 @@
             "edit": "Editar instalación",
             "enterpriseId": "Identificador de empresa",
             "fileSelected": "Archivo seleccionado",
+            "historicImportFile": "Importación de históricos",
             "import": "Importar datos de un documento",
             "importData": "Información de la importación",
             "integration": "Integración",

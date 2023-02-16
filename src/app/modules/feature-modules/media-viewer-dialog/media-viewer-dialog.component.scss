@@ -1,6 +1,7 @@
 @import 'utils/core';
 @import 'utils/theme';
 .media-viewer {
+  height: 100%;
   position: relative;
   display: flex;
   justify-content: center;
@@ -24,10 +25,51 @@
       }
     }
   }
-  video,
-  .image-viewer {
-    width: auto;
-    height: 80%;
-    max-width: 100%;
+  &__content {
+    height: calc(100% - 60px);
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    .pdf-viewer {
+      width: 100%;
+      height: 100%;
+    }
+    video,
+    .image-visor {
+      width: auto;
+      height: 100%;
+      max-width: 100%;
+    }
+    .image-visor {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      position: relative;
+      overflow: hidden;
+      width: 100%;
+      background-color: mat-contrast($primary, 600);
+      .zoom-controls {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        z-index: 5;
+        button {
+          margin: 5px;
+          &.zoom-in,
+          &.zoom-out {
+            font-size: 1.4em;
+          }
+        }
+      }
+      .image-item {
+        width: 100%;
+        height: 100%;
+      }
+    }
   }
 }
