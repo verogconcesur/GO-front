@@ -120,11 +120,7 @@ export class WorkflowColumnActionsAndLinksComponent implements OnInit {
               width: '700px'
             })
             .pipe(take(1))
-            .subscribe((response) => {
-              if (response) {
-                this.prepareAndMoveService.reloadData$.next('MOVES_IN_OTHER_WORKFLOWS');
-              }
-            });
+            .subscribe();
           break;
       }
     }

@@ -142,6 +142,9 @@ export class WorkflowColumnCustomizableEntityComponent implements OnInit, OnChan
   }
 
   public getDataValue(data: WorkflowCardTabItemDTO): string | number {
+    if (!data.tabItemConfigVariable.variable.value) {
+      return '';
+    }
     if (data.tabItemConfigVariable.variable.dataType.toUpperCase() === 'DATE') {
       return this.datePipe.transform(new Date(data.tabItemConfigVariable.variable.value), 'dd-MM-yyyy');
     } else if (data.tabItemConfigVariable.variable.dataType.toUpperCase() === 'DATETIME') {
