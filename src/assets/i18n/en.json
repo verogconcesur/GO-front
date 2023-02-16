@@ -214,6 +214,7 @@
         "askForConfirmation": "Do you want to continue?",
         "attachment": "Attachment",
         "attachments": "Attachments",
+        "audioViewer": "Audio player",
         "auto": "Auto",
         "back": "Back",
         "brands": "Brands",
@@ -276,6 +277,7 @@
         "header": "Header",
         "history": "History",
         "image": "Image",
+        "imageViewer": "Image viewer",
         "import": "Import",
         "information": "Information",
         "insert": "Insert",
@@ -300,6 +302,7 @@
         "others": "Others",
         "paragraph": "Paragraph",
         "payments": "Payments",
+        "pdfViewer": "Pdf viewer",
         "pending": "Pending",
         "postalCode": "Postal Code",
         "price": "Price",
@@ -349,6 +352,7 @@
         "user": "User",
         "users": "Users",
         "vehicle": "Vehicle",
+        "videoViewer": "Video viewer",
         "warning": "Warning",
         "whoSees": "Who sees",
         "workOrder": "Work order",
@@ -549,9 +553,6 @@
         "pageOf": "Page {num1} of {num2}",
         "pages": "Pages",
         "prevPage": "Previous page"
-    },
-    "pdf": {
-        "viewer": "Pdf Viewer"
     },
     "prepareMovement": {
         "extraMovement": "Move associated",

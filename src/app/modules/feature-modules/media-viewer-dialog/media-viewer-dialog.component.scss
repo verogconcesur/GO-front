@@ -1,7 +1,11 @@
 @import 'utils/core';
 @import 'utils/theme';
-.pdf-viewer {
+.media-viewer {
   position: relative;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
   &__header {
     width: 100%;
     display: flex;
@@ -19,5 +23,11 @@
         margin-left: 10px;
       }
     }
+  }
+  video,
+  .image-viewer {
+    width: auto;
+    height: 80%;
+    max-width: 100%;
   }
 }

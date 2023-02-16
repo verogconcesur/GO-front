@@ -1,0 +1,36 @@
+<div class="media-viewer">
+    <div class="media-viewer__header">
+        <h2>{{ getTitle() | translate }}</h2>
+        <div class="actions">
+            <button mat-button color="primary" (click)="download()">
+                {{ labels.download | translate }}
+                <mat-icon>vertical_align_bottom</mat-icon>
+            </button>
+            <button mat-button class="close-button" (click)="close()">
+                <mat-icon>close</mat-icon>
+            </button>
+        </div>
+    </div>
+    <!-- For pdf -->
+    <ngx-extended-pdf-viewer
+        *ngIf="attachment && isFileType('pdf')"
+        [base64Src]="attachment.content"
+        [height]="'90%'"
+        [useBrowserLocale]="true"
+        [textLayer]="true"
+        [showHandToolButton]="true"
+    >
+    </ngx-extended-pdf-viewer>
+    <!-- For video -->
+    <video controls *ngIf="attachment && isFileType('video')">
+        <source [src]="getDataBase64()" [type]="attachment.type" />
+        Your browser does not support HTML video.
+    </video>
+    <!-- For Audio -->
+    <audio controls *ngIf="attachment && isFileType('audio')">
+        <source [src]="getDataBase64()" [type]="attachment.type" />
+        Your browser does not support the audio element.
+    </audio>
+    <!-- For Image -->
+    <img [src]="getDataBase64()" class="image-viewer" *ngIf="attachment && isFileType('image')" />
+</div>
