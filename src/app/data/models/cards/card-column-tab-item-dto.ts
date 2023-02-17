@@ -1,7 +1,7 @@
 import TreeNode from '@data/interfaces/tree-node';
 import { Moment } from 'moment';
 // export const TabItemsCustomTypes = ['TITLE', 'TEXT', 'INPUT', 'LIST', 'TABLE', 'OPTION'];
-export const TabItemsCustomTypes = ['TITLE', 'TEXT', 'INPUT'];
+export const TabItemsCustomTypes = ['TITLE', 'TEXT', 'INPUT', 'OPTION'];
 // export const InputDataTypes = ['STRING', 'NUMBER', 'TEMPORAL'];
 export const InputDataTypes = [
   { value: 'STRING', label: 'cards.column.dataType.string' },
@@ -78,9 +78,10 @@ export interface TabItemConfigListItemDTO extends TabItemConfigCommonDTO {
 }
 export interface TabItemConfigOptionDTO extends TabItemConfigCommonDTO {
   description?: string;
-  applyColor: string;
+  applyColor: boolean;
   color: string;
   overridePriority: boolean;
+  priority: string;
 }
 export interface TabItemConfigTableDTO extends TabItemConfigCommonDTO {
   description?: string;
