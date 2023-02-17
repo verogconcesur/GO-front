@@ -51,6 +51,7 @@ export class WorkflowBoardViewComponent implements OnInit {
   public labels = {
     noData: marker('errors.noDataToShow')
   };
+  public isDragAndDropEnabled: boolean;
   private workflowInstances: WorkflowStateDTO[] = [];
   private filters: WorkflowFilterDTO = null;
   // private askForDataTimeStamp: number;
@@ -77,6 +78,7 @@ export class WorkflowBoardViewComponent implements OnInit {
   };
 
   ngOnInit(): void {
+    this.isDragAndDropEnabled = this.dragAndDropService.isDragAndDropEnabled();
     //Sólo inicializamos listeners si tenemos seleccionad un workflow (tenemos wId en la url)
     if (this.router.url.indexOf(`${RouteConstants.WORKFLOWS}/${RouteConstants.WORKFLOWS_BOARD_VIEW}`) === -1) {
       this.initListeners();
@@ -103,13 +105,15 @@ export class WorkflowBoardViewComponent implements OnInit {
         }, 100);
       }
     });
-    this.dragAndDropService.draggingCard$.pipe(untilDestroyed(this)).subscribe((data: WorkflowCardDTO) => {
-      if (data) {
-        this.cardDragging = true;
-      } else {
-        this.cardDragging = false;
-      }
-    });
+    if (this.isDragAndDropEnabled) {
+      this.dragAndDropService.draggingCard$.pipe(untilDestroyed(this)).subscribe((data: WorkflowCardDTO) => {
+        if (data) {
+          this.cardDragging = true;
+        } else {
+          this.cardDragging = false;
+        }
+      });
+    }
     this.prepareAndMoveService.reloadData$
       .pipe(untilDestroyed(this))
       .subscribe((data: 'MOVES_IN_THIS_WORKFLOW' | 'MOVES_IN_OTHER_WORKFLOWS') => {

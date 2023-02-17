@@ -11,8 +11,8 @@ export default interface WorkflowCardDTO {
   tabItems: WorkflowCardTabItemDTO[];
   vehicleId: number;
   colors: string[];
-  movements: WorkflowMoveDTO[];
   cardInstanceWorkflows: WorkflowCardInstanceDTO[];
+  movements?: WorkflowMoveDTO[];
   information?: string;
   countCompletedTasks?: number;
   countTotalTasks?: number;
