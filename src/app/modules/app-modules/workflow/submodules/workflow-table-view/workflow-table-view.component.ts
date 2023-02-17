@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { Router, NavigationEnd, ChildActivationEnd } from '@angular/router';
+import { RouteConstants } from '@app/constants/route.constants';
 import { ConcenetError } from '@app/types/error';
 import { marker } from '@biesbjerg/ngx-translate-extract-marker';
 import FacilityDTO from '@data/models/organization/facility-dto';
@@ -41,6 +42,9 @@ export class WorkflowTableViewComponent implements OnInit {
   };
   private workflowInstances: WorkflowStateDTO[] = [];
   private filters: WorkflowFilterDTO = null;
+  // private askForDataTimeStamp: number;
+  // private getDataTimeStamp: number;
+  // private renderedDataTimeStamp: number;
 
   constructor(
     private workflowService: WorkflowsService,
@@ -54,7 +58,10 @@ export class WorkflowTableViewComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
-    this.initListeners();
+    //Sólo inicializamos listeners si tenemos seleccionad un workflow (tenemos wId en la url)
+    if (this.router.url.indexOf(`${RouteConstants.WORKFLOWS}/${RouteConstants.WORKFLOWS_TABLE_VIEW}`) === -1) {
+      this.initListeners();
+    }
   }
 
   public initListeners(): void {
@@ -157,6 +164,15 @@ export class WorkflowTableViewComponent implements OnInit {
       this.wNormalStates = this.wStatesData
         .filter((state: WorkflowStateDTO) => !state.anchor)
         .sort((a, b) => a.orderNumber - b.orderNumber);
+      // if (this.getDataTimeStamp) {
+      //   this.renderedDataTimeStamp = +new Date();
+      //   console.log('############ TERMINO DE PREPARAR DATOS FRONT', this.renderedDataTimeStamp);
+      //   console.log('####### TIEMPO EN PREPARAR DATOS FRONT=> ', this.renderedDataTimeStamp - this.getDataTimeStamp);
+      //   console.log('####### TIEMPO TOTAL CONSUMIDO=> ', this.renderedDataTimeStamp - this.askForDataTimeStamp);
+
+      //   this.renderedDataTimeStamp = null;
+      //   this.getDataTimeStamp = null;
+      // }
     });
   }
 
@@ -169,11 +185,16 @@ export class WorkflowTableViewComponent implements OnInit {
     ) {
       this.loadedData = { workflow: this.workflow, facilities: this.facilities };
       const spinner = this.spinnerService.show();
+      // this.askForDataTimeStamp = +new Date();
+      // console.log('############ PIDO DATOS A BACK', this.askForDataTimeStamp);
       forkJoin([
         this.workflowService.getWorkflowInstances(this.workflow, this.facilities, 'TABLE', true).pipe(take(1)),
         this.workflowService.getWorkflowCards(this.workflow, this.facilities, 'TABLE').pipe(take(1))
       ]).subscribe(
         (data: [WorkflowStateDTO[], WorkflowCardDTO[]]) => {
+          // this.getDataTimeStamp = +new Date();
+          // console.log('############ PETICIÓN BACK HA TARDADO: ', this.getDataTimeStamp - this.askForDataTimeStamp);
+          // console.log('############ YA TENGO LOS DATOS EN FRONT', this.getDataTimeStamp);
           this.spinnerService.hide(spinner);
           this.workflowInstances = data[0];
           this.mapWorkflowCardsWithInstances(data[1]);
