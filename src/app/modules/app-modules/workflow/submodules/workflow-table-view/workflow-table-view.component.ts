@@ -118,10 +118,9 @@ export class WorkflowTableViewComponent implements OnInit {
         wSubstate.cards = this.workflowFilterService.orderCardsByOrderNumber(
           workflowCards.filter((card: WorkflowCardDTO) => card.cardInstanceWorkflows[0].workflowSubstateId === wSubstate.id)
         );
+        const subStateCopy = lodash.cloneDeep(wSubstate); //Rompo la recursividad
+        subStateCopy.cards = [];
         wSubstate.cards = wSubstate.cards.map((card) => {
-          const subStateCopy = lodash.cloneDeep(wSubstate);
-          //Rompo la recursividad
-          subStateCopy.cards = [];
           card.workflowSubstate = subStateCopy;
           return card;
         });
@@ -142,7 +141,7 @@ export class WorkflowTableViewComponent implements OnInit {
             }));
           user.cards = this.workflowFilterService.orderCardsByOrderNumber([...substateCardsByUser]);
           user.cardsBySubstateId = lodash.cloneDeep(cardsBySubstateId);
-          user.cardsBySubstateId[wSubstate.id] = [...substateCardsByUser];
+          user.cardsBySubstateId[wSubstate.id] = user.cards;
           totalUsers[user.user.id] = user;
         });
       });
