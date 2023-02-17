@@ -286,7 +286,6 @@ export class WokflowBoardColumnComponent implements OnInit {
       //Se va a posicionar en la última posición
       itemToReplace = { orderNumber: null };
     }
-    console.log(item, dropZoneId);
     const sameDropZone =
       // `${this.wSubstateKey}${item.cardInstanceWorkflows[0].workflowSubstateId}` === dropZoneId ||
       event.container.id === event.previousContainer.id;
