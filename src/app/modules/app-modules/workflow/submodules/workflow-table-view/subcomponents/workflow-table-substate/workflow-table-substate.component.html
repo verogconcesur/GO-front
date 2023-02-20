@@ -7,9 +7,7 @@
                     <span class="tableValue">{{ getValue(element, i) }}</span>
                 </div>
                 <div *ngIf="wState.front && i === 0">
-                    <span class="tableValue">{{
-                        getUserName(element.cardInstanceWorkflows[0].cardInstanceWorkflowUsers[0].id)
-                    }}</span>
+                    <span class="tableValue">{{ getUserName(element) }}</span>
                 </div>
                 <div *ngIf="wState.front && i > 0 && i < headers.length - 2">
                     <span class="tableValue">{{ getValue(element, i - 1) }}</span>
