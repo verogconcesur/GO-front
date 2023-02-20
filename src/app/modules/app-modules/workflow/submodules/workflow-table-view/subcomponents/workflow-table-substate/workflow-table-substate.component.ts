@@ -152,8 +152,13 @@ export class WorkflowTableSubstateComponent implements OnInit {
       return '';
     }
   }
-  public getUserName(userId: number): string {
-    const userDetail = this.wSubstate.workflowSubstateUser.find((user: WorkflowSubstateUserDTO) => (user.id = userId));
+  public getUserName(card: WorkflowCardDTO): string {
+    const userDetail = this.wSubstate.workflowSubstateUser.find(
+      (user: WorkflowSubstateUserDTO) => user.user.id === card.cardInstanceWorkflows[0].cardInstanceWorkflowUsers[0].userId
+    );
+    if (!userDetail) {
+      return '';
+    }
     if (userDetail.user.fullName) {
       return userDetail.user.fullName;
     } else {
