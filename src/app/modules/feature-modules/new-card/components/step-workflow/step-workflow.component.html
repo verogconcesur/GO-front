@@ -17,7 +17,7 @@
             <!-- Facility -->
             <mat-form-field appearance="outline" floatLabel="always" *ngIf="formWorkflow.get('workflow').value">
                 <mat-label>{{ labels.facility | translate }}</mat-label>
-                <mat-select formControlName="facility">
+                <mat-select formControlName="facility" (selectionChange)="initialiceSubStateUsers()">
                     <mat-option *ngFor="let facility of facilityList" [value]="facility">{{ facility.name }}</mat-option>
                 </mat-select>
                 <mat-error *ngIf="formWorkflow.controls?.facility.invalid">
