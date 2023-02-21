@@ -7,7 +7,6 @@ import CardColumnTabItemDTO from '@data/models/cards/card-column-tab-item-dto';
 import { TabItemConfigTextComponent } from '../components/tab-items/tab-item-config-text/tab-item-config-text.component';
 import { TabItemConfigTitleComponent } from '../components/tab-items/tab-item-config-title/tab-item-config-title.component';
 import { TabItemConfigListComponent } from '../components/tab-items/tab-item-config-list/tab-item-config-list.component';
-import { TabItemConfigTableComponent } from '../components/tab-items/tab-item-config-table/tab-item-config-table.component';
 import { TabItemConfigOptionComponent } from '../components/tab-items/tab-item-config-option/tab-item-config-option.component';
 
 export const enum CustomizableInputSelectorModalEnum {
@@ -22,7 +21,10 @@ export const enum CustomizableInputSelectorModalEnum {
 export class CustomizableInputSelectorAuxService {
   constructor(private customDialogService: CustomDialogService) {}
 
-  public openCustomizableInputModal(tabItem: CardColumnTabItemDTO): Observable<CardColumnTabItemDTO> {
+  public openCustomizableInputModal(
+    tabItem: CardColumnTabItemDTO,
+    listParentOptions?: CardColumnTabItemDTO[]
+  ): Observable<CardColumnTabItemDTO> {
     let component: ComponentType<ComponentToExtendForCustomDialog>;
     switch (tabItem.typeItem) {
       case 'TITLE':
@@ -37,16 +39,13 @@ export class CustomizableInputSelectorAuxService {
       case 'LIST':
         component = TabItemConfigListComponent;
         break;
-      case 'TABLE':
-        component = TabItemConfigTableComponent;
-        break;
       case 'OPTION':
         component = TabItemConfigOptionComponent;
         break;
     }
     return this.customDialogService.open({
       component,
-      extendedComponentData: tabItem,
+      extendedComponentData: { tab: tabItem, listOptions: listParentOptions ? listParentOptions : [] },
       id: CustomizableInputSelectorModalEnum.ID,
       panelClass: CustomizableInputSelectorModalEnum.PANEL_CLASS,
       disableClose: true,
