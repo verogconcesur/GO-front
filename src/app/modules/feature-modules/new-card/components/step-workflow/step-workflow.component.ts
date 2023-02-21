@@ -78,11 +78,9 @@ export class StepWorkflowComponent implements OnInit {
     this.subStateUsersList = [];
     this.formWorkflow.get('subStateUser').setValue(null);
     this.formWorkflow.get('subStateUser').setValidators([]);
-    const selectedState = this.formWorkflow.get('entryState').value as WorkflowStateDTO;
-    const selectedSubState = this.formWorkflow.get('subState').value as WorkflowStateDTO;
-    if (selectedState && selectedSubState && selectedState.front) {
+    const wForm = this.formWorkflow.getRawValue();
+    if (wForm.entryState && wForm.entryState.front && wForm.workflow.id && wForm.facility.id && wForm.subState.id) {
       this.formWorkflow.get('subStateUser').setValidators([Validators.required]);
-      const wForm = this.formWorkflow.getRawValue();
       this.workflowsService
         .getSubStateUsers(wForm.workflow.id, wForm.facility.id, wForm.subState.id)
         .pipe(take(1))
