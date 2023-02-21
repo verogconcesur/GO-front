@@ -17,7 +17,6 @@ import { CustomTabComponent } from './components/custom-tab/custom-tab.component
 import { TabItemConfigInputComponent } from './components/tab-items/tab-item-config-input/tab-item-config-input.component';
 import { TabItemConfigListComponent } from './components/tab-items/tab-item-config-list/tab-item-config-list.component';
 import { TabItemConfigOptionComponent } from './components/tab-items/tab-item-config-option/tab-item-config-option.component';
-import { TabItemConfigTableComponent } from './components/tab-items/tab-item-config-table/tab-item-config-table.component';
 import { TabItemConfigTextComponent } from './components/tab-items/tab-item-config-text/tab-item-config-text.component';
 import { TabItemConfigTitleComponent } from './components/tab-items/tab-item-config-title/tab-item-config-title.component';
 
@@ -34,7 +33,6 @@ import { TabItemConfigTitleComponent } from './components/tab-items/tab-item-con
     TabItemConfigInputComponent,
     TabItemConfigListComponent,
     TabItemConfigOptionComponent,
-    TabItemConfigTableComponent,
     TabItemConfigTextComponent,
     TabItemConfigTitleComponent
   ],

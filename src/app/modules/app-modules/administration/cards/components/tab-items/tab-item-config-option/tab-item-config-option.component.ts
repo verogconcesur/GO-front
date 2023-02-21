@@ -55,7 +55,7 @@ export class TabItemConfigOptionComponent extends ComponentToExtendForCustomDial
   }
 
   ngOnInit(): void {
-    this.tabItemToEdit = this.extendedComponentData;
+    this.tabItemToEdit = this.extendedComponentData.tab;
     // const spinner = this.spinnerService.show();
     // this.cardService
     //   .getPriorirites()

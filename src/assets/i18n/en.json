@@ -538,6 +538,7 @@
             "numFacilities": "{numItems} {numItems, plural, =0{facilities} one{facility} other{facilities}}",
             "requireConfigApiExt": "requires external API configuration",
             "storeId": "Store Identifier",
+            "substateConfig": "Substate for automatic charging",
             "title": "Facilities",
             "workflow": "Workflow"
         },
