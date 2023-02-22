@@ -125,12 +125,15 @@ export class TabItemConfigOptionComponent extends ComponentToExtendForCustomDial
   }
   private initializeForm = (): void => {
     this.tabItemForm = this.fb.group({
-      id: [this.tabItemToEdit.id ? this.tabItemToEdit.id : null],
-      typeItem: [this.tabItemToEdit.typeItem ? this.tabItemToEdit.typeItem : '', [Validators.required]],
-      name: [this.tabItemToEdit.name ? this.tabItemToEdit.name : '', [Validators.required, Validators.minLength(this.minLength)]],
-      description: [this.tabItemToEdit.description ? this.tabItemToEdit.description : null],
-      tabId: [this.tabItemToEdit.tabId ? this.tabItemToEdit.tabId : null],
-      orderNumber: [this.tabItemToEdit.orderNumber ? this.tabItemToEdit.orderNumber : null],
+      id: [this.tabItemToEdit?.id ? this.tabItemToEdit.id : null],
+      typeItem: [this.tabItemToEdit?.typeItem ? this.tabItemToEdit.typeItem : '', [Validators.required]],
+      name: [
+        this.tabItemToEdit?.name ? this.tabItemToEdit.name : '',
+        [Validators.required, Validators.minLength(this.minLength)]
+      ],
+      description: [this.tabItemToEdit?.description ? this.tabItemToEdit.description : null],
+      tabId: [this.tabItemToEdit?.tabId ? this.tabItemToEdit.tabId : null],
+      orderNumber: [this.tabItemToEdit?.orderNumber ? this.tabItemToEdit.orderNumber : null],
       tabItemConfigOption: this.fb.group({
         id: [this.tabItemToEdit?.tabItemConfigOption?.id ? this.tabItemToEdit.tabItemConfigOption.id : null],
         tabItemId: [this.tabItemToEdit?.tabItemConfigOption?.tabItemId ? this.tabItemToEdit.tabItemConfigOption.tabItemId : null],
@@ -140,7 +143,7 @@ export class TabItemConfigOptionComponent extends ComponentToExtendForCustomDial
         applyColor: [this.tabItemToEdit?.tabItemConfigOption?.applyColor ? true : false],
         color: [
           this.tabItemToEdit?.tabItemConfigOption?.color ? this.tabItemToEdit.tabItemConfigOption.color : null,
-          [this.tabItemToEdit?.tabItemConfigOption?.applyColor ? Validators.required : null]
+          this.tabItemToEdit?.tabItemConfigOption?.applyColor ? [Validators.required] : null
         ]
         // overridePriority: [this.tabItemToEdit?.tabItemConfigOption?.overridePriority ? true : false],
         // priority: [
