@@ -2,8 +2,9 @@
     <h5 class="uppercase">
         {{ column.name }}
 
-        <button mat-icon-button *ngIf="containerClass === 'actions'" (click)="syncData()">
-            <mat-icon>sync</mat-icon>
+        <button mat-icon-button *ngIf="containerClass === 'actions'" (click)="!synchronizingData && syncData()">
+            <mat-spinner style="margin-left: 10px" diameter="20" *ngIf="synchronizingData"></mat-spinner>
+            <mat-icon *ngIf="!synchronizingData">sync</mat-icon>
         </button>
     </h5>
     <div class="w-column__container" [ngClass]="containerClass">

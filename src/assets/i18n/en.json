@@ -666,7 +666,8 @@
         "card": {
             "cardTabs": "Tabs of the card",
             "permissionSubtitle": "Select the tabs you want to appear in this workflow. Click on the name of the tabs to customize these permissions by role.",
-            "permissionTitle": "Customize permissions on card tabs"
+            "permissionTitle": "Customize permissions on card tabs",
+            "syncData": "Do you want to synchronize the card's data."
         },
         "cardConfig": "Card config",
         "cardsInBoardView": "Board view cards",
@@ -764,6 +765,7 @@
         "substatesWithAndWithoutCards": "Showing substates with or without cards",
         "substatesWithCards": "Showing only substates with cards",
         "substatesWithoutCards": "Showing only substates whithout cards",
+        "syncData": "You are going to sync the workflow's data, do you want to continue?",
         "taskDescription": "Task description",
         "timelineLabel": "Timeline template",
         "timelineStates": "Timeline states",
