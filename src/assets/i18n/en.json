@@ -122,6 +122,7 @@
     "cards": {
         "column": {
             "actionConfiguration": "Actions configuration",
+            "addItem": "New line",
             "applyColor": "Adds color to the card",
             "color": "Color",
             "columnName": "Column Name",
@@ -146,6 +147,8 @@
             "deleteTabConfirmation": "Are you sure you want to delete this tab?",
             "entityTabConfiguration": "Entity data configuration",
             "information": "Information",
+            "isChild": "This checklist has parent fields",
+            "itemList": "Lines of the checklist",
             "linkName": "Link name",
             "mandatory": "Mandatory",
             "nameTab": "Tab name",
@@ -153,12 +156,20 @@
             "newTab": "New tab ",
             "numDecimals": "Number of decimals",
             "overridePriority": "Override the priority of the tab",
+            "parent": "Parent checklist",
+            "parentValue": "Parent field value",
             "priority": "New priority",
+            "select": {
+                "multiple": "Multiple",
+                "simple": "Simple"
+            },
+            "selectType": "Type of selection",
             "shortcutConfiguration": "External links configuration",
             "tabConfiguration": "Tab Configuration",
             "tabList": "Column tabs",
             "tabType": "Tab Type",
-            "template": "Template"
+            "template": "Template",
+            "valueItem": "Line name"
         },
         "create": "Create card",
         "deleteConfirmation": "Do you really want to delete this card?",

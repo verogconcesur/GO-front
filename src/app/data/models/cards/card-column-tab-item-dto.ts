@@ -1,14 +1,15 @@
 import TreeNode from '@data/interfaces/tree-node';
 import { Moment } from 'moment';
-// export const TabItemsCustomTypes = ['TITLE', 'TEXT', 'INPUT', 'LIST', 'TABLE', 'OPTION'];
-export const TabItemsCustomTypes = ['TITLE', 'TEXT', 'INPUT', 'OPTION'];
-// export const InputDataTypes = ['STRING', 'NUMBER', 'TEMPORAL'];
+export const TabItemsCustomTypes = ['TITLE', 'TEXT', 'INPUT', 'OPTION', 'LIST'];
 export const InputDataTypes = [
   { value: 'STRING', label: 'cards.column.dataType.string' },
   { value: 'NUMBER', label: 'cards.column.dataType.number' },
   { value: 'TEMPORAL', label: 'cards.column.dataType.temporal' }
 ];
-// export const InputDateTypes = ['DATETIME', 'DATE', 'TIME'];
+export const InputSelectionTypes = [
+  { value: 'SIMPLE', label: 'cards.column.select.simple' },
+  { value: 'MULTIPLE', label: 'cards.column.select.multiple' }
+];
 export const InputDateTypes = [
   { value: 'DATETIME', label: 'cards.column.dateType.datetime' },
   { value: 'DATE', label: 'cards.column.dateType.date' },
