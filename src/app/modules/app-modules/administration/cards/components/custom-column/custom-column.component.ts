@@ -1,6 +1,6 @@
 import { CdkDragDrop } from '@angular/cdk/drag-drop';
 import { Component, Input, OnInit } from '@angular/core';
-import { FormArray, UntypedFormArray, UntypedFormBuilder, UntypedFormGroup, Validators } from '@angular/forms';
+import { FormArray, FormGroup, UntypedFormArray, UntypedFormBuilder, UntypedFormGroup, Validators } from '@angular/forms';
 import { tabTypes } from '@app/constants/tabTypes.constants';
 import { marker } from '@biesbjerg/ngx-translate-extract-marker';
 import CardColumnDTO from '@data/models/cards/card-column-dto';
@@ -16,6 +16,7 @@ import { map, take } from 'rxjs/operators';
 import { removeItemInFormArray } from '@shared/utils/removeItemInFormArray';
 import WorkflowCardSlotDTO from '@data/models/workflows/workflow-card-slot-dto';
 import CardColumnTabItemDTO, {
+  CardTabItemInstanceDTO,
   TabItemConfigListItemDTO,
   TabItemConfigTableColDTO
 } from '@data/models/cards/card-column-tab-item-dto';
@@ -131,10 +132,20 @@ export class CustomColumnComponent implements OnInit {
     }
   }
   public editTabItem(tabItem: CardColumnTabItemDTO): void {
-    this.customTabItemService.openCustomizableInputModal(tabItem).subscribe((res) => {
+    const tabItems = this.formTab.get('tabItems').getRawValue() as CardColumnTabItemDTO[];
+    this.customTabItemService.openCustomizableInputModal(tabItem, tabItems).subscribe((res) => {
       if (res && res.typeItem) {
         const formTabItem = (this.formTab.get('tabItems') as FormArray).controls[res.orderNumber - 1];
         formTabItem.patchValue(res);
+        if (res.typeItem === 'LIST') {
+          while ((formTabItem.get('tabItemConfigList').get('listItems') as FormArray).length !== 0) {
+            (formTabItem.get('tabItemConfigList').get('listItems') as FormArray).removeAt(0);
+          }
+          const listItemsForm = this.generateTabItemListItems(res);
+          listItemsForm.controls.forEach((form: FormGroup) => {
+            (formTabItem.get('tabItemConfigList').get('listItems') as FormArray).push(form);
+          });
+        }
       }
     });
   }
@@ -146,29 +157,39 @@ export class CustomColumnComponent implements OnInit {
       description: '',
       tabId: this.formTab.value.id
     };
-    this.customTabItemService.openCustomizableInputModal(tabItem).subscribe((res) => {
+    const tabItems = this.formTab.get('tabItems').getRawValue() as CardColumnTabItemDTO[];
+    this.customTabItemService.openCustomizableInputModal(tabItem, tabItems).subscribe((res) => {
       if (res && res.typeItem) {
         switch (res.typeItem) {
           case 'TITLE':
-            (this.formTab.get('tabItems') as FormArray).push(this.generateTabItemTitle(res, this.tabs.length - 1));
+            (this.formTab.get('tabItems') as FormArray).push(
+              this.generateTabItemTitle(res, (this.formTab.get('tabItems') as FormArray).length)
+            );
             break;
           case 'TEXT':
-            (this.formTab.get('tabItems') as FormArray).push(this.generateTabItemText(res, this.tabs.length - 1));
+            (this.formTab.get('tabItems') as FormArray).push(
+              this.generateTabItemText(res, (this.formTab.get('tabItems') as FormArray).length)
+            );
             break;
           case 'INPUT':
-            (this.formTab.get('tabItems') as FormArray).push(this.generateTabItemInput(res, this.tabs.length - 1));
+            (this.formTab.get('tabItems') as FormArray).push(
+              this.generateTabItemInput(res, (this.formTab.get('tabItems') as FormArray).length)
+            );
             break;
           case 'LIST':
-            (this.formTab.get('tabItems') as FormArray).push(this.generateTabItemList(res, this.tabs.length - 1));
-            break;
-          case 'TABLE':
-            (this.formTab.get('tabItems') as FormArray).push(this.generateTabItemTable(res, this.tabs.length - 1));
+            (this.formTab.get('tabItems') as FormArray).push(
+              this.generateTabItemList(res, (this.formTab.get('tabItems') as FormArray).length)
+            );
             break;
           case 'OPTION':
-            (this.formTab.get('tabItems') as FormArray).push(this.generateTabItemOption(res, this.tabs.length - 1));
+            (this.formTab.get('tabItems') as FormArray).push(
+              this.generateTabItemOption(res, (this.formTab.get('tabItems') as FormArray).length)
+            );
             break;
           case 'VARIABLE':
-            (this.formTab.get('tabItems') as FormArray).push(this.generateTabItemVariable(res, this.tabs.length - 1));
+            (this.formTab.get('tabItems') as FormArray).push(
+              this.generateTabItemVariable(res, (this.formTab.get('tabItems') as FormArray).length)
+            );
             break;
         }
       }
@@ -190,9 +211,6 @@ export class CustomColumnComponent implements OnInit {
             break;
           case 'LIST':
             fa.push(this.generateTabItemList(tab, index));
-            break;
-          case 'TABLE':
-            fa.push(this.generateTabItemTable(tab, index));
             break;
           case 'OPTION':
             fa.push(this.generateTabItemOption(tab, index));
@@ -253,14 +271,20 @@ export class CustomColumnComponent implements OnInit {
   public generateTabItemList(tabItem: CardColumnTabItemDTO, index: number): UntypedFormGroup {
     return this.fb.group({
       id: [tabItem ? tabItem.id : null],
-      tabId: [tabItem ? tabItem.tabId : null],
+      tabId: [tabItem?.tabId ? tabItem.tabId : null],
       typeItem: ['LIST'],
       orderNumber: [index + 1, Validators.required],
       name: [tabItem ? tabItem.name : null],
+      description: [tabItem?.description ? tabItem.description : null],
       tabItemConfigList: this.fb.group({
         id: [tabItem?.tabItemConfigList?.id ? tabItem.tabItemConfigList.id : null],
+        tabItemId: [tabItem?.tabItemConfigList?.tabItemId ? tabItem.tabItemConfigList.tabItemId : null],
+        description: [tabItem?.tabItemConfigList?.description ? tabItem.tabItemConfigList.description : null],
         mandatory: [tabItem?.tabItemConfigList?.mandatory ? true : false],
-        selectionType: [tabItem?.tabItemConfigList?.selectionType ? tabItem?.tabItemConfigList?.selectionType : 'SIMPLE'],
+        code: [tabItem?.tabItemConfigList?.code ? tabItem.tabItemConfigList.code : null],
+        parentCode: [tabItem?.tabItemConfigList?.parentCode ? tabItem.tabItemConfigList.parentCode : null],
+        isChild: [tabItem?.tabItemConfigList?.parentCode ? true : false],
+        selectionType: [tabItem?.tabItemConfigList?.selectionType ? tabItem.tabItemConfigList.selectionType : 'SIMPLE'],
         listItems: this.generateTabItemListItems(tabItem)
       })
     });
@@ -273,36 +297,8 @@ export class CustomColumnComponent implements OnInit {
           id: [listItem?.id ? listItem?.id : null],
           tabItemConfigListId: [listItem?.tabItemConfigListId ? listItem?.tabItemConfigListId : null],
           value: [listItem?.value ? listItem?.value : null],
-          code: [listItem?.code ? listItem?.code : null]
-        })
-      );
-    });
-    return fa;
-  }
-  public generateTabItemTable(tabItem: CardColumnTabItemDTO, index: number): UntypedFormGroup {
-    return this.fb.group({
-      id: [tabItem ? tabItem.id : null],
-      tabId: [tabItem ? tabItem.tabId : null],
-      typeItem: ['TABLE'],
-      orderNumber: [index + 1, Validators.required],
-      name: [tabItem ? tabItem.name : null],
-      tabItemConfigTable: this.fb.group({
-        id: [tabItem?.tabItemConfigTable?.id ? tabItem.tabItemConfigTable.id : null],
-        readOption: [tabItem?.tabItemConfigTable?.readOption ? tabItem?.tabItemConfigTable?.readOption : 'READWRITE'],
-        tabItemConfigTableCols: this.generateTabItemConfigTableCols(tabItem)
-      })
-    });
-  }
-  public generateTabItemConfigTableCols(tabItem: CardColumnTabItemDTO): FormArray {
-    const fa = this.fb.array([]);
-    tabItem.tabItemConfigTable.tabItemConfigTableCols.forEach((col: TabItemConfigTableColDTO, index: number) => {
-      fa.push(
-        this.fb.group({
-          id: [col?.id ? col?.id : null],
-          dataType: [col?.dataType ? col?.dataType : 'STRING'],
-          header: [col?.header ? col?.header : null],
-          mandatory: [col?.mandatory ? true : false],
-          orderNumber: [index + 1]
+          code: [listItem?.code ? listItem?.code : null],
+          parentCode: [listItem?.parentCode ? listItem.parentCode : null]
         })
       );
     });
@@ -317,9 +313,10 @@ export class CustomColumnComponent implements OnInit {
       name: [tabItem ? tabItem.name : null],
       tabItemConfigOption: this.fb.group({
         id: [tabItem?.tabItemConfigOption?.id ? tabItem.tabItemConfigOption.id : null],
-        applyColor: [tabItem?.tabItemConfigOption?.applyColor ? tabItem.tabItemConfigOption.applyColor : null],
-        color: [tabItem?.tabItemConfigOption?.color ? tabItem.tabItemConfigOption.color : null],
-        overridePriority: [tabItem?.tabItemConfigOption?.overridePriority ? true : false]
+        tabItemId: [tabItem?.tabItemConfigOption?.tabItemId ? tabItem.tabItemConfigOption.tabItemId : null],
+        description: [tabItem?.tabItemConfigOption?.description ? tabItem.tabItemConfigOption.description : null],
+        applyColor: [tabItem?.tabItemConfigOption?.applyColor ? true : false],
+        color: [tabItem?.tabItemConfigOption?.color ? tabItem.tabItemConfigOption.color : null]
       })
     });
   }

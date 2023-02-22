@@ -1,21 +1,115 @@
 <div class="tab-item-config-content" fxLayout="column" fxLayoutAlign="center center">
-    <div class="tab-item-config-content__form">
-        <form [formGroup]="tabItemForm" *ngIf="tabItemForm" class="smaller-mat-form-fields">
+    <div class="tab-item-config-content__form" class="smaller-mat-form-fields">
+        <form [formGroup]="tabItemForm" *ngIf="tabItemForm">
             <!-- General Data -->
             <div class="tab-item-config-content__form__section">
                 <!-- Name -->
                 <mat-form-field appearance="outline" floatLabel="always">
                     <mat-label>{{ labels.name | translate }}</mat-label>
                     <input matInput formControlName="name" />
-                    <mat-error
-                        class="tab-item-config-content__form__section__group__error"
-                        *ngIf="tabItemForm.controls.name.invalid && tabItemForm.controls.name.touched"
-                    >
-                        {{ labels.nameRequired | translate }} ({{ labels.minLength | translate: { length: this.minLength } }})
+                    <mat-error *ngIf="tabItemForm.controls.name.invalid && tabItemForm.controls.name.touched">
+                        {{ labels.nameRequired | translate }} ({{ labels.minLength | translate : { length: this.minLength } }})
+                    </mat-error>
+                </mat-form-field>
+                <!-- Select Type -->
+                <mat-form-field appearance="outline" floatLabel="always" formGroupName="tabItemConfigList">
+                    <mat-label>{{ labels.selectType | translate }}</mat-label>
+                    <mat-select formControlName="selectionType">
+                        <mat-option *ngFor="let type of inputSelectionTypes" [value]="type.value">{{
+                            type.label | translate
+                        }}</mat-option>
+                    </mat-select>
+                    <mat-error *ngIf="tabItemConfigList.controls?.selectionType.invalid">
+                        <span *ngIf="tabItemConfigList.controls.selectionType.errors.required">{{
+                            labels.required | translate
+                        }}</span>
+                    </mat-error>
+                </mat-form-field>
+                <!-- Mandatory -->
+                <section formGroupName="tabItemConfigList">
+                    <mat-checkbox formControlName="mandatory">{{ labels.mandatory | translate }}</mat-checkbox>
+                </section>
+                <!-- IsChild -->
+                <section formGroupName="tabItemConfigList">
+                    <mat-checkbox formControlName="isChild" (change)="isChildChange($event.checked)">{{
+                        labels.isChild | translate
+                    }}</mat-checkbox>
+                </section>
+                <!-- Parent -->
+                <mat-form-field
+                    appearance="outline"
+                    floatLabel="always"
+                    formGroupName="tabItemConfigList"
+                    *ngIf="tabItemConfigList.controls?.isChild.value"
+                >
+                    <mat-label>{{ labels.parent | translate }}</mat-label>
+                    <mat-select formControlName="parentCode">
+                        <mat-option *ngFor="let option of listOptions" [value]="option.tabItemConfigList.code">
+                            {{ option.name }}</mat-option
+                        >
+                    </mat-select>
+                    <mat-error *ngIf="tabItemConfigList.controls?.parentCode.invalid">
+                        <span *ngIf="tabItemConfigList.controls.parentCode.errors.required">{{
+                            labels.required | translate
+                        }}</span>
                     </mat-error>
                 </mat-form-field>
             </div>
         </form>
+        <div class="tab-item-config-content__form__section">
+            <div class="tab-item-config-content__form__section__title">
+                <span>{{ labels.itemList | translate }}</span>
+            </div>
+            <div
+                *ngFor="let item of listItems.controls; let i = index"
+                class="tab-item-config-content__form__section__listItem"
+                fxLayout="row"
+                fxLayoutAlign="start center"
+                [formGroup]="item"
+            >
+                <!-- Name -->
+                <mat-form-field appearance="outline" floatLabel="always" class="smaller-mat-form-fields__no-margin">
+                    <mat-label>{{ labels.valueItem | translate }}</mat-label>
+                    <input matInput formControlName="value" />
+                    <mat-error *ngIf="tabItemForm.controls.name.invalid && tabItemForm.controls.name.touched">
+                        <span *ngIf="tabItemConfigList.controls.parentCode.errors.required">{{
+                            labels.required | translate
+                        }}</span>
+                    </mat-error>
+                </mat-form-field>
+                <!-- Parent Value -->
+                <mat-form-field
+                    appearance="outline"
+                    class="smaller-mat-form-fields__no-margin"
+                    floatLabel="always"
+                    *ngIf="tabItemConfigList.controls?.isChild.value"
+                >
+                    <mat-label>{{ labels.parentValue | translate }}</mat-label>
+                    <mat-select formControlName="parentCode">
+                        <mat-option *ngFor="let option of getParentOptions()" [value]="option.code">
+                            {{ option.value }}</mat-option
+                        >
+                    </mat-select>
+                    <mat-error *ngIf="tabItemConfigList.controls?.parentCode.invalid">
+                        <span *ngIf="tabItemConfigList.controls.parentCode.errors.required">{{
+                            labels.required | translate
+                        }}</span>
+                    </mat-error>
+                </mat-form-field>
+                <!-- Remove -->
+                <button aria-label="Clear" class="clear-field-button" mat-icon-button (click)="removeListItem(i)">
+                    <mat-icon color="primary">delete_outline</mat-icon>
+                </button>
+            </div>
+            <div
+                fxLayout="row"
+                fxLayoutAlign="space-between center"
+                class="tab-item-config-content__form__section__listItem addButton"
+                (click)="newListItem()"
+            >
+                <span>{{ labels.addItem | translate }}</span> <mat-icon color="primary">add_box</mat-icon>
+            </div>
+        </div>
     </div>
     <div class="tab-item-config-content__buttons">
         <!-- TODO: buttons used when the component is not opened with customDialogService -->

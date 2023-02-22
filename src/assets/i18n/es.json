@@ -122,6 +122,7 @@
     "cards": {
         "column": {
             "actionConfiguration": "Configuración de las acciones",
+            "addItem": "Nueva linea",
             "applyColor": "Aporta color a la ficha",
             "color": "Color",
             "columnName": "Nombre de columna",
@@ -146,6 +147,8 @@
             "deleteTabConfirmation": "¿Está seguro que desea eliminar esta pestaña?",
             "entityTabConfiguration": "Configuración de datos a visualizar",
             "information": "Información",
+            "isChild": "Este checklist tiene campos padre",
+            "itemList": "Líneas del checklist",
             "linkName": "Nombre de enlace",
             "mandatory": "Obligatorio",
             "nameTab": "Nombre de pestaña",
@@ -153,12 +156,20 @@
             "newTab": "Nueva pestaña ",
             "numDecimals": "Número de decimales",
             "overridePriority": "Sobreescribe la prioridad de la ficha",
+            "parent": "Checklist padre",
+            "parentValue": "Valor del campo padre",
             "priority": "Nueva prioridad",
+            "select": {
+                "multiple": "Múltiple",
+                "simple": "Simple"
+            },
+            "selectType": "Tipo de selección",
             "shortcutConfiguration": "Configuración de enlaces externos",
             "tabConfiguration": "Configuración de la pestaña",
             "tabList": "Pestañas de columna",
             "tabType": "Tipo de pestaña",
-            "template": "Plantilla"
+            "template": "Plantilla",
+            "valueItem": "Nombre de la línea"
         },
         "create": "Crear tarjeta",
         "deleteConfirmation": "¿Está seguro que desea eliminar esta tarjeta?",
