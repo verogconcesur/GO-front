@@ -7,6 +7,7 @@ import PaginationResponseI from '@data/interfaces/pagination-response';
 import VehicleEntityDTO from '@data/models/entities/vehicle-entity-dto';
 import { EntitiesService } from '@data/services/entities.service';
 import { CustomDialogService } from '@jenga/custom-dialog';
+import { ModalAssociatedCardsService } from '@modules/feature-modules/modal-associated-cards/modal-associated-cards.service';
 import {
   CreateEditVehicleComponentModalEnum,
   ModalVehicleComponent
@@ -53,7 +54,8 @@ export class VehiclesListComponent implements OnInit {
     private logger: NGXLogger,
     private globalMessageService: GlobalMessageService,
     private translateService: TranslateService,
-    private spinnerService: ProgressSpinnerDialogService
+    private spinnerService: ProgressSpinnerDialogService,
+    private modalAssociatedCardsService: ModalAssociatedCardsService
   ) {}
 
   ngOnInit(): void {
@@ -117,6 +119,10 @@ export class VehiclesListComponent implements OnInit {
         }
       );
   };
+
+  public showVehicleCards(vehicle: VehicleEntityDTO): void {
+    this.modalAssociatedCardsService.openAssociatedCardsModal(vehicle.id, 'vehicleId');
+  }
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   private transformFilterValue = (filterValue: VehicleEntityDTO): any => ({
