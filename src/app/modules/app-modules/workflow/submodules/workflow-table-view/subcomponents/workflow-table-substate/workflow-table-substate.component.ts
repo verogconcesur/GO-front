@@ -75,10 +75,6 @@ export class WorkflowTableSubstateComponent implements OnInit {
             this.displayedColumns.push(tabItem.id + tabItem.name);
             this.headers.push({ col: tabItem.id + tabItem.name, label: tabItem.name });
             break;
-          case 'TABLE':
-            this.displayedColumns.push(tabItem.id + tabItem.name);
-            this.headers.push({ col: tabItem.id + tabItem.name, label: tabItem.name });
-            break;
           case 'TEXT':
             this.displayedColumns.push(tabItem.id + tabItem.name);
             this.headers.push({ col: tabItem.id + tabItem.name, label: tabItem.name });
@@ -123,9 +119,6 @@ export class WorkflowTableSubstateComponent implements OnInit {
           break;
         case 'OPTION':
           slot = tabItem.tabItemConfigOption.variable;
-          break;
-        case 'TABLE':
-          slot = tabItem.tabItemConfigTable.variable;
           break;
         case 'TEXT':
           slot = tabItem.tabItemConfigText.variable;

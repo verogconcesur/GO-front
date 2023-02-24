@@ -121,9 +121,6 @@ export class WorkflowCardComponent implements OnInit {
       case 'OPTION':
         slot = tabItem.tabItemConfigOption.variable;
         break;
-      case 'TABLE':
-        slot = tabItem.tabItemConfigTable.variable;
-        break;
       case 'TEXT':
         slot = tabItem.tabItemConfigText.variable;
         break;
