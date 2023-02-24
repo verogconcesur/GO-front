@@ -674,7 +674,8 @@
         "card": {
             "cardTabs": "Pestañas de la ficha",
             "permissionSubtitle": "Selecciona las pestañas que deseas que aparezcan en este workflow. Haz click sobre el nombre de las pestañas para personalizar estos permisos por rol.",
-            "permissionTitle": "Personalizar permisos sobre las pestañas de la ficha"
+            "permissionTitle": "Personalizar permisos sobre las pestañas de la ficha",
+            "syncData": "Va a proceder a sincronizar los datos de esta tarjeta, ¿desea continuar?"
         },
         "cardConfig": "Configuración de la tarjeta",
         "cardsInBoardView": "Tarjetas en vista pizarra",
@@ -772,6 +773,7 @@
         "substatesWithAndWithoutCards": "Mostrando subestados con o sin tarjetas",
         "substatesWithCards": "Mostrando únicamente subestados con tarjetas",
         "substatesWithoutCards": "Mostrando únicamente subestados sin tarjetas",
+        "syncData": "Va a proceder a sincronizar los datos de este workflow, ¿desea continuar?",
         "taskDescription": "Descripción de la tarea",
         "timelineLabel": "Plantilla de timeline",
         "timelineStates": "Estados de timeline",
