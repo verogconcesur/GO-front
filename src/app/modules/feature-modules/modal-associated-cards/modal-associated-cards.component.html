@@ -10,6 +10,7 @@
     <div class="associated-cards__content">
         <div *ngIf="!cards.length">{{ labels.noData | translate }}</div>
         <app-workflow-card
+            (click)="close()"
             class="card-item"
             *ngFor="let item of cards"
             [card]="item"
