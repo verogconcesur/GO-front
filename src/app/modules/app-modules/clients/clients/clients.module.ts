@@ -1,6 +1,7 @@
 /* eslint-disable max-len */
 import { CommonModule } from '@angular/common';
 import { NgModule } from '@angular/core';
+import { ModalAssociatedCardsModule } from '@modules/feature-modules/modal-associated-cards/modal-associated-cards.module';
 
 // eslint-disable-next-line max-len
 import { SharedModule } from '@shared/shared.module';
@@ -12,6 +13,6 @@ import { ClientsComponent } from './clients.component';
 
 @NgModule({
   declarations: [ClientsComponent, ClientsListComponent],
-  imports: [CommonModule, ClientsRoutingModule, SharedModule, AdministrationCommonHeaderSectionModule]
+  imports: [CommonModule, ClientsRoutingModule, SharedModule, AdministrationCommonHeaderSectionModule, ModalAssociatedCardsModule]
 })
 export class ClientsModule {}
