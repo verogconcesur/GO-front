@@ -96,9 +96,9 @@ export class WorkflowColumnCustomizableCustomComponent implements OnInit, OnChan
           if (tabItem.tabItemConfigList.mandatory) {
             validators.push(Validators.required);
           }
-          break;
-        case 'TABLE':
-          cardTabItemInstance = tabItem.tabItemConfigTable.cardTabItemInstance;
+          if (cardTabItemInstance && cardTabItemInstance.value && tabItem.tabItemConfigList.selectionType === 'MULTIPLE') {
+            cardTabItemInstance.value = JSON.parse(cardTabItemInstance.value as string);
+          }
           break;
         case 'OPTION':
           cardTabItemInstance = tabItem.tabItemConfigOption.cardTabItemInstance;
@@ -144,6 +144,9 @@ export class WorkflowColumnCustomizableCustomComponent implements OnInit, OnChan
             }
             break;
         }
+      }
+      if (item.tabItem.tabItemConfigList && item.tabItem.tabItemConfigList.selectionType === 'MULTIPLE') {
+        item.value = JSON.stringify(item.value);
       }
       return item;
     });
