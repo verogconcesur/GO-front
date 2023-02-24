@@ -143,13 +143,13 @@ export class TabItemConfigOptionComponent extends ComponentToExtendForCustomDial
         applyColor: [this.tabItemToEdit?.tabItemConfigOption?.applyColor ? true : false],
         color: [
           this.tabItemToEdit?.tabItemConfigOption?.color ? this.tabItemToEdit.tabItemConfigOption.color : null,
-          this.tabItemToEdit?.tabItemConfigOption?.applyColor ? [Validators.required] : null
+          this.tabItemToEdit?.tabItemConfigOption?.applyColor ? [Validators.required] : []
+        ],
+        overridePriority: [this.tabItemToEdit?.tabItemConfigOption?.overridePriority ? true : false],
+        priority: [
+          this.tabItemToEdit?.tabItemConfigOption?.priority ? this.tabItemToEdit.tabItemConfigOption.priority : null,
+          this.tabItemToEdit?.tabItemConfigOption?.overridePriority ? [Validators.required] : []
         ]
-        // overridePriority: [this.tabItemToEdit?.tabItemConfigOption?.overridePriority ? true : false],
-        // priority: [
-        //   this.tabItemToEdit?.tabItemConfigOption?.priority ? this.tabItemToEdit.tabItemConfigOption.priority : null,
-        //   [this.tabItemToEdit?.tabItemConfigOption?.overridePriority ? Validators.required : null]
-        // ]
       })
     });
   };

@@ -316,7 +316,9 @@ export class CustomColumnComponent implements OnInit {
         tabItemId: [tabItem?.tabItemConfigOption?.tabItemId ? tabItem.tabItemConfigOption.tabItemId : null],
         description: [tabItem?.tabItemConfigOption?.description ? tabItem.tabItemConfigOption.description : null],
         applyColor: [tabItem?.tabItemConfigOption?.applyColor ? true : false],
-        color: [tabItem?.tabItemConfigOption?.color ? tabItem.tabItemConfigOption.color : null]
+        color: [tabItem?.tabItemConfigOption?.color ? tabItem.tabItemConfigOption.color : null],
+        overridePriority: [tabItem?.tabItemConfigOption?.overridePriority ? true : false],
+        priority: [tabItem?.tabItemConfigOption?.priority ? tabItem.tabItemConfigOption.priority : null]
       })
     });
   }
