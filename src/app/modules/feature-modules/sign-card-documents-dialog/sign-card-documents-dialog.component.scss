@@ -6,14 +6,14 @@
   top: 0;
   left: 0;
   width: 100vw;
-  height: 100vh;
+  height: var(--vh);
   z-index: 101;
   padding: 10px;
   .sign-documents-modal {
     background-color: mat-contrast($primary, 500);
     border-radius: 20px;
     width: $desktop-large;
-    height: calc(100vh - 20px);
+    height: calc(var(--vh) - 20px);
     overflow: hidden;
     max-height: 960px;
     position: relative;
@@ -27,7 +27,7 @@
       // 0 - $tablet-small
       @include respond-to($tablet-small) {
         width: calc(100vw - 20px);
-        height: calc(100vh - 20px);
+        height: calc(var(--vh) - 20px);
         max-width: 480px;
         max-height: 447px;
       }
