@@ -11,6 +11,7 @@ import { Observable, throwError } from 'rxjs';
 import { catchError, take } from 'rxjs/operators';
 import { UserService } from '@data/services/user.service';
 import WarningDTO from '@data/models/notifications/warning-dto';
+import moment from 'moment';
 
 @Injectable({
   providedIn: 'root'
@@ -21,6 +22,7 @@ export class AuthenticationService implements OnDestroy {
 
   private readonly ACCESS_TOKEN = 'access_token';
   private readonly EXPIRES_IN = 'expires_in';
+  private readonly REFRESH_EXPIRES = 'refresh_expire_token';
   private readonly TOKEN_TIMESTAMP = 'token_timestamp';
   private readonly USER_ID = 'user_id';
   private readonly USER_FULL_NAME = 'user_full_name';
@@ -58,7 +60,8 @@ export class AuthenticationService implements OnDestroy {
       // const expires_in = 60000;
       const token_timestamp = this.getTokenTimestamp();
       if (token && expires_in && token_timestamp) {
-        const timeToExpire = token_timestamp + expires_in - refreshTimeBeforeTokenExpires;
+        let timeToExpire = token_timestamp + expires_in - moment().valueOf() - refreshTimeBeforeTokenExpires;
+        timeToExpire = timeToExpire > 0 ? timeToExpire : 0;
         // console.log(timeToExpire, +new Date(), timeToExpire - +new Date());
         this.tokenTimeout = setTimeout(() => {
           this.refreshToken()
@@ -71,7 +74,7 @@ export class AuthenticationService implements OnDestroy {
                 console.log(error.message);
               }
             });
-        }, timeToExpire - +new Date());
+        }, timeToExpire);
       }
     }
   }
@@ -130,6 +133,31 @@ export class AuthenticationService implements OnDestroy {
    */
   removeExpiresIn() {
     localStorage.removeItem(this.EXPIRES_IN);
+  }
+
+  /**
+   * Stores the token refresh_expire_token
+   *
+   * @param time token refresh_expire_token
+   */
+  setRefreshExpires(time: string) {
+    localStorage.setItem(this.REFRESH_EXPIRES, time);
+  }
+
+  /**
+   * Retrieves the token refresh_expire_token
+   *
+   * @returns the token refresh_expire_token
+   */
+  getRefreshExpires() {
+    return parseInt(localStorage.getItem(this.REFRESH_EXPIRES), 10);
+  }
+
+  /**
+   * Remove the saved refresh_expire_token
+   */
+  removeRefreshExpires() {
+    localStorage.removeItem(this.REFRESH_EXPIRES);
   }
 
   /**
@@ -282,6 +310,7 @@ export class AuthenticationService implements OnDestroy {
     }
     localStorage.setItem(this.ACCESS_TOKEN, loginData.access_token);
     localStorage.setItem(this.EXPIRES_IN, loginData.expires_in.toString());
+    localStorage.setItem(this.REFRESH_EXPIRES, loginData.refresh_expire_token.toString());
     localStorage.setItem(this.TOKEN_TIMESTAMP, (+new Date()).toString());
     this.keepTokenAlive();
   }
@@ -292,12 +321,14 @@ export class AuthenticationService implements OnDestroy {
   getLoggedUser(): {
     access_token: string;
     expires_in: number;
+    refresh_expire_token: number;
     user_id: string;
     user_full_name: string;
   } {
     return {
       [this.ACCESS_TOKEN]: this.getToken(),
       [this.EXPIRES_IN]: this.getExpiresIn(),
+      [this.REFRESH_EXPIRES]: this.getRefreshExpires(),
       [this.USER_ID]: this.getUserId(),
       [this.USER_FULL_NAME]: this.getUserFullName()
     };
@@ -307,7 +338,8 @@ export class AuthenticationService implements OnDestroy {
    * Check if there is a logged in user
    */
   isUserLogged(): boolean {
-    return !!this.getToken() && !!this.getExpiresIn();
+    const timeExpiration = moment(this.getTokenTimestamp() + this.getRefreshExpires());
+    return !!this.getToken() && !!this.getRefreshExpires() && timeExpiration.isAfter(moment(), 'second');
   }
 
   /**
