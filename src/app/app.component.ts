@@ -1,4 +1,4 @@
-import { Component, Inject, OnInit } from '@angular/core';
+import { Component, HostListener, Inject, OnInit } from '@angular/core';
 import { Meta } from '@angular/platform-browser';
 import { ENV } from '@app/constants/global.constants';
 import { Env } from '@app/types/env';
@@ -22,27 +22,33 @@ export class AppComponent implements OnInit {
     private translate: TranslateService
   ) {}
 
+  @HostListener('window:resize', ['$event']) onResize(event: { target: { innerHeight: number } }) {
+    this.setVhProperty();
+  }
+
   ngOnInit() {
     this.logger.debug('App.component#ngOnInit', this.env.apiBaseUrl);
     this.addBuildInfoMetatag();
 
     // Sample translation using observable (just in case
     // language JSON is not loaded yet)
-    this.translate
-      .get(this.sampleTranslationStr, { count: this.count })
-      .subscribe((txt) => {
-        this.logger.debug('subscribed translation =>', txt);
-      });
+    this.translate.get(this.sampleTranslationStr, { count: this.count }).subscribe((txt) => {
+      this.logger.debug('subscribed translation =>', txt);
+    });
 
     // Sample instant translation. Be sure to call this
     // after the language JSON is loaded. If you call it like this,
     // (ngOnInit on the app.component) this instant() function could
     // be called BEFORE language .json file has been loaded (because
     // language files are ajax-loaded)
-    this.logger.debug(
-      'instant translation =>',
-      this.translate.instant(this.sampleTranslationStr, { count: this.count })
-    );
+    this.logger.debug('instant translation =>', this.translate.instant(this.sampleTranslationStr, { count: this.count }));
+
+    this.setVhProperty();
+  }
+
+  private setVhProperty(): void {
+    const vh = window.innerHeight;
+    document.documentElement.style.setProperty('--vh', vh + 'px');
   }
 
   private getCount(): number {
@@ -52,10 +58,7 @@ export class AppComponent implements OnInit {
   }
 
   private addBuildInfoMetatag(): void {
-    this.logger.info(
-      'Adding build version info to <head>:',
-      this.env.appVersion
-    );
+    this.logger.info('Adding build version info to <head>:', this.env.appVersion);
 
     this.meta.updateTag({
       name: 'version',
