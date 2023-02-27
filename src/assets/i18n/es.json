@@ -673,9 +673,11 @@
         "byFacilityGroupLabel": "Workflows de {facility}",
         "card": {
             "cardTabs": "Pestañas de la ficha",
+            "customerAssociatedCards": "Tarjetas asociadas al cliente",
             "permissionSubtitle": "Selecciona las pestañas que deseas que aparezcan en este workflow. Haz click sobre el nombre de las pestañas para personalizar estos permisos por rol.",
             "permissionTitle": "Personalizar permisos sobre las pestañas de la ficha",
-            "syncData": "Va a proceder a sincronizar los datos de esta tarjeta, ¿desea continuar?"
+            "syncData": "Va a proceder a sincronizar los datos de esta tarjeta, ¿desea continuar?",
+            "vehicleAssociatedCards": "Tarjetas asociadas al vehículo"
         },
         "cardConfig": "Configuración de la tarjeta",
         "cardsInBoardView": "Tarjetas en vista pizarra",

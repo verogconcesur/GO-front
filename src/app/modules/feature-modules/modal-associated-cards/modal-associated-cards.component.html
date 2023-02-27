@@ -1,0 +1,22 @@
+<div class="associated-cards">
+    <div class="associated-cards__header">
+        <h2>{{ getTitle() }}</h2>
+        <div class="actions">
+            <button mat-button class="close-button" (click)="close()">
+                <mat-icon>close</mat-icon>
+            </button>
+        </div>
+    </div>
+    <div class="associated-cards__content">
+        <div *ngIf="!cards.length">{{ labels.noData | translate }}</div>
+        <app-workflow-card
+            (click)="close()"
+            class="card-item"
+            *ngFor="let item of cards"
+            [card]="item"
+            [disableDrag]="true"
+            [forceSize]="'size-s'"
+            [navigationMode]="'absolute'"
+        ></app-workflow-card>
+    </div>
+</div>
