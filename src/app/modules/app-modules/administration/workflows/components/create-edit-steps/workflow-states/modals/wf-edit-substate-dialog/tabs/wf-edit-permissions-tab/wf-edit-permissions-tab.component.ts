@@ -3,6 +3,7 @@ import { Component, OnInit } from '@angular/core';
 import { FormArray, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ConcenetError } from '@app/types/error';
 import { marker } from '@biesbjerg/ngx-translate-extract-marker';
+import PermissionsDTO from '@data/models/user-permissions/permissions-dto';
 import RoleDTO from '@data/models/user-permissions/role-dto';
 import { WorkFlowPermissionsEnum } from '@data/models/workflow-admin/workflow-card-tab-permissions-dto';
 import WorkflowSubstateUserDTO from '@data/models/workflows/workflow-substate-user-dto';
@@ -59,7 +60,10 @@ export class WfEditPermissionsTabComponent extends WfEditSubstateAbstractTabClas
     this.roleList = null;
     this.roleSelected = null;
     this.userPermissions = data[0];
-    this.userList = data[1];
+    this.userList = data[1].map((user: WorkflowSubstateUserDTO) => {
+      user.user.showAll = !!user.user.permissions.find((perm: PermissionsDTO) => perm.code === 'VERTODOPLAN');
+      return user;
+    });
     const form = this.fb.group({
       users: this.fb.array([])
     });
@@ -70,7 +74,7 @@ export class WfEditPermissionsTabComponent extends WfEditSubstateAbstractTabClas
           this.fb.group({
             id: [permission.id],
             user: [userSub.user],
-            permissionType: [permission.permissionType],
+            permissionType: [userSub.user.showAll ? WorkFlowPermissionsEnum.edit : permission.permissionType],
             workflowSubstateId: [permission.workflowSubstateId],
             workflowUserId: [permission.workflowUserId]
           })
@@ -80,7 +84,7 @@ export class WfEditPermissionsTabComponent extends WfEditSubstateAbstractTabClas
           this.fb.group({
             id: [],
             user: [userSub.user],
-            permissionType: [WorkFlowPermissionsEnum.hide],
+            permissionType: [userSub.user.showAll ? WorkFlowPermissionsEnum.edit : WorkFlowPermissionsEnum.hide],
             workflowSubstateId: [this.substate.id],
             workflowUserId: [userSub.id]
           })
@@ -106,7 +110,7 @@ export class WfEditPermissionsTabComponent extends WfEditSubstateAbstractTabClas
   public changeAllPermissions(permission: string): void {
     let users = this.form.get('users').getRawValue();
     users = users.map((userWk: WorkflowSubstateUserDTO) => {
-      if (userWk.user.role.id === this.roleSelected.id) {
+      if (userWk.user.role.id === this.roleSelected.id && !userWk.user.showAll) {
         userWk.permissionType = permission;
       }
       return userWk;
