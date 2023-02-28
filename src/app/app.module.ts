@@ -13,6 +13,14 @@ import { LoggerModule, NgxLoggerLevel } from 'ngx-logger';
 import { TranslateMessageFormatCompiler } from 'ngx-translate-messageformat-compiler';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
+import { SocketIoModule, SocketIoConfig } from 'ngx-socket-io';
+
+const socketsConfig: SocketIoConfig = {
+  url: environment.socketUrl, // socket server url;
+  options: {
+    transports: ['websocket']
+  }
+};
 
 @NgModule({
   declarations: [AppComponent],
@@ -37,7 +45,8 @@ import { AppComponent } from './app.component';
     }),
     AppRoutingModule,
     CoreModule,
-    LayoutModule
+    LayoutModule,
+    SocketIoModule.forRoot(socketsConfig)
   ],
   providers: [
     TranslateService,
