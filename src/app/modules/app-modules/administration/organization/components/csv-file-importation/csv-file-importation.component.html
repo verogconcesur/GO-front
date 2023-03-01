@@ -22,6 +22,13 @@
                     </mat-form-field>
 
                     <mat-checkbox formControlName="historic">{{ labels.historic | translate }}</mat-checkbox>
+
+                    <mat-checkbox class="retry-last-migration" formControlName="retryLastMigration">{{
+                        labels.retryLastMigration | translate
+                    }}</mat-checkbox>
+                </div>
+                <div class="retry-last-migration-info" *ngIf="retryLastMigrationSelected()">
+                    {{ labels.retryLastMigrationInfo | translate }}
                 </div>
                 <div class="import-data__section__group">
                     <button mat-stroked-button color="primary" class="fileButton" (click)="downloadTemplate()">
