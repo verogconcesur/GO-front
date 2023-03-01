@@ -38,7 +38,8 @@ export class CsvFileImportationComponent extends ComponentToExtendForCustomDialo
     downloadTemplate: marker('organizations.facilities.downloadTemplate'),
     uploadFile: marker('common.uploadFile'),
     required: marker('errors.required'),
-    historic: marker('organizations.facilities.historicImportFile')
+    historic: marker('organizations.facilities.historicImportFile'),
+    retryLastMigration: marker('organizations.facilities.retryLastMigration')
   };
   public workflowList: WorkflowDTO[];
   public importForm: FormGroup;
@@ -69,6 +70,7 @@ export class CsvFileImportationComponent extends ComponentToExtendForCustomDialo
   }
 
   ngOnDestroy(): void {}
+
   public confirmCloseCustomDialog(): Observable<boolean> {
     if (this.importForm?.touched && this.importForm?.dirty) {
       return this.confirmDialogService.open({
@@ -88,6 +90,7 @@ export class CsvFileImportationComponent extends ComponentToExtendForCustomDialo
         facilityId: formValue.facility.id,
         workflowId: formValue.workflow.id,
         historic: formValue.historic ? formValue.historic : false,
+        retryLastMigration: formValue.retryLastMigration ? formValue.retryLastMigration : false,
         fileToImport: formValue.file
       })
       .pipe(
@@ -170,6 +173,7 @@ export class CsvFileImportationComponent extends ComponentToExtendForCustomDialo
       facility: [this.facility, [Validators.required]],
       workflow: [null, [Validators.required]],
       historic: [null],
+      retryLastMigration: [null],
       file: [null, [Validators.required]]
     });
   }
