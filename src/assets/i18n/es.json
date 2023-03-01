@@ -548,6 +548,8 @@
             "integration": "Integración",
             "numFacilities": "{numItems} {numItems, plural, =0{instalaciones} one{instalación} other{instalaciones}}",
             "requireConfigApiExt": "Requiere configuración de API externa",
+            "retryLastMigration": "Reparar última migración",
+            "retryLastMigrationInfo": "Si selecciona la opción de reparar última migración recuerde subir el mismo fichero que subió en la anterior ejecución (con el mismo número de registros y en el mismo orden).",
             "storeId": "Identificador de tienda",
             "substateConfig": "Subestado para carga automática",
             "title": "Instalaciones",
