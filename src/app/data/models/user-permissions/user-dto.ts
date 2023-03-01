@@ -12,4 +12,5 @@ export default interface UserDTO {
   userName?: string;
   password?: string;
   permissions?: PermissionsDTO[];
+  showAll?: boolean;
 }
