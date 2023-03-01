@@ -549,6 +549,7 @@
             "numFacilities": "{numItems} {numItems, plural, =0{facilities} one{facility} other{facilities}}",
             "requireConfigApiExt": "requires external API configuration",
             "retryLastMigration": "Repair last migration",
+            "retryLastMigrationInfo": "If repair last migration is selected remember to upload the same file used last time.",
             "storeId": "Store Identifier",
             "substateConfig": "Substate for automatic charging",
             "title": "Facilities",

@@ -11,6 +11,7 @@ import { TranslateService } from '@ngx-translate/core';
 import { ConfirmDialogService } from '@shared/services/confirm-dialog.service';
 import { GlobalMessageService } from '@shared/services/global-message.service';
 import { ProgressSpinnerDialogService } from '@shared/services/progress-spinner-dialog.service';
+import CombinedRequiredFieldsValidator from '@shared/validators/combined-required-fields.validator';
 import { NGXLogger } from 'ngx-logger';
 import { Observable, of } from 'rxjs';
 import { catchError, finalize, map, take, tap } from 'rxjs/operators';
@@ -39,7 +40,8 @@ export class CsvFileImportationComponent extends ComponentToExtendForCustomDialo
     uploadFile: marker('common.uploadFile'),
     required: marker('errors.required'),
     historic: marker('organizations.facilities.historicImportFile'),
-    retryLastMigration: marker('organizations.facilities.retryLastMigration')
+    retryLastMigration: marker('organizations.facilities.retryLastMigration'),
+    retryLastMigrationInfo: marker('organizations.facilities.retryLastMigrationInfo')
   };
   public workflowList: WorkflowDTO[];
   public importForm: FormGroup;
@@ -70,6 +72,10 @@ export class CsvFileImportationComponent extends ComponentToExtendForCustomDialo
   }
 
   ngOnDestroy(): void {}
+
+  public retryLastMigrationSelected(): boolean {
+    return this.importForm?.get('retryLastMigration')?.value ? true : false;
+  }
 
   public confirmCloseCustomDialog(): Observable<boolean> {
     if (this.importForm?.touched && this.importForm?.dirty) {
