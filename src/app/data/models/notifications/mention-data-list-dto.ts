@@ -4,5 +4,6 @@ export default interface MentionDataListDTO {
   cardInstanceCommentId: number;
   comment: string;
   read: boolean;
+  dateComment: Date;
   cardInstance: WorkflowCardDTO;
 }
