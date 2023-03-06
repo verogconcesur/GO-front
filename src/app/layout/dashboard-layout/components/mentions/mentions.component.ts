@@ -1,3 +1,4 @@
+import { DatePipe } from '@angular/common';
 import { Component, OnInit, ViewEncapsulation } from '@angular/core';
 import { marker } from '@biesbjerg/ngx-translate-extract-marker';
 import MentionDataListDTO from '@data/models/notifications/mention-data-list-dto';
@@ -20,7 +21,7 @@ export class MentionsComponent implements OnInit {
   public mentions: MentionDataListDTO[] = [];
   public loading = false;
   private originalMentions: MentionDataListDTO[] = [];
-  constructor(private mentionService: NotificationService) {}
+  constructor(private mentionService: NotificationService, private datePipe: DatePipe) {}
 
   ngOnInit(): void {}
 
@@ -34,7 +35,7 @@ export class MentionsComponent implements OnInit {
         take(1),
         finalize(() => (this.loading = false))
       )
-      .subscribe((data) => {
+      .subscribe((data: MentionDataListDTO[]) => {
         this.originalMentions = data;
         this.filterDataToShow();
       });
@@ -53,6 +54,10 @@ export class MentionsComponent implements OnInit {
       .subscribe((data) => {
         this.getData();
       });
+  }
+
+  public getItemComment(item: MentionDataListDTO): string {
+    return `${this.datePipe.transform(new Date(item.dateComment), 'dd-MM-yyyy, HH:mm')}: ${item.comment}`;
   }
 
   public filterDataToShow(): void {
