@@ -240,11 +240,15 @@ export class WorkflowsService {
   }
 
   public deleteWorkflow(id: number): Observable<boolean> {
-    return this.http.delete<boolean>(`${this.env.apiBaseUrl}${this.GET_WORKFLOWS_PATH}/${id}`);
+    return this.http
+      .delete<boolean>(`${this.env.apiBaseUrl}${this.GET_WORKFLOWS_PATH}/${id}`)
+      .pipe(catchError((error) => throwError(error.error as ConcenetError)));
   }
 
   public duplicateWorkflow(id: number): Observable<boolean> {
-    return this.http.get<boolean>(`${this.env.apiBaseUrl}${this.GET_WORKFLOWS_PATH}${this.DUPLICATE_WORKFLOWS_PATH}/${id}`);
+    return this.http
+      .get<boolean>(`${this.env.apiBaseUrl}${this.GET_WORKFLOWS_PATH}${this.DUPLICATE_WORKFLOWS_PATH}/${id}`)
+      .pipe(catchError((error) => throwError(error.error as ConcenetError)));
   }
 
   public prepareMovement(card: WorkflowCardDTO, targetId: number): Observable<WorkflowSubstateEventDTO[]> {
