@@ -1,3 +1,4 @@
+import { DatePipe } from '@angular/common';
 import { Component, OnInit, ViewEncapsulation } from '@angular/core';
 import { FormControl } from '@angular/forms';
 import { Router } from '@angular/router';
@@ -45,7 +46,11 @@ export class NotificationsComponent implements OnInit {
   public typesList: string[] = ['ASIG_USER', 'END_WORK', 'ADD_MESSAGE_CLIENT'];
   private originalNotifications: NotificationDataListDTO[] = [];
   private notificationFilter: NotificationFilterDTO = null;
-  constructor(private authService: AuthenticationService, private notificationService: NotificationService) {}
+  constructor(
+    private authService: AuthenticationService,
+    private notificationService: NotificationService,
+    private datePipe: DatePipe
+  ) {}
 
   ngOnInit(): void {
     this.notificationFilter = {
@@ -63,10 +68,14 @@ export class NotificationsComponent implements OnInit {
         take(1),
         finalize(() => (this.loading = false))
       )
-      .subscribe((data) => {
+      .subscribe((data: NotificationDataListDTO[]) => {
         this.originalNotifications = data;
         this.filterDataToShow();
       });
+  }
+
+  public getNotificationInfo(item: NotificationDataListDTO): string {
+    return `${this.datePipe.transform(new Date(item.dateNotification), 'dd-MM-yyyy, HH:mm')}: ${item.notification}`;
   }
 
   public getItemIcon(item: NotificationDataListDTO): string {
