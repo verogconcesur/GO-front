@@ -5,4 +5,5 @@ export default interface MigrationDTO {
   fileToImport: AttachmentDTO;
   workflowId: number;
   historic?: boolean;
+  retryLastMigration?: boolean;
 }

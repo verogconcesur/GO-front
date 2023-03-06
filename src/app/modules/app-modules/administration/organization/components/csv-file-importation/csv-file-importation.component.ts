@@ -11,6 +11,7 @@ import { TranslateService } from '@ngx-translate/core';
 import { ConfirmDialogService } from '@shared/services/confirm-dialog.service';
 import { GlobalMessageService } from '@shared/services/global-message.service';
 import { ProgressSpinnerDialogService } from '@shared/services/progress-spinner-dialog.service';
+import CombinedRequiredFieldsValidator from '@shared/validators/combined-required-fields.validator';
 import { NGXLogger } from 'ngx-logger';
 import { Observable, of } from 'rxjs';
 import { catchError, finalize, map, take, tap } from 'rxjs/operators';
@@ -38,7 +39,9 @@ export class CsvFileImportationComponent extends ComponentToExtendForCustomDialo
     downloadTemplate: marker('organizations.facilities.downloadTemplate'),
     uploadFile: marker('common.uploadFile'),
     required: marker('errors.required'),
-    historic: marker('organizations.facilities.historicImportFile')
+    historic: marker('organizations.facilities.historicImportFile'),
+    retryLastMigration: marker('organizations.facilities.retryLastMigration'),
+    retryLastMigrationInfo: marker('organizations.facilities.retryLastMigrationInfo')
   };
   public workflowList: WorkflowDTO[];
   public importForm: FormGroup;
@@ -69,6 +72,11 @@ export class CsvFileImportationComponent extends ComponentToExtendForCustomDialo
   }
 
   ngOnDestroy(): void {}
+
+  public retryLastMigrationSelected(): boolean {
+    return this.importForm?.get('retryLastMigration')?.value ? true : false;
+  }
+
   public confirmCloseCustomDialog(): Observable<boolean> {
     if (this.importForm?.touched && this.importForm?.dirty) {
       return this.confirmDialogService.open({
@@ -88,6 +96,7 @@ export class CsvFileImportationComponent extends ComponentToExtendForCustomDialo
         facilityId: formValue.facility.id,
         workflowId: formValue.workflow.id,
         historic: formValue.historic ? formValue.historic : false,
+        retryLastMigration: formValue.retryLastMigration ? formValue.retryLastMigration : false,
         fileToImport: formValue.file
       })
       .pipe(
@@ -170,6 +179,7 @@ export class CsvFileImportationComponent extends ComponentToExtendForCustomDialo
       facility: [this.facility, [Validators.required]],
       workflow: [null, [Validators.required]],
       historic: [null],
+      retryLastMigration: [null],
       file: [null, [Validators.required]]
     });
   }
