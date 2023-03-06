@@ -52,7 +52,7 @@ export class NavbarComponent implements OnInit, OnDestroy {
   ngOnInit(): void {
     this.infoWarning = this.authService.getWarningStatus();
     this.initWarningInformationValue();
-    this.initWarningNotificationInterval();
+    // this.initWarningNotificationInterval();
   }
 
   ngOnDestroy(): void {

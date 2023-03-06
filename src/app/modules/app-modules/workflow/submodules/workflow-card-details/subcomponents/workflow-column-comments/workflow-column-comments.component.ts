@@ -15,7 +15,12 @@ import { TextEditorWrapperConfigI } from '@modules/feature-modules/text-editor-w
 import { ProgressSpinnerDialogService } from '@shared/services/progress-spinner-dialog.service';
 import { TextEditorWrapperComponent } from '@modules/feature-modules/text-editor-wrapper/text-editor-wrapper.component';
 import { NotificationSoundService } from '@shared/services/notification-sounds.service';
+import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
+// import { RxStompService } from '@app/services/rx-stomp.service';
+import { Message } from '@stomp/stompjs';
+import { SocketService } from '@app/services/socket.service';
 
+@UntilDestroy()
 @Component({
   selector: 'app-workflow-column-comments',
   templateUrl: './workflow-column-comments.component.html',
@@ -52,19 +57,37 @@ export class WorkflowColumnCommentsComponent implements OnInit, OnDestroy {
     private globalMessageService: GlobalMessageService,
     private translateService: TranslateService,
     private spinnerService: ProgressSpinnerDialogService,
-    private notificationSoundService: NotificationSoundService
+    private notificationSoundService: NotificationSoundService,
+    // private rxStompService: RxStompService
+    private socketService: SocketService
   ) {}
 
   ngOnInit(): void {
     this.idCard = parseInt(this.route.snapshot.params.idCard, 10);
     this.getData(true);
     this.interval = setInterval(() => {
-      this.getData(false, false, true);
+      // this.getData(false, false, true);
     }, this.timeBeforeMarkAsRead);
+    // setTimeout(() => {
+    // this.rxStompService
+    //   .watch('/topic/newcomment')
+    //   .pipe(untilDestroyed(this))
+    //   .subscribe((data: Message) => {
+    //     console.log(data);
+    //   });
+    // this.socketService.initializeWebSocketConnection();
+    // setTimeout(() => {
+    this.socketService
+      .onEvent('/topic/newcomment/workflow-2/facility-1')
+      .pipe(untilDestroyed(this))
+      .subscribe((d) => console.log(d));
+    // }, 5000);
+    // }, 10000);
   }
 
   ngOnDestroy(): void {
     clearInterval(this.interval);
+    // this.socketService.disconect();
     this.interval = null;
   }
 
@@ -180,6 +203,7 @@ export class WorkflowColumnCommentsComponent implements OnInit, OnDestroy {
           });
         }
       });
+      // this.socketService.emitEvent('/app/send/message', this.newComment);
       const comment: CardCommentDTO = {
         comment: this.newComment,
         users: mentionedUsers.length ? mentionedUsers : null

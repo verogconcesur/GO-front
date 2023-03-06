@@ -6,6 +6,10 @@ import { DEFAULT_I18N_LANG, ENV } from '@app/constants/global.constants';
 import { CoreModule } from '@app/core.module';
 import { translateLoaderFactory } from '@app/locale/translate-loader.factory';
 import { TokenInterceptor } from '@app/security/token.interceptor';
+import { rxStompServiceFactory } from '@app/services/rx-stomp-service-factory';
+import { RxStompService } from '@app/services/rx-stomp.service';
+import { socketServiceFactory } from '@app/services/socket-service-factory';
+import { SocketService } from '@app/services/socket.service';
 import { environment } from '@env';
 import { LayoutModule } from '@layout/layout.module';
 import { TranslateCompiler, TranslateLoader, TranslateModule, TranslateService } from '@ngx-translate/core';
@@ -13,14 +17,6 @@ import { LoggerModule, NgxLoggerLevel } from 'ngx-logger';
 import { TranslateMessageFormatCompiler } from 'ngx-translate-messageformat-compiler';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
-import { SocketIoModule, SocketIoConfig } from 'ngx-socket-io';
-
-const socketsConfig: SocketIoConfig = {
-  url: environment.socketUrl, // socket server url;
-  options: {
-    transports: ['websocket']
-  }
-};
 
 @NgModule({
   declarations: [AppComponent],
@@ -45,8 +41,7 @@ const socketsConfig: SocketIoConfig = {
     }),
     AppRoutingModule,
     CoreModule,
-    LayoutModule,
-    SocketIoModule.forRoot(socketsConfig)
+    LayoutModule
   ],
   providers: [
     TranslateService,
@@ -58,7 +53,15 @@ const socketsConfig: SocketIoConfig = {
       provide: HTTP_INTERCEPTORS,
       useClass: TokenInterceptor,
       multi: true
+    },
+    {
+      provide: SocketService,
+      useFactory: socketServiceFactory
     }
+    // {
+    //   provide: RxStompService,
+    //   useFactory: rxStompServiceFactory
+    // }
   ],
   bootstrap: [AppComponent]
 })

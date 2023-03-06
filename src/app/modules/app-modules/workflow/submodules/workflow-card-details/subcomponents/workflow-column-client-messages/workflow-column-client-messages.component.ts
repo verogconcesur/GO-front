@@ -34,7 +34,7 @@ export class WorkflowColumnClientMessagesComponent implements OnInit, OnDestroy 
     this.idCard = parseInt(this.route.snapshot.params.idCard, 10);
     this.getData();
     this.interval = setInterval(() => {
-      this.getData(true);
+      // this.getData(true);
     }, this.timeBeforeMarkAsRead);
   }
 
