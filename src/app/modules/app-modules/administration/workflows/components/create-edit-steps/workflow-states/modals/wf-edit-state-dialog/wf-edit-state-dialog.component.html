@@ -10,11 +10,19 @@
         </mat-form-field>
     </div>
     <!-- color -->
-    <div>
+    <div class="color-wrapper">
         <mat-form-field class="color-picker" appearance="outline" floatLabel="always">
             <mat-label>{{ labels.color | translate }}</mat-label>
             <input type="color" matInput formControlName="color" />
         </mat-form-field>
+        <div class="color-picker-label" *ngIf="!isStateColorSetted(); else resetButton">
+            {{ labels.noColorSelected | translate }}
+        </div>
+        <ng-template #resetButton>
+            <button class="color-picker-reset" mat-raised-button (click)="resetColor()">
+                {{ labels.resetColor | translate }}
+            </button>
+        </ng-template>
     </div>
     <!-- front -->
     <div class="check-line">

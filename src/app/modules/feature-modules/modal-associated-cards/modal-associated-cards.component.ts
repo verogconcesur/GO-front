@@ -20,6 +20,7 @@ export class ModalAssociatedCardsComponent implements OnInit {
     noData: marker('errors.noDataToShow')
   };
   public cards: WorkflowCardDTO[] = [];
+  public cardsByGroup: { workflowId: number; workflowName: string; cards: WorkflowCardDTO[] }[] = [];
 
   constructor(
     private dialogRef: MatDialogRef<ModalAssociatedCardsComponent>,
@@ -38,7 +39,32 @@ export class ModalAssociatedCardsComponent implements OnInit {
           take(1),
           finalize(() => this.spinnerService.hide(spinner))
         )
-        .subscribe((data: WorkflowCardDTO[]) => (this.cards = data));
+        .subscribe((data: WorkflowCardDTO[]) => {
+          this.cards = data;
+          this.cardsByGroup = [];
+          if (this.cards?.length) {
+            if (data) {
+              // eslint-disable-next-line @typescript-eslint/no-explicit-any
+              const dataByWorkflow: any = {};
+              data.forEach((card: WorkflowCardDTO) => {
+                if (dataByWorkflow[card.cardInstanceWorkflows[0].workflowId]) {
+                  dataByWorkflow[card.cardInstanceWorkflows[0].workflowId].cards = [
+                    ...dataByWorkflow[card.cardInstanceWorkflows[0].workflowId].cards,
+                    card
+                  ];
+                } else {
+                  dataByWorkflow[card.cardInstanceWorkflows[0].workflowId] = {
+                    workflowName: card.cardInstanceWorkflows[0].workflowName,
+                    workflowId: card.cardInstanceWorkflows[0].workflowId,
+                    cards: [card]
+                  };
+                }
+              });
+              const result = Object.keys(dataByWorkflow).map((k) => dataByWorkflow[k]);
+              this.cardsByGroup = result;
+            }
+          }
+        });
     }
   }
 
