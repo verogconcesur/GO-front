@@ -32,7 +32,9 @@ export class WfEditStateDialogComponent extends ComponentToExtendForCustomDialog
     anchorDescription: marker('workflows.state-anchorDescription'),
     lockInMoves: marker('workflows.state-lockInMoves'),
     lockInMovesDescription: marker('workflows.state-lockInMovesDescription'),
-    color: marker('workflows.state-color')
+    color: marker('workflows.state-color'),
+    noColorSelected: marker('workflows.state-no-color-selected'),
+    resetColor: marker('workflows.state-reset-color')
   };
   public form: UntypedFormGroup;
   private originalData: WorkflowStateDTO;
@@ -58,12 +60,22 @@ export class WfEditStateDialogComponent extends ComponentToExtendForCustomDialog
   public initForm(data: WorkflowStateDTO): void {
     this.form = this.fb.group({
       anchor: [data?.anchor ? data.anchor : false],
-      color: [data.color ? data.color : '#fff'],
+      color: [data.color ? data.color : null],
       front: [data.front ? data.front : false],
       hideBoard: [data.hideBoard ? data.hideBoard : false],
       locked: [data.locked ? data.locked : false],
       name: [data.name ? data.name : '', [Validators.required]]
     });
+  }
+
+  public isStateColorSetted(): boolean {
+    return this.form?.get('color').value !== null;
+  }
+
+  public resetColor(): void {
+    this.form.get('color').setValue(null);
+    this.form.markAsDirty();
+    this.form.markAsTouched();
   }
 
   public confirmCloseCustomDialog(): Observable<boolean> {

@@ -262,10 +262,16 @@ export class CardInstanceAttachmentsComponent implements OnInit, OnChanges {
   private async addFiles(files: FileList, template: CardAttachmentsDTO): Promise<void> {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const filesToSend: any[] = [];
+    const filesName: string[] = [];
+    this.data.forEach((cardAttachment: CardAttachmentsDTO) => {
+      cardAttachment.attachments.forEach((attachment: AttachmentDTO) => {
+        filesName.push(attachment.name);
+      });
+    });
     const arrayOfBase64 = await this.fileListToBase64(files);
     Array.from(files).forEach((file: File, i: number) => {
       const fileInfo = {
-        name: file.name,
+        name: filesName.indexOf(file.name) === -1 ? file.name : `${+new Date()}_${file.name}`,
         type: file.type,
         size: file.size,
         content: arrayOfBase64[i].split(';base64,')[1]
