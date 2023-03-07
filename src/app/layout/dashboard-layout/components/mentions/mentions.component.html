@@ -11,7 +11,7 @@
             *ngFor="let item of mentions"
             [card]="item.cardInstance"
             [disableDrag]="true"
-            [additionalInfo]="item.comment"
+            [additionalInfo]="getItemComment(item)"
             [showAdditionalInfo]="true"
             [forceSize]="'size-m'"
             [showExtraInfo]="false"

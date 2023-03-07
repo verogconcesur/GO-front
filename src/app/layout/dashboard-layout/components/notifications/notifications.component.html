@@ -23,7 +23,7 @@
             *ngFor="let item of notifications"
             [card]="item.cardInstance"
             [disableDrag]="true"
-            [additionalInfo]="item.notification"
+            [additionalInfo]="getNotificationInfo(item)"
             [additionalInfoIcon]="getItemIcon(item)"
             [showAdditionalInfo]="true"
             [forceSize]="'size-m'"
