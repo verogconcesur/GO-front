@@ -399,6 +399,14 @@
             "socialSecurityId": "Documento de identidad",
             "title": "Clientes"
         },
+        "repairOrders": {
+            "create": "Crear orden de reparación",
+            "edit": "Editar orden de reparación",
+            "import": "Importar orden de reparación",
+            "jobsDescription": "Descripción del trabajo",
+            "reference": "Referencia",
+            "repairOrder": "Orden de reparación"
+        },
         "user": {
             "user": "Usuario"
         },
@@ -485,6 +493,7 @@
         "errors": {
             "customerNotFound": "Este cliente no existe en la base de datos",
             "dataNotFound": "No existe en la base de datos",
+            "repairOrderNotFound": "Esta orden de reparación no existe en la base de datos",
             "userNotFound": "Este usuario no existe en la base de datos",
             "vehicleNotFound": "Este vehículo no existe en la base de datos"
         },
@@ -591,6 +600,9 @@
         "user": "Seleccione un usuario",
         "userPlaceholder": "Usuario"
     },
+    "repairOrder": {
+        "searchDialog": "Buscador de ordenes de reparación"
+    },
     "roles": {
         "create": "Crear rol",
         "deleteConfirmation": "¿Realmente quiere eliminar este rol?",
@@ -686,6 +698,7 @@
         "cardsInCalendarView": "Tarjetas en vista calendario",
         "cardsInTableView": "Tarjetas en vista tablero",
         "changeCustomer": "Cambiar cliente",
+        "changeRepairOrder": "Cambiar orden de reparación",
         "changeUser": "Cambiar asesor",
         "changeVehicle": "Cambiar vehículo",
         "configMoveEvent": "Ajustes de movimiento",
@@ -750,6 +763,7 @@
         "sendMailReceiverType": "Tipo destinario al que va dirigido el correo electrónico",
         "sendMailTemplate": "Plantilla de correo electrónico",
         "setCustomer": "Asignar cliente",
+        "setRepairOrder": "Asignar orden de reparación",
         "setUser": "Asignar usuario",
         "setVehicle": "Asignar vehículo",
         "shortcutColor": "Color de acceso directo",

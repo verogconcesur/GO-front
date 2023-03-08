@@ -399,6 +399,14 @@
             "socialSecurityId": "Identity document",
             "title": "Customers"
         },
+        "repairOrders": {
+            "create": "Create repair order",
+            "edit": "Edit repair order",
+            "import": "Import repair order",
+            "jobsDescription": "Job description",
+            "reference": "Reference",
+            "repairOrder": "Repair order"
+        },
         "user": {
             "user": "User"
         },
@@ -485,6 +493,7 @@
         "errors": {
             "customerNotFound": "This customer does not exist in the database",
             "dataNotFound": "It does not exist in the database",
+            "repairOrderNotFound": "This repair order does not exist in the database",
             "userNotFound": "This user does not exist in the database",
             "vehicleNotFound": "This vehicle does not exist in the database."
         },
@@ -594,6 +603,9 @@
         "user": "Select a user",
         "userPlaceholder": "User"
     },
+    "repairOrder": {
+        "searchDialog": "Repair order searcher"
+    },
     "roles": {
         "create": "Create Role",
         "deleteConfirmation": "Do you really want to delete this role?",
@@ -689,6 +701,7 @@
         "cardsInCalendarView": "Calendar view cards",
         "cardsInTableView": "Table view cards",
         "changeCustomer": "Change customer",
+        "changeRepairOrder": "Change repair order",
         "changeUser": "Change user",
         "changeVehicle": "Change vehicle",
         "configMoveEvent": "Move event configuration",
@@ -753,6 +766,7 @@
         "sendMailReceiverType": "Select type of user",
         "sendMailTemplate": "Email template",
         "setCustomer": "Set customer",
+        "setRepairOrder": "Set repair order",
         "setUser": "Set user",
         "setVehicle": "Set vehicle",
         "shortcutColor": "Shortcut color",
