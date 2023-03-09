@@ -46,6 +46,7 @@ export class LoginComponent implements OnInit {
     if (this.authenticationService.isUserLogged()) {
       this.router.navigate(['/', RouteConstants.DASHBOARD]);
     } else {
+      this.authenticationService.logout();
       this.initializeForm();
     }
   }
