@@ -1,7 +1,5 @@
+import { DatePipe } from '@angular/common';
 import { Component, OnInit, ViewEncapsulation } from '@angular/core';
-import { Router } from '@angular/router';
-import { RouteConstants } from '@app/constants/route.constants';
-import { AuthenticationService } from '@app/security/authentication.service';
 import { marker } from '@biesbjerg/ngx-translate-extract-marker';
 import MentionDataListDTO from '@data/models/notifications/mention-data-list-dto';
 import { NotificationService } from '@data/services/notifications.service';
@@ -17,53 +15,52 @@ export class MentionsComponent implements OnInit {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   public labels: any = {
     newMentions: marker('common.unread'),
-    oldMentions: marker('common.readen')
+    oldMentions: marker('common.readen'),
+    noDataToShow: marker('errors.noDataToShow')
   };
-  public mentions: {
-    new: MentionDataListDTO[];
-    old: MentionDataListDTO[];
-  } = {
-    new: [],
-    old: []
-  };
+  public mentions: MentionDataListDTO[] = [];
   public loading = false;
   private originalMentions: MentionDataListDTO[] = [];
-  constructor(private authService: AuthenticationService, private mentionService: NotificationService, private router: Router) {}
+  constructor(private mentionService: NotificationService, private datePipe: DatePipe) {}
 
   ngOnInit(): void {}
 
   public getData(): void {
     this.loading = true;
+    this.mentions = [];
     this.mentionService
-      .getMentions()
+      .getMentions('NO_READ')
+      // .getMentions('ALL')
       .pipe(
         take(1),
         finalize(() => (this.loading = false))
       )
-      .subscribe((data) => {
+      .subscribe((data: MentionDataListDTO[]) => {
         this.originalMentions = data;
         this.filterDataToShow();
       });
   }
 
-  public goToCard(item: MentionDataListDTO): void {
-    let url = `${RouteConstants.DASHBOARD}/${RouteConstants.WORKFLOWS}/${item.workflowId}/`;
-    if (this.router.url.indexOf(RouteConstants.WORKFLOWS_CALENDAR_VIEW) >= 0) {
-      url += `${RouteConstants.WORKFLOWS_CALENDAR_VIEW}`;
-    } else if (this.router.url.indexOf(RouteConstants.WORKFLOWS_TABLE_VIEW) >= 0) {
-      url += `${RouteConstants.WORKFLOWS_TABLE_VIEW}`;
-    } else {
-      url += `${RouteConstants.WORKFLOWS_BOARD_VIEW}`;
-    }
-    url += `/(${RouteConstants.WORKFLOWS_CARD}:${RouteConstants.WORKFLOWS_ID_CARD}/${item.cardInstanceWorkflowId}/${
-      RouteConstants.WORKFLOWS_ID_USER
-    }/${item.workflowSubstateFront && item.userAsignId ? item.userAsignId : 'null'})`;
-    this.router.navigateByUrl(url);
+  public markAsViewed(item: MentionDataListDTO): void {
+    this.loading = true;
+    this.mentionService
+      .markMentionAsRead(item.cardInstanceCommentId)
+      .pipe(
+        take(1),
+        finalize(() => {
+          this.loading = false;
+        })
+      )
+      .subscribe((data) => {
+        this.getData();
+      });
+  }
+
+  public getItemComment(item: MentionDataListDTO): string {
+    return `${this.datePipe.transform(new Date(item.dateComment), 'dd-MM-yyyy, HH:mm')}: ${item.comment}`;
   }
 
   public filterDataToShow(): void {
-    const filtered = [...this.originalMentions];
-    this.mentions.new = filtered.filter((d) => !d.read);
-    this.mentions.old = filtered.filter((d) => d.read);
+    this.mentions = [...this.originalMentions];
   }
 }

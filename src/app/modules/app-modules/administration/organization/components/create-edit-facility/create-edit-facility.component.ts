@@ -54,7 +54,7 @@ export class CreateEditFacilityComponent extends ComponentToExtendForCustomDialo
     code: marker('organizations.facilities.code'),
     enterpriseId: marker('organizations.facilities.enterpriseId'),
     storeId: marker('organizations.facilities.storeId'),
-    workflowSubstate: marker('common.substate'),
+    workflowSubstate: marker('organizations.facilities.substateConfig'),
     postalCode: marker('common.postalCode'),
     brands: marker('common.brands'),
     cif: marker('common.cif'),
@@ -132,17 +132,18 @@ export class CreateEditFacilityComponent extends ComponentToExtendForCustomDialo
       this.facilityForm.get('code').setValidators([Validators.required]);
       this.facilityForm.get('enterpriseId').setValidators([Validators.required]);
       this.facilityForm.get('storeId').setValidators([Validators.required]);
-      this.facilityForm.get('workflowSubstate').setValidators([Validators.required]);
     } else {
       this.facilityForm.get('code').setValidators([]);
       this.facilityForm.get('enterpriseId').setValidators([]);
       this.facilityForm.get('storeId').setValidators([]);
-      this.facilityForm.get('workflowSubstate').setValidators([]);
       this.facilityForm.get('code').setValue(null);
       this.facilityForm.get('enterpriseId').setValue(null);
       this.facilityForm.get('storeId').setValue(null);
       this.facilityForm.get('workflowSubstate').setValue(null);
     }
+  }
+  public removeSubstate(): void {
+    this.facilityForm.get('workflowSubstate').setValue(null);
   }
   public confirmCloseCustomDialog(): Observable<boolean> {
     if (this.facilityForm?.touched && this.facilityForm?.dirty) {
@@ -270,7 +271,7 @@ export class CreateEditFacilityComponent extends ComponentToExtendForCustomDialo
     return tempDivElement.textContent || tempDivElement.innerText || '';
   }
   public textEditorContentChanged(type: 'header' | 'footer', html: string) {
-    if (html === '' || html === ' ' || this.convertToPlain(html) === '' || this.convertToPlain(html) === ' ') {
+    if ((html === '' || this.convertToPlain(html) === '') && html.length < 20) {
       html = null;
     }
     if (type === 'header' && html !== this.form.header.value) {

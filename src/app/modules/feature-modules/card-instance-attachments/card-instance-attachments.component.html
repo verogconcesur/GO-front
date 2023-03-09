@@ -69,7 +69,7 @@
                         *ngIf="
                             !cardInstanceAttachmentsConfig.disableIndividualDownloadAction &&
                             !cardInstanceAttachmentsConfig.disableAttachmentsSelection &&
-                            !isPdf(item)
+                            !hasPreview(item)
                         "
                         (click)="downloadAttachment(item)"
                         >vertical_align_bottom</mat-icon
@@ -79,7 +79,7 @@
                         *ngIf="
                             !cardInstanceAttachmentsConfig.disableIndividualDownloadAction &&
                             cardInstanceAttachmentsConfig.disableAttachmentsSelection &&
-                            !isPdf(item)
+                            !hasPreview(item)
                         "
                         (click)="downloadAttachment(item)"
                         >vertical_align_bottom</mat-icon
@@ -89,7 +89,7 @@
                         *ngIf="
                             !cardInstanceAttachmentsConfig.disableIndividualDownloadAction &&
                             !cardInstanceAttachmentsConfig.disableAttachmentsSelection &&
-                            isPdf(item)
+                            hasPreview(item)
                         "
                         (click)="downloadAttachment(item)"
                         >search</mat-icon
@@ -99,7 +99,7 @@
                         *ngIf="
                             !cardInstanceAttachmentsConfig.disableIndividualDownloadAction &&
                             cardInstanceAttachmentsConfig.disableAttachmentsSelection &&
-                            isPdf(item)
+                            hasPreview(item)
                         "
                         (click)="downloadAttachment(item)"
                         >search</mat-icon

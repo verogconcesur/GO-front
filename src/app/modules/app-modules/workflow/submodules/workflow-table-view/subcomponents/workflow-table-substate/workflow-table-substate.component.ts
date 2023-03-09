@@ -75,10 +75,6 @@ export class WorkflowTableSubstateComponent implements OnInit {
             this.displayedColumns.push(tabItem.id + tabItem.name);
             this.headers.push({ col: tabItem.id + tabItem.name, label: tabItem.name });
             break;
-          case 'TABLE':
-            this.displayedColumns.push(tabItem.id + tabItem.name);
-            this.headers.push({ col: tabItem.id + tabItem.name, label: tabItem.name });
-            break;
           case 'TEXT':
             this.displayedColumns.push(tabItem.id + tabItem.name);
             this.headers.push({ col: tabItem.id + tabItem.name, label: tabItem.name });
@@ -124,9 +120,6 @@ export class WorkflowTableSubstateComponent implements OnInit {
         case 'OPTION':
           slot = tabItem.tabItemConfigOption.variable;
           break;
-        case 'TABLE':
-          slot = tabItem.tabItemConfigTable.variable;
-          break;
         case 'TEXT':
           slot = tabItem.tabItemConfigText.variable;
           break;
@@ -152,8 +145,13 @@ export class WorkflowTableSubstateComponent implements OnInit {
       return '';
     }
   }
-  public getUserName(userId: number): string {
-    const userDetail = this.wSubstate.workflowSubstateUser.find((user: WorkflowSubstateUserDTO) => (user.id = userId));
+  public getUserName(card: WorkflowCardDTO): string {
+    const userDetail = this.wSubstate.workflowSubstateUser.find(
+      (user: WorkflowSubstateUserDTO) => user.user.id === card.cardInstanceWorkflows[0].cardInstanceWorkflowUsers[0].userId
+    );
+    if (!userDetail) {
+      return '';
+    }
     if (userDetail.user.fullName) {
       return userDetail.user.fullName;
     } else {

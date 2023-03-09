@@ -51,7 +51,7 @@ export class TabItemConfigTitleComponent extends ComponentToExtendForCustomDialo
   }
 
   ngOnInit(): void {
-    this.tabItemToEdit = this.extendedComponentData;
+    this.tabItemToEdit = this.extendedComponentData.tab;
     this.initializeForm();
   }
   public confirmCloseCustomDialog(): Observable<boolean> {

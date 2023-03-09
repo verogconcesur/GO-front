@@ -14,7 +14,6 @@ export class CardTabItemTypePipePipe implements PipeTransform {
     TABLE: marker('common.customTabItem.TABLE'),
     OPTION: marker('common.customTabItem.OPTION')
   };
-  // 'TITLE' | 'TEXT' | 'INPUT' | 'LIST' | 'TABLE' | 'OPTION' | 'VARIABLE' | 'LINK' | 'ACTION';
   constructor(private translateService: TranslateService) {}
 
   transform(value: string, ...args: unknown[]): string {

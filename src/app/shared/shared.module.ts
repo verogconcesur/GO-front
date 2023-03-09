@@ -19,7 +19,7 @@ import { DropFilesZonetDirective } from './directives/dropFilesZone.directive';
 import { TwoDigitDecimalDirective } from './utils/two-digit-decimal.directive';
 import { CardTabItemTypePipePipe } from './utils/card-tab-item-type-pipe.pipe';
 import { SafeHtmlPipe } from './utils/safe-inner-html.pipe';
-import { NotificationSoundService } from './services/notification-sounds.service';
+import { ZoomDirective } from './directives/zoomImage.directive';
 
 @NgModule({
   declarations: [
@@ -32,6 +32,7 @@ import { NotificationSoundService } from './services/notification-sounds.service
     DropFilesZonetDirective,
     ResponsiveTabsComponent,
     TwoDigitDecimalDirective,
+    ZoomDirective,
     CardTabItemTypePipePipe,
     SafeHtmlPipe
   ],
@@ -50,6 +51,7 @@ import { NotificationSoundService } from './services/notification-sounds.service
     MaterialModule,
     FlexLayoutModule,
     ReactiveFormsModule,
+    ZoomDirective,
     FormsModule,
     GoBackComponent,
     ResponsiveTabsComponent,

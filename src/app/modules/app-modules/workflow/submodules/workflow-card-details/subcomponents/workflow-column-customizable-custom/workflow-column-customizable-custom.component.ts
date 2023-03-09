@@ -66,14 +66,16 @@ export class WorkflowColumnCustomizableCustomComponent implements OnInit, OnChan
             tabItem.tabItemConfigInput.dateType === 'DATE' &&
             cardTabItemInstance
           ) {
-            cardTabItemInstance.value = moment(cardTabItemInstance.value, 'DD/MM/YYYY').toDate();
+            cardTabItemInstance.value = cardTabItemInstance.value
+              ? moment(cardTabItemInstance.value, 'DD/MM/YYYY').toDate()
+              : null;
           }
           if (
             tabItem.tabItemConfigInput.dataType === 'TEMPORAL' &&
             tabItem.tabItemConfigInput.dateType === 'DATETIME' &&
             cardTabItemInstance
           ) {
-            cardTabItemInstance.value = moment(cardTabItemInstance.value, 'DD/MM/YYYY HH:mm');
+            cardTabItemInstance.value = cardTabItemInstance.value ? moment(cardTabItemInstance.value, 'DD/MM/YYYY HH:mm') : null;
           }
           if (
             tabItem.tabItemConfigInput.dataType === 'TEMPORAL' &&
@@ -81,7 +83,9 @@ export class WorkflowColumnCustomizableCustomComponent implements OnInit, OnChan
             cardTabItemInstance
           ) {
             const dateStrings = (cardTabItemInstance.value as string).split(':');
-            cardTabItemInstance.value = moment().set('hours', Number(dateStrings[0])).set('minutes', Number(dateStrings[1]));
+            cardTabItemInstance.value = cardTabItemInstance.value
+              ? moment().set('hours', Number(dateStrings[0])).set('minutes', Number(dateStrings[1]))
+              : null;
           }
           if (tabItem.tabItemConfigInput.mandatory) {
             validators.push(Validators.required);
@@ -92,9 +96,9 @@ export class WorkflowColumnCustomizableCustomComponent implements OnInit, OnChan
           if (tabItem.tabItemConfigList.mandatory) {
             validators.push(Validators.required);
           }
-          break;
-        case 'TABLE':
-          cardTabItemInstance = tabItem.tabItemConfigTable.cardTabItemInstance;
+          if (cardTabItemInstance && cardTabItemInstance.value && tabItem.tabItemConfigList.selectionType === 'MULTIPLE') {
+            cardTabItemInstance.value = JSON.parse(cardTabItemInstance.value as string);
+          }
           break;
         case 'OPTION':
           cardTabItemInstance = tabItem.tabItemConfigOption.cardTabItemInstance;
@@ -140,6 +144,9 @@ export class WorkflowColumnCustomizableCustomComponent implements OnInit, OnChan
             }
             break;
         }
+      }
+      if (item.tabItem.tabItemConfigList && item.tabItem.tabItemConfigList.selectionType === 'MULTIPLE') {
+        item.value = JSON.stringify(item.value);
       }
       return item;
     });

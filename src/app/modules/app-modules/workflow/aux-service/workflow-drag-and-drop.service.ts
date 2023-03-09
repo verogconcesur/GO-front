@@ -10,6 +10,8 @@ export class WorkflowDragAndDropService {
   public droppableStates$: BehaviorSubject<string[]> = new BehaviorSubject(null);
   public expandedColumns$: BehaviorSubject<string[]> = new BehaviorSubject([]);
 
+  private readonly DRAG_AND_DROP_ENABLED = false;
+
   constructor() {}
 
   public resetObservables(): void {
@@ -18,7 +20,14 @@ export class WorkflowDragAndDropService {
     this.expandedColumns$.next([]);
   }
 
+  public isDragAndDropEnabled(): boolean {
+    return this.DRAG_AND_DROP_ENABLED;
+  }
+
   public isDroppableState(state: string): boolean {
+    if (!this.DRAG_AND_DROP_ENABLED) {
+      return false;
+    }
     return this.droppableStates$.value?.indexOf(state) >= 0;
   }
 
