@@ -32,7 +32,9 @@ export class WfEditSubstateGeneralTabComponent extends WfEditSubstateAbstractTab
     hideBoardDescription: marker('workflows.state-hideBoardDescription'),
     lockInMoves: marker('workflows.state-lockInMoves'),
     lockInMovesDescription: marker('workflows.state-lockInMovesDescription'),
-    color: marker('workflows.state-color')
+    color: marker('workflows.state-color'),
+    noColorSelected: marker('workflows.state-no-color-selected'),
+    resetColor: marker('workflows.state-reset-color')
   };
 
   constructor(
@@ -63,10 +65,20 @@ export class WfEditSubstateGeneralTabComponent extends WfEditSubstateAbstractTab
       exitPoint: [data?.exitPoint ? data.exitPoint : false],
       hideBoard: [data?.hideBoard ? data.hideBoard : false],
       locked: [data?.locked ? data.locked : false],
-      color: [data?.color ? data.color : '']
+      color: [data?.color ? data.color : null]
     });
     this.editSubstateAuxService.setFormGroupByTab(form, this.tabId);
     this.editSubstateAuxService.setFormOriginalData(this.form.value, this.tabId);
+  }
+
+  public isStateColorSetted(): boolean {
+    return this.form?.get('color').value !== null;
+  }
+
+  public resetColor(): void {
+    this.form.get('color').setValue(null);
+    this.form.markAsDirty();
+    this.form.markAsTouched();
   }
 
   public saveData(): void {

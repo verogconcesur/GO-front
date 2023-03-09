@@ -9,12 +9,13 @@ import { TranslateService } from '@ngx-translate/core';
 import { ProgressSpinnerDialogService } from '@shared/services/progress-spinner-dialog.service';
 import { NGXLogger } from 'ngx-logger';
 import { Observable } from 'rxjs';
-import { take, startWith, map } from 'rxjs/operators';
+import { take, startWith, map, finalize } from 'rxjs/operators';
 import { WorkflowDragAndDropService } from '../../aux-service/workflow-drag-and-drop.service';
 import { ActivatedRoute, Router } from '@angular/router';
 import { UntilDestroy } from '@ngneat/until-destroy';
 import FacilityDTO from '@data/models/organization/facility-dto';
 import { WorkflowPrepareAndMoveService } from '../../aux-service/workflow-prepare-and-move-aux.service';
+import { ConfirmDialogService } from '@shared/services/confirm-dialog.service';
 
 @UntilDestroy()
 @Component({
@@ -34,7 +35,9 @@ export class WorkflowNavbarComponent implements OnInit, OnDestroy {
   public facilitiesOptions: Observable<FacilityDTO[]>;
   public workflowFacilities: FacilityDTO[] = [];
   public facilitiesSelected: FacilityDTO[];
+  public synchronizingData = false;
   public labels = {
+    syncData: marker('workflows.syncData'),
     selectWorkflow: marker('workflows.select'),
     filterWorkflow: marker('workflows.filter'),
     noWorkflows: marker('workflows.noWorkflows'),
@@ -50,7 +53,8 @@ export class WorkflowNavbarComponent implements OnInit, OnDestroy {
     private dragDropService: WorkflowDragAndDropService,
     private route: ActivatedRoute,
     private prepareAndMoveService: WorkflowPrepareAndMoveService,
-    private router: Router
+    private router: Router,
+    private confirmationDialog: ConfirmDialogService
   ) {}
 
   ngOnInit(): void {
@@ -177,17 +181,31 @@ export class WorkflowNavbarComponent implements OnInit, OnDestroy {
   }
 
   public syncData(): void {
-    this.workflowService
-      .syncData(this.workflowSelected.id)
+    this.confirmationDialog
+      .open({
+        title: this.translateService.instant(marker('common.warning')),
+        message: this.translateService.instant(this.labels.syncData)
+      })
       .pipe(take(1))
-      .subscribe(
-        (data) => {
-          this.prepareAndMoveService.reloadData$.next('MOVES_IN_THIS_WORKFLOW');
-        },
-        (error) => {
-          console.error(error);
+      .subscribe((ok: boolean) => {
+        if (ok) {
+          this.synchronizingData = true;
+          this.workflowService
+            .syncData(this.workflowSelected.id)
+            .pipe(
+              take(1),
+              finalize(() => (this.synchronizingData = false))
+            )
+            .subscribe(
+              (data) => {
+                this.prepareAndMoveService.reloadData$.next('MOVES_IN_THIS_WORKFLOW');
+              },
+              (error) => {
+                console.error(error);
+              }
+            );
         }
-      );
+      });
   }
 
   private initForms(): void {

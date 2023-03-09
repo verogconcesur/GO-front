@@ -328,7 +328,7 @@ export class WorkflowsTableComponent implements OnInit {
               },
               error: (error: ConcenetError) => {
                 this.globalMessageService.showError({
-                  message: this.translateService.instant(error.error),
+                  message: this.translateService.instant(error.message),
                   actionText: this.translateService.instant(marker('common.close'))
                 });
               }

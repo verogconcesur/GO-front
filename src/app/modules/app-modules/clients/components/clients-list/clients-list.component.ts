@@ -6,6 +6,7 @@ import { marker } from '@biesbjerg/ngx-translate-extract-marker';
 import PaginationResponseI from '@data/interfaces/pagination-response';
 import CustomerEntityDTO from '@data/models/entities/customer-entity-dto';
 import { CustomDialogService } from '@jenga/custom-dialog';
+import { ModalAssociatedCardsService } from '@modules/feature-modules/modal-associated-cards/modal-associated-cards.service';
 import { TranslateService } from '@ngx-translate/core';
 import { GlobalMessageService } from '@shared/services/global-message.service';
 import { ProgressSpinnerDialogService } from '@shared/services/progress-spinner-dialog.service';
@@ -52,6 +53,7 @@ export class ClientsListComponent implements OnInit {
     private globalMessageService: GlobalMessageService,
     private translateService: TranslateService,
     private spinnerService: ProgressSpinnerDialogService,
+    private modalAssociatedCardsService: ModalAssociatedCardsService,
     private router: Router
   ) {}
 
@@ -116,6 +118,10 @@ export class ClientsListComponent implements OnInit {
         }
       );
   };
+
+  public showCustomerCards(customer: CustomerEntityDTO): void {
+    this.modalAssociatedCardsService.openAssociatedCardsModal(customer.id, 'customerId');
+  }
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   private transformFilterValue = (filterValue: CustomerEntityDTO): any => ({

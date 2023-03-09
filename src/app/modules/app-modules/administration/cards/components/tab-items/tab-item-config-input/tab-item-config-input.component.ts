@@ -67,7 +67,7 @@ export class TabItemConfigInputComponent extends ComponentToExtendForCustomDialo
   }
 
   ngOnInit(): void {
-    this.tabItemToEdit = this.extendedComponentData;
+    this.tabItemToEdit = this.extendedComponentData.tab;
     this.initializeForm();
   }
 

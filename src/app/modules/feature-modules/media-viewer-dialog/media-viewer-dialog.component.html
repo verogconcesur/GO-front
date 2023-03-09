@@ -1,0 +1,48 @@
+<div class="media-viewer">
+    <div class="media-viewer__header">
+        <h2>{{ getTitle() | translate }}</h2>
+        <div class="actions">
+            <button mat-button color="primary" (click)="download()">
+                {{ labels.download | translate }}
+                <mat-icon>vertical_align_bottom</mat-icon>
+            </button>
+            <button mat-button class="close-button" (click)="close()">
+                <mat-icon>close</mat-icon>
+            </button>
+        </div>
+    </div>
+    <div class="media-viewer__content">
+        <!-- For pdf -->
+        <ngx-extended-pdf-viewer
+            *ngIf="attachment && isFileType('pdf')"
+            class="pdf-viewer"
+            [base64Src]="attachment.content"
+            [height]="'100%'"
+            [useBrowserLocale]="true"
+            [textLayer]="true"
+            [showHandToolButton]="true"
+        >
+        </ngx-extended-pdf-viewer>
+        <!-- For video -->
+        <video controls *ngIf="attachment && isFileType('video')">
+            <source [src]="getDataBase64()" [type]="attachment.type" />
+            Your browser does not support HTML video.
+        </video>
+        <!-- For Audio -->
+        <audio controls *ngIf="attachment && isFileType('audio')">
+            <source [src]="getDataBase64()" [type]="attachment.type" />
+            Your browser does not support the audio element.
+        </audio>
+        <!-- For Image -->
+        <div class="image-visor" *ngIf="attachment && isFileType('image')">
+            <div class="zoom-controls">
+                <button mat-raised-button class="zoom zoom-in" (click)="zoomImage.zoomIn()">+</button>
+                <button mat-raised-button class="zoom zoom-out" (click)="zoomImage.zoomOut()">-</button>
+                <button mat-raised-button class="zoom zoom-reset" (click)="zoomImage.resetZoom()">
+                    {{ labels.reset | translate }}
+                </button>
+            </div>
+            <img #zoomImage="zoom-image" zoom-image [src]="getDataBase64()" class="image-item" />
+        </div>
+    </div>
+</div>
