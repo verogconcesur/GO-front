@@ -74,7 +74,8 @@ export class WfEditPermissionsTabComponent extends WfEditSubstateAbstractTabClas
           this.fb.group({
             id: [permission.id],
             user: [userSub.user],
-            permissionType: [userSub.user.showAll ? WorkFlowPermissionsEnum.edit : permission.permissionType],
+            // permissionType: [userSub.user.showAll ? WorkFlowPermissionsEnum.edit : permission.permissionType],
+            permissionType: [permission.permissionType],
             workflowSubstateId: [permission.workflowSubstateId],
             workflowUserId: [permission.workflowUserId]
           })
@@ -84,7 +85,8 @@ export class WfEditPermissionsTabComponent extends WfEditSubstateAbstractTabClas
           this.fb.group({
             id: [],
             user: [userSub.user],
-            permissionType: [userSub.user.showAll ? WorkFlowPermissionsEnum.edit : WorkFlowPermissionsEnum.hide],
+            // permissionType: [userSub.user.showAll ? WorkFlowPermissionsEnum.edit : WorkFlowPermissionsEnum.hide],
+            permissionType: [WorkFlowPermissionsEnum.hide],
             workflowSubstateId: [this.substate.id],
             workflowUserId: [userSub.id]
           })
@@ -110,7 +112,8 @@ export class WfEditPermissionsTabComponent extends WfEditSubstateAbstractTabClas
   public changeAllPermissions(permission: string): void {
     let users = this.form.get('users').getRawValue();
     users = users.map((userWk: WorkflowSubstateUserDTO) => {
-      if (userWk.user.role.id === this.roleSelected.id && !userWk.user.showAll) {
+      // if (userWk.user.role.id === this.roleSelected.id && !userWk.user.showAll) {
+      if (userWk.user.role.id === this.roleSelected.id) {
         userWk.permissionType = permission;
       }
       return userWk;
