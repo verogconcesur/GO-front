@@ -6,7 +6,7 @@ import { ComponentToExtendForCustomDialog, CustomDialogFooterConfigI } from '@je
 import { TranslateService } from '@ngx-translate/core';
 import { ConfirmDialogService } from '@shared/services/confirm-dialog.service';
 import { Observable, of } from 'rxjs';
-import { v4 as uuidv4 } from 'uuid';
+// import { v4 as uuidv4 } from 'uuid';
 export const enum TabItemConfigListComponentModalEnum {
   ID = 'config-list-dialog-id',
   PANEL_CLASS = 'config-list-dialog',
@@ -146,7 +146,7 @@ export class TabItemConfigListComponent extends ComponentToExtendForCustomDialog
         id: [null],
         tabItemConfigListId: [this.tabItemConfigList.get('id').value ? this.tabItemConfigList.get('id').value : null],
         value: [null, [Validators.required]],
-        code: [uuidv4(), [Validators.required]],
+        code: [+new Date(), [Validators.required]],
         parentCode: [null, isChild ? [Validators.required] : []]
       })
     );
@@ -161,7 +161,7 @@ export class TabItemConfigListComponent extends ComponentToExtendForCustomDialog
             id: [item?.id ? item.id : null],
             tabItemConfigListId: [item?.tabItemConfigListId ? item.tabItemConfigListId : null],
             value: [item?.value ? item.value : null, [Validators.required]],
-            code: [item?.code ? item.code : uuidv4(), [Validators.required]],
+            code: [item?.code ? item.code : +new Date(), [Validators.required]],
             parentCode: [item?.parentCode ? item.parentCode : null, isChild ? [Validators.required] : []]
           })
         );
@@ -188,7 +188,7 @@ export class TabItemConfigListComponent extends ComponentToExtendForCustomDialog
         ],
         mandatory: [this.tabItemToEdit?.tabItemConfigList?.mandatory ? true : false],
         code: [
-          this.tabItemToEdit?.tabItemConfigList?.code ? this.tabItemToEdit.tabItemConfigList.code : uuidv4(),
+          this.tabItemToEdit?.tabItemConfigList?.code ? this.tabItemToEdit.tabItemConfigList.code : +new Date(),
           [Validators.required]
         ],
         parentCode: [
