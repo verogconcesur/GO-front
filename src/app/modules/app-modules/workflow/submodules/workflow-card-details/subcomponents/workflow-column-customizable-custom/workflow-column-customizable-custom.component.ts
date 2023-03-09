@@ -104,7 +104,9 @@ export class WorkflowColumnCustomizableCustomComponent implements OnInit, OnChan
           break;
         case 'OPTION':
           cardTabItemInstance = tabItem.tabItemConfigOption.cardTabItemInstance;
-          cardTabItemInstance.value = cardTabItemInstance.value === 'true';
+          if (cardTabItemInstance && cardTabItemInstance.value) {
+            cardTabItemInstance.value = cardTabItemInstance.value === 'true';
+          }
           break;
       }
       this.tabForm.push(
@@ -130,7 +132,7 @@ export class WorkflowColumnCustomizableCustomComponent implements OnInit, OnChan
     this.editMode = false;
     this.setShowLoading.emit(true);
     let bodyItems = this.tabForm.getRawValue();
-    // bodyItems = bodyItems.filter((item: WorkflowCardTabitemInstanceDTO) => item.value !== null);
+    bodyItems = bodyItems.filter((item: WorkflowCardTabitemInstanceDTO) => item.value !== null);
     bodyItems = bodyItems.map((item: WorkflowCardTabitemInstanceDTO) => {
       if (item.value && item.tabItem.tabItemConfigInput && item.tabItem.tabItemConfigInput.dataType === 'TEMPORAL') {
         const date = moment(item.value);
