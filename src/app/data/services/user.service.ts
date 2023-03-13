@@ -65,6 +65,8 @@ export class UserService {
     currentPass: string | null;
     newPass: string | null;
     newPassConfirmation: string | null;
+    signature: string;
+    signatureContentType: string;
   }): Observable<UserDetailsDTO> {
     return this.http
       .put<UserDetailsDTO>(`${this.env.apiBaseUrl}${this.USER_EDIT_PROFILE_PATH}`, userData)

@@ -25,6 +25,10 @@
     .filter {
       width: 100%;
     }
+    &__no-workflows {
+      margin-bottom: 0;
+      color: mat-color($primary, statusError);
+    }
   }
 
   .workflow-navbar-filter__mobile {

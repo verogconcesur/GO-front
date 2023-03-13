@@ -6,7 +6,7 @@
   top: 0;
   left: 0;
   width: calc(100vw - 20px);
-  height: calc(100vh - 20px);
+  height: calc(var(--vh) - 20px);
   z-index: 100;
   padding: 10px;
 
@@ -241,6 +241,19 @@
         &.active {
           border-top: 1px solid mat-color($primary, A700);
           background-color: darken(mat-color($background, background-administration), 5%);
+        }
+        &.new-data label {
+          position: relative;
+          &::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            right: -4px;
+            width: 5px;
+            height: 5px;
+            border-radius: 10px;
+            background-color: blue;
+          }
         }
       }
     }

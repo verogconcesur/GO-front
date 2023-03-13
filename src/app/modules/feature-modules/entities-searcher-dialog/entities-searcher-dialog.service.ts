@@ -1,6 +1,7 @@
 import { Injectable, OnDestroy } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import CustomerEntityDTO from '@data/models/entities/customer-entity-dto';
+import RepairOrderEntityDTO from '@data/models/entities/repair-order-entity-dto';
 import VehicleEntityDTO from '@data/models/entities/vehicle-entity-dto';
 import UserDTO from '@data/models/user-permissions/user-dto';
 import { Observable } from 'rxjs';
@@ -16,21 +17,26 @@ export class EntitiesSearcherDialogService implements OnDestroy {
 
   public openEntitySearcher(
     workflowId: number,
-    mode: 'USER' | 'CUSTOMER' | 'VEHICLE'
-  ): Promise<UserDTO | VehicleEntityDTO | CustomerEntityDTO> {
+    facilityId: number,
+    mode: 'USER' | 'CUSTOMER' | 'VEHICLE' | 'REPAIRORDER'
+  ): Promise<{ entity: UserDTO | VehicleEntityDTO | CustomerEntityDTO | RepairOrderEntityDTO; vehicleInventoryId: number }> {
     return new Promise((resolve, reject) => {
       this.dialog
         .open(EntitiesSearcherDialogComponent, {
-          width: '500px',
-          height: '200px',
+          width: '600px',
           panelClass: 'entities-searcher',
           disableClose: true,
-          data: { workflowId, mode }
+          data: { workflowId, facilityId, mode }
         })
         .afterClosed()
-        .subscribe((data: UserDTO | VehicleEntityDTO | CustomerEntityDTO) => {
-          resolve(data);
-        });
+        .subscribe(
+          (data: {
+            entity: UserDTO | VehicleEntityDTO | CustomerEntityDTO | RepairOrderEntityDTO;
+            vehicleInventoryId: number;
+          }) => {
+            resolve(data);
+          }
+        );
     });
   }
 }

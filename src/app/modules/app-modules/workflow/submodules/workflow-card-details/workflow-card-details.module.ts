@@ -26,6 +26,12 @@ import { EntitiesSearcherDialogModule } from '@modules/feature-modules/entities-
 import { ItemTitleComponent } from './subcomponents/workflow-column-customizable-custom/items/item-title/item-title.component';
 import { ItemTextComponent } from './subcomponents/workflow-column-customizable-custom/items/item-text/item-text.component';
 import { ItemInputComponent } from './subcomponents/workflow-column-customizable-custom/items/item-input/item-input.component';
+import { ModalCustomerModule } from '@modules/feature-modules/modal-customer/modal-customer.module';
+import { ModalVehicleModule } from '@modules/feature-modules/modal-vehicle/modal-vehicle.module';
+import { MessageClientDialogComponent } from './subcomponents/message-client-dialog/message-client-dialog.component';
+import { ItemOptionComponent } from './subcomponents/workflow-column-customizable-custom/items/item-option/item-option.component';
+import { ItemListComponent } from './subcomponents/workflow-column-customizable-custom/items/item-list/item-list.component';
+import { ModalRepairOrderModule } from '@modules/feature-modules/modal-repair-order/modal-repair-order.module';
 @NgModule({
   declarations: [
     WorkflowCardDetailsComponent,
@@ -44,7 +50,10 @@ import { ItemInputComponent } from './subcomponents/workflow-column-customizable
     MoveCardDialogComponent,
     ItemTitleComponent,
     ItemTextComponent,
-    ItemInputComponent
+    ItemInputComponent,
+    MessageClientDialogComponent,
+    ItemOptionComponent,
+    ItemListComponent
   ],
   imports: [
     CommonModule,
@@ -54,7 +63,10 @@ import { ItemInputComponent } from './subcomponents/workflow-column-customizable
     WorkflowCardDetailsRoutingModule,
     TextEditorWrapperModule,
     WorkflowCardTasksModule,
-    EntitiesSearcherDialogModule
+    EntitiesSearcherDialogModule,
+    ModalCustomerModule,
+    ModalVehicleModule,
+    ModalRepairOrderModule
   ]
 })
 export class WorkflowCardDetailsModule {}

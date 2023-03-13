@@ -13,17 +13,18 @@ import { WorkflowNavbarFilterFormComponent } from './components/workflow-navbar-
 // eslint-disable-next-line max-len
 import { WorkflowCardMovementPreparationComponent } from './components/workflow-card-movement-preparation/workflow-card-movement-preparation.component';
 import { TextEditorWrapperModule } from '@modules/feature-modules/text-editor-wrapper/text-editor-wrapper.module';
+// eslint-disable-next-line max-len
+import { MatChipsInputFormFieldModule } from '@modules/feature-modules/mat-chips-input-form-field/mat-chips-input-form-field.module';
 
 @NgModule({
   declarations: [
     WorkflowComponent,
     WorkflowNavbarComponent,
     WorkflowCalendarViewComponent,
-    WorkflowTableViewComponent,
     WorkflowNavbarFilterComponent,
     WorkflowNavbarFilterFormComponent,
     WorkflowCardMovementPreparationComponent
   ],
-  imports: [CommonModule, SharedModule, WorkflowRoutingModule, TextEditorWrapperModule]
+  imports: [CommonModule, SharedModule, WorkflowRoutingModule, TextEditorWrapperModule, MatChipsInputFormFieldModule]
 })
 export class WorkflowModule {}

@@ -1,0 +1,69 @@
+<div class="create-edit-customer-content" fxLayout="column" fxLayoutAlign="center center">
+    <div *ngIf="!isModalModeActive()">
+        <div class="create-edit-customer-content__title mat-display-2">{{ labels.title | translate }}</div>
+    </div>
+    <div class="create-edit-customer-content__form">
+        <form [formGroup]="customerForm" *ngIf="customerForm" class="smaller-mat-form-fields">
+            <!-- General Data -->
+            <div class="customer-data__section">
+                <div class="customer-data__section__title first-child">
+                    {{ labels.data | translate }}
+                </div>
+                <div class="customer-data__section__group">
+                    <!-- Name -->
+                    <mat-form-field appearance="outline" floatLabel="always">
+                        <mat-label>{{ labels.name | translate }}</mat-label>
+                        <input matInput formControlName="name" />
+                    </mat-form-field>
+                    <!-- FirstName -->
+                    <mat-form-field appearance="outline" floatLabel="always">
+                        <mat-label>{{ labels.firstName | translate }}</mat-label>
+                        <input matInput formControlName="firstName" />
+                    </mat-form-field>
+                    <!-- SecondName -->
+                    <mat-form-field appearance="outline" floatLabel="always">
+                        <mat-label>{{ labels.lastName | translate }}</mat-label>
+                        <input matInput formControlName="secondName" />
+                    </mat-form-field>
+                    <!-- Reference -->
+                    <mat-form-field appearance="outline" floatLabel="always">
+                        <mat-label>{{ labels.reference | translate }}</mat-label>
+                        <input matInput formControlName="reference" />
+                    </mat-form-field>
+                    <!-- SocialSecurityId -->
+                    <mat-form-field appearance="outline" floatLabel="always">
+                        <mat-label>{{ labels.socialSecurityId | translate }}</mat-label>
+                        <input matInput formControlName="socialSecurityId" />
+                        <mat-error *ngIf="customerForm.controls?.socialSecurityId.invalid">
+                            <span *ngIf="customerForm.controls.socialSecurityId.errors.required">{{
+                                labels.required | translate
+                            }}</span>
+                        </mat-error>
+                    </mat-form-field>
+                    <!-- Phone -->
+                    <mat-form-field appearance="outline" floatLabel="always">
+                        <mat-label>{{ labels.phone | translate }}</mat-label>
+                        <input matInput formControlName="phone" />
+                    </mat-form-field>
+                    <!-- Email -->
+                    <mat-form-field appearance="outline" floatLabel="always">
+                        <mat-label>{{ labels.email | translate }}</mat-label>
+                        <input matInput formControlName="email" />
+                        <mat-error
+                            *ngIf="
+                                customerForm.controls.email.invalid &&
+                                customerForm.controls.email.touched &&
+                                customerForm.controls.email.hasError('email')
+                            "
+                        >
+                            {{ labels.emailError | translate }}
+                        </mat-error>
+                    </mat-form-field>
+                </div>
+            </div>
+        </form>
+    </div>
+    <div class="create-edit-customer-content__buttons">
+        <!-- TODO: buttons used when the component is not opened with customDialogService -->
+    </div>
+</div>

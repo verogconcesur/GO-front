@@ -2,8 +2,9 @@
     <h5 class="uppercase">
         {{ column.name }}
 
-        <button mat-icon-button *ngIf="containerClass === 'actions'" (click)="syncData()">
-            <mat-icon>sync</mat-icon>
+        <button mat-icon-button *ngIf="containerClass === 'actions'" (click)="!synchronizingData && syncData()">
+            <mat-spinner style="margin-left: 10px" diameter="20" *ngIf="synchronizingData"></mat-spinner>
+            <mat-icon *ngIf="!synchronizingData">sync</mat-icon>
         </button>
     </h5>
     <div class="w-column__container" [ngClass]="containerClass">
@@ -16,6 +17,7 @@
             <app-workflow-column-customizable-entity
                 *ngIf="showColumn('CUSTOMIZABLE_ENTITY')"
                 [tab]="tabToShow"
+                [cardInstance]="cardInstance"
                 (setShowLoading)="setShowLoading($event)"
             ></app-workflow-column-customizable-entity>
             <app-workflow-column-customizable-custom
@@ -56,9 +58,12 @@
             <app-workflow-column-comments
                 [style]="{ display: showColumn('COMMENTS') ? '' : 'none' }"
                 (setShowLoading)="setShowLoading($event)"
+                (newCommentsEvent)="newComments($event, 'COMMENTS')"
             ></app-workflow-column-comments>
             <app-workflow-column-client-messages
                 [style]="{ display: showColumn('CLIENT_MESSAGES') ? '' : 'none' }"
+                (setShowLoading)="setShowLoading($event)"
+                (newCommentsEvent)="newComments($event, 'CLIENT_MESSAGES')"
             ></app-workflow-column-client-messages>
         </div>
         <!-- Columna acciones -->
@@ -66,6 +71,7 @@
             <app-workflow-column-actions-and-links
                 [tab]="column.tabs[0]"
                 [cardInstance]="cardInstance"
+                [idUser]="idUser"
             ></app-workflow-column-actions-and-links>
         </div>
     </div>

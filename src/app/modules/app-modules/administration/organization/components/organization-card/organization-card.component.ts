@@ -15,16 +15,19 @@ export class OrganizationCardComponent implements OnInit {
   @Input() subtitle = '';
   @Input() bgImgB64 = '';
   @Input() item: BrandDTO | DepartmentDTO | FacilityDTO | SpecialtyDTO;
+  @Input() importView = false;
   @Output() edit: EventEmitter<BrandDTO | DepartmentDTO | FacilityDTO | SpecialtyDTO> = new EventEmitter();
   @Output() delete: EventEmitter<BrandDTO | DepartmentDTO | FacilityDTO | SpecialtyDTO> = new EventEmitter();
   @Output() duplicate: EventEmitter<BrandDTO | DepartmentDTO | FacilityDTO | SpecialtyDTO> = new EventEmitter();
   @Output() showUsers: EventEmitter<BrandDTO | DepartmentDTO | FacilityDTO | SpecialtyDTO> = new EventEmitter();
+  @Output() import: EventEmitter<BrandDTO | DepartmentDTO | FacilityDTO | SpecialtyDTO> = new EventEmitter();
 
   public labels = {
     duplicate: marker('common.duplicate'),
     edit: marker('common.edit'),
     users: marker('common.users'),
-    delete: marker('common.delete')
+    delete: marker('common.delete'),
+    import: marker('common.import')
   };
 
   constructor() {}

@@ -15,7 +15,10 @@
   body {
     margin: 0;
   }
-
+  //summernote workarround
+  .ngx-summernote-view {
+    display: none !important;
+  }
   .content-wrapper {
     box-sizing: border-box;
     margin: 0 auto;
@@ -153,6 +156,17 @@
     td,
     th {
       border: 0px;
+    }
+  }
+  .autocomplete-panel-class,
+  .notification-mention-menu {
+    max-height: calc(100vh - 65px) !important;
+    height: 550px !important;
+  }
+
+  .notification-mention-menu {
+    .mat-menu-content {
+      height: calc(100% - 16px);
     }
   }
 }

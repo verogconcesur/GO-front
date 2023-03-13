@@ -1,12 +1,24 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { Component, OnDestroy, OnInit } from '@angular/core';
-import { FormArray, UntypedFormBuilder, UntypedFormGroup, Validators } from '@angular/forms';
+import {
+  AbstractControl,
+  FormArray,
+  FormControl,
+  FormGroup,
+  UntypedFormBuilder,
+  UntypedFormGroup,
+  Validators
+} from '@angular/forms';
 import { marker } from '@biesbjerg/ngx-translate-extract-marker';
 import BrandDTO from '@data/models/organization/brand-dto';
 import DepartmentDTO from '@data/models/organization/department-dto';
 import FacilityDTO from '@data/models/organization/facility-dto';
 import SpecialtyDTO from '@data/models/organization/specialty-dto';
-import TemplatesCommunicationDTO from '@data/models/templates/templates-communication-dto';
+import MessageChannelDTO from '@data/models/templates/message-channels-dto';
+import TemplatesCommunicationDTO, {
+  CommunicationTypes,
+  TemplateComunicationItemsDTO
+} from '@data/models/templates/templates-communication-dto';
 import VariablesDTO from '@data/models/variables-dto';
 import { TemplatesCommunicationService } from '@data/services/templates-communication.service';
 import { VariablesService } from '@data/services/variables.service';
@@ -38,6 +50,10 @@ export class CreateEditCommunicationComponent extends ComponentToExtendForCustom
     organization: marker('userProfile.organization'),
     edit: marker('administration.templates.communications.edit'),
     text: marker('administration.templates.communications.text'),
+    subject: marker('administration.templates.communications.subject'),
+    communicationType: marker('administration.templates.communications.communicationType'),
+    user: marker('common.communicationTypes.user'),
+    customer: marker('common.communicationTypes.customer'),
     data: marker('userProfile.data'),
     insertText: marker('common.insertTextHere'),
     nameRequired: marker('userProfile.nameRequired'),
@@ -48,10 +64,17 @@ export class CreateEditCommunicationComponent extends ComponentToExtendForCustom
     addMacroListOption: true,
     macroListOptions: []
   };
+  public textEditorToolbarOnlyMacroOptions: TextEditorWrapperConfigI = {
+    onlyMacroOption: true,
+    addMacroListOption: true,
+    macroListOptions: []
+  };
   public listVariables: VariablesDTO[];
   public communicationForm: UntypedFormGroup;
   public communicationTemplateForm: UntypedFormGroup;
   public communicationToEdit: TemplatesCommunicationDTO = null;
+  public messageChannels: MessageChannelDTO[] = [];
+  public communicationTypes = CommunicationTypes;
   public startDate: Date;
   public endDate: Date;
   constructor(
@@ -75,17 +98,43 @@ export class CreateEditCommunicationComponent extends ComponentToExtendForCustom
     return this.communicationForm.controls;
   }
 
+  get comItems(): FormArray {
+    return this.communicationForm.get('templateComunicationItems') as FormArray;
+  }
   ngOnInit(): void {
     this.communicationToEdit = this.extendedComponentData;
     this.getVariable();
-    this.initializeForm();
+    this.communicationService
+      .getMessageChannels()
+      .pipe(take(1))
+      .subscribe((res) => {
+        this.messageChannels = res;
+        this.initializeForm();
+      });
     if (this.communicationToEdit) {
       this.MODAL_TITLE = marker('administration.templates.communications.edit');
     }
   }
 
   ngOnDestroy(): void {}
-
+  public getTabLabel(item: FormGroup): string {
+    const validator = item.controls.text.validator ? item.controls.text.validator({} as AbstractControl) : null;
+    if (validator && validator.required) {
+      return item.value.messageChannel.name + '*';
+    } else {
+      return item.value.messageChannel.name;
+    }
+  }
+  public changeComunicationType(): void {
+    if (
+      this.communicationForm.get('comunicationType') &&
+      this.communicationForm.get('comunicationType').value === this.communicationTypes[1].value
+    ) {
+      this.communicationForm.get('templateComunicationItems').get('0').get('text').setValidators([Validators.required]);
+    } else {
+      this.communicationForm.get('templateComunicationItems').get('0').get('text').setValidators([]);
+    }
+  }
   public confirmCloseCustomDialog(): Observable<boolean> {
     if (this.communicationForm.touched && this.communicationForm.dirty) {
       return this.confirmDialogService.open({
@@ -99,9 +148,18 @@ export class CreateEditCommunicationComponent extends ComponentToExtendForCustom
 
   public onSubmitCustomDialog(): Observable<boolean | TemplatesCommunicationDTO> {
     const formValue = this.communicationForm.getRawValue();
-    const variablesOnText = this.listVariables.filter(
-      (variable) => formValue.text && formValue.text.indexOf(variable.name) !== -1
-    );
+    const variablesOnText = this.listVariables.filter((variable) => {
+      let variableUsed = false;
+      formValue.templateComunicationItems.forEach((item: TemplateComunicationItemsDTO) => {
+        if (item.text && item.text.indexOf(variable.name) !== -1) {
+          variableUsed = true;
+        }
+        if (item.subject && item.subject.indexOf(variable.name) !== -1) {
+          variableUsed = true;
+        }
+      });
+      return variableUsed;
+    });
     formValue.variables = variablesOnText;
     if (this.communicationToEdit) {
       formValue.id = this.communicationToEdit.id;
@@ -114,6 +172,9 @@ export class CreateEditCommunicationComponent extends ComponentToExtendForCustom
       facilities: formValue.template.facilities.map((fac: FacilityDTO) => ({ id: fac.id })),
       specialties: formValue.template.specialties.map((spe: SpecialtyDTO) => ({ id: spe.id }))
     };
+    formValue. templateComunicationItems = formValue.templateComunicationItems.filter(
+      (item: TemplateComunicationItemsDTO) => item.text
+    );
     const spinner = this.spinnerService.show();
     return this.communicationService.addOrEditCommunication(formValue).pipe(
       map((response) => {
@@ -156,17 +217,33 @@ export class CreateEditCommunicationComponent extends ComponentToExtendForCustom
           design: 'raised',
           color: 'primary',
           //TODO: tener en cuenta templateBudgetLines
-          disabledFn: () => !(this.communicationForm.touched && this.communicationForm.dirty && this.communicationForm.valid)
+          disabledFn: () =>
+            !(
+              this.communicationForm &&
+              this.communicationForm.touched &&
+              this.communicationForm.dirty &&
+              this.communicationForm.valid
+            )
         }
       ]
     };
   }
-
-  public textEditorContentChanged(html: string) {
-    if (html !== this.form.text.value) {
-      this.communicationForm.get('text').setValue(html, { emitEvent: true });
-      this.communicationForm.get('text').markAsDirty();
-      this.communicationForm.get('text').markAsTouched();
+  public convertToPlain(html: string) {
+    const tempDivElement = document.createElement('div');
+    tempDivElement.innerHTML = html;
+    return tempDivElement.textContent || tempDivElement.innerText || '';
+  }
+  public textEditorContentChanged(html: string, form: FormControl, plain?: boolean) {
+    if (html !== form.value) {
+      if (plain) {
+        html = this.convertToPlain(html);
+      }
+      if ((html === '' || this.convertToPlain(html) === '') && html.length < 20) {
+        html = null;
+      }
+      form.setValue(html, { emitEvent: true });
+      this.communicationForm.markAsDirty();
+      this.communicationForm.markAsTouched();
     }
   }
 
@@ -203,6 +280,7 @@ export class CreateEditCommunicationComponent extends ComponentToExtendForCustom
   private getVariable(): void {
     this.variablesService.searchVariables().subscribe((res) => {
       this.textEditorToolbarOptions.macroListOptions = res.map((item: VariablesDTO) => item.name);
+      this.textEditorToolbarOnlyMacroOptions.macroListOptions = this.textEditorToolbarOptions.macroListOptions;
       this.listVariables = res;
     });
   }
@@ -216,8 +294,26 @@ export class CreateEditCommunicationComponent extends ComponentToExtendForCustom
         departments: [this.communicationToEdit ? this.communicationToEdit.template.departments : null, Validators.required],
         specialties: [this.communicationToEdit ? this.communicationToEdit.template.specialties : null, Validators.required]
       }),
-      text: [this.communicationToEdit ? this.communicationToEdit.text : null, Validators.required],
-      variables: [this.communicationToEdit ? this.communicationToEdit.variables : []]
+      comunicationType: [this.communicationToEdit ? this.communicationToEdit.comunicationType : null],
+      variables: [this.communicationToEdit ? this.communicationToEdit.variables : []],
+      templateComunicationItems: this.fb.array([])
     });
+    this.messageChannels.forEach((messageChannel: MessageChannelDTO) => {
+      let editItem;
+      if (this.communicationToEdit && this.communicationToEdit.templateComunicationItems) {
+        editItem = this.communicationToEdit.templateComunicationItems.find(
+          (communicationItem: TemplateComunicationItemsDTO) => communicationItem.messageChannel.id === messageChannel.id
+        );
+      }
+      (this.communicationForm.get('templateComunicationItems') as FormArray).push(
+        this.fb.group({
+          id: [editItem ? editItem.id : null],
+          text: [editItem ? editItem.text : '', messageChannel.id === 1 ? Validators.required : null],
+          subject: [editItem ? editItem.subject : ''],
+          messageChannel: [messageChannel]
+        })
+      );
+    });
+    this.changeComunicationType();
   }
 }

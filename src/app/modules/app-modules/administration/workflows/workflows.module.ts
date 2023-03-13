@@ -34,6 +34,7 @@ import { WfEditPermissionsTabComponent } from './components/create-edit-steps/wo
 import { GenericTreeNodeSearcherModule } from '@modules/feature-modules/generic-tree-node-searcher/generic-tree-node-searcher.module';
 import { WfEditSubstateEventsDialogComponent } from './components/create-edit-steps/workflow-states/modals/wf-edit-substate-events-dialog/wf-edit-substate-events-dialog.component';
 import { WorkflowsCreateEditAuxService } from './aux-service/workflows-create-edit-aux.service';
+import { MatChipsInputFormFieldModule } from '@modules/feature-modules/mat-chips-input-form-field/mat-chips-input-form-field.module';
 
 @NgModule({
   declarations: [
@@ -67,7 +68,8 @@ import { WorkflowsCreateEditAuxService } from './aux-service/workflows-create-ed
     AdministrationCommonHeaderSectionModule,
     OrganizationLevelsNestedCombosModule,
     UserSearcherDialogModule,
-    GenericTreeNodeSearcherModule
+    GenericTreeNodeSearcherModule,
+    MatChipsInputFormFieldModule
   ],
   providers: [WorkflowsCreateEditAuxService]
 })

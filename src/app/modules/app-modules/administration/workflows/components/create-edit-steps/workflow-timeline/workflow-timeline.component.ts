@@ -59,7 +59,7 @@ export class WorkflowTimelineComponent extends WorkflowStepAbstractClass {
         });
       });
     }
-    this.templateForm = new FormControl(null, [Validators.required]);
+    this.templateForm = new FormControl(null);
     if (data && data.workflowTimeline && data.workflowTimeline.templateTimelineDTO) {
       this.templateForm.setValue(
         data.timelineTemplates.find(
@@ -68,7 +68,7 @@ export class WorkflowTimelineComponent extends WorkflowStepAbstractClass {
       );
     }
     this.form = this.fb.group({
-      templateTimelineDTO: [data?.workflowTimeline?.templateTimelineDTO, [Validators.required]],
+      templateTimelineDTO: [data?.workflowTimeline?.templateTimelineDTO],
       workflowSubstateTimelineItems: this.fb.array([])
     });
     if (data?.workflowTimeline?.workflowSubstateTimelineItems?.length > 0) {
@@ -131,6 +131,16 @@ export class WorkflowTimelineComponent extends WorkflowStepAbstractClass {
     this.form.markAsTouched();
     this.form.markAsDirty();
   }
+  public removeTemplate() {
+    this.templateForm.setValue(null);
+    this.form.get('templateTimelineDTO').setValue(null);
+    const formArray = this.form.get('workflowSubstateTimelineItems') as FormArray;
+    while (formArray.length > 0) {
+      formArray.removeAt(0);
+    }
+    this.form.markAsTouched();
+    this.form.markAsDirty();
+  }
   public changeTemplate() {
     if (this.templateForm.value) {
       const spinner = this.spinnerService.show();
@@ -182,9 +192,9 @@ export class WorkflowTimelineComponent extends WorkflowStepAbstractClass {
     const spinner = this.spinnerService.show();
     return new Promise((resolve, reject) => {
       const body = this.form.getRawValue() as WorkflowTimelineDTO;
-      body.workflowSubstateTimelineItems = body.workflowSubstateTimelineItems.filter(
-        (timelineItem) => timelineItem.templateTimelineItem
-      );
+      body.workflowSubstateTimelineItems = body.workflowSubstateTimelineItems
+        ? body.workflowSubstateTimelineItems.filter((timelineItem) => timelineItem.templateTimelineItem)
+        : [];
       console.log(JSON.stringify(body));
       this.workflowService
         .postWorkflowTimeline(this.workflowId, body)

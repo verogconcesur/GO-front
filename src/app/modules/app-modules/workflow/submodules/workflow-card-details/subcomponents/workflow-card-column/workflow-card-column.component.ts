@@ -1,11 +1,14 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import { marker } from '@biesbjerg/ngx-translate-extract-marker';
 import CardColumnDTO from '@data/models/cards/card-column-dto';
 import CardColumnTabDTO from '@data/models/cards/card-column-tab-dto';
 import CardInstanceDTO from '@data/models/cards/card-instance-dto';
 import { CardService } from '@data/services/cards.service';
 import { WorkflowPrepareAndMoveService } from '@modules/app-modules/workflow/aux-service/workflow-prepare-and-move-aux.service';
+import { TranslateService } from '@ngx-translate/core';
 import { ResponsiveTabI } from '@shared/components/responsive-tabs/responsive-tabs.component';
-import { take } from 'rxjs/operators';
+import { ConfirmDialogService } from '@shared/services/confirm-dialog.service';
+import { finalize, take } from 'rxjs/operators';
 
 @Component({
   selector: 'app-workflow-card-column',
@@ -17,17 +20,34 @@ export class WorkflowCardColumnComponent implements OnInit {
   @Input() column: CardColumnDTO;
   @Input() showTabs = true;
   @Input() containerClass: 'column1' | 'column2' | 'messages' | 'actions' | '' = '';
+  @Input() idUser: number = null;
+  @Output() newCommentsEvent: EventEmitter<{ newData: boolean; column: 'COMMENTS' | 'CLIENT_MESSAGES' }> = new EventEmitter(null);
 
   public showLoading = false;
+  public synchronizingData = false;
   public tabToShow: CardColumnTabDTO = null;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  private tabsInfo: { id: any; label: string; newData: boolean; type: string }[] = [];
 
-  constructor(private cardService: CardService, private prepareAndMoveService: WorkflowPrepareAndMoveService) {}
+  constructor(
+    private cardService: CardService,
+    private prepareAndMoveService: WorkflowPrepareAndMoveService,
+    private confirmationDialog: ConfirmDialogService,
+    private translateService: TranslateService
+  ) {}
 
-  ngOnInit(): void {}
+  ngOnInit(): void {
+    this.tabsInfo = [...this.column.tabs].map((tab: CardColumnTabDTO) => ({
+      id: tab.id,
+      label: tab.name,
+      newData: false,
+      type: tab.type
+    }));
+  }
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  public getTabsInfo(): { id: any; label: string }[] {
-    return [...this.column.tabs].map((tab: CardColumnTabDTO) => ({ id: tab.id, label: tab.name }));
+  public getTabsInfo(): { id: any; label: string; newData: boolean }[] {
+    return this.tabsInfo;
   }
 
   public tabChange(event: ResponsiveTabI): void {
@@ -38,13 +58,35 @@ export class WorkflowCardColumnComponent implements OnInit {
     this.showLoading = loading;
   }
 
+  public newComments(newData: boolean, column: 'COMMENTS' | 'CLIENT_MESSAGES'): void {
+    this.tabsInfo.forEach((tab) => {
+      if (tab.type === column) {
+        tab.newData = newData;
+      }
+    });
+    this.newCommentsEvent.emit({ newData, column });
+  }
+
   public syncData(): void {
-    // console.log('syncdata', this.cardInstance);
-    this.cardService
-      .syncCard(this.cardInstance.cardInstanceWorkflow.id)
+    this.confirmationDialog
+      .open({
+        title: this.translateService.instant(marker('common.warning')),
+        message: this.translateService.instant(marker('workflows.card.syncData'))
+      })
       .pipe(take(1))
-      .subscribe((data) => {
-        this.prepareAndMoveService.reloadData$.next('MOVES_IN_THIS_WORKFLOW');
+      .subscribe((ok: boolean) => {
+        if (ok) {
+          this.synchronizingData = true;
+          this.cardService
+            .syncCard(this.cardInstance.cardInstanceWorkflow.id)
+            .pipe(
+              take(1),
+              finalize(() => (this.synchronizingData = false))
+            )
+            .subscribe((data) => {
+              this.prepareAndMoveService.reloadData$.next('MOVES_IN_OTHER_WORKFLOWS');
+            });
+        }
       });
   }
 

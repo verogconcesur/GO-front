@@ -197,7 +197,15 @@ export class CreateEditTimelineComponent extends ComponentToExtendForCustomDialo
     }
   }
 
+  public convertToPlain(html: string) {
+    const tempDivElement = document.createElement('div');
+    tempDivElement.innerHTML = html;
+    return tempDivElement.textContent || tempDivElement.innerText || '';
+  }
   public textEditorContentChanged(html: string, itemForm: UntypedFormGroup) {
+    if ((html === '' || this.convertToPlain(html) === '') && html.length < 20) {
+      html = null;
+    }
     itemForm.get('messageLanding').setValue(html);
     itemForm.get('messageLanding').markAsDirty();
     itemForm.get('messageLanding').markAsTouched();
@@ -219,7 +227,9 @@ export class CreateEditTimelineComponent extends ComponentToExtendForCustomDialo
     const timelineItem = this.fb.group({
       name: ['', Validators.required],
       id: [null],
-      orderNumber: [this.templateTimelineItems.length]
+      orderNumber: [this.templateTimelineItems.length],
+      closed: [false],
+      messageLanding: ['', [Validators.required]]
     });
     this.templateTimelineItems.push(timelineItem);
   }
@@ -461,7 +471,7 @@ export class CreateEditTimelineComponent extends ComponentToExtendForCustomDialo
             id: [item.id],
             orderNumber: [item.orderNumber],
             closed: [item.closed],
-            messageLanding: [item.messageLanding]
+            messageLanding: [item.messageLanding, [Validators.required]]
           });
           timelineItems.push(timelineItem);
         });

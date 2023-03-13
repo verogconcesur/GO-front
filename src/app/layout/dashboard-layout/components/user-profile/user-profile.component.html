@@ -102,6 +102,7 @@
             <mat-expansion-panel-header>
                 <mat-panel-title>{{ labels.sign | translate }}</mat-panel-title>
             </mat-expansion-panel-header>
+            <div class="user-data-sign" [ngStyle]="{ 'background-image': getSignBase64Image() }"></div>
         </mat-expansion-panel>
     </mat-accordion>
 

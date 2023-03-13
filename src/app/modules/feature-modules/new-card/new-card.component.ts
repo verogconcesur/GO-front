@@ -54,7 +54,7 @@ export class NewCardComponent implements OnInit {
     information: marker('cards.column.information')
   };
   public contentTypeAvailable = [1, 2];
-  public contentSourceAvailable = [1, 2, 3];
+  public contentSourceAvailable = [1, 2, 3, 6];
   public cardDetailSelected: CardDTO;
   public subStateSelected: WorkflowSubstateDTO;
   public currentWorkflowId: number;
@@ -102,7 +102,9 @@ export class NewCardComponent implements OnInit {
               vehicleId: null,
               customerId: null,
               information: null,
-              userId: null
+              vehicleInventoryId: null,
+              userId: null,
+              repairOrderId: null
             },
             cardInstanceWorkflowUsers: []
           };
@@ -196,16 +198,28 @@ export class NewCardComponent implements OnInit {
     step
       .getRawValue()
       .tabs.forEach(
-        (tab: { contentSourceId: number; customerId: number; vehicleId: number; userId: number; information: string }) => {
+        (tab: {
+          contentSourceId: number;
+          customerId: number;
+          vehicleId: number;
+          vehicleInventoryId: number;
+          userId: number;
+          repairOrderId: number;
+          information: string;
+        }) => {
           switch (tab.contentSourceId) {
             case 1:
               cardBody.cardInstance.customerId = tab.customerId;
               break;
             case 2:
               cardBody.cardInstance.vehicleId = tab.vehicleId;
+              cardBody.cardInstance.vehicleInventoryId = tab.vehicleInventoryId;
               break;
             case 3:
               cardBody.cardInstance.userId = tab.userId;
+              break;
+            case 6:
+              cardBody.cardInstance.repairOrderId = tab.repairOrderId;
               break;
             case null:
               cardBody.cardInstance.information = tab.information;
@@ -239,6 +253,8 @@ export class NewCardComponent implements OnInit {
         customerId: [''],
         vehicleId: [''],
         userId: [''],
+        repairOrderId: [''],
+        vehicleInventoryId: [''],
         information: ['', Validators.required]
       });
       (arrayForm as UntypedFormArray).push(tabForm);
@@ -261,6 +277,8 @@ export class NewCardComponent implements OnInit {
           customerId: [''],
           vehicleId: [''],
           userId: [''],
+          repairOrderId: [''],
+          vehicleInventoryId: [''],
           information: ['']
         });
         (arrayForm as UntypedFormArray).push(tabForm);

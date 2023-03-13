@@ -120,25 +120,66 @@
                     </mat-error>
                 </mat-form-field>
             </div>
-            <div class="preparation__section" *ngIf="preparationIn.sendMail">
-                <div class="preparation__section__title">
-                    {{ labels.template | translate }}
-                </div>
-                <app-text-editor-wrapper
-                    id="templateEditor"
-                    textEditorId="templateEditor"
-                    [initialValue]="preparationInForm?.controls?.template?.value"
-                    [textEditorConfig]="textEditorToolbarOptions"
-                    [placeholder]="labels.insertText | translate"
-                    (contentChanged)="textEditorContentChanged($event, preparationInForm)"
-                ></app-text-editor-wrapper>
-                <mat-error
-                    class="preparation__error"
-                    *ngIf="preparationInForm.controls.template.invalid && preparationInForm.controls.template.touched"
-                >
-                    {{ labels.required | translate }}
-                </mat-error>
-            </div>
+
+            <mat-accordion *ngIf="preparationIn.sendMail">
+                <mat-expansion-panel *ngFor="let mailEvent of getWfEventsMailsFormArray('IN').controls; let i = index">
+                    <mat-expansion-panel-header>
+                        <mat-panel-title>
+                            {{ getMailEventTitle(mailEvent, i, getWfEventsMailsFormArray("IN").controls.length) }}
+                        </mat-panel-title>
+                    </mat-expansion-panel-header>
+                    <div *ngFor="let item of mailEvent.controls.items.controls; let j = index">
+                        <section [formGroup]="item" class="mat-tab-page-sections">
+                            <section class="mat-tab-page-sections__title">
+                                <span>{{ item.value.messageChannel.name }}</span>
+                            </section>
+                            <app-mat-chips-input-form-field
+                                [matFormLabel]="labels.receivers"
+                                [inputPlaceholder]="labels.emails"
+                                [fControl]="item.controls?.processedEmail"
+                                [matFormFieldClasses]="'w100'"
+                                [inputPattern]="emailPattern"
+                                [errorPatternMessage]="labels.errorPatternMessage"
+                                *ngIf="item.value.messageChannel.id === 2"
+                            ></app-mat-chips-input-form-field>
+                            <mat-form-field
+                                appearance="outline"
+                                floatLabel="always"
+                                class="w100"
+                                *ngIf="item.value.messageChannel.id === 2"
+                            >
+                                <mat-label>{{ labels.subject | translate }}</mat-label>
+                                <textarea
+                                    matInput
+                                    formControlName="subject"
+                                    [placeholder]="labels.subject | translate"
+                                    cdkTextareaAutosize
+                                ></textarea>
+                                <mat-error *ngIf="item.controls.subject.invalid && item.controls.subject.touched">
+                                    <span>{{ labels.required | translate }}</span>
+                                </mat-error>
+                            </mat-form-field>
+                            <section class="w100">
+                                <app-text-editor-wrapper
+                                    id="{{ 'templateEditorIn' + i + j }}"
+                                    textEditorId="{{ 'templateEditorIn' + i + j }}"
+                                    [initialValue]="item?.controls?.template?.value"
+                                    [textEditorConfig]="textEditorToolbarOptions"
+                                    [placeholder]="labels.insertText | translate"
+                                    (contentChanged)="textEditorContentChanged($event, item)"
+                                ></app-text-editor-wrapper>
+                                <mat-error
+                                    class="preparation__error"
+                                    *ngIf="item.controls.template.invalid && item.controls.template.touched"
+                                >
+                                    {{ labels.required | translate }}
+                                </mat-error>
+                            </section>
+                        </section>
+                    </div>
+                </mat-expansion-panel>
+            </mat-accordion>
+
             <div class="preparation__section" *ngIf="preparationIn.requiredMovementExtra && !preparationIn.movementExtraAuto">
                 <div class="preparation__section__title">
                     {{ labels.extraMovement | translate }}
@@ -210,25 +251,66 @@
                     </mat-error>
                 </mat-form-field>
             </div>
-            <div class="preparation__section" *ngIf="preparationOut.sendMail">
-                <div class="preparation__section__title">
-                    {{ labels.template | translate }}
-                </div>
-                <app-text-editor-wrapper
-                    id="templateEditor"
-                    textEditorId="templateEditor"
-                    [initialValue]="preparationOutForm?.controls?.template?.value"
-                    [textEditorConfig]="textEditorToolbarOptions"
-                    [placeholder]="labels.insertText | translate"
-                    (contentChanged)="textEditorContentChanged($event, preparationOutForm)"
-                ></app-text-editor-wrapper>
-                <mat-error
-                    class="preparation__error"
-                    *ngIf="preparationOutForm.controls.template.invalid && preparationOutForm.controls.template.touched"
-                >
-                    {{ labels.required | translate }}
-                </mat-error>
-            </div>
+
+            <mat-accordion *ngIf="preparationOut.sendMail">
+                <mat-expansion-panel *ngFor="let mailEvent of getWfEventsMailsFormArray('OUT').controls; let i = index">
+                    <mat-expansion-panel-header>
+                        <mat-panel-title>
+                            {{ getMailEventTitle(mailEvent, i, getWfEventsMailsFormArray("OUT").controls.length) }}
+                        </mat-panel-title>
+                    </mat-expansion-panel-header>
+                    <div *ngFor="let item of mailEvent.controls.items.controls; let j = index">
+                        <section [formGroup]="item" class="mat-tab-page-sections">
+                            <section>
+                                <span class="mat-tab-page-sections__title">{{ item.value.messageChannel.name }}</span>
+                            </section>
+                            <app-mat-chips-input-form-field
+                                [matFormLabel]="labels.receivers"
+                                [inputPlaceholder]="labels.emails"
+                                [fControl]="item.controls?.processedEmail"
+                                [matFormFieldClasses]="'w100'"
+                                [inputPattern]="emailPattern"
+                                [errorPatternMessage]="labels.errorPatternMessage"
+                                *ngIf="item.value.messageChannel.id === 2"
+                            ></app-mat-chips-input-form-field>
+                            <mat-form-field
+                                appearance="outline"
+                                floatLabel="always"
+                                class="w100"
+                                *ngIf="item.value.messageChannel.id === 2"
+                            >
+                                <mat-label>{{ labels.subject | translate }}</mat-label>
+                                <textarea
+                                    matInput
+                                    formControlName="subject"
+                                    [placeholder]="labels.subject | translate"
+                                    cdkTextareaAutosize
+                                ></textarea>
+                                <mat-error *ngIf="item.controls.subject.invalid && item.controls.subject.touched">
+                                    <span>{{ labels.required | translate }}</span>
+                                </mat-error>
+                            </mat-form-field>
+                            <section class="w100">
+                                <app-text-editor-wrapper
+                                    id="{{ 'templateEditorOut' + i + j }}"
+                                    textEditorId="{{ 'templateEditorOut' + i + j }}"
+                                    [initialValue]="item?.controls?.template?.value"
+                                    [textEditorConfig]="textEditorToolbarOptions"
+                                    [placeholder]="labels.insertText | translate"
+                                    (contentChanged)="textEditorContentChanged($event, item)"
+                                ></app-text-editor-wrapper>
+                                <mat-error
+                                    class="preparation__error"
+                                    *ngIf="item.controls.template.invalid && item.controls.template.touched"
+                                >
+                                    {{ labels.required | translate }}
+                                </mat-error>
+                            </section>
+                        </section>
+                    </div>
+                </mat-expansion-panel>
+            </mat-accordion>
+
             <div class="preparation__section" *ngIf="preparationOut.requiredMovementExtra && !preparationOut.movementExtraAuto">
                 <div class="preparation__section__title">
                     {{ labels.extraMovement | translate }}
@@ -300,25 +382,65 @@
                     </mat-error>
                 </mat-form-field>
             </div>
-            <div class="preparation__section" *ngIf="preparationMov.sendMail">
-                <div class="preparation__section__title">
-                    {{ labels.template | translate }}
-                </div>
-                <app-text-editor-wrapper
-                    id="templateEditor"
-                    textEditorId="templateEditor"
-                    [initialValue]="preparationMovForm?.controls?.template?.value"
-                    [textEditorConfig]="textEditorToolbarOptions"
-                    [placeholder]="labels.insertText | translate"
-                    (contentChanged)="textEditorContentChanged($event, preparationMovForm)"
-                ></app-text-editor-wrapper>
-                <mat-error
-                    class="preparation__error"
-                    *ngIf="preparationMovForm.controls.template.invalid && preparationMovForm.controls.template.touched"
-                >
-                    {{ labels.required | translate }}
-                </mat-error>
-            </div>
+
+            <mat-accordion *ngIf="preparationMov.sendMail">
+                <mat-expansion-panel *ngFor="let mailEvent of getWfEventsMailsFormArray('MOV').controls; let i = index">
+                    <mat-expansion-panel-header>
+                        <mat-panel-title>
+                            {{ getMailEventTitle(mailEvent, i, getWfEventsMailsFormArray("MOV").controls.length) }}
+                        </mat-panel-title>
+                    </mat-expansion-panel-header>
+                    <div *ngFor="let item of mailEvent.controls.items.controls; let j = index">
+                        <section [formGroup]="item" class="mat-tab-page-sections">
+                            <section>
+                                <span class="mat-tab-page-sections__title">{{ item.value.messageChannel.name }}</span>
+                            </section>
+                            <app-mat-chips-input-form-field
+                                [matFormLabel]="labels.receivers"
+                                [inputPlaceholder]="labels.emails"
+                                [fControl]="item.controls?.processedEmail"
+                                [matFormFieldClasses]="'w100'"
+                                [inputPattern]="emailPattern"
+                                [errorPatternMessage]="labels.errorPatternMessage"
+                                *ngIf="item.value.messageChannel.id === 2"
+                            ></app-mat-chips-input-form-field>
+                            <mat-form-field
+                                appearance="outline"
+                                floatLabel="always"
+                                class="w100"
+                                *ngIf="item.value.messageChannel.id === 2"
+                            >
+                                <mat-label>{{ labels.subject | translate }}</mat-label>
+                                <textarea
+                                    matInput
+                                    formControlName="subject"
+                                    [placeholder]="labels.subject | translate"
+                                    cdkTextareaAutosize
+                                ></textarea>
+                                <mat-error *ngIf="item.controls.subject.invalid && item.controls.subject.touched">
+                                    <span>{{ labels.required | translate }}</span>
+                                </mat-error>
+                            </mat-form-field>
+                            <section class="w100">
+                                <app-text-editor-wrapper
+                                    id="{{ 'templateEditorMov' + i + j }}"
+                                    textEditorId="{{ 'templateEditorMov' + i + j }}"
+                                    [initialValue]="item?.controls?.template?.value"
+                                    [textEditorConfig]="textEditorToolbarOptions"
+                                    [placeholder]="labels.insertText | translate"
+                                    (contentChanged)="textEditorContentChanged($event, item)"
+                                ></app-text-editor-wrapper>
+                                <mat-error
+                                    class="preparation__error"
+                                    *ngIf="item.controls.template.invalid && item.controls.template.touched"
+                                >
+                                    {{ labels.required | translate }}
+                                </mat-error>
+                            </section>
+                        </section>
+                    </div>
+                </mat-expansion-panel>
+            </mat-accordion>
             <div class="preparation__section" *ngIf="preparationMov.requiredMovementExtra && !preparationMov.movementExtraAuto">
                 <div class="preparation__section__title">
                     {{ labels.extraMovement | translate }}

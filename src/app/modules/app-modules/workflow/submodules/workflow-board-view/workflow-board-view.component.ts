@@ -1,5 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { Component, ElementRef, HostListener, NgZone, OnDestroy, OnInit, ViewChild } from '@angular/core';
+import { ChildActivationEnd, NavigationEnd, Router } from '@angular/router';
+import { RouteConstants } from '@app/constants/route.constants';
 import { ConcenetError } from '@app/types/error';
 import { marker } from '@biesbjerg/ngx-translate-extract-marker';
 import FacilityDTO from '@data/models/organization/facility-dto';
@@ -14,6 +16,7 @@ import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
 import { TranslateService } from '@ngx-translate/core';
 import { GlobalMessageService } from '@shared/services/global-message.service';
 import { ProgressSpinnerDialogService } from '@shared/services/progress-spinner-dialog.service';
+import { haveArraysSameValuesIdObjects } from '@shared/utils/array-comparation-function';
 import lodash from 'lodash';
 import { NGXLogger } from 'ngx-logger';
 import { forkJoin } from 'rxjs';
@@ -33,12 +36,13 @@ export class WorkflowBoardViewComponent implements OnInit {
   @ViewChild('ScrollColumns') scrollColumns: ElementRef;
   @ViewChild('AnchorColumn') anchorColumns: ElementRef;
   @ViewChild('AnchorStateColumn') anchorStateColumn: WokflowBoardColumnComponent;
-
+  public showBoardView = true;
   public facilities: FacilityDTO[] = [];
   public workflow: WorkflowDTO = null;
   public wStatesData: WorkflowStateDTO[];
   public wAnchorState: WorkflowStateDTO;
   public wNormalStates: WorkflowStateDTO[];
+  public loadedData: { workflow: WorkflowDTO; facilities: FacilityDTO[] };
   public showAnchorState = true;
   public mouseDown = false;
   public startX: any;
@@ -47,8 +51,12 @@ export class WorkflowBoardViewComponent implements OnInit {
   public labels = {
     noData: marker('errors.noDataToShow')
   };
+  public isDragAndDropEnabled: boolean;
   private workflowInstances: WorkflowStateDTO[] = [];
   private filters: WorkflowFilterDTO = null;
+  // private askForDataTimeStamp: number;
+  // private getDataTimeStamp: number;
+  // private renderedDataTimeStamp: number;
 
   constructor(
     private workflowService: WorkflowsService,
@@ -58,7 +66,9 @@ export class WorkflowBoardViewComponent implements OnInit {
     private logger: NGXLogger,
     private translateService: TranslateService,
     private dragAndDropService: WorkflowDragAndDropService,
-    private prepareAndMoveService: WorkflowPrepareAndMoveService
+    private prepareAndMoveService: WorkflowPrepareAndMoveService,
+
+    private router: Router
   ) {}
 
   @HostListener('window:resize', ['$event']) onResize = (event: { target: { innerWidth: number } }) => {
@@ -68,7 +78,11 @@ export class WorkflowBoardViewComponent implements OnInit {
   };
 
   ngOnInit(): void {
-    this.initListeners();
+    this.isDragAndDropEnabled = this.dragAndDropService.isDragAndDropEnabled();
+    //Sólo inicializamos listeners si tenemos seleccionad un workflow (tenemos wId en la url)
+    if (this.router.url.indexOf(`${RouteConstants.WORKFLOWS}/${RouteConstants.WORKFLOWS_BOARD_VIEW}`) === -1) {
+      this.initListeners();
+    }
   }
 
   public initListeners(): void {
@@ -91,13 +105,15 @@ export class WorkflowBoardViewComponent implements OnInit {
         }, 100);
       }
     });
-    this.dragAndDropService.draggingCard$.pipe(untilDestroyed(this)).subscribe((data: WorkflowCardDTO) => {
-      if (data) {
-        this.cardDragging = true;
-      } else {
-        this.cardDragging = false;
-      }
-    });
+    if (this.isDragAndDropEnabled) {
+      this.dragAndDropService.draggingCard$.pipe(untilDestroyed(this)).subscribe((data: WorkflowCardDTO) => {
+        if (data) {
+          this.cardDragging = true;
+        } else {
+          this.cardDragging = false;
+        }
+      });
+    }
     this.prepareAndMoveService.reloadData$
       .pipe(untilDestroyed(this))
       .subscribe((data: 'MOVES_IN_THIS_WORKFLOW' | 'MOVES_IN_OTHER_WORKFLOWS') => {
@@ -106,13 +122,24 @@ export class WorkflowBoardViewComponent implements OnInit {
           this.prepareAndMoveService.reloadData$.next(null);
         }
       });
+
+    this.router.events.pipe(untilDestroyed(this)).subscribe((event: any) => {
+      if (event instanceof NavigationEnd || event instanceof ChildActivationEnd) {
+        if (this.router.url.indexOf('(card:wcId') > 0 && this.showBoardView) {
+          console.log('Hide board view');
+          this.showBoardView = false;
+        } else if (this.router.url.indexOf('(card:wcId') === -1 && !this.showBoardView) {
+          console.log('Show board view');
+          this.showBoardView = true;
+        }
+      }
+    });
   }
 
   public toggleAnchorState = () => (this.showAnchorState = !this.showAnchorState);
 
   public reloadCardData(event: number): void {
     const spinner = this.spinnerService.show();
-
     this.workflowService
       .getWorkflowCards(this.workflow, this.facilities, 'BOARD')
       .pipe(take(1))
@@ -152,10 +179,9 @@ export class WorkflowBoardViewComponent implements OnInit {
         wSubstate.cards = this.workflowFilterService.orderCardsByOrderNumber(
           workflowCards.filter((card: WorkflowCardDTO) => card.cardInstanceWorkflows[0].workflowSubstateId === wSubstate.id)
         );
+        const subStateCopy = lodash.cloneDeep(wSubstate); //Rompo la recursividad
+        subStateCopy.cards = [];
         wSubstate.cards = wSubstate.cards.map((card) => {
-          const subStateCopy = lodash.cloneDeep(wSubstate);
-          //Rompo la recursividad
-          subStateCopy.cards = [];
           card.workflowSubstate = subStateCopy;
           return card;
         });
@@ -176,7 +202,7 @@ export class WorkflowBoardViewComponent implements OnInit {
             }));
           user.cards = this.workflowFilterService.orderCardsByOrderNumber([...substateCardsByUser]);
           user.cardsBySubstateId = lodash.cloneDeep(cardsBySubstateId);
-          user.cardsBySubstateId[wSubstate.id] = [...substateCardsByUser];
+          user.cardsBySubstateId[wSubstate.id] = user.cards;
           totalUsers[user.user.id] = user;
         });
       });
@@ -198,17 +224,37 @@ export class WorkflowBoardViewComponent implements OnInit {
       this.wNormalStates = this.wStatesData
         .filter((state: WorkflowStateDTO) => !state.anchor)
         .sort((a, b) => a.orderNumber - b.orderNumber);
+      // if (this.getDataTimeStamp) {
+      //   this.renderedDataTimeStamp = +new Date();
+      //   console.log('############ TERMINO DE PREPARAR DATOS FRONT', this.renderedDataTimeStamp);
+      //   console.log('####### TIEMPO EN PREPARAR DATOS FRONT=> ', this.renderedDataTimeStamp - this.getDataTimeStamp);
+      //   console.log('####### TIEMPO TOTAL CONSUMIDO=> ', this.renderedDataTimeStamp - this.askForDataTimeStamp);
+
+      //   this.renderedDataTimeStamp = null;
+      //   this.getDataTimeStamp = null;
+      // }
     });
   }
 
   private getData(): void {
-    if (this.workflow) {
+    if (
+      this.workflow &&
+      (!this.loadedData ||
+        this.workflow.id !== this.loadedData.workflow.id ||
+        !haveArraysSameValuesIdObjects(this.loadedData.facilities, this.facilities))
+    ) {
+      this.loadedData = { workflow: this.workflow, facilities: this.facilities };
       const spinner = this.spinnerService.show();
+      // this.askForDataTimeStamp = +new Date();
+      // console.log('############ PIDO DATOS A BACK', this.askForDataTimeStamp);
       forkJoin([
         this.workflowService.getWorkflowInstances(this.workflow, this.facilities, 'BOARD', true).pipe(take(1)),
         this.workflowService.getWorkflowCards(this.workflow, this.facilities, 'BOARD').pipe(take(1))
       ]).subscribe(
         (data: [WorkflowStateDTO[], WorkflowCardDTO[]]) => {
+          // this.getDataTimeStamp = +new Date();
+          // console.log('############ PETICIÓN BACK HA TARDADO: ', this.getDataTimeStamp - this.askForDataTimeStamp);
+          // console.log('############ YA TENGO LOS DATOS EN FRONT', this.getDataTimeStamp);
           this.spinnerService.hide(spinner);
           this.workflowInstances = data[0];
           this.mapWorkflowCardsWithInstances(data[1]);

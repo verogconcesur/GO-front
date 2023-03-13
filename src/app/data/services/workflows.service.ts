@@ -76,6 +76,33 @@ export class WorkflowsService {
   }
 
   /**
+   * Obtiene las tarjetas visibles para el cliente o para el vehículo
+   *
+   * @returns WorkflowCardDTO[]
+   */
+  public searchCardsInWorkflowsByCustomerOrVehicleId(
+    id: number,
+    type: 'vehicleId' | 'customerId'
+  ): Observable<WorkflowCardDTO[]> {
+    let data = {};
+    if (type === 'vehicleId') {
+      data = {
+        vehicleId: id
+      };
+    } else {
+      data = {
+        customerId: id
+      };
+    }
+    return this.http
+      .post<WorkflowCardDTO[]>(
+        `${this.env.apiBaseUrl}${this.GET_WORKFLOWS_PATH}${this.GET_WORKFLOWS_INSTANCE_PATH}${this.GET_WORKFLOWS_SEARCH_PATH}`,
+        data
+      )
+      .pipe(catchError((error) => throwError(error.error as ConcenetError)));
+  }
+
+  /**
    * Devuelve listado de workflows paginado
    *
    * @returns WorkflowDTO[]
@@ -213,11 +240,15 @@ export class WorkflowsService {
   }
 
   public deleteWorkflow(id: number): Observable<boolean> {
-    return this.http.delete<boolean>(`${this.env.apiBaseUrl}${this.GET_WORKFLOWS_PATH}/${id}`);
+    return this.http
+      .delete<boolean>(`${this.env.apiBaseUrl}${this.GET_WORKFLOWS_PATH}/${id}`)
+      .pipe(catchError((error) => throwError(error.error as ConcenetError)));
   }
 
   public duplicateWorkflow(id: number): Observable<boolean> {
-    return this.http.get<boolean>(`${this.env.apiBaseUrl}${this.GET_WORKFLOWS_PATH}${this.DUPLICATE_WORKFLOWS_PATH}/${id}`);
+    return this.http
+      .get<boolean>(`${this.env.apiBaseUrl}${this.GET_WORKFLOWS_PATH}${this.DUPLICATE_WORKFLOWS_PATH}/${id}`)
+      .pipe(catchError((error) => throwError(error.error as ConcenetError)));
   }
 
   public prepareMovement(card: WorkflowCardDTO, targetId: number): Observable<WorkflowSubstateEventDTO[]> {
@@ -229,7 +260,7 @@ export class WorkflowsService {
       .pipe(catchError((error) => throwError(error.error as ConcenetError)));
   }
 
-  public syncData(workflowId: number, facilityId: number): Observable<any> {
+  public syncData(workflowId: number): Observable<any> {
     return this.http.get<any>(`${this.env.apiBaseUrl}${this.GET_WORKFLOWS_PATH}/${workflowId}${this.SYNCRONIZE_PATH}`);
   }
 

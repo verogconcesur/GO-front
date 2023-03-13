@@ -1,5 +1,5 @@
-import { CdkDragDrop, moveItemInArray, transferArrayItem } from '@angular/cdk/drag-drop';
-import { Component, ElementRef, EventEmitter, Input, NgZone, OnInit, Output } from '@angular/core';
+import { CdkDragDrop } from '@angular/cdk/drag-drop';
+import { Component, Input, OnInit } from '@angular/core';
 import { marker } from '@biesbjerg/ngx-translate-extract-marker';
 import WorkflowCardDTO from '@data/models/workflows/workflow-card-dto';
 import WorkflowCardInstanceDTO from '@data/models/workflows/workflow-card-instance-dto';
@@ -7,18 +7,12 @@ import WorkflowDTO from '@data/models/workflows/workflow-dto';
 import WorkflowMoveDTO from '@data/models/workflows/workflow-move-dto';
 import WorkflowStateDTO from '@data/models/workflows/workflow-state-dto';
 import WorkflowSubstateDTO from '@data/models/workflows/workflow-substate-dto';
-import WorkflowSubstateEventDTO from '@data/models/workflows/workflow-substate-event-dto';
 import WorkflowSubstateUserDTO from '@data/models/workflows/workflow-substate-user-dto';
 import { WorkflowsService } from '@data/services/workflows.service';
 import { WorkflowDragAndDropService } from '@modules/app-modules/workflow/aux-service/workflow-drag-and-drop.service';
 import { WorkflowPrepareAndMoveService } from '@modules/app-modules/workflow/aux-service/workflow-prepare-and-move-aux.service';
 import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
-import { TranslateService } from '@ngx-translate/core';
-import { GlobalMessageService } from '@shared/services/global-message.service';
-import { ProgressSpinnerDialogService } from '@shared/services/progress-spinner-dialog.service';
-import { NGXLogger } from 'ngx-logger';
 import { Observable } from 'rxjs';
-import { take } from 'rxjs/operators';
 
 @UntilDestroy()
 @Component({
@@ -44,6 +38,7 @@ export class WokflowBoardColumnComponent implements OnInit {
   public readonly droppableZoneClass = 'droppable-zone';
   public readonly undroppableZoneClass = 'undroppable';
   public readonly timeToWaitBeforeExpandColumnOnDragging = 1500;
+  public isDragAndDropEnabled: boolean;
 
   public labels = {
     seeMore: marker('common.seeMore'),
@@ -59,14 +54,11 @@ export class WokflowBoardColumnComponent implements OnInit {
   constructor(
     public workflowService: WorkflowsService,
     private dragAndDropService: WorkflowDragAndDropService,
-    private globalMessageService: GlobalMessageService,
-    private logger: NGXLogger,
-    private translateService: TranslateService,
-    private spinnerService: ProgressSpinnerDialogService,
     private prepareAndMoveService: WorkflowPrepareAndMoveService
   ) {}
 
   ngOnInit(): void {
+    this.isDragAndDropEnabled = this.dragAndDropService.isDragAndDropEnabled();
     this.collapsed = this.wState.front;
     const id = `${this.wStateKey}${this.wState.id}`;
     if (this.dragAndDropService.isColumnExpanded(id)) {
@@ -76,12 +68,14 @@ export class WokflowBoardColumnComponent implements OnInit {
   }
 
   public initListeners(): void {
-    this.dragAndDropService.draggingCard$.pipe(untilDestroyed(this)).subscribe((dragging: WorkflowCardDTO) => {
-      this.cardDragging = dragging;
-    });
-    this.dragAndDropService.droppableStates$.pipe(untilDestroyed(this)).subscribe((droppableStates: string[]) => {
-      this.droppableStates = droppableStates;
-    });
+    if (this.isDragAndDropEnabled) {
+      this.dragAndDropService.draggingCard$.pipe(untilDestroyed(this)).subscribe((dragging: WorkflowCardDTO) => {
+        this.cardDragging = dragging;
+      });
+      this.dragAndDropService.droppableStates$.pipe(untilDestroyed(this)).subscribe((droppableStates: string[]) => {
+        this.droppableStates = droppableStates;
+      });
+    }
   }
 
   public changeCollapsed() {
@@ -105,17 +99,18 @@ export class WokflowBoardColumnComponent implements OnInit {
   }
 
   public setHideEmptyDropZone(id: string, value: boolean) {
-    if (this.droppableStates?.indexOf(id) >= 0 || this.droppableStates?.length === 0) {
+    if ((this.isDragAndDropEnabled && this.droppableStates?.indexOf(id) >= 0) || this.droppableStates?.length === 0) {
       this.hideEmptyDropZone[id] = value;
     }
   }
 
-  public getHideEmptyDropZone(id: string) {
+  public getHideEmptyDropZone(id: string): boolean {
     return this.hideEmptyDropZone[id];
   }
 
   public showDropCover(id: string): boolean {
     if (
+      this.isDragAndDropEnabled &&
       this.cardDragging &&
       (this.droppableStates?.indexOf(id) >= 0 || this.droppableStates?.length === 0) &&
       // DGDC: descomentar en el momento en el que se pueda ordenar dentro de un mismo subestado
@@ -129,6 +124,9 @@ export class WokflowBoardColumnComponent implements OnInit {
 
   //  DGDC: quitar en el momento en el que se pueda ordenar dentro de un mismo subestado
   public setOriginDropZone(id: string, show: boolean): void {
+    if (this.isDragAndDropEnabled) {
+      return;
+    }
     if (show) {
       this.originCardDropZone = id;
     } else {
@@ -137,6 +135,9 @@ export class WokflowBoardColumnComponent implements OnInit {
   }
   //  DGDC: quitar en el momento en el que se pueda ordenar dentro de un mismo subestado
   public showOriginSubstateZone(id: string): boolean {
+    if (this.isDragAndDropEnabled) {
+      return false;
+    }
     if (this.originCardDropZone === id) {
       return true;
     }
@@ -144,7 +145,21 @@ export class WokflowBoardColumnComponent implements OnInit {
   }
 
   public getUserName(wUser: WorkflowSubstateUserDTO): string {
-    return `${wUser.user.name} ${wUser.user.firstName} ${wUser.user.lastName}`;
+    if (wUser.user.fullName) {
+      return wUser.user.fullName;
+    } else {
+      let fullName = '';
+      if (wUser.user.name) {
+        fullName = `${wUser.user.name} `;
+      }
+      if (wUser.user.firstName) {
+        fullName = `${wUser.user.firstName} `;
+      }
+      if (wUser.user.lastName) {
+        fullName = `${wUser.user.lastName} `;
+      }
+      return fullName;
+    }
   }
 
   public getCardsFilteredByUser(user: WorkflowSubstateUserDTO, cards: WorkflowCardDTO[]): WorkflowCardDTO[] {
@@ -245,6 +260,9 @@ export class WokflowBoardColumnComponent implements OnInit {
   }
 
   public mouseOverCollapsedCard(event: MouseEvent, action: 'over' | 'leave') {
+    if (this.isDragAndDropEnabled) {
+      return;
+    }
     if (this.getCollapsedDropZoneClass().indexOf(this.droppableZoneClass) >= 0 && action === 'over') {
       this.changeCollapseStatusOnOver = true;
       setTimeout(() => {
@@ -260,6 +278,9 @@ export class WokflowBoardColumnComponent implements OnInit {
   }
 
   public drop(event: CdkDragDrop<string[]>, wSubState: WorkflowSubstateDTO, user: WorkflowSubstateUserDTO, dropZoneId: string) {
+    if (this.isDragAndDropEnabled) {
+      return;
+    }
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const item: any = event.previousContainer.data[event.previousIndex];
     const request: Observable<WorkflowCardInstanceDTO> = null;
@@ -272,7 +293,6 @@ export class WokflowBoardColumnComponent implements OnInit {
       //Se va a posicionar en la última posición
       itemToReplace = { orderNumber: null };
     }
-    console.log(item, dropZoneId);
     const sameDropZone =
       // `${this.wSubstateKey}${item.cardInstanceWorkflows[0].workflowSubstateId}` === dropZoneId ||
       event.container.id === event.previousContainer.id;

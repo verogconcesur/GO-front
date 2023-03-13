@@ -186,7 +186,15 @@ export class CreateEditSpecialtyComponent extends ComponentToExtendForCustomDial
       });
   };
 
+  public convertToPlain(html: string) {
+    const tempDivElement = document.createElement('div');
+    tempDivElement.innerHTML = html;
+    return tempDivElement.textContent || tempDivElement.innerText || '';
+  }
   public textEditorContentChanged(type: 'header' | 'footer', html: string) {
+    if ((html === '' || this.convertToPlain(html) === '') && html.length < 20) {
+      html = null;
+    }
     if (type === 'header' && html !== this.form.header.value) {
       this.specialtyForm.get('header').setValue(html, { emitEvent: true });
       this.specialtyForm.get('header').markAsDirty();

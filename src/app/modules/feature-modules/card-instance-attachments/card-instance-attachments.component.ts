@@ -12,7 +12,7 @@ import { ProgressSpinnerDialogService } from '@shared/services/progress-spinner-
 import { saveAs } from 'file-saver';
 import { NGXLogger } from 'ngx-logger';
 import { finalize, take } from 'rxjs/operators';
-import { PdfViewerService } from '../pdf-viewer-dialog/pdf-viewer.service';
+import { MediaViewerService } from '../media-viewer-dialog/media-viewer.service';
 import CardInstanceAttachmentsConfig from './card-instance-attachments-config-interface';
 import { RenameAttachmentComponent } from './subcomponets/rename-attachment/rename-attachment.component';
 
@@ -24,9 +24,11 @@ import { RenameAttachmentComponent } from './subcomponets/rename-attachment/rena
 export class CardInstanceAttachmentsComponent implements OnInit, OnChanges {
   @Input() cardInstanceAttachmentsConfig: CardInstanceAttachmentsConfig;
   @Input() data: CardAttachmentsDTO[] = [];
+  @Input() selected: AttachmentDTO[] = [];
   @Input() cardInstanceWorkflowId: number = null;
   @Input() tabId: number = null;
   @Output() reload: EventEmitter<boolean> = new EventEmitter<boolean>();
+  @Output() selectionChange: EventEmitter<AttachmentDTO[]> = new EventEmitter<AttachmentDTO[]>();
   public selectedAttachments: AttachmentDTO[] = [];
   public hoverTemplate: CardAttachmentsDTO;
   public hoverTemplateFrom: 'cdk' | 'appDropZone';
@@ -44,13 +46,21 @@ export class CardInstanceAttachmentsComponent implements OnInit, OnChanges {
     private confirmationDialog: ConfirmDialogService,
     private globalMessageService: GlobalMessageService,
     private spinnerService: ProgressSpinnerDialogService,
-    private pdfViewerService: PdfViewerService
+    private mediaViewerService: MediaViewerService
   ) {}
 
-  ngOnInit(): void {}
+  ngOnInit(): void {
+    if (this.selected) {
+      this.selectedAttachments = this.selected;
+    }
+  }
 
   ngOnChanges(changes: SimpleChanges): void {
-    this.selectedAttachments = [];
+    if (this.selected) {
+      this.selectedAttachments = this.selected;
+    } else {
+      this.selectedAttachments = [];
+    }
   }
 
   public selectItem(item: AttachmentDTO): void {
@@ -59,6 +69,8 @@ export class CardInstanceAttachmentsComponent implements OnInit, OnChanges {
     } else {
       this.selectedAttachments.push(item);
     }
+    this.selected = this.selectedAttachments;
+    this.selectionChange.emit(this.selectedAttachments);
   }
 
   public isItemSelected(item: AttachmentDTO): boolean {
@@ -72,16 +84,26 @@ export class CardInstanceAttachmentsComponent implements OnInit, OnChanges {
     if (item.thumbnail && item.type) {
       return `url("data:${item.type} ;base64,${item.thumbnail}")`;
     } else if (item.type) {
-      switch (item.type) {
-        case 'application/pdf':
-          return `url(/assets/img/pdf.png)`;
+      if (item.type.indexOf('pdf') >= 0) {
+        return `url(/assets/img/pdf.png)`;
+      } else if (item.type.indexOf('audio') >= 0 || item.type.indexOf('mp3') >= 0) {
+        return `url(/assets/img/audio-file.png)`;
+      } else if (item.type.indexOf('video') >= 0) {
+        return `url(/assets/img/video-file.png)`;
+      } else if (item.type.indexOf('image') >= 0) {
+        return `url(/assets/img/image-file.png)`;
       }
     }
     return `url(/assets/img/unknown.svg)`;
   }
 
-  public isPdf(item: AttachmentDTO): boolean {
-    if (item?.type?.toLowerCase().indexOf('pdf') >= 0) {
+  public hasPreview(item: AttachmentDTO): boolean {
+    if (
+      item?.type?.toLowerCase().indexOf('pdf') >= 0 ||
+      item.type.indexOf('audio') >= 0 ||
+      item.type.indexOf('video') >= 0 ||
+      item.type.indexOf('image') >= 0
+    ) {
       return true;
     }
     return false;
@@ -98,8 +120,8 @@ export class CardInstanceAttachmentsComponent implements OnInit, OnChanges {
       )
       .subscribe(
         (data: AttachmentDTO) => {
-          if (data.type.toLocaleLowerCase() === 'application/pdf') {
-            this.pdfViewerService.openPdfViewer(data);
+          if (this.hasPreview(item)) {
+            this.mediaViewerService.openMediaViewer(data);
           } else {
             saveAs(`data:${data.type};base64,${data.content}`, data.name);
           }
@@ -240,10 +262,16 @@ export class CardInstanceAttachmentsComponent implements OnInit, OnChanges {
   private async addFiles(files: FileList, template: CardAttachmentsDTO): Promise<void> {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const filesToSend: any[] = [];
+    const filesName: string[] = [];
+    this.data.forEach((cardAttachment: CardAttachmentsDTO) => {
+      cardAttachment.attachments.forEach((attachment: AttachmentDTO) => {
+        filesName.push(attachment.name);
+      });
+    });
     const arrayOfBase64 = await this.fileListToBase64(files);
     Array.from(files).forEach((file: File, i: number) => {
       const fileInfo = {
-        name: file.name,
+        name: filesName.indexOf(file.name) === -1 ? file.name : `${+new Date()}_${file.name}`,
         type: file.type,
         size: file.size,
         content: arrayOfBase64[i].split(';base64,')[1]

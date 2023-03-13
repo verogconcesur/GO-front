@@ -18,8 +18,10 @@
                 <button mat-button [routerLink]="WORKFLOW_PATH" routerLinkActive="active">
                     {{ labels.workflow | translate }}
                 </button>
-                <button mat-button>{{ labels.clients | translate }}</button>
-                <button mat-button>{{ labels.vehicles | translate }}</button>
+                <button mat-button [routerLink]="CLIENTS_PATH" routerLinkActive="active">{{ labels.clients | translate }}</button>
+                <button mat-button [routerLink]="VEHICLES_PATH" routerLinkActive="active">
+                    {{ labels.vehicles | translate }}
+                </button>
                 <button mat-button>{{ labels.advanceSearch | translate }}</button>
                 <button mat-button *ngIf="isAdmin()" (click)="navigateToAdministration()">
                     {{ labels.administration | translate }}
@@ -43,13 +45,11 @@
             <app-workflow-card-searcher [format]="'icon'"></app-workflow-card-searcher>
         </button>
         <!-- END Responsive search input -->
-        <button mat-icon-button aria-label="Email">
-            <!-- TODO: JF Put ngClass to handle the proper icon, when there will comments from the backend side -->
-            <mat-icon fontSet="concenet">comments</mat-icon>
+        <button mat-icon-button aria-label="Email" (click)="showMentions()" [matMenuTriggerFor]="mentionsMenu">
+            <mat-icon fontSet="concenet" [ngClass]="{ active: highLightMentions() }">comments</mat-icon>
         </button>
-        <button mat-icon-button aria-label="Notification">
-            <!-- TODO: JF Put ngClass to handle the proper icon, when there will notifications from the backend side -->
-            <mat-icon fontSet="concenet">notifications-on</mat-icon>
+        <button mat-icon-button aria-label="Notification" (click)="showNotifications()" [matMenuTriggerFor]="notificationsMenu">
+            <mat-icon fontSet="concenet" [ngClass]="{ active: highLightNotifications() }">notifications-on</mat-icon>
         </button>
 
         <!-- User Profile Component -->
@@ -58,13 +58,13 @@
 </mat-toolbar>
 
 <mat-menu #appMenu="matMenu">
-    <button mat-menu-item>
+    <button mat-menu-item [routerLink]="WORKFLOW_PATH">
         <span>{{ labels.workflow | translate }}</span>
     </button>
-    <button mat-menu-item>
+    <button mat-menu-item [routerLink]="CLIENTS_PATH">
         <span>{{ labels.clients | translate }}</span>
     </button>
-    <button mat-menu-item>
+    <button mat-menu-item [routerLink]="VEHICLES_PATH">
         <span>{{ labels.vehicles | translate }}</span>
     </button>
     <button mat-menu-item>
@@ -73,4 +73,28 @@
     <button mat-menu-item (click)="navigateToAdministration()">
         <span>{{ labels.administration | translate }}</span>
     </button>
+</mat-menu>
+
+<mat-menu #notificationsMenu="matMenu" class="notification-mention-menu">
+    <div class="navbar-warning-menu">
+        <h2 class="navbar-warning-menu__header">
+            {{ labels.notifications | translate }}
+        </h2>
+        <mat-divider></mat-divider>
+        <div class="navbar-warning-menu__content">
+            <app-notifications #notifications></app-notifications>
+        </div>
+    </div>
+</mat-menu>
+
+<mat-menu #mentionsMenu="matMenu" class="notification-mention-menu">
+    <div class="navbar-warning-menu">
+        <h2 class="navbar-warning-menu__header">
+            {{ labels.mentions | translate }}
+        </h2>
+        <mat-divider></mat-divider>
+        <div class="navbar-warning-menu__content">
+            <app-mentions #mentions></app-mentions>
+        </div>
+    </div>
 </mat-menu>

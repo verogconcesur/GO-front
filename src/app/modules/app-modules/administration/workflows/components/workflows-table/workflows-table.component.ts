@@ -328,7 +328,7 @@ export class WorkflowsTableComponent implements OnInit {
               },
               error: (error: ConcenetError) => {
                 this.globalMessageService.showError({
-                  message: this.translateService.instant(error.error),
+                  message: this.translateService.instant(error.message),
                   actionText: this.translateService.instant(marker('common.close'))
                 });
               }
@@ -359,7 +359,7 @@ export class WorkflowsTableComponent implements OnInit {
     search: filterValue?.search,
     brands: filterValue?.brands?.map((brand: BrandDTO) => brand.id),
     departments: filterValue?.departments?.map((dep: DepartmentDTO) => dep.id),
-    facilities: filterValue?.facilities?.map((fac: FacilityDTO) => fac.id),
+    facilities: (filterValue?.facilities as FacilityDTO[])?.map((fac: FacilityDTO) => fac.id),
     specialties: filterValue?.specialties?.map((spec: SpecialtyDTO) => spec.id)
   });
 }

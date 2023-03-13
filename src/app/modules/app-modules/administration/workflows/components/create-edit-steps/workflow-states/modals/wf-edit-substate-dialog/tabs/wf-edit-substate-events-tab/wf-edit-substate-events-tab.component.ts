@@ -108,12 +108,12 @@ export class WfEditSubstateEventsTabComponent extends WfEditSubstateAbstractTabC
     data.push({
       ...this.extendedComponentDataIN.move,
       substateEventType: 'IN',
-      ...this.form.get('in').value
+      ...this.InEvents.getFormValue()
     });
     data.push({
-      ...this.extendedComponentDataIN.move,
+      ...this.extendedComponentDataOUT.move,
       substateEventType: 'OUT',
-      ...this.form.get('out').value
+      ...this.OutEvents.getFormValue()
     });
 
     this.substatesService

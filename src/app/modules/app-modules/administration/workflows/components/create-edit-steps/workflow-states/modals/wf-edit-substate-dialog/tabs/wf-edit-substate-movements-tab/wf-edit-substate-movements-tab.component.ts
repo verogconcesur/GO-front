@@ -2,6 +2,7 @@ import { Component, OnInit, ViewChild, ViewEncapsulation } from '@angular/core';
 import { FormBuilder, UntypedFormArray, UntypedFormGroup, Validators } from '@angular/forms';
 import { MatMenuTrigger } from '@angular/material/menu';
 import { marker } from '@biesbjerg/ngx-translate-extract-marker';
+import WorkflowEventMailDTO from '@data/models/workflows/workflow-event-mail-dto';
 import WorkflowMoveDTO from '@data/models/workflows/workflow-move-dto';
 import WorkflowSubstateDTO from '@data/models/workflows/workflow-substate-dto';
 import { WorkflowAdministrationStatesSubstatesService } from '@data/services/workflow-administration-states-substates.service';
@@ -175,9 +176,7 @@ export class WfEditSubstateMovementsTabComponent extends WfEditSubstateAbstractT
       requiredUser: false,
       roles: this.editSubstateAuxService.workflowRoles,
       sendMail: false,
-      sendMailAuto: false,
-      sendMailReceiverRole: null,
-      sendMailReceiverType: null,
+      workflowEventMails: [],
       shortcut: false,
       shortcutColor: null,
       shortcutName: null,
@@ -192,7 +191,6 @@ export class WfEditSubstateMovementsTabComponent extends WfEditSubstateAbstractT
       movementExtraAuto: false,
       movementExtraConfirm: false,
       requiredMovementExtra: false,
-      sendMailTemplate: null,
       signDocumentTemplate: null
     };
     this.trigger.closeMenu();
@@ -227,10 +225,18 @@ export class WfEditSubstateMovementsTabComponent extends WfEditSubstateAbstractT
       requiredUser: [move?.requiredUser ? move.requiredUser : false],
       roles: [move?.roles ? move.roles : []],
       sendMail: [move?.sendMail ? move.sendMail : false],
-      sendMailAuto: [move?.sendMailAuto ? move.sendMailAuto : false],
-      sendMailReceiverRole: [move?.sendMailReceiverRole ? move.sendMailReceiverRole : null],
-      sendMailReceiverType: [move?.sendMailReceiverType ? move.sendMailReceiverType : null],
-      sendMailTemplate: [move?.sendMailTemplate ? move.sendMailTemplate : null],
+      workflowEventMails: move?.workflowEventMails?.length
+        ? this.fb.array(
+            move.workflowEventMails.map((wem: WorkflowEventMailDTO) =>
+              this.fb.group({
+                id: [wem.id ? wem.id : null],
+                sendMailAuto: [wem.sendMailAuto ? wem.sendMailAuto : false],
+                sendMailTemplate: [wem?.sendMailTemplate ? wem.sendMailTemplate : null],
+                workflowEventMailReceivers: [wem?.workflowEventMailReceivers ? wem.workflowEventMailReceivers : []]
+              })
+            )
+          )
+        : this.fb.array([]),
       shortcut: [move?.shortcut ? move.shortcut : false],
       shortcutColor: [move?.shortcutColor ? move.shortcutColor : null],
       shortcutName: [move?.shortcutName ? move.shortcutName : null],

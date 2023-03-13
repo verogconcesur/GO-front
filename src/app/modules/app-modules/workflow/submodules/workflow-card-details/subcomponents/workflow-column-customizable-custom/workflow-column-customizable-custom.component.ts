@@ -66,14 +66,18 @@ export class WorkflowColumnCustomizableCustomComponent implements OnInit, OnChan
             tabItem.tabItemConfigInput.dateType === 'DATE' &&
             cardTabItemInstance
           ) {
-            cardTabItemInstance.value = moment(cardTabItemInstance.value, 'DD/MM/YYYY').toDate();
+            cardTabItemInstance.value = cardTabItemInstance.value
+              ? moment(cardTabItemInstance.value as string, 'DD/MM/YYYY').toDate()
+              : null;
           }
           if (
             tabItem.tabItemConfigInput.dataType === 'TEMPORAL' &&
             tabItem.tabItemConfigInput.dateType === 'DATETIME' &&
             cardTabItemInstance
           ) {
-            cardTabItemInstance.value = moment(cardTabItemInstance.value, 'DD/MM/YYYY HH:mm');
+            cardTabItemInstance.value = cardTabItemInstance.value
+              ? moment(cardTabItemInstance.value as string, 'DD/MM/YYYY HH:mm')
+              : null;
           }
           if (
             tabItem.tabItemConfigInput.dataType === 'TEMPORAL' &&
@@ -81,7 +85,9 @@ export class WorkflowColumnCustomizableCustomComponent implements OnInit, OnChan
             cardTabItemInstance
           ) {
             const dateStrings = (cardTabItemInstance.value as string).split(':');
-            cardTabItemInstance.value = moment().set('hours', Number(dateStrings[0])).set('minutes', Number(dateStrings[1]));
+            cardTabItemInstance.value = cardTabItemInstance.value
+              ? moment().set('hours', Number(dateStrings[0])).set('minutes', Number(dateStrings[1]))
+              : null;
           }
           if (tabItem.tabItemConfigInput.mandatory) {
             validators.push(Validators.required);
@@ -92,12 +98,15 @@ export class WorkflowColumnCustomizableCustomComponent implements OnInit, OnChan
           if (tabItem.tabItemConfigList.mandatory) {
             validators.push(Validators.required);
           }
-          break;
-        case 'TABLE':
-          cardTabItemInstance = tabItem.tabItemConfigTable.cardTabItemInstance;
+          if (cardTabItemInstance && cardTabItemInstance.value && tabItem.tabItemConfigList.selectionType === 'MULTIPLE') {
+            cardTabItemInstance.value = JSON.parse(cardTabItemInstance.value as string);
+          }
           break;
         case 'OPTION':
           cardTabItemInstance = tabItem.tabItemConfigOption.cardTabItemInstance;
+          if (cardTabItemInstance && cardTabItemInstance.value) {
+            cardTabItemInstance.value = cardTabItemInstance.value === 'true';
+          }
           break;
       }
       this.tabForm.push(
@@ -123,9 +132,9 @@ export class WorkflowColumnCustomizableCustomComponent implements OnInit, OnChan
     this.editMode = false;
     this.setShowLoading.emit(true);
     let bodyItems = this.tabForm.getRawValue();
-    bodyItems = bodyItems.filter((item: WorkflowCardTabitemInstanceDTO) => item.value);
+    bodyItems = bodyItems.filter((item: WorkflowCardTabitemInstanceDTO) => item.value !== null);
     bodyItems = bodyItems.map((item: WorkflowCardTabitemInstanceDTO) => {
-      if (item.tabItem.tabItemConfigInput && item.tabItem.tabItemConfigInput.dataType === 'TEMPORAL') {
+      if (item.value && item.tabItem.tabItemConfigInput && item.tabItem.tabItemConfigInput.dataType === 'TEMPORAL') {
         const date = moment(item.value);
         switch (item.tabItem.tabItemConfigInput.dateType) {
           case 'DATE':
@@ -140,6 +149,9 @@ export class WorkflowColumnCustomizableCustomComponent implements OnInit, OnChan
             }
             break;
         }
+      }
+      if (item.value && item.tabItem.tabItemConfigList && item.tabItem.tabItemConfigList.selectionType === 'MULTIPLE') {
+        item.value = JSON.stringify(item.value);
       }
       return item;
     });

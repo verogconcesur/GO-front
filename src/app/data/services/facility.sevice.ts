@@ -8,6 +8,7 @@ import { marker } from '@biesbjerg/ngx-translate-extract-marker';
 import FacilitiesGroupedByBrand from '@data/interfaces/facilities-grouped-by-brand';
 import BrandDTO from '@data/models/organization/brand-dto';
 import FacilityDTO from '@data/models/organization/facility-dto';
+import MigrationDTO from '@data/models/organization/migration-dto';
 import { TranslateService } from '@ngx-translate/core';
 import { forkJoin, Observable, of, throwError } from 'rxjs';
 import { catchError, map, reduce } from 'rxjs/operators';
@@ -20,8 +21,10 @@ export class FacilityService {
   private facilitiesByBrand: any = {};
   private readonly GET_FACILITY = '/api/facilities/';
   private readonly GET_FACILITIES_PATH = '/api/facilities/findAll/';
+  private readonly GET_FACILITY_INTEGRATION = '/api/facilities/findAllWithIntegration';
   private readonly DELETE_FACILITY_PATH = '/api/facilities';
   private readonly DUPLICATE_FACILITY_PATH = '/api/facilities/duplicate';
+  private readonly MIGRATION = 'migration';
 
   constructor(
     @Inject(ENV) private env: Env,
@@ -89,6 +92,12 @@ export class FacilityService {
     }
   }
 
+  public getFacilitiesWithExternalApi(): Observable<FacilityDTO[]> {
+    return this.http
+      .get<FacilityDTO[]>(`${this.env.apiBaseUrl}${this.GET_FACILITY_INTEGRATION}`)
+      .pipe(catchError((error) => throwError(error.error as ConcenetError)));
+  }
+
   public getFacilitiesById(id: number): Observable<FacilityDTO> {
     return this.http
       .get<FacilityDTO>(`${this.env.apiBaseUrl}${this.GET_FACILITY}${id}`)
@@ -110,6 +119,11 @@ export class FacilityService {
   public duplicateFacility(id: number): Observable<FacilityDTO> {
     return this.http
       .get<FacilityDTO>(`${this.env.apiBaseUrl}${this.DUPLICATE_FACILITY_PATH}/${id}`)
+      .pipe(catchError((error) => throwError(error.error as ConcenetError)));
+  }
+  public importFile(migration: MigrationDTO): Observable<MigrationDTO> {
+    return this.http
+      .post<MigrationDTO>(`${this.env.apiBaseUrl}${this.GET_FACILITY}${this.MIGRATION}`, migration)
       .pipe(catchError((error) => throwError(error.error as ConcenetError)));
   }
 

@@ -10,5 +10,5 @@ export default interface TemplatesCommonDTO {
   departments: DepartmentDTO[];
   facilities: FacilityDTO[];
   specialties: SpecialtyDTO[];
-  templateType: string;
+  templateType: 'COMUNICATION' | 'BUDGET' | 'ATTACHMENTS' | 'TIMELINE' | 'CHECKLISTS';
 }

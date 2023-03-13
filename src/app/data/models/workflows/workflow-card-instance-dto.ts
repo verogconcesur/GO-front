@@ -4,7 +4,7 @@ import WorkflowSubstateEventDTO from './workflow-substate-event-dto';
 import WorkflowSubstateUserDTO from './workflow-substate-user-dto';
 
 export default interface WorkflowCardInstanceDTO {
-  // cardInstance: WorkflowCardDTO;
+  cardInstance?: WorkflowCardDTO;
   cardInstanceId: number;
   cardInstanceWorkflowUsers: WorkflowSubstateUserDTO[];
   id: number;
@@ -16,4 +16,5 @@ export default interface WorkflowCardInstanceDTO {
   workflowSubstateId: number;
   workflowSubstateEvents: WorkflowSubstateEventDTO[];
   information?: string;
+  dateAssignmentSubstate?: number;
 }

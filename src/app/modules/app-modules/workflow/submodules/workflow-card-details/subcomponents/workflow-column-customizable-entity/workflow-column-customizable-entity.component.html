@@ -1,13 +1,21 @@
-<div class="w-colunm-entity">
-    <div class="w-colunm-entity-data" *ngFor="let data of entityData">
-        <label class="w-colunm-entity-data__label">{{ data.name }}</label>
-        <div class="w-colunm-entity-data__value">{{ getDataValue(data) }}</div>
-    </div>
+<div class="w-colunm-entity-container">
+    <div class="w-colunm-entity">
+        <div class="w-colunm-entity-data" *ngFor="let data of entityData">
+            <label class="w-colunm-entity-data__label">{{ data.name }}</label>
+            <div class="w-colunm-entity-data__value">{{ getDataValue(data) }}</div>
+        </div>
 
-    <h3 class="no-data" *ngIf="!entityData?.length && dataLoaded">
-        {{ labels.noDataToShow | translate }}
-    </h3>
+        <h3 class="no-data" *ngIf="!entityData?.length && dataLoaded">
+            {{ labels.noDataToShow | translate }}
+        </h3>
+    </div>
+    <div class="w-colunm-entity-change-button" fxLayout="row" fxLayoutAlign="space-between center">
+        <button mat-stroked-button *ngIf="showEditEntity()" (click)="editEntity()">
+            {{ getEditEntityButtonLabel() | translate }}
+        </button>
+
+        <button mat-stroked-button *ngIf="showChangeOrAsignEntity()" (click)="changeEntity()">
+            {{ getChangeOrAsignEntityButtonLabel() | translate }}
+        </button>
+    </div>
 </div>
-<button mat-stroked-button class="w-colunm-entity-change-button" *ngIf="showChangeOrAsignEntity()" (click)="changeEntity()">
-    {{ getChangeOrAsignEntityButtonLabel() | translate }}
-</button>

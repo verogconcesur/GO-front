@@ -13,8 +13,8 @@ import CardContentTypeDTO from '@data/models/cards/card-content-type-dto';
 import CardCreateDTO from '@data/models/cards/card-create-dto';
 import CardDTO from '@data/models/cards/card-dto';
 import CardInstanceDTO from '@data/models/cards/card-instance-dto';
+import PriorityDTO from '@data/models/cards/priority-dto';
 import TemplatesCommonDTO from '@data/models/templates/templates-common-dto';
-import WorkflowCardDTO from '@data/models/workflows/workflow-card-dto';
 import WorkflowCardSlotDTO from '@data/models/workflows/workflow-card-slot-dto';
 import WorkflowCardTabItemDTO from '@data/models/workflows/workflow-card-tab-item-dto';
 import WorkflowCardTabitemInstanceDTO from '@data/models/workflows/workflow-card-tabitem-instance-dto';
@@ -48,6 +48,7 @@ export class CardService {
   private readonly ENTITY_PATH = '/entity';
   private readonly CUSTOM_PATH = '/custom';
   private readonly SYNCRONIZE_PATH = '/synchronize';
+  private readonly PRIORITIES_PATH = '/priorities';
 
   constructor(@Inject(ENV) private env: Env, private http: HttpClient) {}
 
@@ -222,13 +223,18 @@ export class CardService {
   public getEntityCardTabData(
     workflowId: number,
     tabId: number,
-    entityId?: number
+    entityId?: number,
+    inventoryId?: number
   ): Observable<WorkflowCardSlotDTO[] | WorkflowCardTabItemDTO[]> {
     // eslint-disable-next-line max-len
     let url = `${this.env.apiBaseUrl}${this.GET_CARD_INSTANCE_CREATE_PATH}${workflowId}${this.GET_DETAIL_TAB_PATH}/${tabId}`;
     if (entityId) {
       // eslint-disable-next-line max-len
       url = `${this.env.apiBaseUrl}${this.GET_CARD_INSTANCE_CREATE_PATH}${workflowId}${this.GET_DETAIL_TAB_PATH}/${tabId}/${entityId}`;
+    }
+    if (inventoryId) {
+      // eslint-disable-next-line max-len
+      url = `${this.env.apiBaseUrl}${this.GET_CARD_INSTANCE_CREATE_PATH}${workflowId}${this.GET_DETAIL_TAB_PATH}/${tabId}/${entityId}/${inventoryId}`;
     }
     return this.http
       .get<WorkflowCardSlotDTO[] | WorkflowCardTabItemDTO[]>(url)
@@ -262,13 +268,19 @@ export class CardService {
    *
    * @returns WorkflowCardTabItemDTO
    */
-  public setEntityToTab(cardWfId: number, tabId: number, entityId: number): Observable<WorkflowCardTabItemDTO> {
-    return this.http
-      .get<WorkflowCardTabItemDTO>(
-        // eslint-disable-next-line max-len
-        `${this.env.apiBaseUrl}${this.GET_CARD_INSTANCE_PATH}${this.GET_DETAIL_PATH}/${cardWfId}${this.ENTITY_PATH}/${tabId}/${entityId}`
-      )
-      .pipe(catchError((error) => throwError(error.error as ConcenetError)));
+  public setEntityToTab(
+    cardWfId: number,
+    tabId: number,
+    entityId: number,
+    vehicleInventoryId?: number
+  ): Observable<WorkflowCardTabItemDTO> {
+    // eslint-disable-next-line max-len
+    let url = `${this.env.apiBaseUrl}${this.GET_CARD_INSTANCE_PATH}${this.GET_DETAIL_PATH}/${cardWfId}${this.ENTITY_PATH}/${tabId}/${entityId}`;
+    if (vehicleInventoryId) {
+      // eslint-disable-next-line max-len
+      url = `${this.env.apiBaseUrl}${this.GET_CARD_INSTANCE_PATH}${this.GET_DETAIL_PATH}/${cardWfId}${this.ENTITY_PATH}/${tabId}/${entityId}/${vehicleInventoryId}`;
+    }
+    return this.http.get<WorkflowCardTabItemDTO>(url).pipe(catchError((error) => throwError(error.error as ConcenetError)));
   }
 
   /**
@@ -287,6 +299,16 @@ export class CardService {
         `${this.env.apiBaseUrl}${this.GET_CARD_INSTANCE_PATH}${this.GET_DETAIL_PATH}/${cardWfId}${this.CUSTOM_PATH}/${tabId}`,
         tabItems
       )
+      .pipe(catchError((error) => throwError(error.error as ConcenetError)));
+  }
+  /**
+   * Getpriorities
+   *
+   * @returns PriorityDTO[]
+   */
+  public getPriorirites(): Observable<PriorityDTO[]> {
+    return this.http
+      .get<PriorityDTO[]>(`${this.env.apiBaseUrl}${this.GET_CARD_PATH}${this.PRIORITIES_PATH}`)
       .pipe(catchError((error) => throwError(error.error as ConcenetError)));
   }
 }

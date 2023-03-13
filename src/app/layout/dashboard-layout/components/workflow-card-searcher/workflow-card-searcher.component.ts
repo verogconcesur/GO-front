@@ -118,7 +118,6 @@ export class WorkflowCardSearcherComponent implements OnInit {
             }
           });
           const result = Object.keys(dataByWorkflow).map((k) => dataByWorkflow[k]);
-          console.log(result);
           this.cards = result;
           return result;
         } else {
