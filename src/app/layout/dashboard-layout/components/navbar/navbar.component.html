@@ -58,7 +58,7 @@
 </mat-toolbar>
 
 <mat-menu #appMenu="matMenu">
-    <button mat-menu-item>
+    <button mat-menu-item [routerLink]="WORKFLOW_PATH">
         <span>{{ labels.workflow | translate }}</span>
     </button>
     <button mat-menu-item [routerLink]="CLIENTS_PATH">
