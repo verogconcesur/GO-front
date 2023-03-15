@@ -52,10 +52,6 @@ import { AppComponent } from './app.component';
       useClass: TokenInterceptor,
       multi: true
     },
-    // {
-    //   provide: SocketService,
-    //   useFactory: socketServiceFactory
-    // }
     {
       provide: RxStompService,
       useFactory: rxStompServiceFactory
