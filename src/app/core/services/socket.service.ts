@@ -70,9 +70,10 @@ export class SocketService {
       if (this.getIsConnected()) {
         resolve(true);
       }
-      const ws = new SockJS(environment.socketUrl);
+      // const ws = new SockJS(environment.socketUrl);
+      // this.stompClient = Stomp.over(ws);
 
-      this.stompClient = Stomp.over(ws);
+      this.stompClient = Stomp.client(environment.socketUrl);
       // eslint-disable-next-line @typescript-eslint/no-this-alias
       // const that = this;
       this.stompClient.connect(
