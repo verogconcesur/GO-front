@@ -18,7 +18,7 @@ import { ProgressSpinnerDialogService } from '@shared/services/progress-spinner-
 import { haveArraysSameValuesIdObjects } from '@shared/utils/array-comparation-function';
 import lodash from 'lodash';
 import { NGXLogger } from 'ngx-logger';
-import { forkJoin } from 'rxjs';
+import { forkJoin, Subscription } from 'rxjs';
 import { take } from 'rxjs/operators';
 import { WorkflowFilterService } from '../../aux-service/workflow-filter.service';
 import { WorkflowPrepareAndMoveService } from '../../aux-service/workflow-prepare-and-move-aux.service';
@@ -42,6 +42,8 @@ export class WorkflowTableViewComponent implements OnInit {
   };
   private workflowInstances: WorkflowStateDTO[] = [];
   private filters: WorkflowFilterDTO = null;
+  private cardList: WorkflowCardDTO[] = [];
+  private subjectSubscription: Subscription;
   // private askForDataTimeStamp: number;
   // private getDataTimeStamp: number;
   // private renderedDataTimeStamp: number;
@@ -70,6 +72,9 @@ export class WorkflowTableViewComponent implements OnInit {
     });
     this.workflowService.facilitiesSelectedSubject$.pipe(untilDestroyed(this)).subscribe((facilities: FacilityDTO[]) => {
       this.facilities = facilities;
+      if (this.subjectSubscription) {
+        this.subjectSubscription.unsubscribe();
+      }
       this.getData();
     });
     this.workflowFilterService.workflowFilterSubject$.pipe(untilDestroyed(this)).subscribe((filter: WorkflowFilterDTO) => {
@@ -196,6 +201,23 @@ export class WorkflowTableViewComponent implements OnInit {
           this.spinnerService.hide(spinner);
           this.workflowInstances = data[0];
           this.mapWorkflowCardsWithInstances(data[1]);
+          this.cardList = data[1];
+          this.subjectSubscription = this.prepareAndMoveService.moveCard$.pipe(untilDestroyed(this)).subscribe((resp) => {
+            if (resp && resp.cardId) {
+              this.workflowService
+                .getSingleWorkflowCard(resp.cardId, 'TABLE')
+                .pipe(take(1))
+                .subscribe((res) => {
+                  this.cardList = this.cardList.filter(
+                    (card: WorkflowCardDTO) => card.cardInstanceWorkflows[0].id !== resp.cardId
+                  );
+                  this.cardList.push(res);
+                  this.mapWorkflowCardsWithInstances(this.cardList);
+                });
+            } else {
+              this.mapWorkflowCardsWithInstances(this.cardList);
+            }
+          });
         },
         (error: ConcenetError) => {
           this.spinnerService.hide(spinner);
