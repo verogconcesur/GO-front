@@ -54,7 +54,7 @@ export class NewCardComponent implements OnInit {
     information: marker('cards.column.information')
   };
   public contentTypeAvailable = [1, 2];
-  public contentSourceAvailable = [1, 2, 3];
+  public contentSourceAvailable = [1, 2, 3, 6];
   public cardDetailSelected: CardDTO;
   public subStateSelected: WorkflowSubstateDTO;
   public currentWorkflowId: number;
@@ -103,7 +103,8 @@ export class NewCardComponent implements OnInit {
               customerId: null,
               information: null,
               vehicleInventoryId: null,
-              userId: null
+              userId: null,
+              repairOrderId: null
             },
             cardInstanceWorkflowUsers: []
           };
@@ -203,6 +204,7 @@ export class NewCardComponent implements OnInit {
           vehicleId: number;
           vehicleInventoryId: number;
           userId: number;
+          repairOrderId: number;
           information: string;
         }) => {
           switch (tab.contentSourceId) {
@@ -215,6 +217,9 @@ export class NewCardComponent implements OnInit {
               break;
             case 3:
               cardBody.cardInstance.userId = tab.userId;
+              break;
+            case 6:
+              cardBody.cardInstance.repairOrderId = tab.repairOrderId;
               break;
             case null:
               cardBody.cardInstance.information = tab.information;
@@ -248,6 +253,7 @@ export class NewCardComponent implements OnInit {
         customerId: [''],
         vehicleId: [''],
         userId: [''],
+        repairOrderId: [''],
         vehicleInventoryId: [''],
         information: ['', Validators.required]
       });
@@ -271,6 +277,7 @@ export class NewCardComponent implements OnInit {
           customerId: [''],
           vehicleId: [''],
           userId: [''],
+          repairOrderId: [''],
           vehicleInventoryId: [''],
           information: ['']
         });

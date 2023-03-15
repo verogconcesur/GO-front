@@ -25,6 +25,11 @@ import {
   CreateEditVehicleComponentModalEnum,
   ModalVehicleComponent
 } from '@modules/feature-modules/modal-vehicle/modal-vehicle.component';
+import RepairOrderEntityDTO from '@data/models/entities/repair-order-entity-dto';
+import {
+  CreateEditRepairOrderComponentModalEnum,
+  ModalRepairOrderComponent
+} from '@modules/feature-modules/modal-repair-order/modal-repair-order.component';
 
 @Component({
   selector: 'app-workflow-column-customizable-entity',
@@ -43,11 +48,14 @@ export class WorkflowColumnCustomizableEntityComponent implements OnInit, OnChan
     changeUser: marker('workflows.changeUser'),
     changeVehicle: marker('workflows.changeVehicle'),
     changeCustomer: marker('workflows.changeCustomer'),
+    changeRepairOrder: marker('workflows.changeRepairOrder'),
     editVehicle: marker('entities.vehicles.edit'),
     editCustomer: marker('entities.customers.edit'),
+    editRepairOrder: marker('entities.repairOrders.edit'),
     setUser: marker('workflows.setUser'),
     setVehicle: marker('workflows.setVehicle'),
-    setCustomer: marker('workflows.setCustomer')
+    setCustomer: marker('workflows.setCustomer'),
+    setRepairOrder: marker('workflows.setRepairOrder')
   };
 
   public entityData: WorkflowCardTabItemDTO[] = [];
@@ -79,7 +87,7 @@ export class WorkflowColumnCustomizableEntityComponent implements OnInit, OnChan
   }
 
   public showEditEntity(): boolean {
-    if (this.tab.permissionType === 'EDIT' && [1, 2].indexOf(this.tab.contentSourceId) >= 0 && this.entityData?.length) {
+    if (this.tab.permissionType === 'EDIT' && [1, 2, 6].indexOf(this.tab.contentSourceId) >= 0 && this.entityData?.length) {
       return true;
     }
     return false;
@@ -91,13 +99,15 @@ export class WorkflowColumnCustomizableEntityComponent implements OnInit, OnChan
         return this.labels.editCustomer;
       case 2:
         return this.labels.editVehicle;
+      case 6:
+        return this.labels.editRepairOrder;
       default:
         return '';
     }
   }
 
   public showChangeOrAsignEntity(): boolean {
-    if (this.tab.permissionType === 'EDIT' && [1, 2, 3].indexOf(this.tab.contentSourceId) >= 0) {
+    if (this.tab.permissionType === 'EDIT' && [1, 2, 3, 6].indexOf(this.tab.contentSourceId) >= 0) {
       return true;
     }
     return false;
@@ -112,6 +122,8 @@ export class WorkflowColumnCustomizableEntityComponent implements OnInit, OnChan
         return this.labels[`${prefix}Vehicle`];
       case 3:
         return this.labels[`${prefix}User`];
+      case 6:
+        return this.labels[`${prefix}RepairOrder`];
       default:
         return '';
     }
@@ -156,7 +168,7 @@ export class WorkflowColumnCustomizableEntityComponent implements OnInit, OnChan
   }
 
   public changeEntity(): void {
-    let mode: 'USER' | 'CUSTOMER' | 'VEHICLE' = 'USER';
+    let mode: 'USER' | 'CUSTOMER' | 'VEHICLE' | 'REPAIRORDER' = 'USER';
     switch (this.tab.contentSourceId) {
       case 1:
         mode = 'CUSTOMER';
@@ -166,6 +178,9 @@ export class WorkflowColumnCustomizableEntityComponent implements OnInit, OnChan
         break;
       case 3:
         mode = 'USER';
+        break;
+      case 6:
+        mode = 'REPAIRORDER';
         break;
     }
     this.setShowLoading.emit(true);
@@ -246,6 +261,33 @@ export class WorkflowColumnCustomizableEntityComponent implements OnInit, OnChan
                     actionText: this.translateService.instant(marker('common.close'))
                   });
                   this.prepareAndMoveService.reloadData$.next('UPDATE_INFORMATION');
+                }
+              });
+          });
+        break;
+      case 6:
+        //'Repair Order';
+        this.entitiesService
+          .getRepairOrder(this.cardInstance.cardInstanceWorkflow.cardInstance.repairOrderId)
+          .subscribe((data: RepairOrderEntityDTO) => {
+            this.setShowLoading.emit(false);
+            this.customDialogService
+              .open({
+                id: CreateEditRepairOrderComponentModalEnum.ID,
+                panelClass: CreateEditRepairOrderComponentModalEnum.PANEL_CLASS,
+                component: ModalRepairOrderComponent,
+                extendedComponentData: data ? data : null,
+                disableClose: true,
+                width: '900px'
+              })
+              .pipe(take(1))
+              .subscribe((response) => {
+                if (response) {
+                  this.globalMessageService.showSuccess({
+                    message: this.translateService.instant(marker('common.successOperation')),
+                    actionText: this.translateService.instant(marker('common.close'))
+                  });
+                  this.prepareAndMoveService.reloadData$.next('MOVES_IN_OTHER_WORKFLOWS');
                 }
               });
           });

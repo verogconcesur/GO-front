@@ -3,6 +3,7 @@ import { FormGroup, UntypedFormBuilder, Validators } from '@angular/forms';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { marker } from '@biesbjerg/ngx-translate-extract-marker';
 import CustomerEntityDTO from '@data/models/entities/customer-entity-dto';
+import RepairOrderEntityDTO from '@data/models/entities/repair-order-entity-dto';
 import UserEntityDTO from '@data/models/entities/user-entity-dto';
 import VehicleEntityDTO, { InventoryVehicle } from '@data/models/entities/vehicle-entity-dto';
 import { EntitiesService } from '@data/services/entities.service';
@@ -15,6 +16,14 @@ import {
   ModalCustomerExternalApiComponent
 } from '../modal-customer-external-api/modal-customer-external-api.component';
 import { CreateEditCustomerComponentModalEnum, ModalCustomerComponent } from '../modal-customer/modal-customer.component';
+import {
+  CreateEditRepairOrderExternalApiComponentModalEnum,
+  ModalRepairOrderExternalApiComponent
+} from '../modal-repair-order-external-api/modal-repair-order-external-api.component';
+import {
+  CreateEditRepairOrderComponentModalEnum,
+  ModalRepairOrderComponent
+} from '../modal-repair-order/modal-repair-order.component';
 import {
   CreateEditVehicleExternalApiComponentModalEnum,
   ModalVehicleExternalApiComponent
@@ -29,23 +38,28 @@ import { CreateEditVehicleComponentModalEnum, ModalVehicleComponent } from '../m
 export class EntitiesSearcherDialogComponent implements OnInit {
   public workflowId: number;
   public facilityId: number;
-  public mode: 'USER' | 'CUSTOMER' | 'VEHICLE';
+  public mode: 'USER' | 'CUSTOMER' | 'VEHICLE' | 'REPAIRORDER';
   public labels = {
     userSearcher: marker('user.searchDialog'),
     vehicleSearcher: marker('vehicle.searchDialog'),
     customerSearcher: marker('customer.searchDialog'),
+    repairOrderSearcher: marker('repairOrder.searchDialog'),
     createCustomer: marker('entities.customers.create'),
     createVehicle: marker('entities.vehicles.create'),
+    createRepairOrder: marker('entities.repairOrders.create'),
     importCustomer: marker('entities.customers.import'),
+    importVehicle: marker('entities.vehicles.import'),
+    importRepairOrder: marker('entities.repairOrders.import'),
     inventory: marker('entities.vehicles.inventory'),
     vehicle: marker('entities.vehicles.vehicle'),
     customer: marker('entities.customers.customer'),
+    repairOrder: marker('entities.repairOrders.repairOrder'),
     user: marker('entities.user.user'),
-    importVehicle: marker('entities.vehicles.import'),
     search: marker('common.search'),
     userNotFound: marker('newCard.errors.userNotFound'),
     vehicleNotFound: marker('newCard.errors.vehicleNotFound'),
     customerNotFound: marker('newCard.errors.customerNotFound'),
+    repairOrderNotFound: marker('newCard.errors.repairOrderNotFound'),
     dataNotFound: marker('newCard.errors.dataNotFound'),
     required: marker('errors.required'),
     save: marker('common.save')
@@ -53,7 +67,7 @@ export class EntitiesSearcherDialogComponent implements OnInit {
   public searchForm: FormGroup;
   public entityForm: FormGroup;
   public searching = false;
-  public entityList: VehicleEntityDTO[] | UserEntityDTO[] | CustomerEntityDTO[] = [];
+  public entityList: VehicleEntityDTO[] | UserEntityDTO[] | CustomerEntityDTO[] | RepairOrderEntityDTO[] = [];
   public inventoryList: InventoryVehicle[] = [];
 
   constructor(
@@ -63,7 +77,8 @@ export class EntitiesSearcherDialogComponent implements OnInit {
     private translateService: TranslateService,
     private globalMessageService: GlobalMessageService,
     private customDialogService: CustomDialogService,
-    @Inject(MAT_DIALOG_DATA) public dialogData: { workflowId: number; facilityId: number; mode: 'USER' | 'CUSTOMER' | 'VEHICLE' }
+    @Inject(MAT_DIALOG_DATA)
+    public dialogData: { workflowId: number; facilityId: number; mode: 'USER' | 'CUSTOMER' | 'VEHICLE' | 'REPAIRORDER' }
   ) {}
 
   ngOnInit(): void {
@@ -89,12 +104,14 @@ export class EntitiesSearcherDialogComponent implements OnInit {
         return this.labels.customerSearcher;
       case 'VEHICLE':
         return this.labels.vehicleSearcher;
+      case 'REPAIRORDER':
+        return this.labels.repairOrderSearcher;
       default:
         return '';
     }
   }
   public showCreateEntity(): boolean {
-    if (this.mode === 'CUSTOMER' || this.mode === 'VEHICLE') {
+    if (this.mode === 'CUSTOMER' || this.mode === 'VEHICLE' || this.mode === 'REPAIRORDER') {
       return true;
     }
     return false;
@@ -105,6 +122,8 @@ export class EntitiesSearcherDialogComponent implements OnInit {
         return this.labels.createCustomer;
       case 'VEHICLE':
         return this.labels.createVehicle;
+      case 'REPAIRORDER':
+        return this.labels.createRepairOrder;
       default:
         return '';
     }
@@ -115,6 +134,8 @@ export class EntitiesSearcherDialogComponent implements OnInit {
         return this.labels.importCustomer;
       case 'VEHICLE':
         return this.labels.importVehicle;
+      case 'REPAIRORDER':
+        return this.labels.importRepairOrder;
       default:
         return '';
     }
@@ -209,6 +230,50 @@ export class EntitiesSearcherDialogComponent implements OnInit {
             });
         }
         break;
+      case 'REPAIRORDER':
+        if (importEntity) {
+          this.customDialogService
+            .open({
+              id: CreateEditRepairOrderExternalApiComponentModalEnum.ID,
+              panelClass: CreateEditRepairOrderExternalApiComponentModalEnum.PANEL_CLASS,
+              component: ModalRepairOrderExternalApiComponent,
+              disableClose: true,
+              extendedComponentData: { facility: this.facilityId },
+              width: '900px'
+            })
+            .pipe(take(1))
+            .subscribe((response) => {
+              if (response) {
+                this.globalMessageService.showSuccess({
+                  message: this.translateService.instant(marker('common.successOperation')),
+                  actionText: this.translateService.instant(marker('common.close'))
+                });
+                this.searchForm.get('search').setValue(response);
+                this.selectEntity();
+              }
+            });
+        } else {
+          this.customDialogService
+            .open({
+              id: CreateEditRepairOrderComponentModalEnum.ID,
+              panelClass: CreateEditRepairOrderComponentModalEnum.PANEL_CLASS,
+              component: ModalRepairOrderComponent,
+              disableClose: true,
+              width: '900px'
+            })
+            .pipe(take(1))
+            .subscribe((response) => {
+              if (response) {
+                this.globalMessageService.showSuccess({
+                  message: this.translateService.instant(marker('common.successOperation')),
+                  actionText: this.translateService.instant(marker('common.close'))
+                });
+                this.searchForm.get('search').setValue(response);
+                this.selectEntity();
+              }
+            });
+        }
+        break;
     }
   }
 
@@ -236,6 +301,12 @@ export class EntitiesSearcherDialogComponent implements OnInit {
             this.searching = false;
           });
           break;
+        case 'REPAIRORDER':
+          this.entitiesService.searchRepairOrders(this.searchForm.getRawValue()).subscribe((res: RepairOrderEntityDTO[]) => {
+            this.entityList = res;
+            this.searching = false;
+          });
+          break;
         default:
           this.entityList = [];
           this.searching = false;
@@ -247,7 +318,8 @@ export class EntitiesSearcherDialogComponent implements OnInit {
   }
 
   public selectEntity(): void {
-    const entity: VehicleEntityDTO | UserEntityDTO | CustomerEntityDTO = this.searchForm.get('search').value;
+    const entity: VehicleEntityDTO | UserEntityDTO | CustomerEntityDTO | RepairOrderEntityDTO =
+      this.searchForm.get('search').value;
     this.entityForm.get('entity').setValue(entity);
     this.entityForm.get('vehicleInventoryId').setValue(null);
     if (this.mode === 'VEHICLE') {
@@ -288,6 +360,9 @@ export class EntitiesSearcherDialogComponent implements OnInit {
           textOptionUser = textOptionUser + '/' + user.email;
         }
         return textOptionUser;
+      case 'REPAIRORDER':
+        const repairOrder = entity as RepairOrderEntityDTO;
+        return repairOrder.reference;
     }
   }
 
@@ -314,6 +389,8 @@ export class EntitiesSearcherDialogComponent implements OnInit {
         return this.translateService.instant(this.labels.vehicle);
       case 'USER':
         return this.translateService.instant(this.labels.user);
+      case 'REPAIRORDER':
+        return this.translateService.instant(this.labels.repairOrder);
       default:
         return this.translateService.instant(this.labels.user);
     }
@@ -330,6 +407,8 @@ export class EntitiesSearcherDialogComponent implements OnInit {
         return this.translateService.instant(this.labels.vehicleNotFound);
       case 'USER':
         return this.translateService.instant(this.labels.userNotFound);
+      case 'REPAIRORDER':
+        return this.translateService.instant(this.labels.repairOrderNotFound);
       default:
         return this.translateService.instant(this.labels.dataNotFound);
     }

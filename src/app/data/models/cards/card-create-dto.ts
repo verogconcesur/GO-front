@@ -8,6 +8,7 @@ export default interface CardCreateDTO {
     information?: string;
     vehicleInventoryId?: number;
     userId?: number;
+    repairOrderId?: number;
   };
   cardInstanceWorkflowUsers?: WorkflowSubstateUserDTO[];
   workflowSubstateId: number;

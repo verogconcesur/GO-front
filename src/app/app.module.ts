@@ -8,8 +8,6 @@ import { translateLoaderFactory } from '@app/locale/translate-loader.factory';
 import { TokenInterceptor } from '@app/security/token.interceptor';
 import { rxStompServiceFactory } from '@app/services/rx-stomp-service-factory';
 import { RxStompService } from '@app/services/rx-stomp.service';
-import { socketServiceFactory } from '@app/services/socket-service-factory';
-import { SocketService } from '@app/services/socket.service';
 import { environment } from '@env';
 import { LayoutModule } from '@layout/layout.module';
 import { TranslateCompiler, TranslateLoader, TranslateModule, TranslateService } from '@ngx-translate/core';
@@ -55,13 +53,9 @@ import { AppComponent } from './app.component';
       multi: true
     },
     {
-      provide: SocketService,
-      useFactory: socketServiceFactory
+      provide: RxStompService,
+      useFactory: rxStompServiceFactory
     }
-    // {
-    //   provide: RxStompService,
-    //   useFactory: rxStompServiceFactory
-    // }
   ],
   bootstrap: [AppComponent]
 })
