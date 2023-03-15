@@ -67,7 +67,7 @@ export class WorkflowColumnCustomizableCustomComponent implements OnInit, OnChan
             cardTabItemInstance
           ) {
             cardTabItemInstance.value = cardTabItemInstance.value
-              ? moment(cardTabItemInstance.value, 'DD/MM/YYYY').toDate()
+              ? moment(cardTabItemInstance.value as string, 'DD/MM/YYYY').toDate()
               : null;
           }
           if (
@@ -75,7 +75,9 @@ export class WorkflowColumnCustomizableCustomComponent implements OnInit, OnChan
             tabItem.tabItemConfigInput.dateType === 'DATETIME' &&
             cardTabItemInstance
           ) {
-            cardTabItemInstance.value = cardTabItemInstance.value ? moment(cardTabItemInstance.value, 'DD/MM/YYYY HH:mm') : null;
+            cardTabItemInstance.value = cardTabItemInstance.value
+              ? moment(cardTabItemInstance.value as string, 'DD/MM/YYYY HH:mm')
+              : null;
           }
           if (
             tabItem.tabItemConfigInput.dataType === 'TEMPORAL' &&
@@ -102,6 +104,9 @@ export class WorkflowColumnCustomizableCustomComponent implements OnInit, OnChan
           break;
         case 'OPTION':
           cardTabItemInstance = tabItem.tabItemConfigOption.cardTabItemInstance;
+          if (cardTabItemInstance && cardTabItemInstance.value) {
+            cardTabItemInstance.value = cardTabItemInstance.value === 'true';
+          }
           break;
       }
       this.tabForm.push(
@@ -127,9 +132,9 @@ export class WorkflowColumnCustomizableCustomComponent implements OnInit, OnChan
     this.editMode = false;
     this.setShowLoading.emit(true);
     let bodyItems = this.tabForm.getRawValue();
-    bodyItems = bodyItems.filter((item: WorkflowCardTabitemInstanceDTO) => item.value);
+    bodyItems = bodyItems.filter((item: WorkflowCardTabitemInstanceDTO) => item.value !== null);
     bodyItems = bodyItems.map((item: WorkflowCardTabitemInstanceDTO) => {
-      if (item.tabItem.tabItemConfigInput && item.tabItem.tabItemConfigInput.dataType === 'TEMPORAL') {
+      if (item.value && item.tabItem.tabItemConfigInput && item.tabItem.tabItemConfigInput.dataType === 'TEMPORAL') {
         const date = moment(item.value);
         switch (item.tabItem.tabItemConfigInput.dateType) {
           case 'DATE':
@@ -145,7 +150,7 @@ export class WorkflowColumnCustomizableCustomComponent implements OnInit, OnChan
             break;
         }
       }
-      if (item.tabItem.tabItemConfigList && item.tabItem.tabItemConfigList.selectionType === 'MULTIPLE') {
+      if (item.value && item.tabItem.tabItemConfigList && item.tabItem.tabItemConfigList.selectionType === 'MULTIPLE') {
         item.value = JSON.stringify(item.value);
       }
       return item;

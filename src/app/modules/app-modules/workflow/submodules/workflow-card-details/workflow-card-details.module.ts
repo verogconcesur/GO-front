@@ -31,6 +31,7 @@ import { ModalVehicleModule } from '@modules/feature-modules/modal-vehicle/modal
 import { MessageClientDialogComponent } from './subcomponents/message-client-dialog/message-client-dialog.component';
 import { ItemOptionComponent } from './subcomponents/workflow-column-customizable-custom/items/item-option/item-option.component';
 import { ItemListComponent } from './subcomponents/workflow-column-customizable-custom/items/item-list/item-list.component';
+import { ModalRepairOrderModule } from '@modules/feature-modules/modal-repair-order/modal-repair-order.module';
 @NgModule({
   declarations: [
     WorkflowCardDetailsComponent,
@@ -64,7 +65,8 @@ import { ItemListComponent } from './subcomponents/workflow-column-customizable-
     WorkflowCardTasksModule,
     EntitiesSearcherDialogModule,
     ModalCustomerModule,
-    ModalVehicleModule
+    ModalVehicleModule,
+    ModalRepairOrderModule
   ]
 })
 export class WorkflowCardDetailsModule {}
