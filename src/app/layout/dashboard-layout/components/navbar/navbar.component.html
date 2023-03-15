@@ -15,9 +15,7 @@
         <div class="responsive__desktop-and-tablet">
             <div fxLayout="row" fxLayoutAlign="start center">
                 <mat-divider [vertical]="true"></mat-divider>
-                <button mat-button [routerLink]="WORKFLOW_PATH" routerLinkActive="active">
-                    {{ labels.workflow | translate }}
-                </button>
+                <button mat-button [routerLink]="WORKFLOW_PATH" routerLinkActive="active">Workflows</button>
                 <button mat-button [routerLink]="CLIENTS_PATH" routerLinkActive="active">{{ labels.clients | translate }}</button>
                 <button mat-button [routerLink]="VEHICLES_PATH" routerLinkActive="active">
                     {{ labels.vehicles | translate }}
@@ -58,8 +56,8 @@
 </mat-toolbar>
 
 <mat-menu #appMenu="matMenu">
-    <button mat-menu-item>
-        <span>{{ labels.workflow | translate }}</span>
+    <button mat-menu-item [routerLink]="WORKFLOW_PATH">
+        <span>Workflows</span>
     </button>
     <button mat-menu-item [routerLink]="CLIENTS_PATH">
         <span>{{ labels.clients | translate }}</span>
