@@ -92,7 +92,7 @@ export class WorkflowCardDetailsComponent implements OnInit {
       if (resp === 'MOVES_IN_THIS_WORKFLOW') {
         //Si el movimiento ha sido en este workflow cierro el detalle de tarjeta
         this.close();
-      } else if (resp === 'MOVES_IN_OTHER_WORKFLOWS') {
+      } else if (resp === 'MOVES_IN_OTHER_WORKFLOWS' || 'UPDATE_INFORMATION') {
         //Si el movimiento ha sido a otro workflow recargo todo.
         // window.location.reload();
         this.card = null;
