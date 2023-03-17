@@ -8,6 +8,7 @@ import { CustomDialogService } from '@jenga/custom-dialog';
 import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
 import { TranslateService } from '@ngx-translate/core';
 import { ConfirmDialogService } from '@shared/services/confirm-dialog.service';
+import { GlobalMessageService } from '@shared/services/global-message.service';
 import { ProgressSpinnerDialogService } from '@shared/services/progress-spinner-dialog.service';
 import { take } from 'rxjs/operators';
 import { WorkflowsCreateEditAuxService } from '../../aux-service/workflows-create-edit-aux.service';
@@ -50,7 +51,8 @@ export class WorkflowDetailComponent implements OnInit, OnDestroy, AfterViewInit
     private customDialogService: CustomDialogService,
     private translateService: TranslateService,
     private spinnerService: ProgressSpinnerDialogService,
-    private confirmDialogService: ConfirmDialogService
+    private confirmDialogService: ConfirmDialogService,
+    private globalMessageService: GlobalMessageService
   ) {}
 
   ngOnInit(): void {
@@ -92,6 +94,10 @@ export class WorkflowDetailComponent implements OnInit, OnDestroy, AfterViewInit
             (error) => {
               this.spinnerService.hide(spinner);
               this.firstLoad = true;
+              this.globalMessageService.showError({
+                message: error.message,
+                actionText: this.translateService.instant(marker('common.close'))
+              });
             }
           );
       } else {

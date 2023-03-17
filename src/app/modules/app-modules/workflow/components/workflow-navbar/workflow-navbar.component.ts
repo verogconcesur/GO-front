@@ -16,6 +16,7 @@ import { UntilDestroy } from '@ngneat/until-destroy';
 import FacilityDTO from '@data/models/organization/facility-dto';
 import { WorkflowPrepareAndMoveService } from '../../aux-service/workflow-prepare-and-move-aux.service';
 import { ConfirmDialogService } from '@shared/services/confirm-dialog.service';
+import { GlobalMessageService } from '@shared/services/global-message.service';
 
 @UntilDestroy()
 @Component({
@@ -54,7 +55,8 @@ export class WorkflowNavbarComponent implements OnInit, OnDestroy {
     private route: ActivatedRoute,
     private prepareAndMoveService: WorkflowPrepareAndMoveService,
     private router: Router,
-    private confirmationDialog: ConfirmDialogService
+    private confirmationDialog: ConfirmDialogService,
+    private globalMessageService: GlobalMessageService
   ) {}
 
   ngOnInit(): void {
@@ -201,7 +203,10 @@ export class WorkflowNavbarComponent implements OnInit, OnDestroy {
                 this.prepareAndMoveService.reloadData$.next('MOVES_IN_THIS_WORKFLOW');
               },
               (error) => {
-                console.error(error);
+                this.globalMessageService.showError({
+                  message: error.message,
+                  actionText: this.translateService.instant(marker('common.close'))
+                });
               }
             );
         }
@@ -262,6 +267,10 @@ export class WorkflowNavbarComponent implements OnInit, OnDestroy {
         },
         (error) => {
           this.logger.error(error);
+          this.globalMessageService.showError({
+            message: error.message,
+            actionText: this.translateService.instant(marker('common.close'))
+          });
           this.spinnerService.hide(spinner);
         }
       );

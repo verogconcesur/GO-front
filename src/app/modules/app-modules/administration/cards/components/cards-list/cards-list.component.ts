@@ -163,7 +163,7 @@ export class CardsListComponent implements OnInit {
               },
               error: (error) => {
                 this.globalMessageService.showError({
-                  message: this.translateService.instant(marker('common.successOperation')),
+                  message: error.message,
                   actionText: this.translateService.instant(marker('common.close'))
                 });
               }
@@ -194,7 +194,7 @@ export class CardsListComponent implements OnInit {
               },
               error: (error) => {
                 this.globalMessageService.showError({
-                  message: this.translateService.instant(marker('common.successOperation')),
+                  message: error.message,
                   actionText: this.translateService.instant(marker('common.close'))
                 });
               }
