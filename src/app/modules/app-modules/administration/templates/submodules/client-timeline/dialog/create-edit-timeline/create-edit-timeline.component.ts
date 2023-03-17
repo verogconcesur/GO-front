@@ -321,7 +321,10 @@ export class CreateEditTimelineComponent extends ComponentToExtendForCustomDialo
           this.getDepartmentsOptions(initialLoad);
         },
         error: (error) => {
-          this.logger.error(error);
+          this.globalMessageService.showError({
+            message: error.message,
+            actionText: this.translateService.instant(marker('common.close'))
+          });
         }
       });
   }
@@ -359,7 +362,10 @@ export class CreateEditTimelineComponent extends ComponentToExtendForCustomDialo
           this.getSpecialtiesOptions(initialLoad);
         },
         error: (error) => {
-          this.logger.error(error);
+          this.globalMessageService.showError({
+            message: error.message,
+            actionText: this.translateService.instant(marker('common.close'))
+          });
         }
       });
   }
@@ -396,7 +402,10 @@ export class CreateEditTimelineComponent extends ComponentToExtendForCustomDialo
           this.timelineForm.get('template.specialties').setValue(selected);
         },
         error: (error) => {
-          this.logger.error(error);
+          this.globalMessageService.showError({
+            message: error.message,
+            actionText: this.translateService.instant(marker('common.close'))
+          });
         }
       });
   }
