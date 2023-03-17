@@ -324,6 +324,9 @@ export class EntitiesSearcherDialogComponent implements OnInit {
     this.entityForm.get('vehicleInventoryId').setValue(null);
     if (this.mode === 'VEHICLE') {
       this.inventoryList = (entity as VehicleEntityDTO).inventories ? (entity as VehicleEntityDTO).inventories : [];
+      if (this.inventoryList.length === 1) {
+        this.entityForm.get('vehicleInventoryId').setValue(this.inventoryList[0].id);
+      }
     }
     this.searchForm.get('search').setValue('');
   }

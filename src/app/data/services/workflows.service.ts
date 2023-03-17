@@ -261,7 +261,9 @@ export class WorkflowsService {
   }
 
   public syncData(workflowId: number): Observable<any> {
-    return this.http.get<any>(`${this.env.apiBaseUrl}${this.GET_WORKFLOWS_PATH}/${workflowId}${this.SYNCRONIZE_PATH}`);
+    return this.http
+      .get<any>(`${this.env.apiBaseUrl}${this.GET_WORKFLOWS_PATH}/${workflowId}${this.SYNCRONIZE_PATH}`)
+      .pipe(catchError((error) => throwError(error.error as ConcenetError)));
   }
 
   public getSubStateUsers(

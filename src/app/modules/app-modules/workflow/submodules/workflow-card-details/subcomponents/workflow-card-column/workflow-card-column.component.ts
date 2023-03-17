@@ -8,6 +8,7 @@ import { WorkflowPrepareAndMoveService } from '@modules/app-modules/workflow/aux
 import { TranslateService } from '@ngx-translate/core';
 import { ResponsiveTabI } from '@shared/components/responsive-tabs/responsive-tabs.component';
 import { ConfirmDialogService } from '@shared/services/confirm-dialog.service';
+import { GlobalMessageService } from '@shared/services/global-message.service';
 import { finalize, take } from 'rxjs/operators';
 
 @Component({
@@ -33,7 +34,8 @@ export class WorkflowCardColumnComponent implements OnInit {
     private cardService: CardService,
     private prepareAndMoveService: WorkflowPrepareAndMoveService,
     private confirmationDialog: ConfirmDialogService,
-    private translateService: TranslateService
+    private translateService: TranslateService,
+    private globalMessageService: GlobalMessageService
   ) {}
 
   ngOnInit(): void {
@@ -83,9 +85,17 @@ export class WorkflowCardColumnComponent implements OnInit {
               take(1),
               finalize(() => (this.synchronizingData = false))
             )
-            .subscribe((data) => {
-              this.prepareAndMoveService.reloadData$.next('MOVES_IN_OTHER_WORKFLOWS');
-            });
+            .subscribe(
+              (data) => {
+                this.prepareAndMoveService.reloadData$.next('MOVES_IN_OTHER_WORKFLOWS');
+              },
+              (error) => {
+                this.globalMessageService.showError({
+                  message: error.message,
+                  actionText: this.translateService.instant(marker('common.close'))
+                });
+              }
+            );
         }
       });
   }
