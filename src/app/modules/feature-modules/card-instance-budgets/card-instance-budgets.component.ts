@@ -114,17 +114,18 @@ export class CardInstanceBudgetsComponent implements OnInit {
       })
       .subscribe((ok: boolean) => {
         if (ok) {
+          const budgetData = budget.getRawValue();
+          budgetData.attachments = budgetData.attachments.map((att1: CardBudgetAttachmentsDTO) => {
+            let attachment = att1;
+            if (
+              budgetData.attachmentsOriginal?.length &&
+              budgetData.attachmentsOriginal.find((att2: CardBudgetAttachmentsDTO) => att1.file.id === att2.file.id)
+            ) {
+              attachment = budgetData.attachmentsOriginal.find((att2: CardBudgetAttachmentsDTO) => att1.file.id === att2.file.id);
+            }
+            return attachment;
+          });
           if (budget.value.id) {
-            const budgetData = budget.getRawValue();
-            budgetData.attachments = budgetData.attachments.map((att1: CardBudgetAttachmentsDTO) => {
-              let attachment = att1;
-              if (budgetData.attachmentsOriginal.find((att2: CardBudgetAttachmentsDTO) => att1.file.id === att2.file.id)) {
-                attachment = budgetData.attachmentsOriginal.find(
-                  (att2: CardBudgetAttachmentsDTO) => att1.file.id === att2.file.id
-                );
-              }
-              return attachment;
-            });
             this.budgetsService
               .editLine(this.cardInstanceWorkflowId, this.tabId, budgetData)
               .pipe(take(1))
@@ -143,7 +144,7 @@ export class CardInstanceBudgetsComponent implements OnInit {
               );
           } else {
             this.budgetsService
-              .addLines(this.cardInstanceWorkflowId, this.tabId, [budget.getRawValue()])
+              .addLines(this.cardInstanceWorkflowId, this.tabId, [budgetData])
               .pipe(take(1))
               .subscribe(
                 (data) => {
@@ -208,7 +209,8 @@ export class CardInstanceBudgetsComponent implements OnInit {
           description: ['', Validators.required],
           editMode: [true],
           workflowId: [this.cardInstanceBudgetsConfig.workflowId],
-          attachments: []
+          attachments: [],
+          attachmentsOriginal: []
         })
       );
     } else {
@@ -236,7 +238,9 @@ export class CardInstanceBudgetsComponent implements OnInit {
                 amount: ['', [Validators.max(this.maxAmount), Validators.required]],
                 description: ['', Validators.required],
                 editMode: [true],
-                workflowId: [this.cardInstanceBudgetsConfig.workflowId]
+                workflowId: [this.cardInstanceBudgetsConfig.workflowId],
+                attachments: [],
+                attachmentsOriginal: []
               })
             );
           } else if (response) {
