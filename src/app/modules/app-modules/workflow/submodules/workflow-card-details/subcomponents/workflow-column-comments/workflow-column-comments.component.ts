@@ -66,12 +66,12 @@ export class WorkflowColumnCommentsComponent implements OnInit, OnDestroy {
     this.interval = setInterval(() => {
       // this.getData(false, false, true);
     }, this.timeBeforeMarkAsRead);
-    this.rxStompService
-      .watch('/topic/newcomment/workflow-2/facility-1')
-      .pipe(untilDestroyed(this))
-      .subscribe((data: IMessage) => {
-        console.log(data.body);
-      });
+    // this.rxStompService
+    //   .watch('/topic/newcomment/workflow-2/facility-1')
+    //   .pipe(untilDestroyed(this))
+    //   .subscribe((data: IMessage) => {
+    //     console.log(data.body);
+    //   });
   }
 
   ngOnDestroy(): void {

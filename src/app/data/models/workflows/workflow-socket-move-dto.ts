@@ -1,3 +1,4 @@
 export default interface WorkflowSocketMoveDTO {
-  cardId: number;
+  cardInstanceWorkflowId: number;
+  message?: 'MOVEMENT' | 'NEW_CARD' | 'UPDATE_DATA';
 }
