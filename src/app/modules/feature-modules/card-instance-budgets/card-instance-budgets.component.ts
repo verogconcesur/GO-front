@@ -115,16 +115,22 @@ export class CardInstanceBudgetsComponent implements OnInit {
       .subscribe((ok: boolean) => {
         if (ok) {
           const budgetData = budget.getRawValue();
-          budgetData.attachments = budgetData.attachments.map((att1: CardBudgetAttachmentsDTO) => {
-            let attachment = att1;
-            if (
-              budgetData.attachmentsOriginal?.length &&
-              budgetData.attachmentsOriginal.find((att2: CardBudgetAttachmentsDTO) => att1.file.id === att2.file.id)
-            ) {
-              attachment = budgetData.attachmentsOriginal.find((att2: CardBudgetAttachmentsDTO) => att1.file.id === att2.file.id);
-            }
-            return attachment;
-          });
+          if (budgetData.attachments?.length) {
+            budgetData.attachments = budgetData.attachments.map((att1: CardBudgetAttachmentsDTO) => {
+              let attachment = att1;
+              if (
+                budgetData.attachmentsOriginal?.length &&
+                budgetData.attachmentsOriginal.find((att2: CardBudgetAttachmentsDTO) => att1.file.id === att2.file.id)
+              ) {
+                attachment = budgetData.attachmentsOriginal.find(
+                  (att2: CardBudgetAttachmentsDTO) => att1.file.id === att2.file.id
+                );
+              }
+              return attachment;
+            });
+          } else {
+            budgetData.attachments = [];
+          }
           if (budget.value.id) {
             this.budgetsService
               .editLine(this.cardInstanceWorkflowId, this.tabId, budgetData)
