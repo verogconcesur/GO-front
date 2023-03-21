@@ -203,13 +203,13 @@ export class WorkflowTableViewComponent implements OnInit {
           this.mapWorkflowCardsWithInstances(data[1]);
           this.cardList = data[1];
           this.subjectSubscription = this.prepareAndMoveService.moveCard$.pipe(untilDestroyed(this)).subscribe((resp) => {
-            if (resp && resp.cardId) {
+            if (resp && resp.cardInstanceWorkflowId) {
               this.workflowService
-                .getSingleWorkflowCard(resp.cardId, 'TABLE')
+                .getSingleWorkflowCard(resp.cardInstanceWorkflowId, 'TABLE')
                 .pipe(take(1))
                 .subscribe((res) => {
                   this.cardList = this.cardList.filter(
-                    (card: WorkflowCardDTO) => card.cardInstanceWorkflows[0].id !== resp.cardId
+                    (card: WorkflowCardDTO) => card.cardInstanceWorkflows[0].id !== resp.cardInstanceWorkflowId
                   );
                   this.cardList.push(res);
                   this.mapWorkflowCardsWithInstances(this.cardList);

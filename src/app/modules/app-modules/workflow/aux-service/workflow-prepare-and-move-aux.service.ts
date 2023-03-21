@@ -167,11 +167,6 @@ export class WorkflowPrepareAndMoveService {
                   };
                 }) => {
                   if (!res) {
-                    //Recargamos para que al mover tarjeta en vista board no se quede pillado el hover de cdk drag and drop
-                    this.reloadData$.next(view);
-                    // if (item?.cardInstanceWorkflows?.length) {
-                    //   this.moveCard$.next({ cardId: item.cardInstanceWorkflows[0].id });
-                    // }
                     this.spinnerService.hide(this.spinner);
                     return;
                   }
@@ -314,7 +309,6 @@ export class WorkflowPrepareAndMoveService {
                   this.moveCard(item, targetId, user, dropZoneId, itemToReplace, view);
                 },
                 (error) => {
-                  this.reloadData$.next(null);
                   this.spinnerService.hide(this.spinner);
                   this.globalMessageService.showError({
                     message: error?.message ? error.message : this.translateService.instant(marker('errors.unknown')),
@@ -338,7 +332,6 @@ export class WorkflowPrepareAndMoveService {
           // view?: 'MOVES_IN_THIS_WORKFLOW' | 'MOVES_IN_OTHER_WORKFLOWS'
         },
         (error) => {
-          this.reloadData$.next(null);
           this.spinnerService.hide(this.spinner);
           this.globalMessageService.showError({
             message: error?.message ? error.message : this.translateService.instant(marker('errors.unknown')),
@@ -394,10 +387,6 @@ export class WorkflowPrepareAndMoveService {
             this.spinner = null;
             this.prepareAndMove(item, resp[0], null, user, dropZoneId, itemToReplace, 'MOVES_IN_THIS_WORKFLOW');
           } else {
-            this.reloadData$.next(view);
-            // if (item?.cardInstanceWorkflows?.length) {
-            //   this.moveCard$.next({ cardId: item.cardInstanceWorkflows[0].id });
-            // }
             this.spinner = null;
           }
         },

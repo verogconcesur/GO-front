@@ -85,7 +85,6 @@ export class WorkflowCardColumnComponent implements OnInit {
             )
             .subscribe((data) => {
               this.prepareAndMoveService.reloadData$.next('UPDATE_INFORMATION');
-              this.prepareAndMoveService.moveCard$.next({ cardId: this.cardInstance.cardInstanceWorkflow.id });
             });
         }
       });
