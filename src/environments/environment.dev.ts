@@ -5,6 +5,6 @@ export const environment: Env = {
   appVersion: `${require('../../package.json').version}-dev`,
   production: false,
   apiBaseUrl: 'https://concenet-dev.sdos.es/concenet-rest',
-  socketUrl: 'https://concenet-dev.sdos.es/concenet-rest/socket',
+  socketUrl: 'wss://concenet-dev.sdos.es/concenet-rest/socket/',
   logLevel: NgxLoggerLevel.DEBUG
 };

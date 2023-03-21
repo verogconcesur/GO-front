@@ -41,7 +41,7 @@
                             multiple
                             [disabled]="budgetDisabled(budget)"
                             [compareWith]="compareAttachments"
-                            >>
+                        >
                             <mat-option *ngFor="let attachment of attachmentsList" [value]="attachment">{{
                                 attachment.file.name
                             }}</mat-option>

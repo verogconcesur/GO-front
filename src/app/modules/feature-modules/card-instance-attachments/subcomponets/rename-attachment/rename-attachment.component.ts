@@ -30,7 +30,8 @@ export class RenameAttachmentComponent implements OnInit {
     errorMaxLength: marker('errors.maxLengthError'),
     errorMinLength: marker('errors.minLength'),
     extensionChanged: marker('errors.extensionChanged'),
-    close: marker('common.close')
+    close: marker('common.close'),
+    errorFileNameUsed: marker('errors.errorFileNameUsedInOtherFile')
   };
   public maxLength = 40;
   public minLength = 3;
@@ -41,6 +42,7 @@ export class RenameAttachmentComponent implements OnInit {
   public tabId: number;
   public cardInstanceWorkflowId: number;
   public templateAttachmentItemId: number;
+  private usedNames: string[] = [];
 
   constructor(
     public dialogRef: MatDialogRef<RenameAttachmentComponent>,
@@ -51,7 +53,13 @@ export class RenameAttachmentComponent implements OnInit {
     private attachmentService: CardAttachmentsService,
     private spinnerService: ProgressSpinnerDialogService,
     @Inject(MAT_DIALOG_DATA)
-    public data: { attachment: AttachmentDTO; cardInstanceWorkflowId: number; tabId: number; templateAttachmentItemId: number },
+    public data: {
+      attachment: AttachmentDTO;
+      cardInstanceWorkflowId: number;
+      tabId: number;
+      templateAttachmentItemId: number;
+      attachmentsNames: string[];
+    },
     private fb: FormBuilder
   ) {}
 
@@ -64,6 +72,7 @@ export class RenameAttachmentComponent implements OnInit {
     this.tabId = this.data.tabId;
     this.cardInstanceWorkflowId = this.data.cardInstanceWorkflowId;
     this.templateAttachmentItemId = this.data.templateAttachmentItemId;
+    this.usedNames = this.data.attachmentsNames;
     this.extension = this.attachment.name.split('.')[1];
     this.originalName = this.attachment.name;
     this.initForm();
@@ -129,7 +138,7 @@ export class RenameAttachmentComponent implements OnInit {
           Validators.required,
           Validators.maxLength(this.maxLength),
           Validators.minLength(this.minLength),
-          FilenameValidator.validate('name')
+          FilenameValidator.validate(this.usedNames)
         ])
       ]
     });
