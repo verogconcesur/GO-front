@@ -661,7 +661,7 @@ export class SignDocumentChecklistComponent implements OnInit, AfterViewInit, On
           this.renderingDrawingItems = false;
         });
       }
-      p.mouseDragged = (event) => {
+      p.touchMoved = (event) => {
         let type = 'pencil';
         if ($('#sign-document-pen-eraser:checked').length) {
           type = 'eraser';
@@ -684,7 +684,7 @@ export class SignDocumentChecklistComponent implements OnInit, AfterViewInit, On
           }
         }
       };
-      p.mouseReleased = (event) => {
+      p.touchEnded = (event) => {
         const { canvas } = p.get() as unknown as {
           canvas: HTMLCanvasElement;
         };
@@ -819,8 +819,8 @@ export class SignDocumentChecklistComponent implements OnInit, AfterViewInit, On
   private removeP5s(removeDraws?: boolean): void {
     Object.keys(this.p5s).forEach((k) => {
       const p5Canvas = this.p5s[parseInt(k, 10)];
-      p5Canvas.mouseDragged = (event) => {};
-      p5Canvas.mouseReleased = (event) => {};
+      p5Canvas.touchMoved = (event) => {};
+      p5Canvas.touchEnded = (event) => {};
       p5Canvas.remove();
       this.p5s[parseInt(k, 10)] = null;
     });
