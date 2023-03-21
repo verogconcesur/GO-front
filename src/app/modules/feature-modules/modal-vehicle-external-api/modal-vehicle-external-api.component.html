@@ -120,6 +120,14 @@
                                 inventory.vehicleStockId
                             }}</mat-option>
                         </mat-select>
+                        <button
+                            matSuffix
+                            mat-icon-button
+                            aria-label="Clear"
+                            (click)="removeInventory(); $event.stopPropagation()"
+                        >
+                            <mat-icon>close</mat-icon>
+                        </button>
                         <mat-error *ngIf="vehicleForm.controls?.inventory.invalid">
                             <span *ngIf="vehicleForm.controls.inventory.errors.required">{{ labels.required | translate }}</span>
                         </mat-error>
