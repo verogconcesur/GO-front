@@ -198,7 +198,10 @@ export class WorkflowOrganizationComponent extends WorkflowStepAbstractClass {
               );
           },
           error: (error) => {
-            this.logger.error(error);
+            this.globalMessageService.showError({
+              message: error.message,
+              actionText: this.translateService.instant(marker('common.close'))
+            });
           }
         });
     } else {
@@ -239,7 +242,10 @@ export class WorkflowOrganizationComponent extends WorkflowStepAbstractClass {
             this.getSpecialtiesOptions();
           },
           error: (error) => {
-            this.logger.error(error);
+            this.globalMessageService.showError({
+              message: error.message,
+              actionText: this.translateService.instant(marker('common.close'))
+            });
           }
         });
     } else {
@@ -281,7 +287,10 @@ export class WorkflowOrganizationComponent extends WorkflowStepAbstractClass {
             this.form.get('specialties').setValue(selected);
           },
           error: (error) => {
-            this.logger.error(error);
+            this.globalMessageService.showError({
+              message: error.message,
+              actionText: this.translateService.instant(marker('common.close'))
+            });
           }
         });
     } else {

@@ -185,6 +185,10 @@ export class ModalVehicleExternalApiComponent extends ComponentToExtendForCustom
   public selectInventory(inventory: InventoryVehicle) {
     this.inventorySelected = inventory;
   }
+  public removeInventory() {
+    this.inventorySelected = null;
+    this.vehicleForm.get('inventory').setValue(null);
+  }
   public transformOptionLabel(vehicle: VehicleEntityDTO): string {
     let label = '';
     if (vehicle.licensePlate) {

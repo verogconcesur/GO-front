@@ -313,6 +313,9 @@ export class EntityComponent implements OnInit {
             this.formTab.get('vehicleId').setValue(entity.id);
             this.formTab.get('vehicleInventoryId').setValue(null);
             this.inventoryList = (entity as VehicleEntityDTO).inventories ? (entity as VehicleEntityDTO).inventories : [];
+            if (this.inventoryList.length === 1) {
+              this.formTab.get('vehicleInventoryId').setValue(this.inventoryList[0].id);
+            }
             break;
           case 3:
             this.formTab.get('userId').setValue(entity.id);

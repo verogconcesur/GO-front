@@ -78,6 +78,7 @@ export class ModalRepairOrderExternalApiComponent extends ComponentToExtendForCu
       )
       .subscribe(
         (res) => {
+          this.repairOrderList = res && res.length ? res : [];
           this.activatedSearch = true;
           if (this.repairOrderList.length === 1) {
             this.repairOrderSelected = this.repairOrderList[0];

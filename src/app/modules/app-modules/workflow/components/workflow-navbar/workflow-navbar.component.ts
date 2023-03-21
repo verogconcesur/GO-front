@@ -19,6 +19,7 @@ import { ConfirmDialogService } from '@shared/services/confirm-dialog.service';
 import WorkflowSocketMoveDTO from '@data/models/workflows/workflow-socket-move-dto';
 import { RxStompService } from '@app/services/rx-stomp.service';
 import { IMessage } from '@stomp/stompjs';
+import { GlobalMessageService } from '@shared/services/global-message.service';
 
 @UntilDestroy()
 @Component({
@@ -59,7 +60,8 @@ export class WorkflowNavbarComponent implements OnInit, OnDestroy {
     private prepareAndMoveService: WorkflowPrepareAndMoveService,
     private router: Router,
     private confirmationDialog: ConfirmDialogService,
-    private rxStompService: RxStompService
+    private rxStompService: RxStompService,
+    private globalMessageService: GlobalMessageService
   ) {}
 
   ngOnInit(): void {
@@ -240,7 +242,10 @@ export class WorkflowNavbarComponent implements OnInit, OnDestroy {
                 this.prepareAndMoveService.reloadData$.next('MOVES_IN_THIS_WORKFLOW');
               },
               (error) => {
-                console.error(error);
+                this.globalMessageService.showError({
+                  message: error.message,
+                  actionText: this.translateService.instant(marker('common.close'))
+                });
               }
             );
         }
@@ -302,6 +307,10 @@ export class WorkflowNavbarComponent implements OnInit, OnDestroy {
         },
         (error) => {
           this.logger.error(error);
+          this.globalMessageService.showError({
+            message: error.message,
+            actionText: this.translateService.instant(marker('common.close'))
+          });
           this.spinnerService.hide(spinner);
         }
       );
