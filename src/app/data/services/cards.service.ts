@@ -77,9 +77,9 @@ export class CardService {
    * Sync card
    */
   public syncCard(idCard: number): Observable<any> {
-    return this.http.get<any>(
-      `${this.env.apiBaseUrl}${this.GET_CARD_INSTANCE_PATH}${this.GET_DETAIL_PATH}/${idCard}${this.SYNCRONIZE_PATH}`
-    );
+    return this.http
+      .get<any>(`${this.env.apiBaseUrl}${this.GET_CARD_INSTANCE_PATH}${this.GET_DETAIL_PATH}/${idCard}${this.SYNCRONIZE_PATH}`)
+      .pipe(catchError((error) => throwError(error.error as ConcenetError)));
   }
 
   /**

@@ -3,6 +3,7 @@ import { FormArray, FormBuilder, FormGroup } from '@angular/forms';
 import { marker } from '@biesbjerg/ngx-translate-extract-marker';
 import CardColumnTabItemDTO from '@data/models/cards/card-column-tab-item-dto';
 import CustomerEntityDTO from '@data/models/entities/customer-entity-dto';
+import RepairOrderEntityDTO from '@data/models/entities/repair-order-entity-dto';
 import UserEntityDTO from '@data/models/entities/user-entity-dto';
 import VehicleEntityDTO, { InventoryVehicle } from '@data/models/entities/vehicle-entity-dto';
 import { CardService } from '@data/services/cards.service';
@@ -16,6 +17,14 @@ import {
   CreateEditCustomerComponentModalEnum,
   ModalCustomerComponent
 } from '@modules/feature-modules/modal-customer/modal-customer.component';
+import {
+  CreateEditRepairOrderExternalApiComponentModalEnum,
+  ModalRepairOrderExternalApiComponent
+} from '@modules/feature-modules/modal-repair-order-external-api/modal-repair-order-external-api.component';
+import {
+  CreateEditRepairOrderComponentModalEnum,
+  ModalRepairOrderComponent
+} from '@modules/feature-modules/modal-repair-order/modal-repair-order.component';
 import {
   CreateEditVehicleExternalApiComponentModalEnum,
   ModalVehicleExternalApiComponent
@@ -42,17 +51,20 @@ export class EntityComponent implements OnInit {
     inventory: marker('entities.vehicles.inventory'),
     createCustomer: marker('entities.customers.create'),
     createVehicle: marker('entities.vehicles.create'),
+    createRepairOrder: marker('entities.repairOrders.create'),
     importCustomer: marker('entities.customers.import'),
     importVehicle: marker('entities.vehicles.import'),
+    importRepairOrder: marker('entities.repairOrders.import'),
     userNotFound: marker('newCard.errors.userNotFound'),
     vehicleNotFound: marker('newCard.errors.vehicleNotFound'),
     customerNotFound: marker('newCard.errors.customerNotFound'),
+    repairOrderNotFound: marker('newCard.errors.repairOrderNotFound'),
     dataNotFound: marker('newCard.errors.dataNotFound'),
     required: marker('errors.required')
   };
   public searchForm: FormGroup;
   public searching = false;
-  public entityList: VehicleEntityDTO[] | UserEntityDTO[] | CustomerEntityDTO[] = [];
+  public entityList: VehicleEntityDTO[] | UserEntityDTO[] | CustomerEntityDTO[] | RepairOrderEntityDTO[] = [];
   public inventoryList: InventoryVehicle[] = [];
   constructor(
     private fb: FormBuilder,
@@ -68,7 +80,11 @@ export class EntityComponent implements OnInit {
   }
 
   public showCreateEntity(): boolean {
-    if (this.formTab.get('contentSourceId').value === 1 || this.formTab.get('contentSourceId').value === 2) {
+    if (
+      this.formTab.get('contentSourceId').value === 1 ||
+      this.formTab.get('contentSourceId').value === 2 ||
+      this.formTab.get('contentSourceId').value === 6
+    ) {
       return true;
     }
     return false;
@@ -79,6 +95,8 @@ export class EntityComponent implements OnInit {
         return this.labels.createCustomer;
       case 2:
         return this.labels.createVehicle;
+      case 6:
+        return this.labels.createRepairOrder;
       default:
         return '';
     }
@@ -89,6 +107,8 @@ export class EntityComponent implements OnInit {
         return this.labels.importCustomer;
       case 2:
         return this.labels.importVehicle;
+      case 6:
+        return this.labels.importRepairOrder;
       default:
         return '';
     }
@@ -183,6 +203,50 @@ export class EntityComponent implements OnInit {
             });
         }
         break;
+      case 6:
+        if (importEntity) {
+          this.customDialogService
+            .open({
+              id: CreateEditRepairOrderExternalApiComponentModalEnum.ID,
+              panelClass: CreateEditRepairOrderExternalApiComponentModalEnum.PANEL_CLASS,
+              component: ModalRepairOrderExternalApiComponent,
+              disableClose: true,
+              extendedComponentData: { facility: this.formWorkflow.controls.facility.value.id },
+              width: '900px'
+            })
+            .pipe(take(1))
+            .subscribe((response) => {
+              if (response) {
+                this.globalMessageService.showSuccess({
+                  message: this.translateService.instant(marker('common.successOperation')),
+                  actionText: this.translateService.instant(marker('common.close'))
+                });
+                this.searchForm.get('search').setValue(response);
+                this.selectEntity();
+              }
+            });
+        } else {
+          this.customDialogService
+            .open({
+              id: CreateEditRepairOrderComponentModalEnum.ID,
+              panelClass: CreateEditRepairOrderComponentModalEnum.PANEL_CLASS,
+              component: ModalRepairOrderComponent,
+              disableClose: true,
+              width: '900px'
+            })
+            .pipe(take(1))
+            .subscribe((response) => {
+              if (response) {
+                this.globalMessageService.showSuccess({
+                  message: this.translateService.instant(marker('common.successOperation')),
+                  actionText: this.translateService.instant(marker('common.close'))
+                });
+                this.searchForm.get('search').setValue(response);
+                this.selectEntity();
+              }
+            });
+        }
+        break;
     }
   }
   public searchAction() {
@@ -209,6 +273,12 @@ export class EntityComponent implements OnInit {
             this.searching = false;
           });
           break;
+        case 6:
+          this.entitiesService.searchRepairOrders(this.searchForm.getRawValue()).subscribe((res: RepairOrderEntityDTO[]) => {
+            this.entityList = res;
+            this.searching = false;
+          });
+          break;
         default:
           this.entityList = [];
           this.searching = false;
@@ -219,7 +289,8 @@ export class EntityComponent implements OnInit {
     }
   }
   public selectEntity(): void {
-    const entity: VehicleEntityDTO | UserEntityDTO | CustomerEntityDTO = this.searchForm.get('search').value;
+    const entity: VehicleEntityDTO | UserEntityDTO | CustomerEntityDTO | RepairOrderEntityDTO =
+      this.searchForm.get('search').value;
     this.searchForm.get('search').setValue('');
     this.searching = true;
     const spinner = this.spinnerService.show();
@@ -242,9 +313,15 @@ export class EntityComponent implements OnInit {
             this.formTab.get('vehicleId').setValue(entity.id);
             this.formTab.get('vehicleInventoryId').setValue(null);
             this.inventoryList = (entity as VehicleEntityDTO).inventories ? (entity as VehicleEntityDTO).inventories : [];
+            if (this.inventoryList.length === 1) {
+              this.formTab.get('vehicleInventoryId').setValue(this.inventoryList[0].id);
+            }
             break;
           case 3:
             this.formTab.get('userId').setValue(entity.id);
+            break;
+          case 6:
+            this.formTab.get('repairOrderId').setValue(entity.id);
             break;
         }
         this.searching = false;
@@ -322,11 +399,17 @@ export class EntityComponent implements OnInit {
         } else {
           return false;
         }
+      case 6:
+        if (this.formTab.get('repairOrderId').value) {
+          return true;
+        } else {
+          return false;
+        }
       default:
         return false;
     }
   }
-  public transformOptionLabel(entity: CustomerEntityDTO | VehicleEntityDTO | UserEntityDTO): string {
+  public transformOptionLabel(entity: CustomerEntityDTO | VehicleEntityDTO | UserEntityDTO | RepairOrderEntityDTO): string {
     switch (this.formTab.get('contentSourceId').value) {
       case 1:
         const customer = entity as CustomerEntityDTO;
@@ -358,6 +441,9 @@ export class EntityComponent implements OnInit {
           textOptionUser = textOptionUser + '/' + user.email;
         }
         return textOptionUser;
+      case 6:
+        const repairOrder = entity as RepairOrderEntityDTO;
+        return repairOrder.reference;
     }
   }
   public showError(): boolean {
@@ -376,6 +462,8 @@ export class EntityComponent implements OnInit {
         return this.translateService.instant(this.labels.vehicleNotFound);
       case 3:
         return this.translateService.instant(this.labels.userNotFound);
+      case 6:
+        return this.translateService.instant(this.labels.repairOrderNotFound);
       default:
         return this.translateService.instant(this.labels.dataNotFound);
     }

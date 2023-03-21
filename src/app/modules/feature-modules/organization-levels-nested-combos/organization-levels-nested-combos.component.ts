@@ -12,6 +12,8 @@ import { BrandService } from '@data/services/brand.service';
 import { DepartmentService } from '@data/services/deparment.service';
 import { FacilityService } from '@data/services/facility.sevice';
 import { SpecialtyService } from '@data/services/specialty.service';
+import { TranslateService } from '@ngx-translate/core';
+import { GlobalMessageService } from '@shared/services/global-message.service';
 import { haveArraysSameValues } from '@shared/utils/array-comparation-function';
 import { NGXLogger } from 'ngx-logger';
 import { Observable } from 'rxjs';
@@ -52,7 +54,9 @@ export class OrganizationLevelsNestedCombosComponent implements OnInit, OnDestro
     private brandService: BrandService,
     private facilitySevice: FacilityService,
     private departmentService: DepartmentService,
-    private specialtyService: SpecialtyService
+    private specialtyService: SpecialtyService,
+    private globalMessageService: GlobalMessageService,
+    private translateService: TranslateService
   ) {}
 
   get formControls() {
@@ -138,6 +142,10 @@ export class OrganizationLevelsNestedCombosComponent implements OnInit, OnDestro
         },
         error: (error) => {
           this.logger.error(error);
+          this.globalMessageService.showError({
+            message: error.message,
+            actionText: this.translateService.instant(marker('common.close'))
+          });
         }
       });
   }
@@ -178,6 +186,10 @@ export class OrganizationLevelsNestedCombosComponent implements OnInit, OnDestro
         },
         error: (error) => {
           this.logger.error(error);
+          this.globalMessageService.showError({
+            message: error.message,
+            actionText: this.translateService.instant(marker('common.close'))
+          });
         }
       });
   }
@@ -218,6 +230,10 @@ export class OrganizationLevelsNestedCombosComponent implements OnInit, OnDestro
         },
         error: (error) => {
           this.logger.error(error);
+          this.globalMessageService.showError({
+            message: error.message,
+            actionText: this.translateService.instant(marker('common.close'))
+          });
         }
       });
   }

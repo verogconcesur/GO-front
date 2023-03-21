@@ -171,9 +171,15 @@ export class CardInstanceAttachmentsComponent implements OnInit, OnChanges {
 
   public editAttachmentName(item: AttachmentDTO, template: CardAttachmentsDTO): void {
     if (!this.cardInstanceAttachmentsConfig.disableEditFileName) {
+      let attachmentsNames: string[] = [];
+      this.data.forEach((aGroup: CardAttachmentsDTO) => {
+        attachmentsNames = [...attachmentsNames, ...aGroup.attachments.map((a: AttachmentDTO) => a.name)];
+      });
+      console.log(attachmentsNames);
       this.dialog
         .open(RenameAttachmentComponent, {
           data: {
+            attachmentsNames,
             attachment: item,
             tabId: this.tabId,
             cardInstanceWorkflowId: this.cardInstanceWorkflowId,

@@ -9,6 +9,9 @@ import BasicFilterDTO from '@data/models/basic-filter-dto';
 import CustomerEntityApiDTO from '@data/models/entities/customer-entity-api-dto';
 import CustomerEntityDTO from '@data/models/entities/customer-entity-dto';
 import CustomerFilterDTO from '@data/models/entities/customer-filter-dto';
+import RepairOrderEntityApiDTO from '@data/models/entities/repair-order-entity-api-dto';
+import RepairOrderEntityDTO from '@data/models/entities/repair-order-entity-dto';
+import RepairOrderFilterDTO from '@data/models/entities/repair-order-filter-dto';
 import UserEntityDTO from '@data/models/entities/user-entity-dto';
 import VehicleBodyApiDTO from '@data/models/entities/vehicle-body-api-dto';
 import VehicleEntityDTO from '@data/models/entities/vehicle-entity-dto';
@@ -23,6 +26,7 @@ import { catchError } from 'rxjs/operators';
 export class EntitiesService {
   private readonly GET_VEHICLES_PATH = '/api/vehicles/';
   private readonly GET_CUSTOMERS_PATH = '/api/customers/';
+  private readonly GET_REPAIR_ORDER_PATH = '/api/repairOrders/';
   private readonly GET_USERS_PATH = '/api/users/listByFilter';
   private readonly SEARCH_PATH = 'search';
   private readonly SEARCH__EXTERNAL_API_PATH = 'searchExternalApi';
@@ -88,6 +92,16 @@ export class EntitiesService {
   }
 
   /**
+   * Search Repair Orders
+   *
+   * @returns RepairOrderEntityDTO[]
+   */
+  public searchRepairOrders(search: BasicFilterDTO): Observable<RepairOrderEntityDTO[]> {
+    return this.http
+      .post<RepairOrderEntityDTO[]>(`${this.env.apiBaseUrl}${this.GET_REPAIR_ORDER_PATH}${this.SEARCH_PATH}`, search)
+      .pipe(catchError((error) => throwError(error.error as ConcenetError)));
+  }
+  /**
    * Search vehicles Api
    *
    * @returns VehicleEntityApiDTO[]
@@ -105,6 +119,19 @@ export class EntitiesService {
   public searchCustomersApi(search: CustomerFilterDTO): Observable<CustomerEntityApiDTO[]> {
     return this.http
       .post<CustomerEntityApiDTO[]>(`${this.env.apiBaseUrl}${this.GET_CUSTOMERS_PATH}${this.SEARCH__EXTERNAL_API_PATH}`, search)
+      .pipe(catchError((error) => throwError(error.error as ConcenetError)));
+  }
+  /**
+   * Search repair Orders Api
+   *
+   * @returns RepairOrderEntityApiDTO[]
+   */
+  public searchRepairOrdersApi(search: RepairOrderFilterDTO): Observable<RepairOrderEntityApiDTO[]> {
+    return this.http
+      .post<RepairOrderEntityApiDTO[]>(
+        `${this.env.apiBaseUrl}${this.GET_REPAIR_ORDER_PATH}${this.SEARCH__EXTERNAL_API_PATH}`,
+        search
+      )
       .pipe(catchError((error) => throwError(error.error as ConcenetError)));
   }
 
@@ -173,6 +200,41 @@ export class EntitiesService {
   public createVehicleApi(body: VehicleBodyApiDTO): Observable<VehicleEntityDTO> {
     return this.http
       .post<VehicleEntityDTO>(`${this.env.apiBaseUrl}${this.GET_VEHICLES_PATH}${this.SAVE__EXTERNAL_API_PATH}`, body)
+      .pipe(catchError((error) => throwError(error.error as ConcenetError)));
+  }
+
+  /**
+   * Find RepairOrder
+   *
+   * @returns RepairOrderEntityDTO
+   */
+  public getRepairOrder(idRepairOrder: number): Observable<RepairOrderEntityDTO> {
+    return this.http
+      .get<RepairOrderEntityDTO>(`${this.env.apiBaseUrl}${this.GET_REPAIR_ORDER_PATH}${idRepairOrder}`)
+      .pipe(catchError((error) => throwError(error.error as ConcenetError)));
+  }
+
+  /**
+   * Create RepairOrder
+   *
+   * @returns RepairOrderEntityDTO
+   */
+  public createRepairOrder(repairOrder: RepairOrderEntityDTO): Observable<RepairOrderEntityDTO> {
+    return this.http
+      .post<RepairOrderEntityDTO>(`${this.env.apiBaseUrl}${this.GET_REPAIR_ORDER_PATH}`, repairOrder)
+      .pipe(catchError((error) => throwError(error.error as ConcenetError)));
+  }
+
+  /**
+   * Create Repair Order API
+   *
+   * @returns RepairOrderEntityDTO
+   */
+  public createRepairOrderApi(repairOrderId: number, facilityId: number): Observable<RepairOrderEntityDTO> {
+    return this.http
+      .get<RepairOrderEntityDTO>(
+        `${this.env.apiBaseUrl}${this.GET_REPAIR_ORDER_PATH}${this.SAVE__EXTERNAL_API_PATH}${repairOrderId}/${facilityId}`
+      )
       .pipe(catchError((error) => throwError(error.error as ConcenetError)));
   }
 }

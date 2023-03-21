@@ -42,7 +42,7 @@ export interface TabItemConfigActionDTO {
 export interface CardTabItemInstanceDTO {
   id?: number;
   tabItem?: CardColumnTabItemDTO;
-  value: string | Date | Moment;
+  value: string | Date | Moment | boolean;
 }
 export interface TabItemConfigCommonDTO {
   id?: number;
