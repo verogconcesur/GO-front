@@ -96,7 +96,7 @@ export class SignDocumentSaveLocationComponent implements OnInit {
     this.pdfForm = this.fb.group({
       name: [
         this.pdf.procesedFile.name,
-        Validators.compose([Validators.required, Validators.minLength(this.minLength), FilenameValidator.validate('name')])
+        Validators.compose([Validators.required, Validators.minLength(this.minLength), FilenameValidator.validate()])
       ],
       attachmentDirectory: [
         this.attachmentsByGroup && this.attachmentsByGroup.length ? this.attachmentsByGroup[0] : null,
