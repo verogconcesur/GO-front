@@ -2,8 +2,7 @@
 @import 'utils/theme';
 .list-view-wrapper {
   width: 100%;
-  overflow-y: scroll;
-  padding: 20px;
+  padding: 20px 40px;
   .empty-wrapper {
     display: flex;
     justify-content: center;
