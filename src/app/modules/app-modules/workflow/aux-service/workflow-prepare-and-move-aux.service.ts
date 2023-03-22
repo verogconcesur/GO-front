@@ -167,6 +167,7 @@ export class WorkflowPrepareAndMoveService {
                   };
                 }) => {
                   if (!res) {
+                    this.reloadData$.next('UPDATE_INFORMATION');
                     this.spinnerService.hide(this.spinner);
                     return;
                   }
@@ -332,6 +333,7 @@ export class WorkflowPrepareAndMoveService {
           // view?: 'MOVES_IN_THIS_WORKFLOW' | 'MOVES_IN_OTHER_WORKFLOWS'
         },
         (error) => {
+          this.reloadData$.next('UPDATE_INFORMATION');
           this.spinnerService.hide(this.spinner);
           this.globalMessageService.showError({
             message: error?.message ? error.message : this.translateService.instant(marker('errors.unknown')),
@@ -389,6 +391,7 @@ export class WorkflowPrepareAndMoveService {
           } else {
             this.spinner = null;
           }
+          this.reloadData$.next('UPDATE_INFORMATION');
         },
         (error: ConcenetError) => {
           this.spinnerService.hide(this.spinner);
@@ -398,6 +401,7 @@ export class WorkflowPrepareAndMoveService {
             actionText: this.translateService.instant(marker('common.close'))
           });
           this.spinner = null;
+          this.reloadData$.next('UPDATE_INFORMATION');
         }
       );
   }
