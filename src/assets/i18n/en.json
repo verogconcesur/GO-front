@@ -697,6 +697,7 @@
             "syncData": "Do you want to synchronize the card's data.",
             "vehicleAssociatedCards": "Vehicle's cards"
         },
+        "cardChangesDetected": "Changes detected in this card",
         "cardConfig": "Card config",
         "cardsInBoardView": "Board view cards",
         "cardsInCalendarView": "Calendar view cards",
@@ -748,6 +749,7 @@
             "other": "Other",
             "role": "Role"
         },
+        "reloadConfirmation": "¿Do you really want to reload the card?",
         "requiredFields": "Required fields",
         "requiredFieldsList": "List of required fields",
         "requiredHistoryComment": "Historical comment added on move action",
