@@ -310,7 +310,7 @@ export class WorkflowFilterService {
 
     //Si ya he filtrados por tajetas o sin tarjetas => tengo por cada estado los usuarios a visualizar
     // => si no hay usuarios significa que no debo mostrar el estado
-    wStatesData = wStatesData.filter((ws: WorkflowStateDTO) => !ws.front || ws.workflowUsers.length > 0);
+    wStatesData = wStatesData.filter((ws: WorkflowStateDTO) => !ws.front || ws.workflowUsers?.length > 0);
 
     return wStatesData;
   }

@@ -152,6 +152,7 @@ export class WorkflowTableViewComponent implements OnInit {
       });
       wState.cardCount = totalCards;
       wState.userCount = Object.keys(totalUsers).length;
+      wState.workflowUsers = Object.keys(totalUsers).map((k) => totalUsers[k]);
     });
     this.filterData();
   }
