@@ -22,7 +22,7 @@
                     "options": {
                         "allowedCommonJsDependencies": ["messageformat", "jquery"],
                         "preserveSymlinks": true,
-                        "outputPath": "dist/Concenet_Front",
+                        "outputPath": "dist",
                         "index": "src/index.html",
                         "main": "src/main.ts",
                         "polyfills": "src/polyfills.ts",

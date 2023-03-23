@@ -73,6 +73,7 @@ export class SignDocumentChecklistComponent implements OnInit, AfterViewInit, On
   public attachmentsByGroup: CardAttachmentsDTO[] = [];
   public showChangeSign = false;
   public changeSignToOrderNumber: number = null;
+  public debugData: string = null;
   public labels: any = {
     itemsInTemplate: marker('administration.templates.checklists.itemsInTemplate'),
     insertTextHere: marker('common.insertTextHere'),
@@ -506,9 +507,20 @@ export class SignDocumentChecklistComponent implements OnInit, AfterViewInit, On
             const found = itemsModified.find((aux: TemplateChecklistItemDTO) => aux.orderNumber === item.orderNumber);
             if (found) {
               item.itemVal = found.itemVal;
-              if (item.typeItem === 'DRAWING' && this.p5sDraws[found.auxOrderNumber]) {
-                item.itemVal.fileValue.content = this.p5sDraws[found.auxOrderNumber].split(';base64,')[1];
-                item.itemVal.fileValue.type = this.p5sDraws[found.auxOrderNumber].split(';base64,')[0].split('data:')[1];
+              // if (item.typeItem === 'DRAWING' && this.p5sDraws[found.auxOrderNumber]) {
+              //   alert(`${found.auxOrderNumber} ## ${this.p5sDraws[found.auxOrderNumber]}`);
+              //   item.itemVal.fileValue.content = this.p5sDraws[found.auxOrderNumber].split(';base64,')[1];
+              //   item.itemVal.fileValue.type = this.p5sDraws[found.auxOrderNumber].split(';base64,')[0].split('data:')[1];
+              //   item.itemVal.fileValue.name = `${+new Date()}_draw.png`;
+              // }
+              if (item.typeItem === 'DRAWING' && this.p5s[found.auxOrderNumber]) {
+                const { canvas } = this.p5s[found.auxOrderNumber].get() as unknown as {
+                  canvas: HTMLCanvasElement;
+                };
+                const dataUrl = canvas.toDataURL();
+                this.debugData = canvas.toDataURL();
+                item.itemVal.fileValue.content = dataUrl.split(';base64,')[1];
+                item.itemVal.fileValue.type = dataUrl.split(';base64,')[0].split('data:')[1];
                 item.itemVal.fileValue.name = `${+new Date()}_draw.png`;
               } else {
                 item.itemVal.fileValue =
@@ -526,6 +538,7 @@ export class SignDocumentChecklistComponent implements OnInit, AfterViewInit, On
               }
             }
           });
+          alert(JSON.stringify(this.signDocumentExchange));
           this.saveAction.emit(this.signDocumentExchange);
         }
       });
@@ -662,34 +675,50 @@ export class SignDocumentChecklistComponent implements OnInit, AfterViewInit, On
         });
       }
       p.touchMoved = (event) => {
-        let type = 'pencil';
-        if ($('#sign-document-pen-eraser:checked').length) {
-          type = 'eraser';
-        }
-        const size = parseInt($('#sign-document-pen-size').val().toString(), 10);
-        const color = $('#sign-document-pen-color').val().toString();
-        p.fill(color);
-        p.stroke(color);
-        if (type === 'eraser') {
-          p.erase();
-          p.strokeWeight(30);
-          p.line(p.pmouseX, p.pmouseY, p.mouseX, p.mouseY);
-        } else {
-          p.noErase();
-          if (type === 'pencil') {
-            p.strokeWeight(size);
+        try {
+          let type = 'pencil';
+          if ($('#sign-document-pen-eraser:checked').length) {
+            type = 'eraser';
+          }
+          const size = parseInt($('#sign-document-pen-size').val().toString(), 10);
+          const color = $('#sign-document-pen-color').val().toString();
+          p.fill(color);
+          p.stroke(color);
+          if (type === 'eraser') {
+            p.erase();
+            p.strokeWeight(30);
             p.line(p.pmouseX, p.pmouseY, p.mouseX, p.mouseY);
           } else {
-            p.ellipse(p.mouseX, p.mouseY, size, size);
+            p.noErase();
+            if (type === 'pencil') {
+              p.strokeWeight(size);
+              p.line(p.pmouseX, p.pmouseY, p.mouseX, p.mouseY);
+            } else {
+              p.ellipse(p.mouseX, p.mouseY, size, size);
+            }
+            setTimeout(() => {
+              const { canvas } = p.get() as unknown as {
+                canvas: HTMLCanvasElement;
+              };
+              const dataURL = canvas.toDataURL();
+              this.p5sDraws[auxOrderNumber] = dataURL;
+              this.debugData = dataURL;
+            });
           }
+        } catch (error) {
+          alert(error);
         }
       };
-      p.touchEnded = (event) => {
-        const { canvas } = p.get() as unknown as {
-          canvas: HTMLCanvasElement;
-        };
-        this.p5sDraws[auxOrderNumber] = canvas.toDataURL();
-      };
+      // p.touchEnded = (event: TouchEvent) => {
+      //   // const { canvas } = p.get() as unknown as {
+      //   //   canvas: HTMLCanvasElement;
+      //   // };
+      //   // canvas.toDataURL()
+      //   const canvas = event.target as HTMLCanvasElement;
+      //   const dataURL = canvas.toDataURL();
+      //   this.p5sDraws[auxOrderNumber] = dataURL;
+      //   this.debugData = dataURL;
+      // };
     }
   };
 
