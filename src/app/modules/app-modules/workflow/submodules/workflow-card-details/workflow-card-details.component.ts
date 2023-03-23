@@ -14,6 +14,10 @@ import { TranslateService } from '@ngx-translate/core';
 import CardInstanceDTO from '@data/models/cards/card-instance-dto';
 import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
 import { WorkflowPrepareAndMoveService } from '../../aux-service/workflow-prepare-and-move-aux.service';
+import { RxStompService } from '@app/services/rx-stomp.service';
+import { IMessage } from '@stomp/stompjs';
+import WorkflowSocketCardDetailDTO from '@data/models/workflows/workflow-sockect-card-detail-dto';
+import { ConfirmDialogService } from '@shared/services/confirm-dialog.service';
 
 @UntilDestroy()
 @Component({
@@ -37,6 +41,7 @@ export class WorkflowCardDetailsComponent implements OnInit {
   };
   public columnsConfig: CardColumnDTO[] = null;
   public cardInstance: CardInstanceDTO = null;
+  public changesPendingToShow = false;
   public newDataInCommentsOrMessages = {
     COMMENTS: false,
     CLIENT_MESSAGES: false
@@ -50,7 +55,9 @@ export class WorkflowCardDetailsComponent implements OnInit {
     private spinnerService: ProgressSpinnerDialogService,
     private globalMessageService: GlobalMessageService,
     private translateService: TranslateService,
-    private prepareAndMoveService: WorkflowPrepareAndMoveService
+    private prepareAndMoveService: WorkflowPrepareAndMoveService,
+    private rxStompService: RxStompService,
+    private confirmationDialog: ConfirmDialogService
   ) {}
 
   @HostListener('window:resize', ['$event']) onResize(event: { target: { innerWidth: number } }) {
@@ -75,6 +82,7 @@ export class WorkflowCardDetailsComponent implements OnInit {
     this.setShowMode(window.innerWidth);
     this.initListeners();
     this.getCardInfo();
+    this.initWebsocket();
   }
 
   public setShowMode(width: number) {
@@ -90,6 +98,7 @@ export class WorkflowCardDetailsComponent implements OnInit {
   public initListeners(): void {
     this.prepareAndMoveService.reloadData$.pipe(untilDestroyed(this)).subscribe((resp) => {
       if (resp) {
+        this.changesPendingToShow = false;
         this.card = null;
         this.cardInstance = null;
         this.columnsConfig = null;
@@ -123,6 +132,21 @@ export class WorkflowCardDetailsComponent implements OnInit {
 
   public getContainerClass(): string {
     return this.showMode + ' ' + this.tabSelected;
+  }
+
+  public reloadCard(): void {
+    this.confirmationDialog
+      .open({
+        title: this.translateService.instant(marker('common.warning')),
+        message: this.translateService.instant(marker('workflows.reloadConfirmation'))
+      })
+      .pipe(take(1))
+      .subscribe((ok: boolean) => {
+        if (ok) {
+          this.changesPendingToShow = false;
+          this.prepareAndMoveService.reloadData$.next('UPDATE_INFORMATION');
+        }
+      });
   }
 
   private getCardInfo(): void {
@@ -184,5 +208,25 @@ export class WorkflowCardDetailsComponent implements OnInit {
           this.close();
         }
       );
+  }
+
+  private initWebsocket() {
+    this.rxStompService
+      .watch('/topic/detail/' + this.idCard)
+      .pipe(untilDestroyed(this))
+      .subscribe((data: IMessage) => {
+        console.log(JSON.parse(data.body));
+        this.rxStompService.cardDeatilWs$.next(JSON.parse(data.body) as WorkflowSocketCardDetailDTO);
+      });
+
+    this.rxStompService.cardDeatilWs$.pipe(untilDestroyed(this)).subscribe((data: WorkflowSocketCardDetailDTO) => {
+      if (data && data.cardInstanceWorkflowId === this.idCard && data.message === 'DETAIL_FULL') {
+        this.globalMessageService.showWarning({
+          message: this.translateService.instant(marker('workflows.cardChangesDetected')),
+          actionText: this.translateService.instant(marker('common.close'))
+        });
+        this.changesPendingToShow = true;
+      }
+    });
   }
 }

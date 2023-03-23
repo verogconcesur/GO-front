@@ -27,6 +27,7 @@ import { WorkflowCardMovementPreparationComponent } from '../components/workflow
 export class WorkflowPrepareAndMoveService {
   public reloadData$: BehaviorSubject<'MOVES_IN_THIS_WORKFLOW' | 'MOVES_IN_OTHER_WORKFLOWS' | 'UPDATE_INFORMATION'> =
     new BehaviorSubject(null);
+  //Used for WebSockets: card move in board, table and calendar view
   public moveCard$: BehaviorSubject<WorkflowSocketMoveDTO> = new BehaviorSubject(null);
   private readonly wSubstateKey = 'wSubstate-';
   private spinner: string;

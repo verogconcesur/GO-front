@@ -7,6 +7,9 @@
             </div>
             <div class="wcard-details__tab__bg"></div>
         </div>
+        <button mat-icon-button class="wcard-details__tab__changes" *ngIf="changesPendingToShow" (click)="reloadCard()">
+            <mat-icon>refresh</mat-icon>
+        </button>
         <button mat-icon-button class="wcard-details__tab__close" (click)="close()">
             <mat-icon>close</mat-icon>
         </button>

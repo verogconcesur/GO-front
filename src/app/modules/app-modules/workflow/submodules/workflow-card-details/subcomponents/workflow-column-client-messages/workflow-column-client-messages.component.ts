@@ -1,13 +1,17 @@
 import { Component, EventEmitter, Input, OnDestroy, OnInit, Output } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
+import { RxStompService } from '@app/services/rx-stomp.service';
 import { marker } from '@biesbjerg/ngx-translate-extract-marker';
 import CardMessageDTO from '@data/models/cards/card-message';
 import MessageChannelDTO from '@data/models/templates/message-channels-dto';
+import WorkflowSocketCardDetailDTO from '@data/models/workflows/workflow-sockect-card-detail-dto';
 import { CardMessagesService } from '@data/services/card-messages.service';
+import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
 import { TranslateService } from '@ngx-translate/core';
 import { NotificationSoundService } from '@shared/services/notification-sounds.service';
 import { take } from 'rxjs/operators';
 
+@UntilDestroy()
 @Component({
   selector: 'app-workflow-column-client-messages',
   templateUrl: './workflow-column-client-messages.component.html',
@@ -20,32 +24,31 @@ export class WorkflowColumnClientMessagesComponent implements OnInit, OnDestroy 
   public labels = { customer: marker('common.customer') };
   public dataLoaded = false;
   private idCard: number;
-  private interval: NodeJS.Timeout;
   private timeBeforeMarkAsRead = 15000;
 
   constructor(
     private cardMessageService: CardMessagesService,
     private route: ActivatedRoute,
     private translateService: TranslateService,
-    private notificationSoundService: NotificationSoundService
+    private notificationSoundService: NotificationSoundService,
+    private rxStompService: RxStompService
   ) {}
 
   ngOnInit(): void {
     this.idCard = parseInt(this.route.snapshot.params.idCard, 10);
     this.getData();
-    this.interval = setInterval(() => {
-      // this.getData(true);
-    }, this.timeBeforeMarkAsRead);
+    this.rxStompService.cardDeatilWs$.pipe(untilDestroyed(this)).subscribe((data: WorkflowSocketCardDetailDTO) => {
+      if (data && data.cardInstanceWorkflowId === this.idCard && data.message === 'DETAIL_MESSAGES') {
+        this.getData(true);
+      }
+    });
   }
 
-  ngOnDestroy(): void {
-    clearInterval(this.interval);
-    this.interval = null;
-  }
+  ngOnDestroy(): void {}
 
-  public getData(fromInterval = false): void {
+  public getData(fromSockets = false): void {
     if (this.idCard) {
-      if (!fromInterval) {
+      if (!fromSockets) {
         this.setShowLoading.emit(true);
       }
       const cardInstanceWorkflowId = this.idCard;
@@ -53,14 +56,14 @@ export class WorkflowColumnClientMessagesComponent implements OnInit, OnDestroy 
         .getCardMessages(cardInstanceWorkflowId)
         .pipe(take(1))
         .subscribe((res) => {
-          if (res && fromInterval && this.messages.length !== res.length) {
+          if (res && fromSockets && this.messages?.length !== res.length) {
             this.newCommentsEvent.emit(true);
             this.notificationSoundService.playSound('CLIENT_MESSAGES');
-          } else if (fromInterval) {
+          } else if (fromSockets) {
             this.newCommentsEvent.emit(false);
           }
           this.messages = res;
-          if (!fromInterval) {
+          if (!fromSockets) {
             this.setShowLoading.emit(false);
           }
         });
