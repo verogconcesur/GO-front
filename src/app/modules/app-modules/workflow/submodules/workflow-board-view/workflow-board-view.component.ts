@@ -20,7 +20,7 @@ import { haveArraysSameValuesIdObjects } from '@shared/utils/array-comparation-f
 import lodash from 'lodash';
 import { NGXLogger } from 'ngx-logger';
 import { forkJoin, Subscription } from 'rxjs';
-import { take } from 'rxjs/operators';
+import { skip, take } from 'rxjs/operators';
 import { WorkflowDragAndDropService } from '../../aux-service/workflow-drag-and-drop.service';
 import { WorkflowFilterService } from '../../aux-service/workflow-filter.service';
 import { WorkflowPrepareAndMoveService } from '../../aux-service/workflow-prepare-and-move-aux.service';
@@ -264,22 +264,24 @@ export class WorkflowBoardViewComponent implements OnInit {
           this.workflowInstances = data[0];
           this.mapWorkflowCardsWithInstances(data[1]);
           this.cardList = data[1];
-          this.subjectSubscription = this.prepareAndMoveService.moveCard$.pipe(untilDestroyed(this)).subscribe((resp) => {
-            if (resp && resp.cardInstanceWorkflowId) {
-              this.workflowService
-                .getSingleWorkflowCard(resp.cardInstanceWorkflowId, 'BOARD')
-                .pipe(take(1))
-                .subscribe((res) => {
-                  this.cardList = this.cardList.filter(
-                    (card: WorkflowCardDTO) => card.cardInstanceWorkflows[0].id !== resp.cardInstanceWorkflowId
-                  );
-                  this.cardList.push(res);
-                  this.mapWorkflowCardsWithInstances(this.cardList);
-                });
-            } else {
-              this.mapWorkflowCardsWithInstances(this.cardList);
-            }
-          });
+          this.subjectSubscription = this.prepareAndMoveService.moveCard$
+            .pipe(untilDestroyed(this), skip(1))
+            .subscribe((resp) => {
+              if (resp && resp.cardInstanceWorkflowId) {
+                this.workflowService
+                  .getSingleWorkflowCard(resp.cardInstanceWorkflowId, 'BOARD')
+                  .pipe(take(1))
+                  .subscribe((res) => {
+                    this.cardList = this.cardList.filter(
+                      (card: WorkflowCardDTO) => card.cardInstanceWorkflows[0].id !== resp.cardInstanceWorkflowId
+                    );
+                    this.cardList.push(res);
+                    this.mapWorkflowCardsWithInstances(this.cardList);
+                  });
+              } else {
+                this.mapWorkflowCardsWithInstances(this.cardList);
+              }
+            });
         },
         (error: ConcenetError) => {
           this.spinnerService.hide(spinner);
