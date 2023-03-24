@@ -2,33 +2,41 @@
 @import 'utils/theme';
 
 .nav-bar-mentions-menu {
-  position: relative;
   width: 100%;
   height: 100%;
   overflow-y: auto;
-  .loading {
-    position: absolute;
-    width: 100%;
-    height: 100%;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-  }
-  // .new {
-  //   .mention-item {
-  //     border: 1px solid mat-color($primary, A700);
-  //   }
-  // }
-  .new,
-  .old {
-    .mention-item {
-      cursor: pointer;
-      .workflow-card {
-        width: auto;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  &__content {
+    position: relative;
+    .loading {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+    // .new {
+    //   .mention-item {
+    //     border: 1px solid mat-color($primary, A700);
+    //   }
+    // }
+    .new,
+    .old {
+      .mention-item {
+        cursor: pointer;
+        .workflow-card {
+          width: auto;
+        }
       }
     }
   }
   .mat-form-field-label {
     margin-top: -0.7em !important;
+  }
+  &__link {
+    height: 70px;
   }
 }

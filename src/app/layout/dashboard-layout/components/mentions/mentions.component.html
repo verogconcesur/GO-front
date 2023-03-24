@@ -1,23 +1,36 @@
 <div class="nav-bar-mentions-menu">
-    <div class="loading" *ngIf="loading">
-        <mat-spinner diameter="30"></mat-spinner>
+    <div class="nav-bar-mentions-menu__content">
+        <div class="loading" *ngIf="loading">
+            <mat-spinner diameter="30"></mat-spinner>
+        </div>
+        <div class="no-data" *ngIf="!mentions || mentions.length === 0">
+            {{ labels.noDataToShow | translate }}
+        </div>
+        <div class="new">
+            <app-workflow-card
+                class="mention-item mat-elevation-z2"
+                *ngFor="let item of mentions"
+                [card]="item.cardInstance"
+                [disableDrag]="true"
+                [additionalInfo]="getItemComment(item)"
+                [showAdditionalInfo]="true"
+                [forceSize]="'size-m'"
+                [showExtraInfo]="false"
+                [navigationMode]="'absolute'"
+                [viewedBtn]="true"
+                (viewedAction)="markAsViewed(item)"
+            ></app-workflow-card>
+        </div>
     </div>
-    <div class="no-data" *ngIf="!mentions || mentions.length === 0">
-        {{ labels.noDataToShow | translate }}
-    </div>
-    <div class="new">
-        <app-workflow-card
-            class="mention-item mat-elevation-z2"
-            *ngFor="let item of mentions"
-            [card]="item.cardInstance"
-            [disableDrag]="true"
-            [additionalInfo]="getItemComment(item)"
-            [showAdditionalInfo]="true"
-            [forceSize]="'size-m'"
-            [showExtraInfo]="false"
-            [navigationMode]="'absolute'"
-            [viewedBtn]="true"
-            (viewedAction)="markAsViewed(item)"
-        ></app-workflow-card>
+    <div class="nav-bar-mentions-menu__link" fxLayout="row" fxLayoutAlign="center center">
+        <button
+            class="list-view-state__header__buttons__button"
+            mat-raised-button
+            color="primary"
+            [routerLink]="MENTIONS_PATH"
+            routerLinkActive="active"
+        >
+            {{ labels.showAll | translate }}
+        </button>
     </div>
 </div>

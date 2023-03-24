@@ -1,7 +1,6 @@
 import { DatePipe } from '@angular/common';
 import { Component, OnInit, ViewEncapsulation } from '@angular/core';
 import { FormControl } from '@angular/forms';
-import { Router } from '@angular/router';
 import { RouteConstants } from '@app/constants/route.constants';
 import { AuthenticationService } from '@app/security/authentication.service';
 import { marker } from '@biesbjerg/ngx-translate-extract-marker';
@@ -19,6 +18,7 @@ import { finalize, take } from 'rxjs/operators';
 export class NotificationsComponent implements OnInit {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   public labels: any = {
+    showAll: marker('common.showAll'),
     newNotifications: marker('common.unread'),
     oldNotifications: marker('common.readen'),
     noDataToShow: marker('errors.noDataToShow'),
@@ -31,6 +31,7 @@ export class NotificationsComponent implements OnInit {
     ADD_DOC: marker('notifications.type.ADD_DOC'),
     ADD_MESSAGE_CLIENT: marker('notifications.type.ADD_MESSAGE_CLIENT')
   };
+  public NOTIFICATIONS_PATH: string = RouteConstants.NOTIFICATIONS;
   public notifications: NotificationDataListDTO[] = [];
   public loading = false;
   public types = new FormControl('');

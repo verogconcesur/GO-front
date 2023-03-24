@@ -2,28 +2,36 @@
 @import 'utils/theme';
 
 .nav-bar-notifications-menu {
-  position: relative;
   width: 100%;
   height: 100%;
   overflow-y: auto;
-  .loading {
-    position: absolute;
-    width: 100%;
-    height: 100%;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-  }
-  .no-data {
-    padding-top: 10px;
-  }
-  .new {
-    .notification-item {
-      cursor: pointer;
-      .workflow-card {
-        width: auto;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  &__content {
+    position: relative;
+    .loading {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+    .no-data {
+      padding-top: 10px;
+    }
+    .new {
+      .notification-item {
+        cursor: pointer;
+        .workflow-card {
+          width: auto;
+        }
       }
     }
+  }
+  &__link {
+    height: 60px;
   }
   .mat-form-field-label {
     margin-top: -0.7em !important;
