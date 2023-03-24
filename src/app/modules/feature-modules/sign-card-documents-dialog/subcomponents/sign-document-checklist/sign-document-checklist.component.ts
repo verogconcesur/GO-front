@@ -512,13 +512,29 @@ export class SignDocumentChecklistComponent implements OnInit, AfterViewInit, On
               //   item.itemVal.fileValue.content = this.p5sDraws[found.auxOrderNumber].split(';base64,')[1];
               //   item.itemVal.fileValue.type = this.p5sDraws[found.auxOrderNumber].split(';base64,')[0].split('data:')[1];
               //   item.itemVal.fileValue.name = `${+new Date()}_draw.png`;
-              // }
               if (item.typeItem === 'DRAWING' && this.p5s[found.auxOrderNumber]) {
                 const { canvas } = this.p5s[found.auxOrderNumber].get() as unknown as {
                   canvas: HTMLCanvasElement;
                 };
                 const dataUrl = canvas.toDataURL();
-                this.debugData = canvas.toDataURL();
+
+                console.log('############################ INICIO - SAVE ###################################');
+                console.log(canvas, dataUrl);
+                console.log(found.auxOrderNumber, this.p5s, this.p5sDraws);
+
+                console.log(
+                  'p5s === dataUrl',
+                  (
+                    this.p5s[found.auxOrderNumber].get() as unknown as {
+                      canvas: HTMLCanvasElement;
+                    }
+                  ).canvas.toDataURL() === dataUrl
+                );
+
+                console.log('p5sDraws === dataUrl', this.p5sDraws[found.auxOrderNumber] === dataUrl);
+                console.log('debugData === data', this.debugData === dataUrl);
+                console.log('############################## FIN - SAVE #################################');
+
                 item.itemVal.fileValue.content = dataUrl.split(';base64,')[1];
                 item.itemVal.fileValue.type = dataUrl.split(';base64,')[0].split('data:')[1];
                 item.itemVal.fileValue.name = `${+new Date()}_draw.png`;
@@ -696,29 +712,35 @@ export class SignDocumentChecklistComponent implements OnInit, AfterViewInit, On
             } else {
               p.ellipse(p.mouseX, p.mouseY, size, size);
             }
-            setTimeout(() => {
-              const { canvas } = p.get() as unknown as {
-                canvas: HTMLCanvasElement;
-              };
-              const dataURL = canvas.toDataURL();
-              this.p5sDraws[auxOrderNumber] = dataURL;
-              this.debugData = dataURL;
-            });
           }
         } catch (error) {
           alert(error);
         }
       };
-      // p.touchEnded = (event: TouchEvent) => {
-      //   // const { canvas } = p.get() as unknown as {
-      //   //   canvas: HTMLCanvasElement;
-      //   // };
-      //   // canvas.toDataURL()
-      //   const canvas = event.target as HTMLCanvasElement;
-      //   const dataURL = canvas.toDataURL();
-      //   this.p5sDraws[auxOrderNumber] = dataURL;
-      //   this.debugData = dataURL;
-      // };
+      p.touchEnded = (event: TouchEvent, paux: p5 = p) => {
+        const { canvas } = paux.get() as unknown as {
+          canvas: HTMLCanvasElement;
+        };
+        const dataURL = canvas.toDataURL();
+        this.p5sDraws[auxOrderNumber] = dataURL;
+        this.debugData = dataURL;
+        console.log('############################ INICIO - TOUCH END ###################################');
+        console.log(canvas, dataURL);
+        console.log(auxOrderNumber, this.p5s, this.p5sDraws);
+
+        console.log(
+          'p5s === dataUrl',
+          (
+            this.p5s[auxOrderNumber].get() as unknown as {
+              canvas: HTMLCanvasElement;
+            }
+          ).canvas.toDataURL() === dataURL
+        );
+
+        console.log('p5sDraws === dataUrl', this.p5sDraws[auxOrderNumber] === dataURL);
+        console.log('debugData === dataUrl', this.debugData === dataURL);
+        console.log('############################## FIN - TOUCH END #################################');
+      };
     }
   };
 
