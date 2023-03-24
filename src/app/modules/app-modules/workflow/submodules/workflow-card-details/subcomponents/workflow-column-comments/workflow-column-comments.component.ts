@@ -8,7 +8,7 @@ import UserDetailsDTO from '@data/models/user-permissions/user-details-dto';
 import { CardCommentsService } from '@data/services/card-comments.service';
 import { TranslateService } from '@ngx-translate/core';
 import { GlobalMessageService } from '@shared/services/global-message.service';
-import { take } from 'rxjs/operators';
+import { skip, take } from 'rxjs/operators';
 import { forkJoin, Observable } from 'rxjs';
 // eslint-disable-next-line max-len
 import { TextEditorWrapperConfigI } from '@modules/feature-modules/text-editor-wrapper/interfaces/text-editor-wrapper-config.interface';
@@ -64,7 +64,7 @@ export class WorkflowColumnCommentsComponent implements OnInit, OnDestroy {
   ngOnInit(): void {
     this.idCard = parseInt(this.route.snapshot.params.idCard, 10);
     this.getData(true);
-    this.rxStompService.cardDeatilWs$.pipe(untilDestroyed(this)).subscribe((data: WorkflowSocketCardDetailDTO) => {
+    this.rxStompService.cardDeatilWs$.pipe(untilDestroyed(this), skip(1)).subscribe((data: WorkflowSocketCardDetailDTO) => {
       if (!this.sendingComment && data && data.cardInstanceWorkflowId === this.idCard && data.message === 'DETAIL_COMMENTS') {
         this.getData(false, false, true);
       } else if (this.sendingComment) {

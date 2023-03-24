@@ -5,7 +5,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import WorkflowCardDTO from '@data/models/workflows/workflow-card-dto';
 import { marker } from '@biesbjerg/ngx-translate-extract-marker';
 import { CardService } from '@data/services/cards.service';
-import { take } from 'rxjs/operators';
+import { skip, take } from 'rxjs/operators';
 import CardColumnDTO from '@data/models/cards/card-column-dto';
 import { ProgressSpinnerDialogService } from '@shared/services/progress-spinner-dialog.service';
 import { GlobalMessageService } from '@shared/services/global-message.service';
@@ -219,7 +219,7 @@ export class WorkflowCardDetailsComponent implements OnInit {
         this.rxStompService.cardDeatilWs$.next(JSON.parse(data.body) as WorkflowSocketCardDetailDTO);
       });
 
-    this.rxStompService.cardDeatilWs$.pipe(untilDestroyed(this)).subscribe((data: WorkflowSocketCardDetailDTO) => {
+    this.rxStompService.cardDeatilWs$.pipe(untilDestroyed(this), skip(1)).subscribe((data: WorkflowSocketCardDetailDTO) => {
       if (data && data.cardInstanceWorkflowId === this.idCard && data.message === 'DETAIL_FULL') {
         this.globalMessageService.showWarning({
           message: this.translateService.instant(marker('workflows.cardChangesDetected')),
