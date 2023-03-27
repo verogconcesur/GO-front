@@ -18,6 +18,7 @@ import { RxStompService } from '@app/services/rx-stomp.service';
 import { IMessage } from '@stomp/stompjs';
 import WorkflowSocketCardDetailDTO from '@data/models/workflows/workflow-sockect-card-detail-dto';
 import { ConfirmDialogService } from '@shared/services/confirm-dialog.service';
+import { AuthenticationService } from '@app/security/authentication.service';
 
 @UntilDestroy()
 @Component({
@@ -57,7 +58,8 @@ export class WorkflowCardDetailsComponent implements OnInit {
     private translateService: TranslateService,
     private prepareAndMoveService: WorkflowPrepareAndMoveService,
     private rxStompService: RxStompService,
-    private confirmationDialog: ConfirmDialogService
+    private confirmationDialog: ConfirmDialogService,
+    private authService: AuthenticationService
   ) {}
 
   @HostListener('window:resize', ['$event']) onResize(event: { target: { innerWidth: number } }) {
@@ -220,7 +222,12 @@ export class WorkflowCardDetailsComponent implements OnInit {
       });
 
     this.rxStompService.cardDeatilWs$.pipe(untilDestroyed(this), skip(1)).subscribe((data: WorkflowSocketCardDetailDTO) => {
-      if (data && data.cardInstanceWorkflowId === this.idCard && data.message === 'DETAIL_FULL') {
+      if (
+        data &&
+        data.cardInstanceWorkflowId === this.idCard &&
+        data.message === 'DETAIL_FULL' &&
+        data.userId.toString() !== this.authService.getUserId()
+      ) {
         this.globalMessageService.showWarning({
           message: this.translateService.instant(marker('workflows.cardChangesDetected')),
           actionText: this.translateService.instant(marker('common.close'))

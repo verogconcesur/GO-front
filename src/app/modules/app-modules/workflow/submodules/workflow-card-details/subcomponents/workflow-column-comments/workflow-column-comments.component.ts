@@ -19,6 +19,7 @@ import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
 import { RxStompService } from '@app/services/rx-stomp.service';
 import { IMessage } from '@stomp/stompjs';
 import WorkflowSocketCardDetailDTO from '@data/models/workflows/workflow-sockect-card-detail-dto';
+import { AuthenticationService } from '@app/security/authentication.service';
 
 @UntilDestroy()
 @Component({
@@ -58,14 +59,21 @@ export class WorkflowColumnCommentsComponent implements OnInit, OnDestroy {
     private translateService: TranslateService,
     private spinnerService: ProgressSpinnerDialogService,
     private notificationSoundService: NotificationSoundService,
-    private rxStompService: RxStompService
+    private rxStompService: RxStompService,
+    private authService: AuthenticationService
   ) {}
 
   ngOnInit(): void {
     this.idCard = parseInt(this.route.snapshot.params.idCard, 10);
     this.getData(true);
     this.rxStompService.cardDeatilWs$.pipe(untilDestroyed(this), skip(1)).subscribe((data: WorkflowSocketCardDetailDTO) => {
-      if (!this.sendingComment && data && data.cardInstanceWorkflowId === this.idCard && data.message === 'DETAIL_COMMENTS') {
+      if (
+        !this.sendingComment &&
+        data &&
+        data.cardInstanceWorkflowId === this.idCard &&
+        data.userId.toString() !== this.authService.getUserId() &&
+        data.message === 'DETAIL_COMMENTS'
+      ) {
         this.getData(false, false, true);
       } else if (this.sendingComment) {
         this.sendingComment = false;
