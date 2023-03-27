@@ -158,7 +158,7 @@ export class WorkflowTableViewComponent implements OnInit {
   }
 
   private filterData() {
-    this.wStatesData = this.workflowFilterService.filterData(this.workflowInstances, this.filters);
+    this.wStatesData = this.workflowFilterService.filterDataTable(this.workflowInstances, this.filters);
     this.defineColumns();
   }
 

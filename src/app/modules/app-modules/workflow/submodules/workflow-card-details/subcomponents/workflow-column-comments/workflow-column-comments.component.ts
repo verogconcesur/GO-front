@@ -216,12 +216,12 @@ export class WorkflowColumnCommentsComponent implements OnInit, OnDestroy {
   }
 
   public getUserFullname(user: UserDetailsDTO, separator = ' '): string {
-    let fullName = user.name;
+    let fullName = user.name.split(' ').join('');
     if (user.firstName) {
-      fullName += `${separator}${user.firstName}`;
+      fullName += `${separator}${user.firstName.split(' ').join('')}`;
     }
     if (user.lastName) {
-      fullName += `${separator}${user.lastName}`;
+      fullName += `${separator}${user.lastName.split(' ').join('')}`;
     }
     return fullName;
   }
