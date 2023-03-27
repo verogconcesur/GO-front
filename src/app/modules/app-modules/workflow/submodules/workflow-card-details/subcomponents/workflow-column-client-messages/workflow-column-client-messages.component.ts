@@ -9,7 +9,7 @@ import { CardMessagesService } from '@data/services/card-messages.service';
 import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
 import { TranslateService } from '@ngx-translate/core';
 import { NotificationSoundService } from '@shared/services/notification-sounds.service';
-import { take } from 'rxjs/operators';
+import { skip, take } from 'rxjs/operators';
 
 @UntilDestroy()
 @Component({
@@ -37,7 +37,7 @@ export class WorkflowColumnClientMessagesComponent implements OnInit, OnDestroy 
   ngOnInit(): void {
     this.idCard = parseInt(this.route.snapshot.params.idCard, 10);
     this.getData();
-    this.rxStompService.cardDeatilWs$.pipe(untilDestroyed(this)).subscribe((data: WorkflowSocketCardDetailDTO) => {
+    this.rxStompService.cardDeatilWs$.pipe(untilDestroyed(this), skip(1)).subscribe((data: WorkflowSocketCardDetailDTO) => {
       if (data && data.cardInstanceWorkflowId === this.idCard && data.message === 'DETAIL_MESSAGES') {
         this.getData(true);
       }

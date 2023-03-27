@@ -8,7 +8,7 @@ import UserDetailsDTO from '@data/models/user-permissions/user-details-dto';
 import { CardCommentsService } from '@data/services/card-comments.service';
 import { TranslateService } from '@ngx-translate/core';
 import { GlobalMessageService } from '@shared/services/global-message.service';
-import { take } from 'rxjs/operators';
+import { skip, take } from 'rxjs/operators';
 import { forkJoin, Observable } from 'rxjs';
 // eslint-disable-next-line max-len
 import { TextEditorWrapperConfigI } from '@modules/feature-modules/text-editor-wrapper/interfaces/text-editor-wrapper-config.interface';
@@ -19,6 +19,7 @@ import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
 import { RxStompService } from '@app/services/rx-stomp.service';
 import { IMessage } from '@stomp/stompjs';
 import WorkflowSocketCardDetailDTO from '@data/models/workflows/workflow-sockect-card-detail-dto';
+import { AuthenticationService } from '@app/security/authentication.service';
 
 @UntilDestroy()
 @Component({
@@ -58,14 +59,21 @@ export class WorkflowColumnCommentsComponent implements OnInit, OnDestroy {
     private translateService: TranslateService,
     private spinnerService: ProgressSpinnerDialogService,
     private notificationSoundService: NotificationSoundService,
-    private rxStompService: RxStompService
+    private rxStompService: RxStompService,
+    private authService: AuthenticationService
   ) {}
 
   ngOnInit(): void {
     this.idCard = parseInt(this.route.snapshot.params.idCard, 10);
     this.getData(true);
-    this.rxStompService.cardDeatilWs$.pipe(untilDestroyed(this)).subscribe((data: WorkflowSocketCardDetailDTO) => {
-      if (!this.sendingComment && data && data.cardInstanceWorkflowId === this.idCard && data.message === 'DETAIL_COMMENTS') {
+    this.rxStompService.cardDeatilWs$.pipe(untilDestroyed(this), skip(1)).subscribe((data: WorkflowSocketCardDetailDTO) => {
+      if (
+        !this.sendingComment &&
+        data &&
+        data.cardInstanceWorkflowId === this.idCard &&
+        data.userId.toString() !== this.authService.getUserId() &&
+        data.message === 'DETAIL_COMMENTS'
+      ) {
         this.getData(false, false, true);
       } else if (this.sendingComment) {
         this.sendingComment = false;
@@ -216,12 +224,12 @@ export class WorkflowColumnCommentsComponent implements OnInit, OnDestroy {
   }
 
   public getUserFullname(user: UserDetailsDTO, separator = ' '): string {
-    let fullName = user.name;
+    let fullName = user.name.split(' ').join('');
     if (user.firstName) {
-      fullName += `${separator}${user.firstName}`;
+      fullName += `${separator}${user.firstName.split(' ').join('')}`;
     }
     if (user.lastName) {
-      fullName += `${separator}${user.lastName}`;
+      fullName += `${separator}${user.lastName.split(' ').join('')}`;
     }
     return fullName;
   }

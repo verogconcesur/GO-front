@@ -5,7 +5,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import WorkflowCardDTO from '@data/models/workflows/workflow-card-dto';
 import { marker } from '@biesbjerg/ngx-translate-extract-marker';
 import { CardService } from '@data/services/cards.service';
-import { take } from 'rxjs/operators';
+import { skip, take } from 'rxjs/operators';
 import CardColumnDTO from '@data/models/cards/card-column-dto';
 import { ProgressSpinnerDialogService } from '@shared/services/progress-spinner-dialog.service';
 import { GlobalMessageService } from '@shared/services/global-message.service';
@@ -18,6 +18,7 @@ import { RxStompService } from '@app/services/rx-stomp.service';
 import { IMessage } from '@stomp/stompjs';
 import WorkflowSocketCardDetailDTO from '@data/models/workflows/workflow-sockect-card-detail-dto';
 import { ConfirmDialogService } from '@shared/services/confirm-dialog.service';
+import { AuthenticationService } from '@app/security/authentication.service';
 
 @UntilDestroy()
 @Component({
@@ -57,7 +58,8 @@ export class WorkflowCardDetailsComponent implements OnInit {
     private translateService: TranslateService,
     private prepareAndMoveService: WorkflowPrepareAndMoveService,
     private rxStompService: RxStompService,
-    private confirmationDialog: ConfirmDialogService
+    private confirmationDialog: ConfirmDialogService,
+    private authService: AuthenticationService
   ) {}
 
   @HostListener('window:resize', ['$event']) onResize(event: { target: { innerWidth: number } }) {
@@ -219,8 +221,13 @@ export class WorkflowCardDetailsComponent implements OnInit {
         this.rxStompService.cardDeatilWs$.next(JSON.parse(data.body) as WorkflowSocketCardDetailDTO);
       });
 
-    this.rxStompService.cardDeatilWs$.pipe(untilDestroyed(this)).subscribe((data: WorkflowSocketCardDetailDTO) => {
-      if (data && data.cardInstanceWorkflowId === this.idCard && data.message === 'DETAIL_FULL') {
+    this.rxStompService.cardDeatilWs$.pipe(untilDestroyed(this), skip(1)).subscribe((data: WorkflowSocketCardDetailDTO) => {
+      if (
+        data &&
+        data.cardInstanceWorkflowId === this.idCard &&
+        data.message === 'DETAIL_FULL' &&
+        data.userId.toString() !== this.authService.getUserId()
+      ) {
         this.globalMessageService.showWarning({
           message: this.translateService.instant(marker('workflows.cardChangesDetected')),
           actionText: this.translateService.instant(marker('common.close'))

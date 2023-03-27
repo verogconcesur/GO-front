@@ -64,6 +64,11 @@
         z-index: 100;
       }
     }
+    .buttons-wrapper {
+      display: flex;
+      justify-content: flex-end;
+      align-items: center;
+    }
     &__changes {
       color: mat-color($primary, statusWarning);
       margin-right: 10px;
