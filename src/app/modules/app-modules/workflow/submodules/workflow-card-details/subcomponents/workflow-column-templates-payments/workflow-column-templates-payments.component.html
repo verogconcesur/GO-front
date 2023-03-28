@@ -1,0 +1,9 @@
+<app-card-instance-payments
+    [cardInstancePaymentsConfig]="cardInstancePaymentsConfig"
+    [data]="paymentsData"
+    [tabId]="tab.id"
+    [cardInstanceWorkflowId]="idCard"
+    [cardInstance]="cardInstance.cardInstanceWorkflow.cardInstance"
+    (reload)="fetchData()"
+    *ngIf="dataLoaded"
+></app-card-instance-payments>

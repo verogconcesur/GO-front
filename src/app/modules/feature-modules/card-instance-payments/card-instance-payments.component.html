@@ -1,0 +1,92 @@
+<div class="payments" fxFill *ngIf="formPayments">
+    <div class="payments__main">
+        <div class="payments__main__header">
+            <div class="payments__main__header__item" fxLayout="row">
+                <div fxFlex="10" fxLayoutAlign="center center" fxFill>{{ labels.okClient | translate }}</div>
+                <div fxFlex="30" fxLayoutAlign="center center" fxFill>{{ labels.line | translate }}</div>
+                <div fxFlex="20" fxLayoutAlign="center center" fxFill>{{ labels.amount | translate }}</div>
+                <div fxFlex="30" fxLayoutAlign="center center" fxFill>{{ labels.attachments | translate }}</div>
+                <div fxFlex="10" fxLayoutAlign="center center" fxFill>{{ labels.actions | translate }}</div>
+            </div>
+        </div>
+        <div class="payments__main__container" fxLayout="column">
+            <div
+                class="payments__main__container__item smaller-mat-form-fields"
+                *ngFor="let payment of formPayments.controls; let i = index"
+                fxLayout="row"
+                [formGroup]="payment"
+            >
+                <div fxFlex="10" fxLayoutAlign="center center">
+                    <mat-checkbox formControlName="accepted" [disabled]="paymentDisabled(payment)"></mat-checkbox>
+                </div>
+                <div fxFlex="30" fxLayoutAlign="center center">
+                    <mat-form-field appearance="outline" floatLabel="always">
+                        <input type="text" matInput formControlName="description" [readonly]="paymentDisabled(payment)" />
+                    </mat-form-field>
+                </div>
+                <div fxFlex="20" fxLayoutAlign="center center">
+                    <mat-form-field appearance="outline" floatLabel="always">
+                        <input appTwoDigitDecimal matInput formControlName="amount" [readonly]="paymentDisabled(payment)" />
+                        <span matSuffix>€</span>
+                        <mat-error *ngIf="payment.get('amount').invalid">
+                            <span>{{ labels.maxLengthError | translate : { length: maxAmount.toString().length } }}</span>
+                        </mat-error>
+                    </mat-form-field>
+                </div>
+                <div fxFlex="30" fxLayoutAlign="center center">
+                    <mat-form-field appearance="outline" floatLabel="always">
+                        <mat-label>{{ labels.attachments | translate }}</mat-label>
+                        <mat-select
+                            formControlName="attachments"
+                            multiple
+                            [disabled]="paymentDisabled(payment)"
+                            [compareWith]="compareAttachments"
+                        >
+                            <mat-option *ngFor="let attachment of attachmentsList" [value]="attachment">{{
+                                attachment.file.name
+                            }}</mat-option>
+                        </mat-select>
+                    </mat-form-field>
+                </div>
+                <div fxFlex="10" fxLayoutAlign="center center">
+                    <button mat-icon-button color="primary" (click)="cancelPayment(payment, i)" *ngIf="!paymentDisabled(payment)">
+                        <mat-icon style="cursor: pointer">close</mat-icon>
+                    </button>
+                    <button
+                        mat-icon-button
+                        color="primary"
+                        (click)="savePayment(payment)"
+                        *ngIf="!paymentDisabled(payment)"
+                        [disabled]="payment.invalid"
+                    >
+                        <mat-icon style="cursor: pointer">check</mat-icon></button
+                    ><button
+                        mat-icon-button
+                        color="primary"
+                        (click)="editPayment(payment)"
+                        [disabled]="editing"
+                        *ngIf="paymentDisabled(payment) && !cardInstancePaymentsConfig.disableIndividualDeleteAction"
+                    >
+                        <mat-icon style="cursor: pointer">edit</mat-icon></button
+                    ><button
+                        mat-icon-button
+                        color="primary"
+                        (click)="deletePayment(payment)"
+                        [disabled]="editing"
+                        *ngIf="paymentDisabled(payment) && !cardInstancePaymentsConfig.disableIndividualDeleteAction"
+                    >
+                        <mat-icon style="cursor: pointer">delete</mat-icon>
+                    </button>
+                </div>
+            </div>
+        </div>
+        <div
+            class="payments__main__create"
+            fxLayout="row"
+            fxLayoutAlign="end none"
+            *ngIf="!editing && !cardInstancePaymentsConfig.disablePaymentsAdditionAction"
+        >
+            <span class="payments__main__create__item" (click)="newLine()">+ {{ labels.newLine | translate }}</span>
+        </div>
+    </div>
+</div>
