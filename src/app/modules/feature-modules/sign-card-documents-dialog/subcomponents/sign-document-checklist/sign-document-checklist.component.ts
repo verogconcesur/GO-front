@@ -513,9 +513,11 @@ export class SignDocumentChecklistComponent implements OnInit, AfterViewInit, On
               //   item.itemVal.fileValue.type = this.p5sDraws[found.auxOrderNumber].split(';base64,')[0].split('data:')[1];
               //   item.itemVal.fileValue.name = `${+new Date()}_draw.png`;
               if (item.typeItem === 'DRAWING' && this.p5s[found.auxOrderNumber]) {
-                const { canvas } = this.p5s[found.auxOrderNumber].get() as unknown as {
-                  canvas: HTMLCanvasElement;
-                };
+                // const { canvas } = this.p5s[found.auxOrderNumber].get() as unknown as {
+                //   canvas: HTMLCanvasElement;
+                // };
+                const domItem = document.getElementById('item_' + found.auxOrderNumber);
+                const canvas = domItem.querySelector('canvas.p5Canvas') as HTMLCanvasElement;
                 const dataUrl = canvas.toDataURL();
 
                 console.log('############################ INICIO - SAVE ###################################');
@@ -650,7 +652,7 @@ export class SignDocumentChecklistComponent implements OnInit, AfterViewInit, On
     }
     this.printItemImageInPdf(item, templateItemFG);
     if (templateItemFG.get('typeItem').value === 'DRAWING' && !this.p5s[uniqueId] && $(`#${id_resizable}`).length) {
-      this.p5s[uniqueId] = new p5((p: p5) =>
+      new p5((p: p5) =>
         this.setDrawZone(
           p,
           uniqueId,
@@ -718,9 +720,11 @@ export class SignDocumentChecklistComponent implements OnInit, AfterViewInit, On
         }
       };
       p.touchEnded = (event: TouchEvent, paux: p5 = p) => {
-        const { canvas } = paux.get() as unknown as {
-          canvas: HTMLCanvasElement;
-        };
+        // const { canvas } = paux.get() as unknown as {
+        //   canvas: HTMLCanvasElement;
+        // };
+        const domItem = document.getElementById('item_' + auxOrderNumber);
+        const canvas = domItem.querySelector('canvas.p5Canvas') as HTMLCanvasElement;
         const dataURL = canvas.toDataURL();
         this.p5sDraws[auxOrderNumber] = dataURL;
         this.debugData = dataURL;
@@ -741,6 +745,7 @@ export class SignDocumentChecklistComponent implements OnInit, AfterViewInit, On
         console.log('debugData === dataUrl', this.debugData === dataURL);
         console.log('############################## FIN - TOUCH END #################################');
       };
+      this.p5s[auxOrderNumber] = p;
     }
   };
 
