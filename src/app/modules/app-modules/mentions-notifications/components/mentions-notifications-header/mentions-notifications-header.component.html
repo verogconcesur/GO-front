@@ -1,0 +1,40 @@
+<div class="adm-header-section" fxLayout="row wrap" fxLayoutAlign="space-between center">
+    <h1 class="adm-header-section__title mat-display-2">{{ title | translate }}</h1>
+
+    <div class="adm-header-section__actions-wrapper" fxLayout="row" fxLayoutAlign="end center">
+        <div class="adm-header-section__actions-wrapper__search-form-wrapper">
+            <form
+                *ngIf="showSearchOfFilterInput"
+                class="adm-header-section__actions-wrapper__search-form smaller-mat-form-fields"
+                fxLayout="row"
+                fxLayoutAlign="end center"
+                (ngSubmit)="searchAction()"
+            >
+                <mat-form-field
+                    appearance="outline"
+                    class="smaller-mat-form-fields__no-margin smaller-mat-form-fields__button-height"
+                    *ngIf="areSearchActive"
+                >
+                    <input
+                        type="text"
+                        matInput
+                        [placeholder]="getSearchLabel() | translate"
+                        [formControl]="filterTextSearchControl"
+                    />
+                    <button mat-icon-button aria-label="Search" type="button" matSuffix (click)="searchAction()">
+                        <mat-icon>search</mat-icon>
+                    </button>
+                </mat-form-field>
+            </form>
+        </div>
+        <button
+            color="dark"
+            class="filter-action mat-square-icon"
+            (click)="buttonShowFilterDrawerAction.emit()"
+            [class.active]="areFiltersSettedAndActive"
+            mat-flat-button
+        >
+            <mat-icon>filter_list</mat-icon>
+        </button>
+    </div>
+</div>

@@ -515,6 +515,16 @@
         }
     },
     "notifications": {
+        "dateFrom": "Date from",
+        "dateTo": "Date to",
+        "information": "Information",
+        "notificationTypes": "Notification type",
+        "readType": "Status",
+        "readTypes": {
+            "ALL": "All",
+            "NO_READ": "No read",
+            "READ": "Read"
+        },
         "type": {
             "ADD_COMMENT": "New comment",
             "ADD_DOC": "New attachment",

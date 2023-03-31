@@ -1,0 +1,39 @@
+<form [formGroup]="filterForm" *ngIf="filterForm" class="men-filter" fxLayout="column" fxLayoutAlign="center center">
+    <!-- dateCommentFrom -->
+    <mat-form-field appearance="outline" floatLabel="always">
+        <mat-label>{{ labels.dateFrom | translate }}</mat-label>
+        <input
+            matInput
+            readonly
+            #pickerIniInput
+            [matDatepicker]="pickerIni"
+            placeholder="DD/MM/YYYY"
+            formControlName="dateCommentFrom"
+            (dateChange)="changeDate()"
+        />
+        <mat-datepicker-toggle matSuffix [for]="pickerIni"></mat-datepicker-toggle>
+        <mat-datepicker #pickerIni></mat-datepicker>
+    </mat-form-field>
+    <!-- dateCommentTo -->
+    <mat-form-field appearance="outline" floatLabel="always">
+        <mat-label>{{ labels.dateTo | translate }}</mat-label>
+        <input
+            matInput
+            readonly
+            #pickerEndInput
+            [matDatepicker]="pickerEnd"
+            placeholder="DD/MM/YYYY"
+            formControlName="dateCommentTo"
+            (dateChange)="changeDate()"
+        />
+        <mat-datepicker-toggle matSuffix [for]="pickerEnd"></mat-datepicker-toggle>
+        <mat-datepicker #pickerEnd></mat-datepicker>
+    </mat-form-field>
+    <!-- readType -->
+    <mat-form-field appearance="outline" floatLabel="always">
+        <mat-label>{{ labels.readType | translate }}</mat-label>
+        <mat-select formControlName="readFilterType">
+            <mat-option *ngFor="let type of readTypes" [value]="type">{{ labels[type] | translate }}</mat-option>
+        </mat-select>
+    </mat-form-field>
+</form>

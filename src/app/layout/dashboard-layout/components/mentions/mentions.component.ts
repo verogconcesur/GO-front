@@ -1,6 +1,5 @@
 import { DatePipe } from '@angular/common';
 import { Component, OnInit, ViewEncapsulation } from '@angular/core';
-import { RouteConstants } from '@app/constants/route.constants';
 import { marker } from '@biesbjerg/ngx-translate-extract-marker';
 import MentionDataListDTO from '@data/models/notifications/mention-data-list-dto';
 import { NotificationService } from '@data/services/notifications.service';
@@ -15,12 +14,10 @@ import { finalize, take } from 'rxjs/operators';
 export class MentionsComponent implements OnInit {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   public labels: any = {
-    showAll: marker('common.showAll'),
     newMentions: marker('common.unread'),
     oldMentions: marker('common.readen'),
     noDataToShow: marker('errors.noDataToShow')
   };
-  public MENTIONS_PATH: string = RouteConstants.MENTIONS;
   public mentions: MentionDataListDTO[] = [];
   public loading = false;
   private originalMentions: MentionDataListDTO[] = [];
