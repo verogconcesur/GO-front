@@ -79,6 +79,9 @@
     &__header {
       padding: 10px 10px 0 10px;
     }
+    &__button {
+      margin-bottom: 10px !important;
+    }
     &__content {
       padding: 10px;
       background-color: mat-contrast($primary, 500);

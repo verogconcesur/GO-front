@@ -341,6 +341,7 @@
         "selectImageFile": "Selecciona una imagen",
         "send": "Enviar",
         "shortcut": "Enlace externo",
+        "showAll": "Ver todo",
         "showPage": "Pág",
         "state": "Estado",
         "substate": "Subestado",
@@ -514,6 +515,16 @@
         }
     },
     "notifications": {
+        "dateFrom": "Fecha desde",
+        "dateTo": "Fecha hasta",
+        "information": "Información",
+        "notificationTypes": "Tipo de notificación",
+        "readType": "Estado",
+        "readTypes": {
+            "ALL": "Todas",
+            "NO_READ": "No leídas",
+            "READ": "Leídas"
+        },
         "type": {
             "ADD_COMMENT": "Nuevo comentario",
             "ADD_DOC": "Nuevo adjunto",

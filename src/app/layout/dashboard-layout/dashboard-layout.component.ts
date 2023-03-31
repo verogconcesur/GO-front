@@ -6,10 +6,9 @@ import { Component, OnInit } from '@angular/core';
   styleUrls: ['./dashboard-layout.component.scss']
 })
 export class DashboardLayoutComponent implements OnInit {
+  public filterDrawerDisableClose = false;
 
-  constructor() { }
+  constructor() {}
 
-  ngOnInit(): void {
-  }
-
+  ngOnInit(): void {}
 }
