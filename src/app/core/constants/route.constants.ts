@@ -43,6 +43,9 @@ export enum RouteConstants {
 
   VEHICLES = 'vehicles',
 
+  NOTIFICATIONS = 'notifications',
+  MENTIONS = 'mentions',
+
   //Users
   USERS = 'users',
 

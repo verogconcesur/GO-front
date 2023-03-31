@@ -1,0 +1,45 @@
+@import 'utils/core';
+@import 'utils/theme';
+
+.adm-header-section {
+  &__title {
+    margin-bottom: 0px;
+    color: mat-color($foreground, secondary-text);
+  }
+
+  @include respond-to($mobile) {
+    &__title {
+      margin-right: 50%;
+    }
+  }
+
+  &__actions-wrapper {
+    @include respond-to($mobile) {
+      width: 100%;
+    }
+
+    &__search-form-wrapper {
+      display: inline-block;
+      @include respond-to($mobile) {
+        mat-form-field {
+          max-width: 170px;
+        }
+      }
+    }
+
+    .filter-action {
+      margin-left: 5px;
+      &.active:before {
+        content: '';
+        display: block;
+        position: absolute;
+        right: -5px;
+        top: -5px;
+        width: 15px;
+        height: 15px;
+        border-radius: 50%;
+        background-color: yellowgreen;
+      }
+    }
+  }
+}
