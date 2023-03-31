@@ -513,33 +513,37 @@ export class SignDocumentChecklistComponent implements OnInit, AfterViewInit, On
               //   item.itemVal.fileValue.type = this.p5sDraws[found.auxOrderNumber].split(';base64,')[0].split('data:')[1];
               //   item.itemVal.fileValue.name = `${+new Date()}_draw.png`;
               if (item.typeItem === 'DRAWING' && this.p5s[found.auxOrderNumber]) {
-                // const { canvas } = this.p5s[found.auxOrderNumber].get() as unknown as {
-                //   canvas: HTMLCanvasElement;
-                // };
-                const domItem = document.getElementById('item_' + found.auxOrderNumber);
-                const canvas = domItem.querySelector('canvas.p5Canvas') as HTMLCanvasElement;
-                const dataUrl = canvas.toDataURL();
+                try {
+                  // const { canvas } = this.p5s[found.auxOrderNumber].get() as unknown as {
+                  //   canvas: HTMLCanvasElement;
+                  // };
+                  const domItem = document.getElementById('item_' + found.auxOrderNumber);
+                  const canvas = domItem.querySelector('canvas.p5Canvas') as HTMLCanvasElement;
+                  const dataUrl = canvas.toDataURL();
 
-                console.log('############################ INICIO - SAVE ###################################');
-                console.log(canvas, dataUrl);
-                console.log(found.auxOrderNumber, this.p5s, this.p5sDraws);
+                  console.log('############################ INICIO - SAVE ###################################');
+                  console.log(canvas, dataUrl);
+                  console.log(found.auxOrderNumber, this.p5s, this.p5sDraws);
 
-                console.log(
-                  'p5s === dataUrl',
-                  (
-                    this.p5s[found.auxOrderNumber].get() as unknown as {
-                      canvas: HTMLCanvasElement;
-                    }
-                  ).canvas.toDataURL() === dataUrl
-                );
+                  console.log(
+                    'p5s === dataUrl',
+                    (
+                      this.p5s[found.auxOrderNumber].get() as unknown as {
+                        canvas: HTMLCanvasElement;
+                      }
+                    ).canvas.toDataURL() === dataUrl
+                  );
 
-                console.log('p5sDraws === dataUrl', this.p5sDraws[found.auxOrderNumber] === dataUrl);
-                console.log('debugData === data', this.debugData === dataUrl);
-                console.log('############################## FIN - SAVE #################################');
+                  console.log('p5sDraws === dataUrl', this.p5sDraws[found.auxOrderNumber] === dataUrl);
+                  console.log('debugData === data', this.debugData === dataUrl);
+                  console.log('############################## FIN - SAVE #################################');
 
-                item.itemVal.fileValue.content = dataUrl.split(';base64,')[1];
-                item.itemVal.fileValue.type = dataUrl.split(';base64,')[0].split('data:')[1];
-                item.itemVal.fileValue.name = `${+new Date()}_draw.png`;
+                  item.itemVal.fileValue.content = dataUrl.split(';base64,')[1];
+                  item.itemVal.fileValue.type = dataUrl.split(';base64,')[0].split('data:')[1];
+                  item.itemVal.fileValue.name = `${+new Date()}_draw.png`;
+                } catch (error) {
+                  console.error('Save', error);
+                }
               } else {
                 item.itemVal.fileValue =
                   item.itemVal.fileValue.content || (item.itemVal.fileValue.id && item.itemVal.fileValue.thumbnail)
@@ -716,34 +720,41 @@ export class SignDocumentChecklistComponent implements OnInit, AfterViewInit, On
             }
           }
         } catch (error) {
-          alert(error);
+          console.error('touchMoved', error);
         }
       };
       p.touchEnded = (event: TouchEvent, paux: p5 = p) => {
-        // const { canvas } = paux.get() as unknown as {
-        //   canvas: HTMLCanvasElement;
-        // };
-        const domItem = document.getElementById('item_' + auxOrderNumber);
-        const canvas = domItem.querySelector('canvas.p5Canvas') as HTMLCanvasElement;
-        const dataURL = canvas.toDataURL();
-        this.p5sDraws[auxOrderNumber] = dataURL;
-        this.debugData = dataURL;
-        console.log('############################ INICIO - TOUCH END ###################################');
-        console.log(canvas, dataURL);
-        console.log(auxOrderNumber, this.p5s, this.p5sDraws);
+        try {
+          // const { canvas } = paux.get() as unknown as {
+          //   canvas: HTMLCanvasElement;
+          // };
+          const domItem = document.getElementById('item_' + auxOrderNumber);
+          const canvas = domItem.querySelector('canvas.p5Canvas') as HTMLCanvasElement;
+          if (!canvas?.toDataURL || !canvas.toDataURL()) {
+            return;
+          }
+          const dataURL = canvas.toDataURL();
+          this.p5sDraws[auxOrderNumber] = dataURL;
+          this.debugData = dataURL;
+          console.log('############################ INICIO - TOUCH END ###################################');
+          console.log(canvas, dataURL);
+          console.log(auxOrderNumber, this.p5s, this.p5sDraws);
 
-        console.log(
-          'p5s === dataUrl',
-          (
-            this.p5s[auxOrderNumber].get() as unknown as {
-              canvas: HTMLCanvasElement;
-            }
-          ).canvas.toDataURL() === dataURL
-        );
+          console.log(
+            'p5s === dataUrl',
+            (
+              this.p5s[auxOrderNumber].get() as unknown as {
+                canvas: HTMLCanvasElement;
+              }
+            ).canvas.toDataURL() === dataURL
+          );
 
-        console.log('p5sDraws === dataUrl', this.p5sDraws[auxOrderNumber] === dataURL);
-        console.log('debugData === dataUrl', this.debugData === dataURL);
-        console.log('############################## FIN - TOUCH END #################################');
+          console.log('p5sDraws === dataUrl', this.p5sDraws[auxOrderNumber] === dataURL);
+          console.log('debugData === dataUrl', this.debugData === dataURL);
+          console.log('############################## FIN - TOUCH END #################################');
+        } catch (error) {
+          console.error('touchEnded', error);
+        }
       };
       this.p5s[auxOrderNumber] = p;
     }
