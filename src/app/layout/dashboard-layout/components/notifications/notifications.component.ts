@@ -1,8 +1,6 @@
 import { DatePipe } from '@angular/common';
 import { Component, OnInit, ViewEncapsulation } from '@angular/core';
 import { FormControl } from '@angular/forms';
-import { Router } from '@angular/router';
-import { RouteConstants } from '@app/constants/route.constants';
 import { AuthenticationService } from '@app/security/authentication.service';
 import { marker } from '@biesbjerg/ngx-translate-extract-marker';
 import NotificationDataListDTO from '@data/models/notifications/notification-data-list-dto';

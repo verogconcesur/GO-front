@@ -341,6 +341,7 @@
         "selectImageFile": "Select image file",
         "send": "Send",
         "shortcut": "Link",
+        "showAll": "Show all",
         "showPage": "Show page",
         "state": "State",
         "substate": "Substate",
@@ -514,6 +515,16 @@
         }
     },
     "notifications": {
+        "dateFrom": "Date from",
+        "dateTo": "Date to",
+        "information": "Information",
+        "notificationTypes": "Notification type",
+        "readType": "Status",
+        "readTypes": {
+            "ALL": "All",
+            "NO_READ": "No read",
+            "READ": "Read"
+        },
         "type": {
             "ADD_COMMENT": "New comment",
             "ADD_DOC": "New attachment",

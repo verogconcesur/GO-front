@@ -1,6 +1,18 @@
-<div class="dashboard-layout-component mat-app-background">
-    <app-navbar></app-navbar>
-    <ng-container>
-        <router-outlet></router-outlet>
-    </ng-container>
-</div>
+<mat-drawer-container class="dashboard-layout" autosize [hasBackdrop]="true">
+    <mat-drawer
+        #filterDrawer
+        class="administration-layout__filter"
+        [disableClose]="filterDrawerDisableClose"
+        position="end"
+        mode="over"
+        [opened]="false"
+    >
+        <app-filter-drawer [filterDrawer]="filterDrawer" (disableClose)="filterDrawerDisableClose = $event"></app-filter-drawer>
+    </mat-drawer>
+    <div class="dashboard-layout__component mat-app-background">
+        <app-navbar></app-navbar>
+        <ng-container>
+            <router-outlet></router-outlet>
+        </ng-container>
+    </div>
+</mat-drawer-container>

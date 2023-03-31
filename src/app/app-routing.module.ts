@@ -32,6 +32,22 @@ const routes: Routes = [
         loadChildren: () => import('./modules/app-modules/vehicles/vehicles/vehicles.module').then((m) => m.VehiclesModule)
       },
       {
+        path: RouteConstants.NOTIFICATIONS,
+        canActivate: [AuthGuardService],
+        loadChildren: () =>
+          import('./modules/app-modules/mentions-notifications/mentions-notifications/mentions-notifications.module').then(
+            (m) => m.MentionsNotificationsModule
+          )
+      },
+      {
+        path: RouteConstants.MENTIONS,
+        canActivate: [AuthGuardService],
+        loadChildren: () =>
+          import('./modules/app-modules/mentions-notifications/mentions-notifications/mentions-notifications.module').then(
+            (m) => m.MentionsNotificationsModule
+          )
+      },
+      {
         path: RouteConstants.EMPTY,
         canActivate: [AuthGuardService],
         redirectTo: RouteConstants.WORKFLOWS
