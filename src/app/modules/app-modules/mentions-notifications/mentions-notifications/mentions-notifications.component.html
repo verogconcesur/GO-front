@@ -1,0 +1,26 @@
+<div class="mentions-notifications">
+    <div class="mentions-notifications__header">
+        <app-mentions-notifications-header
+            #mnHeader
+            [areFiltersSettedAndActive]="areFiltersSettedAndActive()"
+            [areSearchActive]="areSearchActive()"
+            [title]="'common.notifications'"
+            (buttonShowFilterDrawerAction)="buttonShowFilterDrawerAction()"
+            (buttonSearchAction)="buttonSearchAction($event)"
+        ></app-mentions-notifications-header>
+    </div>
+    <mat-tab-group
+        #tabGroup
+        class="mat-tab-page-sections font-size-smaller"
+        mat-align-tabs="start"
+        [selectedIndex]="getSelectedTabIndex()"
+        (selectedTabChange)="changeSelectedTab($event)"
+    >
+        <mat-tab label="{{ labels.notifications | translate }}"></mat-tab>
+        <mat-tab label="{{ labels.mentions | translate }}"></mat-tab>
+    </mat-tab-group>
+    <div>
+        <app-notifications #notifications *ngIf="selectedTab === 'notifications'"></app-notifications>
+        <app-mentions #mentions *ngIf="selectedTab === 'mentions'"></app-mentions>
+    </div>
+</div>

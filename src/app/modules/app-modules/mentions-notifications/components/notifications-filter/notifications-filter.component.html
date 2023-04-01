@@ -1,0 +1,46 @@
+<form [formGroup]="filterForm" *ngIf="filterForm" class="not-filter" fxLayout="column" fxLayoutAlign="center center">
+    <!-- dateNotificationFrom -->
+    <mat-form-field appearance="outline" floatLabel="always">
+        <mat-label>{{ labels.dateFrom | translate }}</mat-label>
+        <input
+            matInput
+            readonly
+            #pickerIniInput
+            [matDatepicker]="pickerIni"
+            placeholder="DD/MM/YYYY"
+            formControlName="dateNotificationFrom"
+            (dateChange)="changeDate()"
+        />
+        <mat-datepicker-toggle matSuffix [for]="pickerIni"></mat-datepicker-toggle>
+        <mat-datepicker #pickerIni></mat-datepicker>
+    </mat-form-field>
+    <!-- dateNotificationFrom -->
+    <mat-form-field appearance="outline" floatLabel="always">
+        <mat-label>{{ labels.dateTo | translate }}</mat-label>
+        <input
+            matInput
+            readonly
+            #pickerEndInput
+            [matDatepicker]="pickerEnd"
+            placeholder="DD/MM/YYYY"
+            formControlName="dateNotificationTo"
+            (dateChange)="changeDate()"
+        />
+        <mat-datepicker-toggle matSuffix [for]="pickerEnd"></mat-datepicker-toggle>
+        <mat-datepicker #pickerEnd></mat-datepicker>
+    </mat-form-field>
+    <!-- notificationType -->
+    <mat-form-field appearance="outline" floatLabel="always">
+        <mat-label>{{ labels.notificationTypes | translate }}</mat-label>
+        <mat-select formControlName="notificationTypes" multiple>
+            <mat-option *ngFor="let type of typesList" [value]="type">{{ labels[type] | translate }}</mat-option>
+        </mat-select>
+    </mat-form-field>
+    <!-- readType -->
+    <mat-form-field appearance="outline" floatLabel="always">
+        <mat-label>{{ labels.readType | translate }}</mat-label>
+        <mat-select formControlName="readFilterType">
+            <mat-option *ngFor="let type of readTypes" [value]="type">{{ labels[type] | translate }}</mat-option>
+        </mat-select>
+    </mat-form-field>
+</form>

@@ -304,6 +304,7 @@
                 (pdfLoaded)="pdfLoadedFn($event)"
                 (zoomChange)="pdfZoomChange($event)"
                 (textLayerRendered)="configCanvas($event)"
+                [showUnverifiedSignatures]="true"
             >
             </ngx-extended-pdf-viewer>
         </ng-container>

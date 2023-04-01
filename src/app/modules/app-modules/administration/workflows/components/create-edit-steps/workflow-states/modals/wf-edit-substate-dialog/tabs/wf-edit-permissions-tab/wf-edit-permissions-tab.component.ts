@@ -5,6 +5,7 @@ import { ConcenetError } from '@app/types/error';
 import { marker } from '@biesbjerg/ngx-translate-extract-marker';
 import PermissionsDTO from '@data/models/user-permissions/permissions-dto';
 import RoleDTO from '@data/models/user-permissions/role-dto';
+import UserDTO from '@data/models/user-permissions/user-dto';
 import { WorkFlowPermissionsEnum } from '@data/models/workflow-admin/workflow-card-tab-permissions-dto';
 import WorkflowSubstateUserDTO from '@data/models/workflows/workflow-substate-user-dto';
 import { WorkflowAdministrationStatesSubstatesService } from '@data/services/workflow-administration-states-substates.service';
@@ -108,6 +109,27 @@ export class WfEditPermissionsTabComponent extends WfEditSubstateAbstractTabClas
       this.roleSelected = role;
       this.allPermisionForm.get('permission').setValue('');
     }
+  }
+  public getUserFullName(user: WorkflowSubstateUserDTO): string {
+    if (user?.user) {
+      const userdto: UserDTO = user.user;
+      if (userdto.fullName) {
+        return userdto.fullName;
+      } else {
+        let fullname = '';
+        if (userdto.name) {
+          fullname += userdto.name;
+        }
+        if (userdto.firstName) {
+          fullname += ` ${userdto.firstName}`;
+        }
+        if (userdto.lastName) {
+          fullname += ` ${userdto.lastName}`;
+        }
+        return fullname;
+      }
+    }
+    return '';
   }
   public changeAllPermissions(permission: string): void {
     let users = this.form.get('users').getRawValue();

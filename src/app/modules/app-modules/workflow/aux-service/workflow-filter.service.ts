@@ -310,7 +310,101 @@ export class WorkflowFilterService {
 
     //Si ya he filtrados por tajetas o sin tarjetas => tengo por cada estado los usuarios a visualizar
     // => si no hay usuarios significa que no debo mostrar el estado
-    wStatesData = wStatesData.filter((ws: WorkflowStateDTO) => !ws.front || ws.workflowUsers.length > 0);
+    wStatesData = wStatesData.filter((ws: WorkflowStateDTO) => !ws.front || ws.workflowUsers?.length > 0);
+
+    return wStatesData;
+  }
+
+  // Filters for table view
+
+  public filterDataTable(workflowInstances: WorkflowStateDTO[], filter: WorkflowFilterDTO): WorkflowStateDTO[] {
+    let wStatesData: WorkflowStateDTO[] = lodash.cloneDeep(workflowInstances);
+    const filters = JSON.parse(JSON.stringify(filter));
+
+    //Filtro Usuarios
+    if (filter.users?.length > 0) {
+      const usersToFilterIds = filter.users.map((wssu: WorkflowSubstateUserDTO) => wssu.user.id);
+      wStatesData = wStatesData.map((ws: WorkflowStateDTO) => {
+        if (ws.front) {
+          ws.workflowSubstates = ws.workflowSubstates.map((wss: WorkflowSubstateDTO) => {
+            wss.cards = wss.cards.filter(
+              (card: WorkflowCardDTO) =>
+                usersToFilterIds.indexOf(card.cardInstanceWorkflows[0].cardInstanceWorkflowUsers[0].userId) >= 0
+            );
+            return wss;
+          });
+          return ws;
+        } else {
+          ws.workflowSubstates = ws.workflowSubstates.map((wss: WorkflowSubstateDTO) => {
+            wss.cards = [];
+            return wss;
+          });
+          return ws;
+        }
+      });
+    }
+    //Filtro estados
+    if (filters.states?.length) {
+      const statesIds = filters.states.map((w: WorkflowStateDTO) => w.id);
+      wStatesData = wStatesData.filter((ws: WorkflowStateDTO) => statesIds.indexOf(ws.id) >= 0);
+    }
+
+    //Filtro subestados
+    let substatesIdsToFilter: number[] = [];
+    if (filters.subStates?.length) {
+      filters.subStates.forEach(
+        (w: WorkflowSubstateDTO) => (substatesIdsToFilter = [...substatesIdsToFilter, ...w.substatesIdsToFilter])
+      );
+      wStatesData = wStatesData.map((ws: WorkflowStateDTO) => {
+        ws.workflowSubstates = ws.workflowSubstates.filter(
+          (wss: WorkflowSubstateDTO) => substatesIdsToFilter.indexOf(wss.id) >= 0
+        );
+        return ws;
+      });
+      wStatesData = wStatesData.filter((ws: WorkflowStateDTO) => ws.workflowSubstates.length > 0);
+    }
+
+    //Filtro Prioridad
+
+    //Filtro subestados y usuarios con tarjetas
+    if (filters.substatesWithCards === 'WITH_CARDS') {
+      //Filtramos estados vacíos
+      wStatesData = wStatesData.filter((ws: WorkflowStateDTO) => {
+        let isEmpty = true;
+        //No filtramos nada del estado ancla
+
+        ws.workflowSubstates.forEach((wss: WorkflowSubstateDTO) => {
+          if (wss.cards.length) {
+            isEmpty = false;
+          }
+        });
+        return !isEmpty;
+      });
+      //Filtramos subestados vacíos
+      wStatesData = wStatesData.map((ws: WorkflowStateDTO) => {
+        ws.workflowSubstates = ws.workflowSubstates.filter((wss: WorkflowSubstateDTO) => wss?.cards?.length > 0);
+        return ws;
+      });
+    }
+
+    //Filtro subestados y usuarios sin tarjetas
+    if (filters.substatesWithCards === 'WITHOUT_CARDS') {
+      //Filtramos estados completamente llenos / sólo aplica a estados que nos son portada
+      wStatesData = wStatesData.filter((ws: WorkflowStateDTO) => {
+        let haveAllSubstatesData = true;
+        ws.workflowSubstates.forEach((wss: WorkflowSubstateDTO) => {
+          if (wss.cards.length === 0) {
+            haveAllSubstatesData = false;
+          }
+        });
+        return !haveAllSubstatesData;
+      });
+      //Filtramos subestados llenos
+      wStatesData = wStatesData.map((ws: WorkflowStateDTO) => {
+        ws.workflowSubstates = ws.workflowSubstates.filter((wss: WorkflowSubstateDTO) => !wss.cards || wss.cards.length === 0);
+        return ws;
+      });
+    }
 
     return wStatesData;
   }

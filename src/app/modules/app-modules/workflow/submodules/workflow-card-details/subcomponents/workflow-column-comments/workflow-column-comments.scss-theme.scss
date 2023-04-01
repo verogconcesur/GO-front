@@ -5,17 +5,16 @@
     font-size: 0.85em !important;
     .note-hint-popover {
       left: 0 !important;
-      top: -125px !important;
-      height: 100px;
-      overflow: auto;
-      overflow-x: hidden;
+      top: -176px !important;
+      height: 153px;
+      overflow: hidden;
       width: 100%;
     }
     .note-statusbar {
       display: none;
     }
     .popover-content.note-children-container {
-      overflow: hidden;
+      overflow: auto;
     }
   }
 }

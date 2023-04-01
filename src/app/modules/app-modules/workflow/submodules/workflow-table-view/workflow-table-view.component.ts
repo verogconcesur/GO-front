@@ -147,12 +147,13 @@ export class WorkflowTableViewComponent implements OnInit {
       });
       wState.cardCount = totalCards;
       wState.userCount = Object.keys(totalUsers).length;
+      wState.workflowUsers = Object.keys(totalUsers).map((k) => totalUsers[k]);
     });
     this.filterData();
   }
 
   private filterData() {
-    this.wStatesData = this.workflowFilterService.filterData(this.workflowInstances, this.filters);
+    this.wStatesData = this.workflowFilterService.filterDataTable(this.workflowInstances, this.filters);
     this.defineColumns();
   }
 
