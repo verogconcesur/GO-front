@@ -115,6 +115,7 @@
         "budgets": {
             "addLines": "Añadir lineas de presupuesto",
             "deleteConfirmation": "¿Está seguro que desea eliminar esta linea de presupuesto?",
+            "publish": "Publicar presupuesto",
             "saveConfirmation": "¿Está seguro que desea guardar esta linea de presupuesto?",
             "sendConfirmation": "¿Está seguro que desea enviar el presupuesto al cliente?"
         }
