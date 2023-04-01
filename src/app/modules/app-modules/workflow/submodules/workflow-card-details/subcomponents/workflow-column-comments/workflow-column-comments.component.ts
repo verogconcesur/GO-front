@@ -8,14 +8,20 @@ import UserDetailsDTO from '@data/models/user-permissions/user-details-dto';
 import { CardCommentsService } from '@data/services/card-comments.service';
 import { TranslateService } from '@ngx-translate/core';
 import { GlobalMessageService } from '@shared/services/global-message.service';
-import { take } from 'rxjs/operators';
+import { skip, take } from 'rxjs/operators';
 import { forkJoin, Observable } from 'rxjs';
 // eslint-disable-next-line max-len
 import { TextEditorWrapperConfigI } from '@modules/feature-modules/text-editor-wrapper/interfaces/text-editor-wrapper-config.interface';
 import { ProgressSpinnerDialogService } from '@shared/services/progress-spinner-dialog.service';
 import { TextEditorWrapperComponent } from '@modules/feature-modules/text-editor-wrapper/text-editor-wrapper.component';
 import { NotificationSoundService } from '@shared/services/notification-sounds.service';
+import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
+import { RxStompService } from '@app/services/rx-stomp.service';
+import { IMessage } from '@stomp/stompjs';
+import WorkflowSocketCardDetailDTO from '@data/models/workflows/workflow-sockect-card-detail-dto';
+import { AuthenticationService } from '@app/security/authentication.service';
 
+@UntilDestroy()
 @Component({
   selector: 'app-workflow-column-comments',
   templateUrl: './workflow-column-comments.component.html',
@@ -42,8 +48,8 @@ export class WorkflowColumnCommentsComponent implements OnInit, OnDestroy {
     airMode: false,
     height: 80
   };
-  private readonly timeBeforeMarkAsRead = 15000;
-  private interval: NodeJS.Timeout;
+  private readonly timeBeforeMarkAsRead = 20000;
+  private sendingComment = false;
   private idCard: number;
 
   constructor(
@@ -52,23 +58,32 @@ export class WorkflowColumnCommentsComponent implements OnInit, OnDestroy {
     private globalMessageService: GlobalMessageService,
     private translateService: TranslateService,
     private spinnerService: ProgressSpinnerDialogService,
-    private notificationSoundService: NotificationSoundService
+    private notificationSoundService: NotificationSoundService,
+    private rxStompService: RxStompService,
+    private authService: AuthenticationService
   ) {}
 
   ngOnInit(): void {
     this.idCard = parseInt(this.route.snapshot.params.idCard, 10);
     this.getData(true);
-    this.interval = setInterval(() => {
-      this.getData(false, false, true);
-    }, this.timeBeforeMarkAsRead);
+    this.rxStompService.cardDeatilWs$.pipe(untilDestroyed(this), skip(1)).subscribe((data: WorkflowSocketCardDetailDTO) => {
+      if (
+        !this.sendingComment &&
+        data &&
+        data.cardInstanceWorkflowId === this.idCard &&
+        data.userId.toString() !== this.authService.getUserId() &&
+        data.message === 'DETAIL_COMMENTS'
+      ) {
+        this.getData(false, false, true);
+      } else if (this.sendingComment) {
+        this.sendingComment = false;
+      }
+    });
   }
 
-  ngOnDestroy(): void {
-    clearInterval(this.interval);
-    this.interval = null;
-  }
+  ngOnDestroy(): void {}
 
-  public getData(usersToo = false, showLoading = true, fromInterval = false): void {
+  public getData(usersToo = false, showLoading = true, fromSockets = false): void {
     //Cogemos el cardInstanceWorkflowId de la ruta
     if (this.idCard) {
       if (showLoading) {
@@ -84,14 +99,14 @@ export class WorkflowColumnCommentsComponent implements OnInit, OnDestroy {
       forkJoin(requests).subscribe(
         (data: [CardCommentDTO[], UserDetailsDTO[]]): void => {
           if (data[0]?.length) {
-            if (fromInterval && this.comments.length !== data[0].length) {
+            if (fromSockets && this.comments.length !== data[0].length) {
               this.newCommentsEvent.emit(true);
               this.notificationSoundService.playSound('COMMENTS');
-            } else if (fromInterval) {
+            } else if (fromSockets) {
               this.newCommentsEvent.emit(false);
             }
             this.comments = data[0];
-            if (fromInterval && this.commentSelected) {
+            if (fromSockets && this.commentSelected) {
               this.commentSelected = data[0].find((comment) => this.commentSelected.id === comment.id);
             }
           }
@@ -104,6 +119,9 @@ export class WorkflowColumnCommentsComponent implements OnInit, OnDestroy {
             this.textEditorConfig.hintAutomplete = Object.keys(this.availableMentions);
           }
           const newComments = this.comments.filter((comment: CardCommentDTO) => comment.isNew);
+          setTimeout(() => {
+            this.newCommentsEvent.emit(false);
+          }, this.timeBeforeMarkAsRead);
           if (newComments?.length) {
             this.setCommentsAsRead(newComments.map((comment: CardCommentDTO) => comment.id));
           }
@@ -180,10 +198,12 @@ export class WorkflowColumnCommentsComponent implements OnInit, OnDestroy {
           });
         }
       });
+      // this.socketService.emitEvent('/app/send/message', this.newComment);
       const comment: CardCommentDTO = {
         comment: this.newComment,
         users: mentionedUsers.length ? mentionedUsers : null
       };
+      this.sendingComment = true;
       this.cardCommentsService.addCardComment(cardInstanceWorkflowId, comment).subscribe(
         (data: CardCommentDTO) => {
           this.spinnerService.hide(spinner);

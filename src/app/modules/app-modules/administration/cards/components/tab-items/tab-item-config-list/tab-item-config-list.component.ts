@@ -6,7 +6,6 @@ import { ComponentToExtendForCustomDialog, CustomDialogFooterConfigI } from '@je
 import { TranslateService } from '@ngx-translate/core';
 import { ConfirmDialogService } from '@shared/services/confirm-dialog.service';
 import { Observable, of } from 'rxjs';
-// import { v4 as uuidv4 } from 'uuid';
 export const enum TabItemConfigListComponentModalEnum {
   ID = 'config-list-dialog-id',
   PANEL_CLASS = 'config-list-dialog',

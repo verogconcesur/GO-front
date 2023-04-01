@@ -7,6 +7,7 @@ import { TemplateComunicationItemsDTO } from '@data/models/templates/templates-c
 import WorkflowCardDTO from '@data/models/workflows/workflow-card-dto';
 import WorkflowEventMailDTO from '@data/models/workflows/workflow-event-mail-dto';
 import WorkflowMoveDTO from '@data/models/workflows/workflow-move-dto';
+import WorkflowSocketMoveDTO from '@data/models/workflows/workflow-socket-move-dto';
 import WorkflowSubstateDTO from '@data/models/workflows/workflow-substate-dto';
 import WorkflowSubstateEventDTO from '@data/models/workflows/workflow-substate-event-dto';
 import WorkflowSubstateUserDTO from '@data/models/workflows/workflow-substate-user-dto';
@@ -24,7 +25,10 @@ import { WorkflowCardMovementPreparationComponent } from '../components/workflow
   providedIn: 'root'
 })
 export class WorkflowPrepareAndMoveService {
-  public reloadData$: BehaviorSubject<'MOVES_IN_THIS_WORKFLOW' | 'MOVES_IN_OTHER_WORKFLOWS'> = new BehaviorSubject(null);
+  public reloadData$: BehaviorSubject<'MOVES_IN_THIS_WORKFLOW' | 'MOVES_IN_OTHER_WORKFLOWS' | 'UPDATE_INFORMATION'> =
+    new BehaviorSubject(null);
+  //Used for WebSockets: card move in board, table and calendar view
+  public moveCard$: BehaviorSubject<WorkflowSocketMoveDTO> = new BehaviorSubject(null);
   private readonly wSubstateKey = 'wSubstate-';
   private spinner: string;
 
@@ -164,8 +168,7 @@ export class WorkflowPrepareAndMoveService {
                   };
                 }) => {
                   if (!res) {
-                    //Recargamos para que al mover tarjeta en vista board no se quede pillado el hover de cdk drag and drop
-                    this.reloadData$.next(view);
+                    this.reloadData$.next('UPDATE_INFORMATION');
                     this.spinnerService.hide(this.spinner);
                     return;
                   }
@@ -308,7 +311,6 @@ export class WorkflowPrepareAndMoveService {
                   this.moveCard(item, targetId, user, dropZoneId, itemToReplace, view);
                 },
                 (error) => {
-                  this.reloadData$.next(null);
                   this.spinnerService.hide(this.spinner);
                   this.globalMessageService.showError({
                     message: error?.message ? error.message : this.translateService.instant(marker('errors.unknown')),
@@ -332,7 +334,7 @@ export class WorkflowPrepareAndMoveService {
           // view?: 'MOVES_IN_THIS_WORKFLOW' | 'MOVES_IN_OTHER_WORKFLOWS'
         },
         (error) => {
-          this.reloadData$.next(null);
+          this.reloadData$.next('UPDATE_INFORMATION');
           this.spinnerService.hide(this.spinner);
           this.globalMessageService.showError({
             message: error?.message ? error.message : this.translateService.instant(marker('errors.unknown')),
@@ -388,9 +390,9 @@ export class WorkflowPrepareAndMoveService {
             this.spinner = null;
             this.prepareAndMove(item, resp[0], null, user, dropZoneId, itemToReplace, 'MOVES_IN_THIS_WORKFLOW');
           } else {
-            this.reloadData$.next(view);
             this.spinner = null;
           }
+          this.reloadData$.next('UPDATE_INFORMATION');
         },
         (error: ConcenetError) => {
           this.spinnerService.hide(this.spinner);
@@ -400,6 +402,7 @@ export class WorkflowPrepareAndMoveService {
             actionText: this.translateService.instant(marker('common.close'))
           });
           this.spinner = null;
+          this.reloadData$.next('UPDATE_INFORMATION');
         }
       );
   }

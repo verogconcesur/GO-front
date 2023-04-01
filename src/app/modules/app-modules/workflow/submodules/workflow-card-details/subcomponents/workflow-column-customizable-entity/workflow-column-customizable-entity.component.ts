@@ -192,9 +192,7 @@ export class WorkflowColumnCustomizableEntityComponent implements OnInit, OnChan
           .pipe(take(1))
           .subscribe(
             (resp) => {
-              // this.getData();
-              // Para que recargue la vista tablero
-              this.prepareAndMoveService.reloadData$.next('MOVES_IN_OTHER_WORKFLOWS');
+              this.prepareAndMoveService.reloadData$.next('UPDATE_INFORMATION');
             },
             (error) => {
               this.globalMessageService.showError({
@@ -232,7 +230,7 @@ export class WorkflowColumnCustomizableEntityComponent implements OnInit, OnChan
                     message: this.translateService.instant(marker('common.successOperation')),
                     actionText: this.translateService.instant(marker('common.close'))
                   });
-                  this.prepareAndMoveService.reloadData$.next('MOVES_IN_OTHER_WORKFLOWS');
+                  this.prepareAndMoveService.reloadData$.next('UPDATE_INFORMATION');
                 }
               });
           });
@@ -259,7 +257,7 @@ export class WorkflowColumnCustomizableEntityComponent implements OnInit, OnChan
                     message: this.translateService.instant(marker('common.successOperation')),
                     actionText: this.translateService.instant(marker('common.close'))
                   });
-                  this.prepareAndMoveService.reloadData$.next('MOVES_IN_OTHER_WORKFLOWS');
+                  this.prepareAndMoveService.reloadData$.next('UPDATE_INFORMATION');
                 }
               });
           });
@@ -286,7 +284,7 @@ export class WorkflowColumnCustomizableEntityComponent implements OnInit, OnChan
                     message: this.translateService.instant(marker('common.successOperation')),
                     actionText: this.translateService.instant(marker('common.close'))
                   });
-                  this.prepareAndMoveService.reloadData$.next('MOVES_IN_OTHER_WORKFLOWS');
+                  this.prepareAndMoveService.reloadData$.next('UPDATE_INFORMATION');
                 }
               });
           });

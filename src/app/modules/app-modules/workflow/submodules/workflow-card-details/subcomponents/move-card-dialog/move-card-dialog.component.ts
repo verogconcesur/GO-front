@@ -129,7 +129,7 @@ export class MoveCardDialogComponent implements OnInit {
     this.prepareAndMoveService.reloadData$
       .pipe(untilDestroyed(this))
       .subscribe((data: 'MOVES_IN_THIS_WORKFLOW' | 'MOVES_IN_OTHER_WORKFLOWS') => {
-        if (data) {
+        if (data === 'MOVES_IN_THIS_WORKFLOW' || data === 'MOVES_IN_OTHER_WORKFLOWS') {
           this.dialogRef.close(true);
         }
       });
@@ -196,6 +196,7 @@ export class MoveCardDialogComponent implements OnInit {
       null,
       this.view
     );
+    this.close();
   }
 
   private setNodesToShow(data: TreeNode[]): void {
