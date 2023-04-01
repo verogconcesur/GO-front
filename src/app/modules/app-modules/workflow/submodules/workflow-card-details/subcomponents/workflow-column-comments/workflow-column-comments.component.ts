@@ -98,7 +98,7 @@ export class WorkflowColumnCommentsComponent implements OnInit, OnDestroy {
           if (data[1]?.length) {
             this.availableUsersToMention = data[1];
             this.availableUsersToMention.forEach((user: UserDetailsDTO) => {
-              const fullName = this.getUserFullname(user, '.');
+              const fullName = this.getUserFullname(user, '_');
               this.availableMentions[fullName] = user;
             });
             this.textEditorConfig.hintAutomplete = Object.keys(this.availableMentions);
