@@ -5,6 +5,6 @@ export const environment: Env = {
   appVersion: `${require('../../package.json').version}`,
   production: true,
   apiBaseUrl: 'https://go.grupoconcesur.es/concenet-rest',
-  socketUrl: '',
+  socketUrl: 'wss://go.grupoconcesur.es/concenet-rest/socket/',
   logLevel: NgxLoggerLevel.ERROR
 };
