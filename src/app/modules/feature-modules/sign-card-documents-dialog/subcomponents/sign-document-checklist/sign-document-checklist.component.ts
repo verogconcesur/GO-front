@@ -73,7 +73,6 @@ export class SignDocumentChecklistComponent implements OnInit, AfterViewInit, On
   public attachmentsByGroup: CardAttachmentsDTO[] = [];
   public showChangeSign = false;
   public changeSignToOrderNumber: number = null;
-  public debugData: string = null;
   public labels: any = {
     itemsInTemplate: marker('administration.templates.checklists.itemsInTemplate'),
     insertTextHere: marker('common.insertTextHere'),
@@ -501,42 +500,25 @@ export class SignDocumentChecklistComponent implements OnInit, AfterViewInit, On
       .pipe(take(1))
       .subscribe((ok: boolean) => {
         if (ok) {
-          // console.log(this.signDocumentExchange, this.checklistForm.getRawValue(), this.p5sDraws);
           const itemsModified = this.checklistForm.getRawValue().templateChecklistItems;
           this.signDocumentExchange.templateChecklist.templateChecklistItems.forEach((item: TemplateChecklistItemDTO) => {
             const found = itemsModified.find((aux: TemplateChecklistItemDTO) => aux.orderNumber === item.orderNumber);
             if (found) {
               item.itemVal = found.itemVal;
+              // DGDC: Evitamos esta forma de hacerlo ya que en IOS v 15 falla.
               // if (item.typeItem === 'DRAWING' && this.p5sDraws[found.auxOrderNumber]) {
-              //   alert(`${found.auxOrderNumber} ## ${this.p5sDraws[found.auxOrderNumber]}`);
               //   item.itemVal.fileValue.content = this.p5sDraws[found.auxOrderNumber].split(';base64,')[1];
               //   item.itemVal.fileValue.type = this.p5sDraws[found.auxOrderNumber].split(';base64,')[0].split('data:')[1];
               //   item.itemVal.fileValue.name = `${+new Date()}_draw.png`;
               if (item.typeItem === 'DRAWING' && this.p5s[found.auxOrderNumber]) {
                 try {
+                  // DGDC: Evitamos esta forma de hacerlo ya que en IOS v 15 falla.
                   // const { canvas } = this.p5s[found.auxOrderNumber].get() as unknown as {
                   //   canvas: HTMLCanvasElement;
                   // };
                   const domItem = document.getElementById('item_' + found.auxOrderNumber);
                   const canvas = domItem.querySelector('canvas.p5Canvas') as HTMLCanvasElement;
                   const dataUrl = canvas.toDataURL();
-
-                  console.log('############################ INICIO - SAVE ###################################');
-                  console.log(canvas, dataUrl);
-                  console.log(found.auxOrderNumber, this.p5s, this.p5sDraws);
-
-                  console.log(
-                    'p5s === dataUrl',
-                    (
-                      this.p5s[found.auxOrderNumber].get() as unknown as {
-                        canvas: HTMLCanvasElement;
-                      }
-                    ).canvas.toDataURL() === dataUrl
-                  );
-
-                  console.log('p5sDraws === dataUrl', this.p5sDraws[found.auxOrderNumber] === dataUrl);
-                  console.log('debugData === data', this.debugData === dataUrl);
-                  console.log('############################## FIN - SAVE #################################');
 
                   item.itemVal.fileValue.content = dataUrl.split(';base64,')[1];
                   item.itemVal.fileValue.type = dataUrl.split(';base64,')[0].split('data:')[1];
@@ -560,7 +542,6 @@ export class SignDocumentChecklistComponent implements OnInit, AfterViewInit, On
               }
             }
           });
-          alert(JSON.stringify(this.signDocumentExchange));
           this.saveAction.emit(this.signDocumentExchange);
         }
       });
@@ -725,6 +706,7 @@ export class SignDocumentChecklistComponent implements OnInit, AfterViewInit, On
       };
       p.touchEnded = (event: TouchEvent, paux: p5 = p) => {
         try {
+          // DGDC: Evitamos esta forma de hacerlo ya que en IOS v 15 falla.
           // const { canvas } = paux.get() as unknown as {
           //   canvas: HTMLCanvasElement;
           // };
@@ -735,23 +717,6 @@ export class SignDocumentChecklistComponent implements OnInit, AfterViewInit, On
           }
           const dataURL = canvas.toDataURL();
           this.p5sDraws[auxOrderNumber] = dataURL;
-          this.debugData = dataURL;
-          console.log('############################ INICIO - TOUCH END ###################################');
-          console.log(canvas, dataURL);
-          console.log(auxOrderNumber, this.p5s, this.p5sDraws);
-
-          console.log(
-            'p5s === dataUrl',
-            (
-              this.p5s[auxOrderNumber].get() as unknown as {
-                canvas: HTMLCanvasElement;
-              }
-            ).canvas.toDataURL() === dataURL
-          );
-
-          console.log('p5sDraws === dataUrl', this.p5sDraws[auxOrderNumber] === dataURL);
-          console.log('debugData === dataUrl', this.debugData === dataURL);
-          console.log('############################## FIN - TOUCH END #################################');
         } catch (error) {
           console.error('touchEnded', error);
         }
