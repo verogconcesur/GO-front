@@ -25,7 +25,12 @@ export class WorkflowCardSearcherComponent implements OnInit {
   public searching = 0;
   public searcherForm: UntypedFormGroup;
   public cards: { workflowId: number; workflowName: string; cards: WorkflowCardDTO[] }[] = [];
-  filteredOptions: Observable<{ workflowId: number; workflowName: string; cards: WorkflowCardDTO[] }[]>;
+  public paginationConfig = {
+    length: 100,
+    pageSize: 20,
+    page: 1
+  };
+  public filteredOptions: Observable<{ workflowId: number; workflowName: string; cards: WorkflowCardDTO[] }[]>;
 
   constructor(private fb: FormBuilder, private workflowService: WorkflowsService) {}
 
@@ -97,7 +102,8 @@ export class WorkflowCardSearcherComponent implements OnInit {
     value = value ? value : this.searcherForm.get('search')?.value;
     const filterValue = value && typeof value === 'string' ? value.toString().toLowerCase() : '';
     this.searching++;
-    return this.workflowService.searchCardsInWorkflows(filterValue).pipe(
+    this.paginationConfig.page = 0;
+    return this.workflowService.searchCardsInWorkflowsPaginated(filterValue, this.paginationConfig).pipe(
       take(1),
       map((data: WorkflowCardDTO[]) => {
         if (data) {
