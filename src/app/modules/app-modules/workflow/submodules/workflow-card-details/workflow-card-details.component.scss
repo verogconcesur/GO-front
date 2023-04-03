@@ -5,7 +5,7 @@
   position: absolute;
   top: 0;
   left: 0;
-  width: calc(100vw - 20px);
+  width: calc(var(--vw) - 20px);
   height: calc(var(--vh) - 20px);
   z-index: 100;
   padding: 10px;
@@ -64,6 +64,22 @@
         z-index: 100;
       }
     }
+    .buttons-wrapper {
+      display: flex;
+      justify-content: flex-end;
+      align-items: center;
+    }
+    &__changes {
+      color: mat-color($primary, statusWarning);
+      margin-right: 10px;
+      mat-icon {
+        font-size: 1.8em;
+      }
+
+      @include respond-to($tablet) {
+        margin-right: 5px;
+      }
+    }
     &__close {
       color: mat-contrast($primary, 400);
       margin-right: 25px;
@@ -72,7 +88,7 @@
       }
 
       @include respond-to($tablet) {
-        margin-right: 5px;
+        margin-right: 3px;
       }
     }
   }

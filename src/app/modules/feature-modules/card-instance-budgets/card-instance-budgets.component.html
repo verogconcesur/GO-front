@@ -90,6 +90,8 @@
         </div>
     </div>
     <div class="budgets__button" fxLayout="row" fxLayoutAlign="end end">
-        <button mat-stroked-button [disabled]="!enableSendButton()" (click)="sendBudgets()">{{ labels.send | translate }}</button>
+        <button mat-stroked-button [disabled]="!enableSendButton()" (click)="sendBudgets()">
+            {{ labels.publish | translate }}
+        </button>
     </div>
 </div>

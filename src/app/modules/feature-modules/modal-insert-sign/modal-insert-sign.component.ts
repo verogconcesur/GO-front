@@ -39,7 +39,7 @@ export class ModalInsertSignComponent extends ComponentToExtendForCustomDialog i
     p.setup = () => {
       p.createCanvas(500, 250).parent(id);
     };
-    p.mouseDragged = (event) => {
+    p.touchMoved = (event) => {
       let type = 'pencil';
       // if ($('#sign-pen-brush:checked').length) {
       //   type = 'brush';
@@ -70,8 +70,8 @@ export class ModalInsertSignComponent extends ComponentToExtendForCustomDialog i
   };
 
   ngOnDestroy(): void {
-    this.p5Sign.mouseDragged = (event) => {};
-    this.p5Sign.mouseReleased = (event) => {};
+    this.p5Sign.touchMoved = (event) => {};
+    this.p5Sign.touchEnded = (event) => {};
     this.p5Sign.remove();
     this.p5Sign = null;
     $('.p5Canvas').remove();

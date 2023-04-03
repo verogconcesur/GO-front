@@ -5,4 +5,5 @@ export type Env = {
   production: boolean;
   apiBaseUrl: string;
   logLevel: NgxLoggerLevel;
+  socketUrl: string;
 };

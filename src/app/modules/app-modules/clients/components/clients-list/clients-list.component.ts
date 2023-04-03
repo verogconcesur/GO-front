@@ -138,7 +138,17 @@ export class ClientsListComponent implements OnInit {
 
   public showFilterOptionSelected = (opt?: CustomerEntityDTO | string): void => {
     if (opt && typeof opt !== 'string') {
-      this.textSearchValue = opt.name.toLowerCase();
+      if (opt.fullName) {
+        this.textSearchValue = opt.fullName.toLowerCase();
+      } else {
+        this.textSearchValue = opt.name.toLowerCase();
+        if (opt.firstName) {
+          this.textSearchValue += ` ${opt.firstName.toLowerCase()}`;
+        }
+        if (opt.secondName) {
+          this.textSearchValue += ` ${opt.secondName.toLowerCase()}`;
+        }
+      }
     } else {
       opt = opt ? opt : '';
       this.textSearchValue = opt.toString().toLowerCase();
