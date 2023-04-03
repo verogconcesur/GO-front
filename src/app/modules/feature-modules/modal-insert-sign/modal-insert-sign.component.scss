@@ -10,5 +10,6 @@
   &__canvas-wrapper {
     background-color: rgba(mat-contrast($primary, 200), 0.5);
     border-radius: 10px;
+    touch-action: none;
   }
 }
