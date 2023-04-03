@@ -36,6 +36,7 @@ export class WorkflowsService {
   private readonly GET_WORKFLOWS_CREATECARD_PATH = '/api/cardInstanceWorkflow/createCard/getWorkflows';
   private readonly GET_WORKFLOWS_LIST_PATH = '/list';
   private readonly GET_WORKFLOWS_SEARCH_PATH = '/search';
+  private readonly GET_WORKFLOWS_SEARCH_PAGED_PATH = '/searchPaged';
   private readonly DUPLICATE_WORKFLOWS_PATH = '/duplicate';
   private readonly GET_WORKFLOWS_FACILITY_PATH = '/facility';
   private readonly GET_WORKFLOWS_INSTANCE_PATH = '/instances';
@@ -80,11 +81,14 @@ export class WorkflowsService {
    *
    * @returns WorkflowCardDTO[]
    */
-  public searchCardsInWorkflowsPaginated(search: string, pagination?: PaginationRequestI): Observable<WorkflowCardDTO[]> {
+  public searchCardsInWorkflowsPaged(
+    search: string,
+    pagination?: PaginationRequestI
+  ): Observable<PaginationResponseI<WorkflowCardDTO>> {
     return this.http
-      .post<WorkflowCardDTO[]>(
+      .post<PaginationResponseI<WorkflowCardDTO>>(
         `${this.env.apiBaseUrl}${this.GET_WORKFLOWS_PATH}${this.GET_WORKFLOWS_INSTANCE_PATH}${
-          this.GET_WORKFLOWS_SEARCH_PATH
+          this.GET_WORKFLOWS_SEARCH_PAGED_PATH
         }${getPaginationUrlGetParams(pagination, true)}`,
         { search }
       )

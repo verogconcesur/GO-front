@@ -2,6 +2,7 @@ import { Component, Input, OnInit, ViewChild, ViewEncapsulation } from '@angular
 import { FormBuilder, UntypedFormGroup } from '@angular/forms';
 import { MatMenuTrigger } from '@angular/material/menu';
 import { marker } from '@biesbjerg/ngx-translate-extract-marker';
+import PaginationResponseI from '@data/interfaces/pagination-response';
 import WorkflowCardDTO from '@data/models/workflows/workflow-card-dto';
 import { WorkflowsService } from '@data/services/workflows.service';
 import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
@@ -23,14 +24,17 @@ export class WorkflowCardSearcherComponent implements OnInit {
   };
   public lastSearching: number;
   public searching = 0;
+  public filterValue: string;
   public searcherForm: UntypedFormGroup;
-  public cards: { workflowId: number; workflowName: string; cards: WorkflowCardDTO[] }[] = [];
+  public cards: WorkflowCardDTO[] = [];
   public paginationConfig = {
-    length: 100,
-    pageSize: 20,
-    page: 1
+    length: 10,
+    pageSize: 10,
+    page: 0,
+    first: true,
+    last: false
   };
-  public filteredOptions: Observable<{ workflowId: number; workflowName: string; cards: WorkflowCardDTO[] }[]>;
+  public filteredOptions: Observable<WorkflowCardDTO[]>;
 
   constructor(private fb: FormBuilder, private workflowService: WorkflowsService) {}
 
@@ -57,75 +61,58 @@ export class WorkflowCardSearcherComponent implements OnInit {
   public cardSelected(card: WorkflowCardDTO): void {
     this.searcherForm.get('search').setValue(null);
     this.cards = [];
-    console.log(card);
   }
 
-  // public closeIfNoCards(): void {
-  //   console.log(this.trigger, this.trigger.menuOpen);
-  //   if (this.cards.length === 0) {
-  //     console.log('close');
-  //     this.trigger.closeMenu();
-  //   } else if (!this.trigger.menuOpen) {
-  //     console.log('open');
-  //     setTimeout(() => {
-  //       this.trigger.openMenu();
-  //     }, 100);
-  //   }
-  // }
+  public showWorkflowName(index: number): boolean {
+    if (this.cards?.length && index > 0) {
+      const prevCard = this.cards[index - 1];
+      const actualCard = this.cards[index];
+      if (prevCard.cardInstanceWorkflows[0].workflowId === actualCard.cardInstanceWorkflows[0].workflowId) {
+        return false;
+      }
+    }
+    return true;
+  }
 
-  // public menuOpened() {
-  //   console.log('menu opened');
-  // }
+  public onScroll(): void {
+    console.log('fetch new data', this.paginationConfig);
+  }
 
-  // public menuClosed() {
-  //   console.log('menu closed');
-  // }
-
-  // public searchCards(filterValue?: string): void {
-  //   filterValue = filterValue ? filterValue : this.searcherForm.get('search')?.value;
-  //   if (filterValue.length >= 3) {
-  //     this.searching++;
-  //     this.workflowService
-  //       .searchCardsInWorkflows(this.searcherForm.get('search').value)
-  //       .pipe(
-  //         take(1),
-  //         finalize(() => this.searching--)
-  //       )
-  //       .subscribe((data: WorkflowCardDTO[]) => {
-  //         this.trigger.openMenu();
-  //         this.cards = data;
-  //       });
-  //   }
-  // }
-
-  private filter(value?: string): Observable<{ workflowName: string; cards: WorkflowCardDTO[] }[]> {
+  private filter(value?: string): Observable<WorkflowCardDTO[]> {
     value = value ? value : this.searcherForm.get('search')?.value;
-    const filterValue = value && typeof value === 'string' ? value.toString().toLowerCase() : '';
+    this.filterValue = value && typeof value === 'string' ? value.toString().toLowerCase() : '';
     this.searching++;
     this.paginationConfig.page = 0;
-    return this.workflowService.searchCardsInWorkflowsPaginated(filterValue, this.paginationConfig).pipe(
+    return this.fetchData();
+  }
+
+  private fetchData(): Observable<WorkflowCardDTO[]> {
+    return this.workflowService.searchCardsInWorkflowsPaged(this.filterValue, this.paginationConfig).pipe(
       take(1),
-      map((data: WorkflowCardDTO[]) => {
+      map((data: PaginationResponseI<WorkflowCardDTO>) => {
         if (data) {
+          this.paginationConfig.length = data.totalElements;
+          this.cards = data.content;
+          return data.content;
           // eslint-disable-next-line @typescript-eslint/no-explicit-any
-          const dataByWorkflow: any = {};
-          data.forEach((card: WorkflowCardDTO) => {
-            if (dataByWorkflow[card.cardInstanceWorkflows[0].workflowId]) {
-              dataByWorkflow[card.cardInstanceWorkflows[0].workflowId].cards = [
-                ...dataByWorkflow[card.cardInstanceWorkflows[0].workflowId].cards,
-                card
-              ];
-            } else {
-              dataByWorkflow[card.cardInstanceWorkflows[0].workflowId] = {
-                workflowName: card.cardInstanceWorkflows[0].workflowName,
-                workflowId: card.cardInstanceWorkflows[0].workflowId,
-                cards: [card]
-              };
-            }
-          });
-          const result = Object.keys(dataByWorkflow).map((k) => dataByWorkflow[k]);
-          this.cards = result;
-          return result;
+          // const dataByWorkflow: any = {};
+          // data.content.forEach((card: WorkflowCardDTO) => {
+          //   if (dataByWorkflow[card.cardInstanceWorkflows[0].workflowId]) {
+          //     dataByWorkflow[card.cardInstanceWorkflows[0].workflowId].cards = [
+          //       ...dataByWorkflow[card.cardInstanceWorkflows[0].workflowId].cards,
+          //       card
+          //     ];
+          //   } else {
+          //     dataByWorkflow[card.cardInstanceWorkflows[0].workflowId] = {
+          //       workflowName: card.cardInstanceWorkflows[0].workflowName,
+          //       workflowId: card.cardInstanceWorkflows[0].workflowId,
+          //       cards: [card]
+          //     };
+          //   }
+          // });
+          // const result = Object.keys(dataByWorkflow).map((k) => dataByWorkflow[k]);
+          // this.cards = result;
+          // return result;
         } else {
           this.cards = [];
           return [];

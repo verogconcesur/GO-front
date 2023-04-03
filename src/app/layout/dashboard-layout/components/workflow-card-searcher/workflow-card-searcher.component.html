@@ -13,26 +13,31 @@
             <mat-autocomplete
                 autoActiveFirstOption="false"
                 #auto="matAutocomplete"
+                (optionsScroll)="onScroll()"
                 [panelWidth]="'315px'"
                 class="autocomplete-panel-class"
                 classlist="autocomplete-panel-class"
             >
-                <mat-optgroup *ngFor="let group of filteredOptions | async" [label]="group.workflowName">
-                    <mat-option
-                        *ngFor="let option of group.cards"
-                        class="search-option-card"
-                        [value]="option"
-                        (click)="cardSelected(option)"
-                    >
-                        <app-workflow-card
-                            [card]="option"
-                            [disableDrag]="true"
-                            [forceSize]="'size-s'"
-                            [showExtraInfo]="false"
-                            [navigationMode]="'absolute'"
-                        ></app-workflow-card>
-                    </mat-option>
-                </mat-optgroup>
+                <!-- <mat-optgroup *ngFor="let group of filteredOptions | async" [label]="group.workflowName"> -->
+                <mat-option
+                    *ngFor="let option of filteredOptions | async; let i = index"
+                    class="search-option-card"
+                    [ngClass]="{ 'with-wf-name': showWorkflowName(i) }"
+                    [value]="option"
+                    (click)="cardSelected(option)"
+                >
+                    <div class="search-option-card__wf-name" *ngIf="showWorkflowName(i)">
+                        {{ option.cardInstanceWorkflows[0].workflowName }}
+                    </div>
+                    <app-workflow-card
+                        [card]="option"
+                        [disableDrag]="true"
+                        [forceSize]="'size-s'"
+                        [showExtraInfo]="false"
+                        [navigationMode]="'absolute'"
+                    ></app-workflow-card>
+                </mat-option>
+                <!-- </mat-optgroup> -->
             </mat-autocomplete>
         </mat-form-field>
     </form>
