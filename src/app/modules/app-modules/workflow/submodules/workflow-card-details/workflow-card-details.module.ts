@@ -32,6 +32,8 @@ import { MessageClientDialogComponent } from './subcomponents/message-client-dia
 import { ItemOptionComponent } from './subcomponents/workflow-column-customizable-custom/items/item-option/item-option.component';
 import { ItemListComponent } from './subcomponents/workflow-column-customizable-custom/items/item-list/item-list.component';
 import { ModalRepairOrderModule } from '@modules/feature-modules/modal-repair-order/modal-repair-order.module';
+import { WorkflowColumnTemplatesPaymentsComponent } from './subcomponents/workflow-column-templates-payments/workflow-column-templates-payments.component';
+import { CardInstancePaymentsModule } from '@modules/feature-modules/card-instance-payments/card-instance-payments.module';
 @NgModule({
   declarations: [
     WorkflowCardDetailsComponent,
@@ -39,6 +41,7 @@ import { ModalRepairOrderModule } from '@modules/feature-modules/modal-repair-or
     WorkflowColumnCustomizableEntityComponent,
     WorkflowColumnCustomizableCustomComponent,
     WorkflowColumnTemplatesBudgetsComponent,
+    WorkflowColumnTemplatesPaymentsComponent,
     WorkflowColumnTemplatesAttachmentsComponent,
     WorkflowColumnPrefixedInformationComponent,
     WorkflowColumnPrefixedTasksComponent,
@@ -60,6 +63,7 @@ import { ModalRepairOrderModule } from '@modules/feature-modules/modal-repair-or
     SharedModule,
     CardInstanceAttachmentsModule,
     CardInstanceBudgetsModule,
+    CardInstancePaymentsModule,
     WorkflowCardDetailsRoutingModule,
     TextEditorWrapperModule,
     WorkflowCardTasksModule,
