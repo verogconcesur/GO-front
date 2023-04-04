@@ -1,3 +1,6 @@
+@import 'utils/core';
+@import 'utils/theme';
+
 //Reutiliza estilos importados con el theme tanto del navbar como del user-profile
 // DGDC TODO: rehacer estilos!!
 .navbar {
@@ -30,4 +33,33 @@
   margin: 5px 0;
   width: 300px;
   height: 90px !important;
+  opacity: 0;
+  &.with-wf-name {
+    height: 115px !important;
+  }
+  &__wf-name {
+    line-height: 20px;
+  }
+}
+
+.search-option-spinner {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 10px 0;
+}
+
+.search-option-card.fade-in {
+  opacity: 1;
+  animation: fadeInAnimation 0.5s ease-in-out;
+}
+
+@keyframes fadeInAnimation {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
 }
