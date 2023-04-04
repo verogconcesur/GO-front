@@ -64,6 +64,22 @@
         z-index: 100;
       }
     }
+    .buttons-wrapper {
+      display: flex;
+      justify-content: flex-end;
+      align-items: center;
+    }
+    &__changes {
+      color: mat-color($primary, statusWarning);
+      margin-right: 10px;
+      mat-icon {
+        font-size: 1.8em;
+      }
+
+      @include respond-to($tablet) {
+        margin-right: 5px;
+      }
+    }
     &__close {
       color: mat-contrast($primary, 400);
       margin-right: 25px;
@@ -72,7 +88,7 @@
       }
 
       @include respond-to($tablet) {
-        margin-right: 5px;
+        margin-right: 3px;
       }
     }
   }

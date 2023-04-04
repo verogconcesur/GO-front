@@ -8,14 +8,17 @@ import { WorkflowsService } from '@data/services/workflows.service';
 import { TranslateService } from '@ngx-translate/core';
 import { ProgressSpinnerDialogService } from '@shared/services/progress-spinner-dialog.service';
 import { NGXLogger } from 'ngx-logger';
-import { Observable } from 'rxjs';
+import { Observable, Subscription } from 'rxjs';
 import { take, startWith, map, finalize } from 'rxjs/operators';
 import { WorkflowDragAndDropService } from '../../aux-service/workflow-drag-and-drop.service';
 import { ActivatedRoute, Router } from '@angular/router';
-import { UntilDestroy } from '@ngneat/until-destroy';
+import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
 import FacilityDTO from '@data/models/organization/facility-dto';
 import { WorkflowPrepareAndMoveService } from '../../aux-service/workflow-prepare-and-move-aux.service';
 import { ConfirmDialogService } from '@shared/services/confirm-dialog.service';
+import WorkflowSocketMoveDTO from '@data/models/workflows/workflow-socket-move-dto';
+import { RxStompService } from '@app/services/rx-stomp.service';
+import { IMessage } from '@stomp/stompjs';
 import { GlobalMessageService } from '@shared/services/global-message.service';
 
 @UntilDestroy()
@@ -36,6 +39,7 @@ export class WorkflowNavbarComponent implements OnInit, OnDestroy {
   public facilitiesOptions: Observable<FacilityDTO[]>;
   public workflowFacilities: FacilityDTO[] = [];
   public facilitiesSelected: FacilityDTO[];
+  public websocketSubscription: Subscription[] = [];
   public synchronizingData = false;
   public labels = {
     syncData: marker('workflows.syncData'),
@@ -56,6 +60,7 @@ export class WorkflowNavbarComponent implements OnInit, OnDestroy {
     private prepareAndMoveService: WorkflowPrepareAndMoveService,
     private router: Router,
     private confirmationDialog: ConfirmDialogService,
+    private rxStompService: RxStompService,
     private globalMessageService: GlobalMessageService
   ) {}
 
@@ -71,6 +76,38 @@ export class WorkflowNavbarComponent implements OnInit, OnDestroy {
   ngOnDestroy(): void {
     this.workflowService.workflowSelectedSubject$.next(null);
     this.workflowService.facilitiesSelectedSubject$.next([]);
+  }
+
+  websocketImplementation(): void {
+    if (this.websocketSubscription.length > 0) {
+      for (const socketSub of this.websocketSubscription) {
+        socketSub.unsubscribe();
+      }
+    }
+    this.websocketSubscription = [];
+    if (this.workflowSelected && this.facilitiesSelected && this.facilitiesSelected.length > 0) {
+      for (const facility of this.facilitiesSelected) {
+        this.websocketSubscription.push(
+          this.rxStompService
+            .watch('/topic/movement/' + this.workflowSelected.id + '/' + facility.id)
+            .pipe(untilDestroyed(this))
+            .subscribe((data: IMessage) => {
+              this.prepareAndMoveService.moveCard$.next(JSON.parse(data.body) as WorkflowSocketMoveDTO);
+            })
+        );
+      }
+    } else if (this.workflowSelected) {
+      for (const facility of this.workflowSelected.facilities) {
+        this.websocketSubscription.push(
+          this.rxStompService
+            .watch('/topic/movement/' + this.workflowSelected.id + '/' + facility.id)
+            .pipe(untilDestroyed(this))
+            .subscribe((data: IMessage) => {
+              this.prepareAndMoveService.moveCard$.next(JSON.parse(data.body) as WorkflowSocketMoveDTO);
+            })
+        );
+      }
+    }
   }
 
   public goToView(view: 'boardView' | 'tableView' | 'calendarView'): void {
@@ -154,6 +191,7 @@ export class WorkflowNavbarComponent implements OnInit, OnDestroy {
     const facilities = event.value;
     this.facilitiesSelected = facilities;
     this.workflowService.facilitiesSelectedSubject$.next(this.facilitiesSelected);
+    this.websocketImplementation();
   }
 
   public workflowSelectionChange(event: { value: WorkflowDTO }): void {
@@ -180,6 +218,7 @@ export class WorkflowNavbarComponent implements OnInit, OnDestroy {
       this.workflowFacilities = [];
     }
     this.router.navigate([RouteConstants.DASHBOARD, RouteConstants.WORKFLOWS, this.idWorkflowRouteParam, this.currentView]);
+    this.websocketImplementation();
   }
 
   public syncData(): void {
@@ -259,9 +298,10 @@ export class WorkflowNavbarComponent implements OnInit, OnDestroy {
             } else {
               this.workflowFacilities = [];
             }
+            this.websocketImplementation();
           }
           this.spinnerService.hide(spinner);
-          if (this.workflowList?.length === 1) {
+          if (this.workflowList?.length === 1 && !workflowSelectedByIdParam) {
             this.workflowSelectionChange({ value: this.workflowList[0] });
           }
         },
