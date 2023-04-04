@@ -1,7 +1,7 @@
 import { Component, Input, OnInit, ViewChild, ViewEncapsulation } from '@angular/core';
 import { FormBuilder, UntypedFormGroup } from '@angular/forms';
-import { MatMenuTrigger } from '@angular/material/menu';
 import { marker } from '@biesbjerg/ngx-translate-extract-marker';
+import PaginationResponseI from '@data/interfaces/pagination-response';
 import WorkflowCardDTO from '@data/models/workflows/workflow-card-dto';
 import { WorkflowsService } from '@data/services/workflows.service';
 import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
@@ -23,24 +23,32 @@ export class WorkflowCardSearcherComponent implements OnInit {
   };
   public lastSearching: number;
   public searching = 0;
+  public filterValue: string;
   public searcherForm: UntypedFormGroup;
-  public cards: { workflowId: number; workflowName: string; cards: WorkflowCardDTO[] }[] = [];
-  filteredOptions: Observable<{ workflowId: number; workflowName: string; cards: WorkflowCardDTO[] }[]>;
+  public cards: WorkflowCardDTO[] = [];
+  public paginationConfig = {
+    length: 10,
+    pageSize: 10,
+    page: 0,
+    totalPages: 0,
+    first: true,
+    last: false
+  };
 
   constructor(private fb: FormBuilder, private workflowService: WorkflowsService) {}
 
   ngOnInit(): void {
     this.initForm();
-    this.filteredOptions = this.searcherForm.get('search').valueChanges.pipe(
-      untilDestroyed(this),
-      switchMap((value) => {
+    this.searcherForm
+      .get('search')
+      .valueChanges.pipe(untilDestroyed(this))
+      .subscribe((value) => {
         if (value?.length >= 4) {
-          return this.filter(value);
+          this.filter(value);
         } else {
-          return of([]);
+          this.cards = [];
         }
-      })
-    );
+      });
   }
 
   public initForm(): void {
@@ -52,80 +60,57 @@ export class WorkflowCardSearcherComponent implements OnInit {
   public cardSelected(card: WorkflowCardDTO): void {
     this.searcherForm.get('search').setValue(null);
     this.cards = [];
-    console.log(card);
   }
 
-  // public closeIfNoCards(): void {
-  //   console.log(this.trigger, this.trigger.menuOpen);
-  //   if (this.cards.length === 0) {
-  //     console.log('close');
-  //     this.trigger.closeMenu();
-  //   } else if (!this.trigger.menuOpen) {
-  //     console.log('open');
-  //     setTimeout(() => {
-  //       this.trigger.openMenu();
-  //     }, 100);
-  //   }
-  // }
+  public showWorkflowName(index: number): boolean {
+    if (this.cards?.length && index > 0) {
+      const prevCard = this.cards[index - 1];
+      const actualCard = this.cards[index];
+      if (prevCard.cardInstanceWorkflows[0].workflowId === actualCard.cardInstanceWorkflows[0].workflowId) {
+        return false;
+      }
+    }
+    return true;
+  }
 
-  // public menuOpened() {
-  //   console.log('menu opened');
-  // }
+  public onScroll(): void {
+    if (!this.paginationConfig.last && this.paginationConfig.page < this.paginationConfig.totalPages) {
+      this.searching++;
+      this.paginationConfig.page++;
+      this.fetchData();
+    }
+  }
 
-  // public menuClosed() {
-  //   console.log('menu closed');
-  // }
-
-  // public searchCards(filterValue?: string): void {
-  //   filterValue = filterValue ? filterValue : this.searcherForm.get('search')?.value;
-  //   if (filterValue.length >= 3) {
-  //     this.searching++;
-  //     this.workflowService
-  //       .searchCardsInWorkflows(this.searcherForm.get('search').value)
-  //       .pipe(
-  //         take(1),
-  //         finalize(() => this.searching--)
-  //       )
-  //       .subscribe((data: WorkflowCardDTO[]) => {
-  //         this.trigger.openMenu();
-  //         this.cards = data;
-  //       });
-  //   }
-  // }
-
-  private filter(value?: string): Observable<{ workflowName: string; cards: WorkflowCardDTO[] }[]> {
+  private filter(value?: string) {
     value = value ? value : this.searcherForm.get('search')?.value;
-    const filterValue = value && typeof value === 'string' ? value.toString().toLowerCase() : '';
+    this.filterValue = value && typeof value === 'string' ? value.toString().toLowerCase() : '';
     this.searching++;
-    return this.workflowService.searchCardsInWorkflows(filterValue).pipe(
-      take(1),
-      map((data: WorkflowCardDTO[]) => {
+    this.paginationConfig.page = 0;
+    this.fetchData();
+  }
+
+  private fetchData() {
+    this.workflowService
+      .searchCardsInWorkflowsPaged(this.filterValue, this.paginationConfig)
+      .pipe(
+        take(1),
+        finalize(() => this.searching--)
+      )
+      .subscribe((data: PaginationResponseI<WorkflowCardDTO>) => {
         if (data) {
-          // eslint-disable-next-line @typescript-eslint/no-explicit-any
-          const dataByWorkflow: any = {};
-          data.forEach((card: WorkflowCardDTO) => {
-            if (dataByWorkflow[card.cardInstanceWorkflows[0].workflowId]) {
-              dataByWorkflow[card.cardInstanceWorkflows[0].workflowId].cards = [
-                ...dataByWorkflow[card.cardInstanceWorkflows[0].workflowId].cards,
-                card
-              ];
-            } else {
-              dataByWorkflow[card.cardInstanceWorkflows[0].workflowId] = {
-                workflowName: card.cardInstanceWorkflows[0].workflowName,
-                workflowId: card.cardInstanceWorkflows[0].workflowId,
-                cards: [card]
-              };
-            }
-          });
-          const result = Object.keys(dataByWorkflow).map((k) => dataByWorkflow[k]);
-          this.cards = result;
-          return result;
+          this.paginationConfig.length = data.totalElements;
+          this.paginationConfig.first = data.first;
+          this.paginationConfig.last = data.last;
+          this.paginationConfig.page = data.number;
+          this.paginationConfig.totalPages = data.totalPages;
+          this.paginationConfig.first = data.first;
+          if (data.first) {
+            this.cards = [];
+          }
+          this.cards = [...this.cards, ...data.content];
         } else {
           this.cards = [];
-          return [];
         }
-      }),
-      finalize(() => this.searching--)
-    );
+      });
   }
 }
