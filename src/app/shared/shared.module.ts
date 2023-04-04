@@ -20,6 +20,7 @@ import { TwoDigitDecimalDirective } from './utils/two-digit-decimal.directive';
 import { CardTabItemTypePipePipe } from './utils/card-tab-item-type-pipe.pipe';
 import { SafeHtmlPipe } from './utils/safe-inner-html.pipe';
 import { ZoomDirective } from './directives/zoomImage.directive';
+import { MatAutocompleteOptionsScrollDirective } from './directives/matAutocompleteInfiniteScroll.directive';
 
 @NgModule({
   declarations: [
@@ -29,6 +30,7 @@ import { ZoomDirective } from './directives/zoomImage.directive';
     ShowToolbarIfTruncatedDirective,
     RemoveWrapperDirective,
     HighlightDirective,
+    MatAutocompleteOptionsScrollDirective,
     DropFilesZonetDirective,
     ResponsiveTabsComponent,
     TwoDigitDecimalDirective,
@@ -59,6 +61,7 @@ import { ZoomDirective } from './directives/zoomImage.directive';
     ShowToolbarIfTruncatedDirective,
     RemoveWrapperDirective,
     HighlightDirective,
+    MatAutocompleteOptionsScrollDirective,
     DropFilesZonetDirective,
     CustomDialogModule,
     TwoDigitDecimalDirective,

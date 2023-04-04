@@ -36,6 +36,7 @@ export class WorkflowsService {
   private readonly GET_WORKFLOWS_CREATECARD_PATH = '/api/cardInstanceWorkflow/createCard/getWorkflows';
   private readonly GET_WORKFLOWS_LIST_PATH = '/list';
   private readonly GET_WORKFLOWS_SEARCH_PATH = '/search';
+  private readonly GET_WORKFLOWS_SEARCH_PAGED_PATH = '/searchPaged';
   private readonly DUPLICATE_WORKFLOWS_PATH = '/duplicate';
   private readonly GET_WORKFLOWS_FACILITY_PATH = '/facility';
   private readonly GET_WORKFLOWS_INSTANCE_PATH = '/instances';
@@ -71,6 +72,25 @@ export class WorkflowsService {
     return this.http
       .post<WorkflowCardDTO[]>(
         `${this.env.apiBaseUrl}${this.GET_WORKFLOWS_PATH}${this.GET_WORKFLOWS_INSTANCE_PATH}${this.GET_WORKFLOWS_SEARCH_PATH}`,
+        { search }
+      )
+      .pipe(catchError((error) => throwError(error.error as ConcenetError)));
+  }
+
+  /**
+   * Obtiene las tarjetas visibles para el usuario cuyos datos matrícula, vin, NIF/NIE o Referencia de la orden contenga el texto enviado.
+   *
+   * @returns WorkflowCardDTO[]
+   */
+  public searchCardsInWorkflowsPaged(
+    search: string,
+    pagination?: PaginationRequestI
+  ): Observable<PaginationResponseI<WorkflowCardDTO>> {
+    return this.http
+      .post<PaginationResponseI<WorkflowCardDTO>>(
+        `${this.env.apiBaseUrl}${this.GET_WORKFLOWS_PATH}${this.GET_WORKFLOWS_INSTANCE_PATH}${
+          this.GET_WORKFLOWS_SEARCH_PAGED_PATH
+        }${getPaginationUrlGetParams(pagination, true)}`,
         { search }
       )
       .pipe(catchError((error) => throwError(error.error as ConcenetError)));

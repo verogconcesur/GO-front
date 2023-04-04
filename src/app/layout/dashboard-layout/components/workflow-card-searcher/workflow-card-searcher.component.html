@@ -13,26 +13,33 @@
             <mat-autocomplete
                 autoActiveFirstOption="false"
                 #auto="matAutocomplete"
+                (optionsScroll)="onScroll()"
                 [panelWidth]="'315px'"
                 class="autocomplete-panel-class"
                 classlist="autocomplete-panel-class"
             >
-                <mat-optgroup *ngFor="let group of filteredOptions | async" [label]="group.workflowName">
-                    <mat-option
-                        *ngFor="let option of group.cards"
-                        class="search-option-card"
-                        [value]="option"
-                        (click)="cardSelected(option)"
-                    >
-                        <app-workflow-card
-                            [card]="option"
-                            [disableDrag]="true"
-                            [forceSize]="'size-s'"
-                            [showExtraInfo]="false"
-                            [navigationMode]="'absolute'"
-                        ></app-workflow-card>
-                    </mat-option>
-                </mat-optgroup>
+                <mat-option
+                    *ngFor="let option of cards; let i = index"
+                    class="search-option-card"
+                    [ngClass]="{ 'with-wf-name': showWorkflowName(i) }"
+                    [value]="option"
+                    (click)="cardSelected(option)"
+                    [class.fade-in]="true"
+                >
+                    <div class="search-option-card__wf-name" *ngIf="showWorkflowName(i)">
+                        {{ option.cardInstanceWorkflows[0].workflowName }}
+                    </div>
+                    <app-workflow-card
+                        [card]="option"
+                        [disableDrag]="true"
+                        [forceSize]="'size-s'"
+                        [showExtraInfo]="false"
+                        [navigationMode]="'absolute'"
+                    ></app-workflow-card>
+                </mat-option>
+                <div class="search-option-spinner" *ngIf="!paginationConfig.last">
+                    <mat-spinner matSuffix class="spinner" diameter="30"></mat-spinner>
+                </div>
             </mat-autocomplete>
         </mat-form-field>
     </form>
@@ -65,22 +72,28 @@
                     class="autocomplete-panel-class"
                     classlist="autocomplete-panel-class"
                 >
-                    <mat-optgroup *ngFor="let group of filteredOptions | async" [label]="group.workflowName">
-                        <mat-option
-                            *ngFor="let option of group.cards"
-                            class="search-option-card"
-                            [value]="option"
-                            (click)="cardSelected(option)"
-                        >
-                            <app-workflow-card
-                                [card]="option"
-                                [disableDrag]="true"
-                                [forceSize]="'size-s'"
-                                [showExtraInfo]="false"
-                                [navigationMode]="'absolute'"
-                            ></app-workflow-card>
-                        </mat-option>
-                    </mat-optgroup>
+                    <mat-option
+                        *ngFor="let option of cards; let i = index"
+                        class="search-option-card"
+                        [ngClass]="{ 'with-wf-name': showWorkflowName(i) }"
+                        [value]="option"
+                        (click)="cardSelected(option)"
+                        [ngClass]="{ 'fade-in': true }"
+                    >
+                        <div class="search-option-card__wf-name" *ngIf="showWorkflowName(i)">
+                            {{ option.cardInstanceWorkflows[0].workflowName }}
+                        </div>
+                        <app-workflow-card
+                            [card]="option"
+                            [disableDrag]="true"
+                            [forceSize]="'size-s'"
+                            [showExtraInfo]="false"
+                            [navigationMode]="'absolute'"
+                        ></app-workflow-card>
+                    </mat-option>
+                    <div class="search-option-spinner" *ngIf="!paginationConfig.last">
+                        <mat-spinner matSuffix class="spinner" diameter="30"></mat-spinner>
+                    </div>
                 </mat-autocomplete>
             </mat-form-field>
         </form>
