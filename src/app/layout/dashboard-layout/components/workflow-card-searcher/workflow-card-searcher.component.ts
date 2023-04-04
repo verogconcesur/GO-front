@@ -34,7 +34,7 @@ export class WorkflowCardSearcherComponent implements OnInit {
     this.filteredOptions = this.searcherForm.get('search').valueChanges.pipe(
       untilDestroyed(this),
       switchMap((value) => {
-        if (value?.length >= 3) {
+        if (value?.length >= 4) {
           return this.filter(value);
         } else {
           return of([]);

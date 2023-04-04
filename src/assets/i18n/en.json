@@ -115,6 +115,7 @@
         "budgets": {
             "addLines": "Add budget lines",
             "deleteConfirmation": "Are you sure you want to delete this budget line?",
+            "publish": "Publish budget",
             "saveConfirmation": "Are you sure you want to save this budget line?",
             "sendConfirmation": "Are you sure you want to send budget to the client?"
         }
@@ -341,6 +342,7 @@
         "selectImageFile": "Select image file",
         "send": "Send",
         "shortcut": "Link",
+        "showAll": "Show all",
         "showPage": "Show page",
         "state": "State",
         "substate": "Substate",
@@ -514,6 +516,16 @@
         }
     },
     "notifications": {
+        "dateFrom": "Date from",
+        "dateTo": "Date to",
+        "information": "Information",
+        "notificationTypes": "Notification type",
+        "readType": "Status",
+        "readTypes": {
+            "ALL": "All",
+            "NO_READ": "No read",
+            "READ": "Read"
+        },
         "type": {
             "ADD_COMMENT": "New comment",
             "ADD_DOC": "New attachment",
@@ -697,6 +709,7 @@
             "syncData": "Do you want to synchronize the card's data.",
             "vehicleAssociatedCards": "Vehicle's cards"
         },
+        "cardChangesDetected": "Changes detected in this card",
         "cardConfig": "Card config",
         "cardsInBoardView": "Board view cards",
         "cardsInCalendarView": "Calendar view cards",
@@ -748,6 +761,7 @@
             "other": "Other",
             "role": "Role"
         },
+        "reloadConfirmation": "¿Do you really want to reload the card?",
         "requiredFields": "Required fields",
         "requiredFieldsList": "List of required fields",
         "requiredHistoryComment": "Historical comment added on move action",

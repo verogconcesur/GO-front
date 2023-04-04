@@ -5,7 +5,7 @@
   -ms-user-select: none; /* IE 10 and IE 11 */
   user-select: none; /* Standard syntax */
   height: calc(100vh - 136px);
-  width: 100vw;
+  width: calc(var(--vw) - 20px);
   overflow-y: hidden;
   overflow-x: hidden;
   display: flex;

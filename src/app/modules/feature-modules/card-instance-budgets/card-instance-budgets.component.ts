@@ -38,7 +38,7 @@ export class CardInstanceBudgetsComponent implements OnInit {
     amount: marker('common.amount'),
     actions: marker('common.actions'),
     newLine: marker('common.newLine'),
-    send: marker('common.send'),
+    publish: marker('cardDetail.budgets.publish'),
     attachments: marker('common.attachments'),
     deleteConfirmation: marker('common.deleteConfirmation'),
     maxLengthError: marker('errors.maxLengthError')

@@ -75,9 +75,20 @@
 
 <mat-menu #notificationsMenu="matMenu" class="notification-mention-menu">
     <div class="navbar-warning-menu">
-        <h2 class="navbar-warning-menu__header">
-            {{ labels.notifications | translate }}
-        </h2>
+        <div fxLayout="row" fxLayoutAlign="space-between center">
+            <h2 class="navbar-warning-menu__header">
+                {{ labels.notifications | translate }}
+            </h2>
+            <button
+                class="navbar-warning-menu__button"
+                mat-icon-button
+                color="primary"
+                [routerLink]="NOTIFICATIONS_PATH"
+                routerLinkActive="active"
+            >
+                <mat-icon>list</mat-icon>
+            </button>
+        </div>
         <mat-divider></mat-divider>
         <div class="navbar-warning-menu__content">
             <app-notifications #notifications></app-notifications>
@@ -87,9 +98,20 @@
 
 <mat-menu #mentionsMenu="matMenu" class="notification-mention-menu">
     <div class="navbar-warning-menu">
-        <h2 class="navbar-warning-menu__header">
-            {{ labels.mentions | translate }}
-        </h2>
+        <div fxLayout="row" fxLayoutAlign="space-between center">
+            <h2 class="navbar-warning-menu__header">
+                {{ labels.mentions | translate }}
+            </h2>
+            <button
+                class="navbar-warning-menu__button"
+                mat-icon-button
+                color="primary"
+                [routerLink]="MENTIONS_PATH"
+                routerLinkActive="active"
+            >
+                <mat-icon>list</mat-icon>
+            </button>
+        </div>
         <mat-divider></mat-divider>
         <div class="navbar-warning-menu__content">
             <app-mentions #mentions></app-mentions>

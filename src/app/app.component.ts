@@ -48,7 +48,9 @@ export class AppComponent implements OnInit {
 
   private setVhProperty(): void {
     const vh = window.innerHeight;
+    const vw = window.innerWidth;
     document.documentElement.style.setProperty('--vh', vh + 'px');
+    document.documentElement.style.setProperty('--vw', vw + 'px');
   }
 
   private getCount(): number {

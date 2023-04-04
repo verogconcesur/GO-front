@@ -1,0 +1,72 @@
+<div class="notifications-wrapper">
+    <table class="table-notifications table-ellipsis" mat-table [dataSource]="dataSource" style="width: 100%">
+        <!-- col1 Column -->
+        <ng-container matColumnDef="col1">
+            <th mat-header-cell *matHeaderCellDef>{{ "" }}</th>
+            <td mat-cell *matCellDef="let element">
+                <div fxLayout="row" class="col1Container" fxLayoutAlign="left center">
+                    <mat-icon color="primary" *ngIf="!element.read">fiber_manual_record</mat-icon>
+                    <span [ngClass]="{ noReadMargin: element.read }">{{ getLabelInfo(element.cardInstance, 0) }}</span>
+                </div>
+            </td>
+        </ng-container>
+        <!-- col2 Column -->
+        <ng-container matColumnDef="col2">
+            <th mat-header-cell *matHeaderCellDef>{{ "" }}</th>
+            <td mat-cell *matCellDef="let element">
+                {{ getLabelInfo(element.cardInstance, 1) }}
+            </td>
+        </ng-container>
+        <!-- col3 Column -->
+        <ng-container matColumnDef="col3">
+            <th mat-header-cell *matHeaderCellDef>{{ "" }}</th>
+            <td mat-cell *matCellDef="let element">
+                {{ getLabelInfo(element.cardInstance, 2) }}
+            </td>
+        </ng-container>
+        <!-- information Column -->
+        <ng-container matColumnDef="information">
+            <th mat-header-cell *matHeaderCellDef>{{ labels.information | translate }}</th>
+            <td mat-cell *matCellDef="let element">
+                <div fxLayout="row" class="informationContainer">
+                    <mat-icon>{{ getItemIcon(element) }}</mat-icon>
+                    <span>{{ getNotificationInfo(element) }}</span>
+                </div>
+            </td>
+        </ng-container>
+        <!-- actions Column -->
+        <ng-container matColumnDef="actions">
+            <th mat-header-cell *matHeaderCellDef>{{ labels.actions | translate }}</th>
+            <td mat-cell *matCellDef="let element" class="action-buttons no-ellipsis">
+                <div fxLayout="row wrap" fxLayoutAlign="left center">
+                    <button mat-icon-button aria-label="read" *ngIf="!element.read" (click)="markAsRead(element)">
+                        <mat-icon>remove_red_eye</mat-icon>
+                    </button>
+                    <button mat-icon-button aria-label="restore" *ngIf="element.read" (click)="markAsNoRead(element)">
+                        <mat-icon class="cross">remove_red_eye</mat-icon>
+                    </button>
+                    <button mat-icon-button aria-label="detail" (click)="goDetail(element)">
+                        <mat-icon>folder_open</mat-icon>
+                    </button>
+                </div>
+            </td>
+        </ng-container>
+
+        <tr mat-header-row *matHeaderRowDef="displayedColumns; sticky: true"></tr>
+        <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
+        <tr class="mat-row" *matNoDataRow>
+            <td class="mat-cell" style="text-align: center" [attr.colspan]="displayedColumns.length">
+                {{ labels.noDataToShow | translate }}
+            </td>
+        </tr>
+    </table>
+    <mat-paginator
+        [length]="paginationConfig.length"
+        [pageSize]="paginationConfig.pageSize"
+        [pageSizeOptions]="paginationConfig.pageSizeOptions"
+        [pageIndex]="paginationConfig.page"
+        (page)="getNotifications($event)"
+        aria-label="Select page"
+    >
+    </mat-paginator>
+</div>
