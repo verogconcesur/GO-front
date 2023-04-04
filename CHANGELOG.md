@@ -2,6 +2,28 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [1.0.4](https://git.sdos.es/Delivery-Projects/concesur/concenet_front/-/compare/v1.0.3...v1.0.4) (2023-04-04)
+
+
+### Features
+
+* .npmrc file ([99f8c2e](https://git.sdos.es/Delivery-Projects/concesur/concenet_front/-/commit/99f8c2e6d22980c2f26520d00204f82cd08d6cfd))
+* prueba integración continua ([8e5e95e](https://git.sdos.es/Delivery-Projects/concesur/concenet_front/-/commit/8e5e95e4486d4200c77257df96a23494954dc4f6))
+* set finalName in build.properties ([a1a7d36](https://git.sdos.es/Delivery-Projects/concesur/concenet_front/-/commit/a1a7d3608ba6a8f148581aba3088bfd173290232))
+
+
+### Bug Fixes
+
+* avoid edit attachcment name with an used name ([0a67b4c](https://git.sdos.es/Delivery-Projects/concesur/concenet_front/-/commit/0a67b4ce814404a62cbd77826ce27950f6b3ab0f))
+* budgets lines error al adjuntar fichero en la línea si se adjunta en la primera línea ([05607e0](https://git.sdos.es/Delivery-Projects/concesur/concenet_front/-/commit/05607e0e1ebc6d42b607e78a916f80246c38c7cc))
+* budgets lines error al adjuntar fichero en la línea si se adjunta en la primera línea ([84b3682](https://git.sdos.es/Delivery-Projects/concesur/concenet_front/-/commit/84b36821f8417d51cef5576a079a251d89de4f29))
+* front state in table view ([eb8af70](https://git.sdos.es/Delivery-Projects/concesur/concenet_front/-/commit/eb8af706134bdf40ea74dd0e04cdd24029c4c7ff))
+* mostrar todos los usuarios en mención, en permisos de subestado mostrar apellidos ([fb466a5](https://git.sdos.es/Delivery-Projects/concesur/concenet_front/-/commit/fb466a526fa969a7806442ed29d35244693fd37b))
+* permitir línea de presupuesto sin adjunto ([dd9a1ff](https://git.sdos.es/Delivery-Projects/concesur/concenet_front/-/commit/dd9a1ffd4e6452803fd3f1a9e4b5a42975332d27))
+* quitar console.log y caracter en línea de presupuestos ([db32a14](https://git.sdos.es/Delivery-Projects/concesur/concenet_front/-/commit/db32a140a81fb248ac75e185809578df9addf406))
+* view unverified signatures in docs ([77ee15e](https://git.sdos.es/Delivery-Projects/concesur/concenet_front/-/commit/77ee15e6470b546bea3732edb7ac7215958e945a))
+* workflow menu option ([0038228](https://git.sdos.es/Delivery-Projects/concesur/concenet_front/-/commit/0038228352b51227bdbbe7f619efba1d1aa6d330))
+
 ### [1.0.3](https://git.sdos.es/Delivery-Projects/concesur/concenet_front/-/compare/v1.0.2...v1.0.3) (2023-03-09)
 
 
