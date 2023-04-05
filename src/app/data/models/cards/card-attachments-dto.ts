@@ -31,3 +31,14 @@ export interface CardBudgetAttachmentsDTO {
   };
   id?: number;
 }
+export interface CardPaymentAttachmentsDTO {
+  tab: CardColumnTabDTO;
+  cardInstance: CardInstanceDTO;
+  file: AttachmentDTO;
+  templateAttachmentItem: {
+    id: number;
+    name: string;
+    orderNumber: number;
+  };
+  id?: number;
+}
