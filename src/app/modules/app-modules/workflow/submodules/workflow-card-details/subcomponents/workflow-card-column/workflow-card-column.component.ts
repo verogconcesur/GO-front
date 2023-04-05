@@ -87,7 +87,7 @@ export class WorkflowCardColumnComponent implements OnInit {
             )
             .subscribe(
               (data) => {
-                this.prepareAndMoveService.reloadData$.next('MOVES_IN_OTHER_WORKFLOWS');
+                this.prepareAndMoveService.reloadData$.next('UPDATE_INFORMATION');
               },
               (error) => {
                 this.globalMessageService.showError({

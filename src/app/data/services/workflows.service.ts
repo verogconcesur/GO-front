@@ -36,11 +36,13 @@ export class WorkflowsService {
   private readonly GET_WORKFLOWS_CREATECARD_PATH = '/api/cardInstanceWorkflow/createCard/getWorkflows';
   private readonly GET_WORKFLOWS_LIST_PATH = '/list';
   private readonly GET_WORKFLOWS_SEARCH_PATH = '/search';
+  private readonly GET_WORKFLOWS_SEARCH_PAGED_PATH = '/searchPaged';
   private readonly DUPLICATE_WORKFLOWS_PATH = '/duplicate';
   private readonly GET_WORKFLOWS_FACILITY_PATH = '/facility';
   private readonly GET_WORKFLOWS_INSTANCE_PATH = '/instances';
   private readonly GET_WORKFLOWS_VIEW_PATH = '/view';
   private readonly GET_WORKFLOWS_CARDS_PATH = '/cards';
+  private readonly GET_WORKFLOWS_CARD_PATH = '/card';
   private readonly GET_WORKFLOWS_MOVEMENT_PATH = '/movementByTarget';
   private readonly GET_WORKFLOW_MOVEMENT_PATH = '/workflowMovementByTarget';
   private readonly GET_CARD_INSTANCE_WORKFLOW = '/cardInstanceWorkflow';
@@ -70,6 +72,25 @@ export class WorkflowsService {
     return this.http
       .post<WorkflowCardDTO[]>(
         `${this.env.apiBaseUrl}${this.GET_WORKFLOWS_PATH}${this.GET_WORKFLOWS_INSTANCE_PATH}${this.GET_WORKFLOWS_SEARCH_PATH}`,
+        { search }
+      )
+      .pipe(catchError((error) => throwError(error.error as ConcenetError)));
+  }
+
+  /**
+   * Obtiene las tarjetas visibles para el usuario cuyos datos matrícula, vin, NIF/NIE o Referencia de la orden contenga el texto enviado.
+   *
+   * @returns WorkflowCardDTO[]
+   */
+  public searchCardsInWorkflowsPaged(
+    search: string,
+    pagination?: PaginationRequestI
+  ): Observable<PaginationResponseI<WorkflowCardDTO>> {
+    return this.http
+      .post<PaginationResponseI<WorkflowCardDTO>>(
+        `${this.env.apiBaseUrl}${this.GET_WORKFLOWS_PATH}${this.GET_WORKFLOWS_INSTANCE_PATH}${
+          this.GET_WORKFLOWS_SEARCH_PAGED_PATH
+        }${getPaginationUrlGetParams(pagination, true)}`,
         { search }
       )
       .pipe(catchError((error) => throwError(error.error as ConcenetError)));
@@ -184,6 +205,21 @@ export class WorkflowsService {
         `${this.GET_WORKFLOWS_CARDS_PATH}`;
     }
     return this.http.get<WorkflowCardDTO[]>(url).pipe(catchError((error) => throwError(error.error as ConcenetError)));
+  }
+
+  /**
+   * Get one card of a workflow
+   *
+   * @param cardId number
+   * @param viewType 'BOARD' | 'CALENDAR' | 'TABLE'
+   * @returns
+   */
+  public getSingleWorkflowCard(cardId: number, viewType: 'BOARD' | 'CALENDAR' | 'TABLE'): Observable<WorkflowCardDTO> {
+    return this.http
+      .get<WorkflowCardDTO>(
+        `${this.env.apiBaseUrl}${this.GET_WORKFLOWS_PATH}${this.GET_WORKFLOWS_VIEW_PATH}/${viewType}${this.GET_WORKFLOWS_CARD_PATH}/${cardId}`
+      )
+      .pipe(catchError((error) => throwError(error.error as ConcenetError)));
   }
 
   /**

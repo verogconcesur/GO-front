@@ -500,16 +500,32 @@ export class SignDocumentChecklistComponent implements OnInit, AfterViewInit, On
       .pipe(take(1))
       .subscribe((ok: boolean) => {
         if (ok) {
-          // console.log(this.signDocumentExchange, this.checklistForm.getRawValue(), this.p5sDraws);
           const itemsModified = this.checklistForm.getRawValue().templateChecklistItems;
           this.signDocumentExchange.templateChecklist.templateChecklistItems.forEach((item: TemplateChecklistItemDTO) => {
             const found = itemsModified.find((aux: TemplateChecklistItemDTO) => aux.orderNumber === item.orderNumber);
             if (found) {
               item.itemVal = found.itemVal;
-              if (item.typeItem === 'DRAWING' && this.p5sDraws[found.auxOrderNumber]) {
-                item.itemVal.fileValue.content = this.p5sDraws[found.auxOrderNumber].split(';base64,')[1];
-                item.itemVal.fileValue.type = this.p5sDraws[found.auxOrderNumber].split(';base64,')[0].split('data:')[1];
-                item.itemVal.fileValue.name = `${+new Date()}_draw.png`;
+              // DGDC: Evitamos esta forma de hacerlo ya que en IOS v 15 falla.
+              // if (item.typeItem === 'DRAWING' && this.p5sDraws[found.auxOrderNumber]) {
+              //   item.itemVal.fileValue.content = this.p5sDraws[found.auxOrderNumber].split(';base64,')[1];
+              //   item.itemVal.fileValue.type = this.p5sDraws[found.auxOrderNumber].split(';base64,')[0].split('data:')[1];
+              //   item.itemVal.fileValue.name = `${+new Date()}_draw.png`;
+              if (item.typeItem === 'DRAWING' && this.p5s[found.auxOrderNumber]) {
+                try {
+                  // DGDC: Evitamos esta forma de hacerlo ya que en IOS v 15 falla.
+                  // const { canvas } = this.p5s[found.auxOrderNumber].get() as unknown as {
+                  //   canvas: HTMLCanvasElement;
+                  // };
+                  const domItem = document.getElementById('item_' + found.auxOrderNumber);
+                  const canvas = domItem.querySelector('canvas.p5Canvas') as HTMLCanvasElement;
+                  const dataUrl = canvas.toDataURL();
+
+                  item.itemVal.fileValue.content = dataUrl.split(';base64,')[1];
+                  item.itemVal.fileValue.type = dataUrl.split(';base64,')[0].split('data:')[1];
+                  item.itemVal.fileValue.name = `${+new Date()}_draw.png`;
+                } catch (error) {
+                  console.error('Save', error);
+                }
               } else {
                 item.itemVal.fileValue =
                   item.itemVal.fileValue.content || (item.itemVal.fileValue.id && item.itemVal.fileValue.thumbnail)
@@ -621,7 +637,7 @@ export class SignDocumentChecklistComponent implements OnInit, AfterViewInit, On
     }
     this.printItemImageInPdf(item, templateItemFG);
     if (templateItemFG.get('typeItem').value === 'DRAWING' && !this.p5s[uniqueId] && $(`#${id_resizable}`).length) {
-      this.p5s[uniqueId] = new p5((p: p5) =>
+      new p5((p: p5) =>
         this.setDrawZone(
           p,
           uniqueId,
@@ -661,35 +677,51 @@ export class SignDocumentChecklistComponent implements OnInit, AfterViewInit, On
           this.renderingDrawingItems = false;
         });
       }
-      p.mouseDragged = (event) => {
-        let type = 'pencil';
-        if ($('#sign-document-pen-eraser:checked').length) {
-          type = 'eraser';
-        }
-        const size = parseInt($('#sign-document-pen-size').val().toString(), 10);
-        const color = $('#sign-document-pen-color').val().toString();
-        p.fill(color);
-        p.stroke(color);
-        if (type === 'eraser') {
-          p.erase();
-          p.strokeWeight(30);
-          p.line(p.pmouseX, p.pmouseY, p.mouseX, p.mouseY);
-        } else {
-          p.noErase();
-          if (type === 'pencil') {
-            p.strokeWeight(size);
+      p.touchMoved = (event) => {
+        try {
+          let type = 'pencil';
+          if ($('#sign-document-pen-eraser:checked').length) {
+            type = 'eraser';
+          }
+          const size = parseInt($('#sign-document-pen-size').val().toString(), 10);
+          const color = $('#sign-document-pen-color').val().toString();
+          p.fill(color);
+          p.stroke(color);
+          if (type === 'eraser') {
+            p.erase();
+            p.strokeWeight(30);
             p.line(p.pmouseX, p.pmouseY, p.mouseX, p.mouseY);
           } else {
-            p.ellipse(p.mouseX, p.mouseY, size, size);
+            p.noErase();
+            if (type === 'pencil') {
+              p.strokeWeight(size);
+              p.line(p.pmouseX, p.pmouseY, p.mouseX, p.mouseY);
+            } else {
+              p.ellipse(p.mouseX, p.mouseY, size, size);
+            }
           }
+        } catch (error) {
+          console.error('touchMoved', error);
         }
       };
-      p.mouseReleased = (event) => {
-        const { canvas } = p.get() as unknown as {
-          canvas: HTMLCanvasElement;
-        };
-        this.p5sDraws[auxOrderNumber] = canvas.toDataURL();
+      p.touchEnded = (event: TouchEvent, paux: p5 = p) => {
+        try {
+          // DGDC: Evitamos esta forma de hacerlo ya que en IOS v 15 falla.
+          // const { canvas } = paux.get() as unknown as {
+          //   canvas: HTMLCanvasElement;
+          // };
+          const domItem = document.getElementById('item_' + auxOrderNumber);
+          const canvas = domItem.querySelector('canvas.p5Canvas') as HTMLCanvasElement;
+          if (!canvas?.toDataURL || !canvas.toDataURL()) {
+            return;
+          }
+          const dataURL = canvas.toDataURL();
+          this.p5sDraws[auxOrderNumber] = dataURL;
+        } catch (error) {
+          console.error('touchEnded', error);
+        }
       };
+      this.p5s[auxOrderNumber] = p;
     }
   };
 
@@ -819,8 +851,8 @@ export class SignDocumentChecklistComponent implements OnInit, AfterViewInit, On
   private removeP5s(removeDraws?: boolean): void {
     Object.keys(this.p5s).forEach((k) => {
       const p5Canvas = this.p5s[parseInt(k, 10)];
-      p5Canvas.mouseDragged = (event) => {};
-      p5Canvas.mouseReleased = (event) => {};
+      p5Canvas.touchMoved = (event) => {};
+      p5Canvas.touchEnded = (event) => {};
       p5Canvas.remove();
       this.p5s[parseInt(k, 10)] = null;
     });

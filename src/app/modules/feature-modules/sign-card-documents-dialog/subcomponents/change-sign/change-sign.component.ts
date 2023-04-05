@@ -36,7 +36,7 @@ export class ChangeSignComponent implements OnInit, OnDestroy, AfterViewInit {
     p.setup = () => {
       p.createCanvas(400, 250).parent(id);
     };
-    p.mouseDragged = (event) => {
+    p.touchMoved = (event) => {
       let type = 'pencil';
       // if ($('#change-sign-pen-brush:checked').length) {
       //   type = 'brush';
@@ -79,8 +79,8 @@ export class ChangeSignComponent implements OnInit, OnDestroy, AfterViewInit {
 
   ngOnDestroy(): void {
     console.log('Ondestroy change sign component');
-    this.p5Sign.mouseDragged = (event) => {};
-    this.p5Sign.mouseReleased = (event) => {};
+    this.p5Sign.touchMoved = (event) => {};
+    this.p5Sign.touchEnded = (event) => {};
     this.p5Sign.remove();
     this.p5Sign = null;
   }

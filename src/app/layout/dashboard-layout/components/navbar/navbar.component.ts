@@ -4,15 +4,17 @@ import { Router } from '@angular/router';
 import { PermissionConstants } from '@app/constants/permission.constants';
 import { RouteConstants } from '@app/constants/route.constants';
 import { AuthenticationService } from '@app/security/authentication.service';
+import { RxStompService } from '@app/services/rx-stomp.service';
 import { marker } from '@biesbjerg/ngx-translate-extract-marker';
 import WarningDTO from '@data/models/notifications/warning-dto';
 import { NotificationService } from '@data/services/notifications.service';
 import { NewCardComponent, NewCardComponentModalEnum } from '@modules/feature-modules/new-card/new-card.component';
-import { UntilDestroy } from '@ngneat/until-destroy';
+import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
 import { NotificationSoundService } from '@shared/services/notification-sounds.service';
 import { take } from 'rxjs/operators';
 import { MentionsComponent } from '../mentions/mentions.component';
 import { NotificationsComponent } from '../notifications/notifications.component';
+import { IMessage } from '@stomp/stompjs';
 
 @UntilDestroy()
 @Component({
@@ -40,46 +42,23 @@ export class NavbarComponent implements OnInit, OnDestroy {
     mentions: marker('common.mentions')
   };
   public infoWarning: WarningDTO = null;
-  private readonly notificationTimeInterval = 20000;
-  private interval: NodeJS.Timeout;
 
   constructor(
     private router: Router,
     private authService: AuthenticationService,
     public dialog: MatDialog,
     private notificationService: NotificationService,
-    private notificationSoundService: NotificationSoundService
+    private notificationSoundService: NotificationSoundService,
+    private rxStompService: RxStompService
   ) {}
 
   ngOnInit(): void {
     this.infoWarning = this.authService.getWarningStatus();
     this.initWarningInformationValue();
-    this.initWarningNotificationInterval();
+    this.initWebSocketForNotificationsAndMentions();
   }
 
-  ngOnDestroy(): void {
-    clearInterval(this.interval);
-    this.interval = null;
-  }
-
-  public initWarningNotificationInterval(): void {
-    this.interval = setInterval(() => {
-      this.notificationService
-        .getInfoWarnings(this.infoWarning)
-        .pipe(take(1))
-        .subscribe((data) => {
-          if (data?.newNoReadMention || data?.newNoReadNotification) {
-            this.notificationSoundService.playSound('NOTIFICATION');
-          }
-          this.infoWarning = {
-            ...data,
-            frontLastHeaderMentionOpenedTime: this.infoWarning.frontLastHeaderMentionOpenedTime,
-            frontLastHeaderNotificationOpenedTime: this.infoWarning.frontLastHeaderNotificationOpenedTime
-          };
-          this.authService.setWarningStatus(data);
-        });
-    }, this.notificationTimeInterval);
-  }
+  ngOnDestroy(): void {}
 
   public navigateToAdministration(): void {
     this.router.navigate([RouteConstants.ADMINISTRATION]);
@@ -130,5 +109,31 @@ export class NavbarComponent implements OnInit, OnDestroy {
 
   private initWarningInformationValue(): void {
     this.infoWarning = this.authService.getWarningStatus();
+  }
+
+  private initWebSocketForNotificationsAndMentions(): void {
+    this.rxStompService
+      .watch('/topic/notification/' + this.authService.getUserId())
+      .pipe(untilDestroyed(this))
+      .subscribe((data: IMessage) => {
+        this.getInfoWarnings();
+      });
+  }
+
+  private getInfoWarnings(): void {
+    this.notificationService
+      .getInfoWarnings(this.infoWarning)
+      .pipe(take(1))
+      .subscribe((data) => {
+        if (data?.newNoReadMention || data?.newNoReadNotification) {
+          this.notificationSoundService.playSound('NOTIFICATION');
+        }
+        this.infoWarning = {
+          ...data,
+          frontLastHeaderMentionOpenedTime: this.infoWarning.frontLastHeaderMentionOpenedTime,
+          frontLastHeaderNotificationOpenedTime: this.infoWarning.frontLastHeaderNotificationOpenedTime
+        };
+        this.authService.setWarningStatus(data);
+      });
   }
 }
