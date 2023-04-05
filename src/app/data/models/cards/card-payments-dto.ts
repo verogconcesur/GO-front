@@ -15,7 +15,7 @@ export interface CardPaymentLineDTO {
 export interface CardPaymentsDTO {
   id?: number;
   cardInstance?: CardInstanceDTO;
-  paymentsLines?: CardPaymentLineDTO[];
+  paymentLines?: CardPaymentLineDTO[];
   pending?: number;
   total?: number;
   tab?: CardColumnTabDTO;

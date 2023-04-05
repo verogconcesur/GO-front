@@ -4,7 +4,7 @@ import { Inject, Injectable } from '@angular/core';
 import { ENV } from '@app/constants/global.constants';
 import { Env } from '@app/types/env';
 import { ConcenetError } from '@app/types/error';
-import { CardPaymentLineDTO, CardPaymentsDTO } from '@data/models/cards/card-payments-dto';
+import { CardPaymentLineDTO, CardPaymentsDTO, PaymentTypeDTO } from '@data/models/cards/card-payments-dto';
 import { Observable, throwError } from 'rxjs';
 import { catchError } from 'rxjs/operators';
 
@@ -17,6 +17,7 @@ export class CardPaymentsService {
   private readonly EDIT_PATH = '/edit';
   private readonly PAYMENTS_PATH = '/payments';
   private readonly LINE_PATH = '/line';
+  private readonly TYPES = '/types';
 
   constructor(@Inject(ENV) private env: Env, private http: HttpClient) {}
 
@@ -67,6 +68,39 @@ export class CardPaymentsService {
       .delete<CardPaymentsDTO>(
         // eslint-disable-next-line max-len
         `${this.env.apiBaseUrl}${this.GET_CARD_INSTANCE_PATH}${this.DETAIL_PATH}/${cardInstanceWorkflowId}${this.PAYMENTS_PATH}/${tabId}${this.LINE_PATH}/${idLine}`
+      )
+      .pipe(catchError((error) => throwError(error.error as ConcenetError)));
+  }
+
+  /**
+   * Save Total information
+   *
+   * @param cardInstanceWorkflowId
+   * @param tabId
+   * @param paymentDto
+   * @returns CardPaymentsDTO
+   */
+  public saveTotal(cardInstanceWorkflowId: number, tabId: number, payment: CardPaymentsDTO): Observable<CardPaymentsDTO> {
+    return this.http
+      .post<CardPaymentsDTO>(
+        // eslint-disable-next-line max-len
+        `${this.env.apiBaseUrl}${this.GET_CARD_INSTANCE_PATH}${this.DETAIL_PATH}/${cardInstanceWorkflowId}${this.PAYMENTS_PATH}/${tabId}`,
+        payment
+      )
+      .pipe(catchError((error) => throwError(error.error as ConcenetError)));
+  }
+  /**
+   * Get card payments
+   *
+   * @param cardInstanceWorkflowId
+   * @param tabId
+   * @returns CardPaymentsDTO
+   */
+  public getCardPaymentTypes(): Observable<PaymentTypeDTO[]> {
+    return this.http
+      .get<PaymentTypeDTO[]>(
+        // eslint-disable-next-line max-len
+        `${this.env.apiBaseUrl}${this.GET_CARD_INSTANCE_PATH}${this.PAYMENTS_PATH}${this.TYPES}`
       )
       .pipe(catchError((error) => throwError(error.error as ConcenetError)));
   }

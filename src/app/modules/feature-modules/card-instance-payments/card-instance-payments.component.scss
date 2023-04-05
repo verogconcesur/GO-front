@@ -5,6 +5,15 @@
     padding: 10px;
     height: calc(100% - 120px);
     overflow-y: auto;
+    &__total {
+      flex-wrap: wrap;
+      mat-form-field {
+        margin-right: 15px;
+        mat-icon {
+          font-size: 20px;
+        }
+      }
+    }
     &__header {
       &__item {
         font-weight: 600;

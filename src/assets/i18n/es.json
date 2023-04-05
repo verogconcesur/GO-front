@@ -117,6 +117,11 @@
             "deleteConfirmation": "¿Está seguro que desea eliminar esta linea de presupuesto?",
             "saveConfirmation": "¿Está seguro que desea guardar esta linea de presupuesto?",
             "sendConfirmation": "¿Está seguro que desea enviar el presupuesto al cliente?"
+        },
+        "payments": {
+            "deleteConfirmation": "¿Está seguro que desea eliminar esta linea de pago?",
+            "saveConfirmation": "¿Está seguro que desea guardar esta linea de pago?",
+            "saveTotalConfirmation": "¿Está seguro que desea guardar este total?"
         }
     },
     "cards": {
@@ -268,6 +273,7 @@
         "delete": "Eliminar",
         "deleteConfirmation": "¿Está seguro que desea eliminar este elemento?",
         "deleteFile": "Borrar archivo",
+        "description": "Descripción",
         "directLinks": "Accesos directos",
         "download": "Descargar",
         "dropHere": "Suelta aquí",
@@ -312,10 +318,12 @@
         "newLine": "Nueva línea",
         "next": "Siguiente",
         "notifications": "Notificaciones",
+        "observations": "Observaciones",
         "okClient": "OK Cliente",
         "origin": "Origen",
         "others": "Otros",
         "paragraph": "Párrafo",
+        "paymentType": "Tipo de pago",
         "payments": "Pagos",
         "pdfViewer": "Visor de pdf",
         "pending": "Pendiente",
@@ -353,6 +361,7 @@
         "tasks": "Tareas",
         "title": "Título",
         "to": "Hasta",
+        "total": "Total",
         "town": "Ciudad",
         "type3CharsToSearch": "Escribe al menos tres caracteres...",
         "typeBudget": "Añade una plantilla de presupuestos",
