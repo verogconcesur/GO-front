@@ -118,6 +118,11 @@
             "publish": "Publish budget",
             "saveConfirmation": "Are you sure you want to save this budget line?",
             "sendConfirmation": "Are you sure you want to send budget to the client?"
+        },
+        "payments": {
+            "deleteConfirmation": "Are you sure you want to delete this payment line?",
+            "saveConfirmation": "Are you sure you want to save this payment line?",
+            "saveTotalConfirmation": "Are you sure you want to save this total?"
         }
     },
     "cards": {
@@ -269,6 +274,7 @@
         "delete": "Delete",
         "deleteConfirmation": "Do you really want to delete this item?",
         "deleteFile": "Delete file",
+        "description": "Description",
         "directLinks": "Short cuts",
         "download": "Download",
         "dropHere": "Drop here",
@@ -313,10 +319,12 @@
         "newLine": "New line",
         "next": "Next",
         "notifications": "Notifications",
+        "observations": "Observations",
         "okClient": "OK Client",
         "origin": "Origin",
         "others": "Others",
         "paragraph": "Paragraph",
+        "paymentType": "Payment type",
         "payments": "Payments",
         "pdfViewer": "Pdf viewer",
         "pending": "Pending",
@@ -355,6 +363,7 @@
         "tasks": "Tasks",
         "title": "Title",
         "to": "To",
+        "total": "Total",
         "town": "Town",
         "type3CharsToSearch": "Write at least three characters...",
         "typeBudget": "Add a budget template",
