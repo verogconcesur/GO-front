@@ -44,21 +44,4 @@
       margin-right: 5px;
     }
   }
-  .attachment-selector {
-    position: absolute;
-    height: 100%;
-    width: 100%;
-    background-color: mat-contrast($primary, 400);
-    z-index: 10;
-    .close-attachments-btn {
-      position: absolute;
-      bottom: 20px;
-      left: 20px;
-    }
-    .add-attachments-btn {
-      position: absolute;
-      bottom: 20px;
-      right: 20px;
-    }
-  }
 }
