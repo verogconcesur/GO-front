@@ -1,6 +1,6 @@
 import { CdkDragDrop } from '@angular/cdk/drag-drop';
-import { Component, EventEmitter, Input, OnChanges, OnInit, Output, SimpleChanges } from '@angular/core';
-import { MatDialog } from '@angular/material/dialog';
+import { Component, EventEmitter, Inject, Input, OnChanges, OnInit, Optional, Output, SimpleChanges } from '@angular/core';
+import { MAT_DIALOG_DATA, MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { ConcenetError } from '@app/types/error';
 import { marker } from '@biesbjerg/ngx-translate-extract-marker';
 import { AttachmentDTO, CardAttachmentsDTO } from '@data/models/cards/card-attachments-dto';
@@ -13,9 +13,16 @@ import { saveAs } from 'file-saver';
 import { NGXLogger } from 'ngx-logger';
 import { finalize, take } from 'rxjs/operators';
 import { MediaViewerService } from '../media-viewer-dialog/media-viewer.service';
-import CardInstanceAttachmentsConfig from './card-instance-attachments-config-interface';
+import CardInstanceAttachmentsConfig, {
+  CardInstanceAttachmentsModalVersionConfig
+} from './card-instance-attachments-config-interface';
 import { RenameAttachmentComponent } from './subcomponets/rename-attachment/rename-attachment.component';
 
+export const enum CardInstanceAttachmentsComponentEnum {
+  ID = 'card-instances-attachments-id',
+  PANEL_CLASS = 'card-instances-attachments-wrapper',
+  TITLE = 'common.addAttachments'
+}
 @Component({
   selector: 'app-card-instance-attachments',
   templateUrl: './card-instance-attachments.component.html',
@@ -37,8 +44,14 @@ export class CardInstanceAttachmentsComponent implements OnInit, OnChanges {
     dropHere: marker('common.dropHere'),
     deleteConfirmation: marker('common.deleteConfirmation')
   };
+  public modalMode = false;
+  public title: string = marker('common.attachments');
+  public confirmButtonLabel: string = marker('common.confirm');
+  private originalSelected: AttachmentDTO[] = [];
 
   constructor(
+    @Optional() @Inject(MAT_DIALOG_DATA) public dialogData: CardInstanceAttachmentsModalVersionConfig,
+    @Optional() public dialogRef: MatDialogRef<CardInstanceAttachmentsComponent>,
     private dialog: MatDialog,
     private attachmentService: CardAttachmentsService,
     private logger: NGXLogger,
@@ -50,7 +63,18 @@ export class CardInstanceAttachmentsComponent implements OnInit, OnChanges {
   ) {}
 
   ngOnInit(): void {
-    if (this.selected) {
+    if (this.dialogData) {
+      this.modalMode = true;
+      this.cardInstanceAttachmentsConfig = this.dialogData.cardInstanceAttachmentsConfig;
+      this.data = this.dialogData.data;
+      this.selectedAttachments = this.dialogData.selected;
+      this.originalSelected = [...this.dialogData.selected];
+      this.cardInstanceWorkflowId = this.dialogData.cardInstanceWorkflowId;
+      this.tabId = this.dialogData.tabId;
+      this.title = this.dialogData.title ? this.dialogData.title : this.title;
+      this.confirmButtonLabel = this.dialogData.confirmButtonLabel ? this.dialogData.confirmButtonLabel : this.confirmButtonLabel;
+    } else if (this.selected) {
+      this.originalSelected = [...this.selected];
       this.selectedAttachments = this.selected;
     }
   }
@@ -175,7 +199,7 @@ export class CardInstanceAttachmentsComponent implements OnInit, OnChanges {
       this.data.forEach((aGroup: CardAttachmentsDTO) => {
         attachmentsNames = [...attachmentsNames, ...aGroup.attachments.map((a: AttachmentDTO) => a.name)];
       });
-      console.log(attachmentsNames);
+      // console.log(attachmentsNames);
       this.dialog
         .open(RenameAttachmentComponent, {
           data: {
@@ -242,6 +266,14 @@ export class CardInstanceAttachmentsComponent implements OnInit, OnChanges {
       this.hoverTemplate = null;
       this.hoverTemplateFrom = null;
     }
+  }
+
+  public close(): void {
+    this.dialogRef.close(this.originalSelected);
+  }
+
+  public save(): void {
+    this.dialogRef.close(this.selectedAttachments);
   }
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any

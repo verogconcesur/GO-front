@@ -47,7 +47,7 @@
                                 {{ labels.attachments | translate }}
                             </div>
                             <div class="attachments-info">
-                                <button mat-raised-button color="primary" (click)="showAttachmentSelector = true">
+                                <button mat-raised-button color="primary" (click)="openAttachmentsModal()">
                                     {{ labels.addAttachments | translate }}
                                 </button>
                                 <div class="attachments-names">
@@ -93,19 +93,6 @@
                 </mat-tab>
             </mat-tab-group>
         </form>
-    </div>
-    <div class="attachment-selector" *ngIf="showAttachmentSelector">
-        <app-card-instance-attachments
-            [cardInstanceAttachmentsConfig]="cardInstanceAttachmentsConfig"
-            [data]="attachments"
-            [selected]="attachmentsSelected"
-            [tabId]="null"
-            [cardInstanceWorkflowId]="cardInstanceAttachmentsConfig.wcId"
-            (selectionChange)="attachmentSelected($event)"
-        ></app-card-instance-attachments>
-        <button class="add-attachments-btn" mat-raised-button color="primary" (click)="addAttachments()">
-            {{ labels.confirm | translate }}
-        </button>
     </div>
     <div class="message-client-content__buttons">
         <!-- TODO: buttons used when the component is not opened with customDialogService -->
