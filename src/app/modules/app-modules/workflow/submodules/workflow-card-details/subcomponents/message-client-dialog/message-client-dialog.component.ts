@@ -8,6 +8,7 @@ import {
   Validators,
   FormControl
 } from '@angular/forms';
+import { MatDialog } from '@angular/material/dialog';
 import { marker } from '@biesbjerg/ngx-translate-extract-marker';
 import { AttachmentDTO, CardAttachmentsDTO } from '@data/models/cards/card-attachments-dto';
 import CardInstanceDTO from '@data/models/cards/card-instance-dto';
@@ -19,7 +20,13 @@ import { CardMessagesService } from '@data/services/card-messages.service';
 import { TemplatesCommunicationService } from '@data/services/templates-communication.service';
 import { ComponentToExtendForCustomDialog, CustomDialogFooterConfigI } from '@jenga/custom-dialog';
 // eslint-disable-next-line max-len
-import CardInstanceAttachmentsConfig from '@modules/feature-modules/card-instance-attachments/card-instance-attachments-config-interface';
+import CardInstanceAttachmentsConfig, {
+  CardInstanceAttachmentsModalVersionConfig
+} from '@modules/feature-modules/card-instance-attachments/card-instance-attachments-config-interface';
+import {
+  CardInstanceAttachmentsComponent,
+  CardInstanceAttachmentsComponentEnum
+} from '@modules/feature-modules/card-instance-attachments/card-instance-attachments.component';
 // eslint-disable-next-line max-len
 import { TextEditorWrapperConfigI } from '@modules/feature-modules/text-editor-wrapper/interfaces/text-editor-wrapper-config.interface';
 import { TranslateService } from '@ngx-translate/core';
@@ -52,7 +59,6 @@ export class MessageClientDialogComponent extends ComponentToExtendForCustomDial
     addAttachments: marker('common.addAttachments'),
     confirm: marker('common.confirm')
   };
-  public showAttachmentSelector = false;
   public cardInstanceAttachmentsConfig: CardInstanceAttachmentsConfig;
   public attachments: CardAttachmentsDTO[] = [];
   public attachmentsSelected: AttachmentDTO[] = [];
@@ -78,7 +84,8 @@ export class MessageClientDialogComponent extends ComponentToExtendForCustomDial
     private communicationService: TemplatesCommunicationService,
     private cardService: CardMessagesService,
     private globalMessageService: GlobalMessageService,
-    private cardAttachmentsService: CardAttachmentsService
+    private cardAttachmentsService: CardAttachmentsService,
+    private dialog: MatDialog
   ) {
     super(
       MessageClientDialogComponentModalEnum.ID,
@@ -128,16 +135,38 @@ export class MessageClientDialogComponent extends ComponentToExtendForCustomDial
         }
       );
   }
+  public openAttachmentsModal(): void {
+    const data: CardInstanceAttachmentsModalVersionConfig = {
+      cardInstanceAttachmentsConfig: this.cardInstanceAttachmentsConfig,
+      data: this.attachments,
+      selected: this.attachmentsSelected,
+      cardInstanceWorkflowId: this.cardInstanceAttachmentsConfig.wcId,
+      tabId: null,
+      title: marker('common.selectAttacmentsToAdd'),
+      confirmButtonLabel: 'common.addAttachments'
+    };
+    const dialogRef = this.dialog.open(CardInstanceAttachmentsComponent, {
+      width: '90%',
+      maxWidth: '905px',
+      height: '90%',
+      panelClass: CardInstanceAttachmentsComponentEnum.PANEL_CLASS,
+      disableClose: true,
+      data
+    });
+    dialogRef
+      .afterClosed()
+      .pipe(take(1))
+      .subscribe((resp: AttachmentDTO[]) => {
+        this.attachmentSelected(resp);
+      });
+  }
   public attachmentSelected(attachments: AttachmentDTO[]): void {
     this.attachmentsSelected = attachments;
-  }
-  public addAttachments(): void {
     this.messageClientsForm.controls.forEach((fg: UntypedFormGroup) => {
       if (fg.value.messageChannelId === 2) {
         fg.get('attachments').setValue([...this.attachmentsSelected].map((item) => ({ id: item.id, name: item.name })));
       }
     });
-    this.showAttachmentSelector = false;
   }
   public getAttachmentsName(): string {
     if (this.attachmentsSelected?.length) {
@@ -156,9 +185,18 @@ export class MessageClientDialogComponent extends ComponentToExtendForCustomDial
       this.cardService
         .getMessageTemplates(this.cardInstance.cardInstanceWorkflow.id, channels)
         .pipe(take(1))
-        .subscribe((res) => {
-          this.templateList = res;
-          this.spinnerService.hide(spinner);
+        .subscribe({
+          next: (res) => {
+            this.templateList = res;
+            this.spinnerService.hide(spinner);
+          },
+          error: (error) => {
+            this.spinnerService.hide(spinner);
+            this.globalMessageService.showError({
+              message: error.message,
+              actionText: this.translateService.instant(marker('common.close'))
+            });
+          }
         });
     } else {
       this.templateList = [];
@@ -178,18 +216,27 @@ export class MessageClientDialogComponent extends ComponentToExtendForCustomDial
       this.cardService
         .getMessageClients(this.cardInstance.cardInstanceWorkflow.id, template, channels)
         .pipe(take(1))
-        .subscribe((res) => {
-          res.forEach((message: CardMessageRenderDTO) => {
-            (this.messageForm.get('messageClients') as FormArray).push(
-              this.fb.group({
-                messageChannelId: [message.messageChannelId],
-                messageRender: [message.messageRender, [Validators.required]],
-                subjectRender: [message.subjectRender, message.messageChannelId === 2 ? [Validators.required] : []],
-                attachments: [message.attachments ? message.attachments : null]
-              })
-            );
-          });
-          this.spinnerService.hide(spinner);
+        .subscribe({
+          next: (res) => {
+            res.forEach((message: CardMessageRenderDTO) => {
+              (this.messageForm.get('messageClients') as FormArray).push(
+                this.fb.group({
+                  messageChannelId: [message.messageChannelId],
+                  messageRender: [message.messageRender, [Validators.required]],
+                  subjectRender: [message.subjectRender, message.messageChannelId === 2 ? [Validators.required] : []],
+                  attachments: [message.attachments ? message.attachments : null]
+                })
+              );
+            });
+            this.spinnerService.hide(spinner);
+          },
+          error: (error) => {
+            this.spinnerService.hide(spinner);
+            this.globalMessageService.showError({
+              message: error.message,
+              actionText: this.translateService.instant(marker('common.close'))
+            });
+          }
         });
     }
   }
