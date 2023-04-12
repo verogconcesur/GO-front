@@ -8,10 +8,9 @@ import BrandDTO from '@data/models/organization/brand-dto';
 import DepartmentDTO from '@data/models/organization/department-dto';
 import FacilityDTO from '@data/models/organization/facility-dto';
 import SpecialtyDTO from '@data/models/organization/specialty-dto';
-import TemplatesChecklistsDTO, { TemplateChecklistItemDTO } from '@data/models/templates/templates-checklists-dto';
+import { TemplateChecklistItemListDTO } from '@data/models/templates/templates-checklists-dto';
 import TemplatesFilterDTO from '@data/models/templates/templates-filter-dto';
 import { TemplatesChecklistsService } from '@data/services/templates-checklists.service';
-import { CustomDialogService } from '@jenga/custom-dialog';
 // eslint-disable-next-line max-len
 import { AdministrationCommonHeaderSectionClassToExtend } from '@modules/feature-modules/administration-common-header-section/administration-common-header-section-class-to-extend';
 import { FilterDrawerService } from '@modules/feature-modules/filter-drawer/services/filter-drawer.service';
@@ -32,7 +31,7 @@ export class ChecklistsComponent extends AdministrationCommonHeaderSectionClassT
   public labels = {
     noDataToShow: marker('errors.noDataToShow')
   };
-  public dataSource: TemplatesChecklistsDTO[] = [];
+  public dataSource: TemplateChecklistItemListDTO[] = [];
   public paginationConfig = {
     length: 1,
     pageSize: 5,
@@ -63,7 +62,7 @@ export class ChecklistsComponent extends AdministrationCommonHeaderSectionClassT
     this.openCreateEditChecklistDialog();
   }
 
-  public editAction(checklist: TemplatesChecklistsDTO): void {
+  public editAction(checklist: TemplateChecklistItemListDTO): void {
     this.openCreateEditChecklistDialog(checklist);
   }
 
@@ -84,7 +83,7 @@ export class ChecklistsComponent extends AdministrationCommonHeaderSectionClassT
         )
         .pipe(
           take(1),
-          map((response: PaginationResponseI<TemplatesChecklistsDTO>) => ({
+          map((response: PaginationResponseI<TemplateChecklistItemListDTO>) => ({
             content: response.content,
             optionLabelFn: this.optionLabelFn
           }))
@@ -129,7 +128,7 @@ export class ChecklistsComponent extends AdministrationCommonHeaderSectionClassT
         take(1),
         finalize(() => this.spinnerService.hide(spinner))
       )
-      .subscribe((response: PaginationResponseI<TemplatesChecklistsDTO>) => {
+      .subscribe((response: PaginationResponseI<TemplateChecklistItemListDTO>) => {
         this.paginationConfig.length = response.totalElements;
         this.dataSource = response.content;
       });
@@ -165,16 +164,16 @@ export class ChecklistsComponent extends AdministrationCommonHeaderSectionClassT
       });
   }
 
-  public optionLabelFn = (option: TemplatesChecklistsDTO): string => {
+  public optionLabelFn = (option: TemplateChecklistItemListDTO): string => {
     if (option) {
       let name = '';
-      name += option.template?.name ? option.template.name : '';
+      name += option.name ? option.name : '';
       return name;
     }
     return '';
   };
 
-  private openCreateEditChecklistDialog = (checklist?: TemplatesChecklistsDTO): void => {
+  private openCreateEditChecklistDialog = (checklist?: TemplateChecklistItemListDTO): void => {
     if (checklist?.id) {
       this.router.navigate([
         RouteConstants.ADMINISTRATION,
