@@ -12,7 +12,7 @@ import CardContentSourceDTO from '@data/models/cards/card-content-source-dto';
 import CardContentTypeDTO from '@data/models/cards/card-content-type-dto';
 import CardCreateDTO from '@data/models/cards/card-create-dto';
 import CardDTO from '@data/models/cards/card-dto';
-import CardInstanceDTO from '@data/models/cards/card-instance-dto';
+import CardInstanceDTO, { CardInstanceInformationDTO } from '@data/models/cards/card-instance-dto';
 import PriorityDTO from '@data/models/cards/priority-dto';
 import TemplatesCommonDTO from '@data/models/templates/templates-common-dto';
 import WorkflowCardSlotDTO from '@data/models/workflows/workflow-card-slot-dto';
@@ -49,6 +49,7 @@ export class CardService {
   private readonly CUSTOM_PATH = '/custom';
   private readonly SYNCRONIZE_PATH = '/synchronize';
   private readonly PRIORITIES_PATH = '/priorities';
+  private readonly INFORMATION = '/informations';
 
   constructor(@Inject(ENV) private env: Env, private http: HttpClient) {}
 
@@ -309,6 +310,20 @@ export class CardService {
   public getPriorirites(): Observable<PriorityDTO[]> {
     return this.http
       .get<PriorityDTO[]>(`${this.env.apiBaseUrl}${this.GET_CARD_PATH}${this.PRIORITIES_PATH}`)
+      .pipe(catchError((error) => throwError(error.error as ConcenetError)));
+  }
+
+  /**
+   * Save Information
+   *
+   * @returns CardInstanceInformationDTO
+   */
+  public saveInformation(idCard: number, information: CardInstanceInformationDTO): Observable<CardInstanceInformationDTO> {
+    return this.http
+      .post<CardInstanceInformationDTO>(
+        `${this.env.apiBaseUrl}${this.GET_CARD_INSTANCE_PATH}${this.GET_DETAIL_PATH}/${idCard}${this.INFORMATION}`,
+        information
+      )
       .pipe(catchError((error) => throwError(error.error as ConcenetError)));
   }
 }
