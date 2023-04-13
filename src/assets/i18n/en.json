@@ -822,6 +822,7 @@
         "substatesWithCards": "Showing only substates with cards",
         "substatesWithoutCards": "Showing only substates whithout cards",
         "syncData": "You are going to sync the workflow's data, do you want to continue?",
+        "tag": "Tag",
         "taskDescription": "Task description",
         "timelineLabel": "Timeline template",
         "timelineStates": "Timeline states",
