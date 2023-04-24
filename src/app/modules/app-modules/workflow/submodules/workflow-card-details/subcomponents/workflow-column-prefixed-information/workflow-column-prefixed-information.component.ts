@@ -22,6 +22,7 @@ export class WorkflowColumnPrefixedInformationComponent implements OnInit {
   public labels = {
     workOrderInformation: marker('workflows.workOrderInformation'),
     createdOn: marker('common.createdOn'),
+    updatedOn: marker('common.updatedOn'),
     origin: marker('common.origin'),
     taskDescription: marker('workflows.taskDescription'),
     tag: marker('workflows.tag'),
