@@ -365,8 +365,6 @@ export class CreateEditFacilityComponent extends ComponentToExtendForCustomDialo
     const workflowsIdsFound: number[] = [];
     states.forEach((state: WorkflowStateDTO) => {
       if (workflowsIdsFound.indexOf(state.workflow.id) === -1) {
-        //Es un workflow nuevo
-        workflowsIdsFound.push(state.workflow.id);
         const dataToPush = {
           name: `${this.translateService.instant('cards.workflows')}: ${state.workflow.name}`,
           children: [
@@ -378,6 +376,8 @@ export class CreateEditFacilityComponent extends ComponentToExtendForCustomDialo
         };
         //Primero compruebo que tengamos subestados dentro del estado
         if (dataToPush.children?.length && dataToPush.children[0]?.children?.length) {
+          //Es un workflow nuevo
+          workflowsIdsFound.push(state.workflow.id);
           //Es otro workflow
           otherWorkflows[state.workflow.id] = dataToPush;
         }

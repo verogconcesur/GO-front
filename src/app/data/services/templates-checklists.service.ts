@@ -6,7 +6,10 @@ import { ConcenetError } from '@app/types/error';
 import PaginationRequestI from '@data/interfaces/pagination-request';
 import PaginationResponseI from '@data/interfaces/pagination-response';
 import { CardAttachmentsDTO } from '@data/models/cards/card-attachments-dto';
-import TemplatesChecklistsDTO, { SignDocumentExchangeDTO } from '@data/models/templates/templates-checklists-dto';
+import TemplatesChecklistsDTO, {
+  SignDocumentExchangeDTO,
+  TemplateChecklistItemListDTO
+} from '@data/models/templates/templates-checklists-dto';
 import TemplatesFilterDTO from '@data/models/templates/templates-filter-dto';
 import { getPaginationUrlGetParams } from '@data/utils/pagination-aux';
 import { Observable, throwError } from 'rxjs';
@@ -31,9 +34,9 @@ export class TemplatesChecklistsService {
   public searchChecklistsTemplates(
     templateFilter: TemplatesFilterDTO,
     pagination?: PaginationRequestI
-  ): Observable<PaginationResponseI<TemplatesChecklistsDTO>> {
+  ): Observable<PaginationResponseI<TemplateChecklistItemListDTO>> {
     return this.http
-      .post<PaginationResponseI<TemplatesChecklistsDTO>>(
+      .post<PaginationResponseI<TemplateChecklistItemListDTO>>(
         `${this.env.apiBaseUrl}${this.SEARCH_COMMUNICATIONS_PATH}${getPaginationUrlGetParams(pagination, true)}`,
         { ...templateFilter, templateType: this.TEMPLATE_TYPE }
       )

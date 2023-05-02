@@ -2,6 +2,45 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [1.0.5](https://git.sdos.es/Delivery-Projects/concesur/concenet_front/-/compare/v1.0.4...v1.0.5) (2023-05-02)
+
+
+### Features
+
+* avance buscador paginado ([328a82b](https://git.sdos.es/Delivery-Projects/concesur/concenet_front/-/commit/328a82b16036e2a9b2ad2d6e79a9dc96bc11af78))
+* buscador paginado ([4e8ddd0](https://git.sdos.es/Delivery-Projects/concesur/concenet_front/-/commit/4e8ddd0a0192325acce0b5e3e551efb1cdfc976a))
+* búsqueda paginada ([39d773f](https://git.sdos.es/Delivery-Projects/concesur/concenet_front/-/commit/39d773ff3351fc52a42270b289e32b6d0e0688aa))
+* cambiar literal enviar presupuesto ([4d27227](https://git.sdos.es/Delivery-Projects/concesur/concenet_front/-/commit/4d2722773c2a0062882dd22c8db6ad6ce41fa6ca))
+* clean code sign for Ipad v15 fix ([ce92e90](https://git.sdos.es/Delivery-Projects/concesur/concenet_front/-/commit/ce92e90f5e810ce972837fcd33ae416a21a82dca))
+* clean code sockets ([842fdef](https://git.sdos.es/Delivery-Projects/concesur/concenet_front/-/commit/842fdef13c28465ca60b3b925260bd2b13a4e483))
+* notificaciones y menciones with sockets ([bbb2caa](https://git.sdos.es/Delivery-Projects/concesur/concenet_front/-/commit/bbb2caaf10ba031016197d894f5be3c01409e25d))
+* nuevo servicio para búsqueda paginada ([076811a](https://git.sdos.es/Delivery-Projects/concesur/concenet_front/-/commit/076811a0d0952f7ffa01dd0c705fd013ed2a0fd6))
+* pruebas websockets ([64ac37f](https://git.sdos.es/Delivery-Projects/concesur/concenet_front/-/commit/64ac37fd653af3ef60a9e4594a55b5104aa1a9be))
+* socket url for production ([871142e](https://git.sdos.es/Delivery-Projects/concesur/concenet_front/-/commit/871142ee1d5b8b544d8b7ea4c347686e88d33ca6))
+* try catch drawind sign ([2649e29](https://git.sdos.es/Delivery-Projects/concesur/concenet_front/-/commit/2649e2933f0cd6aa98786d6352972637f0331af3))
+* using rx stomp lib ([ceed837](https://git.sdos.es/Delivery-Projects/concesur/concenet_front/-/commit/ceed8372bf614333c6523f3948bc28d790fd6cf4))
+* websocket tener en cuenta iduser ([f9a095b](https://git.sdos.es/Delivery-Projects/concesur/concenet_front/-/commit/f9a095b4ba3e2cb585ae8fc483b887462479d86c))
+* websockets ([6f355d1](https://git.sdos.es/Delivery-Projects/concesur/concenet_front/-/commit/6f355d1146b3417f6caaf2e8d4c63d1f5669536b))
+* websockets comentarios, mensaje cliente y detalle completo tarjeta ([7ab26ad](https://git.sdos.es/Delivery-Projects/concesur/concenet_front/-/commit/7ab26ade828c5e955b4cf0e244f770b22c5986c7))
+* wss connection ([f34f3a5](https://git.sdos.es/Delivery-Projects/concesur/concenet_front/-/commit/f34f3a5a810ef79e38ad3773fa54da2f621284ae))
+
+
+### Bug Fixes
+
+* avoid message first subscription and button style ([0cc12ec](https://git.sdos.es/Delivery-Projects/concesur/concenet_front/-/commit/0cc12ecea37f6c5dfc70a740b52a5b0f044bd8b5))
+* buscador cliente click en option ([76ab2d3](https://git.sdos.es/Delivery-Projects/concesur/concenet_front/-/commit/76ab2d3703fe9fd9d6fcac1a6730df51a0bfed9f))
+* checklist error in safari ([0725e63](https://git.sdos.es/Delivery-Projects/concesur/concenet_front/-/commit/0725e63045d4c968fb7fc30918406ea638870ef2))
+* corrección line height busqueda paginada ([2e8adbd](https://git.sdos.es/Delivery-Projects/concesur/concenet_front/-/commit/2e8adbd588067fe061ec8c154c29c9eed78d0c72))
+* corrección line height busqueda paginada ([86b8ad2](https://git.sdos.es/Delivery-Projects/concesur/concenet_front/-/commit/86b8ad2ae5e436328528e6b30ebf7005cc2eb837))
+* evitar que al añadir firma de usuario se mueva la pantalla en el ipad ([5d00548](https://git.sdos.es/Delivery-Projects/concesur/concenet_front/-/commit/5d005481560ea393913c176103ee580be79c6f9b))
+* label information column ([a6cf618](https://git.sdos.es/Delivery-Projects/concesur/concenet_front/-/commit/a6cf618b8ada62696d45d054d03ec8efec2f371c))
+* más pruebas ([4d6fc7f](https://git.sdos.es/Delivery-Projects/concesur/concenet_front/-/commit/4d6fc7f56a94b5c6987b3de9a2726f322a742f3b))
+* mentions in comments and cardDetail styles to avoid scrolls ([603c91b](https://git.sdos.es/Delivery-Projects/concesur/concenet_front/-/commit/603c91b9ec061e6851aa5cf8f544973331a80792))
+* pruebas debug ([3468cbc](https://git.sdos.es/Delivery-Projects/concesur/concenet_front/-/commit/3468cbcd55ee54f6d24d576b3f69bfdf39b67400))
+* send attachments issue (ticket soporte 992131) ([2fc2f78](https://git.sdos.es/Delivery-Projects/concesur/concenet_front/-/commit/2fc2f78b982f74e422c075e3bf8ad64fa7894dd1))
+* skip on movement websocket ([46899c2](https://git.sdos.es/Delivery-Projects/concesur/concenet_front/-/commit/46899c2cda795ec39090b7f7f176a16da11d1ae6))
+* trying with document.getElementById ([41331f3](https://git.sdos.es/Delivery-Projects/concesur/concenet_front/-/commit/41331f3181cade85de6250f5a0e976116ae30551))
+
 ### [1.0.4](https://git.sdos.es/Delivery-Projects/concesur/concenet_front/-/compare/v1.0.3...v1.0.4) (2023-04-04)
 
 
