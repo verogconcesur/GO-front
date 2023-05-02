@@ -83,9 +83,22 @@ export class WorkflowNavbarFilterFormComponent implements OnInit {
   }
 
   public getUserName(wUser: WorkflowSubstateUserDTO): string {
-    return `${wUser.user.name} ${wUser.user.firstName} ${wUser.user.lastName}`;
+    if (wUser?.user?.fullName) {
+      return wUser.user.fullName;
+    } else {
+      const completeInfoName = [];
+      if (wUser?.user?.name) {
+        completeInfoName.push(wUser.user.name);
+      }
+      if (wUser?.user?.firstName) {
+        completeInfoName.push(wUser.user.firstName);
+      }
+      if (wUser?.user?.lastName) {
+        completeInfoName.push(wUser.user.lastName);
+      }
+      return completeInfoName.join(' ');
+    }
   }
-
   public filterSubstatesWithCards(): void {
     const actualValue = this.filterForm.get('substatesWithCards').value;
     if (actualValue === 'BOTH') {

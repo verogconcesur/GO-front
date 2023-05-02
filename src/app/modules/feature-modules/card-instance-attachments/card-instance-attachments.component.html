@@ -1,119 +1,132 @@
-<div class="attachments" cdkDropListGroup cdkScrollable>
-    <div class="attachments__templates" *ngFor="let template of data">
-        <div class="attachments__templates__header">
-            <label>{{ template.templateAttachmentItem.name }}</label>
-            <button
-                mat-icon-button
-                color="primary"
-                class="v-align-bottom no-padding"
-                *ngIf="!cardInstanceAttachmentsConfig.disableAttachmentsAddition"
-                (click)="fileDropRef.click()"
-            >
-                <mat-icon>add</mat-icon>
-            </button>
-        </div>
-        <div
-            class="attachments__templates__content"
-            [ngClass]="{ fileoverCdk: hoverTemplate === template }"
-            appDropZone
-            [disableDropZone]="cardInstanceAttachmentsConfig.disableAttachmentsAddition"
-            (fileDropped)="fileDropped($event, template)"
-            cdkDropList
-            [cdkDropListData]="{ template: template }"
-            (cdkDropListDropped)="fileMoved($event, template); setHoverTemplate(false, template, 'cdk')"
-            (cdkDropListEntered)="setHoverTemplate(true, template, 'cdk')"
-            (cdkDropListExited)="setHoverTemplate(false, template, 'cdk')"
-        >
-            <input
-                type="file"
-                style="display: none"
-                #fileDropRef
-                id="fileDropRef"
-                multiple
-                (change)="fileBrowseHandler($event.target.files, template)"
-            />
-            <div class="fileover-placeholder">
-                <label>{{ labels.dropHere | translate }}</label>
-            </div>
-            <label class="drop-here-label">{{ labels.dropHere | translate }}</label>
-            <div
-                class="attachments__templates__content__item"
-                *ngFor="let item of template.attachments"
-                cdkDrag
-                (cdkDragStarted)="draggingAttachment = item"
-                [attr.attachment]="item"
-                [ngClass]="{ selected: isItemSelected(item) }"
-                [ngStyle]="{ 'background-image': getItemBgImage(item) }"
-            >
-                <div class="actions-wrapper">
-                    <mat-icon
-                        class="top-left"
-                        *ngIf="!cardInstanceAttachmentsConfig.disableIndividualDeleteAction"
-                        (click)="deleteAttachment(item)"
-                        >delete</mat-icon
-                    >
-                    <mat-icon
-                        class="top-right"
-                        *ngIf="!cardInstanceAttachmentsConfig.disableAttachmentsSelection && !isItemSelected(item)"
-                        (click)="selectItem(item)"
-                        >check_box_outline_blank</mat-icon
-                    >
-                    <mat-icon
-                        class="top-right"
-                        *ngIf="!cardInstanceAttachmentsConfig.disableAttachmentsSelection && isItemSelected(item)"
-                        (click)="selectItem(item)"
-                        >check_box</mat-icon
-                    >
-                    <mat-icon
-                        class="bottom-right"
-                        *ngIf="
-                            !cardInstanceAttachmentsConfig.disableIndividualDownloadAction &&
-                            !cardInstanceAttachmentsConfig.disableAttachmentsSelection &&
-                            !hasPreview(item)
-                        "
-                        (click)="downloadAttachment(item)"
-                        >vertical_align_bottom</mat-icon
-                    >
-                    <mat-icon
-                        class="top-right"
-                        *ngIf="
-                            !cardInstanceAttachmentsConfig.disableIndividualDownloadAction &&
-                            cardInstanceAttachmentsConfig.disableAttachmentsSelection &&
-                            !hasPreview(item)
-                        "
-                        (click)="downloadAttachment(item)"
-                        >vertical_align_bottom</mat-icon
-                    >
-                    <mat-icon
-                        class="bottom-right"
-                        *ngIf="
-                            !cardInstanceAttachmentsConfig.disableIndividualDownloadAction &&
-                            !cardInstanceAttachmentsConfig.disableAttachmentsSelection &&
-                            hasPreview(item)
-                        "
-                        (click)="downloadAttachment(item)"
-                        >search</mat-icon
-                    >
-                    <mat-icon
-                        class="top-right"
-                        *ngIf="
-                            !cardInstanceAttachmentsConfig.disableIndividualDownloadAction &&
-                            cardInstanceAttachmentsConfig.disableAttachmentsSelection &&
-                            hasPreview(item)
-                        "
-                        (click)="downloadAttachment(item)"
-                        >search</mat-icon
-                    >
-                </div>
-                <div
-                    class="file-name"
-                    [ngClass]="{ editable: !cardInstanceAttachmentsConfig.disableEditFileName }"
-                    (click)="editAttachmentName(item, template)"
+<div class="attachments" [ngClass]="{ 'modal-view': modalMode }">
+    <div class="attachments__header" *ngIf="modalMode">
+        <h2 class="mat-headline">{{ title | translate }}</h2>
+        <button mat-icon-button class="attachments__header__close close-modal-button" (click)="close()">
+            <mat-icon>close</mat-icon>
+        </button>
+    </div>
+    <div class="attachments__content" cdkDropListGroup cdkScrollable>
+        <div class="attachments__content__templates" *ngFor="let template of data">
+            <div class="attachments__content__templates__header">
+                <label>{{ template.templateAttachmentItem.name }}</label>
+                <button
+                    mat-icon-button
+                    color="primary"
+                    class="v-align-bottom no-padding"
+                    *ngIf="!cardInstanceAttachmentsConfig.disableAttachmentsAddition"
+                    (click)="fileDropRef.click()"
                 >
-                    {{ item.name }}
-                    <mat-icon>edit</mat-icon>
+                    <mat-icon>add</mat-icon>
+                </button>
+            </div>
+            <div
+                class="attachments__content__templates__content"
+                [ngClass]="{ fileoverCdk: hoverTemplate === template }"
+                appDropZone
+                [disableDropZone]="cardInstanceAttachmentsConfig.disableAttachmentsAddition"
+                (fileDropped)="fileDropped($event, template)"
+                cdkDropList
+                [cdkDropListData]="{ template: template }"
+                (cdkDropListDropped)="fileMoved($event, template); setHoverTemplate(false, template, 'cdk')"
+                (cdkDropListEntered)="setHoverTemplate(true, template, 'cdk')"
+                (cdkDropListExited)="setHoverTemplate(false, template, 'cdk')"
+            >
+                <input
+                    type="file"
+                    style="display: none"
+                    #fileDropRef
+                    id="fileDropRef"
+                    multiple
+                    (change)="fileBrowseHandler($event.target.files, template)"
+                />
+                <div class="fileover-placeholder">
+                    <label>{{ labels.dropHere | translate }}</label>
+                </div>
+                <label class="drop-here-label">{{ labels.dropHere | translate }}</label>
+                <div
+                    class="attachments__content__templates__content__item"
+                    *ngFor="let item of template.attachments"
+                    cdkDrag
+                    (cdkDragStarted)="draggingAttachment = item"
+                    [attr.attachment]="item"
+                    [ngClass]="{ selected: isItemSelected(item) }"
+                    [ngStyle]="{ 'background-image': getItemBgImage(item) }"
+                >
+                    <div class="actions-wrapper">
+                        <mat-icon
+                            class="top-left"
+                            *ngIf="!cardInstanceAttachmentsConfig.disableIndividualDeleteAction"
+                            (click)="deleteAttachment(item)"
+                            >delete</mat-icon
+                        >
+                        <mat-icon
+                            class="top-right"
+                            *ngIf="!cardInstanceAttachmentsConfig.disableAttachmentsSelection && !isItemSelected(item)"
+                            (click)="selectItem(item)"
+                            >check_box_outline_blank</mat-icon
+                        >
+                        <mat-icon
+                            class="top-right"
+                            *ngIf="!cardInstanceAttachmentsConfig.disableAttachmentsSelection && isItemSelected(item)"
+                            (click)="selectItem(item)"
+                            >check_box</mat-icon
+                        >
+                        <mat-icon
+                            class="bottom-right"
+                            *ngIf="
+                                !cardInstanceAttachmentsConfig.disableIndividualDownloadAction &&
+                                !cardInstanceAttachmentsConfig.disableAttachmentsSelection &&
+                                !hasPreview(item)
+                            "
+                            (click)="downloadAttachment(item)"
+                            >vertical_align_bottom</mat-icon
+                        >
+                        <mat-icon
+                            class="top-right"
+                            *ngIf="
+                                !cardInstanceAttachmentsConfig.disableIndividualDownloadAction &&
+                                cardInstanceAttachmentsConfig.disableAttachmentsSelection &&
+                                !hasPreview(item)
+                            "
+                            (click)="downloadAttachment(item)"
+                            >vertical_align_bottom</mat-icon
+                        >
+                        <mat-icon
+                            class="bottom-right"
+                            *ngIf="
+                                !cardInstanceAttachmentsConfig.disableIndividualDownloadAction &&
+                                !cardInstanceAttachmentsConfig.disableAttachmentsSelection &&
+                                hasPreview(item)
+                            "
+                            (click)="downloadAttachment(item)"
+                            >search</mat-icon
+                        >
+                        <mat-icon
+                            class="top-right"
+                            *ngIf="
+                                !cardInstanceAttachmentsConfig.disableIndividualDownloadAction &&
+                                cardInstanceAttachmentsConfig.disableAttachmentsSelection &&
+                                hasPreview(item)
+                            "
+                            (click)="downloadAttachment(item)"
+                            >search</mat-icon
+                        >
+                    </div>
+                    <div
+                        class="file-name"
+                        [ngClass]="{ editable: !cardInstanceAttachmentsConfig.disableEditFileName }"
+                        (click)="editAttachmentName(item, template)"
+                    >
+                        {{ item.name }}
+                        <mat-icon>edit</mat-icon>
+                    </div>
                 </div>
             </div>
         </div>
+    </div>
+    <div class="attachments__footer" *ngIf="modalMode">
+        <button mat-flat-button color="primary" (click)="save()">
+            {{ confirmButtonLabel | translate }}
+        </button>
     </div>
 </div>

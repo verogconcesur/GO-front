@@ -1,145 +1,189 @@
 @import 'utils/theme';
-.attachments {
-  padding: 10px 15px;
-  max-height: 93%;
-  overflow-y: auto;
-  &__templates {
-    margin-bottom: 20px;
-    &__header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      text-transform: uppercase;
-      label {
-        font-weight: 600;
-        font-size: 0.85em;
-        color: mat-contrast($primary, 100);
-        margin: 0px;
-        max-width: calc(100% - 30px);
-        overflow: hidden;
-        text-overflow: ellipsis;
-      }
+.attachments.modal-view {
+  position: relative;
+  overflow-y: hidden;
+  .attachments__header {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    z-index: 1;
+    background-color: mat-contrast($primary, 400);
+  }
+  .attachments__content {
+    margin-top: 50px;
+    max-height: calc(100% - 110px);
+  }
+  .attachments__footer {
+    position: absolute;
+    bottom: 0;
+    right: 0;
+    width: 100%;
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    z-index: 1;
+    background-color: mat-contrast($primary, 400);
+    button {
+      margin-top: 10px;
     }
-    &__content {
-      display: flex;
-      justify-content: flex-start;
-      flex-wrap: wrap;
-      align-items: center;
-      width: 100%;
-      min-height: 50px;
-      position: relative;
-      .fileover-placeholder {
-        display: none;
-        z-index: 100;
-        width: 100%;
-        height: 100%;
-        position: absolute;
-        top: 0;
-        left: 0;
-        border: 2px dotted mat-color($primary, statusSuccess);
-        background-color: lighten(mat-color($primary, statusSuccess), 40%);
-        border-radius: 10px;
-        justify-content: center;
+  }
+}
+.attachments {
+  height: 100%;
+  &__header {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 10px;
+    align-items: center;
+    h2.mat-headline {
+      cursor: default;
+      margin: 0 20px 0 0;
+      color: mat-color($foreground, secondary-text);
+    }
+  }
+  &__content {
+    padding: 10px 15px;
+    // max-height: 93%;
+    overflow-y: auto;
+    &__templates {
+      margin-bottom: 20px;
+      &__header {
+        display: flex;
+        justify-content: space-between;
         align-items: center;
-      }
-      .drop-here-label {
-        display: none;
-      }
-      &.fileover {
-        min-height: 190px;
-        border: 2px dotted mat-color($primary, statusSuccess);
-        background-color: lighten(mat-color($primary, statusSuccess), 40%);
-        border-radius: 10px;
-        .attachments__templates__content__item {
-          opacity: 0;
-        }
-        .drop-here-label {
-          position: absolute;
-          top: calc(50% - 10px);
-          left: 0;
-          width: 100%;
-          text-align: center;
-          display: block;
-        }
-      }
-      &.fileoverCdk {
-        .fileover-placeholder {
-          display: flex;
-        }
-      }
-      &__item {
-        max-width: 248px;
-        min-width: 100px;
-        max-height: 188px;
-        //Añadir medias queries
-        width: 248px;
-        height: 188px;
-        background-color: mat-color($background, background-administration);
-        position: relative;
-        margin: 5px 10px 30px 10px;
-        border-radius: 15px;
-        background-position: center;
-        background-size: contain;
-        background-repeat: no-repeat;
-
-        .actions-wrapper {
-          position: absolute;
-          border-radius: 15px;
-          top: 0px;
-          left: 0px;
-          width: 100%;
-          height: 100%;
-          background-color: rgba(mat-contrast($primary, 100), 0.7);
-          opacity: 0;
-          transition: opacity 0.5s ease;
-          mat-icon {
-            color: mat-contrast($primary, 400);
-            cursor: pointer;
-            position: absolute;
-            &.top-left {
-              top: 15px;
-              left: 15px;
-            }
-            &.top-right {
-              top: 15px;
-              right: 15px;
-            }
-            &.bottom-right {
-              bottom: 15px;
-              right: 15px;
-            }
-          }
-        }
-        &.selected,
-        &:hover {
-          .actions-wrapper {
-            opacity: 1;
-          }
-        }
-
-        .file-name {
-          position: absolute;
-          bottom: -25px;
-          width: 100%;
+        text-transform: uppercase;
+        label {
+          font-weight: 600;
+          font-size: 0.85em;
+          color: mat-contrast($primary, 100);
+          margin: 0px;
+          max-width: calc(100% - 30px);
           overflow: hidden;
           text-overflow: ellipsis;
-          text-align: center;
-          cursor: default;
-          white-space: nowrap;
-          mat-icon {
-            position: absolute;
-            display: none;
-            color: mat-color($primary, 700);
-            top: -2px;
-            right: 0px;
+        }
+      }
+      &__content {
+        display: flex;
+        justify-content: flex-start;
+        flex-wrap: wrap;
+        align-items: center;
+        width: 100%;
+        min-height: 50px;
+        position: relative;
+        .fileover-placeholder {
+          display: none;
+          z-index: 100;
+          width: 100%;
+          height: 100%;
+          position: absolute;
+          top: 0;
+          left: 0;
+          border: 2px dotted mat-color($primary, statusSuccess);
+          background-color: lighten(mat-color($primary, statusSuccess), 40%);
+          border-radius: 10px;
+          justify-content: center;
+          align-items: center;
+        }
+        .drop-here-label {
+          display: none;
+        }
+        &.fileover {
+          min-height: 190px;
+          border: 2px dotted mat-color($primary, statusSuccess);
+          background-color: lighten(mat-color($primary, statusSuccess), 40%);
+          border-radius: 10px;
+          .attachments__templates__content__item {
+            opacity: 0;
           }
-          &.editable {
-            cursor: pointer;
-            &:hover {
-              border: 1px solid mat-color($primary, 200);
-              border-radius: 5px;
-              mat-icon {
-                display: block;
+          .drop-here-label {
+            position: absolute;
+            top: calc(50% - 10px);
+            left: 0;
+            width: 100%;
+            text-align: center;
+            display: block;
+          }
+        }
+        &.fileoverCdk {
+          .fileover-placeholder {
+            display: flex;
+          }
+        }
+        &__item {
+          max-width: 248px;
+          min-width: 100px;
+          max-height: 188px;
+          //Añadir medias queries
+          width: 248px;
+          height: 188px;
+          background-color: mat-color($background, background-administration);
+          position: relative;
+          margin: 5px 10px 30px 10px;
+          border-radius: 15px;
+          background-position: center;
+          background-size: contain;
+          background-repeat: no-repeat;
+
+          .actions-wrapper {
+            position: absolute;
+            border-radius: 15px;
+            top: 0px;
+            left: 0px;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(mat-contrast($primary, 100), 0.7);
+            opacity: 0;
+            transition: opacity 0.5s ease;
+            mat-icon {
+              color: mat-contrast($primary, 400);
+              cursor: pointer;
+              position: absolute;
+              &.top-left {
+                top: 15px;
+                left: 15px;
+              }
+              &.top-right {
+                top: 15px;
+                right: 15px;
+              }
+              &.bottom-right {
+                bottom: 15px;
+                right: 15px;
+              }
+            }
+          }
+          &.selected,
+          &:hover {
+            .actions-wrapper {
+              opacity: 1;
+            }
+          }
+
+          .file-name {
+            position: absolute;
+            bottom: -25px;
+            width: 100%;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            text-align: center;
+            cursor: default;
+            white-space: nowrap;
+            mat-icon {
+              position: absolute;
+              display: none;
+              color: mat-color($primary, 700);
+              top: -2px;
+              right: 0px;
+            }
+            &.editable {
+              cursor: pointer;
+              &:hover {
+                border: 1px solid mat-color($primary, 200);
+                border-radius: 5px;
+                mat-icon {
+                  display: block;
+                }
               }
             }
           }

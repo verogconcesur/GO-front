@@ -2,6 +2,20 @@ import { FormControl, UntypedFormArray } from '@angular/forms';
 import { AttachmentDTO } from '../cards/card-attachments-dto';
 import WorkflowCardSlotDTO from '../workflows/workflow-card-slot-dto';
 import TemplatesCommonDTO from './templates-common-dto';
+import BrandDTO from '../organization/brand-dto';
+import DepartmentDTO from '../organization/department-dto';
+import FacilityDTO from '../organization/facility-dto';
+import SpecialtyDTO from '../organization/specialty-dto';
+
+export interface TemplateChecklistItemListDTO {
+  id: number;
+  name: string;
+  brands: BrandDTO[];
+  departments: DepartmentDTO[];
+  facilities: FacilityDTO[];
+  specialties: SpecialtyDTO[];
+  templateType: string;
+}
 
 export interface TemplateChecklistItemValDTO {
   booleanValue: boolean;
