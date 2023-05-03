@@ -21,7 +21,7 @@ export class WorkflowCardSearcherComponent implements OnInit {
   public labels = {
     search: marker('common.search')
   };
-  public lastSearching: number;
+  public lastSearch: string[] = [];
   public searching = 0;
   public filterValue: string;
   public searcherForm: UntypedFormGroup;
@@ -84,9 +84,12 @@ export class WorkflowCardSearcherComponent implements OnInit {
   private filter(value?: string) {
     value = value ? value : this.searcherForm.get('search')?.value;
     this.filterValue = value && typeof value === 'string' ? value.toString().toLowerCase() : '';
-    this.searching++;
-    this.paginationConfig.page = 0;
-    this.fetchData();
+    if (this.lastSearch.length === 0) {
+      this.searching++;
+      this.paginationConfig.page = 0;
+      this.fetchData();
+    }
+    this.lastSearch.push(value);
   }
 
   private fetchData() {
@@ -94,7 +97,15 @@ export class WorkflowCardSearcherComponent implements OnInit {
       .searchCardsInWorkflowsPaged(this.filterValue, this.paginationConfig)
       .pipe(
         take(1),
-        finalize(() => this.searching--)
+        finalize(() => {
+          this.searching--;
+          if (this.lastSearch.length >= 1) {
+            this.searching++;
+            this.paginationConfig.page = 0;
+            this.fetchData();
+          }
+          this.lastSearch = [];
+        })
       )
       .subscribe((data: PaginationResponseI<WorkflowCardDTO>) => {
         if (data) {
