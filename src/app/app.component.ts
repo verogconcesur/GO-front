@@ -1,6 +1,7 @@
 import { Component, HostListener, Inject, OnInit } from '@angular/core';
 import { Meta } from '@angular/platform-browser';
 import { ENV } from '@app/constants/global.constants';
+import { RxStompService } from '@app/services/rx-stomp.service';
 import { Env } from '@app/types/env';
 import { marker } from '@biesbjerg/ngx-translate-extract-marker';
 import { TranslateService } from '@ngx-translate/core';
@@ -19,7 +20,8 @@ export class AppComponent implements OnInit {
     @Inject(ENV) private env: Env,
     private meta: Meta,
     private logger: NGXLogger,
-    private translate: TranslateService
+    private translate: TranslateService,
+    private rxStompService: RxStompService
   ) {}
 
   @HostListener('window:resize', ['$event']) onResize(event: { target: { innerHeight: number } }) {
@@ -44,6 +46,11 @@ export class AppComponent implements OnInit {
     this.logger.debug('instant translation =>', this.translate.instant(this.sampleTranslationStr, { count: this.count }));
 
     this.setVhProperty();
+
+    window.addEventListener('beforeunload', () => {
+      this.rxStompService.deactivate();
+      this.rxStompService.stompClient.forceDisconnect();
+    });
   }
 
   private setVhProperty(): void {
