@@ -139,7 +139,7 @@ export class WorkflowTimelineComponent extends WorkflowStepAbstractClass {
     this.form.markAsDirty();
   }
   public removeAttachmentTab(): void {
-    this.form.get('workflowAttachmentTimelineDTO').setValue(null);
+    this.form.get('tabId').setValue(null);
     this.form.get('templateAttachmentItemId').setValue(null);
   }
   public getAttachmentItems(): TemplateAtachmentItemsDTO[] {
