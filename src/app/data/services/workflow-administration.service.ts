@@ -17,6 +17,7 @@ import { Observable, throwError } from 'rxjs';
 import { catchError } from 'rxjs/operators';
 import TemplatesCommonDTO from '@data/models/templates/templates-common-dto';
 import { WorkflowTimelineDTO } from '@data/models/workflow-admin/workflow-timeline-dto';
+import { WorkflowAttachmentTimelineDTO } from '@data/models/workflow-admin/workflow-attachment-timeline-dto';
 
 @Injectable({
   providedIn: 'root'
@@ -31,6 +32,7 @@ export class WorkflowAdministrationService {
   private readonly VIEW_PATH = '/views';
   private readonly ATTRIBUTES_PATH = '/attributes';
   private readonly TIMELINE_PATH = '/timeline';
+  private readonly ATTACHMENTS_PATH = '/attachments';
   private readonly TEMPLATES_PATH = '/listTemplates';
   private readonly BUDGET_PATH = '/budget';
   private readonly VALIDATE_PATH = '/validatePublish';
@@ -255,6 +257,19 @@ export class WorkflowAdministrationService {
       .post<WorkflowTimelineDTO>(
         `${this.env.apiBaseUrl}${this.WORKFLOW_PATH}/${workflowId}${this.TIMELINE_PATH}`,
         workflowTimeline
+      )
+      .pipe(catchError((error) => throwError(error.error as ConcenetError)));
+  }
+
+  /**
+   * Obtener Timeline Workflow
+   *
+   * @returns WorkflowTimeLineDTO
+   */
+  public getWorkflowTimelineAttachments(workflowId: number): Observable<WorkflowAttachmentTimelineDTO[]> {
+    return this.http
+      .get<WorkflowAttachmentTimelineDTO[]>(
+        `${this.env.apiBaseUrl}${this.WORKFLOW_PATH}/${workflowId}${this.TIMELINE_PATH}${this.ATTACHMENTS_PATH}`
       )
       .pipe(catchError((error) => throwError(error.error as ConcenetError)));
   }
