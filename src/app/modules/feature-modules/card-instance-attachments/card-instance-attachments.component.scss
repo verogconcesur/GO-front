@@ -124,7 +124,10 @@
           background-position: center;
           background-size: contain;
           background-repeat: no-repeat;
-
+          border: 1px solid rgba(0, 0, 0, 0);
+          &.shared-in-landing {
+            border: 1px solid mat-color($primary, statusSuccess);
+          }
           .actions-wrapper {
             position: absolute;
             border-radius: 15px;
@@ -135,6 +138,7 @@
             background-color: rgba(mat-contrast($primary, 100), 0.7);
             opacity: 0;
             transition: opacity 0.5s ease;
+
             mat-icon {
               color: mat-contrast($primary, 400);
               cursor: pointer;
@@ -150,6 +154,10 @@
               &.bottom-right {
                 bottom: 15px;
                 right: 15px;
+              }
+              &.bottom-left {
+                bottom: 15px;
+                left: 15px;
               }
             }
           }

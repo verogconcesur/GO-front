@@ -42,7 +42,9 @@ export class CardInstanceAttachmentsComponent implements OnInit, OnChanges {
   public draggingAttachment: AttachmentDTO;
   public labels = {
     dropHere: marker('common.dropHere'),
-    deleteConfirmation: marker('common.deleteConfirmation')
+    deleteConfirmation: marker('common.deleteConfirmation'),
+    fileSharedWithCustomerInLanding: marker('landing.fileSharedWithCustomerInLanding'),
+    stopSharingFileWithCustomerInLanding: marker('landing.stopSharingFileWithCustomerInLanding')
   };
   public modalMode = false;
   public title: string = marker('common.attachments');
@@ -131,6 +133,10 @@ export class CardInstanceAttachmentsComponent implements OnInit, OnChanges {
       return true;
     }
     return false;
+  }
+
+  public stopSharingFileInLanding(item: AttachmentDTO): void {
+    console.log('Invocar servicio para dejar de compartir adjunto a través de la landing', item);
   }
 
   public downloadAttachment(item: AttachmentDTO): void {

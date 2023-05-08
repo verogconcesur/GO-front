@@ -124,6 +124,7 @@ export class MessageClientDialogComponent extends ComponentToExtendForCustomDial
             wcId: this.cardInstance.cardInstanceWorkflow.id,
             permission: 'SHOW',
             disableAttachmentsSelection: false,
+            disableLandingAction: true,
             disableEditFileName: true,
             disableIndividualDeleteAction: true,
             disableIndividualDownloadAction: true,
@@ -163,7 +164,7 @@ export class MessageClientDialogComponent extends ComponentToExtendForCustomDial
   public attachmentSelected(attachments: AttachmentDTO[]): void {
     this.attachmentsSelected = attachments;
     this.messageClientsForm.controls.forEach((fg: UntypedFormGroup) => {
-      if (fg.value.messageChannelId === 2) {
+      if (fg.value.messageChannelId === 1 || fg.value.messageChannelId === 2) {
         fg.get('attachments').setValue([...this.attachmentsSelected].map((item) => ({ id: item.id, name: item.name })));
       }
     });

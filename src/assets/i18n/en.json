@@ -466,6 +466,10 @@
         "unknown": "Unknown error",
         "uploadOnlyOneFile": "You must load only one file"
     },
+    "landing": {
+        "fileSharedWithCustomerInLanding": "File shared with the customer",
+        "stopSharingFileWithCustomerInLanding": "Stop sharing file with the customer"
+    },
     "login": {
         "description": "Please enter your credentials",
         "email": "Username",
