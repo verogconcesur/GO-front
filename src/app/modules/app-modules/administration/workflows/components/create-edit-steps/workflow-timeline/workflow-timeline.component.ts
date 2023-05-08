@@ -18,6 +18,8 @@ import { forkJoin } from 'rxjs';
 import { finalize, take } from 'rxjs/operators';
 import { WorkflowsCreateEditAuxService } from '../../../aux-service/workflows-create-edit-aux.service';
 import { WorkflowStepAbstractClass } from '../workflow-step-abstract-class';
+import { WorkflowAttachmentTimelineDTO } from '@data/models/workflow-admin/workflow-attachment-timeline-dto';
+import { TemplateAtachmentItemsDTO } from '@data/models/templates/templates-attachment-dto';
 
 @Component({
   selector: 'app-workflow-timeline',
@@ -31,7 +33,10 @@ export class WorkflowTimelineComponent extends WorkflowStepAbstractClass {
     title: marker('workflows.selectTimeline'),
     timelineStates: marker('workflows.timelineStates'),
     label: marker('workflows.timelineLabel'),
-    required: marker('errors.required')
+    required: marker('errors.required'),
+    selectAttachmentTab: marker('workflows.selectAttachmentTab'),
+    attachmentTab: marker('workflows.attachmentTab'),
+    category: marker('workflows.attachemntCategory')
   };
   public templateForm: FormControl;
   public substateList: WorkflowSubstateDTO[] = [];
@@ -69,7 +74,9 @@ export class WorkflowTimelineComponent extends WorkflowStepAbstractClass {
     }
     this.form = this.fb.group({
       templateTimelineDTO: [data?.workflowTimeline?.templateTimelineDTO],
-      workflowSubstateTimelineItems: this.fb.array([])
+      workflowSubstateTimelineItems: this.fb.array([]),
+      tabId: [data?.workflowTimeline?.tabId],
+      templateAttachmentItemId: [data?.workflowTimeline?.templateAttachmentItemId]
     });
     if (data?.workflowTimeline?.workflowSubstateTimelineItems?.length > 0) {
       data.workflowTimeline.workflowSubstateTimelineItems.forEach((timelineItem: WorkflowSubstateTimelineItemDTO) => {
@@ -131,6 +138,22 @@ export class WorkflowTimelineComponent extends WorkflowStepAbstractClass {
     this.form.markAsTouched();
     this.form.markAsDirty();
   }
+  public removeAttachmentTab(): void {
+    this.form.get('tabId').setValue(null);
+    this.form.get('templateAttachmentItemId').setValue(null);
+  }
+  public getAttachmentItems(): TemplateAtachmentItemsDTO[] {
+    if (this.form.get('tabId')?.value) {
+      const attachmentTimeline = this.originalData.attachmentTemplates.find(
+        (attTime: WorkflowAttachmentTimelineDTO) => attTime.id === this.form.get('tabId')?.value
+      );
+      return attachmentTimeline?.template?.templateAttachmentItems?.length
+        ? attachmentTimeline.template.templateAttachmentItems
+        : [];
+    } else {
+      return [];
+    }
+  }
   public removeTemplate() {
     this.templateForm.setValue(null);
     this.form.get('templateTimelineDTO').setValue(null);
@@ -162,20 +185,26 @@ export class WorkflowTimelineComponent extends WorkflowStepAbstractClass {
         });
     }
   }
+  public selectAttachmentTab() {
+    const tabItems = this.getAttachmentItems();
+    this.form.get('templateAttachmentItemId').setValue(tabItems.length ? tabItems[0] : null);
+  }
   public async getWorkflowStepData(): Promise<boolean> {
     const spinner = this.spinnerService.show();
     return new Promise((resolve, reject) => {
       const resquests = [
         this.workflowService.getWorkflowTimeline(this.workflowId).pipe(take(1)),
         this.workflowService.getTemplates(this.workflowId, 'TIMELINE').pipe(take(1)),
-        this.workflowStateService.getWorkflowStatesAndSubstates(this.workflowId).pipe(take(1))
+        this.workflowStateService.getWorkflowStatesAndSubstates(this.workflowId).pipe(take(1)),
+        this.workflowService.getWorkflowTimelineAttachments(this.workflowId).pipe(take(1))
       ];
       forkJoin(resquests).subscribe(
-        (responses: [WorkflowTimelineDTO, TemplatesCommonDTO[], WorkflowStateDTO[]]) => {
+        (responses: [WorkflowTimelineDTO, TemplatesCommonDTO[], WorkflowStateDTO[], WorkflowAttachmentTimelineDTO[]]) => {
           this.originalData = {
             workflowTimeline: responses[0],
             timelineTemplates: responses[1] ? responses[1] : [],
-            stateList: responses[2]
+            stateList: responses[2],
+            attachmentTemplates: responses[3] ? responses[3] : []
           };
           this.spinnerService.hide(spinner);
           resolve(true);
