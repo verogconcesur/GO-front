@@ -88,6 +88,7 @@ export class WorkflowColumnTemplatesAttachmentsComponent implements OnInit, OnCh
       wcId: this.idCard,
       permission: this.tab.permissionType,
       disableAttachmentsSelection: true,
+      disableLandingAction: this.tab.permissionType !== 'EDIT' ? true : false,
       disableEditFileName: this.tab.permissionType !== 'EDIT' ? true : false,
       disableIndividualDeleteAction: this.tab.permissionType !== 'EDIT' ? true : false,
       disableAttachmentsAddition: this.tab.permissionType !== 'EDIT' ? true : false

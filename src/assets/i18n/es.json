@@ -466,6 +466,10 @@
         "unknown": "Error desconocido",
         "uploadOnlyOneFile": "Solo está permitido cargar un único archivo"
     },
+    "landing": {
+        "fileSharedWithCustomerInLanding": "Archivo compartido con el cliente.",
+        "stopSharingFileWithCustomerInLanding": "Dejar de compartir archivo con el cliente."
+    },
     "login": {
         "description": "Por favor, introduzca sus credenciales",
         "email": "Nombre de usuario",

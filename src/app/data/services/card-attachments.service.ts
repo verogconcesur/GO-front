@@ -18,6 +18,7 @@ export class CardAttachmentsService {
   private readonly EDIT_PATH = '/edit';
   private readonly DELETE_PATH = '/delete';
   private readonly DOWNLOAD_PATH = '/download';
+  private readonly HIDE_LANDING_PATH = '/hideLanding';
 
   constructor(@Inject(ENV) private env: Env, private http: HttpClient) {}
 
@@ -101,6 +102,15 @@ export class CardAttachmentsService {
       .delete<any>(
         `${this.env.apiBaseUrl}${this.GET_CARD_INSTANCE_PATH}${this.DETAIL_PATH}/` +
           `${cardInstanceWorkflowId}${this.ATTACHMETS_PATH}/${tabId}${this.DELETE_PATH}/${fileId}`
+      )
+      .pipe(catchError((error) => throwError(error.error as ConcenetError)));
+  }
+
+  public hideLanding(cardInstanceWorkflowId: number, tabId: number, fileId: number): Observable<boolean> {
+    return this.http
+      .get<boolean>(
+        `${this.env.apiBaseUrl}${this.GET_CARD_INSTANCE_PATH}${this.DETAIL_PATH}/` +
+          `${cardInstanceWorkflowId}${this.ATTACHMETS_PATH}/${tabId}${this.HIDE_LANDING_PATH}/${fileId}`
       )
       .pipe(catchError((error) => throwError(error.error as ConcenetError)));
   }

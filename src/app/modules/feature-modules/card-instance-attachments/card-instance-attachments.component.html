@@ -49,8 +49,14 @@
                     cdkDrag
                     (cdkDragStarted)="draggingAttachment = item"
                     [attr.attachment]="item"
-                    [ngClass]="{ selected: isItemSelected(item) }"
+                    [ngClass]="{
+                        selected: isItemSelected(item),
+                        'shared-in-landing': item.showInLanding
+                    }"
                     [ngStyle]="{ 'background-image': getItemBgImage(item) }"
+                    matTooltip="{{ labels.fileSharedWithCustomerInLanding | translate }}"
+                    matTooltipPosition="above"
+                    [matTooltipDisabled]="!item.showInLanding"
                 >
                     <div class="actions-wrapper">
                         <mat-icon
@@ -80,6 +86,14 @@
                             "
                             (click)="downloadAttachment(item)"
                             >vertical_align_bottom</mat-icon
+                        >
+                        <mat-icon
+                            class="bottom-left shared-in-landing"
+                            *ngIf="!cardInstanceAttachmentsConfig.disableLandingAction && item.showInLanding"
+                            (click)="stopSharingFileInLanding(item)"
+                            matTooltip="{{ labels.stopSharingFileWithCustomerInLanding | translate }}"
+                            matTooltipPosition="above"
+                            >visibility_off</mat-icon
                         >
                         <mat-icon
                             class="top-right"

@@ -9,6 +9,7 @@ export default interface CardInstanceAttachmentsConfig {
   disableIndividualDeleteAction?: boolean;
   disableIndividualDownloadAction?: boolean;
   disableEditFileName?: boolean;
+  disableLandingAction?: boolean;
 }
 
 export interface CardInstanceAttachmentsModalVersionConfig {

@@ -42,7 +42,9 @@ export class CardInstanceAttachmentsComponent implements OnInit, OnChanges {
   public draggingAttachment: AttachmentDTO;
   public labels = {
     dropHere: marker('common.dropHere'),
-    deleteConfirmation: marker('common.deleteConfirmation')
+    deleteConfirmation: marker('common.deleteConfirmation'),
+    fileSharedWithCustomerInLanding: marker('landing.fileSharedWithCustomerInLanding'),
+    stopSharingFileWithCustomerInLanding: marker('landing.stopSharingFileWithCustomerInLanding')
   };
   public modalMode = false;
   public title: string = marker('common.attachments');
@@ -131,6 +133,42 @@ export class CardInstanceAttachmentsComponent implements OnInit, OnChanges {
       return true;
     }
     return false;
+  }
+
+  public stopSharingFileInLanding(item: AttachmentDTO): void {
+    this.confirmationDialog
+      .open({
+        title: this.translateService.instant(marker('common.warning')),
+        message: `${this.translateService.instant(this.labels.stopSharingFileWithCustomerInLanding)}`
+      })
+      .pipe(take(1))
+      .subscribe((ok: boolean) => {
+        if (ok) {
+          const spinner = this.spinnerService.show();
+          this.attachmentService
+            .hideLanding(this.cardInstanceWorkflowId, this.tabId, item.id)
+            .pipe(
+              take(1),
+              finalize(() => this.spinnerService.hide(spinner))
+            )
+            .subscribe({
+              next: (data) => {
+                this.globalMessageService.showSuccess({
+                  message: this.translateService.instant(marker('common.successOperation')),
+                  actionText: this.translateService.instant(marker('common.close'))
+                });
+
+                this.reload.emit(true);
+              },
+              error: (err: ConcenetError) => {
+                this.globalMessageService.showError({
+                  message: err.message,
+                  actionText: this.translateService.instant(marker('common.close'))
+                });
+              }
+            });
+        }
+      });
   }
 
   public downloadAttachment(item: AttachmentDTO): void {
