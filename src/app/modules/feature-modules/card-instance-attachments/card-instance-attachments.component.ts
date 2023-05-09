@@ -136,7 +136,39 @@ export class CardInstanceAttachmentsComponent implements OnInit, OnChanges {
   }
 
   public stopSharingFileInLanding(item: AttachmentDTO): void {
-    console.log('Invocar servicio para dejar de compartir adjunto a través de la landing', item);
+    this.confirmationDialog
+      .open({
+        title: this.translateService.instant(marker('common.warning')),
+        message: `${this.translateService.instant(this.labels.stopSharingFileWithCustomerInLanding)}`
+      })
+      .pipe(take(1))
+      .subscribe((ok: boolean) => {
+        if (ok) {
+          const spinner = this.spinnerService.show();
+          this.attachmentService
+            .hideLanding(this.cardInstanceWorkflowId, this.tabId, item.id)
+            .pipe(
+              take(1),
+              finalize(() => this.spinnerService.hide(spinner))
+            )
+            .subscribe({
+              next: (data) => {
+                this.globalMessageService.showSuccess({
+                  message: this.translateService.instant(marker('common.successOperation')),
+                  actionText: this.translateService.instant(marker('common.close'))
+                });
+
+                this.reload.emit(true);
+              },
+              error: (err: ConcenetError) => {
+                this.globalMessageService.showError({
+                  message: err.message,
+                  actionText: this.translateService.instant(marker('common.close'))
+                });
+              }
+            });
+        }
+      });
   }
 
   public downloadAttachment(item: AttachmentDTO): void {
