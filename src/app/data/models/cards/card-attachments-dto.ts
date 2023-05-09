@@ -8,6 +8,7 @@ export interface AttachmentDTO {
   size: number;
   thumbnail: string;
   type: string;
+  showInLanding?: boolean;
 }
 
 export interface CardAttachmentsDTO {
