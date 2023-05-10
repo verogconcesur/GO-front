@@ -169,14 +169,17 @@ export class NewCardComponent implements OnInit {
     ) {
       const spinner = this.spinnerService.show();
       this.subStateSelected = this.formWorkflow.get('subState').getRawValue();
-      this.cardsService.getCardCreateTabData(this.formWorkflow.get('workflow').value.id).subscribe((res) => {
-        this.cardDetailSelected = res;
-        this.initializeStep1Form();
-        this.initializeStep2Form();
-        this.stepIndex = this.stepIndex + 1;
-        this.stepper.next();
-        this.spinnerService.hide(spinner);
-      });
+      this.cardsService
+        .getCardCreateTabData(this.formWorkflow.get('workflow').value.id)
+        .pipe(take(1))
+        .subscribe((res) => {
+          this.cardDetailSelected = res;
+          this.initializeStep1Form();
+          this.initializeStep2Form();
+          this.stepIndex = this.stepIndex + 1;
+          this.stepper.next();
+          this.spinnerService.hide(spinner);
+        });
     } else {
       this.stepIndex = this.stepIndex + 1;
       this.stepper.next();

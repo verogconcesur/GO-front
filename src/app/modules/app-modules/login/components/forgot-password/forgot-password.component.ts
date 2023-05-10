@@ -7,7 +7,7 @@ import { UserService } from '@data/services/user.service';
 import { TranslateService } from '@ngx-translate/core';
 import { GlobalMessageService } from '@shared/services/global-message.service';
 import { ProgressSpinnerDialogService } from '@shared/services/progress-spinner-dialog.service';
-import { finalize } from 'rxjs/operators';
+import { finalize, take } from 'rxjs/operators';
 
 @Component({
   selector: 'app-forgot-password',
@@ -44,6 +44,7 @@ export class ForgotPasswordComponent implements OnInit {
     this.userService
       .restorePassword(this.forgotPasswordForm.value.userName)
       .pipe(
+        take(1),
         finalize(() => {
           this.spinnerService.hide(spinner);
         })

@@ -11,6 +11,7 @@ import WorkflowCardTabPermissionsDTO, {
 import { CardService } from '@data/services/cards.service';
 import { WorkflowAdministrationService } from '@data/services/workflow-administration.service';
 import { ComponentToExtendForCustomDialog, CustomDialogService, CustomDialogFooterConfigI } from '@jenga/custom-dialog';
+import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
 import { TranslateService } from '@ngx-translate/core';
 import { ConfirmDialogService } from '@shared/services/confirm-dialog.service';
 import { GlobalMessageService } from '@shared/services/global-message.service';
@@ -24,7 +25,7 @@ export const enum WorkflowCardsPermissionsComponentModalEnum {
   PANEL_CLASS = 'workflow-cards-permissions-dialog',
   TITLE = 'workflows.editPermissions'
 }
-
+@UntilDestroy()
 @Component({
   selector: 'app-workflow-cards-permissions',
   templateUrl: './workflow-cards-permissions.component.html',
@@ -142,7 +143,7 @@ export class WorkflowCardsPermissionsComponent extends ComponentToExtendForCusto
         this.cardTabForm = formCardTab;
         this.selectedTab = tab;
       }
-      this.cardTabForm.valueChanges.subscribe(() => {
+      this.cardTabForm.valueChanges.pipe(untilDestroyed(this)).subscribe(() => {
         this.allPermisionForm.get('permission').setValue('');
       });
     }
@@ -152,7 +153,7 @@ export class WorkflowCardsPermissionsComponent extends ComponentToExtendForCusto
     if (this.isTabSelected(tab)) {
       const index = this.permissionForm.getRawValue().findIndex((permission: WorkflowCardTabDTO) => permission.tabId === tab.id);
       this.cardTabForm = this.permissionForm.at(index) as FormGroup;
-      this.cardTabForm.valueChanges.subscribe(() => {
+      this.cardTabForm.valueChanges.pipe(untilDestroyed(this)).subscribe(() => {
         this.allPermisionForm.get('permission').setValue('');
       });
       this.selectedTab = tab;

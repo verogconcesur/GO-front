@@ -4,7 +4,7 @@ import CustomerEntityDTO from '@data/models/entities/customer-entity-dto';
 import RepairOrderEntityDTO from '@data/models/entities/repair-order-entity-dto';
 import VehicleEntityDTO from '@data/models/entities/vehicle-entity-dto';
 import UserDTO from '@data/models/user-permissions/user-dto';
-import { Observable } from 'rxjs';
+import { Observable, take } from 'rxjs';
 import { EntitiesSearcherDialogComponent } from './entities-searcher-dialog.component';
 
 @Injectable({
@@ -29,6 +29,7 @@ export class EntitiesSearcherDialogService implements OnDestroy {
           data: { workflowId, facilityId, mode }
         })
         .afterClosed()
+        .pipe(take(1))
         .subscribe(
           (data: {
             entity: UserDTO | VehicleEntityDTO | CustomerEntityDTO | RepairOrderEntityDTO;

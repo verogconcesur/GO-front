@@ -33,11 +33,13 @@ import {
   CreateEditVehicleComponentModalEnum,
   ModalVehicleComponent
 } from '@modules/feature-modules/modal-vehicle/modal-vehicle.component';
+import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
 import { TranslateService } from '@ngx-translate/core';
 import { GlobalMessageService } from '@shared/services/global-message.service';
 import { ProgressSpinnerDialogService } from '@shared/services/progress-spinner-dialog.service';
 import { take } from 'rxjs/operators';
 
+@UntilDestroy()
 @Component({
   selector: 'app-entity',
   templateUrl: './entity.component.html',
@@ -254,30 +256,42 @@ export class EntityComponent implements OnInit {
       this.searching = true;
       switch (this.formTab.get('contentSourceId').value) {
         case 1:
-          this.entitiesService.searchCustomers(this.searchForm.getRawValue()).subscribe((res: CustomerEntityDTO[]) => {
-            this.entityList = res;
-            this.searching = false;
-          });
+          this.entitiesService
+            .searchCustomers(this.searchForm.getRawValue())
+            .pipe(take(1))
+            .subscribe((res: CustomerEntityDTO[]) => {
+              this.entityList = res;
+              this.searching = false;
+            });
           break;
         case 2:
-          this.entitiesService.searchVehicles(this.searchForm.getRawValue()).subscribe((res: VehicleEntityDTO[]) => {
-            this.entityList = res;
-            this.searching = false;
-          });
+          this.entitiesService
+            .searchVehicles(this.searchForm.getRawValue())
+            .pipe(take(1))
+            .subscribe((res: VehicleEntityDTO[]) => {
+              this.entityList = res;
+              this.searching = false;
+            });
           break;
         case 3:
           const search = this.searchForm.getRawValue();
           search.workflowId = this.formWorkflow.get('workflow').value.id;
-          this.entitiesService.searchUsers(search).subscribe((res: UserEntityDTO[]) => {
-            this.entityList = res;
-            this.searching = false;
-          });
+          this.entitiesService
+            .searchUsers(search)
+            .pipe(take(1))
+            .subscribe((res: UserEntityDTO[]) => {
+              this.entityList = res;
+              this.searching = false;
+            });
           break;
         case 6:
-          this.entitiesService.searchRepairOrders(this.searchForm.getRawValue()).subscribe((res: RepairOrderEntityDTO[]) => {
-            this.entityList = res;
-            this.searching = false;
-          });
+          this.entitiesService
+            .searchRepairOrders(this.searchForm.getRawValue())
+            .pipe(take(1))
+            .subscribe((res: RepairOrderEntityDTO[]) => {
+              this.entityList = res;
+              this.searching = false;
+            });
           break;
         default:
           this.entityList = [];
@@ -296,6 +310,7 @@ export class EntityComponent implements OnInit {
     const spinner = this.spinnerService.show();
     this.cardsService
       .getEntityCardTabData(this.formWorkflow.get('workflow').value.id, this.formTab.get('id').value, entity.id)
+      .pipe(take(1))
       .subscribe((res) => {
         const tabItems = res as unknown as CardColumnTabItemDTO[];
         tabItems.forEach((tabItem) => {
@@ -338,6 +353,7 @@ export class EntityComponent implements OnInit {
         this.formTab.get('vehicleId').value,
         this.formTab.get('vehicleInventoryId').value
       )
+      .pipe(take(1))
       .subscribe((res) => {
         const tabItems = res as unknown as CardColumnTabItemDTO[];
         tabItems.forEach((tabItem) => {
@@ -363,6 +379,7 @@ export class EntityComponent implements OnInit {
         this.formTab.get('vehicleId').value,
         this.formTab.get('vehicleInventoryId').value
       )
+      .pipe(take(1))
       .subscribe((res) => {
         const tabItems = res as unknown as CardColumnTabItemDTO[];
         tabItems.forEach((tabItem) => {
@@ -472,9 +489,12 @@ export class EntityComponent implements OnInit {
     this.searchForm = this.fb.group({
       search: ['']
     });
-    this.searchForm.get('search').valueChanges.subscribe((res) => {
-      this.searchAction();
-    });
+    this.searchForm
+      .get('search')
+      .valueChanges.pipe(untilDestroyed(this))
+      .subscribe((res) => {
+        this.searchAction();
+      });
   }
   ngOnInit(): void {
     this.initializeForm();

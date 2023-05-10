@@ -85,6 +85,7 @@ export class CardInstanceBudgetsComponent implements OnInit {
         title: this.translateService.instant(marker('common.warning')),
         message: this.translateService.instant(marker('cardDetail.budgets.sendConfirmation'))
       })
+      .pipe(take(1))
       .subscribe((ok: boolean) => {
         if (ok) {
           this.messagesServices
@@ -112,6 +113,7 @@ export class CardInstanceBudgetsComponent implements OnInit {
         title: this.translateService.instant(marker('common.warning')),
         message: this.translateService.instant(marker('cardDetail.budgets.saveConfirmation'))
       })
+      .pipe(take(1))
       .subscribe((ok: boolean) => {
         if (ok) {
           const budgetData = budget.getRawValue();

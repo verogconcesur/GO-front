@@ -171,7 +171,7 @@ export class WorkflowColumnCommentsComponent implements OnInit, OnDestroy {
   public setCommentsAsRead(commentIds: number[]): void {
     const requests: Observable<unknown>[] = [];
     commentIds.forEach((id) => {
-      requests.push(this.cardCommentsService.setCommentsAsRead(id));
+      requests.push(this.cardCommentsService.setCommentsAsRead(id).pipe(take(1)));
     });
     forkJoin(requests).subscribe((data) => {
       setTimeout(() => {
@@ -204,22 +204,25 @@ export class WorkflowColumnCommentsComponent implements OnInit, OnDestroy {
         users: mentionedUsers.length ? mentionedUsers : null
       };
       this.sendingComment = true;
-      this.cardCommentsService.addCardComment(cardInstanceWorkflowId, comment).subscribe(
-        (data: CardCommentDTO) => {
-          this.spinnerService.hide(spinner);
-          this.newComment = '';
-          this.dataLoaded = false;
-          setTimeout(() => (this.dataLoaded = true));
-          this.getData();
-        },
-        (error: ConcenetError) => {
-          this.setShowLoading.emit(false);
-          this.globalMessageService.showError({
-            message: error.message,
-            actionText: this.translateService.instant(marker('common.close'))
-          });
-        }
-      );
+      this.cardCommentsService
+        .addCardComment(cardInstanceWorkflowId, comment)
+        .pipe(take(1))
+        .subscribe(
+          (data: CardCommentDTO) => {
+            this.spinnerService.hide(spinner);
+            this.newComment = '';
+            this.dataLoaded = false;
+            setTimeout(() => (this.dataLoaded = true));
+            this.getData();
+          },
+          (error: ConcenetError) => {
+            this.setShowLoading.emit(false);
+            this.globalMessageService.showError({
+              message: error.message,
+              actionText: this.translateService.instant(marker('common.close'))
+            });
+          }
+        );
     }
   }
 

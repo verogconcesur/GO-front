@@ -126,28 +126,34 @@ export class CustomColumnComponent implements OnInit {
       this.changeContentType();
     }
     if (this.formTab && this.formTab.value.type) {
-      this.cardService.getContentTypes(this.formTab.value.type).subscribe((res) => {
-        this.tabContentTypeList = res;
-      });
+      this.cardService
+        .getContentTypes(this.formTab.value.type)
+        .pipe(take(1))
+        .subscribe((res) => {
+          this.tabContentTypeList = res;
+        });
     }
   }
   public editTabItem(tabItem: CardColumnTabItemDTO): void {
     const tabItems = this.formTab.get('tabItems').getRawValue() as CardColumnTabItemDTO[];
-    this.customTabItemService.openCustomizableInputModal(tabItem, tabItems).subscribe((res) => {
-      if (res && res.typeItem) {
-        const formTabItem = (this.formTab.get('tabItems') as FormArray).controls[res.orderNumber - 1];
-        formTabItem.patchValue(res);
-        if (res.typeItem === 'LIST') {
-          while ((formTabItem.get('tabItemConfigList').get('listItems') as FormArray).length !== 0) {
-            (formTabItem.get('tabItemConfigList').get('listItems') as FormArray).removeAt(0);
+    this.customTabItemService
+      .openCustomizableInputModal(tabItem, tabItems)
+      .pipe(take(1))
+      .subscribe((res) => {
+        if (res && res.typeItem) {
+          const formTabItem = (this.formTab.get('tabItems') as FormArray).controls[res.orderNumber - 1];
+          formTabItem.patchValue(res);
+          if (res.typeItem === 'LIST') {
+            while ((formTabItem.get('tabItemConfigList').get('listItems') as FormArray).length !== 0) {
+              (formTabItem.get('tabItemConfigList').get('listItems') as FormArray).removeAt(0);
+            }
+            const listItemsForm = this.generateTabItemListItems(res);
+            listItemsForm.controls.forEach((form: FormGroup) => {
+              (formTabItem.get('tabItemConfigList').get('listItems') as FormArray).push(form);
+            });
           }
-          const listItemsForm = this.generateTabItemListItems(res);
-          listItemsForm.controls.forEach((form: FormGroup) => {
-            (formTabItem.get('tabItemConfigList').get('listItems') as FormArray).push(form);
-          });
         }
-      }
-    });
+      });
   }
   public newTabItem(tabItemType: string): void {
     const tabItem: CardColumnTabItemDTO = {
@@ -158,42 +164,45 @@ export class CustomColumnComponent implements OnInit {
       tabId: this.formTab.value.id
     };
     const tabItems = this.formTab.get('tabItems').getRawValue() as CardColumnTabItemDTO[];
-    this.customTabItemService.openCustomizableInputModal(tabItem, tabItems).subscribe((res) => {
-      if (res && res.typeItem) {
-        switch (res.typeItem) {
-          case 'TITLE':
-            (this.formTab.get('tabItems') as FormArray).push(
-              this.generateTabItemTitle(res, (this.formTab.get('tabItems') as FormArray).length)
-            );
-            break;
-          case 'TEXT':
-            (this.formTab.get('tabItems') as FormArray).push(
-              this.generateTabItemText(res, (this.formTab.get('tabItems') as FormArray).length)
-            );
-            break;
-          case 'INPUT':
-            (this.formTab.get('tabItems') as FormArray).push(
-              this.generateTabItemInput(res, (this.formTab.get('tabItems') as FormArray).length)
-            );
-            break;
-          case 'LIST':
-            (this.formTab.get('tabItems') as FormArray).push(
-              this.generateTabItemList(res, (this.formTab.get('tabItems') as FormArray).length)
-            );
-            break;
-          case 'OPTION':
-            (this.formTab.get('tabItems') as FormArray).push(
-              this.generateTabItemOption(res, (this.formTab.get('tabItems') as FormArray).length)
-            );
-            break;
-          case 'VARIABLE':
-            (this.formTab.get('tabItems') as FormArray).push(
-              this.generateTabItemVariable(res, (this.formTab.get('tabItems') as FormArray).length)
-            );
-            break;
+    this.customTabItemService
+      .openCustomizableInputModal(tabItem, tabItems)
+      .pipe(take(1))
+      .subscribe((res) => {
+        if (res && res.typeItem) {
+          switch (res.typeItem) {
+            case 'TITLE':
+              (this.formTab.get('tabItems') as FormArray).push(
+                this.generateTabItemTitle(res, (this.formTab.get('tabItems') as FormArray).length)
+              );
+              break;
+            case 'TEXT':
+              (this.formTab.get('tabItems') as FormArray).push(
+                this.generateTabItemText(res, (this.formTab.get('tabItems') as FormArray).length)
+              );
+              break;
+            case 'INPUT':
+              (this.formTab.get('tabItems') as FormArray).push(
+                this.generateTabItemInput(res, (this.formTab.get('tabItems') as FormArray).length)
+              );
+              break;
+            case 'LIST':
+              (this.formTab.get('tabItems') as FormArray).push(
+                this.generateTabItemList(res, (this.formTab.get('tabItems') as FormArray).length)
+              );
+              break;
+            case 'OPTION':
+              (this.formTab.get('tabItems') as FormArray).push(
+                this.generateTabItemOption(res, (this.formTab.get('tabItems') as FormArray).length)
+              );
+              break;
+            case 'VARIABLE':
+              (this.formTab.get('tabItems') as FormArray).push(
+                this.generateTabItemVariable(res, (this.formTab.get('tabItems') as FormArray).length)
+              );
+              break;
+          }
         }
-      }
-    });
+      });
   }
   public getTabItems(tabItems?: CardColumnTabItemDTO[]): UntypedFormArray {
     const fa = this.fb.array([]);
@@ -404,16 +413,22 @@ export class CustomColumnComponent implements OnInit {
   }
   public getContentSources() {
     if (this.formTab && this.formTab.value.contentTypeId) {
-      this.cardService.getContentSources(this.formTab.value.contentTypeId).subscribe((res) => {
-        this.tabContentSourceList = res;
-      });
+      this.cardService
+        .getContentSources(this.formTab.value.contentTypeId)
+        .pipe(take(1))
+        .subscribe((res) => {
+          this.tabContentSourceList = res;
+        });
     }
   }
   public getTemplates(templateType: string) {
     if (this.formTab && this.formTab.value.contentTypeId) {
-      this.cardService.listTemplates(templateType).subscribe((res) => {
-        this.tabTemplateList = res;
-      });
+      this.cardService
+        .listTemplates(templateType)
+        .pipe(take(1))
+        .subscribe((res) => {
+          this.tabTemplateList = res;
+        });
     }
   }
 
@@ -462,23 +477,26 @@ export class CustomColumnComponent implements OnInit {
           );
         });
       } else {
-        this.cardService.getEntityAttributes(this.formTab.value.contentSourceId).subscribe((res: WorkflowCardSlotDTO[]) => {
-          this.tabContentSlotsList = res;
-          this.tabContentSlotsList?.forEach((line, index) => {
-            (this.formTab.get('tabItems') as UntypedFormArray).push(
-              this.newTabItemVariable(
-                {
-                  attributeName: line.name,
-                  name: line.name,
-                  variableId: line.id,
-                  visible: false,
-                  tabId: this.formTab.value.id
-                },
-                index + 1
-              )
-            );
+        this.cardService
+          .getEntityAttributes(this.formTab.value.contentSourceId)
+          .pipe(take(1))
+          .subscribe((res: WorkflowCardSlotDTO[]) => {
+            this.tabContentSlotsList = res;
+            this.tabContentSlotsList?.forEach((line, index) => {
+              (this.formTab.get('tabItems') as UntypedFormArray).push(
+                this.newTabItemVariable(
+                  {
+                    attributeName: line.name,
+                    name: line.name,
+                    variableId: line.id,
+                    visible: false,
+                    tabId: this.formTab.value.id
+                  },
+                  index + 1
+                )
+              );
+            });
           });
-        });
       }
     }
   };

@@ -11,7 +11,7 @@ import { TranslateService } from '@ngx-translate/core';
 import { GlobalMessageService } from '@shared/services/global-message.service';
 import { ProgressSpinnerDialogService } from '@shared/services/progress-spinner-dialog.service';
 import ConfirmPasswordValidator from '@shared/validators/confirm-password.validator';
-import { finalize } from 'rxjs/operators';
+import { finalize, take } from 'rxjs/operators';
 import { passwordPattern } from '@app/constants/patterns.constants';
 
 @UntilDestroy()
@@ -65,6 +65,7 @@ export class RestorePasswordComponent implements OnInit {
     this.userService
       .changePassword({ hash: this.hash, ...this.restorePasswordForm.value })
       .pipe(
+        take(1),
         finalize(() => {
           this.spinnerService.hide(spinner);
         })

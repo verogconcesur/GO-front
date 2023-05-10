@@ -154,6 +154,7 @@ export class CreateEditRoleComponent extends ComponentToExtendForCustomDialog im
         title: this.translateService.instant(marker('common.warning')),
         message: this.translateService.instant(marker('users.roles.deleteConfirmation'))
       })
+      .pipe(take(1))
       .subscribe((ok: boolean) => {
         if (ok) {
           this.roleService
