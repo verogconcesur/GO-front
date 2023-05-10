@@ -157,6 +157,7 @@ export class BudgetsComponent extends AdministrationCommonHeaderSectionClassToEx
         title: this.translateService.instant(marker('common.warning')),
         message: this.translateService.instant(marker('administration.templates.budgets.deleteConfirmation'))
       })
+      .pipe(take(1))
       .subscribe((ok: boolean) => {
         if (ok) {
           const spinner = this.spinnerService.show();

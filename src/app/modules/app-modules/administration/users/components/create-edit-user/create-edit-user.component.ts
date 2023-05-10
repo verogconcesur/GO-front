@@ -204,6 +204,7 @@ export class CreateEditUserComponent extends ComponentToExtendForCustomDialog im
         title: this.translateService.instant(marker('common.warning')),
         message: this.translateService.instant(marker('user.deleteConfirmation'))
       })
+      .pipe(take(1))
       .subscribe((ok: boolean) => {
         if (ok) {
           this.userService

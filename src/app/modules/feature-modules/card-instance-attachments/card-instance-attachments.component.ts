@@ -211,6 +211,7 @@ export class CardInstanceAttachmentsComponent implements OnInit, OnChanges {
           }
         })
         .afterClosed()
+        .pipe(take(1))
         .subscribe((response) => {
           if (response) {
             this.reload.emit(true);

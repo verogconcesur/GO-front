@@ -366,6 +366,7 @@ export class WorkflowStatesComponent extends WorkflowStepAbstractClass implement
         disableClose: true,
         width: substate ? '850px' : '700px'
       })
+      .pipe(take(1))
       .subscribe(async (res) => {
         if (res || this.substateModified) {
           this.substateModified = false;

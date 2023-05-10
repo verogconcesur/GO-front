@@ -113,10 +113,12 @@ export class WorkflowUsersComponent extends WorkflowStepAbstractClass implements
     return new Promise((resolve, reject) => {
       const resquests = [
         this.workflowService.getWorkflowUsers(this.workflowId).pipe(take(1)),
-        this.userService.searchUsers(this.usersFilter, {
-          page: 0,
-          size: 10000
-        })
+        this.userService
+          .searchUsers(this.usersFilter, {
+            page: 0,
+            size: 10000
+          })
+          .pipe(take(1))
       ];
 
       forkJoin(resquests).subscribe((responses: [WorkflowSubstateUserDTO[], PaginationResponseI<UserDetailsDTO>]) => {

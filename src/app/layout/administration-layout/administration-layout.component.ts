@@ -61,20 +61,23 @@ export class AdministrationLayoutComponent implements OnInit {
     const userId = Number(this.authenticationService.getUserId());
     this.userDetails = this.userService.userLogged$.value;
     if (!this.userDetails) {
-      this.userService.getUserDetailsById(userId).subscribe({
-        next: (response) => {
-          this.userDetails = response;
-          this.userService.userLogged$.next(response);
-        },
-        error: (error: ConcenetError) => {
-          this.logger.error(error);
+      this.userService
+        .getUserDetailsById(userId)
+        .pipe(take(1))
+        .subscribe({
+          next: (response) => {
+            this.userDetails = response;
+            this.userService.userLogged$.next(response);
+          },
+          error: (error: ConcenetError) => {
+            this.logger.error(error);
 
-          this.globalMessageService.showError({
-            message: error.message,
-            actionText: this.translateService.instant(marker('common.close'))
-          });
-        }
-      });
+            this.globalMessageService.showError({
+              message: error.message,
+              actionText: this.translateService.instant(marker('common.close'))
+            });
+          }
+        });
     }
   }
 

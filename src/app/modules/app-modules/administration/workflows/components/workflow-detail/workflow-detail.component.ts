@@ -78,7 +78,7 @@ export class WorkflowDetailComponent implements OnInit, OnDestroy, AfterViewInit
   }
 
   public getWorkflowInfo() {
-    this.route.paramMap.subscribe((params) => {
+    this.route.paramMap.pipe(take(1)).subscribe((params) => {
       const idWorkflow = Number(params.get('idWorkflow'));
       if (idWorkflow) {
         const spinner = this.spinnerService.show();
@@ -155,6 +155,7 @@ export class WorkflowDetailComponent implements OnInit, OnDestroy, AfterViewInit
         disableClose: true,
         width: '900px'
       })
+      .pipe(take(1))
       .subscribe((res) => {
         if (res) {
           this.workflowDetail = res;

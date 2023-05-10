@@ -103,7 +103,10 @@ export class ClientsListComponent implements OnInit {
           size: this.paginationConfig.pageSize
         }
       )
-      .pipe(finalize(() => this.spinnerService.hide(spinner)))
+      .pipe(
+        take(1),
+        finalize(() => this.spinnerService.hide(spinner))
+      )
       .subscribe(
         (response: PaginationResponseI<CustomerEntityDTO>) => {
           this.paginationConfig.length = response.totalElements;

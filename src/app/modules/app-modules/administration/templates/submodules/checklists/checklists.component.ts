@@ -140,6 +140,7 @@ export class ChecklistsComponent extends AdministrationCommonHeaderSectionClassT
         title: this.translateService.instant(marker('common.warning')),
         message: this.translateService.instant(marker('administration.templates.checklists.deleteConfirmation'))
       })
+      .pipe(take(1))
       .subscribe((ok: boolean) => {
         if (ok) {
           const spinner = this.spinnerService.show();

@@ -29,7 +29,9 @@ import {
   ModalVehicleExternalApiComponent
 } from '../modal-vehicle-external-api/modal-vehicle-external-api.component';
 import { CreateEditVehicleComponentModalEnum, ModalVehicleComponent } from '../modal-vehicle/modal-vehicle.component';
+import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
 
+@UntilDestroy()
 @Component({
   selector: 'app-entities-searcher-dialog',
   templateUrl: './entities-searcher-dialog.component.html',
@@ -282,30 +284,42 @@ export class EntitiesSearcherDialogComponent implements OnInit {
       this.searching = true;
       switch (this.mode) {
         case 'CUSTOMER':
-          this.entitiesService.searchCustomers(this.searchForm.getRawValue()).subscribe((res: CustomerEntityDTO[]) => {
-            this.entityList = res;
-            this.searching = false;
-          });
+          this.entitiesService
+            .searchCustomers(this.searchForm.getRawValue())
+            .pipe(take(1))
+            .subscribe((res: CustomerEntityDTO[]) => {
+              this.entityList = res;
+              this.searching = false;
+            });
           break;
         case 'VEHICLE':
-          this.entitiesService.searchVehicles(this.searchForm.getRawValue()).subscribe((res: VehicleEntityDTO[]) => {
-            this.entityList = res;
-            this.searching = false;
-          });
+          this.entitiesService
+            .searchVehicles(this.searchForm.getRawValue())
+            .pipe(take(1))
+            .subscribe((res: VehicleEntityDTO[]) => {
+              this.entityList = res;
+              this.searching = false;
+            });
           break;
         case 'USER':
           const search = this.searchForm.getRawValue();
           search.workflowId = this.workflowId;
-          this.entitiesService.searchUsers(search).subscribe((res: UserEntityDTO[]) => {
-            this.entityList = res;
-            this.searching = false;
-          });
+          this.entitiesService
+            .searchUsers(search)
+            .pipe(take(1))
+            .subscribe((res: UserEntityDTO[]) => {
+              this.entityList = res;
+              this.searching = false;
+            });
           break;
         case 'REPAIRORDER':
-          this.entitiesService.searchRepairOrders(this.searchForm.getRawValue()).subscribe((res: RepairOrderEntityDTO[]) => {
-            this.entityList = res;
-            this.searching = false;
-          });
+          this.entitiesService
+            .searchRepairOrders(this.searchForm.getRawValue())
+            .pipe(take(1))
+            .subscribe((res: RepairOrderEntityDTO[]) => {
+              this.entityList = res;
+              this.searching = false;
+            });
           break;
         default:
           this.entityList = [];
@@ -425,8 +439,11 @@ export class EntitiesSearcherDialogComponent implements OnInit {
       entity: [null, Validators.required],
       vehicleInventoryId: [null]
     });
-    this.searchForm.get('search').valueChanges.subscribe((res) => {
-      this.searchAction();
-    });
+    this.searchForm
+      .get('search')
+      .valueChanges.pipe(untilDestroyed(this))
+      .subscribe((res) => {
+        this.searchAction();
+      });
   }
 }
