@@ -5,6 +5,7 @@ import TemplatesChecklistsDTO, { TemplateChecklistItemDTO } from '@data/models/t
 import WorkflowCardSlotDTO from '@data/models/workflows/workflow-card-slot-dto';
 import CombinedRequiredFieldsValidator from '@shared/validators/combined-required-fields.validator';
 import { BehaviorSubject, Observable } from 'rxjs';
+
 @Injectable({
   providedIn: 'root'
 })

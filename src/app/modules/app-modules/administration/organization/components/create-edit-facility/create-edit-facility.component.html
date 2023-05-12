@@ -192,6 +192,53 @@
                     </mat-form-field>
                 </div>
             </div>
+            <!-- Email Configuration -->
+            <div class="facility-data__section">
+                <div class="facility-data__section__title">
+                    {{ labels.confEmail | translate }}
+                </div>
+                <div class="facility-data__section__group grid-group">
+                    <!-- configMailerHost -->
+                    <mat-form-field appearance="outline" floatLabel="always">
+                        <mat-label>{{ labels.configMailerHost | translate }}</mat-label>
+                        <input matInput formControlName="configMailerHost" />
+                        <mat-error *ngIf="facilityForm.controls?.configMailerHost.invalid && facilityForm.controls?.configMailerHost.touched">
+                            <span *ngIf="facilityForm.controls.configMailerHost.errors.required">{{ labels.requireConfigEmail | translate }}</span>
+                        </mat-error>
+                    </mat-form-field>
+                   
+                    <!-- configMailerPort -->
+                    <mat-form-field appearance="outline" floatLabel="always">
+                        <mat-label>{{ labels.configMailerPort | translate }}</mat-label>
+                        <input matInput formControlName="configMailerPort" />
+                        <mat-error *ngIf="facilityForm.controls?.configMailerPort.invalid && facilityForm.controls?.configMailerPort.touched">
+                            <span *ngIf="facilityForm.controls.configMailerPort.errors.required">{{ labels.requireConfigEmail | translate }}</span>
+                        </mat-error>
+                    </mat-form-field>
+
+                    <!-- configMailerUserName -->
+                    <mat-form-field appearance="outline" floatLabel="always">
+                        <mat-label>{{ labels.configMailerUserName | translate }}</mat-label>
+                        <input matInput formControlName="configMailerUserName" />
+                        <mat-error *ngIf="facilityForm.controls?.configMailerUserName.invalid && facilityForm.controls?.configMailerUserName.touched">
+                            <span *ngIf="facilityForm.controls.configMailerUserName.errors.required">{{ labels.requireConfigEmail | translate }}</span>
+                        </mat-error>
+                    </mat-form-field>
+
+                    <!-- configMailerPass -->
+                    <mat-form-field appearance="outline" floatLabel="always">
+                        <mat-label>{{ labels.configMailerPass | translate }}</mat-label>
+                        <input matInput formControlName="configMailerPass" type="password" />
+                        <mat-error *ngIf="facilityForm.controls?.configMailerPass.invalid && facilityForm.controls?.configMailerPass.touched">
+                            <span *ngIf="facilityForm.controls.configMailerPass.errors.required">{{ labels.requireConfigEmail | translate }}</span>
+                        </mat-error>
+                    </mat-form-field>
+                </div>
+            </div>
+
+
+
+
 
             <!-- Emails -->
             <div class="facility-data__section">
