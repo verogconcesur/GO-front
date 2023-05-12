@@ -46,4 +46,6 @@
             <img #zoomImage="zoom-image" zoom-image [src]="getDataBase64()" class="image-item" />
         </div>
     </div>
+    <div class="media-viewer__prev" *ngIf="showPrev()" (click)="goPrev()"><mat-icon>keyboard_arrow_left</mat-icon></div>
+    <div class="media-viewer__next" *ngIf="showNext()" (click)="goNext()"><mat-icon>keyboard_arrow_right</mat-icon></div>
 </div>

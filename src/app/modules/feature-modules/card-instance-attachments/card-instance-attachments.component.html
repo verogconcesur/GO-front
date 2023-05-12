@@ -84,7 +84,7 @@
                                 !cardInstanceAttachmentsConfig.disableAttachmentsSelection &&
                                 !hasPreview(item)
                             "
-                            (click)="downloadAttachment(item)"
+                            (click)="downloadAttachment(item, template.attachments)"
                             >vertical_align_bottom</mat-icon
                         >
                         <mat-icon
@@ -102,7 +102,7 @@
                                 cardInstanceAttachmentsConfig.disableAttachmentsSelection &&
                                 !hasPreview(item)
                             "
-                            (click)="downloadAttachment(item)"
+                            (click)="downloadAttachment(item, template.attachments)"
                             >vertical_align_bottom</mat-icon
                         >
                         <mat-icon
@@ -112,7 +112,7 @@
                                 !cardInstanceAttachmentsConfig.disableAttachmentsSelection &&
                                 hasPreview(item)
                             "
-                            (click)="downloadAttachment(item)"
+                            (click)="downloadAttachment(item, template.attachments)"
                             >search</mat-icon
                         >
                         <mat-icon
@@ -122,7 +122,7 @@
                                 cardInstanceAttachmentsConfig.disableAttachmentsSelection &&
                                 hasPreview(item)
                             "
-                            (click)="downloadAttachment(item)"
+                            (click)="downloadAttachment(item, template.attachments)"
                             >search</mat-icon
                         >
                     </div>
