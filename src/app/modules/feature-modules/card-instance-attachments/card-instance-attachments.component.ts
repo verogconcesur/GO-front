@@ -171,7 +171,7 @@ export class CardInstanceAttachmentsComponent implements OnInit, OnChanges {
       });
   }
 
-  public downloadAttachment(item: AttachmentDTO): void {
+  public downloadAttachment(item: AttachmentDTO, list: AttachmentDTO[]): void {
     const spinner = this.spinnerService.show();
     //window.open(this.attachmentService.getDownloadAttachmentUrl(this.cardInstanceWorkflowId, this.tabId, item.id), '_blank');
     this.attachmentService
@@ -183,7 +183,8 @@ export class CardInstanceAttachmentsComponent implements OnInit, OnChanges {
       .subscribe(
         (data: AttachmentDTO) => {
           if (this.hasPreview(item)) {
-            this.mediaViewerService.openMediaViewer(data);
+            const listFiltered = list.filter((att: AttachmentDTO) => this.hasPreview(att));
+            this.mediaViewerService.openMediaViewerMúltiple(data, listFiltered, this.cardInstanceWorkflowId, this.tabId);
           } else {
             saveAs(`data:${data.type};base64,${data.content}`, data.name);
           }
