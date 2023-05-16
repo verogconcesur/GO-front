@@ -164,7 +164,9 @@ export class MessageClientDialogComponent extends ComponentToExtendForCustomDial
   public attachmentSelected(attachments: AttachmentDTO[]): void {
     this.attachmentsSelected = attachments;
     this.messageClientsForm.controls.forEach((fg: UntypedFormGroup) => {
-      if (fg.value.messageChannelId === 1 || fg.value.messageChannelId === 2) {
+      // DGDC: descomentar cuando la landing esté preparada
+      // if (fg.value.messageChannelId === 1 || fg.value.messageChannelId === 2) {
+      if (fg.value.messageChannelId === 2) {
         fg.get('attachments').setValue([...this.attachmentsSelected].map((item) => ({ id: item.id, name: item.name })));
       }
     });

@@ -11,7 +11,7 @@ import { NGXLogger } from 'ngx-logger';
 import { Observable, Subscription } from 'rxjs';
 import { take, startWith, map, finalize } from 'rxjs/operators';
 import { WorkflowDragAndDropService } from '../../aux-service/workflow-drag-and-drop.service';
-import { ActivatedRoute, Router } from '@angular/router';
+import { ActivatedRoute, ChildActivationEnd, NavigationEnd, Router } from '@angular/router';
 import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
 import FacilityDTO from '@data/models/organization/facility-dto';
 import { WorkflowPrepareAndMoveService } from '../../aux-service/workflow-prepare-and-move-aux.service';
@@ -69,6 +69,14 @@ export class WorkflowNavbarComponent implements OnInit, OnDestroy {
       this.idWorkflowRouteParam = parseInt(this.route.snapshot.params.wId, 10);
     }
     this.currentUrl = window.location.hash.split('#/').join('/');
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    this.router.events.pipe(untilDestroyed(this)).subscribe((event: any) => {
+      if (event instanceof NavigationEnd || event instanceof ChildActivationEnd) {
+        if (this.router.url.indexOf('(card:wcId') === -1 && this.workflowList?.length === 1 && !this.idWorkflowRouteParam) {
+          this.workflowSelectionChange({ value: this.workflowList[0] });
+        }
+      }
+    });
     this.initForms();
     this.getData();
   }
@@ -76,6 +84,11 @@ export class WorkflowNavbarComponent implements OnInit, OnDestroy {
   ngOnDestroy(): void {
     this.workflowService.workflowSelectedSubject$.next(null);
     this.workflowService.facilitiesSelectedSubject$.next([]);
+    if (this.websocketSubscription.length > 0) {
+      for (const socketSub of this.websocketSubscription) {
+        socketSub.unsubscribe();
+      }
+    }
   }
 
   websocketImplementation(): void {
@@ -301,7 +314,7 @@ export class WorkflowNavbarComponent implements OnInit, OnDestroy {
             this.websocketImplementation();
           }
           this.spinnerService.hide(spinner);
-          if (this.workflowList?.length === 1 && !workflowSelectedByIdParam) {
+          if (this.workflowList?.length === 1 && !workflowSelectedByIdParam && this.router.url.indexOf('(card:wcId') === -1) {
             this.workflowSelectionChange({ value: this.workflowList[0] });
           }
         },
