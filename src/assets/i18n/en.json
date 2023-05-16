@@ -588,7 +588,7 @@
             "integration": "Integration",
             "numFacilities": "{numItems} {numItems, plural, =0{facilities} one{facility} other{facilities}}",
             "requireConfigApiExt": "requires external API configuration",
-            "requireConfigEmail": "requires email configuration",
+            "requireConfigEmail": "Requires all fields of email configuration be completed",
             "retryLastMigration": "Repair last migration",
             "retryLastMigrationInfo": "If repair last migration is selected remember to upload the same file used last time.",
             "storeId": "Store Identifier",

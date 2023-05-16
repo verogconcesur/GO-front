@@ -308,17 +308,6 @@ export class CreateEditFacilityComponent extends ComponentToExtendForCustomDialo
     control.setValue([]);
   }
 
-  hasError(): boolean {
-    return (
-      (!this.facilityForm.controls.configMailerHost.value ||
-        !this.facilityForm.controls.configMailerPort.value ||
-        !this.facilityForm.controls.configMailerUserName.value ||
-        !this.facilityForm.controls.configMailerPass.value) &&
-      this.facilityForm.invalid &&
-      this.facilityForm.errors?.configMailerRequired
-    );
-  }
-
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   public hasAllSelected(control: AbstractControl, list: any[]): boolean {
     const actualValue = control.value ? control.value : [];
