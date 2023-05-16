@@ -1,0 +1,22 @@
+<div class="layout-container">
+    <div class="layout-container__header">
+        <app-administration-common-header-section
+            #cardsHeader
+            [showFilterButton]="false"
+            [showSearchOfFilterInput]="false"
+            [areFiltersSettedAndActive]="false"
+            [title]="labels.layoutTitle"
+        ></app-administration-common-header-section>
+    </div>
+    <mat-tab-group
+        class="mat-tab-page-sections"
+        mat-align-tabs="start"
+        [selectedIndex]="getSelectedTabIndex()"
+        (selectedTabChange)="changeSelectedTab($event)"
+    >
+        <mat-tab label="{{ labels.config | translate }}"></mat-tab>
+        <mat-tab label="{{ labels.links | translate }}"></mat-tab>
+        <mat-tab label="{{ labels.banners | translate }}"></mat-tab>
+    </mat-tab-group>
+    <router-outlet></router-outlet>
+</div>

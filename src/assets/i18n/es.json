@@ -5,6 +5,7 @@
         "cards": "Tarjetas",
         "exit": "Salir de configuración",
         "facilities": "Instalaciones",
+        "landing": "Landing",
         "organization": "Organización",
         "records": "Fichas",
         "templates": {
@@ -467,8 +468,12 @@
         "uploadOnlyOneFile": "Solo está permitido cargar un único archivo"
     },
     "landing": {
+        "banners": "Banners (ofertas y promociones)",
+        "config": "Configuración",
         "fileSharedWithCustomerInLanding": "Archivo compartido con el cliente.",
-        "stopSharingFileWithCustomerInLanding": "Dejar de compartir archivo con el cliente."
+        "links": "Enlaces (menú y redes sociales)",
+        "stopSharingFileWithCustomerInLanding": "Dejar de compartir archivo con el cliente.",
+        "title": "Landing"
     },
     "login": {
         "description": "Por favor, introduzca sus credenciales",
