@@ -308,6 +308,17 @@ export class CreateEditFacilityComponent extends ComponentToExtendForCustomDialo
     control.setValue([]);
   }
 
+  hasError(): boolean {
+    return (
+      (!this.facilityForm.controls.configMailerHost.value ||
+        !this.facilityForm.controls.configMailerPort.value ||
+        !this.facilityForm.controls.configMailerUserName.value ||
+        !this.facilityForm.controls.configMailerPass.value) &&
+      this.facilityForm.invalid &&
+      this.facilityForm.errors?.configMailerRequired
+    );
+  }
+
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   public hasAllSelected(control: AbstractControl, list: any[]): boolean {
     const actualValue = control.value ? control.value : [];
@@ -478,34 +489,22 @@ export class CreateEditFacilityComponent extends ComponentToExtendForCustomDialo
           this.facilityToEdit && this.facilityToEdit.workflowSubstate ? this.facilityToEdit.workflowSubstate : null
         ],
         configMailerHost: [
-          this.facilityToEdit && this.facilityToEdit.configMailerHost ? this.facilityToEdit.configMailerHost : null, Validators.required
+          this.facilityToEdit && this.facilityToEdit.configMailerHost ? this.facilityToEdit.configMailerHost : null
         ],
         configMailerPort: [
-          this.facilityToEdit && this.facilityToEdit.configMailerPort ? this.facilityToEdit.configMailerPort : null, Validators.required
+          this.facilityToEdit && this.facilityToEdit.configMailerPort ? this.facilityToEdit.configMailerPort : null
         ],
         configMailerUserName: [
-          this.facilityToEdit && this.facilityToEdit.configMailerUserName ? this.facilityToEdit.configMailerUserName : null, Validators.required
+          this.facilityToEdit && this.facilityToEdit.configMailerUserName ? this.facilityToEdit.configMailerUserName : null
         ],
         configMailerPass: [
-          this.facilityToEdit && this.facilityToEdit.configMailerPass ? this.facilityToEdit.configMailerPass : null, Validators.required
+          this.facilityToEdit && this.facilityToEdit.configMailerPass ? this.facilityToEdit.configMailerPass : null
         ]
       },
       {
         validators: validateConfigMailers
       }
     );
-    this.facilityForm.controls.configMailerHost.valueChanges.subscribe(() => {
-      this.facilityForm.controls.configMailerHost.updateValueAndValidity();
-    });
-    this.facilityForm.controls.configMailerPort.valueChanges.subscribe(() => {
-      this.facilityForm.controls.configMailerPort.updateValueAndValidity();
-    });
-    this.facilityForm.controls.configMailerUserName.valueChanges.subscribe(() => {
-      this.facilityForm.controls.configMailerUserName.updateValueAndValidity();
-    });
-    this.facilityForm.controls.configMailerPass.valueChanges.subscribe(() => {
-      this.facilityForm.controls.configMailerPass.updateValueAndValidity();
-    });
 
     this.requiredConfigChange(this.facilityToEdit?.requireConfigApiExt);
     this.facilityForm.controls.country.valueChanges.pipe(untilDestroyed(this)).subscribe((x) => {

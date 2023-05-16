@@ -588,7 +588,7 @@
             "integration": "Integración",
             "numFacilities": "{numItems} {numItems, plural, =0{instalaciones} one{instalación} other{instalaciones}}",
             "requireConfigApiExt": "Requiere configuración de API externa",
-            "requireConfigEmail": "Requiere rellenar todos los campos de configuración del correo",
+            "requireConfigEmail": "La configuración de correo requiere rellenar todos los campos para continuar",
             "retryLastMigration": "Reparar última migración",
             "retryLastMigrationInfo": "Si selecciona la opción de reparar última migración recuerde subir el mismo fichero que subió en la anterior ejecución (con el mismo número de registros y en el mismo orden).",
             "storeId": "Identificador de tienda",

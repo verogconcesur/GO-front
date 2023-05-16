@@ -19,9 +19,7 @@ export function validateConfigMailers(control: AbstractControl): { [key: string]
     const isAnyFieldFilled = hostValue || portValue || userNameValue || passValue;
 
 
-    const isAnyFieldTouched = configMailerHost.touched || configMailerPort.touched || configMailerUserName.touched || configMailerPass.touched;
-
-    if ((isConfigModified && isAnyFieldFilled) || isAnyFieldTouched) {
+    if ((isConfigModified && isAnyFieldFilled)) {
 
       if (!hostValue || !portValue || !userNameValue || !passValue) {
         return { configMailerRequired: true };
