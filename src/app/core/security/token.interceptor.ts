@@ -30,6 +30,7 @@ type ObservableResponse = Observable<
 @Injectable()
 export class TokenInterceptor implements HttpInterceptor {
   private static readonly AUTHORIZATION = 'Authorization';
+  private static readonly CACHE = 'Cache-Control';
 
   private readonly BYPASS_URLS: string[] = ['/assets/', 'accounts.logout'];
 
@@ -62,7 +63,8 @@ export class TokenInterceptor implements HttpInterceptor {
   private addTokenHeaders(req: HttpRequest<unknown>, access_token: string): HttpRequest<unknown> {
     return req.clone({
       setHeaders: {
-        [TokenInterceptor.AUTHORIZATION]: `Bearer ${access_token}`
+        [TokenInterceptor.AUTHORIZATION]: `Bearer ${access_token}`,
+        [TokenInterceptor.CACHE]: 'no-store'
       }
     });
   }

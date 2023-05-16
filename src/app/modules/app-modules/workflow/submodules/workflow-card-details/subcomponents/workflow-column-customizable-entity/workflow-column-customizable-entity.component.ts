@@ -212,6 +212,7 @@ export class WorkflowColumnCustomizableEntityComponent implements OnInit, OnChan
         //'CUSTOMER';
         this.entitiesService
           .getCustomer(this.cardInstance.cardInstanceWorkflow.cardInstance.customerId)
+          .pipe(take(1))
           .subscribe((data: CustomerEntityDTO) => {
             this.setShowLoading.emit(false);
             this.customDialogService
@@ -239,6 +240,7 @@ export class WorkflowColumnCustomizableEntityComponent implements OnInit, OnChan
         //'VEHICLE';
         this.entitiesService
           .getVehicle(this.cardInstance.cardInstanceWorkflow.cardInstance.vehicleId)
+          .pipe(take(1))
           .subscribe((data: VehicleEntityDTO) => {
             this.setShowLoading.emit(false);
             this.customDialogService
@@ -266,6 +268,7 @@ export class WorkflowColumnCustomizableEntityComponent implements OnInit, OnChan
         //'Repair Order';
         this.entitiesService
           .getRepairOrder(this.cardInstance.cardInstanceWorkflow.cardInstance.repairOrderId)
+          .pipe(take(1))
           .subscribe((data: RepairOrderEntityDTO) => {
             this.setShowLoading.emit(false);
             this.customDialogService

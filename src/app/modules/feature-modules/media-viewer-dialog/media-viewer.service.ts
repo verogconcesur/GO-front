@@ -33,4 +33,24 @@ export class MediaViewerService implements OnDestroy {
       .afterClosed()
       .pipe(take(1));
   }
+  public openMediaViewerMúltiple(current: AttachmentDTO, list: AttachmentDTO[], cardInstanceId: number, tabId: number): void {
+    const data = {
+      current,
+      list,
+      cardInstanceId,
+      tabId
+    };
+    this.dialog
+      .open(MediaViewerDialogComponent, {
+        maxWidth: '95%',
+        minWidth: '600px',
+        width: '75%',
+        height: '90%',
+        panelClass: 'media-viewer-wrapper',
+        disableClose: true,
+        data
+      })
+      .afterClosed()
+      .pipe(take(1));
+  }
 }

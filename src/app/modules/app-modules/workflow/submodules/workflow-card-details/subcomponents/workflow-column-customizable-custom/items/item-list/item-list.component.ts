@@ -4,7 +4,9 @@ import { marker } from '@biesbjerg/ngx-translate-extract-marker';
 import CardColumnTabDTO from '@data/models/cards/card-column-tab-dto';
 import CardColumnTabItemDTO, { TabItemConfigListItemDTO } from '@data/models/cards/card-column-tab-item-dto';
 import CardInstanceDTO from '@data/models/cards/card-instance-dto';
+import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
 
+@UntilDestroy()
 @Component({
   selector: 'app-item-list',
   templateUrl: './item-list.component.html',
@@ -40,7 +42,8 @@ export class ItemListComponent implements OnInit {
           this.tabForm
             .at(i)
             .get('value')
-            .valueChanges.subscribe((res) => {
+            .valueChanges.pipe(untilDestroyed(this))
+            .subscribe((res) => {
               this.tabItemForm.get('value').setValue(null);
               this.getOptions(res);
             });

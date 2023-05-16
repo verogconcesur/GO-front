@@ -58,7 +58,7 @@ export class CreateEditCardComponent implements OnInit {
     this.selectedCol = col.orderNumber;
   }
   ngOnInit(): void {
-    this.route.params.subscribe((params) => {
+    this.route.params.pipe(take(1)).subscribe((params) => {
       if (params.idCard) {
         this.getCardDetail(params.idCard);
       } else {
@@ -116,11 +116,14 @@ export class CreateEditCardComponent implements OnInit {
   }
   private getCardDetail(idCard: number): void {
     const spinner = this.spinnerService.show();
-    this.cardService.getCardById(idCard).subscribe((res) => {
-      this.cardToEdit = res;
-      this.initializeForm();
-      this.spinnerService.hide(spinner);
-    });
+    this.cardService
+      .getCardById(idCard)
+      .pipe(take(1))
+      .subscribe((res) => {
+        this.cardToEdit = res;
+        this.initializeForm();
+        this.spinnerService.hide(spinner);
+      });
   }
   private initializeForm = (): void => {
     this.cardForm = this.fb.group({

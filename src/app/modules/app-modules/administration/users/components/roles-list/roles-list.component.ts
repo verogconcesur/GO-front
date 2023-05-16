@@ -45,6 +45,7 @@ export class RolesListComponent implements OnInit {
     this.roleService
       .getAllRoles()
       .pipe(
+        take(1),
         finalize(() => {
           if (spinner) {
             this.spinnerService.hide(spinner);
@@ -89,6 +90,7 @@ export class RolesListComponent implements OnInit {
           this.roleService
             .deleteRoleById(roleId)
             .pipe(
+              take(1),
               finalize(() => {
                 this.spinnerService.hide(spinner);
               })

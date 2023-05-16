@@ -28,6 +28,7 @@ import TreeNode from '@data/interfaces/tree-node';
 import WorkflowSubstateDTO from '@data/models/workflows/workflow-substate-dto';
 import { WorkflowAdministrationStatesSubstatesService } from '@data/services/workflow-administration-states-substates.service';
 import WorkflowStateDTO from '@data/models/workflows/workflow-state-dto';
+import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
 
 export const enum CreateEditFacilityComponentModalEnum {
   ID = 'create-edit-facility-dialog-id',
@@ -35,6 +36,7 @@ export const enum CreateEditFacilityComponentModalEnum {
   TITLE = 'organizations.facilities.create'
 }
 
+@UntilDestroy()
 @Component({
   selector: 'app-create-edit-facility',
   templateUrl: './create-edit-facility.component.html',
@@ -400,31 +402,37 @@ export class CreateEditFacilityComponent extends ComponentToExtendForCustomDialo
   private getProvinceListOptions(initialLoad = false): void {
     this.provinceList = [];
     if (this.form.country.value) {
-      this.localityService.getProvincesByCountryId(this.form.country.value.id).subscribe((provinces: ProvinceDTO[]) => {
-        this.provinceList = provinces;
-        const selectedProvince = this.facilityForm.get('province').value;
-        if (selectedProvince && initialLoad) {
-          this.facilityForm.get('province').setValue(
-            provinces.find((province: ProvinceDTO) => province.id === selectedProvince.id),
-            { emitEvent: false }
-          );
-        }
-      });
+      this.localityService
+        .getProvincesByCountryId(this.form.country.value.id)
+        .pipe(take(1))
+        .subscribe((provinces: ProvinceDTO[]) => {
+          this.provinceList = provinces;
+          const selectedProvince = this.facilityForm.get('province').value;
+          if (selectedProvince && initialLoad) {
+            this.facilityForm.get('province').setValue(
+              provinces.find((province: ProvinceDTO) => province.id === selectedProvince.id),
+              { emitEvent: false }
+            );
+          }
+        });
     }
   }
   private getTownListOptions(initialLoad = false): void {
     this.townList = [];
     if (this.form.province.value) {
-      this.localityService.getTownsByProvinceId(this.form.province.value.id).subscribe((towns: TownDTO[]) => {
-        this.townList = towns;
-        const selectedTown = this.facilityForm.get('town').value;
-        if (selectedTown && initialLoad) {
-          this.facilityForm.get('town').setValue(
-            towns.find((town: TownDTO) => town.id === selectedTown.id),
-            { emitEvent: false }
-          );
-        }
-      });
+      this.localityService
+        .getTownsByProvinceId(this.form.province.value.id)
+        .pipe(take(1))
+        .subscribe((towns: TownDTO[]) => {
+          this.townList = towns;
+          const selectedTown = this.facilityForm.get('town').value;
+          if (selectedTown && initialLoad) {
+            this.facilityForm.get('town').setValue(
+              towns.find((town: TownDTO) => town.id === selectedTown.id),
+              { emitEvent: false }
+            );
+          }
+        });
     }
   }
   private initializeForm = (): void => {
@@ -455,11 +463,11 @@ export class CreateEditFacilityComponent extends ComponentToExtendForCustomDialo
       ]
     });
     this.requiredConfigChange(this.facilityToEdit?.requireConfigApiExt);
-    this.facilityForm.controls.country.valueChanges.subscribe((x) => {
+    this.facilityForm.controls.country.valueChanges.pipe(untilDestroyed(this)).subscribe((x) => {
       this.form.province.setValue(null);
       this.getProvinceListOptions();
     });
-    this.facilityForm.controls.province.valueChanges.subscribe((x) => {
+    this.facilityForm.controls.province.valueChanges.pipe(untilDestroyed(this)).subscribe((x) => {
       this.form.town.setValue(null);
       this.getTownListOptions();
     });

@@ -19,7 +19,9 @@ import { forkJoin, Observable, of } from 'rxjs';
 import { finalize, take } from 'rxjs/operators';
 import { WEditSubstateFormAuxService } from '../../aux-service/wf-edit-substate-aux.service';
 import { WfEditSubstateAbstractTabClass } from '../wf-edit-substate-abstract-tab-class';
+import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
 
+@UntilDestroy()
 @Component({
   selector: 'app-wf-edit-permissions-tab',
   templateUrl: './wf-edit-permissions-tab.component.html',
@@ -99,7 +101,7 @@ export class WfEditPermissionsTabComponent extends WfEditSubstateAbstractTabClas
     this.roleList = _.uniqBy(this.roleList, 'id');
     this.editSubstateAuxService.setFormGroupByTab(form, this.tabId);
     this.editSubstateAuxService.setFormOriginalData(this.form.value, this.tabId);
-    this.form.valueChanges.subscribe(() => {
+    this.form.valueChanges.pipe(untilDestroyed(this)).subscribe(() => {
       this.allPermisionForm.get('permission').setValue('');
     });
     this.roleSelected = this.roleList[0];

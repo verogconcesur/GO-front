@@ -11,7 +11,7 @@ import ConfirmPasswordValidator from '@shared/validators/confirm-password.valida
 import { passwordPattern } from '@app/constants/patterns.constants';
 import { UserService } from '@data/services/user.service';
 import { GlobalMessageService } from '@shared/services/global-message.service';
-import { catchError, finalize, map } from 'rxjs/operators';
+import { catchError, finalize, map, take } from 'rxjs/operators';
 import { InsertSignComponentModalEnum, ModalInsertSignComponent } from '../modal-insert-sign/modal-insert-sign.component';
 
 export const enum MyProfileComponentModalEnum {
@@ -89,6 +89,7 @@ export class MyProfileComponent extends ComponentToExtendForCustomDialog impleme
         disableClose: true,
         width: '500px'
       })
+      .pipe(take(1))
       .subscribe((data) => {
         this.profileForm.get('signature').setValue(data.split('base64,')[1]);
         this.profileForm.get('signatureContentType').setValue(data.split(';base64,')[0].split('data:')[1]);

@@ -172,7 +172,7 @@ export class CreateEditCommunicationComponent extends ComponentToExtendForCustom
       facilities: formValue.template.facilities.map((fac: FacilityDTO) => ({ id: fac.id })),
       specialties: formValue.template.specialties.map((spe: SpecialtyDTO) => ({ id: spe.id }))
     };
-    formValue. templateComunicationItems = formValue.templateComunicationItems.filter(
+    formValue.templateComunicationItems = formValue.templateComunicationItems.filter(
       (item: TemplateComunicationItemsDTO) => item.text
     );
     const spinner = this.spinnerService.show();
@@ -253,6 +253,7 @@ export class CreateEditCommunicationComponent extends ComponentToExtendForCustom
         title: this.translateService.instant(marker('common.warning')),
         message: this.translateService.instant(marker('administration.templates.communications.deleteConfirmation'))
       })
+      .pipe(take(1))
       .subscribe((ok: boolean) => {
         if (ok) {
           const spinner = this.spinnerService.show();
@@ -278,11 +279,14 @@ export class CreateEditCommunicationComponent extends ComponentToExtendForCustom
   };
 
   private getVariable(): void {
-    this.variablesService.searchVariables().subscribe((res) => {
-      this.textEditorToolbarOptions.macroListOptions = res.map((item: VariablesDTO) => item.name);
-      this.textEditorToolbarOnlyMacroOptions.macroListOptions = this.textEditorToolbarOptions.macroListOptions;
-      this.listVariables = res;
-    });
+    this.variablesService
+      .searchVariables()
+      .pipe(take(1))
+      .subscribe((res) => {
+        this.textEditorToolbarOptions.macroListOptions = res.map((item: VariablesDTO) => item.name);
+        this.textEditorToolbarOnlyMacroOptions.macroListOptions = this.textEditorToolbarOptions.macroListOptions;
+        this.listVariables = res;
+      });
   }
 
   private initializeForm(): void {
