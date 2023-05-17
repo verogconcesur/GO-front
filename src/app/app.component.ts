@@ -1,6 +1,7 @@
 import { Component, HostListener, Inject, OnInit } from '@angular/core';
 import { Meta } from '@angular/platform-browser';
 import { ENV } from '@app/constants/global.constants';
+import { PerformanceService } from '@app/services/performance.service';
 import { RxStompService } from '@app/services/rx-stomp.service';
 import { Env } from '@app/types/env';
 import { marker } from '@biesbjerg/ngx-translate-extract-marker';
@@ -21,7 +22,8 @@ export class AppComponent implements OnInit {
     private meta: Meta,
     private logger: NGXLogger,
     private translate: TranslateService,
-    private rxStompService: RxStompService
+    private rxStompService: RxStompService,
+    private performanceService: PerformanceService
   ) {}
 
   @HostListener('window:resize', ['$event']) onResize(event: { target: { innerHeight: number } }) {
@@ -31,6 +33,7 @@ export class AppComponent implements OnInit {
   ngOnInit() {
     this.logger.debug('App.component#ngOnInit', this.env.apiBaseUrl);
     this.addBuildInfoMetatag();
+    this.performanceService.initTimeoutToReload();
 
     // Sample translation using observable (just in case
     // language JSON is not loaded yet)
