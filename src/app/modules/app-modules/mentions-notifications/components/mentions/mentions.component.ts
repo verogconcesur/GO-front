@@ -139,13 +139,19 @@ export class MentionsComponent implements OnInit {
         break;
     }
     const datePipe = new DatePipe('en-EN');
+    const dataType = slot?.dataType ? slot.dataType : '';
     const attrname = slot?.attributeName ? slot.attributeName : '';
-    switch (attrname) {
-      case 'dueOutDateTime':
-        return this.translateService.instant('workflows.dueOutDateTime', {
-          date: datePipe.transform(slot.value, 'dd/MM'),
-          time: datePipe.transform(slot.value, 'HH:mm')
-        });
+    if (attrname === 'dueOutDateTime') {
+      return this.translateService.instant('workflows.dueOutDateTime', {
+        date: datePipe.transform(slot.value, 'dd/MM'),
+        time: datePipe.transform(slot.value, 'HH:mm')
+      });
+    }
+    switch (dataType) {
+      case 'DATE':
+        return datePipe.transform(slot.value, 'dd/MM/YYYY');
+      case 'DATETIME':
+        return datePipe.transform(slot.value, 'dd/MM/YYYY, HH:mm');
       default:
         return slot?.value ? slot.value : null;
     }

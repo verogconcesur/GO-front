@@ -25,6 +25,7 @@ import { WorkflowDragAndDropService } from '../../aux-service/workflow-drag-and-
 import { WorkflowFilterService } from '../../aux-service/workflow-filter.service';
 import { WorkflowPrepareAndMoveService } from '../../aux-service/workflow-prepare-and-move-aux.service';
 import { WokflowBoardColumnComponent } from './subcomponents/wokflow-board-column/wokflow-board-column.component';
+import { PerformanceService } from '@app/services/performance.service';
 
 @UntilDestroy()
 @Component({
@@ -69,7 +70,7 @@ export class WorkflowBoardViewComponent implements OnInit {
     private translateService: TranslateService,
     private dragAndDropService: WorkflowDragAndDropService,
     private prepareAndMoveService: WorkflowPrepareAndMoveService,
-
+    private performanceService: PerformanceService,
     private router: Router
   ) {}
 
@@ -135,6 +136,7 @@ export class WorkflowBoardViewComponent implements OnInit {
           this.showBoardView = false;
         } else if (this.router.url.indexOf('(card:wcId') === -1 && !this.showBoardView) {
           console.log('Show board view');
+          this.performanceService.refreshIfNecesary();
           this.showBoardView = true;
         }
       }

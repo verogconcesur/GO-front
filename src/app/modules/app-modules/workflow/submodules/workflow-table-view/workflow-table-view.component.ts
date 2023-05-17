@@ -22,6 +22,7 @@ import { forkJoin, Subscription } from 'rxjs';
 import { skip, take } from 'rxjs/operators';
 import { WorkflowFilterService } from '../../aux-service/workflow-filter.service';
 import { WorkflowPrepareAndMoveService } from '../../aux-service/workflow-prepare-and-move-aux.service';
+import { PerformanceService } from '@app/services/performance.service';
 @UntilDestroy()
 @Component({
   selector: 'app-workflow-table-view',
@@ -56,6 +57,7 @@ export class WorkflowTableViewComponent implements OnInit {
     private logger: NGXLogger,
     private translateService: TranslateService,
     private prepareAndMoveService: WorkflowPrepareAndMoveService,
+    private performanceService: PerformanceService,
     private router: Router
   ) {}
 
@@ -98,6 +100,7 @@ export class WorkflowTableViewComponent implements OnInit {
           this.showListView = false;
         } else if (this.router.url.indexOf('(card:wcId') === -1 && !this.showListView) {
           console.log('Show board view');
+          this.performanceService.refreshIfNecesary();
           this.showListView = true;
         }
       }
