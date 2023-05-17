@@ -63,25 +63,54 @@ export class VehiclesListComponent implements OnInit {
   }
 
   public openCreateEditVehicleDialog = (vehicle?: VehicleEntityDTO): void => {
-    this.customDialogService
-      .open({
-        id: CreateEditVehicleComponentModalEnum.ID,
-        panelClass: CreateEditVehicleComponentModalEnum.PANEL_CLASS,
-        component: ModalVehicleComponent,
-        extendedComponentData: vehicle ? vehicle : null,
-        disableClose: true,
-        width: '900px'
-      })
-      .pipe(take(1))
-      .subscribe((response) => {
-        if (response) {
-          this.globalMessageService.showSuccess({
-            message: this.translateService.instant(marker('common.successOperation')),
-            actionText: this.translateService.instant(marker('common.close'))
-          });
-          this.getVehicles();
-        }
-      });
+    if (vehicle) {
+      //'VEHICLE';
+      const spinner = this.spinnerService.show();
+      this.entitiesService
+        .getVehicle(vehicle.id)
+        .pipe(take(1))
+        .subscribe((data: VehicleEntityDTO) => {
+          this.spinnerService.hide(spinner);
+          this.customDialogService
+            .open({
+              id: CreateEditVehicleComponentModalEnum.ID,
+              panelClass: CreateEditVehicleComponentModalEnum.PANEL_CLASS,
+              component: ModalVehicleComponent,
+              extendedComponentData: data,
+              disableClose: true,
+              width: '900px'
+            })
+            .pipe(take(1))
+            .subscribe((response) => {
+              if (response) {
+                this.globalMessageService.showSuccess({
+                  message: this.translateService.instant(marker('common.successOperation')),
+                  actionText: this.translateService.instant(marker('common.close'))
+                });
+                this.getVehicles();
+              }
+            });
+        });
+    } else {
+      this.customDialogService
+        .open({
+          id: CreateEditVehicleComponentModalEnum.ID,
+          panelClass: CreateEditVehicleComponentModalEnum.PANEL_CLASS,
+          component: ModalVehicleComponent,
+          disableClose: true,
+          width: '900px'
+        })
+        .pipe(take(1))
+        .subscribe((response) => {
+          if (response) {
+            this.globalMessageService.showSuccess({
+              message: this.translateService.instant(marker('common.successOperation')),
+              actionText: this.translateService.instant(marker('common.close'))
+            });
+            this.getVehicles();
+          }
+        });
+    }
   };
 
   public getVehicles = (pageEvent?: PageEvent): void => {
