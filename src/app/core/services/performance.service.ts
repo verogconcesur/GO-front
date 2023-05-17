@@ -4,7 +4,7 @@ import { ENV } from '@app/constants/global.constants';
 import { Env } from '@app/types/env';
 import PerformanceDTO from '@data/models/performance/performance-dto';
 import { NGXLogger } from 'ngx-logger';
-import { Observable, finalize } from 'rxjs';
+import { Observable, finalize, take } from 'rxjs';
 
 @Injectable({
   providedIn: 'root'
@@ -33,7 +33,15 @@ export class PerformanceService {
         console.log('- PERFORMANCE =>', this.performance);
       }
       this.sendLog()
-        .pipe(finalize(() => window.location.reload()))
+        .pipe(
+          take(1),
+          finalize(() => {
+            this.reload = false;
+            this.destroy();
+            this.initTimeoutToReload();
+            // window.location.reload();
+          })
+        )
         .subscribe({
           next: (data) => console.log(data),
           error: (err) => console.error(err)
