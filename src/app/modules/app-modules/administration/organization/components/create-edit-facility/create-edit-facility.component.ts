@@ -1,3 +1,4 @@
+/* eslint-disable max-len */
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { Component, OnDestroy, OnInit, ViewChild, ViewEncapsulation } from '@angular/core';
 import { AbstractControl, UntypedFormBuilder, UntypedFormGroup, Validators } from '@angular/forms';
@@ -29,6 +30,7 @@ import WorkflowSubstateDTO from '@data/models/workflows/workflow-substate-dto';
 import { WorkflowAdministrationStatesSubstatesService } from '@data/services/workflow-administration-states-substates.service';
 import WorkflowStateDTO from '@data/models/workflows/workflow-state-dto';
 import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
+import { validateConfigMailers } from '@shared/validators/configEmail-required-fields.validator';
 
 export const enum CreateEditFacilityComponentModalEnum {
   ID = 'create-edit-facility-dialog-id',
@@ -48,11 +50,14 @@ export class CreateEditFacilityComponent extends ComponentToExtendForCustomDialo
   public labels = {
     title: marker('organizations.facilities.create'),
     name: marker('userProfile.name'),
+    configMailerUserName: marker('userProfile.userName'),
+    configMailerPass: marker('login.password'),
     createFacility: marker('organizations.facilities.create'),
     editFacility: marker('organizations.facilities.edit'),
     address: marker('common.address'),
     integration: marker('organizations.facilities.integration'),
     requireConfigApiExt: marker('organizations.facilities.requireConfigApiExt'),
+    requireConfigEmail: marker('organizations.facilities.requireConfigEmail'),
     code: marker('organizations.facilities.code'),
     enterpriseId: marker('organizations.facilities.enterpriseId'),
     storeId: marker('organizations.facilities.storeId'),
@@ -66,7 +71,10 @@ export class CreateEditFacilityComponent extends ComponentToExtendForCustomDialo
     town: marker('common.town'),
     data: marker('userProfile.data'),
     emails: marker('common.emails'),
+    confEmail: marker('common.confEmail'),
     header: marker('common.header'),
+    configMailerHost: marker('common.host'),
+    configMailerPort: marker('common.port'),
     nameRequired: marker('userProfile.nameRequired'),
     select: marker('common.select'),
     footer: marker('common.footer'),
@@ -187,7 +195,11 @@ export class CreateEditFacilityComponent extends ComponentToExtendForCustomDialo
         code: formValue.code,
         enterpriseId: formValue.enterpriseId,
         storeId: formValue.storeId,
-        workflowSubstate: formValue.workflowSubstate
+        workflowSubstate: formValue.workflowSubstate,
+        configMailerHost: formValue.configMailerHost,
+        configMailerPort: formValue.configMailerPort,
+        configMailerUserName: formValue.configMailerUserName,
+        configMailerPass: formValue.configMailerUserName
       })
       .pipe(
         map((response) => {
@@ -436,32 +448,53 @@ export class CreateEditFacilityComponent extends ComponentToExtendForCustomDialo
     }
   }
   private initializeForm = (): void => {
-    this.facilityForm = this.fb.group({
-      address: [this.facilityToEdit ? this.facilityToEdit.address : null],
-      brands: [this.facilityToEdit ? this.facilityToEdit.brands : [], Validators.required],
-      cif: [this.facilityToEdit ? this.facilityToEdit.cif : null],
-      email: [this.facilityToEdit ? this.facilityToEdit.email : null, Validators.email],
-      footer: [this.facilityToEdit ? this.facilityToEdit.footer : null],
-      header: [this.facilityToEdit ? this.facilityToEdit.header : null],
-      id: [this.facilityToEdit ? this.facilityToEdit.id : null],
-      name: [this.facilityToEdit ? this.facilityToEdit.name : null, [Validators.required, Validators.minLength(this.minLength)]],
-      numDepartments: [this.facilityToEdit ? this.facilityToEdit.numDepartments : 0],
-      postalCode: [this.facilityToEdit ? this.facilityToEdit.postalCode : null],
-      town: [this.facilityToEdit?.town ? this.facilityToEdit.town : null],
-      province: [this.facilityToEdit && this.facilityToEdit.town?.province ? this.facilityToEdit.town.province : null],
-      country: [
-        this.facilityToEdit && this.facilityToEdit.town?.province?.country ? this.facilityToEdit.town.province.country : null
-      ],
-      requireConfigApiExt: [
-        this.facilityToEdit && this.facilityToEdit.requireConfigApiExt ? this.facilityToEdit.requireConfigApiExt : false
-      ],
-      code: [this.facilityToEdit && this.facilityToEdit.code ? this.facilityToEdit.code : null],
-      enterpriseId: [this.facilityToEdit && this.facilityToEdit.enterpriseId ? this.facilityToEdit.enterpriseId : null],
-      storeId: [this.facilityToEdit && this.facilityToEdit.storeId ? this.facilityToEdit.storeId : null],
-      workflowSubstate: [
-        this.facilityToEdit && this.facilityToEdit.workflowSubstate ? this.facilityToEdit.workflowSubstate : null
-      ]
-    });
+    this.facilityForm = this.fb.group(
+      {
+        address: [this.facilityToEdit ? this.facilityToEdit.address : null],
+        brands: [this.facilityToEdit ? this.facilityToEdit.brands : [], Validators.required],
+        cif: [this.facilityToEdit ? this.facilityToEdit.cif : null],
+        email: [this.facilityToEdit ? this.facilityToEdit.email : null, Validators.email],
+        footer: [this.facilityToEdit ? this.facilityToEdit.footer : null],
+        header: [this.facilityToEdit ? this.facilityToEdit.header : null],
+        id: [this.facilityToEdit ? this.facilityToEdit.id : null],
+        name: [
+          this.facilityToEdit ? this.facilityToEdit.name : null,
+          [Validators.required, Validators.minLength(this.minLength)]
+        ],
+        numDepartments: [this.facilityToEdit ? this.facilityToEdit.numDepartments : 0],
+        postalCode: [this.facilityToEdit ? this.facilityToEdit.postalCode : null],
+        town: [this.facilityToEdit?.town ? this.facilityToEdit.town : null],
+        province: [this.facilityToEdit && this.facilityToEdit.town?.province ? this.facilityToEdit.town.province : null],
+        country: [
+          this.facilityToEdit && this.facilityToEdit.town?.province?.country ? this.facilityToEdit.town.province.country : null
+        ],
+        requireConfigApiExt: [
+          this.facilityToEdit && this.facilityToEdit.requireConfigApiExt ? this.facilityToEdit.requireConfigApiExt : false
+        ],
+        code: [this.facilityToEdit && this.facilityToEdit.code ? this.facilityToEdit.code : null],
+        enterpriseId: [this.facilityToEdit && this.facilityToEdit.enterpriseId ? this.facilityToEdit.enterpriseId : null],
+        storeId: [this.facilityToEdit && this.facilityToEdit.storeId ? this.facilityToEdit.storeId : null],
+        workflowSubstate: [
+          this.facilityToEdit && this.facilityToEdit.workflowSubstate ? this.facilityToEdit.workflowSubstate : null
+        ],
+        configMailerHost: [
+          this.facilityToEdit && this.facilityToEdit.configMailerHost ? this.facilityToEdit.configMailerHost : null
+        ],
+        configMailerPort: [
+          this.facilityToEdit && this.facilityToEdit.configMailerPort ? this.facilityToEdit.configMailerPort : null
+        ],
+        configMailerUserName: [
+          this.facilityToEdit && this.facilityToEdit.configMailerUserName ? this.facilityToEdit.configMailerUserName : null
+        ],
+        configMailerPass: [
+          this.facilityToEdit && this.facilityToEdit.configMailerPass ? this.facilityToEdit.configMailerPass : null
+        ]
+      },
+      {
+        validators: validateConfigMailers
+      }
+    );
+
     this.requiredConfigChange(this.facilityToEdit?.requireConfigApiExt);
     this.facilityForm.controls.country.valueChanges.pipe(untilDestroyed(this)).subscribe((x) => {
       this.form.province.setValue(null);
