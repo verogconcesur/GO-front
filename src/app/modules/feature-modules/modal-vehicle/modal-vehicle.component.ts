@@ -101,6 +101,8 @@ export class ModalVehicleComponent extends ComponentToExtendForCustomDialog impl
     this.form.commissionNumber.setValidators([]);
     this.form.facility.setValue(null);
     this.form.commissionNumber.setValue(null);
+    this.vehicleForm.markAsTouched();
+    this.vehicleForm.markAsDirty();
   }
   public selectFacility(): void {
     this.form.commissionNumber.setValidators([Validators.required, Validators.minLength(this.minLength)]);
