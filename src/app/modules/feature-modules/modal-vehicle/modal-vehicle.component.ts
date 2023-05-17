@@ -121,13 +121,13 @@ export class ModalVehicleComponent extends ComponentToExtendForCustomDialog impl
     const formValue = this.vehicleForm.value;
     const body: VehicleEntityDTO = {
       id: formValue.id ? formValue.id : null,
-      licensePlate: formValue.id ? formValue.id : null,
-      vin: formValue.id ? formValue.id : null,
-      make: formValue.id ? formValue.id : null,
-      model: formValue.id ? formValue.id : null,
-      description: formValue.id ? formValue.id : null,
-      vehicleId: formValue.id ? formValue.id : null,
-      chassis: formValue.id ? formValue.id : null,
+      licensePlate: formValue.licensePlate ? formValue.licensePlate : null,
+      vin: formValue.vin ? formValue.vin : null,
+      make: formValue.make ? formValue.make : null,
+      model: formValue.model ? formValue.model : null,
+      description: formValue.description ? formValue.description : null,
+      vehicleId: formValue.vehicleId ? formValue.vehicleId : null,
+      chassis: formValue.chassis ? formValue.chassis : null,
       inventories: []
     };
     if (this.vehicleToEdit && this.vehicleToEdit.inventories && this.vehicleToEdit.inventories.length) {
