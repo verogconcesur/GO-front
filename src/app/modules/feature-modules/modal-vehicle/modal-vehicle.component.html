@@ -46,6 +46,33 @@
                         <input matInput formControlName="chassis" />
                     </mat-form-field>
                 </div>
+                <div class="vehicle-data__section__title first-child">
+                    {{ labels.orderData | translate }}
+                </div>
+                <div class="vehicle-data__section__group">
+                    <!-- Facility -->
+                    <mat-form-field appearance="outline" floatLabel="always">
+                        <mat-label>{{ labels.facility | translate }}</mat-label>
+                        <mat-select formControlName="facility" (selectionChange)="selectFacility()">
+                            <mat-option *ngFor="let facility of facilityList" [value]="facility">{{ facility.name }}</mat-option>
+                        </mat-select>
+                        <button matSuffix mat-icon-button aria-label="Clear" (click)="removeFacility(); $event.stopPropagation()">
+                            <mat-icon>close</mat-icon>
+                        </button>
+                    </mat-form-field>
+                    <!-- commissionNumber -->
+                    <mat-form-field appearance="outline" floatLabel="always">
+                        <mat-label>{{ labels.commissionNumber | translate }}</mat-label>
+                        <input matInput formControlName="commissionNumber" [readonly]="!form.facility.value" />
+                        <mat-error *ngIf="form?.commissionNumber.invalid">
+                            <span *ngIf="form.commissionNumber.errors.required">
+                                {{ labels.required | translate }} ({{
+                                    labels.minLength | translate : { length: this.minLength }
+                                }})</span
+                            >
+                        </mat-error>
+                    </mat-form-field>
+                </div>
             </div>
         </form>
     </div>
