@@ -367,7 +367,10 @@ export class EntitiesSearcherDialogComponent implements OnInit {
         const vehicle = entity as VehicleEntityDTO;
         let textOptionVehicle = vehicle.licensePlate;
         if (vehicle.vin && vehicle.vin.toLowerCase().trim().includes(this.searchForm.get('search').value.toLowerCase().trim())) {
-          textOptionVehicle = textOptionVehicle + '/' + vehicle.vin;
+          textOptionVehicle = textOptionVehicle ? textOptionVehicle + '/' + vehicle.vin : vehicle.vin;
+        }
+        if (!textOptionVehicle && vehicle && vehicle.inventories && vehicle.inventories.length) {
+          textOptionVehicle = vehicle.inventories[vehicle.inventories.length - 1].commissionNumber;
         }
         return textOptionVehicle;
       case 'USER':
