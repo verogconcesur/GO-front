@@ -42,10 +42,12 @@
             >
                 <mat-tab *ngFor="let item of messageClientsForm.controls" [label]="getTabLabel(item)">
                     <ng-template matTabContent class="messageChannelImessage-datad__section">
-                        <div
+                        <!-- DGDC: descomentar cuando la landing esté preparada -->
+                        <!-- <div
                             class="messageChannelImessage-datad__section__group"
                             *ngIf="item.value.messageChannelId === 1 || item.value.messageChannelId === 2"
-                        >
+                        > -->
+                        <div class="messageChannelImessage-datad__section__group" *ngIf="item.value.messageChannelId === 2">
                             <div class="messageChannelImessage-datad__section__group__title">
                                 {{ labels.attachments | translate }}
                             </div>

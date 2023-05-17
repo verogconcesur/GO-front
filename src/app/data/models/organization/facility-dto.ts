@@ -19,4 +19,8 @@ export default interface FacilityDTO {
   enterpriseId?: string;
   storeId?: string;
   workflowSubstate?: WorkflowSubstateDTO;
+  configMailerHost?: string;
+  configMailerPort?: string;
+  configMailerUserName?: string;
+  configMailerPass?: string;
 }

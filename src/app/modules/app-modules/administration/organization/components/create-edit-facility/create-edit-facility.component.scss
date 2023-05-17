@@ -3,48 +3,64 @@
 .create-edit-facility-content {
   width: 100%;
   padding-right: 15px;
+
   .create-edit-facility-content__form {
     width: 100%;
+
     .facility-data__section {
       &__title {
         margin: 0 0 10px 0;
+
         &.first-child {
           margin-top: 0px;
         }
       }
+
       &__info {
         margin: 0 0 5px 0;
         line-height: 38px;
       }
+
       &__group {
         margin-bottom: 15px;
+
         &.grid-group {
           display: grid;
           justify-items: left;
           gap: 1rem;
           grid-template-columns: repeat(auto-fit, minmax(10rem, 1fr));
         }
+
         &__title {
           padding-bottom: 0px;
           text-transform: uppercase;
           margin-bottom: 0px;
           padding-right: 0.5rem;
+
           &::after {
             content: ':';
           }
         }
+
         &.substateList {
           mat-form-field {
             max-width: 450px;
           }
         }
       }
+
+      .error-message {
+        margin-top: 10px; /* Espacio superior */
+        margin-bottom: 10px; /* Espacio inferior */
+      }
     }
   }
 }
+
 .attr-menu {
   width: 450px;
   max-width: 450px !important;
+
   .mat-menu-content,
   .mat-menu-content:not(:empty) {
     padding-top: 0px;
