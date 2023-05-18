@@ -1,0 +1,65 @@
+@import 'utils/core';
+@import 'utils/theme';
+.landing-config {
+  width: calc(100% - 15px);
+  padding: 15px 0 0 15px;
+  form {
+    width: 100%;
+    .landing-config__section {
+      &__title {
+        margin: 0 0 10px 0;
+        font-size: 1.1em;
+        font-weight: 500;
+        &.first-child {
+          margin-top: 0px;
+        }
+      }
+      &__info {
+        margin: 0 0 5px 0;
+        line-height: 38px;
+      }
+      &__group {
+        margin-bottom: 15px;
+        &.grid-group {
+          display: grid;
+          justify-items: left;
+          gap: 1rem;
+          grid-template-columns: repeat(auto-fit, minmax(10rem, 1fr));
+        }
+        &.flex-group {
+          display: flex;
+          justify-content: space-between;
+          align-items: center;
+        }
+        &__title {
+          padding-bottom: 0px;
+          text-transform: uppercase;
+          margin-bottom: 0px;
+          padding-right: 0.5rem;
+          &::after {
+            content: ':';
+          }
+        }
+        .landing-facilities {
+          min-width: 205px;
+          width: 100%;
+          max-width: 410px;
+        }
+      }
+
+      .image-section {
+        display: flex;
+        justify-content: flex-start;
+        .select-button {
+          max-height: 38px;
+          margin: 4px 0 0 4px;
+        }
+      }
+    }
+  }
+  &__footer {
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+  }
+}
