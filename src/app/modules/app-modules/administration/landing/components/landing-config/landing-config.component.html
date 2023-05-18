@@ -1,1 +1,124 @@
-<p>landing-config works!</p>
+<section class="landing-config">
+    <form [formGroup]="landingForm" *ngIf="landingForm" class="smaller-mat-form-fields">
+        <div class="landing-config__section">
+            <h3 class="landing-config__section__title">
+                {{ labels.imagesConfig | translate }}
+            </h3>
+            <section class="landing-config__section__group">
+                <div formGroupName="logo" class="image-section">
+                    <!-- Logo -->
+                    <mat-form-field appearance="outline" floatLabel="always">
+                        <!-- Readonly Input to show File names -->
+                        <mat-label>{{ labels.logo | translate }}</mat-label>
+                        <input matInput formControlName="name" readonly />
+
+                        <!-- Fetch selected filed on change -->
+                        <input
+                            type="file"
+                            #logoFileInput
+                            class="imageFileInput"
+                            (change)="fileChangeEvent($event, 'logo')"
+                            name="logoFileInput"
+                            accept="image/*"
+                            style="display: none"
+                        />
+                    </mat-form-field>
+
+                    <!-- Browse Button -->
+                    <button class="select-button" mat-raised-button color="primary" (click)="logoFileInput.click()">
+                        {{ labels.select | translate }}
+                    </button>
+                    <button class="select-button" mat-raised-button aria-label="view" (click)="previewImage('logo')">
+                        {{ labels.view | translate }}
+                    </button>
+                </div>
+                <div formGroupName="logoAlt" class="image-section">
+                    <!-- LogoAlt -->
+                    <mat-form-field appearance="outline" floatLabel="always">
+                        <!-- Readonly Input to show File names -->
+                        <mat-label>{{ labels.logoAlt | translate }}</mat-label>
+                        <input matInput formControlName="name" readonly />
+
+                        <!-- Fetch selected filed on change -->
+                        <input
+                            type="file"
+                            #logoAltFileInput
+                            class="imageFileInput"
+                            (change)="fileChangeEvent($event, 'logoAlt')"
+                            name="logoAltFileInput"
+                            accept="image/*"
+                            style="display: none"
+                        />
+                    </mat-form-field>
+
+                    <!-- Browse Button -->
+                    <button class="select-button" mat-raised-button color="primary" (click)="logoAltFileInput.click()">
+                        {{ labels.select | translate }}
+                    </button>
+                    <button class="select-button" mat-raised-button aria-label="view" (click)="previewImage('logoAlt')">
+                        {{ labels.view | translate }}
+                    </button>
+                </div>
+                <div formGroupName="backgroundImage" class="image-section">
+                    <!-- backgroundImage -->
+                    <mat-form-field appearance="outline" floatLabel="always">
+                        <!-- Readonly Input to show File names -->
+                        <mat-label>{{ labels.bgImage | translate }}</mat-label>
+                        <input matInput formControlName="name" readonly />
+
+                        <!-- Fetch selected filed on change -->
+                        <input
+                            type="file"
+                            #bgImageFileInput
+                            class="imageFileInput"
+                            (change)="fileChangeEvent($event, 'backgroundImage')"
+                            name="bgImageFileInput"
+                            accept="image/*"
+                            style="display: none"
+                        />
+                    </mat-form-field>
+
+                    <!-- Browse Button -->
+                    <button class="select-button" mat-raised-button color="primary" (click)="bgImageFileInput.click()">
+                        {{ labels.select | translate }}
+                    </button>
+                    <button class="select-button" mat-raised-button aria-label="view" (click)="previewImage('backgroundImage')">
+                        {{ labels.view | translate }}
+                    </button>
+                </div>
+            </section>
+        </div>
+        <div class="landing-config__section">
+            <h3 class="landing-config__section__title">
+                {{ labels.themeConfig | translate }}
+            </h3>
+            <section class="landing-config__section__group">
+                <mat-form-field appearance="outline" floatLabel="always">
+                    <mat-label>{{ labels.theme | translate }}</mat-label>
+                    <mat-select formControlName="landingTheme">
+                        <mat-option *ngFor="let theme of themes" [value]="theme">{{ theme.name }}</mat-option>
+                    </mat-select>
+                </mat-form-field>
+            </section>
+        </div>
+        <div class="landing-config__section">
+            <h3 class="landing-config__section__title">
+                {{ labels.facilitiesConfig | translate }}
+            </h3>
+            <section class="landing-config__section__group">
+                <mat-form-field appearance="outline" floatLabel="always" class="landing-facilities">
+                    <mat-label>{{ labels.facilities | translate }}</mat-label>
+                    <mat-select formControlName="facilities" multiple>
+                        <mat-option *ngFor="let facility of facilities" [value]="facility">{{ facility.name }}</mat-option>
+                    </mat-select>
+                </mat-form-field>
+            </section>
+        </div>
+    </form>
+
+    <div class="landing-config__footer">
+        <button mat-raised-button color="primary" (click)="submit()">
+            {{ labels.save | translate }}
+        </button>
+    </div>
+</section>
