@@ -429,6 +429,7 @@
         "vehicles": {
             "addStock": "Search on inventary",
             "chassis": "Chassis",
+            "commissionBonus": "Commission / Order bonus",
             "commissionNumber": "Commission number",
             "create": "Create vehicle",
             "description": "Description",

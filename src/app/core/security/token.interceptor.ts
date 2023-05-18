@@ -64,7 +64,7 @@ export class TokenInterceptor implements HttpInterceptor {
     return req.clone({
       setHeaders: {
         [TokenInterceptor.AUTHORIZATION]: `Bearer ${access_token}`,
-        [TokenInterceptor.CACHE]: 'no-store'
+        [TokenInterceptor.CACHE]: 'no-cache'
       }
     });
   }
