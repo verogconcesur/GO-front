@@ -199,7 +199,7 @@ export class CreateEditFacilityComponent extends ComponentToExtendForCustomDialo
         configMailerHost: formValue.configMailerHost,
         configMailerPort: formValue.configMailerPort,
         configMailerUserName: formValue.configMailerUserName,
-        configMailerPass: formValue.configMailerUserName
+        configMailerPass: formValue.configMailerPass
       })
       .pipe(
         map((response) => {
