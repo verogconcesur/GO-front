@@ -106,7 +106,7 @@
                 {{ labels.facilitiesConfig | translate }}
             </h3>
             <section class="landing-config__section__group">
-                <mat-form-field appearance="outline" floatLabel="always">
+                <mat-form-field appearance="outline" floatLabel="always" class="landing-facilities">
                     <mat-label>{{ labels.facilities | translate }}</mat-label>
                     <mat-select formControlName="facilities" multiple>
                         <mat-option *ngFor="let facility of facilities" [value]="facility">{{ facility.name }}</mat-option>
@@ -115,4 +115,10 @@
             </section>
         </div>
     </form>
+
+    <div class="landing-config__footer">
+        <button mat-raised-button color="primary" (click)="submit()">
+            {{ labels.save | translate }}
+        </button>
+    </div>
 </section>

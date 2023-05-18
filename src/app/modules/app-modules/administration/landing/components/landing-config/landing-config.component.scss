@@ -40,6 +40,11 @@
             content: ':';
           }
         }
+        .landing-facilities {
+          min-width: 205px;
+          width: 100%;
+          max-width: 410px;
+        }
       }
 
       .image-section {
@@ -51,5 +56,10 @@
         }
       }
     }
+  }
+  &__footer {
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
   }
 }

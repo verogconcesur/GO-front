@@ -35,7 +35,8 @@ export class LandingConfigComponent implements OnInit {
     imagesConfig: marker('landing.imagesConfig'),
     view: marker('common.view'),
     themeConfig: marker('landing.themeConfig'),
-    theme: marker('landing.theme')
+    theme: marker('landing.theme'),
+    save: marker('common.save')
   };
   constructor(
     private fb: FormBuilder,
@@ -101,6 +102,43 @@ export class LandingConfigComponent implements OnInit {
     }
   }
 
+  public submit(): void {
+    const landingConfig = this.landingForm.value;
+    landingConfig.facilities = this.facilities.map((f) => {
+      if (landingConfig.facilities.find((f2: FacilityDTO) => f2.id === f.id)) {
+        f.showInLanding = true;
+      } else {
+        f.showInLanding = false;
+      }
+      return f;
+    });
+    const spinner = this.spinnerService.show();
+    this.landingService
+      .saveLandingCofnig(landingConfig)
+      .pipe(
+        take(1),
+        finalize(() => this.spinnerService.hide(spinner))
+      )
+      .subscribe({
+        next: (data: LandingConfigDTO) => {
+          this.landingConfig = data ? data : null;
+          this.facilities = data?.facilities ? data.facilities : [];
+          this.themes = data?.themes ? data.themes : [];
+          this.initForm();
+          this.globalMessageService.showSuccess({
+            message: this.translateService.instant(marker('common.successOperation')),
+            actionText: this.translateService.instant(marker('common.close'))
+          });
+        },
+        error: (err) => {
+          this.globalMessageService.showError({
+            message: err?.message ? err.message : this.translateService.instant(marker('errors.unknown')),
+            actionText: this.translateService.instant(marker('common.close'))
+          });
+        }
+      });
+  }
+
   private getLandingConfig(): void {
     const spinner = this.spinnerService.show();
     this.landingService
@@ -112,8 +150,8 @@ export class LandingConfigComponent implements OnInit {
       .subscribe({
         next: (data: LandingConfigDTO) => {
           this.landingConfig = data ? data : null;
-          this.facilities = data?.facilities ? [...data.facilities] : [];
-          this.themes = data?.themes ? [...data.themes] : [];
+          this.facilities = data?.facilities ? data.facilities : [];
+          this.themes = data?.themes ? data.themes : [];
           this.initForm();
         },
         error: (err) => {
