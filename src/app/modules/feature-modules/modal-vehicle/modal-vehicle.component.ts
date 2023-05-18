@@ -41,7 +41,7 @@ export class ModalVehicleComponent extends ComponentToExtendForCustomDialog impl
     data: marker('userProfile.data'),
     orderData: marker('entities.vehicles.orderData'),
     facility: marker('entities.vehicles.facility'),
-    commissionNumber: marker('entities.vehicles.commissionNumber'),
+    commissionNumber: marker('entities.vehicles.commissionBonus'),
     required: marker('errors.required'),
     minLength: marker('errors.minLength')
   };

@@ -429,6 +429,7 @@
         "vehicles": {
             "addStock": "Buscar en inventario",
             "chassis": "Chasis",
+            "commissionBonus": "Comisión / Bono de pedido",
             "commissionNumber": "Número de comisión",
             "create": "Crear vehículo",
             "description": "Descripción",
