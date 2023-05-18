@@ -19,4 +19,5 @@ export default interface FacilityDTO {
   enterpriseId?: string;
   storeId?: string;
   workflowSubstate?: WorkflowSubstateDTO;
+  showInLanding?: boolean;
 }
