@@ -1,0 +1,75 @@
+@import '@angular/material/theming';
+@import 'utils/core';
+
+@mixin landing-links-component-theme($theme, $main-typo) {
+  $primary: map-get($theme, primary);
+  $background: map-get($theme, background);
+
+  .landing-links-container {
+    padding: 15px;
+    &__title {
+      color: mat-color($primary, 500);
+    }
+    &__section {
+      .landing-custom-links-item-container {
+        width: 100%;
+        max-width: 800px;
+        padding: 10px 0;
+        .landing-custom-links-item {
+          background-color: mat-color($background, background);
+          border-radius: 6px;
+          width: 100%;
+          min-height: 60px;
+          padding: 0 10px;
+          margin-bottom: 10px;
+          cursor: pointer;
+          .landing-custom-links-item-nameContainer {
+            width: 100%;
+          }
+          .customIcon {
+            width: 18px;
+            height: 18px;
+            font-size: 18px;
+            margin: 0 8px;
+          }
+          .fileImport {
+            mat-icon {
+              font-size: 19px;
+            }
+          }
+          .landing-custom-links-item-formContainer {
+            width: calc(100% - 70px);
+          }
+          mat-form-field {
+            margin: 8px;
+          }
+        }
+      }
+    }
+  }
+  .landing-custom-links-item.cdk-drag-placeholder {
+    opacity: 0;
+  }
+
+  .landing-custom-links-item.cdk-drag-animating {
+    transition: transform 250ms cubic-bezier(0, 0, 0.2, 1);
+  }
+
+  .landing-custom-links-item-container.cdk-drop-list-dragging .landing-custom-links-item:not(.cdk-drag-placeholder) {
+    transition: transform 250ms cubic-bezier(0, 0, 0.2, 1);
+  }
+  .landing-custom-links-item-createButton {
+    background-color: mat-color($primary, 100);
+    border-radius: 6px;
+    width: 100%;
+    min-height: 60px;
+    padding: 0 20px;
+    cursor: pointer;
+    mat-icon {
+      width: 20px;
+      height: 20px;
+      font-size: 20px;
+      margin-left: 10px;
+    }
+  }
+}
