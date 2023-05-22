@@ -20,13 +20,14 @@ import { finalize, take } from 'rxjs';
 })
 export class LandingLinksComponent implements OnInit {
   public labels = {
-    social: marker('adminitration.landing.links.social'),
-    menu: marker('adminitration.landing.links.menu'),
-    newLink: marker('adminitration.landing.links.newLink'),
-    name: marker('adminitration.landing.links.name'),
-    link: marker('adminitration.landing.links.link'),
-    icon: marker('adminitration.landing.links.icon'),
-    nameLink: marker('adminitration.landing.links.nameLink')
+    social: marker('landing.linksComponent.social'),
+    menu: marker('landing.linksComponent.menu'),
+    newLink: marker('landing.linksComponent.newLink'),
+    name: marker('landing.linksComponent.name'),
+    link: marker('landing.linksComponent.link'),
+    icon: marker('landing.linksComponent.icon'),
+    nameLink: marker('landing.linksComponent.nameLink'),
+    save: marker('common.save')
   };
   public minLength = 3;
   public linkList: LandingLinkDTO[];
@@ -48,6 +49,34 @@ export class LandingLinksComponent implements OnInit {
   get menu() {
     return this.formMenu as UntypedFormArray;
   }
+
+  public submit(): void {
+    const links = [...this.formMenu.getRawValue(), ...this.formSocial.getRawValue()];
+    const spinner = this.spinnerService.show();
+    this.landingService
+      .saveLinks(links)
+      .pipe(
+        take(1),
+        finalize(() => this.spinnerService.hide(spinner))
+      )
+      .subscribe({
+        next: (data: LandingLinkDTO[]) => {
+          this.linkList = data ? data : null;
+          this.initializeForm();
+          this.globalMessageService.showSuccess({
+            message: this.translateService.instant(marker('common.successOperation')),
+            actionText: this.translateService.instant(marker('common.close'))
+          });
+        },
+        error: (err) => {
+          this.globalMessageService.showError({
+            message: err?.message ? err.message : this.translateService.instant(marker('errors.unknown')),
+            actionText: this.translateService.instant(marker('common.close'))
+          });
+        }
+      });
+  }
+
   public openAttachment(link: UntypedFormGroup): void {
     const linkBody = link.getRawValue();
     if (linkBody.icon && linkBody.icon.content) {
@@ -79,21 +108,21 @@ export class LandingLinksComponent implements OnInit {
     if (type === 'SOCIAL') {
       this.social.push(
         this.fb.group({
-          id: [null],
           orderNumber: [this.social.length + 1, [Validators.required]],
           name: [this.translateService.instant(this.labels.nameLink), [Validators.required]],
           link: ['', [Validators.required]],
           icon: [null, [Validators.required]],
-          fileName: ['', [Validators.required]]
+          fileName: ['', [Validators.required]],
+          typeLink: ['SOCIAL', [Validators.required]]
         })
       );
     } else if (type === 'MENU') {
       this.menu.push(
         this.fb.group({
-          id: [null],
           orderNumber: [this.menu.length + 1, [Validators.required]],
           name: [this.translateService.instant(this.labels.nameLink), [Validators.required]],
-          link: ['', [Validators.required]]
+          link: ['', [Validators.required]],
+          typeLink: ['MENU', [Validators.required]]
         })
       );
     }
@@ -131,10 +160,37 @@ export class LandingLinksComponent implements OnInit {
       .pipe(take(1))
       .subscribe((ok: boolean) => {
         if (ok) {
-          if (type === 'SOCIAL') {
-            removeItemInFormArray(this.social, link.value.orderNumber - 1);
-          } else if (type === 'MENU') {
-            removeItemInFormArray(this.menu, link.value.orderNumber - 1);
+          if (link.value.id) {
+            const spinner = this.spinnerService.show();
+            this.landingService
+              .deleteLinks(link.value.id)
+              .pipe(
+                take(1),
+                finalize(() => {
+                  this.spinnerService.hide(spinner);
+                })
+              )
+              .subscribe({
+                next: () => {
+                  if (type === 'SOCIAL') {
+                    removeItemInFormArray(this.social, link.value.orderNumber - 1);
+                  } else if (type === 'MENU') {
+                    removeItemInFormArray(this.menu, link.value.orderNumber - 1);
+                  }
+                },
+                error: (error) => {
+                  this.globalMessageService.showError({
+                    message: error.message,
+                    actionText: this.translateService.instant(marker('common.close'))
+                  });
+                }
+              });
+          } else {
+            if (type === 'SOCIAL') {
+              removeItemInFormArray(this.social, link.value.orderNumber - 1);
+            } else if (type === 'MENU') {
+              removeItemInFormArray(this.menu, link.value.orderNumber - 1);
+            }
           }
         }
       });
@@ -163,6 +219,13 @@ export class LandingLinksComponent implements OnInit {
       });
   }
   private initializeForm = (): void => {
+    this.linkList = this.linkList.sort((a: LandingLinkDTO, b: LandingLinkDTO) => {
+      if (a.orderNumber > b.orderNumber) {
+        return 1;
+      } else {
+        return -1;
+      }
+    });
     this.formSocial = this.fb.array([]);
     this.formMenu = this.fb.array([]);
     this.linkList.forEach((link) => {
@@ -174,7 +237,8 @@ export class LandingLinksComponent implements OnInit {
             name: [link.name, [Validators.required]],
             link: [link.link, [Validators.required]],
             icon: [link.icon, [Validators.required]],
-            fileName: [link.icon.name, [Validators.required]]
+            fileName: [link.icon.name, [Validators.required]],
+            typeLink: [link.typeLink, [Validators.required]]
           })
         );
       } else if (link.typeLink === 'MENU') {
@@ -183,7 +247,8 @@ export class LandingLinksComponent implements OnInit {
             id: [link.id],
             orderNumber: [link.orderNumber, [Validators.required]],
             name: [link.name, [Validators.required]],
-            link: [link.link, [Validators.required]]
+            link: [link.link, [Validators.required]],
+            typeLink: [link.typeLink, [Validators.required]]
           })
         );
       }

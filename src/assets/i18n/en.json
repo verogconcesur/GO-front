@@ -471,6 +471,17 @@
     },
     "landing": {
         "banners": "Banners",
+        "bannersComponent": {
+            "banners": "Banners",
+            "description": "Description",
+            "endDate": "End date",
+            "image": "Image",
+            "initDate": "start Date",
+            "link": "Link",
+            "nameLink": "Link name",
+            "newLink": "New link",
+            "title": "Title"
+        },
         "bgImage": "Background image",
         "config": "Configuration",
         "facilities": "Facilities",
@@ -478,6 +489,15 @@
         "fileSharedWithCustomerInLanding": "File shared with the customer",
         "imagesConfig": "Images and logos to config",
         "links": "Social and menu links",
+        "linksComponent": {
+            "icon": "Icon",
+            "link": "Link",
+            "menu": "Menu",
+            "name": "Name",
+            "nameLink": "Link name",
+            "newLink": "New link",
+            "social": "Social Media"
+        },
         "logo": "Logo",
         "logoAlt": "Alternative logo",
         "stopSharingFileWithCustomerInLanding": "Stop sharing file with the customer",
