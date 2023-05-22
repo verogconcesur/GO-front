@@ -13,38 +13,38 @@
     &__section {
       .landing-custom-links-item-container {
         width: 100%;
-        max-width: 800px;
+        max-width: 900px;
         padding: 10px 0;
-        .landing-custom-links-item {
-          background-color: mat-color($background, background);
-          border-radius: 6px;
-          width: 100%;
-          min-height: 60px;
-          padding: 0 10px;
-          margin-bottom: 10px;
-          cursor: pointer;
-          .landing-custom-links-item-nameContainer {
-            width: 100%;
-          }
-          .customIcon {
-            width: 18px;
-            height: 18px;
-            font-size: 18px;
-            margin: 0 8px;
-          }
-          .fileImport {
-            mat-icon {
-              font-size: 19px;
-            }
-          }
-          .landing-custom-links-item-formContainer {
-            width: calc(100% - 70px);
-          }
-          mat-form-field {
-            margin: 8px;
-          }
-        }
       }
+    }
+  }
+  .landing-custom-links-item {
+    background-color: mat-color($background, background);
+    border-radius: 6px;
+    width: 100%;
+    min-height: 60px;
+    padding: 0 10px;
+    margin-bottom: 10px;
+    cursor: pointer;
+    .landing-custom-links-item-nameContainer {
+      width: 100%;
+    }
+    .customIcon {
+      width: 18px;
+      height: 18px;
+      font-size: 18px;
+      margin: 0 8px;
+    }
+    .fileImport {
+      mat-icon {
+        font-size: 19px;
+      }
+    }
+    .landing-custom-links-item-formContainer {
+      width: calc(100% - 70px);
+    }
+    mat-form-field {
+      margin: 8px;
     }
   }
   .landing-custom-links-item.cdk-drag-placeholder {

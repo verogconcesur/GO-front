@@ -44,6 +44,7 @@
                         </mat-form-field>
                         <input
                             type="file"
+                            accept="image/*"
                             style="display: none"
                             #fileDropRef
                             id="fileDropRef"
@@ -114,5 +115,10 @@
                 </div>
             </ng-container>
         </div>
+    </div>
+    <div class="landing-links-container__footer">
+        <button mat-raised-button color="primary" (click)="submit()">
+            {{ labels.save | translate }}
+        </button>
     </div>
 </div>
