@@ -484,6 +484,7 @@
         },
         "bgImage": "Background image",
         "config": "Configuration",
+        "defaultTheme": "Default theme",
         "facilities": "Facilities",
         "facilitiesConfig": "Facilities to show in the landing",
         "fileSharedWithCustomerInLanding": "File shared with the customer",

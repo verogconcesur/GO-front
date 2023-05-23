@@ -484,6 +484,7 @@
         },
         "bgImage": "Imagen de fondo",
         "config": "Configuración",
+        "defaultTheme": "Paleta por defecto",
         "facilities": "Instalaciones",
         "facilitiesConfig": "Instalaciones a mostrar en la landing",
         "fileSharedWithCustomerInLanding": "Archivo compartido con el cliente.",

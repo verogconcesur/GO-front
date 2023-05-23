@@ -104,6 +104,7 @@ export class LandingConfigComponent implements OnInit {
 
   public submit(): void {
     const landingConfig = this.landingForm.value;
+    landingConfig.landingTheme = landingConfig.landingTheme?.id ? landingConfig.landingTheme : null;
     landingConfig.facilities = this.facilities.map((f) => {
       if (landingConfig.facilities.find((f2: FacilityDTO) => f2.id === f.id)) {
         f.showInLanding = true;
@@ -124,6 +125,14 @@ export class LandingConfigComponent implements OnInit {
           this.landingConfig = data ? data : null;
           this.facilities = data?.facilities ? data.facilities : [];
           this.themes = data?.themes ? data.themes : [];
+          this.themes = [
+            {
+              classTheme: null,
+              id: null,
+              name: this.translateService.instant(marker('landing.defaultTheme'))
+            },
+            ...this.themes
+          ];
           this.initForm();
           this.globalMessageService.showSuccess({
             message: this.translateService.instant(marker('common.successOperation')),
@@ -152,6 +161,14 @@ export class LandingConfigComponent implements OnInit {
           this.landingConfig = data ? data : null;
           this.facilities = data?.facilities ? data.facilities : [];
           this.themes = data?.themes ? data.themes : [];
+          this.themes = [
+            {
+              classTheme: null,
+              id: null,
+              name: this.translateService.instant(marker('landing.defaultTheme'))
+            },
+            ...this.themes
+          ];
           this.initForm();
         },
         error: (err) => {
@@ -183,7 +200,7 @@ export class LandingConfigComponent implements OnInit {
       landingTheme: [
         this.landingConfig?.landingTheme
           ? this.themes.find((t: LandingThemeDTO) => t.id === this.landingConfig.landingTheme.id)
-          : null,
+          : this.themes.find((t: LandingThemeDTO) => !t.id),
         Validators.required
       ],
       logo: this.fb.group({
