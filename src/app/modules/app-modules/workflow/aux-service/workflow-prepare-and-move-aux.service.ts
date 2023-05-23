@@ -393,7 +393,7 @@ export class WorkflowPrepareAndMoveService {
           } else {
             this.spinner = null;
           }
-          this.reloadData$.next('UPDATE_INFORMATION');
+          this.reloadData$.next(view);
         },
         (error: ConcenetError) => {
           this.spinnerService.hide(this.spinner);

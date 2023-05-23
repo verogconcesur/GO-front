@@ -213,27 +213,26 @@ export class WorkflowCardDetailsComponent implements OnInit {
   }
 
   private initWebsocket() {
-    this.rxStompService
-      .watch('/topic/detail/' + this.idCard)
-      .pipe(untilDestroyed(this))
-      .subscribe((data: IMessage) => {
-        console.log(JSON.parse(data.body));
-        this.rxStompService.cardDeatilWs$.next(JSON.parse(data.body) as WorkflowSocketCardDetailDTO);
-      });
-
-    this.rxStompService.cardDeatilWs$.pipe(untilDestroyed(this), skip(1)).subscribe((data: WorkflowSocketCardDetailDTO) => {
-      if (
-        data &&
-        data.cardInstanceWorkflowId === this.idCard &&
-        data.message === 'DETAIL_FULL' &&
-        data.userId.toString() !== this.authService.getUserId()
-      ) {
-        this.globalMessageService.showWarning({
-          message: this.translateService.instant(marker('workflows.cardChangesDetected')),
-          actionText: this.translateService.instant(marker('common.close'))
-        });
-        this.changesPendingToShow = true;
-      }
-    });
+    // this.rxStompService
+    //   .watch('/topic/detail/' + this.idCard)
+    //   .pipe(untilDestroyed(this))
+    //   .subscribe((data: IMessage) => {
+    //     console.log(JSON.parse(data.body));
+    //     this.rxStompService.cardDeatilWs$.next(JSON.parse(data.body) as WorkflowSocketCardDetailDTO);
+    //   });
+    // this.rxStompService.cardDeatilWs$.pipe(untilDestroyed(this), skip(1)).subscribe((data: WorkflowSocketCardDetailDTO) => {
+    //   if (
+    //     data &&
+    //     data.cardInstanceWorkflowId === this.idCard &&
+    //     data.message === 'DETAIL_FULL' &&
+    //     data.userId.toString() !== this.authService.getUserId()
+    //   ) {
+    //     this.globalMessageService.showWarning({
+    //       message: this.translateService.instant(marker('workflows.cardChangesDetected')),
+    //       actionText: this.translateService.instant(marker('common.close'))
+    //     });
+    //     this.changesPendingToShow = true;
+    //   }
+    // });
   }
 }
