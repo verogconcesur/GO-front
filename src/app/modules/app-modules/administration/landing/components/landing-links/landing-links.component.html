@@ -1,1 +1,124 @@
-<p>landing-links works!</p>
+<div class="landing-links-container" fxLayout="column" *ngIf="formSocial && formMenu">
+    <div class="landing-links-container__title">
+        <h2>{{ labels.social | translate }}</h2>
+    </div>
+    <div class="landing-links-container__section" cdkDropListGroup>
+        <div class="landing-custom-links-item-container" cdkDropList (cdkDropListDropped)="drop($event, 'SOCIAL')">
+            <div
+                cdkDrag
+                class="landing-custom-links-item mat-elevation-z2"
+                fxLayoutAlign="none center"
+                *ngFor="let social of social.controls; let i = index"
+            >
+                <div
+                    fxLayout="row"
+                    fxLayoutAlign="space-between center"
+                    class="landing-custom-links-item-nameContainer smaller-mat-form-fields"
+                >
+                    <mat-icon class="customIcon">drag_indicator</mat-icon>
+                    <div
+                        class="landing-custom-links-item-formContainer"
+                        fxLayout="row wrap"
+                        fxLayoutAlign="left center"
+                        [formGroup]="social"
+                    >
+                        <mat-form-field appearance="outline" class="smaller-mat-form-fields__no-margin" floatLabel="always">
+                            <mat-label>{{ labels.name | translate }}</mat-label>
+                            <input type="text" matInput formControlName="name" />
+                        </mat-form-field>
+                        <mat-form-field appearance="outline" class="smaller-mat-form-fields__no-margin" floatLabel="always">
+                            <mat-label>{{ labels.link | translate }}</mat-label>
+                            <input type="text" matInput formControlName="link" />
+                        </mat-form-field>
+                        <mat-form-field
+                            appearance="outline"
+                            class="smaller-mat-form-fields__no-margin fileImport"
+                            floatLabel="always"
+                        >
+                            <mat-label>{{ labels.icon | translate }}</mat-label>
+                            <input type="text" matInput formControlName="fileName" [readonly]="true" />
+                            <mat-icon matPrefix (click)="fileDropRef.click()">cloud_upload</mat-icon>
+                            <mat-icon matSuffix (click)="openAttachment(social); $event.stopPropagation()"
+                                >remove_red_eye</mat-icon
+                            >
+                        </mat-form-field>
+                        <input
+                            type="file"
+                            accept="image/*"
+                            style="display: none"
+                            #fileDropRef
+                            id="fileDropRef"
+                            matInput
+                            (change)="addFile($event.target.files, social)"
+                        />
+                    </div>
+                    <mat-icon class="customIcon" (click)="deleteLink(social, 'SOCIAL'); $event.stopPropagation()"
+                        >delete</mat-icon
+                    >
+                </div>
+            </div>
+            <ng-container>
+                <div
+                    class="landing-custom-links-item-createButton"
+                    (click)="newLink('SOCIAL')"
+                    fxLayout="row"
+                    fxLayoutAlign="space-between center"
+                >
+                    {{ labels.newLink | translate }} <mat-icon>add</mat-icon>
+                </div>
+            </ng-container>
+        </div>
+    </div>
+    <div class="landing-links-container__title">
+        <h2>{{ labels.menu | translate }}</h2>
+    </div>
+    <div class="landing-links-container__section" cdkDropListGroup>
+        <div class="landing-custom-links-item-container" cdkDropList (cdkDropListDropped)="drop($event, 'MENU')">
+            <div
+                cdkDrag
+                class="landing-custom-links-item mat-elevation-z2"
+                fxLayoutAlign="none center"
+                *ngFor="let menu of menu.controls; let i = index"
+            >
+                <div
+                    fxLayout="row"
+                    fxLayoutAlign="space-between center"
+                    class="landing-custom-links-item-nameContainer smaller-mat-form-fields"
+                >
+                    <mat-icon class="customIcon">drag_indicator</mat-icon>
+                    <div
+                        class="landing-custom-links-item-formContainer"
+                        fxLayout="row wrap"
+                        fxLayoutAlign="left center"
+                        [formGroup]="menu"
+                    >
+                        <mat-form-field appearance="outline" class="smaller-mat-form-fields__no-margin" floatLabel="always">
+                            <mat-label>{{ labels.name | translate }}</mat-label>
+                            <input type="text" matInput formControlName="name" />
+                        </mat-form-field>
+                        <mat-form-field appearance="outline" class="smaller-mat-form-fields__no-margin" floatLabel="always">
+                            <mat-label>{{ labels.link | translate }}</mat-label>
+                            <input type="text" matInput formControlName="link" />
+                        </mat-form-field>
+                    </div>
+                    <mat-icon class="customIcon" (click)="deleteLink(menu, 'MENU'); $event.stopPropagation()">delete</mat-icon>
+                </div>
+            </div>
+            <ng-container>
+                <div
+                    class="landing-custom-links-item-createButton"
+                    (click)="newLink('MENU')"
+                    fxLayout="row"
+                    fxLayoutAlign="space-between center"
+                >
+                    {{ labels.newLink | translate }} <mat-icon>add</mat-icon>
+                </div>
+            </ng-container>
+        </div>
+    </div>
+    <div class="landing-links-container__footer">
+        <button mat-raised-button color="primary" (click)="submit()">
+            {{ labels.save | translate }}
+        </button>
+    </div>
+</div>

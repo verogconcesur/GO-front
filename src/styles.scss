@@ -22,6 +22,7 @@
 @import 'app/modules/app-modules/workflow/workflow.component.scss-theme.scss';
 @import 'app/modules/feature-modules/new-card/new-card.component.scss-theme.scss';
 @import 'app/modules/feature-modules/workflow-card/workflow-card.component.scss-theme.scss';
+@import 'app/modules/app-modules/administration/landing/components/landing-links/landing-links.component.scss-theme.scss';
 
 @mixin custom-components-theme($theme, $main-typography) {
   @include app-component-theme($theme);
@@ -45,6 +46,7 @@
   @include responsive-tabs-component-theme($theme, $main-typography);
   @include create-edit-card-component-theme($theme, $main-typography);
   @include new-card-component-theme($theme, $main-typography);
+  @include landing-links-component-theme($theme, $main-typography);
 }
 
 // Load theme and custom components styles for current theme

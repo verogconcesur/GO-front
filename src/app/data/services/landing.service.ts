@@ -3,7 +3,9 @@ import { Inject, Injectable } from '@angular/core';
 import { ENV } from '@app/constants/global.constants';
 import { Env } from '@app/types/env';
 import { ConcenetError } from '@app/types/error';
+import LandingBannerDTO from '@data/models/landing/landing-banner-dto';
 import LandingConfigDTO from '@data/models/landing/landing-config-dto';
+import LandingLinkDTO from '@data/models/landing/landing-link-dto';
 import { Observable, throwError } from 'rxjs';
 import { catchError } from 'rxjs/operators';
 
@@ -15,6 +17,14 @@ export class LandingService {
   private readonly CONFIG_PATH = '/config';
   private readonly GET_CONFIG_PATH = '/getEditConfig';
   private readonly SAVE_CONFIG_PATH = '/saveConfig';
+  private readonly LINKS_PATH = '/listLinks';
+  private readonly LINK_DETAIL_PATH = '/getLink/';
+  private readonly SAVE_LINK_PATH = '/saveLinks';
+  private readonly DELETE_LINK_PATH = '/deleteLink/';
+  private readonly BANNERS_PATH = '/listBanners';
+  private readonly BANNER_DETAIL_PATH = '/getBanner/';
+  private readonly SAVE_BANNER_PATH = '/saveBanners';
+  private readonly DELETE_BANNER_PATH = '/deleteBanner/';
 
   constructor(@Inject(ENV) private env: Env, private http: HttpClient) {}
 
@@ -29,6 +39,55 @@ export class LandingService {
       .post<LandingConfigDTO>(
         `${this.env.apiBaseUrl}${this.LANDING_PATH}${this.CONFIG_PATH}${this.SAVE_CONFIG_PATH}`,
         landingConfig
+      )
+      .pipe(catchError((error) => throwError(error.error as ConcenetError)));
+  }
+  public getLinks(): Observable<LandingLinkDTO[]> {
+    return this.http
+      .get<LandingLinkDTO[]>(`${this.env.apiBaseUrl}${this.LANDING_PATH}${this.CONFIG_PATH}${this.LINKS_PATH}`)
+      .pipe(catchError((error) => throwError(error.error as ConcenetError)));
+  }
+  public getLinkDetail(linkId: number): Observable<LandingLinkDTO> {
+    return this.http
+      .get<LandingLinkDTO>(`${this.env.apiBaseUrl}${this.LANDING_PATH}${this.CONFIG_PATH}${this.LINK_DETAIL_PATH}${linkId}`)
+      .pipe(catchError((error) => throwError(error.error as ConcenetError)));
+  }
+
+  public saveLinks(linkList: LandingLinkDTO[]): Observable<LandingLinkDTO[]> {
+    return this.http
+      .post<LandingLinkDTO[]>(`${this.env.apiBaseUrl}${this.LANDING_PATH}${this.CONFIG_PATH}${this.SAVE_LINK_PATH}`, linkList)
+      .pipe(catchError((error) => throwError(error.error as ConcenetError)));
+  }
+
+  public deleteLinks(linkId: number): Observable<LandingLinkDTO> {
+    return this.http
+      .delete<LandingLinkDTO>(`${this.env.apiBaseUrl}${this.LANDING_PATH}${this.CONFIG_PATH}${this.DELETE_LINK_PATH}${linkId}`)
+      .pipe(catchError((error) => throwError(error.error as ConcenetError)));
+  }
+  public getBanners(): Observable<LandingBannerDTO[]> {
+    return this.http
+      .get<LandingBannerDTO[]>(`${this.env.apiBaseUrl}${this.LANDING_PATH}${this.CONFIG_PATH}${this.BANNERS_PATH}`)
+      .pipe(catchError((error) => throwError(error.error as ConcenetError)));
+  }
+  public getBannerDetail(bannerId: number): Observable<LandingBannerDTO> {
+    return this.http
+      .get<LandingBannerDTO>(`${this.env.apiBaseUrl}${this.LANDING_PATH}${this.CONFIG_PATH}${this.BANNER_DETAIL_PATH}${bannerId}`)
+      .pipe(catchError((error) => throwError(error.error as ConcenetError)));
+  }
+
+  public saveBanners(bannerList: LandingBannerDTO[]): Observable<LandingBannerDTO[]> {
+    return this.http
+      .post<LandingBannerDTO[]>(
+        `${this.env.apiBaseUrl}${this.LANDING_PATH}${this.CONFIG_PATH}${this.SAVE_BANNER_PATH}`,
+        bannerList
+      )
+      .pipe(catchError((error) => throwError(error.error as ConcenetError)));
+  }
+
+  public deleteBanner(bannerId: number): Observable<LandingBannerDTO> {
+    return this.http
+      .delete<LandingBannerDTO>(
+        `${this.env.apiBaseUrl}${this.LANDING_PATH}${this.CONFIG_PATH}${this.DELETE_BANNER_PATH}${bannerId}`
       )
       .pipe(catchError((error) => throwError(error.error as ConcenetError)));
   }

@@ -1,1 +1,123 @@
-<p>landing-banners works!</p>
+<div class="landing-links-container" fxLayout="column" *ngIf="formBanner">
+    <div class="landing-links-container__title">
+        <h2>{{ labels.banners | translate }}</h2>
+    </div>
+    <div class="landing-links-container__section" cdkDropListGroup>
+        <div class="landing-custom-links-item-container" cdkDropList (cdkDropListDropped)="drop($event)">
+            <div
+                cdkDrag
+                class="landing-custom-links-item mat-elevation-z2"
+                fxLayoutAlign="none center"
+                *ngFor="let banner of banner.controls; let i = index"
+            >
+                <div
+                    fxLayout="row"
+                    fxLayoutAlign="space-between center"
+                    class="landing-custom-links-item-nameContainer smaller-mat-form-fields"
+                >
+                    <mat-icon class="customIcon">drag_indicator</mat-icon>
+                    <div
+                        class="landing-custom-links-item-formContainer"
+                        fxLayout="row wrap"
+                        fxLayoutAlign="left center"
+                        [formGroup]="banner"
+                    >
+                        <mat-form-field appearance="outline" class="smaller-mat-form-fields__no-margin" floatLabel="always">
+                            <mat-label>{{ labels.title | translate }}</mat-label>
+                            <input type="text" matInput formControlName="title" />
+                        </mat-form-field>
+                        <mat-form-field
+                            appearance="outline"
+                            class="smaller-mat-form-fields__no-margin fileImport"
+                            floatLabel="always"
+                        >
+                            <mat-label>{{ labels.initDate | translate }}</mat-label>
+                            <input
+                                matInput
+                                readonly
+                                #pickerIniInput
+                                [matDatepicker]="pickerIni"
+                                placeholder="DD/MM/YYYY"
+                                formControlName="initDate"
+                            />
+                            <mat-datepicker-toggle matSuffix [for]="pickerIni"></mat-datepicker-toggle>
+                            <mat-datepicker #pickerIni></mat-datepicker>
+                        </mat-form-field>
+                        <mat-form-field
+                            appearance="outline"
+                            class="smaller-mat-form-fields__no-margin fileImport"
+                            floatLabel="always"
+                        >
+                            <mat-label>{{ labels.endDate | translate }}</mat-label>
+                            <input
+                                matInput
+                                readonly
+                                #pickerIniInput
+                                [matDatepicker]="pickerEnd"
+                                placeholder="DD/MM/YYYY"
+                                formControlName="endDate"
+                            />
+                            <mat-datepicker-toggle matSuffix [for]="pickerEnd"></mat-datepicker-toggle>
+                            <mat-datepicker #pickerEnd></mat-datepicker>
+                        </mat-form-field>
+                        <mat-form-field appearance="outline" class="smaller-mat-form-fields__no-margin" floatLabel="always">
+                            <mat-label>{{ labels.link | translate }}</mat-label>
+                            <input type="text" matInput formControlName="link" />
+                        </mat-form-field>
+                        <mat-form-field
+                            appearance="outline"
+                            class="smaller-mat-form-fields__no-margin fileImport"
+                            floatLabel="always"
+                        >
+                            <mat-label>{{ labels.description | translate }}</mat-label>
+                            <textarea
+                                matInput
+                                formControlName="description"
+                                cdkTextareaAutosize
+                                cdkAutosizeMinRows="1"
+                                cdkAutosizeMaxRows="1"
+                            ></textarea>
+                        </mat-form-field>
+                        <mat-form-field
+                            appearance="outline"
+                            class="smaller-mat-form-fields__no-margin fileImport"
+                            floatLabel="always"
+                        >
+                            <mat-label>{{ labels.image | translate }}</mat-label>
+                            <input type="text" matInput formControlName="fileName" [readonly]="true" />
+                            <mat-icon matPrefix (click)="fileDropRef.click()">cloud_upload</mat-icon>
+                            <mat-icon matSuffix (click)="openAttachment(banner); $event.stopPropagation()"
+                                >remove_red_eye</mat-icon
+                            >
+                        </mat-form-field>
+                        <input
+                            type="file"
+                            accept="image/*"
+                            style="display: none"
+                            #fileDropRef
+                            id="fileDropRef"
+                            matInput
+                            (change)="addFile($event.target.files, banner)"
+                        />
+                    </div>
+                    <mat-icon class="customIcon" (click)="deleteBanner(banner); $event.stopPropagation()">delete</mat-icon>
+                </div>
+            </div>
+            <ng-container>
+                <div
+                    class="landing-custom-links-item-createButton"
+                    (click)="newBanner()"
+                    fxLayout="row"
+                    fxLayoutAlign="space-between center"
+                >
+                    {{ labels.newLink | translate }} <mat-icon>add</mat-icon>
+                </div>
+            </ng-container>
+        </div>
+    </div>
+    <div class="landing-links-container__footer">
+        <button mat-raised-button color="primary" (click)="submit()">
+            {{ labels.save | translate }}
+        </button>
+    </div>
+</div>

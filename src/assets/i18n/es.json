@@ -471,6 +471,17 @@
 	},
 	"landing": {
 		"banners": "Banners (ofertas y promociones)",
+        "bannersComponent": {
+            "banners": "Banners",
+            "description": "Descripción",
+            "endDate": "Fecha fin",
+            "image": "Imagen",
+            "initDate": "Fecha inicio",
+            "link": "Enlace",
+            "nameLink": "Nombre del enlace",
+            "newLink": "Nuevo enlace",
+            "title": "Título"
+        },
 		"bgImage": "Imagen de fondo",
 		"config": "Configuración",
 		"defaultTheme": "Paleta por defecto",
@@ -479,6 +490,15 @@
 		"fileSharedWithCustomerInLanding": "Archivo compartido con el cliente.",
 		"imagesConfig": "Configuración de imágenes y logos",
 		"links": "Enlaces (menú y redes sociales)",
+        "linksComponent": {
+            "icon": "Icono",
+            "link": "Enlace",
+            "menu": "Menu",
+            "name": "Nombre",
+            "nameLink": "Nombre del enlace",
+            "newLink": "Nuevo enlace",
+            "social": "Redes Sociales"
+        },
 		"logo": "Logo",
 		"logoAlt": "Logo alternativo (contraste)",
 		"stopSharingFileWithCustomerInLanding": "Dejar de compartir archivo con el cliente.",
