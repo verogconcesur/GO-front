@@ -30,6 +30,7 @@ export class NavbarComponent implements OnInit, OnDestroy {
   public readonly VEHICLES_PATH = RouteConstants.VEHICLES;
   public readonly MENTIONS_PATH = RouteConstants.MENTIONS;
   public readonly NOTIFICATIONS_PATH = RouteConstants.NOTIFICATIONS;
+  public readonly ADVANCED_SEARCH_PATH = RouteConstants.ADVANCED_SEARCH;
   public labels = {
     title: marker('app.title'),
     workflow: marker('app.menu.workflow'),
