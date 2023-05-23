@@ -50,7 +50,7 @@
                 <mat-label>{{ labels.inventory | translate }}</mat-label>
                 <mat-select formControlName="vehicleInventoryId" (selectionChange)="selectInventory()">
                     <mat-option *ngFor="let inventory of inventoryList" [value]="inventory.id">{{
-                        inventory.vehicleStockId
+                        getInventoryLabel(inventory)
                     }}</mat-option>
                 </mat-select>
                 <button matSuffix mat-icon-button aria-label="Clear" (click)="removeInventory(); $event.stopPropagation()">
