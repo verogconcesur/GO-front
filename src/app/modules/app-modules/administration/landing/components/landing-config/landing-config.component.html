@@ -117,7 +117,7 @@
     </form>
 
     <div class="landing-config__footer">
-        <button mat-raised-button color="primary" (click)="submit()">
+        <button mat-raised-button color="primary" *ngIf="landingForm" (click)="submit()">
             {{ labels.save | translate }}
         </button>
     </div>
