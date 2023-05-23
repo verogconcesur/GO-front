@@ -98,15 +98,23 @@ export class ModalVehicleComponent extends ComponentToExtendForCustomDialog impl
 
   ngOnDestroy(): void {}
   public removeFacility(): void {
-    this.form.commissionNumber.setValidators([]);
     this.form.facility.setValue(null);
-    this.form.commissionNumber.setValue(null);
     this.vehicleForm.markAsTouched();
     this.vehicleForm.markAsDirty();
   }
-  public selectFacility(): void {
-    this.form.commissionNumber.setValidators([Validators.required, Validators.minLength(this.minLength)]);
-    this.form.commissionNumber.setValue(null);
+  public changeCommissionNumber(): void {
+    if (this.form.commissionNumber.value && !this.form.facility.hasValidator(Validators.required)) {
+      this.form.facility.setValidators([Validators.required, Validators.minLength(this.minLength)]);
+      this.form.facility.updateValueAndValidity();
+      this.vehicleForm.markAsTouched();
+      this.vehicleForm.markAsDirty();
+    } else if (!this.form.commissionNumber.value && this.form.facility.hasValidator(Validators.required)) {
+      this.form.facility.setValidators([]);
+      this.form.facility.setValue(null);
+      this.form.facility.updateValueAndValidity();
+      this.vehicleForm.markAsTouched();
+      this.vehicleForm.markAsDirty();
+    }
   }
   public confirmCloseCustomDialog(): Observable<boolean> {
     if (this.vehicleForm.touched && this.vehicleForm.dirty) {
@@ -136,14 +144,14 @@ export class ModalVehicleComponent extends ComponentToExtendForCustomDialog impl
       body.inventories.push({
         id: this.vehicleToEdit.inventories[this.vehicleToEdit.inventories.length - 1].id,
         commissionNumber: formValue.commissionNumber ? formValue.commissionNumber : null,
-        enterpriseId: formValue.commissionNumber ? formValue.facility.enterpriseId : null,
-        storeId: formValue.commissionNumber ? formValue.facility.storeId : null
+        enterpriseId: formValue.facility ? formValue.facility.enterpriseId : null,
+        storeId: formValue.facility ? formValue.facility.storeId : null
       });
     } else if (formValue.commissionNumber) {
       body.inventories.push({
         commissionNumber: formValue.commissionNumber ? formValue.commissionNumber : null,
-        enterpriseId: formValue.commissionNumber ? formValue.facility.enterpriseId : null,
-        storeId: formValue.commissionNumber ? formValue.facility.storeId : null
+        enterpriseId: formValue.facility ? formValue.facility.enterpriseId : null,
+        storeId: formValue.facility ? formValue.facility.storeId : null
       });
     }
     const spinner = this.spinnerService.show();
@@ -197,15 +205,14 @@ export class ModalVehicleComponent extends ComponentToExtendForCustomDialog impl
       facility: [null]
     });
     if (this.vehicleToEdit && this.vehicleToEdit.inventories && this.vehicleToEdit.inventories.length) {
+      this.form.commissionNumber.setValue(
+        this.vehicleToEdit.inventories[this.vehicleToEdit.inventories.length - 1].commissionNumber
+      );
+      this.changeCommissionNumber();
       const facility = this.facilityList.find(
         (fac: FacilityDTO) => fac.id === this.vehicleToEdit.inventories[this.vehicleToEdit.inventories.length - 1].facilityId
       );
       this.form.facility.setValue(facility);
-      if (facility) {
-        this.form.commissionNumber.setValue(
-          this.vehicleToEdit.inventories[this.vehicleToEdit.inventories.length - 1].commissionNumber
-        );
-      }
     }
   };
 }

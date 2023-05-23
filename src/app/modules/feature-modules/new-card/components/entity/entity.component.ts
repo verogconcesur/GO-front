@@ -80,7 +80,16 @@ export class EntityComponent implements OnInit {
   get tabItems(): FormArray {
     return this.formTab.get('tabItems') as FormArray;
   }
-
+  public getInventoryLabel(inventory: InventoryVehicle) {
+    let returnLabel = '';
+    if (inventory.vehicleStockId) {
+      returnLabel = inventory.vehicleStockId;
+    }
+    if (inventory.commissionNumber) {
+      returnLabel = returnLabel ? returnLabel + inventory.commissionNumber : inventory.commissionNumber;
+    }
+    return returnLabel;
+  }
   public showCreateEntity(): boolean {
     if (
       this.formTab.get('contentSourceId').value === 1 ||
