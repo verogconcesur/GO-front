@@ -32,6 +32,12 @@ const routes: Routes = [
         loadChildren: () => import('./modules/app-modules/vehicles/vehicles/vehicles.module').then((m) => m.VehiclesModule)
       },
       {
+        path: RouteConstants.ADVANCED_SEARCH,
+        canActivate: [AuthGuardService],
+        loadChildren: () =>
+          import('./modules/app-modules/advanced-search/advanced-search.module').then((m) => m.AdvancedSearchModule)
+      },
+      {
         path: RouteConstants.NOTIFICATIONS,
         canActivate: [AuthGuardService],
         loadChildren: () =>
