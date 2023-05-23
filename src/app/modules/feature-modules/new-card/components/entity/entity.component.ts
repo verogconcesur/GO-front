@@ -86,7 +86,7 @@ export class EntityComponent implements OnInit {
       returnLabel = inventory.vehicleStockId;
     }
     if (inventory.commissionNumber) {
-      returnLabel = returnLabel ? returnLabel + inventory.commissionNumber : inventory.commissionNumber;
+      returnLabel = returnLabel ? returnLabel + '/' + inventory.commissionNumber : inventory.commissionNumber;
     }
     return returnLabel;
   }
