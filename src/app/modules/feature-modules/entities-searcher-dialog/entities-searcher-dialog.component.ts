@@ -98,6 +98,16 @@ export class EntitiesSearcherDialogComponent implements OnInit {
   public save(): void {
     this.dialogRef.close(this.entityForm.getRawValue());
   }
+  public getInventoryLabel(inventory: InventoryVehicle): string {
+    let returnLabel = '';
+    if (inventory.vehicleStockId) {
+      returnLabel = inventory.vehicleStockId;
+    }
+    if (inventory.commissionNumber) {
+      returnLabel = returnLabel ? returnLabel + '/' + inventory.commissionNumber : inventory.commissionNumber;
+    }
+    return returnLabel;
+  }
   public getTitle(): string {
     switch (this.mode) {
       case 'USER':
