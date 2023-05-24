@@ -53,7 +53,7 @@
                     <mat-label>{{ labels.inventory | translate }}</mat-label>
                     <mat-select formControlName="vehicleInventoryId">
                         <mat-option *ngFor="let inventory of inventoryList" [value]="inventory.id">{{
-                            inventory.vehicleStockId
+                            getInventoryLabel(inventory)
                         }}</mat-option>
                     </mat-select>
                     <button matSuffix mat-icon-button aria-label="Clear" (click)="removeInventory(); $event.stopPropagation()">
@@ -62,10 +62,10 @@
                 </mat-form-field>
             </div>
         </div>
-        <div class="entities-searcher__button" fxLayout="row" fxLayoutAlign="end end">
-            <button mat-stroked-button color="primary" [disabled]="entityForm.invalid" (click)="save()">
-                {{ labels.save | translate }}
-            </button>
-        </div>
+    </div>
+    <div class="entities-searcher__button" fxLayout="row" fxLayoutAlign="end end">
+        <button mat-stroked-button color="primary" [disabled]="entityForm.invalid" (click)="save()">
+            {{ labels.save | translate }}
+        </button>
     </div>
 </div>
