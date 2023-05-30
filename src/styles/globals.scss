@@ -169,4 +169,10 @@
       height: calc(100% - 16px);
     }
   }
+
+  .disable-pdf-form {
+    .annotationLayer section {
+      pointer-events: none !important;
+    }
+  }
 }

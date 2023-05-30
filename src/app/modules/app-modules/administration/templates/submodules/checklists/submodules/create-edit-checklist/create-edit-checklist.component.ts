@@ -62,6 +62,7 @@ export class CreateEditChecklistComponent implements OnInit {
     name: marker('administration.templates.checklists.name'),
     nameRequired: marker('userProfile.nameRequired'),
     includeFile: marker('administration.templates.checklists.includeFile'),
+    remoteSignature: marker('administration.templates.checklists.remoteSignature'),
     dropHere: marker('administration.templates.checklists.dropHere'),
     noData: marker('errors.noDataToShow'),
     pages: marker('pagination.pages'),
@@ -74,6 +75,7 @@ export class CreateEditChecklistComponent implements OnInit {
     copyItemInPage: marker('administration.templates.checklists.copyItemInPage'),
     cancel: marker('common.cancel'),
     save: marker('common.save'),
+    defaultValue: marker('administration.templates.checklists.defaultValue'),
     staticValue: marker('administration.templates.checklists.staticValue'),
     staticValueInput: marker('administration.templates.checklists.staticValueInput'),
     staticValueImage: marker('administration.templates.checklists.staticValueImage')
@@ -231,6 +233,15 @@ export class CreateEditChecklistComponent implements OnInit {
       }`;
     }
     return '';
+  }
+
+  public staticOrDefaultValueChange(field: 'staticValue' | 'defaultValue', itemOrderNumber: number): void {
+    const fg: UntypedFormGroup = this.getChecklistItemByOrderNumber(itemOrderNumber);
+    const field2 = field === 'staticValue' ? 'defaultValue' : 'staticValue';
+    if (fg?.get(field)?.value) {
+      fg.get(field2).setValue(false);
+      this.updateValueAndValidityForm();
+    }
   }
 
   public eraseTemplatePDF(): void {
@@ -581,9 +592,14 @@ export class CreateEditChecklistComponent implements OnInit {
             if (item.typeItem === 'VARIABLE') {
               item.variable = { id: item.variable.id };
             }
-            if (item.staticValue && item.typeItem !== 'SIGN' && item.typeItem !== 'DRAWING' && item.typeItem !== 'IMAGE') {
+            if (
+              (item.staticValue || item.defaultValue) &&
+              item.typeItem !== 'SIGN' &&
+              item.typeItem !== 'DRAWING' &&
+              item.typeItem !== 'IMAGE'
+            ) {
               item.itemVal.fileValue = null;
-            } else if (!item.staticValue) {
+            } else if (!(item.staticValue || item.defaultValue)) {
               item.itemVal = null;
             }
             return item;

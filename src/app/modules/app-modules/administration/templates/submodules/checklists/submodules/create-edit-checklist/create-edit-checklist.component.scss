@@ -86,6 +86,9 @@
             content: ':';
           }
         }
+        .remote-signature {
+          margin-left: 15px;
+        }
       }
     }
   }
@@ -107,6 +110,9 @@
 
   .section-margin-bottom {
     margin-bottom: 20px;
+  }
+  .section-margin-left {
+    margin-left: 20px;
   }
 
   .image-input-preview {

@@ -123,6 +123,7 @@
                                                     mat-raised-button
                                                     color="primary"
                                                     class="add-static-image-btn"
+                                                    [disabled]="mode === 'REMOTE'"
                                                     (click)="changeSign(syncGroup.selectedItem)"
                                                 >
                                                     <label>{{ labels.changeSign | translate }}</label>
@@ -130,7 +131,7 @@
                                                 <div
                                                     class="image-input-preview"
                                                     fxLayoutAlign="center center"
-                                                    (click)="changeSign(syncGroup.selectedItem)"
+                                                    (click)="mode === 'REMOTE' && changeSign(syncGroup.selectedItem)"
                                                 >
                                                     <img [src]="getImagePreviewBase64(syncGroup.selectedItem)" />
                                                 </div>
@@ -226,6 +227,7 @@
                 <ng-container class="checklist-sign__pdf__viewer" *ngIf="fileTemplateBase64 | async as base64">
                     <ngx-extended-pdf-viewer
                         id="checklistPDF"
+                        [ngClass]="{ 'disable-pdf-form': mode === 'REMOTE' }"
                         [base64Src]="base64"
                         height="96%"
                         [minHeight]="getPdfMinHeight()"

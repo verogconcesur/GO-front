@@ -54,6 +54,9 @@
                                     <mat-checkbox formControlName="includeFile">{{
                                         labels.includeFile | translate
                                     }}</mat-checkbox>
+                                    <mat-checkbox formControlName="remoteSignature" class="remote-signature">{{
+                                        labels.remoteSignature | translate
+                                    }}</mat-checkbox>
                                 </section>
                             </div>
                         </div>
@@ -179,15 +182,31 @@
                                                 "
                                                 class="section-margin-bottom"
                                             >
-                                                <mat-checkbox formControlName="staticValue">{{
-                                                    labels.staticValue | translate
-                                                }}</mat-checkbox>
+                                                <mat-checkbox
+                                                    formControlName="staticValue"
+                                                    (change)="staticOrDefaultValueChange('staticValue', syncGroup.selectedItem)"
+                                                    >{{ labels.staticValue | translate }}</mat-checkbox
+                                                >
+                                            </section>
+                                            <!-- Default value -->
+                                            <section
+                                                *ngIf="groupByType.typeItem === 'TEXT' || groupByType.typeItem === 'CHECK'"
+                                                class="section-margin-bottom"
+                                            >
+                                                <mat-checkbox
+                                                    formControlName="defaultValue"
+                                                    (change)="staticOrDefaultValueChange('defaultValue', syncGroup.selectedItem)"
+                                                    >{{ labels.defaultValue | translate }}</mat-checkbox
+                                                >
                                             </section>
                                             <!-- Static value TEXT-->
                                             <section
                                                 *ngIf="
                                                     groupByType.typeItem === 'TEXT' &&
-                                                    getChecklistItemByOrderNumber(syncGroup.selectedItem).get('staticValue').value
+                                                    (getChecklistItemByOrderNumber(syncGroup.selectedItem).get('staticValue')
+                                                        .value ||
+                                                        getChecklistItemByOrderNumber(syncGroup.selectedItem).get('defaultValue')
+                                                            .value)
                                                 "
                                                 formGroupName="itemVal"
                                                 class="section-margin-bottom"
@@ -197,12 +216,28 @@
                                                     <input matInput formControlName="textValue" />
                                                 </mat-form-field>
                                             </section>
+                                            <!-- Default value CHECK-->
+                                            <section
+                                                *ngIf="
+                                                    groupByType.typeItem === 'CHECK' &&
+                                                    getChecklistItemByOrderNumber(syncGroup.selectedItem).get('defaultValue')
+                                                        .value
+                                                "
+                                                formGroupName="itemVal"
+                                                class="section-margin-bottom section-margin-left"
+                                            >
+                                                <mat-checkbox formControlName="booleanValue">{{
+                                                    labels.staticValueInput | translate
+                                                }}</mat-checkbox>
+                                            </section>
                                         </section>
                                         <!-- Static value IMAGE-->
                                         <section
                                             *ngIf="
                                                 groupByType.typeItem === 'IMAGE' &&
-                                                getChecklistItemByOrderNumber(syncGroup.selectedItem).get('staticValue').value
+                                                (getChecklistItemByOrderNumber(syncGroup.selectedItem).get('staticValue').value ||
+                                                    getChecklistItemByOrderNumber(syncGroup.selectedItem).get('defaultValue')
+                                                        .value)
                                             "
                                             fxLayoutAlign="space-between center"
                                             class="section-margin-bottom"

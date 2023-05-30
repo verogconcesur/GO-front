@@ -36,7 +36,6 @@ export class SignDocumentTemplateSelectorComponent implements OnInit {
 
   private getTemplates(): void {
     const spinner = this.spinnerService.show();
-    //TODO DGDC: mandar mode como parámetro
     this.templates$ = this.templatesChecklistsService.getTemplatesChecklistByWCardId(this.wCardId, this.mode).pipe(
       take(1),
       tap((data: TemplatesChecklistsDTO[]) => (this.hasTemplates = data && data.length > 0 ? true : false)),

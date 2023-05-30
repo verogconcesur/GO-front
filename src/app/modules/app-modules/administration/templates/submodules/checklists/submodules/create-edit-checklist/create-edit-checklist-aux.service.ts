@@ -25,6 +25,7 @@ export class CreateEditChecklistAuxService {
     return this.fb.group({
       id: [checklistToEdit?.id ? checklistToEdit.id : null],
       includeFile: [checklistToEdit?.includeFile ? checklistToEdit.includeFile : false],
+      remoteSignature: [checklistToEdit?.remoteSignature ? checklistToEdit.remoteSignature : false],
       //TemplatesCommonDTO;
       template: this.fb.group({
         id: [checklistToEdit?.template?.id ? checklistToEdit.template.id : null],
@@ -66,6 +67,7 @@ export class CreateEditChecklistAuxService {
         typeItem: [item.typeItem, Validators.required],
         typeSign: [item.typeSign],
         staticValue: [item.staticValue],
+        defaultValue: [item.defaultValue],
         orderNumber: [newOrderId, Validators.required],
         label: [item.label, Validators.required],
         sincronizedItems: [forceId ? (item.sincronizedItems ? item.sincronizedItems : [newOrderId]) : [newOrderId]],
@@ -127,6 +129,7 @@ export class CreateEditChecklistAuxService {
         typeItem: [item.data('type'), Validators.required],
         typeSign: [null],
         staticValue: [false],
+        defaultValue: [false],
         orderNumber: [uniqueIdOrder, Validators.required],
         label: [null, Validators.required],
         sincronizedItems: [[uniqueIdOrder]],
