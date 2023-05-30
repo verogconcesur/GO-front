@@ -13,6 +13,7 @@ import { finalize, take, tap } from 'rxjs/operators';
 })
 export class SignDocumentTemplateSelectorComponent implements OnInit {
   @Input() wCardId: number;
+  @Input() mode: 'REMOTE' | 'NO_REMOTE';
   @Output() templateSelected: EventEmitter<TemplatesChecklistsDTO> = new EventEmitter();
   public templates$: Observable<TemplatesChecklistsDTO[]>;
   public hasTemplates: boolean;
@@ -35,7 +36,8 @@ export class SignDocumentTemplateSelectorComponent implements OnInit {
 
   private getTemplates(): void {
     const spinner = this.spinnerService.show();
-    this.templates$ = this.templatesChecklistsService.getTemplatesChecklistByWCardId(this.wCardId).pipe(
+    //TODO DGDC: mandar mode como parámetro
+    this.templates$ = this.templatesChecklistsService.getTemplatesChecklistByWCardId(this.wCardId, this.mode).pipe(
       take(1),
       tap((data: TemplatesChecklistsDTO[]) => (this.hasTemplates = data && data.length > 0 ? true : false)),
       finalize(() => this.spinnerService.hide(spinner))

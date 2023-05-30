@@ -93,6 +93,11 @@
                 "text": "Notes",
                 "title": "Communication"
             },
+            "sign": {
+                "modeTitle": "What kind of document do you want to sign?",
+                "noRemoteMode": "Internal signature (user)",
+                "remoteMode": "Remote signature (client)"
+            },
             "title": "Templates"
         },
         "title": "Go",

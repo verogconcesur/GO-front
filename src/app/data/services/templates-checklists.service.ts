@@ -49,9 +49,17 @@ export class TemplatesChecklistsService {
       .pipe(catchError((error) => throwError(error as ConcenetError)));
   }
 
-  public getTemplatesChecklistByWCardId(id: number): Observable<TemplatesChecklistsDTO[]> {
+  public getTemplatesChecklistByWCardId(id: number, mode?: 'REMOTE' | 'NO_REMOTE'): Observable<TemplatesChecklistsDTO[]> {
+    let modePath = '';
+    if (mode === 'REMOTE') {
+      modePath = '/REMOTE';
+    } else if (mode === 'NO_REMOTE') {
+      modePath = '/NOREMOTE';
+    }
     return this.http
-      .get<TemplatesChecklistsDTO[]>(`${this.env.apiBaseUrl}${this.CARD_INSTANCE_PATH}/${id}${this.TEMPLATE_CHECKLIST}`)
+      .get<TemplatesChecklistsDTO[]>(
+        `${this.env.apiBaseUrl}${this.CARD_INSTANCE_PATH}/${id}${this.TEMPLATE_CHECKLIST}${modePath}`
+      )
       .pipe(catchError((error) => throwError(error as ConcenetError)));
   }
 

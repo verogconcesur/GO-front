@@ -48,6 +48,8 @@ import { AttachmentDTO, CardAttachmentsDTO } from '@data/models/cards/card-attac
 })
 export class SignDocumentChecklistComponent implements OnInit, AfterViewInit, OnDestroy {
   @Input() wCardId: number;
+  //En la firma remota bloqueamos el formulario
+  @Input() mode: 'REMOTE' | 'NO_REMOTE' = 'NO_REMOTE';
   @Input() pdf: SignDocumentExchangeDTO;
   @Output() setTitle: EventEmitter<string> = new EventEmitter();
   @Output() saveAction: EventEmitter<SignDocumentExchangeDTO> = new EventEmitter();
@@ -126,7 +128,7 @@ export class SignDocumentChecklistComponent implements OnInit, AfterViewInit, On
             this.getChecklistItemByOrderNumber(auxOrderNumber)
               .get('itemVal')
               .get('textValue')
-              .setValue(item.itemVal?.textValue ? item.itemVal.textValue : null);
+              .setValue(item.itemVal?.textValue && this.mode === 'NO_REMOTE' ? item.itemVal.textValue : null);
           }
           this.formDataIdValueMapByForm[auxOrderNumber] = item.itemVal?.textValue ? item.itemVal?.textValue : null;
           this.formDataIdValueMapByForNgxPdf[`formData.item-${this.auxOrderRelationRealOrder[auxOrderNumber]}`] = item.itemVal
@@ -141,13 +143,11 @@ export class SignDocumentChecklistComponent implements OnInit, AfterViewInit, On
             this.getChecklistItemByOrderNumber(auxOrderNumber)
               .get('itemVal')
               .get('booleanValue')
-              .setValue(item.itemVal?.booleanValue ? true : null);
+              .setValue(item.itemVal?.booleanValue && this.mode === 'NO_REMOTE' ? true : null);
           }
           this.formDataIdValueMapByForm[auxOrderNumber] = item.itemVal?.booleanValue ? true : null;
-          this.formDataIdValueMapByForNgxPdf[`formData.item-${this.auxOrderRelationRealOrder[auxOrderNumber]}`] = item.itemVal
-            ?.booleanValue
-            ? 'Yes'
-            : null;
+          this.formDataIdValueMapByForNgxPdf[`formData.item-${this.auxOrderRelationRealOrder[auxOrderNumber]}`] =
+            item.itemVal?.booleanValue && this.mode === 'NO_REMOTE' ? 'Yes' : null;
           this.changeCounter = 1;
         });
       }
@@ -167,9 +167,9 @@ export class SignDocumentChecklistComponent implements OnInit, AfterViewInit, On
       if (k.indexOf('formData.item-') === 0) {
         const auxOrder = this.realOrderRelationAuxOrder[parseInt(k.split('formData.item-')[1].split('/')[0], 10)];
         const fgAux = this.getChecklistItemByOrderNumber(auxOrder);
-        if (fgAux.get('typeItem').value === 'TEXT') {
+        if (fgAux.get('typeItem').value === 'TEXT' && this.mode === 'NO_REMOTE') {
           this.formDataIdValueMapByPdf[auxOrder] = data[k];
-        } else if (fgAux.get('typeItem').value === 'CHECK') {
+        } else if (fgAux.get('typeItem').value === 'CHECK' && this.mode === 'NO_REMOTE') {
           this.formDataIdValueMapByPdf[auxOrder] = data[k] === 'Yes' ? true : null;
         }
         if (this.formDataIdValueMapByPdf[auxOrder] !== this.formDataIdValueMapByForm[auxOrder]) {
@@ -177,10 +177,10 @@ export class SignDocumentChecklistComponent implements OnInit, AfterViewInit, On
             .get('sincronizedItems')
             .value.forEach((n: number) => {
               const fg = this.getChecklistItemByOrderNumber(n);
-              if (fg.get('typeItem').value === 'TEXT') {
+              if (fg.get('typeItem').value === 'TEXT' && this.mode === 'NO_REMOTE') {
                 fg.get('itemVal').get('textValue').setValue(data[k]);
                 this.formDataIdValueMapByPdf[n] = data[k];
-              } else if (fg.get('typeItem').value === 'CHECK') {
+              } else if (fg.get('typeItem').value === 'CHECK' && this.mode === 'NO_REMOTE') {
                 fg.get('itemVal')
                   .get('booleanValue')
                   .setValue(data[k] === 'Yes' ? true : null);
@@ -576,6 +576,9 @@ export class SignDocumentChecklistComponent implements OnInit, AfterViewInit, On
 
   private initForm() {
     this.checklistForm = this.signDocumentAuxService.createChecklistForm(this.checklistToEdit, []);
+    if (this.mode === 'REMOTE') {
+      this.checklistForm.disable();
+    }
     this.updateValueAndValidityForm();
   }
 

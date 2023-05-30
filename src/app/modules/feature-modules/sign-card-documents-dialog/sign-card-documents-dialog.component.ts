@@ -16,6 +16,7 @@ import { RouteConstants } from '@app/constants/route.constants';
   styleUrls: ['./sign-card-documents-dialog.component.scss']
 })
 export class SignCardDocumentsDialogComponent implements OnInit {
+  public mode: 'REMOTE' | 'NO_REMOTE';
   public stepIndex = 0;
   public wCardId: number;
   public wCardUserId: number;
@@ -63,8 +64,20 @@ export class SignCardDocumentsDialogComponent implements OnInit {
     return '';
   }
 
+  public isSmallModal(): boolean {
+    if (this.mode === 'NO_REMOTE') {
+      return this.stepIndex !== 2;
+    } else {
+      return this.stepIndex !== 2;
+    }
+  }
+
   public setPdfName(pdfname: string): void {
     this.pdfName = pdfname;
+  }
+
+  public modeSelected(mode: 'REMOTE' | 'NO_REMOTE'): void {
+    this.mode = mode;
   }
 
   public templateSelected(template: TemplatesChecklistsDTO): void {
