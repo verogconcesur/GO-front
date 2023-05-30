@@ -4,6 +4,8 @@ import p5 from 'p5';
 import $ from 'jquery';
 import 'jqueryui';
 import { marker } from '@biesbjerg/ngx-translate-extract-marker';
+import SignaturePad from 'signature_pad';
+import { FormControl } from '@angular/forms';
 
 @Component({
   selector: 'app-change-sign',
@@ -13,11 +15,13 @@ import { marker } from '@biesbjerg/ngx-translate-extract-marker';
 export class ChangeSignComponent implements OnInit, OnDestroy, AfterViewInit {
   @Output() closeEvent: EventEmitter<boolean> = new EventEmitter();
   @Output() saveEvent: EventEmitter<string> = new EventEmitter();
-  public pencilType: 'pencil' | 'eraser' = 'pencil';
-  public p5Sign: p5 = null;
   public labels = {
-    save: marker('common.save')
+    save: marker('common.save'),
+    erase: marker('common.erase')
   };
+  public colorFormControl = new FormControl('#000');
+  private canvas: HTMLCanvasElement = null;
+  private signaturePad: SignaturePad;
 
   constructor(private translateService: TranslateService) {}
 
@@ -28,60 +32,26 @@ export class ChangeSignComponent implements OnInit, OnDestroy, AfterViewInit {
   }
 
   public setDrawZone(): void {
-    new p5((p: p5) => this.configDrawingZone(p, 'paint-zone__canvas-wrapper'));
+    this.canvas = document.getElementById('sign-canvas') as HTMLCanvasElement;
+    this.signaturePad = new SignaturePad(this.canvas);
   }
 
-  public configDrawingZone = (p: p5, id: string): void => {
-    console.log('configDrawingZone => changeSignComponent');
-    p.setup = () => {
-      p.createCanvas(400, 250).parent(id);
-    };
-    p.touchMoved = (event) => {
-      let type = 'pencil';
-      // if ($('#change-sign-pen-brush:checked').length) {
-      //   type = 'brush';
-      // } else
-      if ($('#change-sign-pen-eraser:checked').length) {
-        type = 'eraser';
-      }
-      const size = parseInt($('#change-sign-pen-size').val().toString(), 10);
-      // const color = $('#change-sign-pen-color').val().toString();
-      const color = '#000';
-      p.fill(color);
-      p.stroke(color);
-      if (type === 'eraser') {
-        p.erase();
-        p.strokeWeight(30);
-        p.line(p.pmouseX, p.pmouseY, p.mouseX, p.mouseY);
-      } else {
-        p.noErase();
-        if (type === 'pencil') {
-          p.strokeWeight(size);
-          p.line(p.pmouseX, p.pmouseY, p.mouseX, p.mouseY);
-        } else {
-          p.ellipse(p.mouseX, p.mouseY, size, size);
-        }
-      }
-    };
-    this.p5Sign = p;
-  };
+  public eraseSignature(): void {
+    this.signaturePad.clear();
+  }
+
+  public colorChanged(): void {
+    console.log(this.colorFormControl.value);
+    this.signaturePad.penColor = this.colorFormControl.value;
+  }
 
   public cancelAction(): void {
     this.closeEvent.emit(true);
   }
 
   public confirmAction(): void {
-    const { canvas } = this.p5Sign.get() as unknown as {
-      canvas: HTMLCanvasElement;
-    };
-    this.saveEvent.emit(canvas.toDataURL());
+    this.saveEvent.emit(this.signaturePad.toDataURL());
   }
 
-  ngOnDestroy(): void {
-    console.log('Ondestroy change sign component');
-    this.p5Sign.touchMoved = (event) => {};
-    this.p5Sign.touchEnded = (event) => {};
-    this.p5Sign.remove();
-    this.p5Sign = null;
-  }
+  ngOnDestroy(): void {}
 }
