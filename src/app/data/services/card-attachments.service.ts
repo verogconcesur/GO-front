@@ -118,7 +118,7 @@ export class CardAttachmentsService {
 
   public cancelRemoteSignature(cardInstanceWorkflowId: number, remoteSignatureId: number): Observable<boolean> {
     return this.http
-      .delete<boolean>(
+      .get<boolean>(
         `${this.env.apiBaseUrl}${this.GET_CARD_INSTANCE_PATH}${this.DETAIL_PATH}/` +
           `${cardInstanceWorkflowId}${this.CANCEL_REMOTE_SIGNATURE_PATH}/${remoteSignatureId}`
       )
