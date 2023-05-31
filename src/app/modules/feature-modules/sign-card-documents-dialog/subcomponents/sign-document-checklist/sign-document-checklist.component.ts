@@ -129,7 +129,7 @@ export class SignDocumentChecklistComponent implements OnInit, AfterViewInit, On
             this.getChecklistItemByOrderNumber(auxOrderNumber)
               .get('itemVal')
               .get('textValue')
-              .setValue(item.itemVal?.textValue && this.mode === 'NO_REMOTE' ? item.itemVal.textValue : null);
+              .setValue(item.itemVal?.textValue ? item.itemVal.textValue : null);
           }
           this.formDataIdValueMapByForm[auxOrderNumber] = item.itemVal?.textValue ? item.itemVal?.textValue : null;
           this.formDataIdValueMapByForNgxPdf[`formData.item-${this.auxOrderRelationRealOrder[auxOrderNumber]}`] = item.itemVal
@@ -144,11 +144,13 @@ export class SignDocumentChecklistComponent implements OnInit, AfterViewInit, On
             this.getChecklistItemByOrderNumber(auxOrderNumber)
               .get('itemVal')
               .get('booleanValue')
-              .setValue(item.itemVal?.booleanValue && this.mode === 'NO_REMOTE' ? true : null);
+              .setValue(item.itemVal?.booleanValue ? true : null);
           }
           this.formDataIdValueMapByForm[auxOrderNumber] = item.itemVal?.booleanValue ? true : null;
-          this.formDataIdValueMapByForNgxPdf[`formData.item-${this.auxOrderRelationRealOrder[auxOrderNumber]}`] =
-            item.itemVal?.booleanValue && this.mode === 'NO_REMOTE' ? 'Yes' : null;
+          this.formDataIdValueMapByForNgxPdf[`formData.item-${this.auxOrderRelationRealOrder[auxOrderNumber]}`] = item.itemVal
+            ?.booleanValue
+            ? 'Yes'
+            : null;
           this.changeCounter = 1;
         });
       }

@@ -197,7 +197,8 @@
             "CHANGE_STATE": "Change state",
             "EDIT_INFO": "Edit info",
             "INCOMING_CALL": "Incoming call",
-            "OUTCOMING_CALL": "Outcoming call"
+            "OUTCOMING_CALL": "Outcoming call",
+            "REMOTE_SIGN": "Remote sign"
         },
         "messages": {
             "chanels": "Channels",
@@ -660,6 +661,17 @@
     },
     "sample": {
         "text": "There {count, plural, =0{is} one{is} other{are}} {count, plural, =0{} one{a} other{several}} {count, plural, =0{nothing} one{thing} other{things}}"
+    },
+    "signature": {
+        "cancelConfirmation": "Are you sure you want to cancel the remote sign of this document?",
+        "status": {
+            "canceled": "Canceled",
+            "pending": "Pending",
+            "readen": "Readen",
+            "rejected": "Rejected",
+            "signed": "Signed",
+            "unreaden": "Unread"
+        }
     },
     "textEditor": {
         "htmlCodeInsertion": "Insert html code",

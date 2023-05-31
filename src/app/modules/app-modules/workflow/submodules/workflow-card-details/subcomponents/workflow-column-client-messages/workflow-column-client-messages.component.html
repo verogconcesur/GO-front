@@ -12,6 +12,7 @@
                 <mat-icon *ngIf="checkMessageChannel(message, 1)">person_pin</mat-icon>
                 <mat-icon *ngIf="checkMessageChannel(message, 2)">alternate_email</mat-icon>
                 <mat-icon *ngIf="checkMessageChannel(message, 3)">message</mat-icon>
+                <mat-icon fontSet="concenet" *ngIf="checkMessageSignature(message)">signature</mat-icon>
             </div>
             <div class="date">
                 {{ message.dateComment | date : "dd/MM/yy, HH:mm" }}

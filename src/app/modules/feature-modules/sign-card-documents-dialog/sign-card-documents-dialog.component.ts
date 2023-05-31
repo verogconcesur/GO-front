@@ -132,7 +132,7 @@ export class SignCardDocumentsDialogComponent implements OnInit {
       const spinner = this.spinnerService.show();
       let fileId = null;
       if (this.template.includeFile) {
-        fileId = this.template.templateFile.id;
+        fileId = null;
       } else if (this.pdf?.attachment?.id) {
         fileId = this.pdf.attachment.id;
       } else if (this.pdf?.procesedFile?.id) {

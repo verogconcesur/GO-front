@@ -197,7 +197,8 @@
             "CHANGE_STATE": "Cambiar estado",
             "EDIT_INFO": "Editar información",
             "INCOMING_CALL": "Llamada entrante",
-            "OUTCOMING_CALL": "Llamada saliente"
+            "OUTCOMING_CALL": "Llamada saliente",
+            "REMOTE_SIGN": "Firma remota"
         },
         "messages": {
             "chanels": "Canales",
@@ -657,6 +658,17 @@
     },
     "sample": {
         "text": "{count, plural, =0{No hay} one{Hay una} other{Hay varias}} {count, plural, =0{nada} one{cosa} other{cosas}}"
+    },
+    "signature": {
+        "cancelConfirmation": "¿Está seguro que desea cancelar la firma remota de este documento?",
+        "status": {
+            "canceled": "Cancelado",
+            "pending": "Pendiente",
+            "readen": "Leído",
+            "rejected": "Rechazado",
+            "signed": "Firmado",
+            "unreaden": "Sin leer"
+        }
     },
     "textEditor": {
         "htmlCodeInsertion": "Inserta el código html",

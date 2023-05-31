@@ -72,7 +72,7 @@ export class CreateEditChecklistAuxService {
         label: [item.label, Validators.required],
         sincronizedItems: [forceId ? (item.sincronizedItems ? item.sincronizedItems : [newOrderId]) : [newOrderId]],
         itemVal: this.fb.group({
-          booleanValue: [item.itemVal?.booleanValue ? item.itemVal?.booleanValue : null],
+          booleanValue: [item.itemVal?.booleanValue || item.itemVal?.booleanValue === false ? item.itemVal?.booleanValue : null],
           fileValue: this.fb.group({
             content: [item.itemVal?.fileValue?.content ? item.itemVal.fileValue.content : null],
             id: [item.itemVal?.fileValue?.id ? item.itemVal.fileValue.id : null],

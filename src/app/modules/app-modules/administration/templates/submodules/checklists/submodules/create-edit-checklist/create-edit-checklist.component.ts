@@ -602,6 +602,9 @@ export class CreateEditChecklistComponent implements OnInit {
             } else if (!(item.staticValue || item.defaultValue)) {
               item.itemVal = null;
             }
+            if (item.defaultValue && item.typeItem === 'CHECK' && !item.itemVal.booleanValue) {
+              item.itemVal.booleanValue = false;
+            }
             return item;
           });
           this.templatesChecklistsService

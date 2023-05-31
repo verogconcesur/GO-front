@@ -135,12 +135,24 @@
                         <mat-icon *ngIf="item?.eventHistoryType === 'ADD_DOC'"> attach_file</mat-icon>
                         <mat-icon *ngIf="item?.eventHistoryType === 'ADD_COMMENT'"> insert_comment</mat-icon>
                         <mat-icon *ngIf="item?.eventHistoryType === 'MIGRATION'"> exit_to_app</mat-icon>
+                        <mat-icon fontSet="concenet" *ngIf="item?.eventHistoryType === 'REMOTE_SIGN'"> signature</mat-icon>
                         <div [innerHtml]="getHistoryDescription(item) | safeHtml"></div>
                     </div>
                     <div class="history-info__date">{{ item.dateEvent | date : "dd/MM/yy, HH:mm" }}</div>
                 </div>
                 <div class="history-info__line">
-                    <div class="history-info__comment" *ngIf="item.comments" [innerHtml]="item.comments | safeHtml"></div>
+                    <div
+                        class="history-info__comment"
+                        *ngIf="item.comments || item.cardInstanceRemoteSignature"
+                        [innerHtml]="getHistoryComment(item)"
+                    ></div>
+                    <button
+                        mat-raised-button
+                        *ngIf="item.cardInstanceRemoteSignature && item.cardInstanceRemoteSignature.status === 'PENDING'"
+                        (click)="cancelRemoteSignature(item)"
+                    >
+                        {{ labels.cancel | translate }}
+                    </button>
                 </div>
             </div>
         </div>

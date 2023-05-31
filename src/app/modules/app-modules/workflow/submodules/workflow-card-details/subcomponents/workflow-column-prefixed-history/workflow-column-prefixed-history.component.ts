@@ -6,10 +6,13 @@ import { marker } from '@biesbjerg/ngx-translate-extract-marker';
 import CardColumnTabDTO from '@data/models/cards/card-column-tab-dto';
 import CardHistoryDTO from '@data/models/cards/card-history';
 import CardHistoryFilterDTO from '@data/models/cards/card-history-filter';
+import { CardAttachmentsService } from '@data/services/card-attachments.service';
 import { CardHistoryService } from '@data/services/card-history.service';
 import { TranslateService } from '@ngx-translate/core';
+import { ConfirmDialogService } from '@shared/services/confirm-dialog.service';
 import { GlobalMessageService } from '@shared/services/global-message.service';
-import { take } from 'rxjs/operators';
+import { ProgressSpinnerDialogService } from '@shared/services/progress-spinner-dialog.service';
+import { finalize, take } from 'rxjs/operators';
 
 @Component({
   selector: 'app-workflow-column-prefixed-history',
@@ -27,7 +30,8 @@ export class WorkflowColumnPrefixedHistoryComponent implements OnInit, OnChanges
     migration: marker('cards.migration'),
     from: marker('common.from'),
     to: marker('common.to'),
-    noDataToShow: marker('errors.noDataToShow')
+    noDataToShow: marker('errors.noDataToShow'),
+    cancel: marker('common.cancel')
   };
   public historyOriginalData: CardHistoryDTO[] = [];
   public historyData: CardHistoryDTO[] = [];
@@ -60,7 +64,10 @@ export class WorkflowColumnPrefixedHistoryComponent implements OnInit, OnChanges
     private route: ActivatedRoute,
     private globalMessageService: GlobalMessageService,
     private translateService: TranslateService,
-    private formBuilder: UntypedFormBuilder
+    private formBuilder: UntypedFormBuilder,
+    private confirmDialogService: ConfirmDialogService,
+    private spinnerService: ProgressSpinnerDialogService,
+    private cardAttachmentService: CardAttachmentsService
   ) {}
 
   ngOnInit(): void {
@@ -206,6 +213,35 @@ export class WorkflowColumnPrefixedHistoryComponent implements OnInit, OnChanges
     return html;
   }
 
+  public getHistoryComment(item: CardHistoryDTO): string {
+    if (item.cardInstanceRemoteSignature) {
+      let state = '';
+      if (item.cardInstanceRemoteSignature.status === 'PENDING') {
+        state = `${this.translateService.instant(marker('signature.status.pending'))}`;
+      } else if (item.cardInstanceRemoteSignature.status === 'SIGNED') {
+        state = `${this.translateService.instant(marker('signature.status.signed'))}`;
+      } else if (item.cardInstanceRemoteSignature.status === 'REJECTED') {
+        state = `${this.translateService.instant(marker('signature.status.rejected'))}`;
+      } else if (item.cardInstanceRemoteSignature.status === 'CANCELED') {
+        state = `${this.translateService.instant(marker('signature.status.canceled'))}`;
+      }
+      if (
+        item.cardInstanceRemoteSignature.status !== 'SIGNED' &&
+        item.cardInstanceRemoteSignature.status !== 'REJECTED' &&
+        item.cardInstanceRemoteSignature.readDate
+      ) {
+        state += ` (${this.translateService.instant(marker('signature.status.readen'))})`;
+      } else if (item.cardInstanceRemoteSignature.status !== 'SIGNED') {
+        state += ` (${this.translateService.instant(marker('signature.status.unreaden'))})`;
+      }
+      return `${item.comments ? item.comments : ''}<ul><li>${this.translateService.instant('cards.column.template')}: ${
+        item.cardInstanceRemoteSignature.templateChecklist.template.name
+      }</li><li>${this.translateService.instant(marker('common.state'))}: ${state}</li></ul>`;
+    } else {
+      return item.comments;
+    }
+  }
+
   public getCircleStyles(item: CardHistoryDTO): string {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const styles: any = {};
@@ -234,6 +270,41 @@ export class WorkflowColumnPrefixedHistoryComponent implements OnInit, OnChanges
       }
     }
     this.filterChange();
+  }
+
+  public cancelRemoteSignature(item: CardHistoryDTO): void {
+    this.confirmDialogService
+      .open({
+        title: this.translateService.instant(marker('common.warning')),
+        message: this.translateService.instant(marker('signature.cancelConfirmation'))
+      })
+      .pipe(take(1))
+      .subscribe((ok: boolean) => {
+        if (ok) {
+          const spinner = this.spinnerService.show();
+          this.cardAttachmentService
+            .cancelRemoteSignature(this.historyFilter.cardInstanceWorkflowId, item.cardInstanceRemoteSignature.id)
+            .pipe(
+              take(1),
+              finalize(() => this.spinnerService.hide(spinner))
+            )
+            .subscribe({
+              next: () => {
+                this.globalMessageService.showSuccess({
+                  message: this.translateService.instant(marker('common.successOperation')),
+                  actionText: this.translateService.instant(marker('common.close'))
+                });
+                this.getData();
+              },
+              error: (error: ConcenetError) => {
+                this.globalMessageService.showError({
+                  message: error.message,
+                  actionText: this.translateService.instant(marker('common.close'))
+                });
+              }
+            });
+        }
+      });
   }
 
   private getFilterOptions(): void {

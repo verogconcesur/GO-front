@@ -1,5 +1,7 @@
 import MessageChannelDTO from '../templates/message-channels-dto';
+import CardColumnTabDTO from './card-column-tab-dto';
 import CardInstanceDTO from './card-instance-dto';
+import CardInstanceRemoteSignatureDTO from './card-instance-remote-signature-dto';
 
 export default interface CardMessageDTO {
   cardInstance?: CardInstanceDTO;
@@ -10,4 +12,6 @@ export default interface CardMessageDTO {
   roleSender?: string;
   sender?: string;
   messageChannels: MessageChannelDTO[];
+  budgetTab?: CardColumnTabDTO;
+  cardInstanceRemoteSignature?: CardInstanceRemoteSignatureDTO;
 }

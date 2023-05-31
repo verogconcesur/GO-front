@@ -82,4 +82,7 @@ export class WorkflowColumnClientMessagesComponent implements OnInit, OnDestroy 
   public checkMessageChannel(message: CardMessageDTO, channelId: number): boolean {
     return message.messageChannels && !!message.messageChannels.find((msg: MessageChannelDTO) => msg.id === channelId);
   }
+  public checkMessageSignature(message: CardMessageDTO): boolean {
+    return message.cardInstanceRemoteSignature ? true : false;
+  }
 }

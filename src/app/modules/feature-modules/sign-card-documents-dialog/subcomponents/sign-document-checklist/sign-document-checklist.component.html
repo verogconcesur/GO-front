@@ -131,7 +131,7 @@
                                                 <div
                                                     class="image-input-preview"
                                                     fxLayoutAlign="center center"
-                                                    (click)="mode === 'REMOTE' && changeSign(syncGroup.selectedItem)"
+                                                    (click)="mode !== 'REMOTE' && changeSign(syncGroup.selectedItem)"
                                                 >
                                                     <img [src]="getImagePreviewBase64(syncGroup.selectedItem)" />
                                                 </div>

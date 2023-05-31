@@ -23,6 +23,7 @@ export class CardAttachmentsService {
   private readonly DOWNLOAD_PATH = '/download';
   private readonly HIDE_LANDING_PATH = '/hideLanding';
   private readonly SEND_REMOTE_SIGNATURE_PATH = '/sendRemoteSignature';
+  private readonly CANCEL_REMOTE_SIGNATURE_PATH = '/cancelRemoteSignature';
 
   constructor(@Inject(ENV) private env: Env, private http: HttpClient) {}
 
@@ -111,6 +112,15 @@ export class CardAttachmentsService {
         `${this.env.apiBaseUrl}${this.GET_CARD_INSTANCE_PATH}${this.DETAIL_PATH}/` +
           `${cardInstanceWorkflowId}${this.SEND_REMOTE_SIGNATURE_PATH}`,
         { templateChecklistId, fileId }
+      )
+      .pipe(catchError((error) => throwError(error.error as ConcenetError)));
+  }
+
+  public cancelRemoteSignature(cardInstanceWorkflowId: number, remoteSignatureId: number): Observable<boolean> {
+    return this.http
+      .delete<boolean>(
+        `${this.env.apiBaseUrl}${this.GET_CARD_INSTANCE_PATH}${this.DETAIL_PATH}/` +
+          `${cardInstanceWorkflowId}${this.CANCEL_REMOTE_SIGNATURE_PATH}/${remoteSignatureId}`
       )
       .pipe(catchError((error) => throwError(error.error as ConcenetError)));
   }
