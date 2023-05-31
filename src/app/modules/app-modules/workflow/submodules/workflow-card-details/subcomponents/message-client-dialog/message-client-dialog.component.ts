@@ -12,6 +12,7 @@ import { MatDialog } from '@angular/material/dialog';
 import { marker } from '@biesbjerg/ngx-translate-extract-marker';
 import { AttachmentDTO, CardAttachmentsDTO } from '@data/models/cards/card-attachments-dto';
 import CardInstanceDTO from '@data/models/cards/card-instance-dto';
+import CardInstanceRemoteSignatureDTO from '@data/models/cards/card-instance-remote-signature-dto';
 import CardMessageRenderDTO from '@data/models/cards/card-message-render';
 import MessageChannelDTO from '@data/models/templates/message-channels-dto';
 import TemplatesCommonDTO from '@data/models/templates/templates-common-dto';
@@ -73,6 +74,7 @@ export class MessageClientDialogComponent extends ComponentToExtendForCustomDial
     macroListOptions: []
   };
   public cardInstance: CardInstanceDTO;
+  public remoteSignature: CardInstanceRemoteSignatureDTO;
   public messageForm: UntypedFormGroup;
   public messageChannels: MessageChannelDTO[] = [];
   public templateList: TemplatesCommonDTO[] = [];
@@ -105,7 +107,8 @@ export class MessageClientDialogComponent extends ComponentToExtendForCustomDial
   }
   ngOnInit(): void {
     const spinner = this.spinnerService.show();
-    this.cardInstance = this.extendedComponentData;
+    this.cardInstance = this.extendedComponentData.cardInstance;
+    this.remoteSignature = this.extendedComponentData.remoteSignature;
     forkJoin([
       this.communicationService.getMessageChannels(),
       this.cardAttachmentsService.getCardAttachmentsByInstance(this.cardInstance.cardInstanceWorkflow.id)
@@ -135,6 +138,12 @@ export class MessageClientDialogComponent extends ComponentToExtendForCustomDial
           console.log(errors);
         }
       );
+  }
+  public getTitle(): string {
+    if (this.remoteSignature) {
+      return marker('cards.messages.signatureTitle');
+    }
+    return this.labels.title;
   }
   public openAttachmentsModal(): void {
     const data: CardInstanceAttachmentsModalVersionConfig = {
@@ -261,6 +270,12 @@ export class MessageClientDialogComponent extends ComponentToExtendForCustomDial
     const formValue = this.messageForm.getRawValue();
     const spinner = this.spinnerService.show();
     const template = this.messageForm.get('comunicationTemplate').value;
+    if (this.remoteSignature?.id) {
+      formValue.messageClients.map((m: CardMessageRenderDTO) => {
+        m.cardInstanceRemoteSignatureId = this.remoteSignature.id;
+        return m;
+      });
+    }
     const channels = this.messageForm
       .getRawValue()
       .messageChannels.filter((channel: { messageChannel: MessageChannelDTO; selected: boolean }) => channel.selected)

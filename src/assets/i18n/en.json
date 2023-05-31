@@ -53,7 +53,9 @@
                 "name": "Checklist name",
                 "new": "New checklist",
                 "pdfPreview": "Preview",
+                "remoteChecklistPreviewer": "Document preview",
                 "remoteSignature": "Remote signature (client)",
+                "remoteSignatureSendSuccess": "Document sent succesfully to client",
                 "selectCardAttachmentImage": "Select image file attached",
                 "selectCardAttachmentPdf": "Select PDF file attached",
                 "selectDirectory": "Select directory",
@@ -200,6 +202,7 @@
         "messages": {
             "chanels": "Channels",
             "communicationTemplate": "Comunication template",
+            "signatureTitle": "Do you want to send a message to the client notifying the new document to sign?",
             "title": "Message Client"
         },
         "migration": "Migration",

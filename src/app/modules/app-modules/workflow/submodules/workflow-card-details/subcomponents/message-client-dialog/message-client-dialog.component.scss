@@ -5,6 +5,11 @@
   width: 100%;
   padding-right: 15px;
   position: relative;
+  &__title {
+    width: 100%;
+    margin-bottom: 10px;
+    font-weight: 600;
+  }
   &__form {
     width: 100%;
     .message-data__section {

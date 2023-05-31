@@ -95,6 +95,7 @@ export class SignDocumentChecklistComponent implements OnInit, AfterViewInit, On
     items: marker('common.items'),
     showInPage: marker('common.showPage'),
     save: marker('common.save'),
+    send: marker('common.send'),
     changeSign: marker('common.changeSign'),
     selectCardAttachmentImage: marker('administration.templates.checklists.selectCardAttachmentImage')
   };
@@ -663,7 +664,7 @@ export class SignDocumentChecklistComponent implements OnInit, AfterViewInit, On
     width: number,
     height: number
   ): void => {
-    if (item.length) {
+    if (item.length && this.mode !== 'REMOTE') {
       item.css({
         'z-index': 1000,
         'touch-action': 'none'

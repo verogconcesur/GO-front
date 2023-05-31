@@ -5,10 +5,12 @@ import { ProgressSpinnerDialogService } from '@shared/services/progress-spinner-
 import { ConfirmDialogService } from '@shared/services/confirm-dialog.service';
 import { TranslateService } from '@ngx-translate/core';
 import { marker } from '@biesbjerg/ngx-translate-extract-marker';
-import { take } from 'rxjs/operators';
+import { finalize, take } from 'rxjs/operators';
 import TemplatesChecklistsDTO, { SignDocumentExchangeDTO } from '@data/models/templates/templates-checklists-dto';
 import { AttachmentDTO } from '@data/models/cards/card-attachments-dto';
-import { RouteConstants } from '@app/constants/route.constants';
+import { CardAttachmentsService } from '@data/services/card-attachments.service';
+import { GlobalMessageService } from '@shared/services/global-message.service';
+import CardInstanceRemoteSignatureDTO from '@data/models/cards/card-instance-remote-signature-dto';
 
 @Component({
   selector: 'app-sign-card-documents-dialog',
@@ -35,7 +37,9 @@ export class SignCardDocumentsDialogComponent implements OnInit {
     private location: Location,
     private spinnerService: ProgressSpinnerDialogService,
     private confirmDialogService: ConfirmDialogService,
-    private translateService: TranslateService
+    private cardAttachmentService: CardAttachmentsService,
+    private translateService: TranslateService,
+    private globalMessageService: GlobalMessageService
   ) {}
 
   ngOnInit(): void {
@@ -57,7 +61,9 @@ export class SignCardDocumentsDialogComponent implements OnInit {
       case 1:
         return marker('cards.eventType.ADD_DOC');
       case 2:
-        return this.pdfName;
+        return `${this.pdfName} - ${this.translateService.instant(
+          marker('administration.templates.checklists.remoteChecklistPreviewer')
+        )}`;
       case 3:
         return marker('common.saveFile');
     }
@@ -98,6 +104,7 @@ export class SignCardDocumentsDialogComponent implements OnInit {
   }
 
   public fileSelected(event: { file: AttachmentDTO; tabId: number }): void {
+    // console.log('fileSelected', event);
     if (event.file.id) {
       this.pdf = {
         attachment: event.file,
@@ -121,12 +128,47 @@ export class SignCardDocumentsDialogComponent implements OnInit {
   }
 
   public pdfSignedEvent(pdf: SignDocumentExchangeDTO): void {
-    console.log(pdf);
-    this.pdf = pdf;
-    this.stepIndex = 3;
+    if (this.mode === 'REMOTE') {
+      const spinner = this.spinnerService.show();
+      let fileId = null;
+      if (this.template.includeFile) {
+        fileId = this.template.templateFile.id;
+      } else if (this.pdf?.attachment?.id) {
+        fileId = this.pdf.attachment.id;
+      } else if (this.pdf?.procesedFile?.id) {
+        fileId = this.pdf.procesedFile.id;
+      } else if (this.pdf?.upload?.id) {
+        fileId = this.pdf.upload.id;
+      }
+
+      this.cardAttachmentService
+        .sendRemoteSignature(this.wCardId, this.template.id, fileId)
+        .pipe(
+          take(1),
+          finalize(() => this.spinnerService.hide(spinner))
+        )
+        .subscribe({
+          next: (data: CardInstanceRemoteSignatureDTO) => {
+            this.globalMessageService.showSuccess({
+              message: this.translateService.instant(marker('administration.templates.checklists.remoteSignatureSendSuccess')),
+              actionText: this.translateService.instant(marker('common.close'))
+            });
+            this.closeDialog(true, data);
+          },
+          error: (error) => {
+            this.globalMessageService.showError({
+              message: error.message,
+              actionText: this.translateService.instant(marker('common.close'))
+            });
+          }
+        });
+    } else {
+      this.pdf = pdf;
+      this.stepIndex = 3;
+    }
   }
 
-  public closeDialog(autoExit?: boolean): void {
+  public closeDialog(autoExit?: boolean, cardRemoteSignature?: CardInstanceRemoteSignatureDTO): void {
     if (autoExit) {
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       // const state: any = this.location.getState();
@@ -179,6 +221,9 @@ export class SignCardDocumentsDialogComponent implements OnInit {
             }
           }
         });
+    }
+    if (cardRemoteSignature) {
+      this.cardAttachmentService.remoteSignatureSubject$.next(cardRemoteSignature);
     }
   }
 

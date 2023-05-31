@@ -1,6 +1,6 @@
 <div class="message-client-content" fxLayout="column" fxLayoutAlign="center center" *ngIf="messageForm">
-    <div *ngIf="!isModalModeActive()">
-        <div class="message-client-content__title mat-display-2">{{ labels.title | translate }}</div>
+    <div class="message-client-content__title" *ngIf="!isModalModeActive() || remoteSignature">
+        {{ getTitle() | translate }}
     </div>
     <div class="message-client-content__form">
         <form [formGroup]="messageForm" class="smaller-mat-form-fields">

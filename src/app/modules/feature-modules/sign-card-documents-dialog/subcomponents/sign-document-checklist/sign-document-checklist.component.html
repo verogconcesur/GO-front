@@ -201,7 +201,7 @@
                 <div *ngIf="renderingDrawingItems" class="checklist-sign__pdf__spinner">
                     <mat-spinner matSuffix class="spinner" diameter="50"></mat-spinner>
                 </div>
-                <div class="paint-zone-controls">
+                <div class="paint-zone-controls" *ngIf="mode !== 'REMOTE'">
                     <div class="type">
                         <input type="radio" name="pen-type" id="sign-document-pen-pencil" class="pen-pencil" checked />
                         <label for="pen-pencil">
@@ -259,8 +259,11 @@
         </mat-accordion>
     </div>
     <div class="checklist-sign__footer">
-        <button mat-flat-button color="primary" (click)="save()">
+        <button mat-flat-button color="primary" (click)="save()" *ngIf="mode !== 'REMOTE'">
             {{ labels.save | translate }}
+        </button>
+        <button mat-flat-button color="primary" (click)="save()" *ngIf="mode === 'REMOTE'">
+            {{ labels.send | translate }}
         </button>
     </div>
 </div>

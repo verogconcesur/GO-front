@@ -53,7 +53,9 @@
                 "name": "Nombre del checklist",
                 "new": "Nuevo checklist",
                 "pdfPreview": "Vista preliminar",
+                "remoteChecklistPreviewer": "Previsualización de documento para firma remota",
                 "remoteSignature": "Firma remota (cliente)",
+                "remoteSignatureSendSuccess": "Documento enviado correctamente al cliente para su firma",
                 "selectCardAttachmentImage": "Archivos de imagen adjuntos",
                 "selectCardAttachmentPdf": "Archivos PDF adjuntos",
                 "selectDirectory": "Seleccion directorio",
@@ -200,6 +202,7 @@
         "messages": {
             "chanels": "Canales",
             "communicationTemplate": "Plantilla de comunicación",
+            "signatureTitle": "¿Desea notificar al cliente sobre el documento que acaba de enviar?",
             "title": "Mensaje Cliente"
         },
         "migration": "Migración",
