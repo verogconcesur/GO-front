@@ -195,7 +195,10 @@
                                             >
                                                 <mat-checkbox
                                                     formControlName="defaultValue"
-                                                    (change)="staticOrDefaultValueChange('defaultValue', syncGroup.selectedItem)"
+                                                    (change)="
+                                                        staticOrDefaultValueChange('defaultValue', syncGroup.selectedItem);
+                                                        refreshItemValWithSyncItems(syncGroup.selectedItem)
+                                                    "
                                                     >{{ labels.defaultValue | translate }}</mat-checkbox
                                                 >
                                             </section>
@@ -213,7 +216,11 @@
                                             >
                                                 <mat-form-field appearance="outline" floatLabel="always" style="width: 100%">
                                                     <mat-label>{{ labels.staticValueInput | translate }} *</mat-label>
-                                                    <input matInput formControlName="textValue" />
+                                                    <input
+                                                        matInput
+                                                        formControlName="textValue"
+                                                        (change)="refreshItemValWithSyncItems(syncGroup.selectedItem)"
+                                                    />
                                                 </mat-form-field>
                                             </section>
                                             <!-- Default value CHECK-->
@@ -226,9 +233,11 @@
                                                 formGroupName="itemVal"
                                                 class="section-margin-bottom section-margin-left"
                                             >
-                                                <mat-checkbox formControlName="booleanValue">{{
-                                                    labels.staticValueInput | translate
-                                                }}</mat-checkbox>
+                                                <mat-checkbox
+                                                    formControlName="booleanValue"
+                                                    (change)="refreshItemValWithSyncItems(syncGroup.selectedItem)"
+                                                    >{{ labels.staticValueInput | translate }}</mat-checkbox
+                                                >
                                             </section>
                                         </section>
                                         <!-- Static value IMAGE-->

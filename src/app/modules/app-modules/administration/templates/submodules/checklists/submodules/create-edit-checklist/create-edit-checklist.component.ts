@@ -223,6 +223,7 @@ export class CreateEditChecklistComponent implements OnInit {
 
   public addStaticImage(item: FileList, itemOrderNumber: number): void {
     this.getImageFile(item, itemOrderNumber);
+    this.refreshItemValWithSyncItems(itemOrderNumber);
   }
 
   public getImagePreviewBase64(itemOrderNumber: number): string {
@@ -238,10 +239,33 @@ export class CreateEditChecklistComponent implements OnInit {
   public staticOrDefaultValueChange(field: 'staticValue' | 'defaultValue', itemOrderNumber: number): void {
     const fg: UntypedFormGroup = this.getChecklistItemByOrderNumber(itemOrderNumber);
     const field2 = field === 'staticValue' ? 'defaultValue' : 'staticValue';
-    if (fg?.get(field)?.value) {
+    if (fg?.get(field)?.value && fg?.get(field2).value) {
       fg.get(field2).setValue(false);
       this.updateValueAndValidityForm();
     }
+  }
+
+  public refreshItemValWithSyncItems(itemOrderNumber: number): void {
+    const fg: UntypedFormGroup = this.getChecklistItemByOrderNumber(itemOrderNumber);
+    const value: TemplateChecklistItemDTO = fg.getRawValue();
+    const sincronizedItems = (value?.sincronizedItems?.length > 1 ? value.sincronizedItems : [value.orderNumber]).filter(
+      (orderNumber) => orderNumber !== value.orderNumber
+    );
+    sincronizedItems.forEach((sincItem) => {
+      const fg2: UntypedFormGroup = this.getChecklistItemByOrderNumber(sincItem);
+      if (fg2) {
+        if (fg2.get('defaultValue').value !== value.defaultValue) {
+          fg2.get('defaultValue').setValue(value.defaultValue);
+        }
+        if (fg2.get('itemVal')?.get('textValue').value !== value.itemVal?.textValue) {
+          fg2.get('itemVal').get('textValue').setValue(value.itemVal.textValue);
+        }
+        if (fg2.get('itemVal')?.get('booleanValue').value !== value.itemVal?.booleanValue) {
+          fg2.get('itemVal').get('booleanValue').setValue(value.itemVal.booleanValue);
+        }
+      }
+    });
+    this.updateValueAndValidityForm();
   }
 
   public eraseTemplatePDF(): void {
@@ -435,6 +459,7 @@ export class CreateEditChecklistComponent implements OnInit {
           }
         });
       });
+      this.refreshItemValWithSyncItems(syncGroup.selectedItem);
       this.setItemListToShow();
     }
   }
@@ -502,7 +527,11 @@ export class CreateEditChecklistComponent implements OnInit {
       const fg = this.getChecklistItemByOrderNumber(syncGroup.selectedItem);
       this.pagesSelectedToAddItem.value?.forEach((n: number) => {
         this.uniqueIdOrder++;
-        const result = this.createEditChecklistAuxService.copyItemForPage(fg.getRawValue(), n, this.uniqueIdOrder);
+        const value: TemplateChecklistItemDTO = fg.getRawValue();
+        if (value.itemVal) {
+          value.itemVal.id = null;
+        }
+        const result = this.createEditChecklistAuxService.copyItemForPage(value, n, this.uniqueIdOrder);
         (this.checklistForm.get('templateChecklistItems') as UntypedFormArray).push(result);
       });
       this.pagesSelectedToAddItem.setValue([]);
