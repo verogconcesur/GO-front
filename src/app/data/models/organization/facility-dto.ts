@@ -23,4 +23,5 @@ export default interface FacilityDTO {
   configMailerPort?: string;
   configMailerUserName?: string;
   configMailerPass?: string;
+  senderSms?: string;
 }
