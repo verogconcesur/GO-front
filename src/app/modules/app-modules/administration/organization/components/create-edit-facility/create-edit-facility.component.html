@@ -278,6 +278,24 @@
                 </div>
             </div>
 
+            <!-- Sms Configuration -->
+            <div class="facility-data__section">
+                <div class="facility-data__section__title">
+                    {{ labels.confSms | translate }}
+                </div>
+
+                <div class="facility-data__section__group grid-group">
+                    <!-- configMailerHost -->
+                    <mat-form-field appearance="outline" floatLabel="always">
+                        <mat-label>{{ labels.configSmsSender | translate }} </mat-label>
+                        <input matInput formControlName="senderSms" />
+                        <mat-error *ngIf="facilityForm.controls.senderSms.invalid && facilityForm.controls.senderSms.touched">
+                            {{ labels.minLength | translate : { length: this.minLength } }},
+                            {{ labels.maxLength | translate : { length: this.maxLength } }}
+                        </mat-error>
+                    </mat-form-field>
+                </div>
+            </div>
             <!-- Emails -->
             <div class="facility-data__section">
                 <div class="facility-data__section__title">
