@@ -54,9 +54,12 @@
                                     <mat-checkbox formControlName="includeFile">{{
                                         labels.includeFile | translate
                                     }}</mat-checkbox>
-                                    <mat-checkbox formControlName="remoteSignature" class="remote-signature">{{
-                                        labels.remoteSignature | translate
-                                    }}</mat-checkbox>
+                                    <mat-checkbox
+                                        formControlName="remoteSignature"
+                                        class="remote-signature"
+                                        (change)="setItemListToShow()"
+                                        >{{ labels.remoteSignature | translate }}</mat-checkbox
+                                    >
                                 </section>
                             </div>
                         </div>
@@ -324,7 +327,7 @@
             </mat-accordion>
         </div>
     </div>
-    <div class="checklist-config__column checklist-config__pdf">
+    <div class="checklist-config__column checklist-config__pdf" [ngClass]="{ remoteSign: isRemoteSign() }">
         <ng-container class="checklist-config__pdf__viewer" *ngIf="fileTemplateBase64 | async as base64; else dropZone">
             <ngx-extended-pdf-viewer
                 id="checklistPDF"
@@ -386,7 +389,12 @@
                 </div>
             </div>
         </div>
-        <div class="checklistItemToDrag undropped" id="checklistItemToDrag__drawing" data-type="DRAWING">
+        <div
+            class="checklistItemToDrag undropped"
+            id="checklistItemToDrag__drawing"
+            data-type="DRAWING"
+            [ngClass]="{ hidden: isRemoteSign() }"
+        >
             <div class="resizable" style="height: 50px; width: 124px">
                 <div class="checklistItemToDrag__drawing checklistItemToDrag__label">
                     <label>{{ labels.drawing | translate }}</label>
@@ -407,7 +415,12 @@
                 </div>
             </div>
         </div>
-        <div class="checklistItemToDrag undropped" id="checklistItemToDrag__image" data-type="IMAGE">
+        <div
+            class="checklistItemToDrag undropped"
+            id="checklistItemToDrag__image"
+            data-type="IMAGE"
+            [ngClass]="{ hidden: isRemoteSign() }"
+        >
             <div class="resizable" style="height: 50px; width: 124px">
                 <div class="checklistItemToDrag__image checklistItemToDrag__label">
                     <label>{{ labels.image | translate }}</label>

@@ -140,6 +140,10 @@ export class CreateEditChecklistComponent implements OnInit {
     }
   }
 
+  public isRemoteSign(): boolean {
+    return this.checklistForm?.get('remoteSignature')?.value ? true : false;
+  }
+
   public getTitle(): string {
     if (this.checklistToEdit) {
       return this.checklistForm.value.template.name;
@@ -151,7 +155,12 @@ export class CreateEditChecklistComponent implements OnInit {
   }
 
   public setItemListToShow(): void {
-    const items: TemplateChecklistItemDTO[] = this.checklistForm?.get('templateChecklistItems').getRawValue();
+    let items: TemplateChecklistItemDTO[] = this.checklistForm?.get('templateChecklistItems').getRawValue();
+    if (this.isRemoteSign()) {
+      items = items.filter((item: TemplateChecklistItemDTO) => {
+        return item.typeItem !== 'DRAWING' && item.typeItem !== 'IMAGE';
+      });
+    }
     const groupByType: AuxChecklistItemsGroupByTypeDTO[] = [];
     items.forEach((item: TemplateChecklistItemDTO, index) => {
       const group = groupByType.find((g: AuxChecklistItemsGroupByTypeDTO) => g.typeItem === item.typeItem);
@@ -601,7 +610,7 @@ export class CreateEditChecklistComponent implements OnInit {
       .subscribe((ok: boolean) => {
         if (ok) {
           const spinner = this.spinnerService.show();
-          const data: any = this.checklistForm.getRawValue();
+          const data: TemplatesChecklistsDTO = this.checklistForm.getRawValue();
           const template: any = data.template;
           template.brands = template.brands.map((item: any) => {
             return { id: item.id };
@@ -616,6 +625,11 @@ export class CreateEditChecklistComponent implements OnInit {
             return { id: item.id };
           });
           data.template = template;
+          if (data.remoteSignature) {
+            data.templateChecklistItems = data.templateChecklistItems.filter((item: TemplateChecklistItemDTO) => {
+              return item.typeItem !== 'DRAWING' && item.typeItem !== 'IMAGE';
+            });
+          }
           data.templateChecklistItems.map((item: any) => {
             item.sincronizedItems = item.sincronizedItems.length === 1 || item.staticValue ? null : item.sincronizedItems;
             if (item.typeItem === 'VARIABLE') {

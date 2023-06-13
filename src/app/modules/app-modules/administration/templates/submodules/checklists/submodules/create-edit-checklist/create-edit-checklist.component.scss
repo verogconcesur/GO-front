@@ -45,6 +45,14 @@
         left: 10px;
       }
     }
+    &.remoteSign {
+      #checklistPDF {
+        .checklistItemToDrag[data-type='IMAGE'],
+        .checklistItemToDrag[data-type='DRAWING'] {
+          display: none !important;
+        }
+      }
+    }
   }
   &__items {
     display: flex;
@@ -149,6 +157,10 @@
   display: flex;
   justify-content: flex-start;
   align-items: center;
+  &.hidden {
+    display: none;
+    margin: 0;
+  }
   &.dropped {
     margin: 0;
     position: absolute !important;
