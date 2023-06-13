@@ -1,3 +1,4 @@
+/* eslint-disable max-len */
 /* eslint-disable object-shorthand */
 /* eslint-disable space-before-function-paren */
 /* eslint-disable @typescript-eslint/no-explicit-any */
@@ -21,9 +22,10 @@ export class TextEditorWrapperComponent implements OnInit, AfterViewInit {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   public summerNoteconfig: any;
   //Styles used to mantain the styles used by summernote on export
-  private summernoteStyles =
-    // eslint-disable-next-line max-len
-    '<style><!--SummernoteStyles-->table{border-collapse:collapse;width:100%}table td, table th{border:1px solid #ececec;padding:5px 3px}table.table-no-bordered td, table.table-no-bordered th{border:0px;}a{background-color:inherit;color:#337ab7;font-family:inherit;font-weight:inherit;text-decoration:inherit}a:focus, a:hover{color:#23527c;outline:0;text-decoration:underline}figure{margin:0}</style>';
+  private summernoteStyles = '';
+// eslint-disable-next-line max-len
+
+    //'<style><!--SummernoteStyles-->table{border-collapse:collapse;width:100%}table td, table th{border:1px solid #ececec;padding:5px 3px}table.table-no-bordered td, table.table-no-bordered th{border:0px;}a{background-color:inherit;color:#337ab7;font-family:inherit;font-weight:inherit;text-decoration:inherit}a:focus, a:hover{color:#23527c;outline:0;text-decoration:underline}figure{margin:0}</style>';
   private summernoteNode: any;
   private lang: string;
   private sumernoteHtmlContent = '';
