@@ -197,7 +197,7 @@
             "CHANGE_STATE": "Cambiar estado",
             "EDIT_INFO": "Editar información",
             "INCOMING_CALL": "Llamada entrante",
-            "OUTCOMING_CALL": "Llamada saliente"
+            "OUTCOMING_CALL": "Llamada saliente",
             "REMOTE_SIGN": "Firma remota"
         },
         "messages": {
