@@ -92,35 +92,35 @@ export class WorkflowNavbarComponent implements OnInit, OnDestroy {
   }
 
   websocketImplementation(): void {
-    // if (this.websocketSubscription.length > 0) {
-    //   for (const socketSub of this.websocketSubscription) {
-    //     socketSub.unsubscribe();
-    //   }
-    // }
-    // this.websocketSubscription = [];
-    // if (this.workflowSelected && this.facilitiesSelected && this.facilitiesSelected.length > 0) {
-    //   for (const facility of this.facilitiesSelected) {
-    //     this.websocketSubscription.push(
-    //       this.rxStompService
-    //         .watch('/topic/movement/' + this.workflowSelected.id + '/' + facility.id)
-    //         .pipe(untilDestroyed(this))
-    //         .subscribe((data: IMessage) => {
-    //           this.prepareAndMoveService.moveCard$.next(JSON.parse(data.body) as WorkflowSocketMoveDTO);
-    //         })
-    //     );
-    //   }
-    // } else if (this.workflowSelected) {
-    //   for (const facility of this.workflowSelected.facilities) {
-    //     this.websocketSubscription.push(
-    //       this.rxStompService
-    //         .watch('/topic/movement/' + this.workflowSelected.id + '/' + facility.id)
-    //         .pipe(untilDestroyed(this))
-    //         .subscribe((data: IMessage) => {
-    //           this.prepareAndMoveService.moveCard$.next(JSON.parse(data.body) as WorkflowSocketMoveDTO);
-    //         })
-    //     );
-    //   }
-    // }
+    if (this.websocketSubscription.length > 0) {
+      for (const socketSub of this.websocketSubscription) {
+        socketSub.unsubscribe();
+      }
+    }
+    this.websocketSubscription = [];
+    if (this.workflowSelected && this.facilitiesSelected && this.facilitiesSelected.length > 0) {
+      for (const facility of this.facilitiesSelected) {
+        this.websocketSubscription.push(
+          this.rxStompService
+            .watch('/topic/movement/' + this.workflowSelected.id + '/' + facility.id)
+            .pipe(untilDestroyed(this))
+            .subscribe((data: IMessage) => {
+              this.prepareAndMoveService.moveCard$.next(JSON.parse(data.body) as WorkflowSocketMoveDTO);
+            })
+        );
+      }
+    } else if (this.workflowSelected) {
+      for (const facility of this.workflowSelected.facilities) {
+        this.websocketSubscription.push(
+          this.rxStompService
+            .watch('/topic/movement/' + this.workflowSelected.id + '/' + facility.id)
+            .pipe(untilDestroyed(this))
+            .subscribe((data: IMessage) => {
+              this.prepareAndMoveService.moveCard$.next(JSON.parse(data.body) as WorkflowSocketMoveDTO);
+            })
+        );
+      }
+    }
   }
 
   public goToView(view: 'boardView' | 'tableView' | 'calendarView'): void {

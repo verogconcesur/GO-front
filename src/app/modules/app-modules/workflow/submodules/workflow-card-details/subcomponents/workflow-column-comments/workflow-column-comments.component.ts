@@ -48,7 +48,6 @@ export class WorkflowColumnCommentsComponent implements OnInit, OnDestroy {
     airMode: false,
     height: 80
   };
-  public interval: NodeJS.Timeout;
   private readonly timeBeforeMarkAsRead = 20000;
   private sendingComment = false;
   private idCard: number;
@@ -67,29 +66,22 @@ export class WorkflowColumnCommentsComponent implements OnInit, OnDestroy {
   ngOnInit(): void {
     this.idCard = parseInt(this.route.snapshot.params.idCard, 10);
     this.getData(true);
-    this.interval = setInterval(() => {
-      this.getData(false, false, true);
-    }, 60000);
-    // this.rxStompService.cardDeatilWs$.pipe(untilDestroyed(this), skip(1)).subscribe((data: WorkflowSocketCardDetailDTO) => {
-    //   if (
-    //     !this.sendingComment &&
-    //     data &&
-    //     data.cardInstanceWorkflowId === this.idCard &&
-    //     data.userId.toString() !== this.authService.getUserId() &&
-    //     data.message === 'DETAIL_COMMENTS'
-    //   ) {
-    //     this.getData(false, false, true);
-    //   } else if (this.sendingComment) {
-    //     this.sendingComment = false;
-    //   }
-    // });
+    this.rxStompService.cardDeatilWs$.pipe(untilDestroyed(this), skip(1)).subscribe((data: WorkflowSocketCardDetailDTO) => {
+      if (
+        !this.sendingComment &&
+        data &&
+        data.cardInstanceWorkflowId === this.idCard &&
+        data.userId.toString() !== this.authService.getUserId() &&
+        data.message === 'DETAIL_COMMENTS'
+      ) {
+        this.getData(false, false, true);
+      } else if (this.sendingComment) {
+        this.sendingComment = false;
+      }
+    });
   }
 
-  ngOnDestroy(): void {
-    if (this.interval) {
-      clearInterval(this.interval);
-    }
-  }
+  ngOnDestroy(): void {}
 
   public getData(usersToo = false, showLoading = true, fromSockets = false): void {
     //Cogemos el cardInstanceWorkflowId de la ruta

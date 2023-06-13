@@ -30,7 +30,6 @@ export class NavbarComponent implements OnInit, OnDestroy {
   public readonly VEHICLES_PATH = RouteConstants.VEHICLES;
   public readonly MENTIONS_PATH = RouteConstants.MENTIONS;
   public readonly NOTIFICATIONS_PATH = RouteConstants.NOTIFICATIONS;
-  public readonly ADVANCED_SEARCH_PATH = RouteConstants.ADVANCED_SEARCH;
   public labels = {
     title: marker('app.title'),
     workflow: marker('app.menu.workflow'),
@@ -43,7 +42,7 @@ export class NavbarComponent implements OnInit, OnDestroy {
     mentions: marker('common.mentions')
   };
   public infoWarning: WarningDTO = null;
-  public interval: NodeJS.Timeout;
+
   constructor(
     private router: Router,
     private authService: AuthenticationService,
@@ -59,11 +58,7 @@ export class NavbarComponent implements OnInit, OnDestroy {
     this.initWebSocketForNotificationsAndMentions();
   }
 
-  ngOnDestroy(): void {
-    if (this.interval) {
-      clearInterval(this.interval);
-    }
-  }
+  ngOnDestroy(): void {}
 
   public navigateToAdministration(): void {
     this.router.navigate([RouteConstants.ADMINISTRATION]);
@@ -117,15 +112,12 @@ export class NavbarComponent implements OnInit, OnDestroy {
   }
 
   private initWebSocketForNotificationsAndMentions(): void {
-    // this.rxStompService
-    //   .watch('/topic/notification/' + this.authService.getUserId())
-    //   .pipe(untilDestroyed(this))
-    //   .subscribe((data: IMessage) => {
-    //     this.getInfoWarnings();
-    //   });
-    this.interval = setInterval(() => {
-      this.getInfoWarnings();
-    }, 60000);
+    this.rxStompService
+      .watch('/topic/notification/' + this.authService.getUserId())
+      .pipe(untilDestroyed(this))
+      .subscribe((data: IMessage) => {
+        this.getInfoWarnings();
+      });
   }
 
   private getInfoWarnings(): void {
