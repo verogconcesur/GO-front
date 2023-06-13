@@ -83,9 +83,13 @@ export class CreateEditFacilityComponent extends ComponentToExtendForCustomDialo
     selectAll: marker('users.roles.selectAll'),
     unselectAll: marker('common.unselectAll'),
     emailError: marker('errors.emailPattern'),
-    minLength: marker('errors.minLength')
+    minLength: marker('errors.minLength'),
+    maxLength: marker('errors.maxLengthError'),
+    confSms: marker('common.confSms'),
+    configSmsSender: marker('common.configSmsSender')
   };
   public minLength = 3;
+  public maxLength = 11;
   public organizationLevelsToShow = { specialties: false, departments: false, facilities: false };
   public countryAsyncList: Observable<CountryDTO[]>;
   public brandsAsyncList: Observable<BrandDTO[]>;
@@ -199,7 +203,8 @@ export class CreateEditFacilityComponent extends ComponentToExtendForCustomDialo
         configMailerHost: formValue.configMailerHost,
         configMailerPort: formValue.configMailerPort,
         configMailerUserName: formValue.configMailerUserName,
-        configMailerPass: formValue.configMailerPass
+        configMailerPass: formValue.configMailerPass,
+        senderSms: formValue.senderSms
       })
       .pipe(
         map((response) => {
@@ -488,6 +493,10 @@ export class CreateEditFacilityComponent extends ComponentToExtendForCustomDialo
         ],
         configMailerPass: [
           this.facilityToEdit && this.facilityToEdit.configMailerPass ? this.facilityToEdit.configMailerPass : null
+        ],
+        senderSms: [
+          this.facilityToEdit && this.facilityToEdit.senderSms ? this.facilityToEdit.senderSms : null,
+          [Validators.minLength(this.minLength), Validators.maxLength(this.maxLength)]
         ]
       },
       {

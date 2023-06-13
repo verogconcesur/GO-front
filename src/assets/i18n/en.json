@@ -267,6 +267,8 @@
         "completed": "Finished",
         "concept": "Concept",
         "confEmail": "Configuration for email sending",
+        "confSms": "Configuration for SMS sending",
+        "configSmsSender": "Sender name",
         "confirm": "Submit",
         "country": "Country",
         "create": "Create",
