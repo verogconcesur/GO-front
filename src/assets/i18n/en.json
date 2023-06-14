@@ -5,6 +5,7 @@
         "cards": "Cards",
         "exit": "Exit settings",
         "facilities": "Facilities",
+        "landing": "Client's landing",
         "organization": "Organization",
         "records": "Records",
         "templates": {
@@ -301,6 +302,7 @@
         "expand": "Expand all",
         "externalLinks": "External links",
         "field": "Field",
+        "fieldRequired": "Field required",
         "fieldsType": "Field's type",
         "fileName": "File name",
         "filter": "Filter",
@@ -398,6 +400,7 @@
         "users": "Users",
         "vehicle": "Vehicle",
         "videoViewer": "Video viewer",
+        "view": "View",
         "warning": "Warning",
         "whoSees": "Who sees",
         "workOrder": "Work order",
@@ -487,8 +490,41 @@
         "uploadOnlyOneFile": "You must load only one file"
     },
     "landing": {
+        "banners": "Banners",
+        "bannersComponent": {
+            "banners": "Banners",
+            "description": "Description",
+            "endDate": "End date",
+            "image": "Image",
+            "initDate": "start Date",
+            "link": "Link",
+            "nameLink": "Link name",
+            "newLink": "New link",
+            "title": "Title"
+        },
+        "bgImage": "Background image",
+        "config": "Configuration",
+        "defaultTheme": "Default theme",
+        "facilities": "Facilities",
+        "facilitiesConfig": "Facilities to show in the landing",
         "fileSharedWithCustomerInLanding": "File shared with the customer",
-        "stopSharingFileWithCustomerInLanding": "Stop sharing file with the customer"
+        "imagesConfig": "Images and logos to config",
+        "links": "Social and menu links",
+        "linksComponent": {
+            "icon": "Icon",
+            "link": "Link",
+            "menu": "Menu",
+            "name": "Name",
+            "nameLink": "Link name",
+            "newLink": "New link",
+            "social": "Social Media"
+        },
+        "logo": "Logo",
+        "logoAlt": "Alternative logo",
+        "stopSharingFileWithCustomerInLanding": "Stop sharing file with the customer",
+        "theme": "Theme",
+        "themeConfig": "Theme config",
+        "title": "Client's landing"
     },
     "login": {
         "description": "Please enter your credentials",

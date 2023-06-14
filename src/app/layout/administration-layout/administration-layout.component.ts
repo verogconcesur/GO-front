@@ -29,7 +29,8 @@ export class AdministrationLayoutComponent implements OnInit {
     title: marker('administration.title'),
     users: marker('administration.users'),
     viewProfile: marker('administration.viewProfile'),
-    workflows: marker('administration.workflows')
+    workflows: marker('administration.workflows'),
+    landing: marker('administration.landing')
   };
   public filterDrawerDisableClose = false;
 
@@ -40,6 +41,7 @@ export class AdministrationLayoutComponent implements OnInit {
   public readonly TEMPLATES_PATH = RouteConstants.TEMPLATES;
   public readonly CARDS_PATH = RouteConstants.CARDS;
   public readonly WORKFLOWS_PATH = RouteConstants.ADM_WORKFLOWS;
+  public readonly LANDING_PATH = RouteConstants.ADM_LANDING;
 
   public userDetails: UserDetailsDTO;
 

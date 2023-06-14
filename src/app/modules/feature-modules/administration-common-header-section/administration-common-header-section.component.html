@@ -56,7 +56,13 @@
         >
             <mat-icon>filter_list</mat-icon>
         </button>
-        <button class="create-action" (click)="buttonCreateAction.emit()" mat-raised-button color="primary">
+        <button
+            class="create-action"
+            *ngIf="showCreateButton"
+            (click)="buttonCreateAction.emit()"
+            mat-raised-button
+            color="primary"
+        >
             <span class="create-action__small-label">{{
                 buttonSmallLabel ? (buttonSmallLabel | translate) : (buttonLabel | translate)
             }}</span>
