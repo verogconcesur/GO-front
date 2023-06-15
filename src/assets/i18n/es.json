@@ -100,6 +100,24 @@
         "viewProfile": "Ver perfil",
         "workflows": "Workflows"
     },
+    "advSearch": {
+        "addColumn": "Añadir columna",
+        "addFilter": "Añadir filtro",
+        "cleanConf": "Limpiar configuración",
+        "context": "Contexto",
+        "continueNewSearch": "Si continua se borraran los filtros actuales.",
+        "critSearch": "Criterios de búsqueda",
+        "customCol": "Personalizar columnas",
+        "deleteConfirmation": "¿Está seguro que desea eliminar esta búsqueda guardada?",
+        "endDate": "Fecha fin",
+        "export": "Exportar",
+        "favSearch": "Búsquedas favoritas",
+        "initDate": "Fecha inicio",
+        "saveFav": "Guardar como favorita",
+        "savedSearch": "Búsquedas guardadas",
+        "states": "Estados",
+        "subStates": "Subestados"
+    },
     "app": {
         "menu": {
             "administration": "Administración",
@@ -831,6 +849,7 @@
         "state-roleTitle": "Quién ve el estado",
         "stateName": "Nombre de estado",
         "states": "Definición y control de estados",
+        "subStates": "",
         "substateName": "Nombre de subestado",
         "substatesWithAndWithoutCards": "Mostrando subestados con o sin tarjetas",
         "substatesWithCards": "Mostrando únicamente subestados con tarjetas",

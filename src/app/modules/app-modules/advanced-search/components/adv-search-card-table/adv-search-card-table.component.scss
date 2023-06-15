@@ -1,0 +1,21 @@
+.adv-search-table-container {
+  width: 100%;
+  height: 100%;
+  padding: 20px;
+  box-sizing: border-box;
+  overflow-y: auto;
+  &__table {
+    width: 100%;
+    overflow-x: auto;
+    .table-adv-search {
+      min-width: 100%;
+      th,
+      td {
+        padding-right: 10px;
+      }
+    }
+  }
+  mat-paginator {
+    width: 100%;
+  }
+}
