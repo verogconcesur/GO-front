@@ -1,1 +1,148 @@
-<p>advanced-search works!</p>
+<mat-drawer-container class="adv-search" autosize [hasBackdrop]="true" *ngIf="advSearchForm">
+    <mat-drawer #favDrawer [mode]="'over'" [position]="'end'">
+        <div class="adv-search__sidenav" fxLayout="column" fxLayoutAlign="start start">
+            <div class="adv-search__sidenav__title" fxLayout="row wrap" fxLayoutAlign="start center">
+                <span> {{ labels.savedSearch | translate }}</span>
+            </div>
+            <div class="adv-search__sidenav__container" fxLayout="column" fxLayoutAlign="start start">
+                <div
+                    class="adv-search__sidenav__container__item"
+                    fxLayout="row"
+                    fxLayoutAlign="space-between center"
+                    *ngFor="let advSearch of advSearchFav"
+                >
+                    <span class="name" (click)="getFavSearch(advSearch)">{{ advSearch.name }}</span>
+                    <div class="icons" fxLayout="row" fxLayoutAlign="space-between center">
+                        <mat-icon (click)="duplicateFavSearch(advSearch); $event.stopPropagation()">filter_none</mat-icon>
+                        <mat-icon *ngIf="advSearch.editable" (click)="getFavSearch(advSearch, true); $event.stopPropagation()"
+                            >edit</mat-icon
+                        >
+                        <mat-icon *ngIf="advSearch.editable" (click)="deleteFavSearch(advSearch); $event.stopPropagation()"
+                            >close</mat-icon
+                        >
+                    </div>
+                </div>
+            </div>
+        </div>
+    </mat-drawer>
+    <mat-drawer-content>
+        <div class="adv-search__content">
+            <div class="adv-search__content__header" fxLayout="row" fxLayoutAlign="space-between center">
+                <div class="adv-search__content__header__title" fxLayout="row" fxLayoutAlign="start center">
+                    <div
+                        class="filterButton"
+                        (click)="openFilters('context')"
+                        fxLayout="row"
+                        fxLayoutAlign="space-between center"
+                    >
+                        <div class="filterLabel">{{ labels.context | translate }}</div>
+                        <div class="filerIcon"><mat-icon>keyboard_arrow_down</mat-icon></div>
+                    </div>
+                    <div
+                        class="filterButton"
+                        (click)="openFilters('criteria')"
+                        fxLayout="row"
+                        fxLayoutAlign="space-between center"
+                    >
+                        <div class="filterLabel">{{ labels.critSearch | translate }}</div>
+                        <div class="filerIcon"><mat-icon>keyboard_arrow_down</mat-icon></div>
+                    </div>
+                    <div class="filterButton" (click)="openFilters('column')" fxLayout="row" fxLayoutAlign="space-between center">
+                        <div class="filterLabel">{{ labels.customCol | translate }}</div>
+                        <div class="filerIcon"><mat-icon>keyboard_arrow_down</mat-icon></div>
+                    </div>
+                    <button mat-flat-button color="primary">
+                        {{ labels.search | translate }}
+                    </button>
+                    <div class="cleanButton" fxLayout="row" fxLayoutAlign="start center" (click)="cleanFilters()">
+                        <span> {{ labels.cleanConf | translate }}</span>
+                    </div>
+                </div>
+                <div fxLayout="row" fxLayoutAlign="end center" class="adv-search__content__header__sidetitle">
+                    <div class="custButton" fxLayout="row" fxLayoutAlign="space-between center">
+                        <span>{{ labels.export | translate }}</span>
+                        <mat-icon>keyboard_arrow_down</mat-icon>
+                    </div>
+                    <div class="custButton" fxLayout="row" fxLayoutAlign="space-between center">
+                        <span>{{ labels.saveFav | translate }}</span>
+                        <mat-icon>star_border</mat-icon>
+                    </div>
+                    <div class="custButton" fxLayout="row" fxLayoutAlign="space-between center" (click)="favDrawer.toggle()">
+                        <span>{{ labels.favSearch | translate }}</span>
+                        <mat-icon>keyboard_arrow_left</mat-icon>
+                    </div>
+                </div>
+            </div>
+            <div class="adv-search__content__container">
+                <mat-drawer-container class="adv-search__content__container__drawer" autosize [hasBackdrop]="true">
+                    <mat-drawer #drawerCont [opened]="false" [mode]="'over'">
+                        <ng-container class="adv-search__content__container__drawer__side" *ngIf="modeDrawer === 'context'">
+                            <form
+                                [formGroup]="advSearchForm"
+                                class="smaller-mat-form-fields adv-search__content__container__drawer__side"
+                            >
+                                <div
+                                    class="adv-search__content__container__drawer__side__header"
+                                    fxLayout="row"
+                                    fxLayoutAlign="space-between center"
+                                >
+                                    <div class="adv-search__content__container__drawer__side__header__title">
+                                        {{ labels.context | translate }}
+                                    </div>
+                                </div>
+                                <div class="adv-search__content__container__drawer__side__content" formGroupName="context"></div>
+                            </form>
+                        </ng-container>
+                        <ng-container class="adv-search__content__container__drawer__side" *ngIf="modeDrawer === 'criteria'">
+                            <div class="adv-search__content__container__drawer__side">
+                                <div
+                                    class="adv-search__content__container__drawer__side__header"
+                                    fxLayout="row"
+                                    fxLayoutAlign="space-between center"
+                                >
+                                    <div class="adv-search__content__container__drawer__side__header__title">
+                                        {{ labels.critSearch | translate }}
+                                    </div>
+                                    <div
+                                        class="adv-search__content__container__drawer__side__header__action"
+                                        fxLayout="row"
+                                        fxLayoutAlign="space-between center"
+                                    >
+                                        <span>{{ labels.addFilter | translate }}</span>
+                                        <mat-icon>add</mat-icon>
+                                    </div>
+                                </div>
+                                <div class="adv-search__content__container__drawer__side__content"></div></div
+                        ></ng-container>
+                        <ng-container class="adv-search__content__container__drawer__side" *ngIf="modeDrawer === 'column'">
+                            <div class="adv-search__content__container__drawer__side">
+                                <div
+                                    class="adv-search__content__container__drawer__side__header"
+                                    fxLayout="row"
+                                    fxLayoutAlign="space-between center"
+                                >
+                                    <div class="adv-search__content__container__drawer__side__header__title">
+                                        {{ labels.customCol | translate }}
+                                    </div>
+                                    <div
+                                        class="adv-search__content__container__drawer__side__header__action"
+                                        fxLayout="row"
+                                        fxLayoutAlign="space-between center"
+                                    >
+                                        <span>{{ labels.addColumn | translate }}</span>
+                                        <mat-icon>add</mat-icon>
+                                    </div>
+                                </div>
+                                <div class="adv-search__content__container__drawer__side__content"></div></div
+                        ></ng-container>
+                    </mat-drawer>
+                    <mat-drawer-content>
+                        <div class="adv-search__content__container__drawer__content">
+                            <app-adv-search-card-table #searchTable></app-adv-search-card-table>
+                        </div>
+                    </mat-drawer-content>
+                </mat-drawer-container>
+            </div>
+        </div>
+    </mat-drawer-content>
+</mat-drawer-container>
