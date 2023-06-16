@@ -158,7 +158,7 @@ export class WorkflowColumnCommentsComponent implements OnInit, OnDestroy {
 
   public answerComment(comment: CardCommentDTO): void {
     this.newComment =
-      '<p><span><b contenteditable="false" readonly="readonly"> @' + this.getUserFullname(comment.user, '.') + ' </b></span></p>';
+      '<p><span><b contenteditable="false" readonly="readonly"> @' + this.getUserFullname(comment.user, '_') + ' </b></span></p>';
     this.dataLoaded = false;
     setTimeout(() => {
       this.dataLoaded = true;

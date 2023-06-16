@@ -1,4 +1,4 @@
-import { TabItemConfigInputDTO } from '../cards/card-column-tab-item-dto';
+import { TabItemConfigInputDTO, TabItemConfigListDTO } from '../cards/card-column-tab-item-dto';
 import WorkflowCardSlotDTO from './workflow-card-slot-dto';
 
 export default interface WorkflowCardTabItemDTO {
@@ -21,7 +21,7 @@ export default interface WorkflowCardTabItemDTO {
     name: string;
     tabItemId: number;
   };
-  tabItemConfigList: { id: number; tabItemId: number; variable: WorkflowCardSlotDTO };
+  tabItemConfigList: TabItemConfigListDTO;
   tabItemConfigOption: { id: number; tabItemId: number; variable: WorkflowCardSlotDTO };
   tabItemConfigTable: { id: number; tabItemId: number; variable: WorkflowCardSlotDTO };
   tabItemConfigText: { id: number; tabItemId: number; variable: WorkflowCardSlotDTO };
