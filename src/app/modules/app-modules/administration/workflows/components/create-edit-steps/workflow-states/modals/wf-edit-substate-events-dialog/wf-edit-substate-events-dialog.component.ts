@@ -465,7 +465,9 @@ export class WfEditSubstateEventsDialogComponent extends ComponentToExtendForCus
     const value = this.form.value;
     const formValue = {
       ...value,
-      requiredFieldsList: this.form.value.requiredFields ? this.form.value.requiredFieldsList : [],
+      requiredFieldsList: this.form.value.requiredFields
+        ? this.form.value.requiredFieldsList.map((field: any) => ({ id: field.id }))
+        : [],
       roles: this.form.get('roles')?.value.filter((role: RoleDTO) => role.selected),
       workflowEventMails: value.sendMail
         ? value.workflowEventMails
