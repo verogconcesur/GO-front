@@ -13,6 +13,7 @@ export default interface VehicleEntityDTO {
   reference?: string;
   vin?: string;
   inventories?: InventoryVehicle[];
+  cardInstanceId?: number;
 }
 export interface InventoryVehicle {
   id?: number;

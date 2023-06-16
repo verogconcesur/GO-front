@@ -155,25 +155,27 @@ export class ModalVehicleComponent extends ComponentToExtendForCustomDialog impl
       });
     }
     const spinner = this.spinnerService.show();
-    return this.entitiesService.createVehicle(body).pipe(
-      map((response) => {
-        this.globalMessageService.showSuccess({
-          message: this.translateService.instant(marker('common.successOperation')),
-          actionText: this.translateService.instant(marker('common.close'))
-        });
-        return response;
-      }),
-      catchError((error) => {
-        this.globalMessageService.showError({
-          message: error.message,
-          actionText: this.translateService.instant(marker('common.close'))
-        });
-        return of(false);
-      }),
-      finalize(() => {
-        this.spinnerService.hide(spinner);
-      })
-    );
+    return this.entitiesService
+      .createVehicle(body, this.vehicleToEdit && this.vehicleToEdit.cardInstanceId ? this.vehicleToEdit.cardInstanceId : null)
+      .pipe(
+        map((response) => {
+          this.globalMessageService.showSuccess({
+            message: this.translateService.instant(marker('common.successOperation')),
+            actionText: this.translateService.instant(marker('common.close'))
+          });
+          return response;
+        }),
+        catchError((error) => {
+          this.globalMessageService.showError({
+            message: error.message,
+            actionText: this.translateService.instant(marker('common.close'))
+          });
+          return of(false);
+        }),
+        finalize(() => {
+          this.spinnerService.hide(spinner);
+        })
+      );
   }
 
   public setAndGetFooterConfig(): CustomDialogFooterConfigI | null {
