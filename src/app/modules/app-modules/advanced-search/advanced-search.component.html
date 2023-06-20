@@ -75,7 +75,7 @@
             </div>
             <div class="adv-search__content__container">
                 <mat-drawer-container class="adv-search__content__container__drawer" autosize [hasBackdrop]="true">
-                    <mat-drawer #drawerCont [opened]="false" [mode]="'over'">
+                    <mat-drawer #drawerCont [mode]="'over'">
                         <ng-container class="adv-search__content__container__drawer__side" *ngIf="modeDrawer === 'context'">
                             <form
                                 [formGroup]="advSearchForm"
@@ -90,7 +90,185 @@
                                         {{ labels.context | translate }}
                                     </div>
                                 </div>
-                                <div class="adv-search__content__container__drawer__side__content" formGroupName="context"></div>
+                                <div
+                                    class="adv-search__content__container__drawer__side__content"
+                                    formGroupName="advancedSearchContext"
+                                    fxLayout="row wrap"
+                                    fxLayoutAlign="space-between start"
+                                >
+                                    <mat-form-field appearance="outline" floatLabel="always">
+                                        <mat-label>{{ labels.initDate | translate }}</mat-label>
+                                        <input
+                                            matInput
+                                            #pickerIniInput
+                                            readonly
+                                            [matDatepicker]="pickerIni"
+                                            [placeholder]="labels.initDate | translate"
+                                            formControlName="dateCardFrom"
+                                        />
+                                        <mat-datepicker-toggle matSuffix [for]="pickerIni"></mat-datepicker-toggle>
+                                        <mat-datepicker #pickerIni></mat-datepicker>
+                                    </mat-form-field>
+                                    <mat-form-field appearance="outline" floatLabel="always">
+                                        <mat-label>{{ labels.endDate | translate }}</mat-label>
+                                        <input
+                                            matInput
+                                            #pickerEndInput
+                                            readonly
+                                            [matDatepicker]="pickerEnd"
+                                            [placeholder]="labels.endDate | translate"
+                                            formControlName="dateCardTo"
+                                        />
+                                        <mat-datepicker-toggle matSuffix [for]="pickerEnd"></mat-datepicker-toggle>
+                                        <mat-datepicker #pickerEnd></mat-datepicker>
+                                    </mat-form-field>
+                                    <mat-form-field appearance="outline" floatLabel="always">
+                                        <mat-label>{{ labels.facilities | translate }}</mat-label>
+                                        <mat-select formControlName="facilities" multiple>
+                                            <button
+                                                mat-button
+                                                class="mat-button-w-100-left"
+                                                *ngIf="!hasAllSelected(context.facilities, facilityList)"
+                                                (click)="selectAll(context.facilities, facilityList)"
+                                            >
+                                                {{ labels.selectAll | translate }}
+                                            </button>
+                                            <button
+                                                mat-button
+                                                class="mat-button-w-100-left"
+                                                *ngIf="hasAllSelected(context.facilities, facilityList)"
+                                                (click)="unselectAll('facilities', context.facilities)"
+                                            >
+                                                {{ labels.unselectAll | translate }}
+                                            </button>
+                                            <mat-option *ngFor="let facility of facilityList" [value]="facility">{{
+                                                facility.name
+                                            }}</mat-option>
+                                        </mat-select>
+                                    </mat-form-field>
+                                    <mat-form-field appearance="outline" floatLabel="always">
+                                        <mat-label>{{ labels.workflows | translate }}</mat-label>
+                                        <mat-select formControlName="workflows" multiple (selectionChange)="changeWorkflow()">
+                                            <button
+                                                mat-button
+                                                class="mat-button-w-100-left"
+                                                *ngIf="!hasAllSelected(context.workflows, workflowList)"
+                                                (click)="selectAll(context.workflows, workflowList)"
+                                            >
+                                                {{ labels.selectAll | translate }}
+                                            </button>
+                                            <button
+                                                mat-button
+                                                class="mat-button-w-100-left"
+                                                *ngIf="hasAllSelected(context.workflows, workflowList)"
+                                                (click)="unselectAll('workflows', context.workflows)"
+                                            >
+                                                {{ labels.unselectAll | translate }}
+                                            </button>
+                                            <mat-option *ngFor="let workflow of workflowList" [value]="workflow">{{
+                                                workflow.name
+                                            }}</mat-option>
+                                        </mat-select>
+                                    </mat-form-field>
+                                    <mat-form-field appearance="outline" floatLabel="always">
+                                        <mat-label>{{ labels.states | translate }}</mat-label>
+                                        <mat-select formControlName="states" multiple (selectionChange)="changeState()">
+                                            <mat-form-field
+                                                appearance="outline"
+                                                floatLabel="always"
+                                                class="smaller-mat-form-fields__no-margin selector-filter"
+                                            >
+                                                <input
+                                                    matInput
+                                                    type="text"
+                                                    matInput
+                                                    formControlName="filterStateForm"
+                                                    (keydown)="$event.stopPropagation()"
+                                            /></mat-form-field>
+                                            <button
+                                                mat-button
+                                                class="mat-button-w-100-left"
+                                                *ngIf="
+                                                    !hasAllSelected(context.states, getStates()) && !context.filterStateForm.value
+                                                "
+                                                (click)="selectAll(context.states, getStates())"
+                                            >
+                                                {{ labels.selectAll | translate }}
+                                            </button>
+                                            <button
+                                                mat-button
+                                                class="mat-button-w-100-left"
+                                                *ngIf="
+                                                    hasAllSelected(context.states, getStates()) && !context.filterStateForm.value
+                                                "
+                                                (click)="unselectAll('states', context.states)"
+                                            >
+                                                {{ labels.unselectAll | translate }}
+                                            </button>
+                                            <mat-option
+                                                *ngFor="let state of statesOptions | async"
+                                                [value]="state"
+                                                matTooltip="{{ state.workflow.name }} - {{ state.name }}"
+                                                matTooltipPosition="after"
+                                                >{{ state.workflow.name + " - " + state.name }}</mat-option
+                                            >
+                                        </mat-select>
+                                    </mat-form-field>
+                                    <mat-form-field appearance="outline" floatLabel="always">
+                                        <mat-label>{{ labels.substates | translate }}</mat-label>
+                                        <mat-select formControlName="substates" multiple>
+                                            <mat-form-field
+                                                appearance="outline"
+                                                floatLabel="always"
+                                                class="smaller-mat-form-fields__no-margin selector-filter"
+                                            >
+                                                <input
+                                                    matInput
+                                                    type="text"
+                                                    matInput
+                                                    formControlName="filterSubstateForm"
+                                                    (keydown)="$event.stopPropagation()"
+                                            /></mat-form-field>
+                                            <button
+                                                mat-button
+                                                class="mat-button-w-100-left"
+                                                *ngIf="
+                                                    !hasAllSelected(context.substates, getSubstates()) &&
+                                                    !context.filterSubstateForm.value
+                                                "
+                                                (click)="selectAll(context.substates, getSubstates())"
+                                            >
+                                                {{ labels.selectAll | translate }}
+                                            </button>
+                                            <button
+                                                mat-button
+                                                class="mat-button-w-100-left"
+                                                *ngIf="
+                                                    hasAllSelected(context.substates, getSubstates()) &&
+                                                    !context.filterSubstateForm.value
+                                                "
+                                                (click)="unselectAll('substates', context.substates)"
+                                            >
+                                                {{ labels.unselectAll | translate }}
+                                            </button>
+                                            <mat-option
+                                                *ngFor="let substate of subStatesOptions | async"
+                                                [value]="substate"
+                                                matTooltip="{{ substate.workflowState.workflow.name }} - {{
+                                                    substate.workflowState.name
+                                                }} - {{ substate.name }}"
+                                                matTooltipPosition="after"
+                                                >{{
+                                                    substate.workflowState.workflow.name +
+                                                        " - " +
+                                                        substate.workflowState.name +
+                                                        " - " +
+                                                        substate.name
+                                                }}</mat-option
+                                            >
+                                        </mat-select>
+                                    </mat-form-field>
+                                </div>
                             </form>
                         </ng-container>
                         <ng-container class="adv-search__content__container__drawer__side" *ngIf="modeDrawer === 'criteria'">
