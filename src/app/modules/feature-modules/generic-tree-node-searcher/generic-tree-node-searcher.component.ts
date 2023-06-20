@@ -18,6 +18,7 @@ import { Observable, of } from 'rxjs';
 })
 export class GenericTreeNodeSearcherComponent implements OnInit, OnChanges {
   @Input() originalData: TreeNode[] = null;
+  @Input() checkBoxSelection = false;
   @Output() nodeSelected: EventEmitter<TreeNode> = new EventEmitter();
   public labels = {
     noData: marker('errors.noDataToShow'),
@@ -44,6 +45,7 @@ export class GenericTreeNodeSearcherComponent implements OnInit, OnChanges {
 
   ngOnChanges(changes: SimpleChanges): void {
     if (changes.originalData) {
+      console.log(this.originalData);
       this.setTreeDataSource(this.originalData);
     }
   }
@@ -57,6 +59,7 @@ export class GenericTreeNodeSearcherComponent implements OnInit, OnChanges {
     const filterValue = this.filterTextSearchControl.value ? normalizaStringToLowerCase(this.filterTextSearchControl.value) : '';
     if (filterValue) {
       this.setTreeDataSource(this.filterNodes(filterValue, originalData));
+      this.treeControl.expandAll();
     } else {
       this.setTreeDataSource(originalData);
     }
@@ -65,8 +68,12 @@ export class GenericTreeNodeSearcherComponent implements OnInit, OnChanges {
   public hasChild = (_: number, node: TreeNode) => !!node.children && node.children.length > 0;
 
   public selectNode(node: TreeNode) {
-    this.nodeSelected.emit(node);
-    this.resetFilter();
+    if (this.checkBoxSelection) {
+      node.selected = true;
+    } else {
+      this.nodeSelected.emit(node);
+      this.resetFilter();
+    }
   }
 
   private setTreeDataSource(data: TreeNode[]): void {

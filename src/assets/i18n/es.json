@@ -107,6 +107,9 @@
         "context": "Contexto",
         "continueNewSearch": "Si continua se borraran los filtros actuales.",
         "critSearch": "Criterios de búsqueda",
+        "criteria": {
+            "title": "Seleccionar criterios de búsqueda"
+        },
         "customCol": "Personalizar columnas",
         "deleteConfirmation": "¿Está seguro que desea eliminar esta búsqueda guardada?",
         "endDate": "Fecha fin",
@@ -849,7 +852,6 @@
         "state-roleTitle": "Quién ve el estado",
         "stateName": "Nombre de estado",
         "states": "Definición y control de estados",
-        "subStates": "",
         "substateName": "Nombre de subestado",
         "substatesWithAndWithoutCards": "Mostrando subestados con o sin tarjetas",
         "substatesWithCards": "Mostrando únicamente subestados con tarjetas",

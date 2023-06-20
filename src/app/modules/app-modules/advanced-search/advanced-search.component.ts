@@ -17,6 +17,12 @@ import { FacilityService } from '@data/services/facility.sevice';
 import WorkflowCreateCardDTO from '@data/models/workflows/workflow-create-card-dto';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { AuthenticationService } from '@app/security/authentication.service';
+import AdvancedSearchOptionsDTO from '@data/models/adv-search/adv-search-options-dto';
+import { CustomDialogService } from '@jenga/custom-dialog';
+import {
+  AdvSearchCriteriaDialogComponent,
+  AdvSearchCriteriaDialogComponentModalEnum
+} from './components/adv-search-criteria-dialog/adv-search-criteria-dialog.component';
 
 @UntilDestroy()
 @Component({
@@ -50,6 +56,7 @@ export class AdvancedSearchComponent implements OnInit {
   public advSearchFav: AdvSearchDTO[] = [];
   public facilityList: FacilityDTO[] = [];
   public workflowList: WorkflowCreateCardDTO[] = [];
+  public criteriaOptions: AdvancedSearchOptionsDTO = { cards: {}, entities: {} };
   public advSearchForm: FormGroup;
   public modeDrawer: 'criteria' | 'context' | 'column';
   constructor(
@@ -61,7 +68,8 @@ export class AdvancedSearchComponent implements OnInit {
     private confirmationDialog: ConfirmDialogService,
     private fb: FormBuilder,
     private translateService: TranslateService,
-    private admService: AuthenticationService
+    private admService: AuthenticationService,
+    private customDialogService: CustomDialogService
   ) {}
   initForm(advSearch?: AdvSearchDTO, edit?: boolean) {
     this.advSearchForm = this.fb.group({
@@ -204,18 +212,31 @@ export class AdvancedSearchComponent implements OnInit {
         }
       });
   }
+  addCriteriaFilter(): void {
+    console.log(this.criteriaOptions, this.advSearchForm.get('advancedSearchItems').value);
+    this.customDialogService.open({
+      component: AdvSearchCriteriaDialogComponent,
+      extendedComponentData: { options: this.criteriaOptions, selected: this.advSearchForm.get('advancedSearchItems').value },
+      id: AdvSearchCriteriaDialogComponentModalEnum.ID,
+      panelClass: AdvSearchCriteriaDialogComponentModalEnum.PANEL_CLASS,
+      disableClose: true,
+      width: '700px'
+    });
+  }
   ngOnInit(): void {
     const spinner = this.spinnerService.show();
     const resquests = [
       this.advSearchService.getAdvSearchList().pipe(take(1)),
       this.facilityService.getFacilitiesByBrandsIds().pipe(take(1)),
-      this.advSearchService.getWorkflowList().pipe(take(1))
+      this.advSearchService.getWorkflowList().pipe(take(1)),
+      this.advSearchService.getCriteria().pipe(take(1))
     ];
     forkJoin(resquests).subscribe({
-      next: (responses: [AdvSearchDTO[], FacilityDTO[], WorkflowCreateCardDTO[]]) => {
+      next: (responses: [AdvSearchDTO[], FacilityDTO[], WorkflowCreateCardDTO[], AdvancedSearchOptionsDTO]) => {
         this.advSearchFav = responses[0] ? responses[0] : [];
         this.facilityList = responses[1] ? responses[1] : [];
         this.workflowList = responses[2] ? responses[2] : [];
+        this.criteriaOptions = responses[3] ? responses[3] : { cards: {}, entities: {} };
         this.initForm();
         this.spinnerService.hide(spinner);
       },

@@ -9,6 +9,7 @@ import PaginationRequestI from '@data/interfaces/pagination-request';
 import PaginationResponseI from '@data/interfaces/pagination-response';
 import AdvSearchDTO from '@data/models/adv-search/adv-search-dto';
 import AdvSearchOperatorDTO from '@data/models/adv-search/adv-search-operator-dto';
+import AdvancedSearchOptionsDTO from '@data/models/adv-search/adv-search-options-dto';
 import WorkflowCreateCardDTO from '@data/models/workflows/workflow-create-card-dto';
 import { getPaginationUrlGetParams } from '@data/utils/pagination-aux';
 import { Observable, catchError, throwError } from 'rxjs';
@@ -24,6 +25,7 @@ export class AdvSearchService {
   private readonly OPERATORS_PATH = '/operators';
   private readonly RUN_PATH = '/run';
   private readonly GET_WORKFLOW_PATH = '/getWorkflows';
+  private readonly GET_CRITERIA_PATH = '/getCriteria';
 
   constructor(@Inject(ENV) private env: Env, private http: HttpClient, private router: Router) {}
   public getWorkflowList(): Observable<WorkflowCreateCardDTO[]> {
@@ -72,6 +74,11 @@ export class AdvSearchService {
         `${this.env.apiBaseUrl}${this.GET_ADV_SEARCH_PATH}${this.RUN_PATH}${getPaginationUrlGetParams(pagination, true)}`,
         search
       )
+      .pipe(catchError((error) => throwError(error as ConcenetError)));
+  }
+  public getCriteria(): Observable<AdvancedSearchOptionsDTO> {
+    return this.http
+      .get<AdvancedSearchOptionsDTO>(`${this.env.apiBaseUrl}${this.GET_ADV_SEARCH_PATH}${this.GET_CRITERIA_PATH}`)
       .pipe(catchError((error) => throwError(error as ConcenetError)));
   }
 }
