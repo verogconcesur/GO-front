@@ -108,6 +108,8 @@
         "continueNewSearch": "Si continua se borraran los filtros actuales.",
         "critSearch": "Criterios de búsqueda",
         "criteria": {
+            "cards": "Criterios pertenencientes al tipo de ficha",
+            "entities": "Criterios asociados al tipo de dato",
             "title": "Seleccionar criterios de búsqueda"
         },
         "customCol": "Personalizar columnas",
@@ -371,6 +373,7 @@
         "seeLess": "Ver menos",
         "seeMore": "Ver más",
         "select": "Seleccionar",
+        "selectAll": "Seleccionar todo",
         "selectAttacmentsToAdd": "Seleccione los adjuntos",
         "selectImageFile": "Selecciona una imagen",
         "send": "Enviar",

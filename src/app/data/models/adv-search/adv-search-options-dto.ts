@@ -1,11 +1,11 @@
-import WorkflowCardSlotDTO from '../workflows/workflow-card-slot-dto';
-import WorkflowCardTabItemDTO from '../workflows/workflow-card-tab-item-dto';
+import CardColumnTabItemDTO from '../cards/card-column-tab-item-dto';
+import AdvSearchVariableDTO from './adv-search-variable-dto';
 
 export default interface AdvancedSearchOptionsDTO {
   cards: {
-    [key: string]: WorkflowCardTabItemDTO[];
+    [key: string]: CardColumnTabItemDTO[];
   };
   entities: {
-    [key: string]: WorkflowCardSlotDTO[];
+    [key: string]: AdvSearchVariableDTO[];
   };
 }

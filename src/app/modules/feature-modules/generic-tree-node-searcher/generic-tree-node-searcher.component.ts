@@ -45,7 +45,6 @@ export class GenericTreeNodeSearcherComponent implements OnInit, OnChanges {
 
   ngOnChanges(changes: SimpleChanges): void {
     if (changes.originalData) {
-      console.log(this.originalData);
       this.setTreeDataSource(this.originalData);
     }
   }
@@ -69,7 +68,7 @@ export class GenericTreeNodeSearcherComponent implements OnInit, OnChanges {
 
   public selectNode(node: TreeNode) {
     if (this.checkBoxSelection) {
-      node.selected = true;
+      node.selected = !node.selected;
     } else {
       this.nodeSelected.emit(node);
       this.resetFilter();

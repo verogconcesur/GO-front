@@ -108,6 +108,8 @@
         "continueNewSearch": "Continuing will delete the current filters",
         "critSearch": "Search Criteria",
         "criteria": {
+            "cards": "Criteria associated to card type",
+            "entities": "Criteria associated to data type",
             "title": "Select criterias"
         },
         "customCol": "Customice columns",
@@ -371,6 +373,7 @@
         "seeLess": "See less",
         "seeMore": "See more",
         "select": "Select",
+        "selectAll": "Select all",
         "selectAttacmentsToAdd": "Select the attachments to add",
         "selectImageFile": "Select image file",
         "send": "Send",

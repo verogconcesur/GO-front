@@ -1,9 +1,12 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
-import { FormBuilder, UntypedFormGroup } from '@angular/forms';
 import { marker } from '@biesbjerg/ngx-translate-extract-marker';
 import TreeNode from '@data/interfaces/tree-node';
+import { AdvancedSearchItem } from '@data/models/adv-search/adv-search-dto';
 import AdvancedSearchOptionsDTO from '@data/models/adv-search/adv-search-options-dto';
+import AdvSearchVariableDTO from '@data/models/adv-search/adv-search-variable-dto';
+import CardColumnTabItemDTO from '@data/models/cards/card-column-tab-item-dto';
 import { ComponentToExtendForCustomDialog, CustomDialogFooterConfigI } from '@jenga/custom-dialog';
+// eslint-disable-next-line max-len
 import { GenericTreeNodeSearcherComponent } from '@modules/feature-modules/generic-tree-node-searcher/generic-tree-node-searcher.component';
 import { TranslateService } from '@ngx-translate/core';
 import { ConfirmDialogService } from '@shared/services/confirm-dialog.service';
@@ -22,13 +25,8 @@ export const enum AdvSearchCriteriaDialogComponentModalEnum {
 })
 export class AdvSearchCriteriaDialogComponent extends ComponentToExtendForCustomDialog implements OnInit {
   @ViewChild('genericTreeNodeSearcher') genericTreeNodeSearcher: GenericTreeNodeSearcherComponent;
-  public criteriaForm: UntypedFormGroup;
   public treeNodes: TreeNode[] = [];
-  constructor(
-    private fb: FormBuilder,
-    private confirmDialogService: ConfirmDialogService,
-    private translateService: TranslateService
-  ) {
+  constructor(private confirmDialogService: ConfirmDialogService, private translateService: TranslateService) {
     super(
       AdvSearchCriteriaDialogComponentModalEnum.ID,
       AdvSearchCriteriaDialogComponentModalEnum.PANEL_CLASS,
@@ -37,50 +35,103 @@ export class AdvSearchCriteriaDialogComponent extends ComponentToExtendForCustom
   }
 
   ngOnInit(): void {
-    console.log(this.extendedComponentData);
-    if (this.extendedComponentData.options?.cards && Object.keys(this.extendedComponentData.options.cards).length) {
+    const options: AdvancedSearchOptionsDTO = this.extendedComponentData.options;
+    const selected: AdvancedSearchItem[] = this.extendedComponentData.selected ? [...this.extendedComponentData.selected] : [];
+    if (options?.cards && Object.keys(options.cards).length) {
       const treeNode: TreeNode = {
-        name: marker('advSearch.criteria.cards'),
+        name: this.translateService.instant(marker('advSearch.criteria.cards')),
         children: []
       };
-      Object.keys(this.extendedComponentData.options.cards).forEach((k) => {
+      Object.keys(options.cards).forEach((k) => {
         treeNode.children.push({
           name: k,
-          children: this.extendedComponentData.options.cards[k].map((d: TreeNode) => ({ ...d, selected: false }))
+          children: options.cards[k].map((d) => ({
+            ...d,
+            selected: selected.find((s) => s.tabItem?.id === d.id) ? true : false
+          }))
         } as TreeNode);
       });
       this.treeNodes.push(treeNode);
     }
-    if (this.extendedComponentData.options?.entities && Object.keys(this.extendedComponentData.options.entities).length) {
+    if (options?.entities && Object.keys(options.entities).length) {
       const treeNode: TreeNode = {
-        name: marker('advSearch.criteria.entities'),
+        name: this.translateService.instant(marker('advSearch.criteria.entities')),
         children: []
       };
-      Object.keys(this.extendedComponentData.options.entities).forEach((k) => {
+      Object.keys(options.entities).forEach((k) => {
         treeNode.children.push({
           name: k,
-          children: this.extendedComponentData.options.entities[k].map((d: TreeNode) => ({ ...d, selected: false }))
+          children: options.entities[k].map((d) => ({
+            ...d,
+            selected: selected.find((s) => s.variable?.id === d.id) ? true : false
+          }))
         } as TreeNode);
       });
       this.treeNodes.push(treeNode);
     }
-    this.initializeForm();
   }
 
   public confirmCloseCustomDialog(): Observable<boolean> {
-    if (this.criteriaForm.touched && this.criteriaForm.dirty) {
-      return this.confirmDialogService.open({
-        title: this.translateService.instant(marker('common.warning')),
-        message: this.translateService.instant(marker('common.unsavedChangesExit'))
-      });
-    } else {
-      return of(true);
-    }
+    return this.confirmDialogService.open({
+      title: this.translateService.instant(marker('common.warning')),
+      message: this.translateService.instant(marker('errors.ifContinueLosingChanges'))
+    });
   }
 
-  public onSubmitCustomDialog(): Observable<AdvancedSearchOptionsDTO> {
-    console.log(this.genericTreeNodeSearcher.originalData);
-    return of(this.criteriaForm.getRawValue() as AdvancedSearchOptionsDTO);
+  public onSubmitCustomDialog(): Observable<AdvancedSearchItem[]> {
+    console.log(this.extendedComponentData.selected, this.genericTreeNodeSearcher.originalData);
+    return of(
+      this.extractTreeSelectedNodes(
+        [],
+        this.genericTreeNodeSearcher.originalData as CardColumnTabItemDTO[] | AdvSearchVariableDTO[],
+        this.extendedComponentData.selected
+      )
+    );
+  }
+
+  public extractTreeSelectedNodes(
+    result: AdvancedSearchItem[],
+    tree: CardColumnTabItemDTO[] | AdvSearchVariableDTO[],
+    oldSelectedItems: AdvancedSearchItem[]
+  ): AdvancedSearchItem[] {
+    //Tenemos dos tipos de datos englobados en AdvancedSearchItem:
+    // - los asociados a la ficha => CardColumnTabItemDTO
+    // - los asociados a la entidad => AdvSearchVariableDTO
+    tree.forEach((node) => {
+      if (node.children?.length) {
+        result = this.extractTreeSelectedNodes(
+          result,
+          node.children as CardColumnTabItemDTO[] | AdvSearchVariableDTO[],
+          oldSelectedItems
+        );
+      } else if (node.selected) {
+        console.log('Es posible que tengamos que setear algunos de los valores por defecto');
+        const advancedSearchItem: AdvancedSearchItem = {
+          id: null,
+          advancedSearchId: null,
+          advancedSearchOperator: null,
+          tabItem: null,
+          value: null,
+          variable: null
+        };
+        let found: AdvancedSearchItem = null;
+        if (Object.keys(node).indexOf('typeItem') >= 0) {
+          // El nodo es de tipo CardColumnTabItemDTO
+          found = oldSelectedItems.find((item) => item.tabItem?.id === (node as CardColumnTabItemDTO).id);
+          advancedSearchItem.tabItem = node as CardColumnTabItemDTO;
+        } else {
+          // El nodo es de tipo AdvSearchVariableDTO
+          found = oldSelectedItems.find((item) => item.variable?.id === (node as AdvSearchVariableDTO).id);
+          advancedSearchItem.variable = node as AdvSearchVariableDTO;
+        }
+        if (found) {
+          result.push(found);
+        } else {
+          result.push(advancedSearchItem);
+        }
+      }
+    });
+    return result;
   }
 
   public setAndGetFooterConfig(): CustomDialogFooterConfigI | null {
@@ -103,8 +154,4 @@ export class AdvSearchCriteriaDialogComponent extends ComponentToExtendForCustom
       ]
     };
   }
-
-  private initializeForm = (): void => {
-    this.criteriaForm = this.fb.group({});
-  };
 }
