@@ -77,6 +77,19 @@
                                                 >
                                             </button>
                                         </div>
+                                        <div class="timeline-item__actions">
+                                            <button
+                                                mat-button
+                                                [ngClass]="{ 'opacity-04': showingLandingEmailEditor !== i }"
+                                                (click)="showLandingEmailEditor(i)"
+                                                matTooltip="{{ labels.landingEmail | translate }}"
+                                                matTooltipPosition="above"
+                                            >
+                                                <mat-icon class="message" [ngClass]="{ active: showingLandingEmailEditor === i }"
+                                                    >alternate_email</mat-icon
+                                                >
+                                            </button>
+                                        </div>
 
                                         <div class="timeline-item__actions">
                                             <button mat-button class="opacity-04" (click)="deleteTimelineItem(i)">
@@ -95,6 +108,17 @@
                                             [placeholder]="labels.insertText | translate"
                                             (contentChanged)="textEditorContentChanged($event, itemForm)"
                                         ></app-text-editor-wrapper>
+                                    </div>
+
+                                    <div *ngIf="showingLandingEmailEditor === i">
+                                        <mat-form-field appearance="outline" floatLabel="always" class="timeline-item__email">
+                                            <mat-label>{{ labels.email | translate }}</mat-label>
+                                            <input
+                                                matInput
+                                                formControlName="recipientEmail"
+                                                (contentChanged)="textEditorEmailChanged($event, itemForm)"
+                                            />
+                                        </mat-form-field>
                                     </div>
                                 </div>
                             </ng-container>
