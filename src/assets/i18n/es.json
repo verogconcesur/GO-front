@@ -110,6 +110,8 @@
         "criteria": {
             "cards": "Criterios pertenencientes al tipo de ficha",
             "entities": "Criterios asociados al tipo de dato",
+            "showAllNodes": "Mostrar todos",
+            "showSelectedNodes": "Mostrar seleccionados",
             "title": "Seleccionar criterios de búsqueda"
         },
         "customCol": "Personalizar columnas",

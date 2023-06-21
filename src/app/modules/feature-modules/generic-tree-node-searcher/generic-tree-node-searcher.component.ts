@@ -29,6 +29,7 @@ export class GenericTreeNodeSearcherComponent implements OnInit, OnChanges {
   //Used to highlight the results
   public searchedWords$: Observable<string[]> = of([]);
   public filterTextSearchControl = new UntypedFormControl();
+  public areOnlySelectedNodesShown = false;
 
   constructor() {}
 
@@ -54,6 +55,7 @@ export class GenericTreeNodeSearcherComponent implements OnInit, OnChanges {
   }
 
   public filter(): void {
+    this.areOnlySelectedNodesShown = false;
     const originalData: TreeNode[] = lodash.cloneDeep(this.originalData);
     const filterValue = this.filterTextSearchControl.value ? normalizaStringToLowerCase(this.filterTextSearchControl.value) : '';
     if (filterValue) {
@@ -69,9 +71,31 @@ export class GenericTreeNodeSearcherComponent implements OnInit, OnChanges {
   public selectNode(node: TreeNode) {
     if (this.checkBoxSelection) {
       node.selected = !node.selected;
+      this.setNodeSelectionInTreeData(node, this.originalData);
     } else {
       this.nodeSelected.emit(node);
       this.resetFilter();
+    }
+  }
+
+  public expandAll(): void {
+    this.treeControl.expandAll();
+  }
+  public collapseAll(): void {
+    this.treeControl.collapseAll();
+  }
+
+  public toggleShowOnlySelectedNode(): void {
+    this.filterTextSearchControl.setValue(null, { emitEvent: false });
+    this.searchedWords$ = of([]);
+    this.areOnlySelectedNodesShown = !this.areOnlySelectedNodesShown;
+    const originalData: TreeNode[] = lodash.cloneDeep(this.originalData);
+    if (this.areOnlySelectedNodesShown) {
+      this.setTreeDataSource(this.filterSelectedNodes(originalData));
+      this.treeControl.expandAll();
+    } else {
+      this.setTreeDataSource(originalData);
+      this.treeControl.expandAll();
     }
   }
 
@@ -97,4 +121,28 @@ export class GenericTreeNodeSearcherComponent implements OnInit, OnChanges {
       return null;
     });
   }
+
+  private filterSelectedNodes(data: TreeNode[]): TreeNode[] {
+    return data.filter((item: TreeNode) => {
+      if (item.selected) {
+        return item;
+      } else if (item.children?.length) {
+        item.children = this.filterSelectedNodes(item.children);
+        if (item.children.length) {
+          return item;
+        }
+      }
+      return null;
+    });
+  }
+
+  private setNodeSelectionInTreeData = (node: TreeNode, tree: TreeNode[]): void => {
+    tree.forEach((item: TreeNode) => {
+      if (item.id === node.id) {
+        item.selected = node.selected;
+      } else if (item.children?.length) {
+        this.setNodeSelectionInTreeData(node, item.children);
+      }
+    });
+  };
 }

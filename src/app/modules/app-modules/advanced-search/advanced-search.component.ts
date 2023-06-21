@@ -283,9 +283,8 @@ export class AdvancedSearchComponent implements OnInit {
         width: '700px'
       })
       .pipe(take(1))
-      .subscribe((data) => {
+      .subscribe((data: AdvancedSearchItem[]) => {
         console.log('TODO set advancedSearchItems:', data);
-        console.log(JSON.stringify(data));
       });
   }
   ngOnInit(): void {

@@ -110,6 +110,8 @@
         "criteria": {
             "cards": "Criteria associated to card type",
             "entities": "Criteria associated to data type",
+            "showAllNodes": "Show all",
+            "showSelectedNodes": "Show selected",
             "title": "Select criterias"
         },
         "customCol": "Customice columns",

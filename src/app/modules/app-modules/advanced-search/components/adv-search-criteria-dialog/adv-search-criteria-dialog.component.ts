@@ -26,6 +26,12 @@ export const enum AdvSearchCriteriaDialogComponentModalEnum {
 export class AdvSearchCriteriaDialogComponent extends ComponentToExtendForCustomDialog implements OnInit {
   @ViewChild('genericTreeNodeSearcher') genericTreeNodeSearcher: GenericTreeNodeSearcherComponent;
   public treeNodes: TreeNode[] = [];
+  public labels = {
+    collapseAll: marker('common.collapse'),
+    expandAll: marker('common.expand'),
+    showSelectedNodes: marker('advSearch.criteria.showSelectedNodes'),
+    showAllNodes: marker('advSearch.criteria.showAllNodes')
+  };
   constructor(private confirmDialogService: ConfirmDialogService, private translateService: TranslateService) {
     super(
       AdvSearchCriteriaDialogComponentModalEnum.ID,
@@ -79,7 +85,6 @@ export class AdvSearchCriteriaDialogComponent extends ComponentToExtendForCustom
   }
 
   public onSubmitCustomDialog(): Observable<AdvancedSearchItem[]> {
-    console.log(this.extendedComponentData.selected, this.genericTreeNodeSearcher.originalData);
     return of(
       this.extractTreeSelectedNodes(
         [],
