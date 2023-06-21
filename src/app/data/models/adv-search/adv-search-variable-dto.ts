@@ -1,4 +1,6 @@
-export default interface AdvSearchVariableDTO {
+import TreeNode from '@data/interfaces/tree-node';
+
+export default interface AdvSearchVariableDTO extends TreeNode {
   id: number;
   attributeName: string;
   dataType: 'STRING' | 'NUMBER' | 'BOOLEAN' | 'DATE' | 'TIME' | 'DATETIME' | 'ENTITY';

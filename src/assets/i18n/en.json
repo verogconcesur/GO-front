@@ -107,6 +107,13 @@
         "context": "Context",
         "continueNewSearch": "Continuing will delete the current filters",
         "critSearch": "Search Criteria",
+        "criteria": {
+            "cards": "Criteria associated to card type",
+            "entities": "Criteria associated to data type",
+            "showAllNodes": "Show all",
+            "showSelectedNodes": "Show selected",
+            "title": "Select criterias"
+        },
         "customCol": "Customice columns",
         "deleteConfirmation": "Are you sure you want to delete this saved search?",
         "endDate": "End date",
@@ -853,7 +860,6 @@
         "state-roleTitle": "Who sees the state",
         "stateName": "State name",
         "states": "States controls and definition",
-        "subStates": "",
         "substateName": "Substate name",
         "substatesWithAndWithoutCards": "Showing substates with or without cards",
         "substatesWithCards": "Showing only substates with cards",

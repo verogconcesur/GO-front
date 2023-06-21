@@ -4,9 +4,12 @@ import { SharedModule } from '@shared/shared.module';
 import { AdvancedSearchRoutingModule } from './advanced-search-routing.module';
 import { AdvancedSearchComponent } from './advanced-search.component';
 import { AdvSearchCardTableComponent } from './components/adv-search-card-table/adv-search-card-table.component';
+import { AdvSearchCriteriaDialogComponent } from './components/adv-search-criteria-dialog/adv-search-criteria-dialog.component';
+// eslint-disable-next-line max-len
+import { GenericTreeNodeSearcherModule } from '@modules/feature-modules/generic-tree-node-searcher/generic-tree-node-searcher.module';
 
 @NgModule({
-  declarations: [AdvancedSearchComponent, AdvSearchCardTableComponent],
-  imports: [CommonModule, SharedModule, AdvancedSearchRoutingModule]
+  declarations: [AdvancedSearchComponent, AdvSearchCardTableComponent, AdvSearchCriteriaDialogComponent],
+  imports: [CommonModule, SharedModule, AdvancedSearchRoutingModule, GenericTreeNodeSearcherModule]
 })
 export class AdvancedSearchModule {}

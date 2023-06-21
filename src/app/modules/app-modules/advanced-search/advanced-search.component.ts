@@ -2,7 +2,7 @@
 import { Component, OnInit, ViewChild, ViewEncapsulation } from '@angular/core';
 import { ConcenetError } from '@app/types/error';
 import { marker } from '@biesbjerg/ngx-translate-extract-marker';
-import AdvSearchDTO from '@data/models/adv-search/adv-search-dto';
+import AdvSearchDTO, { AdvancedSearchItem } from '@data/models/adv-search/adv-search-dto';
 import { AdvSearchService } from '@data/services/adv-search.service';
 import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
 import { ProgressSpinnerDialogService } from '@shared/services/progress-spinner-dialog.service';
@@ -23,6 +23,12 @@ import WorkflowStateDTO from '@data/models/workflows/workflow-state-dto';
 import WorkflowSubstateDTO from '@data/models/workflows/workflow-substate-dto';
 import _ from 'lodash';
 import moment from 'moment';
+import AdvancedSearchOptionsDTO from '@data/models/adv-search/adv-search-options-dto';
+import { CustomDialogService } from '@jenga/custom-dialog';
+import {
+  AdvSearchCriteriaDialogComponent,
+  AdvSearchCriteriaDialogComponentModalEnum
+} from './components/adv-search-criteria-dialog/adv-search-criteria-dialog.component';
 
 @UntilDestroy()
 @Component({
@@ -60,6 +66,7 @@ export class AdvancedSearchComponent implements OnInit {
   public advSearchFav: AdvSearchDTO[] = [];
   public facilityList: FacilityDTO[] = [];
   public workflowList: WorkflowCreateCardDTO[] = [];
+  public criteriaOptions: AdvancedSearchOptionsDTO = { cards: {}, entities: {} };
   public statesOptions: Observable<WorkflowStateDTO[] | any[]>;
   public subStatesOptions: Observable<WorkflowSubstateDTO[] | any[]>;
   public advSearchForm: FormGroup;
@@ -73,7 +80,8 @@ export class AdvancedSearchComponent implements OnInit {
     private confirmationDialog: ConfirmDialogService,
     private fb: FormBuilder,
     private translateService: TranslateService,
-    private admService: AuthenticationService
+    private admService: AuthenticationService,
+    private customDialogService: CustomDialogService
   ) {}
   get context() {
     return (this.advSearchForm.get('advancedSearchContext') as FormGroup).controls;
@@ -264,18 +272,35 @@ export class AdvancedSearchComponent implements OnInit {
         }
       });
   }
+  addCriteriaFilter(): void {
+    this.customDialogService
+      .open({
+        component: AdvSearchCriteriaDialogComponent,
+        extendedComponentData: { options: this.criteriaOptions, selected: this.advSearchForm.get('advancedSearchItems').value },
+        id: AdvSearchCriteriaDialogComponentModalEnum.ID,
+        panelClass: AdvSearchCriteriaDialogComponentModalEnum.PANEL_CLASS,
+        disableClose: true,
+        width: '700px'
+      })
+      .pipe(take(1))
+      .subscribe((data: AdvancedSearchItem[]) => {
+        console.log('TODO set advancedSearchItems:', data);
+      });
+  }
   ngOnInit(): void {
     const spinner = this.spinnerService.show();
     const resquests = [
       this.advSearchService.getAdvSearchList().pipe(take(1)),
       this.facilityService.getFacilitiesByBrandsIds().pipe(take(1)),
-      this.advSearchService.getWorkflowList().pipe(take(1))
+      this.advSearchService.getWorkflowList().pipe(take(1)),
+      this.advSearchService.getCriteria().pipe(take(1))
     ];
     forkJoin(resquests).subscribe({
-      next: (responses: [AdvSearchDTO[], FacilityDTO[], WorkflowCreateCardDTO[]]) => {
+      next: (responses: [AdvSearchDTO[], FacilityDTO[], WorkflowCreateCardDTO[], AdvancedSearchOptionsDTO]) => {
         this.advSearchFav = responses[0] ? responses[0] : [];
         this.facilityList = responses[1] ? responses[1] : [];
         this.workflowList = responses[2] ? responses[2] : [];
+        this.criteriaOptions = responses[3] ? responses[3] : { cards: {}, entities: {} };
         this.workflowList = this.workflowList.map((wk: WorkflowCreateCardDTO) => {
           wk.workflowStates = wk.workflowStates.map((ws: WorkflowStateDTO) => {
             const workflowCopy = _.cloneDeep(wk); //Rompo la recursividad
