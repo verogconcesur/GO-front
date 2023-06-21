@@ -1,13 +1,13 @@
 <div class="criteria-buttons" fxLayoutAlign="space-between center">
     <div class="criteria-buttons__left">
-        <button mat-stroked-button (click)="genericTreeNodeSearcher.expandAll()">{{ labels.expandAll | translate }}</button>
-        <button mat-stroked-button (click)="genericTreeNodeSearcher.collapseAll()">{{ labels.collapseAll | translate }}</button>
-    </div>
-    <div class="criteria-buttons__right">
         <button mat-stroked-button color="primary" (click)="genericTreeNodeSearcher.toggleShowOnlySelectedNode()">
             <span *ngIf="!genericTreeNodeSearcher.areOnlySelectedNodesShown">{{ labels.showSelectedNodes | translate }}</span>
             <span *ngIf="genericTreeNodeSearcher.areOnlySelectedNodesShown">{{ labels.showAllNodes | translate }}</span>
         </button>
+    </div>
+    <div class="criteria-buttons__right">
+        <button mat-stroked-button (click)="genericTreeNodeSearcher.expandAll()">{{ labels.expandAll | translate }}</button>
+        <button mat-stroked-button (click)="genericTreeNodeSearcher.collapseAll()">{{ labels.collapseAll | translate }}</button>
     </div>
 </div>
 <app-generic-tree-node-searcher

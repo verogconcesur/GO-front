@@ -1,3 +1,11 @@
 .criteria-buttons {
   margin-bottom: 10px;
+  button {
+    font-weight: 500;
+    margin-right: 5px;
+    font-size: 0.8rem;
+    line-height: 20px;
+    height: 25px;
+    cursor: pointer;
+  }
 }
