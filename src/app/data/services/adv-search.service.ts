@@ -26,6 +26,7 @@ export class AdvSearchService {
   private readonly RUN_PATH = '/run';
   private readonly GET_WORKFLOW_PATH = '/getWorkflows';
   private readonly GET_CRITERIA_PATH = '/getCriteria';
+  private readonly GET_COLUMNS_PATH = '/getColumns';
 
   constructor(@Inject(ENV) private env: Env, private http: HttpClient, private router: Router) {}
   public getWorkflowList(): Observable<WorkflowCreateCardDTO[]> {
@@ -79,6 +80,11 @@ export class AdvSearchService {
   public getCriteria(): Observable<AdvancedSearchOptionsDTO> {
     return this.http
       .get<AdvancedSearchOptionsDTO>(`${this.env.apiBaseUrl}${this.GET_ADV_SEARCH_PATH}${this.GET_CRITERIA_PATH}`)
+      .pipe(catchError((error) => throwError(error as ConcenetError)));
+  }
+  public getColumns(): Observable<AdvancedSearchOptionsDTO> {
+    return this.http
+      .get<AdvancedSearchOptionsDTO>(`${this.env.apiBaseUrl}${this.GET_ADV_SEARCH_PATH}${this.GET_COLUMNS_PATH}`)
       .pipe(catchError((error) => throwError(error as ConcenetError)));
   }
 }
