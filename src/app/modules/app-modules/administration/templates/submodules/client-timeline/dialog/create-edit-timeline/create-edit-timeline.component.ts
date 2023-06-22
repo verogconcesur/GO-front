@@ -45,6 +45,7 @@ export class CreateEditTimelineComponent extends ComponentToExtendForCustomDialo
   public labels = {
     title: marker('administration.templates.clientTimeline.add'),
     name: marker('administration.templates.clientTimeline.name'),
+    email: marker('administration.templates.clientTimeline.email'),
     organization: marker('userProfile.organization'),
     edit: marker('administration.templates.clientTimeline.edit'),
     data: marker('userProfile.data'),
@@ -61,7 +62,9 @@ export class CreateEditTimelineComponent extends ComponentToExtendForCustomDialo
     itemConcept: marker('administration.templates.clientTimeline.itemConcept'),
     closed: marker('administration.templates.clientTimeline.closed'),
     insertText: marker('common.insertTextHere'),
-    landingMessage: marker('administration.templates.clientTimeline.landingMessage')
+    landingMessage: marker('administration.templates.clientTimeline.landingMessage'),
+    landingEmail: marker('administration.templates.clientTimeline.landingEmail')
+
   };
   public timelineForm: UntypedFormGroup;
   public brandsAsyncList: Observable<BrandDTO[]>;
@@ -73,6 +76,7 @@ export class CreateEditTimelineComponent extends ComponentToExtendForCustomDialo
   public startDate: Date;
   public endDate: Date;
   public showingLandingMessageEditor: number;
+  public showingLandingEmailEditor: number;
   public textEditorToolbarOptions: TextEditorWrapperConfigI = {
     addHtmlModificationOption: true,
     addMacroListOption: true,
@@ -196,6 +200,13 @@ export class CreateEditTimelineComponent extends ComponentToExtendForCustomDialo
       this.showingLandingMessageEditor = null;
     }
   }
+  public showLandingEmailEditor(i: number) {
+    if (this.showingLandingEmailEditor !== i) {
+      this.showingLandingEmailEditor = i;
+    } else {
+      this.showingLandingEmailEditor = null;
+    }
+  }
 
   public convertToPlain(html: string) {
     const tempDivElement = document.createElement('div');
@@ -209,6 +220,14 @@ export class CreateEditTimelineComponent extends ComponentToExtendForCustomDialo
     itemForm.get('messageLanding').setValue(html);
     itemForm.get('messageLanding').markAsDirty();
     itemForm.get('messageLanding').markAsTouched();
+  }
+  public textEditorEmailChanged(html: string, itemForm: UntypedFormGroup) {
+    if ((html === '' || this.convertToPlain(html) === '') && html.length < 20) {
+      html = null;
+    }
+    itemForm.get('recipientEmail').setValue(html);
+    itemForm.get('recipientEmail').markAsDirty();
+    itemForm.get('recipientEmail').markAsTouched();
   }
 
   public dropTimelineItem(event: CdkDragDrop<TemplatesTimelineItemsDTO[]>) {
@@ -229,7 +248,8 @@ export class CreateEditTimelineComponent extends ComponentToExtendForCustomDialo
       id: [null],
       orderNumber: [this.templateTimelineItems.length],
       closed: [false],
-      messageLanding: ['', [Validators.required]]
+      messageLanding: ['', [Validators.required]],
+      recipientEmail: ['', [Validators.email]],
     });
     this.templateTimelineItems.push(timelineItem);
   }
@@ -481,7 +501,8 @@ export class CreateEditTimelineComponent extends ComponentToExtendForCustomDialo
             id: [item.id],
             orderNumber: [item.orderNumber],
             closed: [item.closed],
-            messageLanding: [item.messageLanding, [Validators.required]]
+            messageLanding: [item.messageLanding, [Validators.required]],
+            recipientEmail: [item.recipientEmail, [Validators.email]],
           });
           timelineItems.push(timelineItem);
         });

@@ -14,6 +14,7 @@ export default interface WorkflowCardInstanceDTO {
   workflowId: number;
   workflowName: string;
   workflowSubstateId: number;
+  workflowSubstateName: string;
   workflowSubstateEvents: WorkflowSubstateEventDTO[];
   information?: string;
   dateAssignmentSubstate?: number;

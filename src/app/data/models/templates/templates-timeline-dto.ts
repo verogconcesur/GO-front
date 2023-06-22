@@ -4,6 +4,7 @@ import FacilityDTO from '../organization/facility-dto';
 import SpecialtyDTO from '../organization/specialty-dto';
 
 export interface TemplatesTimelineItemsDTO {
+  recipientEmail: string;
   name: string;
   id: number;
   orderNumber: number;
