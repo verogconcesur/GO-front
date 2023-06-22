@@ -197,7 +197,7 @@ export class ClientTimelineComponent extends AdministrationCommonHeaderSectionCl
         component: CreateEditTimelineComponent,
         extendedComponentData: timeline ? timeline : null,
         disableClose: true,
-        width: '700px'
+        width: '750px'
       })
       .pipe(take(1))
       .subscribe((response) => {
