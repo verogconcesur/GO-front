@@ -20,6 +20,7 @@ export interface AdvancedSearchItem {
   tabItem: CardColumnTabItemDTO;
   value: string;
   variable: AdvSearchVariableDTO;
+  orderNumber?: number;
 }
 export interface AdvancedSearchContext {
   id: number;

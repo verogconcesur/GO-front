@@ -16,7 +16,7 @@ import { ConfirmDialogService } from '@shared/services/confirm-dialog.service';
 import FacilityDTO from '@data/models/organization/facility-dto';
 import { FacilityService } from '@data/services/facility.sevice';
 import WorkflowCreateCardDTO from '@data/models/workflows/workflow-create-card-dto';
-import { AbstractControl, FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { AbstractControl, FormArray, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { AuthenticationService } from '@app/security/authentication.service';
 import { haveArraysSameValues } from '@shared/utils/array-comparation-function';
 import WorkflowStateDTO from '@data/models/workflows/workflow-state-dto';
@@ -29,6 +29,9 @@ import {
   AdvSearchCriteriaDialogComponent,
   AdvSearchCriteriaDialogComponentModalEnum
 } from './components/adv-search-criteria-dialog/adv-search-criteria-dialog.component';
+import { CdkDragDrop } from '@angular/cdk/drag-drop';
+import { moveItemInFormArray } from '@shared/utils/moveItemInFormArray';
+import { removeItemInFormArray } from '@shared/utils/removeItemInFormArray';
 
 @UntilDestroy()
 @Component({
@@ -67,9 +70,11 @@ export class AdvancedSearchComponent implements OnInit {
   public facilityList: FacilityDTO[] = [];
   public workflowList: WorkflowCreateCardDTO[] = [];
   public criteriaOptions: AdvancedSearchOptionsDTO = { cards: {}, entities: {} };
+  public columnsOptions: AdvancedSearchOptionsDTO = { cards: {}, entities: {} };
   public statesOptions: Observable<WorkflowStateDTO[] | any[]>;
   public subStatesOptions: Observable<WorkflowSubstateDTO[] | any[]>;
   public advSearchForm: FormGroup;
+  public advSearchSelected: AdvSearchDTO;
   public modeDrawer: 'criteria' | 'context' | 'column';
   constructor(
     private advSearchService: AdvSearchService,
@@ -85,6 +90,13 @@ export class AdvancedSearchComponent implements OnInit {
   ) {}
   get context() {
     return (this.advSearchForm.get('advancedSearchContext') as FormGroup).controls;
+  }
+  get columns(): FormArray {
+    return this.advSearchForm.get('advancedSearchCols') as FormArray;
+  }
+  public runSearch(): void {
+    this.advSearchSelected.advancedSearchCols = this.columns.getRawValue();
+    this.table.executeSearch(this.advSearchSelected);
   }
   public changeState(): void {
     const substateList = this.getSubstates();
@@ -256,6 +268,7 @@ export class AdvancedSearchComponent implements OnInit {
             .pipe(take(1))
             .subscribe({
               next: (advSearchDetail) => {
+                this.advSearchSelected = advSearchDetail;
                 this.initForm(advSearchDetail, edit);
                 this.favDrawer.toggle();
                 this.spinnerService.hide(spinner);
@@ -287,20 +300,85 @@ export class AdvancedSearchComponent implements OnInit {
         console.log('TODO set advancedSearchItems:', data);
       });
   }
+  addColumns(): void {
+    this.customDialogService
+      .open({
+        component: AdvSearchCriteriaDialogComponent,
+        extendedComponentData: { options: this.columnsOptions, selected: this.advSearchForm.get('advancedSearchCols').value },
+        id: AdvSearchCriteriaDialogComponentModalEnum.ID,
+        panelClass: AdvSearchCriteriaDialogComponentModalEnum.PANEL_CLASS,
+        disableClose: true,
+        width: '700px'
+      })
+      .pipe(take(1))
+      .subscribe((data: AdvancedSearchItem[]) => {
+        const currentCols = this.columns.getRawValue();
+        data = data.filter((elem: AdvancedSearchItem) => {
+          if (elem.tabItem) {
+            return !currentCols.find((col: AdvancedSearchItem) => col.tabItem && col.tabItem.id === elem.tabItem.id);
+          } else {
+            return !currentCols.find((col: AdvancedSearchItem) => col.variable && col.variable.id === elem.variable.id);
+          }
+        });
+        _.forEach(data, (value) => {
+          this.addColumn(value);
+        });
+      });
+  }
+  addColumn(value: AdvancedSearchItem): void {
+    if (this.columns) {
+      this.columns.push(
+        this.fb.group({
+          id: [value.id ? value.id : null],
+          advancedSearchId: [this.advSearchForm.value.id ? this.advSearchForm.value.id : null],
+          tabItem: [value.tabItem ? value.tabItem : null],
+          variable: [value.variable ? value.variable : null],
+          orderNumber: [this.columns.length + 1]
+        })
+      );
+    }
+  }
+  getColName(col: FormGroup): string {
+    if (col.value.tabItem) {
+      return col.value.tabItem.name;
+    } else {
+      return col.value.variable.name;
+    }
+  }
+  drop(event: CdkDragDrop<string[]>) {
+    moveItemInFormArray(this.columns, event.previousIndex, event.currentIndex);
+  }
+  deleteColumn(col: FormGroup) {
+    this.confirmationDialog
+      .open({
+        title: this.translateService.instant(marker('common.warning')),
+        message: this.translateService.instant(marker('advSearch.deleteColumnConfirmation'))
+      })
+      .pipe(take(1))
+      .subscribe((ok: boolean) => {
+        if (ok) {
+          removeItemInFormArray(this.columns, col.value.orderNumber - 1);
+        }
+      });
+  }
   ngOnInit(): void {
     const spinner = this.spinnerService.show();
     const resquests = [
       this.advSearchService.getAdvSearchList().pipe(take(1)),
       this.facilityService.getFacilitiesByBrandsIds().pipe(take(1)),
       this.advSearchService.getWorkflowList().pipe(take(1)),
-      this.advSearchService.getCriteria().pipe(take(1))
+      this.advSearchService.getCriteria().pipe(take(1)),
+      this.advSearchService.getColumns().pipe(take(1))
     ];
     forkJoin(resquests).subscribe({
-      next: (responses: [AdvSearchDTO[], FacilityDTO[], WorkflowCreateCardDTO[], AdvancedSearchOptionsDTO]) => {
+      next: (
+        responses: [AdvSearchDTO[], FacilityDTO[], WorkflowCreateCardDTO[], AdvancedSearchOptionsDTO, AdvancedSearchOptionsDTO]
+      ) => {
         this.advSearchFav = responses[0] ? responses[0] : [];
         this.facilityList = responses[1] ? responses[1] : [];
         this.workflowList = responses[2] ? responses[2] : [];
         this.criteriaOptions = responses[3] ? responses[3] : { cards: {}, entities: {} };
+        this.columnsOptions = responses[4] ? responses[4] : { cards: {}, entities: {} };
         this.workflowList = this.workflowList.map((wk: WorkflowCreateCardDTO) => {
           wk.workflowStates = wk.workflowStates.map((ws: WorkflowStateDTO) => {
             const workflowCopy = _.cloneDeep(wk); //Rompo la recursividad
@@ -383,6 +461,12 @@ export class AdvancedSearchComponent implements OnInit {
               .filter((sub: WorkflowSubstateDTO) => !!sub)
           );
         }
+      }
+      if (advSearch.advancedSearchCols) {
+        advSearch.advancedSearchCols = _.sortBy(advSearch.advancedSearchCols, ['orderNumber']);
+        _.forEach(advSearch.advancedSearchCols, (value) => {
+          this.addColumn(value);
+        });
       }
     }
     this.changeWorkflow();

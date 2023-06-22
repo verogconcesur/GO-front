@@ -51,7 +51,7 @@
                         <div class="filterLabel">{{ labels.customCol | translate }}</div>
                         <div class="filerIcon"><mat-icon>keyboard_arrow_down</mat-icon></div>
                     </div>
-                    <button mat-flat-button color="primary">
+                    <button mat-flat-button color="primary" (click)="runSearch()">
                         {{ labels.search | translate }}
                     </button>
                     <div class="cleanButton" fxLayout="row" fxLayoutAlign="start center" (click)="cleanFilters()">
@@ -307,13 +307,37 @@
                                         class="adv-search__content__container__drawer__side__header__action"
                                         fxLayout="row"
                                         fxLayoutAlign="space-between center"
+                                        (click)="addColumns()"
                                     >
                                         <span>{{ labels.addColumn | translate }}</span>
                                         <mat-icon>add</mat-icon>
                                     </div>
                                 </div>
-                                <div class="adv-search__content__container__drawer__side__content"></div></div
-                        ></ng-container>
+                                <div class="adv-search__content__container__drawer__side__content" cdkDropListGroup>
+                                    <div
+                                        class="adv-search__content__container__drawer__side__content__columns"
+                                        cdkDropList
+                                        (cdkDropListDropped)="drop($event)"
+                                    >
+                                        <div
+                                            cdkDrag
+                                            class="custom-actions-item mat-elevation-z2"
+                                            fxLayoutAlign="none center"
+                                            *ngFor="let col of columns.controls; let i = index"
+                                        >
+                                            <div
+                                                fxLayout="row"
+                                                fxLayoutAlign="space-between center"
+                                                class="custom-actions-item-nameContainer"
+                                            >
+                                                <mat-icon>drag_indicator</mat-icon> <span>{{ getColName(col) }}</span
+                                                ><mat-icon (click)="deleteColumn(col); $event.stopPropagation()">delete</mat-icon>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div></ng-container
+                        >
                     </mat-drawer>
                     <mat-drawer-content>
                         <div class="adv-search__content__container__drawer__content">
