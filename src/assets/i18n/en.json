@@ -83,7 +83,9 @@
                 "itemConcept": "Item concept",
                 "items": "Items",
                 "landingMessage": "Text to show when your card is in this state of the Timeline",
+                "landingEmail": "^Predetermined email configuration",
                 "name": "timeline's template name",
+                "email": "Email",
                 "title": "Client timeline"
             },
             "communications": {

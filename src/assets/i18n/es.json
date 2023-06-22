@@ -83,7 +83,9 @@
                 "itemConcept": "Concepto del elemento",
                 "items": "Elementos",
                 "landingMessage": "Texto a mostrar en la landing del cliente cuando su ficha entre en este punto del Timeline.",
+                "landingEmail": "Configuración de Email predefinido",
                 "name": "Nombre de plantilla de timeline de cliente",
+                "email": "Email",
                 "title": "Timeline de cliente"
             },
             "communications": {
