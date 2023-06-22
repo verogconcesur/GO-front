@@ -73,6 +73,20 @@ export class WorkflowCardSearcherComponent implements OnInit {
     return true;
   }
 
+  public showWorkflowSubstate(index: number): boolean {
+    if (this.cards?.length && index > 0) {
+      const prevCard = this.cards[index - 1];
+      const actualCard = this.cards[index];
+      if (
+        prevCard.cardInstanceWorkflows[0].workflowId === actualCard.cardInstanceWorkflows[0].workflowId &&
+        prevCard.cardInstanceWorkflows[0].workflowSubstateName === actualCard.cardInstanceWorkflows[0].workflowSubstateName
+      ) {
+        return false;
+      }
+    }
+    return true;
+  }
+
   public onScroll(): void {
     if (!this.paginationConfig.last && this.paginationConfig.page < this.paginationConfig.totalPages) {
       this.searching++;
