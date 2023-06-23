@@ -23,6 +23,7 @@ export class WorkflowColumnClientMessagesComponent implements OnInit, OnDestroy 
   public messages: CardMessageDTO[] = [];
   public labels = { customer: marker('common.customer') };
   public dataLoaded = false;
+  public interval: NodeJS.Timeout;
   private idCard: number;
   private timeBeforeMarkAsRead = 15000;
 
@@ -37,14 +38,21 @@ export class WorkflowColumnClientMessagesComponent implements OnInit, OnDestroy 
   ngOnInit(): void {
     this.idCard = parseInt(this.route.snapshot.params.idCard, 10);
     this.getData();
-    this.rxStompService.cardDeatilWs$.pipe(untilDestroyed(this), skip(1)).subscribe((data: WorkflowSocketCardDetailDTO) => {
-      if (data && data.cardInstanceWorkflowId === this.idCard && data.message === 'DETAIL_MESSAGES') {
-        this.getData(true);
-      }
-    });
+    this.interval = setInterval(() => {
+      this.getData();
+    }, 60000);
+    // this.rxStompService.cardDeatilWs$.pipe(untilDestroyed(this), skip(1)).subscribe((data: WorkflowSocketCardDetailDTO) => {
+    //   if (data && data.cardInstanceWorkflowId === this.idCard && data.message === 'DETAIL_MESSAGES') {
+    //     this.getData(true);
+    //   }
+    // });
   }
 
-  ngOnDestroy(): void {}
+  ngOnDestroy(): void {
+    if (this.interval) {
+      clearInterval(this.interval);
+    }
+  }
 
   public getData(fromSockets = false): void {
     if (this.idCard) {

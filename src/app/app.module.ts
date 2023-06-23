@@ -51,11 +51,11 @@ import { AppComponent } from './app.component';
       provide: HTTP_INTERCEPTORS,
       useClass: TokenInterceptor,
       multi: true
-    },
-    {
-      provide: RxStompService,
-      useFactory: rxStompServiceFactory
     }
+    // {
+    //   provide: RxStompService,
+    //   useFactory: rxStompServiceFactory
+    // }
   ],
   bootstrap: [AppComponent]
 })

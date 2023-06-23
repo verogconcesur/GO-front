@@ -50,10 +50,10 @@ export class AppComponent implements OnInit {
 
     this.setVhProperty();
 
-    window.addEventListener('beforeunload', () => {
-      this.rxStompService.deactivate();
-      this.rxStompService.stompClient.forceDisconnect();
-    });
+    // window.addEventListener('beforeunload', () => {
+    //   this.rxStompService.deactivate();
+    //   this.rxStompService.stompClient.forceDisconnect();
+    // });
   }
 
   private setVhProperty(): void {
