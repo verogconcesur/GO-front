@@ -76,6 +76,7 @@ export class AdvancedSearchComponent implements OnInit {
   public advSearchForm: FormGroup;
   public advSearchSelected: AdvSearchDTO;
   public modeDrawer: 'criteria' | 'context' | 'column';
+  public escapedValue = '';
   constructor(
     private advSearchService: AdvSearchService,
     private facilityService: FacilityService,
@@ -93,6 +94,9 @@ export class AdvancedSearchComponent implements OnInit {
   }
   get columns(): FormArray {
     return this.advSearchForm.get('advancedSearchCols') as FormArray;
+  }
+  get criteria(): FormArray {
+    return this.advSearchForm.get('advancedSearchItems') as FormArray;
   }
   public runSearch(): void {
     this.advSearchSelected.advancedSearchCols = this.columns.getRawValue();
@@ -297,7 +301,17 @@ export class AdvancedSearchComponent implements OnInit {
       })
       .pipe(take(1))
       .subscribe((data: AdvancedSearchItem[]) => {
-        console.log('TODO set advancedSearchItems:', data);
+        const criteriaItems = this.criteria.getRawValue();
+        data = data.filter((elem: AdvancedSearchItem) => {
+          if (elem.tabItem) {
+            return !criteriaItems.find((item: AdvancedSearchItem) => item.tabItem && item.tabItem.id === elem.tabItem.id);
+          } else {
+            return !criteriaItems.find((item: AdvancedSearchItem) => item.variable && item.variable.id === elem.variable.id);
+          }
+        });
+        _.forEach(data, (value) => {
+          this.addCriteria(value);
+        });
       });
   }
   addColumns(): void {
@@ -336,6 +350,20 @@ export class AdvancedSearchComponent implements OnInit {
           orderNumber: [this.columns.length + 1]
         })
       );
+    }
+  }
+  addCriteria(value: AdvancedSearchItem): void {
+    if (this.criteria) {
+      this.criteria.push(
+        this.fb.group({
+          id: [value.id ? value.id : null],
+          advancedSearchId: [this.advSearchForm.value.id ? this.advSearchForm.value.id : null],
+          tabItem: [value.tabItem ? value.tabItem : null],
+          variable: [value.variable ? value.variable : null],
+          orderNumber: [this.columns.length + 1]
+        })
+      );
+      console.log(this.criteria.value);
     }
   }
   getColName(col: FormGroup): string {
@@ -377,6 +405,7 @@ export class AdvancedSearchComponent implements OnInit {
         this.advSearchFav = responses[0] ? responses[0] : [];
         this.facilityList = responses[1] ? responses[1] : [];
         this.workflowList = responses[2] ? responses[2] : [];
+        this.escapedValue = responses[3]?.escapedValue ? responses[3].escapedValue : '';
         this.criteriaOptions = responses[3] ? responses[3] : { cards: {}, entities: {} };
         this.columnsOptions = responses[4] ? responses[4] : { cards: {}, entities: {} };
         this.workflowList = this.workflowList.map((wk: WorkflowCreateCardDTO) => {
@@ -466,6 +495,12 @@ export class AdvancedSearchComponent implements OnInit {
         advSearch.advancedSearchCols = _.sortBy(advSearch.advancedSearchCols, ['orderNumber']);
         _.forEach(advSearch.advancedSearchCols, (value) => {
           this.addColumn(value);
+        });
+      }
+      if (advSearch.advancedSearchItems) {
+        advSearch.advancedSearchItems = _.sortBy(advSearch.advancedSearchItems, ['orderNumber']);
+        _.forEach(advSearch.advancedSearchItems, (value) => {
+          this.addCriteria(value);
         });
       }
     }

@@ -8,4 +8,5 @@ export default interface AdvancedSearchOptionsDTO {
   entities: {
     [key: string]: AdvSearchVariableDTO[];
   };
+  escapedValue?: string;
 }
