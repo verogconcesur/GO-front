@@ -30,16 +30,26 @@
 }
 
 .search-option-card {
-  margin: 5px 0;
+  margin: 8px 0;
   width: 300px;
-  height: 90px !important;
+  height: 100px !important;
   opacity: 0;
   &.with-wf-name {
-    height: 115px !important;
+    height: 150px !important;
+  }
+  &.with-wf-substate-name {
+    height: 125px !important;
   }
   &__wf-name {
-    line-height: 10px;
-    padding-top: 9px;
+    line-height: 20px;
+    display: block;
+  }
+  .search-option-card__wf-name div {
+    margin-bottom: 9px;
+  }
+  .workflow-substate {
+    font-weight: bold;
+    color: #2020ab;
   }
 }
 

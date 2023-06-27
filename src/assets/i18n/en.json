@@ -78,7 +78,9 @@
                 "itemConcept": "Item concept",
                 "items": "Items",
                 "landingMessage": "Text to show when your card is in this state of the Timeline",
+                "landingEmail": "^Predetermined email configuration",
                 "name": "timeline's template name",
+                "email": "Email",
                 "title": "Client timeline"
             },
             "communications": {
@@ -281,6 +283,8 @@
         "completed": "Finished",
         "concept": "Concept",
         "confEmail": "Configuration for email sending",
+        "confSms": "Configuration for SMS sending",
+        "configSmsSender": "Sender name",
         "confirm": "Submit",
         "country": "Country",
         "create": "Create",
@@ -308,6 +312,7 @@
         "edit": "Edit",
         "emails": "Emails",
         "employee": "Employee",
+        "erase": "Erase",
         "events": "Events",
         "expand": "Expand all",
         "externalLinks": "External links",

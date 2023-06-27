@@ -243,6 +243,7 @@ export class WorkflowColumnCustomizableEntityComponent implements OnInit, OnChan
           .pipe(take(1))
           .subscribe((data: VehicleEntityDTO) => {
             this.setShowLoading.emit(false);
+            data.cardInstanceId = this.cardInstance.cardInstanceWorkflow.id;
             this.customDialogService
               .open({
                 id: CreateEditVehicleComponentModalEnum.ID,

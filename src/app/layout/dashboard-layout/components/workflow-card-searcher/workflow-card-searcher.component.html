@@ -21,21 +21,29 @@
                 <mat-option
                     *ngFor="let option of cards; let i = index"
                     class="search-option-card"
-                    [ngClass]="{ 'with-wf-name': showWorkflowName(i) }"
+                    [ngClass]="{
+                        'with-wf-name': showWorkflowName(i),
+                        'with-wf-substate-name': !showWorkflowName(i) && showWorkflowSubstate(i)
+                    }"
                     [value]="option"
                     (click)="cardSelected(option)"
                     [class.fade-in]="true"
                 >
                     <div class="search-option-card__wf-name" *ngIf="showWorkflowName(i)">
-                        {{ option.cardInstanceWorkflows[0].workflowName }}
+                        <div>{{ option.cardInstanceWorkflows[0].workflowName }}</div>
                     </div>
+                    <div class="search-option-card__wf-name" *ngIf="showWorkflowSubstate(i)">
+                        <div class="workflow-substate">{{ option.cardInstanceWorkflows[0].workflowSubstateName }}</div>
+                    </div>
+
                     <app-workflow-card
                         [card]="option"
                         [disableDrag]="true"
                         [forceSize]="'size-s'"
                         [showExtraInfo]="false"
                         [navigationMode]="'absolute'"
-                    ></app-workflow-card>
+                    >
+                    </app-workflow-card>
                 </mat-option>
                 <div class="search-option-spinner" *ngIf="!paginationConfig.last">
                     <mat-spinner matSuffix class="spinner" diameter="30"></mat-spinner>

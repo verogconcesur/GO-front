@@ -186,9 +186,9 @@ export class EntitiesService {
    *
    * @returns VehicleEntityDTO
    */
-  public createVehicle(vehicle: VehicleEntityDTO): Observable<VehicleEntityDTO> {
+  public createVehicle(vehicle: VehicleEntityDTO, cardInstanceId?: number): Observable<VehicleEntityDTO> {
     return this.http
-      .post<VehicleEntityDTO>(`${this.env.apiBaseUrl}${this.GET_VEHICLES_PATH}`, vehicle)
+      .post<VehicleEntityDTO>(`${this.env.apiBaseUrl}${this.GET_VEHICLES_PATH}${cardInstanceId ? cardInstanceId : ''}`, vehicle)
       .pipe(catchError((error) => throwError(error.error as ConcenetError)));
   }
 

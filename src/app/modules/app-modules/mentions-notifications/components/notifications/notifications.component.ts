@@ -146,7 +146,17 @@ export class NotificationsComponent implements OnInit {
         slot = tabItem.tabItemConfigLink;
         break;
       case 'LIST':
-        slot = tabItem.tabItemConfigList.variable;
+        let found = null;
+        if (tabItem.tabItemConfigList?.listItems?.length && tabItem.tabItemConfigList?.cardTabItemInstance?.value) {
+          found = tabItem.tabItemConfigList.listItems.find(
+            (item) => item.code === tabItem.tabItemConfigList.cardTabItemInstance.value
+          );
+        }
+        if (found) {
+          slot = found;
+        } else {
+          slot = tabItem.tabItemConfigList.cardTabItemInstance;
+        }
         break;
       case 'OPTION':
         slot = tabItem.tabItemConfigOption.variable;

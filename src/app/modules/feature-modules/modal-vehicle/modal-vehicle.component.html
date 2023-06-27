@@ -50,26 +50,22 @@
                     {{ labels.orderData | translate }}
                 </div>
                 <div class="vehicle-data__section__group">
+                    <!-- commissionNumber -->
+                    <mat-form-field appearance="outline" floatLabel="always">
+                        <mat-label>{{ labels.commissionNumber | translate }}</mat-label>
+                        <input matInput formControlName="commissionNumber" (change)="changeCommissionNumber()" />
+                    </mat-form-field>
                     <!-- Facility -->
                     <mat-form-field appearance="outline" floatLabel="always">
                         <mat-label>{{ labels.facility | translate }}</mat-label>
-                        <mat-select formControlName="facility" (selectionChange)="selectFacility()">
+                        <mat-select formControlName="facility" [disabled]="!form.commissionNumber.value">
                             <mat-option *ngFor="let facility of facilityList" [value]="facility">{{ facility.name }}</mat-option>
                         </mat-select>
                         <button matSuffix mat-icon-button aria-label="Clear" (click)="removeFacility(); $event.stopPropagation()">
                             <mat-icon>close</mat-icon>
                         </button>
-                    </mat-form-field>
-                    <!-- commissionNumber -->
-                    <mat-form-field appearance="outline" floatLabel="always">
-                        <mat-label>{{ labels.commissionNumber | translate }}</mat-label>
-                        <input matInput formControlName="commissionNumber" [readonly]="!form.facility.value" />
-                        <mat-error *ngIf="form?.commissionNumber.invalid">
-                            <span *ngIf="form.commissionNumber.errors.required">
-                                {{ labels.required | translate }} ({{
-                                    labels.minLength | translate : { length: this.minLength }
-                                }})</span
-                            >
+                        <mat-error *ngIf="form?.facility.invalid">
+                            <span *ngIf="form.facility.errors.required"> {{ labels.required | translate }} </span>
                         </mat-error>
                     </mat-form-field>
                 </div>

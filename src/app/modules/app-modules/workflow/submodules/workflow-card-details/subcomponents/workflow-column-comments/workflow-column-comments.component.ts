@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, OnDestroy, OnInit, Output, ViewChild } from '@angular/core';
+import { Component, EventEmitter, Inject, Input, OnDestroy, OnInit, Output, ViewChild } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { ConcenetError } from '@app/types/error';
 import { marker } from '@biesbjerg/ngx-translate-extract-marker';
@@ -20,6 +20,8 @@ import { RxStompService } from '@app/services/rx-stomp.service';
 import { IMessage } from '@stomp/stompjs';
 import WorkflowSocketCardDetailDTO from '@data/models/workflows/workflow-sockect-card-detail-dto';
 import { AuthenticationService } from '@app/security/authentication.service';
+import { ENV } from '@app/constants/global.constants';
+import { Env } from '@app/types/env';
 
 @UntilDestroy()
 @Component({
@@ -48,11 +50,13 @@ export class WorkflowColumnCommentsComponent implements OnInit, OnDestroy {
     airMode: false,
     height: 80
   };
+  public interval: NodeJS.Timeout;
   private readonly timeBeforeMarkAsRead = 20000;
   private sendingComment = false;
   private idCard: number;
 
   constructor(
+    @Inject(ENV) private env: Env,
     private cardCommentsService: CardCommentsService,
     private route: ActivatedRoute,
     private globalMessageService: GlobalMessageService,
@@ -66,22 +70,32 @@ export class WorkflowColumnCommentsComponent implements OnInit, OnDestroy {
   ngOnInit(): void {
     this.idCard = parseInt(this.route.snapshot.params.idCard, 10);
     this.getData(true);
-    this.rxStompService.cardDeatilWs$.pipe(untilDestroyed(this), skip(1)).subscribe((data: WorkflowSocketCardDetailDTO) => {
-      if (
-        !this.sendingComment &&
-        data &&
-        data.cardInstanceWorkflowId === this.idCard &&
-        data.userId.toString() !== this.authService.getUserId() &&
-        data.message === 'DETAIL_COMMENTS'
-      ) {
+    if (this.env.socketsEnabled) {
+      this.rxStompService.cardDeatilWs$.pipe(untilDestroyed(this), skip(1)).subscribe((data: WorkflowSocketCardDetailDTO) => {
+        if (
+          !this.sendingComment &&
+          data &&
+          data.cardInstanceWorkflowId === this.idCard &&
+          data.userId.toString() !== this.authService.getUserId() &&
+          data.message === 'DETAIL_COMMENTS'
+        ) {
+          this.getData(false, false, true);
+        } else if (this.sendingComment) {
+          this.sendingComment = false;
+        }
+      });
+    } else {
+      this.interval = setInterval(() => {
         this.getData(false, false, true);
-      } else if (this.sendingComment) {
-        this.sendingComment = false;
-      }
-    });
+      }, 60000);
+    }
   }
 
-  ngOnDestroy(): void {}
+  ngOnDestroy(): void {
+    if (this.interval) {
+      clearInterval(this.interval);
+    }
+  }
 
   public getData(usersToo = false, showLoading = true, fromSockets = false): void {
     //Cogemos el cardInstanceWorkflowId de la ruta
@@ -158,7 +172,7 @@ export class WorkflowColumnCommentsComponent implements OnInit, OnDestroy {
 
   public answerComment(comment: CardCommentDTO): void {
     this.newComment =
-      '<p><span><b contenteditable="false" readonly="readonly"> @' + this.getUserFullname(comment.user, '.') + ' </b></span></p>';
+      '<p><span><b contenteditable="false" readonly="readonly"> @' + this.getUserFullname(comment.user, '_') + ' </b></span></p>';
     this.dataLoaded = false;
     setTimeout(() => {
       this.dataLoaded = true;
