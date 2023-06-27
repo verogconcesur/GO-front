@@ -1,4 +1,4 @@
-import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
+import { Component, Inject, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { Router } from '@angular/router';
 import { PermissionConstants } from '@app/constants/permission.constants';
@@ -15,6 +15,8 @@ import { take } from 'rxjs/operators';
 import { MentionsComponent } from '../mentions/mentions.component';
 import { NotificationsComponent } from '../notifications/notifications.component';
 import { IMessage } from '@stomp/stompjs';
+import { ENV } from '@app/constants/global.constants';
+import { Env } from '@app/types/env';
 
 @UntilDestroy()
 @Component({
@@ -42,8 +44,9 @@ export class NavbarComponent implements OnInit, OnDestroy {
     mentions: marker('common.mentions')
   };
   public infoWarning: WarningDTO = null;
-
+  public interval: NodeJS.Timeout;
   constructor(
+    @Inject(ENV) private env: Env,
     private router: Router,
     private authService: AuthenticationService,
     public dialog: MatDialog,
@@ -58,7 +61,11 @@ export class NavbarComponent implements OnInit, OnDestroy {
     this.initWebSocketForNotificationsAndMentions();
   }
 
-  ngOnDestroy(): void {}
+  ngOnDestroy(): void {
+    if (this.interval) {
+      clearInterval(this.interval);
+    }
+  }
 
   public navigateToAdministration(): void {
     this.router.navigate([RouteConstants.ADMINISTRATION]);
@@ -112,12 +119,18 @@ export class NavbarComponent implements OnInit, OnDestroy {
   }
 
   private initWebSocketForNotificationsAndMentions(): void {
-    this.rxStompService
-      .watch('/topic/notification/' + this.authService.getUserId())
-      .pipe(untilDestroyed(this))
-      .subscribe((data: IMessage) => {
+    if (this.env.socketsEnabled) {
+      this.rxStompService
+        .watch('/topic/notification/' + this.authService.getUserId())
+        .pipe(untilDestroyed(this))
+        .subscribe((data: IMessage) => {
+          this.getInfoWarnings();
+        });
+    } else {
+      this.interval = setInterval(() => {
         this.getInfoWarnings();
-      });
+      }, 60000);
+    }
   }
 
   private getInfoWarnings(): void {

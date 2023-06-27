@@ -1,4 +1,4 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Component, Inject, OnDestroy, OnInit } from '@angular/core';
 import { UntypedFormBuilder, UntypedFormGroup } from '@angular/forms';
 import { RouteConstants } from '@app/constants/route.constants';
 import { marker } from '@biesbjerg/ngx-translate-extract-marker';
@@ -20,6 +20,8 @@ import WorkflowSocketMoveDTO from '@data/models/workflows/workflow-socket-move-d
 import { RxStompService } from '@app/services/rx-stomp.service';
 import { IMessage } from '@stomp/stompjs';
 import { GlobalMessageService } from '@shared/services/global-message.service';
+import { ENV } from '@app/constants/global.constants';
+import { Env } from '@app/types/env';
 
 @UntilDestroy()
 @Component({
@@ -50,6 +52,7 @@ export class WorkflowNavbarComponent implements OnInit, OnDestroy {
   };
 
   constructor(
+    @Inject(ENV) private env: Env,
     private workflowService: WorkflowsService,
     private spinnerService: ProgressSpinnerDialogService,
     private logger: NGXLogger,
@@ -92,33 +95,35 @@ export class WorkflowNavbarComponent implements OnInit, OnDestroy {
   }
 
   websocketImplementation(): void {
-    if (this.websocketSubscription.length > 0) {
-      for (const socketSub of this.websocketSubscription) {
-        socketSub.unsubscribe();
+    if (this.env.socketsEnabled) {
+      if (this.websocketSubscription.length > 0) {
+        for (const socketSub of this.websocketSubscription) {
+          socketSub.unsubscribe();
+        }
       }
-    }
-    this.websocketSubscription = [];
-    if (this.workflowSelected && this.facilitiesSelected && this.facilitiesSelected.length > 0) {
-      for (const facility of this.facilitiesSelected) {
-        this.websocketSubscription.push(
-          this.rxStompService
-            .watch('/topic/movement/' + this.workflowSelected.id + '/' + facility.id)
-            .pipe(untilDestroyed(this))
-            .subscribe((data: IMessage) => {
-              this.prepareAndMoveService.moveCard$.next(JSON.parse(data.body) as WorkflowSocketMoveDTO);
-            })
-        );
-      }
-    } else if (this.workflowSelected) {
-      for (const facility of this.workflowSelected.facilities) {
-        this.websocketSubscription.push(
-          this.rxStompService
-            .watch('/topic/movement/' + this.workflowSelected.id + '/' + facility.id)
-            .pipe(untilDestroyed(this))
-            .subscribe((data: IMessage) => {
-              this.prepareAndMoveService.moveCard$.next(JSON.parse(data.body) as WorkflowSocketMoveDTO);
-            })
-        );
+      this.websocketSubscription = [];
+      if (this.workflowSelected && this.facilitiesSelected && this.facilitiesSelected.length > 0) {
+        for (const facility of this.facilitiesSelected) {
+          this.websocketSubscription.push(
+            this.rxStompService
+              .watch('/topic/movement/' + this.workflowSelected.id + '/' + facility.id)
+              .pipe(untilDestroyed(this))
+              .subscribe((data: IMessage) => {
+                this.prepareAndMoveService.moveCard$.next(JSON.parse(data.body) as WorkflowSocketMoveDTO);
+              })
+          );
+        }
+      } else if (this.workflowSelected) {
+        for (const facility of this.workflowSelected.facilities) {
+          this.websocketSubscription.push(
+            this.rxStompService
+              .watch('/topic/movement/' + this.workflowSelected.id + '/' + facility.id)
+              .pipe(untilDestroyed(this))
+              .subscribe((data: IMessage) => {
+                this.prepareAndMoveService.moveCard$.next(JSON.parse(data.body) as WorkflowSocketMoveDTO);
+              })
+          );
+        }
       }
     }
   }

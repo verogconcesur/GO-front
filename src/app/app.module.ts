@@ -54,7 +54,8 @@ import { AppComponent } from './app.component';
     },
     {
       provide: RxStompService,
-      useFactory: rxStompServiceFactory
+      useFactory: rxStompServiceFactory,
+      deps: [ENV]
     }
   ],
   bootstrap: [AppComponent]
