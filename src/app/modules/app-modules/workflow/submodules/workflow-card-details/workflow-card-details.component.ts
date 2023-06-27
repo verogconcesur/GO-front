@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { Component, HostListener, OnInit } from '@angular/core';
+import { Component, HostListener, Inject, OnInit } from '@angular/core';
 import { Location } from '@angular/common';
 import { ActivatedRoute, Router } from '@angular/router';
 import WorkflowCardDTO from '@data/models/workflows/workflow-card-dto';
@@ -19,6 +19,8 @@ import { IMessage } from '@stomp/stompjs';
 import WorkflowSocketCardDetailDTO from '@data/models/workflows/workflow-sockect-card-detail-dto';
 import { ConfirmDialogService } from '@shared/services/confirm-dialog.service';
 import { AuthenticationService } from '@app/security/authentication.service';
+import { Env } from '@app/types/env';
+import { ENV } from '@app/constants/global.constants';
 
 @UntilDestroy()
 @Component({
@@ -49,6 +51,7 @@ export class WorkflowCardDetailsComponent implements OnInit {
   };
 
   constructor(
+    @Inject(ENV) private env: Env,
     private route: ActivatedRoute,
     private router: Router,
     private location: Location,
@@ -213,26 +216,28 @@ export class WorkflowCardDetailsComponent implements OnInit {
   }
 
   private initWebsocket() {
-    // this.rxStompService
-    //   .watch('/topic/detail/' + this.idCard)
-    //   .pipe(untilDestroyed(this))
-    //   .subscribe((data: IMessage) => {
-    //     console.log(JSON.parse(data.body));
-    //     this.rxStompService.cardDeatilWs$.next(JSON.parse(data.body) as WorkflowSocketCardDetailDTO);
-    //   });
-    // this.rxStompService.cardDeatilWs$.pipe(untilDestroyed(this), skip(1)).subscribe((data: WorkflowSocketCardDetailDTO) => {
-    //   if (
-    //     data &&
-    //     data.cardInstanceWorkflowId === this.idCard &&
-    //     data.message === 'DETAIL_FULL' &&
-    //     data.userId.toString() !== this.authService.getUserId()
-    //   ) {
-    //     this.globalMessageService.showWarning({
-    //       message: this.translateService.instant(marker('workflows.cardChangesDetected')),
-    //       actionText: this.translateService.instant(marker('common.close'))
-    //     });
-    //     this.changesPendingToShow = true;
-    //   }
-    // });
+    if (this.env.socketsEnabled) {
+      this.rxStompService
+        .watch('/topic/detail/' + this.idCard)
+        .pipe(untilDestroyed(this))
+        .subscribe((data: IMessage) => {
+          console.log(JSON.parse(data.body));
+          this.rxStompService.cardDeatilWs$.next(JSON.parse(data.body) as WorkflowSocketCardDetailDTO);
+        });
+      this.rxStompService.cardDeatilWs$.pipe(untilDestroyed(this), skip(1)).subscribe((data: WorkflowSocketCardDetailDTO) => {
+        if (
+          data &&
+          data.cardInstanceWorkflowId === this.idCard &&
+          data.message === 'DETAIL_FULL' &&
+          data.userId.toString() !== this.authService.getUserId()
+        ) {
+          this.globalMessageService.showWarning({
+            message: this.translateService.instant(marker('workflows.cardChangesDetected')),
+            actionText: this.translateService.instant(marker('common.close'))
+          });
+          this.changesPendingToShow = true;
+        }
+      });
+    }
   }
 }
