@@ -144,6 +144,16 @@
             width: 100%;
             &__columns {
               width: 100%;
+              &.criteria-columns {
+                .custom-actions-item {
+                  width: auto;
+                  height: auto;
+                  min-height: 37px;
+                  .custom-actions-item-nameContainer {
+                    min-height: 37px;
+                  }
+                }
+              }
             }
           }
         }

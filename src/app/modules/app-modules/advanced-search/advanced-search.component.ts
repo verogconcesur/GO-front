@@ -32,6 +32,7 @@ import {
 import { CdkDragDrop } from '@angular/cdk/drag-drop';
 import { moveItemInFormArray } from '@shared/utils/moveItemInFormArray';
 import { removeItemInFormArray } from '@shared/utils/removeItemInFormArray';
+import AdvSearchOperatorDTO from '@data/models/adv-search/adv-search-operator-dto';
 
 @UntilDestroy()
 @Component({
@@ -77,6 +78,8 @@ export class AdvancedSearchComponent implements OnInit {
   public advSearchSelected: AdvSearchDTO;
   public modeDrawer: 'criteria' | 'context' | 'column';
   public escapedValue = '';
+  public operators: AdvSearchOperatorDTO[] = [];
+  public criteriaExpandPanelControl: any = {};
   constructor(
     private advSearchService: AdvSearchService,
     private facilityService: FacilityService,
@@ -373,8 +376,12 @@ export class AdvancedSearchComponent implements OnInit {
       return col.value.variable.name;
     }
   }
-  drop(event: CdkDragDrop<string[]>) {
-    moveItemInFormArray(this.columns, event.previousIndex, event.currentIndex);
+  drop(event: CdkDragDrop<string[]>, list: 'columns' | 'criteria') {
+    if (list === 'columns') {
+      moveItemInFormArray(this.columns, event.previousIndex, event.currentIndex);
+    } else {
+      moveItemInFormArray(this.criteria, event.previousIndex, event.currentIndex);
+    }
   }
   deleteColumn(col: FormGroup) {
     this.confirmationDialog
@@ -389,6 +396,19 @@ export class AdvancedSearchComponent implements OnInit {
         }
       });
   }
+  deleteCriteria(col: FormGroup) {
+    this.confirmationDialog
+      .open({
+        title: this.translateService.instant(marker('common.warning')),
+        message: this.translateService.instant(marker('advSearch.deleteCriteriaConfirmation'))
+      })
+      .pipe(take(1))
+      .subscribe((ok: boolean) => {
+        if (ok) {
+          removeItemInFormArray(this.criteria, col.value.orderNumber - 1);
+        }
+      });
+  }
   ngOnInit(): void {
     const spinner = this.spinnerService.show();
     const resquests = [
@@ -396,11 +416,19 @@ export class AdvancedSearchComponent implements OnInit {
       this.facilityService.getFacilitiesByBrandsIds().pipe(take(1)),
       this.advSearchService.getWorkflowList().pipe(take(1)),
       this.advSearchService.getCriteria().pipe(take(1)),
-      this.advSearchService.getColumns().pipe(take(1))
+      this.advSearchService.getColumns().pipe(take(1)),
+      this.advSearchService.getAdvSearchOperators().pipe(take(1))
     ];
     forkJoin(resquests).subscribe({
       next: (
-        responses: [AdvSearchDTO[], FacilityDTO[], WorkflowCreateCardDTO[], AdvancedSearchOptionsDTO, AdvancedSearchOptionsDTO]
+        responses: [
+          AdvSearchDTO[],
+          FacilityDTO[],
+          WorkflowCreateCardDTO[],
+          AdvancedSearchOptionsDTO,
+          AdvancedSearchOptionsDTO,
+          AdvSearchOperatorDTO[]
+        ]
       ) => {
         this.advSearchFav = responses[0] ? responses[0] : [];
         this.facilityList = responses[1] ? responses[1] : [];
@@ -408,6 +436,8 @@ export class AdvancedSearchComponent implements OnInit {
         this.escapedValue = responses[3]?.escapedValue ? responses[3].escapedValue : '';
         this.criteriaOptions = responses[3] ? responses[3] : { cards: {}, entities: {} };
         this.columnsOptions = responses[4] ? responses[4] : { cards: {}, entities: {} };
+        this.operators = responses[5] ? responses[5] : [];
+        console.log(this.operators);
         this.workflowList = this.workflowList.map((wk: WorkflowCreateCardDTO) => {
           wk.workflowStates = wk.workflowStates.map((ws: WorkflowStateDTO) => {
             const workflowCopy = _.cloneDeep(wk); //Rompo la recursividad

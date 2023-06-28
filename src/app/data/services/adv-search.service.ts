@@ -64,10 +64,12 @@ export class AdvSearchService {
       .get<AdvSearchDTO[]>(`${this.env.apiBaseUrl}${this.GET_ADV_SEARCH_PATH}${this.LIST_PATH}`)
       .pipe(catchError((error) => throwError(error as ConcenetError)));
   }
-  public getAdvSearchOperators(dataType: string): Observable<AdvSearchOperatorDTO[]> {
-    return this.http
-      .get<AdvSearchOperatorDTO[]>(`${this.env.apiBaseUrl}${this.GET_ADV_SEARCH_PATH}${this.OPERATORS_PATH}/${dataType}`)
-      .pipe(catchError((error) => throwError(error as ConcenetError)));
+  public getAdvSearchOperators(dataType?: string): Observable<AdvSearchOperatorDTO[]> {
+    let url = `${this.env.apiBaseUrl}${this.GET_ADV_SEARCH_PATH}${this.OPERATORS_PATH}`;
+    if (dataType) {
+      url += `/${dataType}`;
+    }
+    return this.http.get<AdvSearchOperatorDTO[]>(url).pipe(catchError((error) => throwError(error as ConcenetError)));
   }
   public executeSearch(search: AdvSearchDTO, pagination?: PaginationRequestI): Observable<PaginationResponseI<any[]>> {
     return this.http
