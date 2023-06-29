@@ -33,6 +33,12 @@ import { CdkDragDrop } from '@angular/cdk/drag-drop';
 import { moveItemInFormArray } from '@shared/utils/moveItemInFormArray';
 import { removeItemInFormArray } from '@shared/utils/removeItemInFormArray';
 import AdvSearchOperatorDTO from '@data/models/adv-search/adv-search-operator-dto';
+import {
+  AdvSearchCriteriaEditionDialogComponent,
+  AdvSearchCriteriaEditionDialogComponentModalEnum
+} from './components/adv-search-criteria-edition-dialog/adv-search-criteria-edition-dialog.component';
+import RoleDTO from '@data/models/user-permissions/role-dto';
+import { RoleService } from '@data/services/role.service';
 
 @UntilDestroy()
 @Component({
@@ -79,7 +85,7 @@ export class AdvancedSearchComponent implements OnInit {
   public modeDrawer: 'criteria' | 'context' | 'column';
   public escapedValue = '';
   public operators: AdvSearchOperatorDTO[] = [];
-  public criteriaExpandPanelControl: any = {};
+  public roles: RoleDTO[] = [];
   constructor(
     private advSearchService: AdvSearchService,
     private facilityService: FacilityService,
@@ -90,7 +96,8 @@ export class AdvancedSearchComponent implements OnInit {
     private fb: FormBuilder,
     private translateService: TranslateService,
     private admService: AuthenticationService,
-    private customDialogService: CustomDialogService
+    private customDialogService: CustomDialogService,
+    private roleService: RoleService
   ) {}
   get context() {
     return (this.advSearchForm.get('advancedSearchContext') as FormGroup).controls;
@@ -102,6 +109,7 @@ export class AdvancedSearchComponent implements OnInit {
     return this.advSearchForm.get('advancedSearchItems') as FormArray;
   }
   public runSearch(): void {
+    console.log('DGDC pasar el resto de criterios');
     this.advSearchSelected.advancedSearchCols = this.columns.getRawValue();
     this.table.executeSearch(this.advSearchSelected);
   }
@@ -363,10 +371,11 @@ export class AdvancedSearchComponent implements OnInit {
           advancedSearchId: [this.advSearchForm.value.id ? this.advSearchForm.value.id : null],
           tabItem: [value.tabItem ? value.tabItem : null],
           variable: [value.variable ? value.variable : null],
-          orderNumber: [this.columns.length + 1]
+          orderNumber: [this.columns.length + 1],
+          advancedSearchOperator: [null],
+          value: [null]
         })
       );
-      console.log(this.criteria.value);
     }
   }
   getColName(col: FormGroup): string {
@@ -409,6 +418,21 @@ export class AdvancedSearchComponent implements OnInit {
         }
       });
   }
+  editCriteria(criteria: FormGroup) {
+    this.customDialogService
+      .open({
+        component: AdvSearchCriteriaEditionDialogComponent,
+        extendedComponentData: { operators: this.operators, roles: this.roles, criteria },
+        id: AdvSearchCriteriaEditionDialogComponentModalEnum.ID,
+        panelClass: AdvSearchCriteriaEditionDialogComponentModalEnum.PANEL_CLASS,
+        disableClose: true,
+        width: '700px'
+      })
+      .pipe(take(1))
+      .subscribe((data: any) => {
+        console.log('Resolve', data);
+      });
+  }
   ngOnInit(): void {
     const spinner = this.spinnerService.show();
     const resquests = [
@@ -417,7 +441,8 @@ export class AdvancedSearchComponent implements OnInit {
       this.advSearchService.getWorkflowList().pipe(take(1)),
       this.advSearchService.getCriteria().pipe(take(1)),
       this.advSearchService.getColumns().pipe(take(1)),
-      this.advSearchService.getAdvSearchOperators().pipe(take(1))
+      this.advSearchService.getAdvSearchOperators().pipe(take(1)),
+      this.roleService.getAllRoles().pipe(take(1))
     ];
     forkJoin(resquests).subscribe({
       next: (
@@ -427,7 +452,8 @@ export class AdvancedSearchComponent implements OnInit {
           WorkflowCreateCardDTO[],
           AdvancedSearchOptionsDTO,
           AdvancedSearchOptionsDTO,
-          AdvSearchOperatorDTO[]
+          AdvSearchOperatorDTO[],
+          RoleDTO[]
         ]
       ) => {
         this.advSearchFav = responses[0] ? responses[0] : [];
@@ -437,7 +463,7 @@ export class AdvancedSearchComponent implements OnInit {
         this.criteriaOptions = responses[3] ? responses[3] : { cards: {}, entities: {} };
         this.columnsOptions = responses[4] ? responses[4] : { cards: {}, entities: {} };
         this.operators = responses[5] ? responses[5] : [];
-        console.log(this.operators);
+        this.roles = responses[6] ? responses[6] : [];
         this.workflowList = this.workflowList.map((wk: WorkflowCreateCardDTO) => {
           wk.workflowStates = wk.workflowStates.map((ws: WorkflowStateDTO) => {
             const workflowCopy = _.cloneDeep(wk); //Rompo la recursividad

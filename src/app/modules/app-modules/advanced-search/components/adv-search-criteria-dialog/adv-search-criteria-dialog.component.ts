@@ -42,7 +42,6 @@ export class AdvSearchCriteriaDialogComponent extends ComponentToExtendForCustom
 
   ngOnInit(): void {
     const options: AdvancedSearchOptionsDTO = this.extendedComponentData.options;
-    console.log(this.extendedComponentData.selected);
     const selected: AdvancedSearchItem[] = this.extendedComponentData.selected ? [...this.extendedComponentData.selected] : [];
     if (options?.cards && Object.keys(options.cards).length) {
       const treeNode: TreeNode = {

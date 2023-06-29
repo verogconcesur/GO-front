@@ -111,19 +111,23 @@
 		"critSearch": "Criterios de búsqueda",
 		"criteria": {
 			"cards": "Criterios pertenencientes al tipo de ficha",
+			"edition": {
+				"title": "Editar criterio de búsqueda"
+			},
 			"entities": "Criterios asociados al tipo de dato",
 			"showAllNodes": "Mostrar todos",
 			"showSelectedNodes": "Mostrar seleccionados",
 			"title": "Seleccionar criterios de búsqueda"
 		},
 		"customCol": "Personalizar columnas",
-		"deleteColumnConfirmation": "",
+		"deleteColumnConfirmation": "¿Está seguro que desea eliminar esta columna?",
 		"deleteConfirmation": "¿Está seguro que desea eliminar esta búsqueda guardada?",
-		"deleteCriteriaConfirmation": "",
+		"deleteCriteriaConfirmation": "¿Está seguro que desea eliminar este criterio de búsqueda?",
 		"endDate": "Fecha fin",
 		"export": "Exportar",
 		"favSearch": "Búsquedas favoritas",
 		"initDate": "Fecha inicio",
+		"operator": "Operador",
 		"saveFav": "Guardar como favorita",
 		"savedSearch": "Búsquedas guardadas",
 		"states": "Estados",

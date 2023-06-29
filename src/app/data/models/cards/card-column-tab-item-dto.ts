@@ -78,6 +78,7 @@ export interface TabItemConfigListItemDTO extends TabItemConfigCommonDTO {
   value: string;
   code: string;
   parentCode: string;
+  name?: string;
 }
 export interface TabItemConfigOptionDTO extends TabItemConfigCommonDTO {
   description?: string;

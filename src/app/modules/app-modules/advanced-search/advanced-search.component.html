@@ -306,25 +306,23 @@
                                                 fxLayout="row"
                                                 fxLayoutAlign="space-between center"
                                                 class="custom-actions-item-nameContainer"
-                                                (click)="criteriaExpandPanelControl[i] = !criteriaExpandPanelControl[i]"
                                             >
-                                                <mat-icon cdkDragHandle>drag_indicator</mat-icon>
-                                                <span>{{ getColName(col) }}</span>
-                                                <div>
-                                                    <mat-icon *ngIf="!criteriaExpandPanelControl[i]"> expand_more </mat-icon>
-                                                    <mat-icon *ngIf="criteriaExpandPanelControl[i]"> expand_less </mat-icon>
+                                                <div class="left-side" fxLayout="row" fxLayoutAlign="start center">
+                                                    <mat-icon cdkDragHandle>drag_indicator</mat-icon>
+                                                    <div class="criteria-info">
+                                                        <div>{{ getColName(col) }}</div>
+                                                        <div>Info of the criteria</div>
+                                                    </div>
                                                 </div>
-                                                <!-- <mat-icon (click)="deleteCriteria(col); $event.stopPropagation()"
-                                                    >delete</mat-icon
-                                                > -->
-                                            </div>
-                                            <div
-                                                fxLayout="row"
-                                                fxLayoutAlign="space-between center"
-                                                class="custom-actions-item-nameContainer"
-                                                *ngIf="criteriaExpandPanelControl[i]"
-                                            >
-                                                Más cosas
+
+                                                <div class="right-side">
+                                                    <mat-icon (click)="deleteCriteria(col); $event.stopPropagation()"
+                                                        >delete</mat-icon
+                                                    >
+                                                    <mat-icon (click)="editCriteria(col); $event.stopPropagation()"
+                                                        >edit</mat-icon
+                                                    >
+                                                </div>
                                             </div>
                                         </div>
                                     </div>

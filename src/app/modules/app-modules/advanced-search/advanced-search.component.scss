@@ -148,10 +148,13 @@
                 .custom-actions-item {
                   width: auto;
                   height: auto;
-                  min-height: 37px;
+                  min-height: 50px;
                   .custom-actions-item-nameContainer {
-                    min-height: 37px;
+                    min-height: 50px;
                   }
+                }
+                .right-side {
+                  min-width: 68px;
                 }
               }
             }
