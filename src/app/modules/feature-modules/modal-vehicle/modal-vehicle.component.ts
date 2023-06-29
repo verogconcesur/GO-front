@@ -82,12 +82,14 @@ export class ModalVehicleComponent extends ComponentToExtendForCustomDialog impl
       .pipe(
         take(1),
         finalize(() => {
-          this.initializeForm();
           this.spinnerService.hide(spinner);
+          this.initializeForm();
         })
       )
       .subscribe({
-        next: (data) => (this.facilityList = data),
+        next: (data) => {
+          this.facilityList = data ? data : [];
+        },
         error: (err: ConcenetError) =>
           this.globalMessageService.showError({
             message: err.message,
