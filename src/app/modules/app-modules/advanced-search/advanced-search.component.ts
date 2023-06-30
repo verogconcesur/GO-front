@@ -109,7 +109,7 @@ export class AdvancedSearchComponent implements OnInit {
     return this.advSearchForm.get('advancedSearchItems') as FormArray;
   }
   public runSearch(): void {
-    console.log('DGDC pasar el resto de criterios');
+    // console.log('DGDC pasar el resto de criterios');
     this.advSearchSelected.advancedSearchCols = this.columns.getRawValue();
     this.table.executeSearch(this.advSearchSelected);
   }
@@ -385,6 +385,49 @@ export class AdvancedSearchComponent implements OnInit {
       return col.value.variable.name;
     }
   }
+  getCriteriaInfo(criteria: FormGroup): string {
+    // console.log(criteria.value);
+    const criteriaValue = criteria.value as AdvancedSearchItem;
+    let value = '';
+    if (typeof criteriaValue.value === 'string' && criteriaValue.value?.indexOf(this.escapedValue) >= 0) {
+      if (criteriaValue.advancedSearchOperator.code === 'BET') {
+        value = this.translateService.instant(marker('advSearch.itemsBetween'), {
+          from: criteriaValue.value.split(this.escapedValue)[0],
+          to: criteriaValue.value.split(this.escapedValue)[1]
+        });
+      } else {
+        value = this.translateService.instant(marker('advSearch.itemsInArray'), {
+          num: criteriaValue.value.split(this.escapedValue).length
+        });
+      }
+    } else if (criteriaValue.value && typeof criteriaValue.value === 'object') {
+      if ((criteriaValue.value as any).name) {
+        value = (criteriaValue.value as any).name;
+      } else if ((criteriaValue.value as any).label) {
+        value = (criteriaValue.value as any).label;
+      }
+    } else {
+      value = criteriaValue.value;
+    }
+    if (criteriaValue.advancedSearchOperator?.name && value) {
+      return `${criteriaValue.advancedSearchOperator.name} ${value}`;
+    } else if (criteriaValue.advancedSearchOperator?.name) {
+      return criteriaValue.advancedSearchOperator.name;
+    }
+  }
+  errorInCriteriaConfig(criteria: FormGroup): string {
+    const criteriaValue = criteria.value as AdvancedSearchItem;
+    if (
+      !criteriaValue.advancedSearchOperator ||
+      (!criteriaValue?.value &&
+        criteriaValue.advancedSearchOperator.code !== 'ISNULL' &&
+        criteriaValue.advancedSearchOperator.code !== 'NOTISNULL')
+    ) {
+      return this.translateService.instant(marker('advSearch.criteriaWithoutConfig'));
+    }
+    return null;
+  }
+
   drop(event: CdkDragDrop<string[]>, list: 'columns' | 'criteria') {
     if (list === 'columns') {
       moveItemInFormArray(this.columns, event.previousIndex, event.currentIndex);
@@ -422,7 +465,7 @@ export class AdvancedSearchComponent implements OnInit {
     this.customDialogService
       .open({
         component: AdvSearchCriteriaEditionDialogComponent,
-        extendedComponentData: { operators: this.operators, roles: this.roles, criteria },
+        extendedComponentData: { operators: this.operators, roles: this.roles, criteria, escapedValue: this.escapedValue },
         id: AdvSearchCriteriaEditionDialogComponentModalEnum.ID,
         panelClass: AdvSearchCriteriaEditionDialogComponentModalEnum.PANEL_CLASS,
         disableClose: true,
@@ -430,7 +473,12 @@ export class AdvancedSearchComponent implements OnInit {
       })
       .pipe(take(1))
       .subscribe((data: any) => {
-        console.log('Resolve', data);
+        console.log('edit', data);
+        criteria.get('advancedSearchOperator').setValue(data.operator);
+        const value = Array.isArray(data.value)
+          ? data.value.map((i: any) => (i?.id ? i.id : i)).join(this.escapedValue)
+          : data.value;
+        criteria.get('value').setValue(value);
       });
   }
   ngOnInit(): void {

@@ -56,7 +56,7 @@ export class AdvSearchCriteriaEditionDialogComponent extends ComponentToExtendFo
     insertNumberChip: marker('advSearch.criteria.insertNumberChip'),
     insertDateChip: marker('advSearch.criteria.insertDateChip'),
     insertDateTimeChip: marker('advSearch.criteria.insertDateTimeChip'),
-    insertTimeChip: marker('advSearch.criteria.insertNuTimeip'),
+    insertTimeChip: marker('advSearch.criteria.insertTimeChip'),
     addTimeChip: marker('advSearch.criteria.addTimeChip')
   };
   public dataType: string = null;
@@ -104,8 +104,8 @@ export class AdvSearchCriteriaEditionDialogComponent extends ComponentToExtendFo
         case 'OPTION':
           this.dataType = 'BOOLEAN';
           this.valueOptions = [
-            { value: true, label: this.labels.tBooleanTrue },
-            { value: false, label: this.labels.tBooleanFalse }
+            { value: 'true', label: this.translateService.instant(this.labels.tBooleanTrue) },
+            { value: 'false', label: this.translateService.instant(this.labels.tBooleanFalse) }
           ];
           break;
         case 'LIST':
@@ -130,6 +130,23 @@ export class AdvSearchCriteriaEditionDialogComponent extends ComponentToExtendFo
     this.operators = this.extendedComponentData.operators.filter(
       (op: AdvSearchOperatorDTO) => op.dataTypes.indexOf(this.dataType) >= 0
     );
+    //Ya tengo valueOptions y operatos, inicializo los form.
+    if (this.criteria?.advancedSearchOperator) {
+      this.operatorFormControl.setValue(this.operators.find((op) => op.id === this.criteria.advancedSearchOperator.id));
+      let value =
+        `${this.criteria.value}`?.indexOf(this.extendedComponentData.escapedValue) >= 0
+          ? this.criteria.value.split(this.extendedComponentData.escapedValue)
+          : this.criteria.value;
+      if (this.criteria.advancedSearchOperator.code === 'BET') {
+        this.valueFormControl.setValue(this.getValueDate(value[0], true));
+        this.valueFormControl2.setValue(this.getValueDate(value[1], true));
+      } else if (this.valueOptions?.length) {
+        value = Array.isArray(value) ? value : [value];
+        this.valueFormControl.setValue(value.map((item) => this.valueOptions.find((opt) => `${opt.id}` === item)));
+      } else {
+        this.valueFormControl.setValue(this.getValueDate(value, true));
+      }
+    }
   }
 
   public addChip(event: MatChipInputEvent): void {
@@ -146,13 +163,7 @@ export class AdvSearchCriteriaEditionDialogComponent extends ComponentToExtendFo
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   public addDateChip(event: any, mode = 'DATE'): void {
-    let format = 'D/M/YYYY';
-    if (mode === 'DATETIME') {
-      format = 'D/M/YYYY HH:mm';
-    } else if (mode === 'TIME') {
-      format = 'HH:mm';
-    }
-    const value = moment(event.value).format(format);
+    const value = this.getValueDate(event.value);
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const chips: any[] = Array.isArray(this.valueFormControl.value) ? this.valueFormControl.value : [];
     if (value && chips.indexOf(value) === -1) {
@@ -162,6 +173,44 @@ export class AdvSearchCriteriaEditionDialogComponent extends ComponentToExtendFo
     if (this.pickerIniInput?.nativeElement) {
       this.pickerIniInput.nativeElement.value = '';
     }
+  }
+
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  public getValueDate(value: any, forceDateType?: boolean) {
+    if (
+      value &&
+      !Array.isArray(value) &&
+      (this.dataType === 'DATE' || this.dataType === 'DATETIME' || this.dataType === 'TIME') &&
+      `${value}`.indexOf(this.extendedComponentData.escapedValue) === -1
+    ) {
+      if (typeof value === 'string' && value.indexOf('/') > 0) {
+        if (forceDateType) {
+          console.log(value, new Date(value));
+          console.log();
+          let hora = '';
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
+          let fecha: any = value.split(' ');
+          if (fecha.length > 1) {
+            hora = ` ${fecha[1]}`;
+          }
+          fecha = fecha[0].split('/');
+          const newValue = `${fecha[2]}/${fecha[1]}/${fecha[0]}${hora}`;
+          return new Date(newValue);
+        }
+        return value;
+      } else {
+        let format = '';
+        if (this.dataType === 'DATE') {
+          format = 'D/M/YYYY';
+        } else if (this.dataType === 'DATETIME') {
+          format = 'D/M/YYYY HH:mm';
+        } else if (this.dataType === 'TIME') {
+          format = 'HH:mm';
+        }
+        return moment(value).format(format);
+      }
+    }
+    return value;
   }
 
   public addTimeChip(): void {
@@ -188,8 +237,24 @@ export class AdvSearchCriteriaEditionDialogComponent extends ComponentToExtendFo
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   public onSubmitCustomDialog(): Observable<any> {
-    console.log(this.criteriaFormGroup, this.valueFormControl, this.valueFormControl2, this.operatorFormControl);
-    return of(this.criteriaFormGroup);
+    const operator = this.operatorFormControl.value;
+    let value1 = this.getValueDate(this.valueFormControl.value);
+    let value2 = this.getValueDate(this.valueFormControl2.value);
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const data: any = {
+      operator,
+      value: null
+    };
+    if (operator?.code !== 'BET' && (value1 || value1 === false)) {
+      data.value = value1;
+    } else if (operator?.code === 'BET' && (value1 || value1 === false) && (value2 || value2 === false)) {
+      value1 = value1 ? (value1 === true ? 'true' : value1) : 'false';
+      value2 = value2 ? (value2 === true ? 'true' : value2) : 'false';
+      data.value = [value1, value2];
+    } else {
+      console.log('Falta algún dato');
+    }
+    return of(data);
   }
 
   public setAndGetFooterConfig(): CustomDialogFooterConfigI | null {

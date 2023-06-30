@@ -153,6 +153,18 @@
                     min-height: 50px;
                   }
                 }
+                .left-side {
+                  .criteria-info {
+                    .error {
+                      display: flex;
+                      justify-content: center;
+                      align-items: center;
+                      mat-icon {
+                        color: mat-color($primary, statusError);
+                      }
+                    }
+                  }
+                }
                 .right-side {
                   min-width: 68px;
                 }

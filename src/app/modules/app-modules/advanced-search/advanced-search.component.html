@@ -311,7 +311,10 @@
                                                     <mat-icon cdkDragHandle>drag_indicator</mat-icon>
                                                     <div class="criteria-info">
                                                         <div>{{ getColName(col) }}</div>
-                                                        <div>Info of the criteria</div>
+                                                        <div *ngIf="!errorInCriteriaConfig(col)">{{ getCriteriaInfo(col) }}</div>
+                                                        <div class="error" *ngIf="errorInCriteriaConfig(col)">
+                                                            <mat-icon>warning</mat-icon> {{ errorInCriteriaConfig(col) }}
+                                                        </div>
                                                     </div>
                                                 </div>
 
