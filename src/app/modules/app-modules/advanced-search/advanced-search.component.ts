@@ -347,6 +347,7 @@ export class AdvancedSearchComponent implements OnInit {
       .pipe(take(1))
       .subscribe((data: AdvancedSearchItem[]) => {
         const criteriaItems = this.criteria.getRawValue();
+        data = data ? data : [];
         data = data.filter((elem: AdvancedSearchItem) => {
           if (elem.tabItem) {
             return !criteriaItems.find((item: AdvancedSearchItem) => item.tabItem && item.tabItem.id === elem.tabItem.id);
@@ -372,6 +373,7 @@ export class AdvancedSearchComponent implements OnInit {
       .pipe(take(1))
       .subscribe((data: AdvancedSearchItem[]) => {
         const currentCols = this.columns.getRawValue();
+        data = data ? data : [];
         data = data.filter((elem: AdvancedSearchItem) => {
           if (elem.tabItem) {
             return !currentCols.find((col: AdvancedSearchItem) => col.tabItem && col.tabItem.id === elem.tabItem.id);
@@ -405,7 +407,7 @@ export class AdvancedSearchComponent implements OnInit {
           advancedSearchId: [this.advSearchForm.value.id ? this.advSearchForm.value.id : null],
           tabItem: [value.tabItem ? value.tabItem : null],
           variable: [value.variable ? value.variable : null],
-          orderNumber: [this.columns.length + 1],
+          orderNumber: [this.criteria.length + 1],
           advancedSearchOperator: [null],
           value: [null]
         })
