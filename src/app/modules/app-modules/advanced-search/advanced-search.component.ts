@@ -2,7 +2,7 @@
 import { Component, OnInit, ViewChild, ViewEncapsulation } from '@angular/core';
 import { ConcenetError } from '@app/types/error';
 import { marker } from '@biesbjerg/ngx-translate-extract-marker';
-import AdvSearchDTO, { AdvancedSearchItem } from '@data/models/adv-search/adv-search-dto';
+import AdvSearchDTO, { AdvancedSearchContext, AdvancedSearchItem } from '@data/models/adv-search/adv-search-dto';
 import { AdvSearchService } from '@data/services/adv-search.service';
 import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
 import { ProgressSpinnerDialogService } from '@shared/services/progress-spinner-dialog.service';
@@ -109,8 +109,32 @@ export class AdvancedSearchComponent implements OnInit {
     return this.advSearchForm.get('advancedSearchItems') as FormArray;
   }
   public runSearch(): void {
-    // console.log('DGDC pasar el resto de criterios');
+    this.advSearchSelected = this.advSearchSelected
+      ? this.advSearchSelected
+      : {
+          id: null,
+          name: null,
+          userId: null,
+          allUsers: true,
+          editable: true,
+          unionType: 'TYPE_AND',
+          advancedSearchItems: [],
+          advancedSearchCols: [],
+          advancedSearchContext: null
+        };
+    this.advSearchSelected.advancedSearchItems = this.criteria.getRawValue();
     this.advSearchSelected.advancedSearchCols = this.columns.getRawValue();
+    console.log(this.advSearchForm.get('advancedSearchContext'), this.advSearchForm.get('advancedSearchContext').getRawValue());
+    // id: number;
+    // dateCardFrom: string;
+    // dateCardTo: string;
+    // facilitiesIds: number[];
+    // workflowsIds: number[];
+    // statesIds: number[];
+    // substatesIds: number[];
+    this.advSearchSelected.advancedSearchContext = this.advSearchForm
+      .get('advancedSearchContext')
+      .getRawValue() as AdvancedSearchContext;
     this.table.executeSearch(this.advSearchSelected);
   }
   public changeState(): void {
@@ -389,7 +413,12 @@ export class AdvancedSearchComponent implements OnInit {
     // console.log(criteria.value);
     const criteriaValue = criteria.value as AdvancedSearchItem;
     let value = '';
-    if (typeof criteriaValue.value === 'string' && criteriaValue.value?.indexOf(this.escapedValue) >= 0) {
+    if (
+      `${criteriaValue.value}`?.indexOf(this.escapedValue) >= 0 ||
+      criteriaValue.advancedSearchOperator.code === 'IN' ||
+      criteriaValue.advancedSearchOperator.code === 'NIN' ||
+      criteriaValue.advancedSearchOperator.code === 'BET'
+    ) {
       if (criteriaValue.advancedSearchOperator.code === 'BET') {
         value = this.translateService.instant(marker('advSearch.itemsBetween'), {
           from: criteriaValue.value.split(this.escapedValue)[0],
@@ -400,12 +429,12 @@ export class AdvancedSearchComponent implements OnInit {
           num: criteriaValue.value.split(this.escapedValue).length
         });
       }
-    } else if (criteriaValue.value && typeof criteriaValue.value === 'object') {
-      if ((criteriaValue.value as any).name) {
-        value = (criteriaValue.value as any).name;
-      } else if ((criteriaValue.value as any).label) {
-        value = (criteriaValue.value as any).label;
-      }
+    } else if (
+      criteriaValue.tabItem?.typeItem === 'LIST' ||
+      criteriaValue.variable?.dataType === 'ENTITY' ||
+      (criteriaValue.value && typeof criteriaValue.value === 'object')
+    ) {
+      value = this.translateService.instant(marker('advSearch.optionSelected'));
     } else {
       value = criteriaValue.value;
     }
@@ -473,7 +502,6 @@ export class AdvancedSearchComponent implements OnInit {
       })
       .pipe(take(1))
       .subscribe((data: any) => {
-        console.log('edit', data);
         criteria.get('advancedSearchOperator').setValue(data.operator);
         const value = Array.isArray(data.value)
           ? data.value.map((i: any) => (i?.id ? i.id : i)).join(this.escapedValue)

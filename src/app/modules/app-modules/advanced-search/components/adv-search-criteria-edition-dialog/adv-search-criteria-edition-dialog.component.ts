@@ -104,8 +104,8 @@ export class AdvSearchCriteriaEditionDialogComponent extends ComponentToExtendFo
         case 'OPTION':
           this.dataType = 'BOOLEAN';
           this.valueOptions = [
-            { value: 'true', label: this.translateService.instant(this.labels.tBooleanTrue) },
-            { value: 'false', label: this.translateService.instant(this.labels.tBooleanFalse) }
+            { id: 'true', value: 'true', label: this.translateService.instant(this.labels.tBooleanTrue) },
+            { id: 'false', value: 'false', label: this.translateService.instant(this.labels.tBooleanFalse) }
           ];
           break;
         case 'LIST':
@@ -133,18 +133,31 @@ export class AdvSearchCriteriaEditionDialogComponent extends ComponentToExtendFo
     //Ya tengo valueOptions y operatos, inicializo los form.
     if (this.criteria?.advancedSearchOperator) {
       this.operatorFormControl.setValue(this.operators.find((op) => op.id === this.criteria.advancedSearchOperator.id));
-      let value =
-        `${this.criteria.value}`?.indexOf(this.extendedComponentData.escapedValue) >= 0
-          ? this.criteria.value.split(this.extendedComponentData.escapedValue)
-          : this.criteria.value;
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      let value: any = this.criteria.value;
+      if (`${this.criteria.value}`?.indexOf(this.extendedComponentData.escapedValue) >= 0) {
+        value = this.criteria.value.split(this.extendedComponentData.escapedValue);
+      } else if (this.criteria.advancedSearchOperator.code === 'IN' || this.criteria.advancedSearchOperator.code === 'NIN') {
+        value = [value];
+      }
       if (this.criteria.advancedSearchOperator.code === 'BET') {
-        this.valueFormControl.setValue(this.getValueDate(value[0], true));
-        this.valueFormControl2.setValue(this.getValueDate(value[1], true));
-      } else if (this.valueOptions?.length) {
+        this.valueFormControl.setValue(this.getValueOrDate(value[0], true));
+        this.valueFormControl2.setValue(this.getValueOrDate(value[1], true));
+      } else if (
+        this.valueOptions?.length &&
+        (this.criteria.advancedSearchOperator.code === 'IN' || this.criteria.advancedSearchOperator.code === 'NIN')
+      ) {
         value = Array.isArray(value) ? value : [value];
-        this.valueFormControl.setValue(value.map((item) => this.valueOptions.find((opt) => `${opt.id}` === item)));
+        this.valueFormControl.setValue(
+          value.map(
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
+            (item: any) => this.valueOptions.find((opt) => `${opt.id}` === `${item}`).id
+          )
+        );
+      } else if (this.valueOptions?.length) {
+        this.valueFormControl.setValue(this.valueOptions.find((opt) => `${opt.id}` === `${value}`).id);
       } else {
-        this.valueFormControl.setValue(this.getValueDate(value, true));
+        this.valueFormControl.setValue(this.getValueOrDate(value, true));
       }
     }
   }
@@ -163,7 +176,7 @@ export class AdvSearchCriteriaEditionDialogComponent extends ComponentToExtendFo
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   public addDateChip(event: any, mode = 'DATE'): void {
-    const value = this.getValueDate(event.value);
+    const value = this.getValueOrDate(event.value);
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const chips: any[] = Array.isArray(this.valueFormControl.value) ? this.valueFormControl.value : [];
     if (value && chips.indexOf(value) === -1) {
@@ -176,17 +189,12 @@ export class AdvSearchCriteriaEditionDialogComponent extends ComponentToExtendFo
   }
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  public getValueDate(value: any, forceDateType?: boolean) {
-    if (
-      value &&
-      !Array.isArray(value) &&
-      (this.dataType === 'DATE' || this.dataType === 'DATETIME' || this.dataType === 'TIME') &&
-      `${value}`.indexOf(this.extendedComponentData.escapedValue) === -1
-    ) {
+  public getValueOrDate(value: any, forceDateType?: boolean) {
+    if (Array.isArray(value) || !value || `${value}`.indexOf(this.extendedComponentData.escapedValue) >= 0) {
+      return value;
+    } else if (this.dataType === 'DATE' || this.dataType === 'DATETIME' || this.dataType === 'TIME') {
       if (typeof value === 'string' && value.indexOf('/') > 0) {
         if (forceDateType) {
-          console.log(value, new Date(value));
-          console.log();
           let hora = '';
           // eslint-disable-next-line @typescript-eslint/no-explicit-any
           let fecha: any = value.split(' ');
@@ -196,6 +204,15 @@ export class AdvSearchCriteriaEditionDialogComponent extends ComponentToExtendFo
           fecha = fecha[0].split('/');
           const newValue = `${fecha[2]}/${fecha[1]}/${fecha[0]}${hora}`;
           return new Date(newValue);
+        }
+        return value;
+      } else if (typeof value === 'string' && value.indexOf(':') > 0) {
+        if (forceDateType) {
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
+          const fecha: any = moment().format('YYYY/M/D');
+          const newValue = `${fecha} ${value}`;
+          const date = moment(newValue);
+          return date;
         }
         return value;
       } else {
@@ -209,6 +226,8 @@ export class AdvSearchCriteriaEditionDialogComponent extends ComponentToExtendFo
         }
         return moment(value).format(format);
       }
+    } else if (this.dataType === 'NUMBER' && typeof value === 'string') {
+      return parseInt(value, 10);
     }
     return value;
   }
@@ -238,8 +257,8 @@ export class AdvSearchCriteriaEditionDialogComponent extends ComponentToExtendFo
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   public onSubmitCustomDialog(): Observable<any> {
     const operator = this.operatorFormControl.value;
-    let value1 = this.getValueDate(this.valueFormControl.value);
-    let value2 = this.getValueDate(this.valueFormControl2.value);
+    let value1 = this.getValueOrDate(this.valueFormControl.value);
+    let value2 = this.getValueOrDate(this.valueFormControl2.value);
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const data: any = {
       operator,

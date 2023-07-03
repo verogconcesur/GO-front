@@ -75,6 +75,7 @@ export class AdvSearchCardTableComponent implements OnInit {
     this.displayedColumns = [];
     this.dataSource = [];
     if (filter) {
+      console.log('executeSearch', filter);
       this.advSearchFilter = filter;
       this.advSearchFilter.advancedSearchCols.forEach((element) => {
         if (element.variable && element.variable.name) {

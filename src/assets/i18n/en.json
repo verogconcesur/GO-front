@@ -154,6 +154,7 @@
         "itemsBetween": "{from} and {to}",
         "itemsInArray": "list of {num} items",
         "operator": "Operator",
+        "optionSelected": "option selected",
         "saveFav": "Save as favourite",
         "savedSearch": "Saved Searches",
         "states": "States",
