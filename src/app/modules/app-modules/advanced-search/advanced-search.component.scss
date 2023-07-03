@@ -59,11 +59,13 @@
       overflow-x: auto;
       box-sizing: border-box;
       font-size: 0.75rem;
+      position: relative;
       &__title {
         .filterButton {
           border: 1px solid rgba(mat-contrast($primary, A100), 20%);
           border-radius: 4px;
           margin-right: 10px;
+          position: relative;
           cursor: pointer;
           .filterLabel {
             padding: 5px 10px;
@@ -77,6 +79,37 @@
               margin-top: 5px;
               font-size: 21px;
               height: 18px;
+            }
+          }
+          .badgeInfo {
+            position: absolute;
+            top: -12px;
+            left: -8px;
+            width: auto;
+            height: 20px;
+            display: flex;
+            justify-content: start;
+            align-items: center;
+            font-size: 0.9em;
+            &__count {
+              width: 20px;
+              height: 20px;
+              display: flex;
+              justify-content: center;
+              align-items: center;
+              background-color: mat-color($primary, 700);
+              color: mat-contrast($primary, 400);
+              border-radius: 10px;
+            }
+            &__error {
+              background-color: rgba(0, 0, 0, 0);
+              color: mat-color($primary, statusError);
+              left: 16px;
+              width: 25px;
+              mat-icon {
+                width: 23px;
+                height: 20px;
+              }
             }
           }
         }

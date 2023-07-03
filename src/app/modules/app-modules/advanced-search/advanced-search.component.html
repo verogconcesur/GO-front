@@ -37,6 +37,9 @@
                     >
                         <div class="filterLabel">{{ labels.context | translate }}</div>
                         <div class="filerIcon"><mat-icon>keyboard_arrow_down</mat-icon></div>
+                        <div class="badgeInfo">
+                            <div class="badgeInfo__error" *ngIf="contextErrors()"><mat-icon>warning</mat-icon></div>
+                        </div>
                     </div>
                     <div
                         class="filterButton"
@@ -46,12 +49,25 @@
                     >
                         <div class="filterLabel">{{ labels.critSearch | translate }}</div>
                         <div class="filerIcon"><mat-icon>keyboard_arrow_down</mat-icon></div>
+                        <div class="badgeInfo">
+                            <div class="badgeInfo__error" *ngIf="criteriaErrors()"><mat-icon>warning</mat-icon></div>
+                            <div class="badgeInfo__count" *ngIf="criteria.length">{{ criteria.length }}</div>
+                        </div>
                     </div>
                     <div class="filterButton" (click)="openFilters('column')" fxLayout="row" fxLayoutAlign="space-between center">
                         <div class="filterLabel">{{ labels.customCol | translate }}</div>
                         <div class="filerIcon"><mat-icon>keyboard_arrow_down</mat-icon></div>
+                        <div class="badgeInfo">
+                            <div class="badgeInfo__error" *ngIf="!columns.length"><mat-icon>warning</mat-icon></div>
+                            <div class="badgeInfo__count" *ngIf="columns.length">{{ columns.length }}</div>
+                        </div>
                     </div>
-                    <button mat-flat-button color="primary" (click)="runSearch()">
+                    <button
+                        mat-flat-button
+                        color="primary"
+                        [disabled]="!columns.length || criteriaErrors() || contextErrors()"
+                        (click)="runSearch()"
+                    >
                         {{ labels.search | translate }}
                     </button>
                     <div class="cleanButton" fxLayout="row" fxLayoutAlign="start center" (click)="cleanFilters()">

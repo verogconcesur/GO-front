@@ -16,7 +16,7 @@ import { ConfirmDialogService } from '@shared/services/confirm-dialog.service';
 import FacilityDTO from '@data/models/organization/facility-dto';
 import { FacilityService } from '@data/services/facility.sevice';
 import WorkflowCreateCardDTO from '@data/models/workflows/workflow-create-card-dto';
-import { AbstractControl, FormArray, FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { AbstractControl, FormArray, FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { AuthenticationService } from '@app/security/authentication.service';
 import { haveArraysSameValues } from '@shared/utils/array-comparation-function';
 import WorkflowStateDTO from '@data/models/workflows/workflow-state-dto';
@@ -108,6 +108,24 @@ export class AdvancedSearchComponent implements OnInit {
   get criteria(): FormArray {
     return this.advSearchForm.get('advancedSearchItems') as FormArray;
   }
+
+  public contextErrors(): boolean {
+    return (
+      !this.advSearchForm.get('advancedSearchContext')?.get('dateCardFrom')?.value ||
+      !this.advSearchForm.get('advancedSearchContext')?.get('dateCardTo')?.value
+    );
+  }
+  public criteriaErrors(): boolean {
+    let error = false;
+    this.criteria.controls.reduce((a: boolean, b: FormGroup) => {
+      if (!error && this.errorInCriteriaConfig(b)) {
+        error = true;
+      }
+      return error;
+    }, false);
+    return error;
+  }
+
   public runSearch(): void {
     this.advSearchSelected = this.advSearchSelected
       ? this.advSearchSelected
@@ -124,14 +142,6 @@ export class AdvancedSearchComponent implements OnInit {
         };
     this.advSearchSelected.advancedSearchItems = this.criteria.getRawValue();
     this.advSearchSelected.advancedSearchCols = this.columns.getRawValue();
-    console.log(this.advSearchForm.get('advancedSearchContext'), this.advSearchForm.get('advancedSearchContext').getRawValue());
-    // id: number;
-    // dateCardFrom: string;
-    // dateCardTo: string;
-    // facilitiesIds: number[];
-    // workflowsIds: number[];
-    // statesIds: number[];
-    // substatesIds: number[];
     this.advSearchSelected.advancedSearchContext = this.advSearchForm
       .get('advancedSearchContext')
       .getRawValue() as AdvancedSearchContext;
@@ -579,8 +589,8 @@ export class AdvancedSearchComponent implements OnInit {
         workflows: [[]],
         states: [[]],
         substates: [[]],
-        dateCardFrom: [new Date(), Validators.required],
-        dateCardTo: [new Date(), Validators.required],
+        dateCardFrom: [null, Validators.required],
+        dateCardTo: [null, Validators.required],
         filterStateForm: [''],
         filterSubstateForm: ['']
       }),
@@ -590,8 +600,12 @@ export class AdvancedSearchComponent implements OnInit {
     this.initListeners();
     if (advSearch) {
       if (advSearch.advancedSearchContext) {
-        this.context.dateCardFrom.setValue(moment(advSearch.advancedSearchContext.dateCardFrom, 'DD-MM-YYYY').toDate());
-        this.context.dateCardTo.setValue(moment(advSearch.advancedSearchContext.dateCardTo, 'DD-MM-YYYY').toDate());
+        if (advSearch.advancedSearchContext.dateCardFrom) {
+          this.context.dateCardFrom.setValue(moment(advSearch.advancedSearchContext.dateCardFrom, 'DD-MM-YYYY').toDate());
+        }
+        if (advSearch.advancedSearchContext.dateCardTo) {
+          this.context.dateCardTo.setValue(moment(advSearch.advancedSearchContext.dateCardTo, 'DD-MM-YYYY').toDate());
+        }
         if (advSearch.advancedSearchContext.facilitiesIds) {
           this.context.facilities.setValue(
             advSearch.advancedSearchContext.facilitiesIds
