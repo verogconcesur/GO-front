@@ -145,6 +145,12 @@ export class AdvancedSearchComponent implements OnInit {
     this.advSearchSelected.advancedSearchContext = this.advSearchForm
       .get('advancedSearchContext')
       .getRawValue() as AdvancedSearchContext;
+    this.advSearchSelected.advancedSearchContext.dateCardFrom = moment(
+      this.advSearchSelected.advancedSearchContext.dateCardFrom
+    ).format('DD/MM/YYYY');
+    this.advSearchSelected.advancedSearchContext.dateCardTo = moment(
+      this.advSearchSelected.advancedSearchContext.dateCardTo
+    ).format('DD/MM/YYYY');
     this.table.executeSearch(this.advSearchSelected);
   }
   public changeState(): void {
