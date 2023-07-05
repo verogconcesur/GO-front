@@ -27,6 +27,7 @@ export class AdvSearchService {
   private readonly GET_WORKFLOW_PATH = '/getWorkflows';
   private readonly GET_CRITERIA_PATH = '/getCriteria';
   private readonly GET_COLUMNS_PATH = '/getColumns';
+  private readonly GET_LIST_OPTIONS_FOR_ENTITY = '/getListByVariable';
 
   constructor(@Inject(ENV) private env: Env, private http: HttpClient, private router: Router) {}
   public getWorkflowList(): Observable<WorkflowCreateCardDTO[]> {
@@ -62,6 +63,13 @@ export class AdvSearchService {
   public getAdvSearchList(): Observable<AdvSearchDTO[]> {
     return this.http
       .get<AdvSearchDTO[]>(`${this.env.apiBaseUrl}${this.GET_ADV_SEARCH_PATH}${this.LIST_PATH}`)
+      .pipe(catchError((error) => throwError(error as ConcenetError)));
+  }
+  public getOptionsListForEntity(idVariable: number): Observable<{ id: number; value: string }[]> {
+    return this.http
+      .get<{ id: number; value: string }[]>(
+        `${this.env.apiBaseUrl}${this.GET_ADV_SEARCH_PATH}${this.GET_LIST_OPTIONS_FOR_ENTITY}/${idVariable}`
+      )
       .pipe(catchError((error) => throwError(error as ConcenetError)));
   }
   public getAdvSearchOperators(dataType?: string): Observable<AdvSearchOperatorDTO[]> {

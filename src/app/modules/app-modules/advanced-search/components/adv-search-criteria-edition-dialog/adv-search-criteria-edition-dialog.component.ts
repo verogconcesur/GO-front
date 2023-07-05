@@ -6,11 +6,14 @@ import { marker } from '@biesbjerg/ngx-translate-extract-marker';
 import { AdvancedSearchItem } from '@data/models/adv-search/adv-search-dto';
 import AdvSearchOperatorDTO from '@data/models/adv-search/adv-search-operator-dto';
 import RoleDTO from '@data/models/user-permissions/role-dto';
+import { AdvSearchService } from '@data/services/adv-search.service';
 import { ComponentToExtendForCustomDialog, CustomDialogFooterConfigI } from '@jenga/custom-dialog';
+import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
 import { TranslateService } from '@ngx-translate/core';
 import { ConfirmDialogService } from '@shared/services/confirm-dialog.service';
+import { GlobalMessageService } from '@shared/services/global-message.service';
 import moment from 'moment';
-import { Observable, of } from 'rxjs';
+import { BehaviorSubject, Observable, of, take } from 'rxjs';
 
 export const enum AdvSearchCriteriaEditionDialogComponentModalEnum {
   ID = 'adv-search-criteria-edition-dialog-id',
@@ -62,9 +65,14 @@ export class AdvSearchCriteriaEditionDialogComponent extends ComponentToExtendFo
   public dataType: string = null;
   public operators: AdvSearchOperatorDTO[] = [];
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  public valueOptions: any[] = [];
+  public valueOptions: BehaviorSubject<any[]> = new BehaviorSubject([]);
 
-  constructor(private confirmDialogService: ConfirmDialogService, private translateService: TranslateService) {
+  constructor(
+    private confirmDialogService: ConfirmDialogService,
+    private translateService: TranslateService,
+    private advSearchService: AdvSearchService,
+    private globalMessageService: GlobalMessageService
+  ) {
     super(
       AdvSearchCriteriaEditionDialogComponentModalEnum.ID,
       AdvSearchCriteriaEditionDialogComponentModalEnum.PANEL_CLASS,
@@ -93,6 +101,8 @@ export class AdvSearchCriteriaEditionDialogComponent extends ComponentToExtendFo
 
   ngOnInit(): void {
     this.criteriaFormGroup = this.extendedComponentData.criteria;
+    this.valueOptions.next(null);
+    let settingValueOptions = false;
     if (this.criteria.tabItem?.typeItem) {
       switch (this.criteria.tabItem?.typeItem) {
         case 'INPUT':
@@ -103,15 +113,17 @@ export class AdvSearchCriteriaEditionDialogComponent extends ComponentToExtendFo
           break;
         case 'OPTION':
           this.dataType = 'BOOLEAN';
-          this.valueOptions = [
+          this.valueOptions.next([
             { id: 'true', value: 'true', label: this.translateService.instant(this.labels.tBooleanTrue) },
             { id: 'false', value: 'false', label: this.translateService.instant(this.labels.tBooleanFalse) }
-          ];
+          ]);
+          settingValueOptions = true;
           break;
         case 'LIST':
           this.dataType = 'ENTITY';
           //Use code and name
-          this.valueOptions = this.criteria.tabItem.tabItemConfigList.listItems.map((i) => ({ ...i, name: i.value }));
+          this.valueOptions.next(this.criteria.tabItem.tabItemConfigList.listItems.map((i) => ({ ...i, name: i.value })));
+          settingValueOptions = true;
           break;
         case 'TITLE':
         case 'TEXT':
@@ -121,10 +133,26 @@ export class AdvSearchCriteriaEditionDialogComponent extends ComponentToExtendFo
       }
     } else {
       this.dataType = this.criteria.variable.dataType;
-      if (this.dataType === 'ENTITY' && this.criteria.variable.attributeName === 'role.name') {
+      if (this.dataType === 'ENTITY') {
         //Use code and name
+        // get options with service && this.criteria.variable.attributeName === 'role.name'
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        this.valueOptions = this.extendedComponentData.roles.map((rol: any) => ({ ...rol, code: rol.id }));
+        this.advSearchService
+          .getOptionsListForEntity(this.criteria.variable.id)
+          .pipe(take(1))
+          .subscribe({
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
+            next: (options: any[]) => {
+              this.valueOptions.next(options.map((opt) => ({ ...opt, code: opt.id, name: opt.value })));
+            },
+            error: (err) => {
+              this.globalMessageService.showError({
+                message: err.message,
+                actionText: this.translateService.instant(marker('common.close'))
+              });
+            }
+          });
+        settingValueOptions = true;
       }
     }
     this.operators = this.extendedComponentData.operators.filter(
@@ -144,18 +172,26 @@ export class AdvSearchCriteriaEditionDialogComponent extends ComponentToExtendFo
         this.valueFormControl.setValue(this.getValueOrDate(value[0], true));
         this.valueFormControl2.setValue(this.getValueOrDate(value[1], true));
       } else if (
-        this.valueOptions?.length &&
+        settingValueOptions &&
         (this.criteria.advancedSearchOperator.code === 'IN' || this.criteria.advancedSearchOperator.code === 'NIN')
       ) {
         value = Array.isArray(value) ? value : [value];
-        this.valueFormControl.setValue(
-          value.map(
-            // eslint-disable-next-line @typescript-eslint/no-explicit-any
-            (item: any) => this.valueOptions.find((opt) => `${opt.id}` === `${item}`).id
-          )
-        );
-      } else if (this.valueOptions?.length) {
-        this.valueFormControl.setValue(this.valueOptions.find((opt) => `${opt.id}` === `${value}`).id);
+        this.valueOptions.pipe(untilDestroyed(this)).subscribe((options) => {
+          if (options && Array.isArray(options)) {
+            this.valueFormControl.setValue(
+              value.map(
+                // eslint-disable-next-line @typescript-eslint/no-explicit-any
+                (item: any) => options.find((opt) => `${opt.id}` === `${item}`).id
+              )
+            );
+          }
+        });
+      } else if (settingValueOptions) {
+        this.valueOptions.pipe(untilDestroyed(this)).subscribe((options) => {
+          if (options && Array.isArray(options)) {
+            this.valueFormControl.setValue(options.find((opt) => `${opt.id}` === `${value}`).id);
+          }
+        });
       } else {
         this.valueFormControl.setValue(this.getValueOrDate(value, true));
       }
