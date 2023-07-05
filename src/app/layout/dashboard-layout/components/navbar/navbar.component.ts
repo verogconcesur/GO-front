@@ -17,6 +17,14 @@ import { NotificationsComponent } from '../notifications/notifications.component
 import { IMessage } from '@stomp/stompjs';
 import { ENV } from '@app/constants/global.constants';
 import { Env } from '@app/types/env';
+import { AdvSearchService } from '@data/services/adv-search.service';
+import { FormArray, FormBuilder, FormGroup } from '@angular/forms';
+import { ConcenetError } from '@app/types/error';
+import { GlobalMessageService } from '@shared/services/global-message.service';
+import { TranslateService } from '@ngx-translate/core';
+import { removeItemInFormArray } from '@shared/utils/removeItemInFormArray';
+import saveAs from 'file-saver';
+import { AttachmentDTO } from '@data/models/cards/card-attachments-dto';
 
 @UntilDestroy()
 @Component({
@@ -42,10 +50,13 @@ export class NavbarComponent implements OnInit, OnDestroy {
     administration: marker('app.menu.administration'),
     createCard: marker('app.menu.createCard'),
     notifications: marker('common.notifications'),
-    mentions: marker('common.mentions')
+    mentions: marker('common.mentions'),
+    files: marker('common.files')
   };
   public infoWarning: WarningDTO = null;
   public interval: NodeJS.Timeout;
+  public searchExportForm: FormArray;
+  public intervalExport: NodeJS.Timeout;
   constructor(
     @Inject(ENV) private env: Env,
     private router: Router,
@@ -53,18 +64,26 @@ export class NavbarComponent implements OnInit, OnDestroy {
     public dialog: MatDialog,
     private notificationService: NotificationService,
     private notificationSoundService: NotificationSoundService,
-    private rxStompService: RxStompService
+    private rxStompService: RxStompService,
+    private advSearchService: AdvSearchService,
+    private fb: FormBuilder,
+    private globalMessageService: GlobalMessageService,
+    private translateService: TranslateService
   ) {}
 
   ngOnInit(): void {
     this.infoWarning = this.authService.getWarningStatus();
     this.initWarningInformationValue();
     this.initWebSocketForNotificationsAndMentions();
+    this.initExportSearchSubscription();
   }
 
   ngOnDestroy(): void {
     if (this.interval) {
       clearInterval(this.interval);
+    }
+    if (this.intervalExport) {
+      clearInterval(this.intervalExport);
     }
   }
 
@@ -85,6 +104,10 @@ export class NavbarComponent implements OnInit, OnDestroy {
     });
   }
 
+  public showDownload(): void {
+    this.infoWarning.newFileDownloading = false;
+    this.authService.setWarningStatus(this.infoWarning);
+  }
   public showMentions(): void {
     this.infoWarning.newNoReadMention = false;
     this.infoWarning.frontLastHeaderMentionOpenedTime = this.infoWarning.lastDateNoReadMention;
@@ -97,6 +120,10 @@ export class NavbarComponent implements OnInit, OnDestroy {
     this.infoWarning.frontLastHeaderNotificationOpenedTime = this.infoWarning.lastDateNoReadNotification;
     this.authService.setWarningStatus(this.infoWarning);
     this.notifications.getData();
+  }
+
+  public highLightDownload(): boolean {
+    return this.infoWarning.newFileDownloading;
   }
 
   public highLightNotifications(): boolean {
@@ -114,6 +141,14 @@ export class NavbarComponent implements OnInit, OnDestroy {
         this.infoWarning.frontLastHeaderMentionOpenedTime !== this.infoWarning.lastDateNoReadMention)
     );
   }
+  public downloadFile(fileAsyn: FormGroup): void {
+    saveAs(this.getDataBase64(fileAsyn.value.attachment), fileAsyn.value.attachment.name);
+  }
+  public getDataBase64(attach: AttachmentDTO): string {
+    return `data:${attach.type};base64,${attach.content}`;
+  }
+
+  public download(): void {}
 
   private initWarningInformationValue(): void {
     this.infoWarning = this.authService.getWarningStatus();
@@ -149,5 +184,64 @@ export class NavbarComponent implements OnInit, OnDestroy {
         };
         this.authService.setWarningStatus(data);
       });
+  }
+  private initExportSearchSubscription(): void {
+    this.searchExportForm = this.fb.array([]);
+    this.advSearchService.newSearchExport$.subscribe((res) => {
+      if (res) {
+        this.advSearchService
+          .exportAdvSearch(res)
+          .pipe(take(1))
+          .subscribe({
+            next: (fileAsync) => {
+              if (fileAsync.error) {
+                console.log(fileAsync.error);
+              } else {
+                this.searchExportForm.push(
+                  this.fb.group({
+                    advSearch: [res],
+                    fileData: [fileAsync.fileData],
+                    id: [fileAsync.id],
+                    name: [fileAsync.name],
+                    process: [fileAsync.process],
+                    attachment: []
+                  })
+                );
+                this.infoWarning.newFileDownloading = true;
+                this.authService.setWarningStatus(this.infoWarning);
+              }
+            },
+            error: (error: ConcenetError) => {
+              this.globalMessageService.showError({
+                message: error.message,
+                actionText: this.translateService.instant(marker('common.close'))
+              });
+            }
+          });
+      }
+    });
+    this.intervalExport = setInterval(() => {
+      this.searchExportForm.controls.forEach((formSearch, index) => {
+        if (!formSearch.value.attachment) {
+          this.advSearchService
+            .finishExportAdvSearch(formSearch.value.id)
+            .pipe(take(1))
+            .subscribe({
+              next: (attch) => {
+                if (attch) {
+                  formSearch.get('attachment').setValue(attch);
+                }
+              },
+              error: (error: ConcenetError) => {
+                this.globalMessageService.showError({
+                  message: error.message,
+                  actionText: this.translateService.instant(marker('common.close'))
+                });
+                removeItemInFormArray(this.searchExportForm, index);
+              }
+            });
+        }
+      });
+    }, 10000);
   }
 }

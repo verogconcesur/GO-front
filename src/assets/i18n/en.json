@@ -366,6 +366,7 @@
         "field": "Field",
         "fieldsType": "Field's type",
         "fileName": "File name",
+        "files": "Files",
         "filter": "Filter",
         "filterAction": "Filter",
         "filterByType": "Filter by type",
