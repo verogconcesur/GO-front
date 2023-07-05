@@ -37,6 +37,10 @@ import {
   AdvSearchCriteriaEditionDialogComponent,
   AdvSearchCriteriaEditionDialogComponentModalEnum
 } from './components/adv-search-criteria-edition-dialog/adv-search-criteria-edition-dialog.component';
+import {
+  AdvSearchSaveFavDialogComponent,
+  AdvSearchSaveFavDialogComponentModalEnum
+} from './components/adv-search-save-fav-dialog/adv-search-save-fav-dialog.component';
 
 @UntilDestroy()
 @Component({
@@ -340,7 +344,11 @@ export class AdvancedSearchComponent implements OnInit {
     this.customDialogService
       .open({
         component: AdvSearchCriteriaDialogComponent,
-        extendedComponentData: { options: this.criteriaOptions, selected: this.advSearchForm.get('advancedSearchItems').value },
+        extendedComponentData: {
+          options: this.criteriaOptions,
+          selected: this.advSearchForm.get('advancedSearchItems').value,
+          mode: 'CRITERIA'
+        },
         id: AdvSearchCriteriaDialogComponentModalEnum.ID,
         panelClass: AdvSearchCriteriaDialogComponentModalEnum.PANEL_CLASS,
         disableClose: true,
@@ -366,7 +374,11 @@ export class AdvancedSearchComponent implements OnInit {
     this.customDialogService
       .open({
         component: AdvSearchCriteriaDialogComponent,
-        extendedComponentData: { options: this.columnsOptions, selected: this.advSearchForm.get('advancedSearchCols').value },
+        extendedComponentData: {
+          options: this.columnsOptions,
+          selected: this.advSearchForm.get('advancedSearchCols').value,
+          mode: 'COLUMNS'
+        },
         id: AdvSearchCriteriaDialogComponentModalEnum.ID,
         panelClass: AdvSearchCriteriaDialogComponentModalEnum.PANEL_CLASS,
         disableClose: true,
@@ -523,6 +535,26 @@ export class AdvancedSearchComponent implements OnInit {
         criteria.get('value').setValue(value);
       });
   }
+  hasErrors(): boolean {
+    return !this.columns.length || this.criteriaErrors() || this.contextErrors();
+  }
+  saveFav(): void {
+    this.customDialogService
+      .open({
+        component: AdvSearchSaveFavDialogComponent,
+        extendedComponentData: { advSearchForm: this.advSearchForm },
+        id: AdvSearchSaveFavDialogComponentModalEnum.ID,
+        panelClass: AdvSearchSaveFavDialogComponentModalEnum.PANEL_CLASS,
+        disableClose: true,
+        width: '700px'
+      })
+      .pipe(take(1))
+      .subscribe((data: FormGroup) => {
+        if (data) {
+          this.advSearchForm = _.cloneDeep(data);
+        }
+      });
+  }
   ngOnInit(): void {
     const spinner = this.spinnerService.show();
     const resquests = [
@@ -581,10 +613,12 @@ export class AdvancedSearchComponent implements OnInit {
   }
   private initForm(advSearch?: AdvSearchDTO, edit?: boolean) {
     this.advSearchForm = this.fb.group({
-      id: [],
-      name: [],
-      unionType: ['TYPE_AND'],
-      userId: [this.admService.getUserId()],
+      id: [advSearch?.id ? advSearch.id : null],
+      name: [advSearch?.name ? advSearch.name : null, [Validators.required]],
+      unionType: [advSearch?.unionType ? advSearch.unionType : 'TYPE_AND'],
+      userId: [advSearch?.userId ? advSearch.userId : this.admService.getUserId()],
+      allUsers: [advSearch?.allUsers ? advSearch.allUsers : false],
+      editable: [advSearch?.editable === false ? advSearch.editable : true],
       advancedSearchContext: this.fb.group({
         facilities: [[]],
         workflows: [[]],
@@ -663,7 +697,7 @@ export class AdvancedSearchComponent implements OnInit {
         map((value) => this.filter('states', value || ''))
       );
 
-    this.subStatesOptions = this.subStatesOptions = this.advSearchForm
+    this.subStatesOptions = this.advSearchForm
       .get('advancedSearchContext')
       .get('filterSubstateForm')
       ?.valueChanges.pipe(

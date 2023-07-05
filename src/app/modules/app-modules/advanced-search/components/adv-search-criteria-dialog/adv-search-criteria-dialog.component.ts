@@ -26,6 +26,7 @@ export const enum AdvSearchCriteriaDialogComponentModalEnum {
 export class AdvSearchCriteriaDialogComponent extends ComponentToExtendForCustomDialog implements OnInit {
   @ViewChild('genericTreeNodeSearcher') genericTreeNodeSearcher: GenericTreeNodeSearcherComponent;
   public treeNodes: TreeNode[] = [];
+  public mode: 'CRITERIA' | 'COLUMNS' = null;
   public labels = {
     collapseAll: marker('common.collapse'),
     expandAll: marker('common.expand'),
@@ -33,19 +34,24 @@ export class AdvSearchCriteriaDialogComponent extends ComponentToExtendForCustom
     showAllNodes: marker('advSearch.criteria.showAllNodes')
   };
   constructor(private confirmDialogService: ConfirmDialogService, private translateService: TranslateService) {
-    super(
-      AdvSearchCriteriaDialogComponentModalEnum.ID,
-      AdvSearchCriteriaDialogComponentModalEnum.PANEL_CLASS,
-      marker('advSearch.criteria.title')
-    );
+    super(AdvSearchCriteriaDialogComponentModalEnum.ID, AdvSearchCriteriaDialogComponentModalEnum.PANEL_CLASS, '');
   }
 
   ngOnInit(): void {
+    if (this.extendedComponentData.mode === 'COLUMNS') {
+      super.MODAL_TITLE = marker('advSearch.columns.title');
+    } else {
+      super.MODAL_TITLE = marker('advSearch.criteria.title');
+    }
+    this.mode = this.extendedComponentData.mode === 'COLUMNS' ? this.extendedComponentData.mode : 'CRITERIA';
     const options: AdvancedSearchOptionsDTO = this.extendedComponentData.options;
     const selected: AdvancedSearchItem[] = this.extendedComponentData.selected ? [...this.extendedComponentData.selected] : [];
     if (options?.cards && Object.keys(options.cards).length) {
       const treeNode: TreeNode = {
-        name: this.translateService.instant(marker('advSearch.criteria.cards')),
+        name:
+          this.mode === 'CRITERIA'
+            ? this.translateService.instant(marker('advSearch.criteria.cards'))
+            : this.translateService.instant(marker('advSearch.columns.cards')),
         children: []
       };
       Object.keys(options.cards).forEach((k) => {
@@ -61,7 +67,10 @@ export class AdvSearchCriteriaDialogComponent extends ComponentToExtendForCustom
     }
     if (options?.entities && Object.keys(options.entities).length) {
       const treeNode: TreeNode = {
-        name: this.translateService.instant(marker('advSearch.criteria.entities')),
+        name:
+          this.mode === 'CRITERIA'
+            ? this.translateService.instant(marker('advSearch.criteria.entities'))
+            : this.translateService.instant(marker('advSearch.columns.entities')),
         children: []
       };
       Object.keys(options.entities).forEach((k) => {

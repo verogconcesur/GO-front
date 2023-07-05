@@ -106,6 +106,11 @@
         "addColumn": "Add column",
         "addFilter": "Add filter",
         "cleanConf": "Clean Configuration",
+        "columns": {
+            "cards": "Columns associated to card type",
+            "entities": "Columns associated to data type",
+            "title": "Select columns to display"
+        },
         "context": "Context",
         "continueNewSearch": "Continuing will delete the current filters",
         "critSearch": "Search Criteria",
@@ -156,6 +161,15 @@
         "operator": "Operator",
         "optionSelected": "option selected",
         "saveFav": "Save as favourite",
+        "saveFavOperation": {
+            "allUsers": "Allow all users to run this favorite search",
+            "duplicateModeTitle": "Save favourite search as copy",
+            "editModeTitle": "Edit favourite search",
+            "name": "Favourite search name",
+            "newModeTitle": "Save favourite search",
+            "saveAsNew": "Save as a new favourite search",
+            "title": "Save/edit favourite search"
+        },
         "savedSearch": "Saved Searches",
         "states": "States",
         "subStates": "Substates"

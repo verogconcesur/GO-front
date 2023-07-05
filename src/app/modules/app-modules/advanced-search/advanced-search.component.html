@@ -62,12 +62,7 @@
                             <div class="badgeInfo__count" *ngIf="columns.length">{{ columns.length }}</div>
                         </div>
                     </div>
-                    <button
-                        mat-flat-button
-                        color="primary"
-                        [disabled]="!columns.length || criteriaErrors() || contextErrors()"
-                        (click)="runSearch()"
-                    >
+                    <button mat-flat-button color="primary" [disabled]="hasErrors()" (click)="runSearch()">
                         {{ labels.search | translate }}
                     </button>
                     <div class="cleanButton" fxLayout="row" fxLayoutAlign="start center" (click)="cleanFilters()">
@@ -75,11 +70,22 @@
                     </div>
                 </div>
                 <div fxLayout="row" fxLayoutAlign="end center" class="adv-search__content__header__sidetitle">
-                    <div class="custButton" fxLayout="row" fxLayoutAlign="space-between center">
+                    <div
+                        class="custButton"
+                        fxLayout="row"
+                        fxLayoutAlign="space-between center"
+                        [ngClass]="{ disabled: hasErrors() }"
+                    >
                         <span>{{ labels.export | translate }}</span>
                         <mat-icon>keyboard_arrow_down</mat-icon>
                     </div>
-                    <div class="custButton" fxLayout="row" fxLayoutAlign="space-between center">
+                    <div
+                        class="custButton"
+                        fxLayout="row"
+                        fxLayoutAlign="space-between center"
+                        (click)="!hasErrors() && saveFav()"
+                        [ngClass]="{ disabled: hasErrors() }"
+                    >
                         <span>{{ labels.saveFav | translate }}</span>
                         <mat-icon>star_border</mat-icon>
                     </div>

@@ -137,6 +137,10 @@
             height: 18px;
             margin-left: 5px;
           }
+          &.disabled {
+            cursor: default;
+            color: mat-color($primary, statusNeutral);
+          }
         }
         .custButton:last-child {
           font-weight: 500;
