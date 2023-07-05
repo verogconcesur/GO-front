@@ -107,9 +107,9 @@
         "addFilter": "Añadir filtro",
         "cleanConf": "Limpiar configuración",
         "columns": {
-            "cards": "Columnas pertenecientes al tipo de ficha",
+            "cards": "Columnas asociadas al tipo de tarjeta",
             "entities": "Columnas asociadas al tipo de dato",
-            "title": "Seleccionar columnas a visualizar"
+            "title": "Seleccionar columnas para mostrar"
         },
         "context": "Contexto",
         "continueNewSearch": "Si continua se borraran los filtros actuales.",
@@ -162,12 +162,12 @@
         "optionSelected": "opción seleccionada",
         "saveFav": "Guardar como favorita",
         "saveFavOperation": {
-            "allUsers": "Permitir a todos los usuarios ejecutar esta búsqueda favorita",
-            "duplicateModeTitle": "Guardar búsqueda favorita como duplicada",
-            "editModeTitle": "Editar búsqueda favorita",
+            "allUsers": "Permitir a todos los usuarios ejecutar esta búsqueda de favoritos",
+            "duplicateModeTitle": "Guardar búsqueda favorita como copia",
+            "editModeTitle": "Editar búsqueda de favoritos",
             "name": "Nombre de búsqueda favorita",
             "newModeTitle": "Guardar búsqueda favorita",
-            "saveAsNew": "Guarda búsqueda favorita como una nueva búsqueda",
+            "saveAsNew": "Guardar como nueva búsqueda favorita",
             "title": "Guardar/editar búsqueda favorita"
         },
         "savedSearch": "Búsquedas guardadas",
@@ -366,6 +366,7 @@
         "field": "Campo",
         "fieldsType": "Tipo",
         "fileName": "Nombre de archivo",
+        "files": "Ficheros",
         "filter": "Filtro",
         "filterAction": "Filtrar",
         "filterByType": "Filtrar por tipo",
