@@ -367,6 +367,7 @@
         "field": "Campo",
         "fieldsType": "Tipo",
         "fileName": "Nombre de archivo",
+        "files": "Ficheros",
         "filter": "Filtro",
         "filterAction": "Filtrar",
         "filterByType": "Filtrar por tipo",

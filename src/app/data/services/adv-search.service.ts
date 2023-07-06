@@ -10,14 +10,17 @@ import PaginationResponseI from '@data/interfaces/pagination-response';
 import AdvSearchDTO from '@data/models/adv-search/adv-search-dto';
 import AdvSearchOperatorDTO from '@data/models/adv-search/adv-search-operator-dto';
 import AdvancedSearchOptionsDTO from '@data/models/adv-search/adv-search-options-dto';
+import FileAsyncDTO from '@data/models/adv-search/file-async-dto';
+import { AttachmentDTO } from '@data/models/cards/card-attachments-dto';
 import WorkflowCreateCardDTO from '@data/models/workflows/workflow-create-card-dto';
 import { getPaginationUrlGetParams } from '@data/utils/pagination-aux';
-import { Observable, catchError, throwError } from 'rxjs';
+import { BehaviorSubject, Observable, catchError, throwError } from 'rxjs';
 
 @Injectable({
   providedIn: 'root'
 })
 export class AdvSearchService {
+  public newSearchExport$: BehaviorSubject<AdvSearchDTO> = new BehaviorSubject(null);
   private readonly GET_ADV_SEARCH_PATH = '/api/advancedSearch';
   private readonly DUPLICATE_PATH = '/duplicate';
   private readonly EXPORT_PATH = '/export';
@@ -27,6 +30,7 @@ export class AdvSearchService {
   private readonly GET_WORKFLOW_PATH = '/getWorkflows';
   private readonly GET_CRITERIA_PATH = '/getCriteria';
   private readonly GET_COLUMNS_PATH = '/getColumns';
+  private readonly FINISH_EXPORT_PATH = '/finishExport/';
   private readonly GET_LIST_OPTIONS_FOR_ENTITY = '/getListByVariable';
 
   constructor(@Inject(ENV) private env: Env, private http: HttpClient, private router: Router) {}
@@ -55,10 +59,15 @@ export class AdvSearchService {
       .get<AdvSearchDTO>(`${this.env.apiBaseUrl}${this.GET_ADV_SEARCH_PATH}${this.DUPLICATE_PATH}/${id}`)
       .pipe(catchError((error) => throwError(error as ConcenetError)));
   }
-  public exportAdvSearch(search: AdvSearchDTO): Observable<AdvSearchDTO> {
+  public exportAdvSearch(search: AdvSearchDTO): Observable<FileAsyncDTO> {
     return this.http
-      .post<AdvSearchDTO>(`${this.env.apiBaseUrl}${this.GET_ADV_SEARCH_PATH}${this.EXPORT_PATH}`, search)
-      .pipe(catchError((error) => throwError(error as ConcenetError)));
+      .post<FileAsyncDTO>(`${this.env.apiBaseUrl}${this.GET_ADV_SEARCH_PATH}${this.EXPORT_PATH}`, search)
+      .pipe(catchError((error) => throwError(error.error as ConcenetError)));
+  }
+  public finishExportAdvSearch(idFile: number): Observable<AttachmentDTO> {
+    return this.http
+      .get<AttachmentDTO>(`${this.env.apiBaseUrl}${this.GET_ADV_SEARCH_PATH}${this.FINISH_EXPORT_PATH}${idFile}`)
+      .pipe(catchError((error) => throwError(error.error as ConcenetError)));
   }
   public getAdvSearchList(): Observable<AdvSearchDTO[]> {
     return this.http

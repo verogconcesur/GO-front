@@ -8,4 +8,5 @@ export default interface WarningDTO {
   newNoReadNotification: boolean;
   frontLastHeaderMentionOpenedTime?: string | number;
   frontLastHeaderNotificationOpenedTime?: string | number;
+  newFileDownloading?: boolean;
 }
