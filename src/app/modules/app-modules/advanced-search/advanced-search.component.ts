@@ -41,6 +41,7 @@ import {
   AdvSearchSaveFavDialogComponent,
   AdvSearchSaveFavDialogComponentModalEnum
 } from './components/adv-search-save-fav-dialog/adv-search-save-fav-dialog.component';
+import { PermissionConstants } from '@app/constants/permission.constants';
 
 @UntilDestroy()
 @Component({
@@ -75,6 +76,7 @@ export class AdvancedSearchComponent implements OnInit {
     unselectAll: marker('common.unselectAll'),
     required: marker('errors.required')
   };
+  public isAdmin = false;
   public advSearchFav: AdvSearchDTO[] = [];
   public facilityList: FacilityDTO[] = [];
   public workflowList: WorkflowCreateCardDTO[] = [];
@@ -97,7 +99,8 @@ export class AdvancedSearchComponent implements OnInit {
     private fb: FormBuilder,
     private translateService: TranslateService,
     private admService: AuthenticationService,
-    private customDialogService: CustomDialogService
+    private customDialogService: CustomDialogService,
+    private authService: AuthenticationService
   ) {}
   get context() {
     return (this.advSearchForm.get('advancedSearchContext') as FormGroup).controls;
@@ -123,6 +126,9 @@ export class AdvancedSearchComponent implements OnInit {
       }
       return error;
     }, false);
+    if (!error && this.criteria.length === 0) {
+      error = true;
+    }
     return error;
   }
 
@@ -405,7 +411,9 @@ export class AdvancedSearchComponent implements OnInit {
       this.columns.push(
         this.fb.group({
           id: [value.id ? value.id : null],
-          advancedSearchId: [this.advSearchForm.value.id ? this.advSearchForm.value.id : null],
+          advancedSearchId: [
+            value.advancedSearchId ? value.advancedSearchId : this.advSearchForm.value.id ? this.advSearchForm.value.id : null
+          ],
           tabItem: [value.tabItem ? value.tabItem : null],
           variable: [value.variable ? value.variable : null],
           orderNumber: [this.columns.length + 1]
@@ -418,12 +426,14 @@ export class AdvancedSearchComponent implements OnInit {
       this.criteria.push(
         this.fb.group({
           id: [value.id ? value.id : null],
-          advancedSearchId: [this.advSearchForm.value.id ? this.advSearchForm.value.id : null],
+          advancedSearchId: [
+            value.advancedSearchId ? value.advancedSearchId : this.advSearchForm.value.id ? this.advSearchForm.value.id : null
+          ],
           tabItem: [value.tabItem ? value.tabItem : null],
           variable: [value.variable ? value.variable : null],
-          orderNumber: [this.criteria.length + 1],
-          advancedSearchOperator: [null],
-          value: [null]
+          orderNumber: [value.orderNumber ? value.orderNumber : this.criteria.length + 1],
+          advancedSearchOperator: [value.advancedSearchOperator ? value.advancedSearchOperator : null],
+          value: [value.value ? value.value : null]
         })
       );
     }
@@ -542,20 +552,24 @@ export class AdvancedSearchComponent implements OnInit {
     this.customDialogService
       .open({
         component: AdvSearchSaveFavDialogComponent,
-        extendedComponentData: { advSearchForm: this.advSearchForm },
+        extendedComponentData: { advSearchForm: this.advSearchForm, isAdmin: this.isAdmin },
         id: AdvSearchSaveFavDialogComponentModalEnum.ID,
         panelClass: AdvSearchSaveFavDialogComponentModalEnum.PANEL_CLASS,
         disableClose: true,
         width: '700px'
       })
       .pipe(take(1))
-      .subscribe((data: FormGroup) => {
+      .subscribe((data: AdvSearchDTO) => {
         if (data) {
-          this.advSearchForm = _.cloneDeep(data);
+          this.initForm(data);
+          this.refreshFavSearchList();
         }
       });
   }
   ngOnInit(): void {
+    this.isAdmin = this.authService.getUserPermissions().find((permission) => permission.code === PermissionConstants.ISADMIN)
+      ? true
+      : false;
     const spinner = this.spinnerService.show();
     const resquests = [
       this.advSearchService.getAdvSearchList().pipe(take(1)),

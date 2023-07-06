@@ -13,7 +13,11 @@
                 >
                     <span class="name" (click)="getFavSearch(advSearch)">{{ advSearch.name }}</span>
                     <div class="icons" fxLayout="row" fxLayoutAlign="space-between center">
-                        <mat-icon (click)="duplicateFavSearch(advSearch); $event.stopPropagation()">filter_none</mat-icon>
+                        <mat-icon
+                            *ngIf="isAdmin || advSearch.editable"
+                            (click)="duplicateFavSearch(advSearch); $event.stopPropagation()"
+                            >filter_none</mat-icon
+                        >
                         <mat-icon *ngIf="advSearch.editable" (click)="getFavSearch(advSearch, true); $event.stopPropagation()"
                             >edit</mat-icon
                         >

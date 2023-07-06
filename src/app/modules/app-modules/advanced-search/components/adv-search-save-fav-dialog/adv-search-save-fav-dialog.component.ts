@@ -1,14 +1,15 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
-import { PermissionConstants } from '@app/constants/permission.constants';
-import { AuthenticationService } from '@app/security/authentication.service';
 import { marker } from '@biesbjerg/ngx-translate-extract-marker';
 import AdvSearchDTO from '@data/models/adv-search/adv-search-dto';
 import { ComponentToExtendForCustomDialog, CustomDialogFooterConfigI } from '@jenga/custom-dialog';
 import { TranslateService } from '@ngx-translate/core';
-import { ConfirmDialogService } from '@shared/services/confirm-dialog.service';
-import { Observable, of } from 'rxjs';
+import { Observable, catchError, finalize, map, of } from 'rxjs';
 import _ from 'lodash';
+import { GlobalMessageService } from '@shared/services/global-message.service';
+import { AdvSearchService } from '@data/services/adv-search.service';
+import { ProgressSpinnerDialogService } from '@shared/services/progress-spinner-dialog.service';
+import moment from 'moment';
 
 export const enum AdvSearchSaveFavDialogComponentModalEnum {
   ID = 'adv-search-save-fav-dialog-id',
@@ -31,10 +32,12 @@ export class AdvSearchSaveFavDialogComponent extends ComponentToExtendForCustomD
   public advSearchForm: FormGroup;
   public isAdmin = false;
   public saveAsNewFormControl = new FormControl(false);
+  private previousName: string = null;
   constructor(
-    private confirmDialogService: ConfirmDialogService,
     private translateService: TranslateService,
-    private authService: AuthenticationService
+    private advSearchService: AdvSearchService,
+    private globalMessageService: GlobalMessageService,
+    private spinnerService: ProgressSpinnerDialogService
   ) {
     super(AdvSearchSaveFavDialogComponentModalEnum.ID, AdvSearchSaveFavDialogComponentModalEnum.PANEL_CLASS, '');
   }
@@ -48,10 +51,9 @@ export class AdvSearchSaveFavDialogComponent extends ComponentToExtendForCustomD
   }
 
   ngOnInit(): void {
+    this.previousName = this.extendedComponentData.advSearchForm.get('name').value;
     this.advSearchForm = _.cloneDeep(this.extendedComponentData.advSearchForm);
-    this.isAdmin = this.authService.getUserPermissions().find((permission) => permission.code === PermissionConstants.ISADMIN)
-      ? true
-      : false;
+    this.isAdmin = this.extendedComponentData.isAdmin;
     if (this.advSearch.editable && this.advSearch.id) {
       super.MODAL_TITLE = this.translateService.instant(marker('advSearch.saveFavOperation.editModeTitle'));
     } else if (!this.advSearch.id) {
@@ -64,14 +66,46 @@ export class AdvSearchSaveFavDialogComponent extends ComponentToExtendForCustomD
   }
 
   public confirmCloseCustomDialog(): Observable<boolean> {
-    return this.confirmDialogService.open({
-      title: this.translateService.instant(marker('common.warning')),
-      message: this.translateService.instant(marker('errors.ifContinueLosingChanges'))
-    });
+    return of(true);
+  }
+  public getSubmitError(): string {
+    let error: string = null;
+    if (
+      ((!this.advSearch.editable && this.advSearch.id) || this.saveAsNewFormControl.value) &&
+      this.previousName === this.advSearchForm.get('name').value
+    ) {
+      error = this.translateService.instant(marker('advSearch.saveFavOperation.errorSameName'));
+    }
+    return error;
   }
 
-  public onSubmitCustomDialog(): Observable<FormGroup> {
-    return of(this.advSearchForm);
+  public onSubmitCustomDialog(): Observable<AdvSearchDTO | boolean> {
+    const dataToSend: AdvSearchDTO = this.advSearchForm.getRawValue();
+    if ((!this.advSearch.editable && this.advSearch.id) || this.saveAsNewFormControl.value) {
+      dataToSend.id = null;
+    }
+    dataToSend.advancedSearchContext.dateCardFrom = moment(dataToSend.advancedSearchContext.dateCardFrom).format('DD/MM/YYYY');
+    dataToSend.advancedSearchContext.dateCardTo = moment(dataToSend.advancedSearchContext.dateCardTo).format('DD/MM/YYYY');
+    const spinner = this.spinnerService.show();
+    return this.advSearchService.createAdvSearch(dataToSend).pipe(
+      map((response) => {
+        this.globalMessageService.showSuccess({
+          message: this.translateService.instant(marker('common.successOperation')),
+          actionText: this.translateService.instant(marker('common.close'))
+        });
+        return response;
+      }),
+      catchError((error) => {
+        this.globalMessageService.showError({
+          message: error.error.message,
+          actionText: this.translateService.instant(marker('common.close'))
+        });
+        return of(false);
+      }),
+      finalize(() => {
+        this.spinnerService.hide(spinner);
+      })
+    );
   }
 
   public setAndGetFooterConfig(): CustomDialogFooterConfigI | null {
@@ -90,7 +124,7 @@ export class AdvSearchSaveFavDialogComponent extends ComponentToExtendForCustomD
           label: marker('common.save'),
           design: 'raised',
           color: 'primary',
-          disabledFn: () => !this.advSearchForm.get('name').value
+          disabledFn: () => !this.advSearchForm.get('name').value || this.getSubmitError() !== null
         }
       ]
     };

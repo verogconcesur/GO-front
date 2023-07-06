@@ -165,6 +165,7 @@
             "allUsers": "Permitir a todos los usuarios ejecutar esta búsqueda favorita",
             "duplicateModeTitle": "Guardar búsqueda favorita como duplicada",
             "editModeTitle": "Editar búsqueda favorita",
+            "errorSameName": "Debes modificar el nombre de la búsqueda para poder guardar",
             "name": "Nombre de búsqueda favorita",
             "newModeTitle": "Guardar búsqueda favorita",
             "saveAsNew": "Guarda búsqueda favorita como una nueva búsqueda",

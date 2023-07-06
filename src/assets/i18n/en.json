@@ -165,6 +165,7 @@
             "allUsers": "Allow all users to run this favorite search",
             "duplicateModeTitle": "Save favourite search as copy",
             "editModeTitle": "Edit favourite search",
+            "errorSameName": "You must change the search's name before saving",
             "name": "Favourite search name",
             "newModeTitle": "Save favourite search",
             "saveAsNew": "Save as a new favourite search",
