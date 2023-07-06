@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import CardColumnTabItemDTO from '../cards/card-column-tab-item-dto';
 import AdvSearchOperatorDTO from './adv-search-operator-dto';
 import AdvSearchVariableDTO from './adv-search-variable-dto';
@@ -29,5 +30,9 @@ export interface AdvancedSearchContext {
   facilitiesIds: number[];
   workflowsIds: number[];
   statesIds: number[];
-  substatesIds: number[];
+  substatesIds: any[];
+  facilities?: any[];
+  workflows?: any[];
+  states?: any[];
+  substates?: any[];
 }

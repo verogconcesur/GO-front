@@ -86,6 +86,18 @@ export class AdvSearchSaveFavDialogComponent extends ComponentToExtendForCustomD
     }
     dataToSend.advancedSearchContext.dateCardFrom = moment(dataToSend.advancedSearchContext.dateCardFrom).format('DD/MM/YYYY');
     dataToSend.advancedSearchContext.dateCardTo = moment(dataToSend.advancedSearchContext.dateCardTo).format('DD/MM/YYYY');
+    if (dataToSend.advancedSearchContext.states.length) {
+      dataToSend.advancedSearchContext.statesIds = dataToSend.advancedSearchContext.states.map((item) => item.id);
+    }
+    if (dataToSend.advancedSearchContext.substates.length) {
+      dataToSend.advancedSearchContext.substatesIds = dataToSend.advancedSearchContext.substates.map((item) => item.id);
+    }
+    if (dataToSend.advancedSearchContext.workflows.length) {
+      dataToSend.advancedSearchContext.workflowsIds = dataToSend.advancedSearchContext.workflows.map((item) => item.id);
+    }
+    if (dataToSend.advancedSearchContext.facilities.length) {
+      dataToSend.advancedSearchContext.facilitiesIds = dataToSend.advancedSearchContext.facilities.map((item) => item.id);
+    }
     const spinner = this.spinnerService.show();
     return this.advSearchService.createAdvSearch(dataToSend).pipe(
       map((response) => {
