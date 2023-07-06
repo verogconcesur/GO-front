@@ -12,7 +12,7 @@
         <div class="save-fav__form__row" *ngIf="isAdmin">
             <mat-checkbox formControlName="allUsers">{{ labels.allUsers | translate }}</mat-checkbox>
         </div>
-        <div class="save-fav__form__row" *ngIf="isAdmin && form.id.value">
+        <div class="save-fav__form__row" *ngIf="form.editable.value && form.id.value">
             <mat-checkbox [formControl]="saveAsNewFormControl">{{ labels.saveAsNew | translate }}</mat-checkbox>
         </div>
         <mat-error *ngIf="getSubmitError()">
