@@ -71,6 +71,7 @@ export class AdvancedSearchComponent implements OnInit {
     substates: marker('advSearch.subStates'),
     initDate: marker('advSearch.initDate'),
     endDate: marker('advSearch.endDate'),
+    rangeDate: marker('advSearch.rangeDate'),
     search: marker('common.search'),
     selectAll: marker('common.selectAll'),
     unselectAll: marker('common.unselectAll'),
@@ -158,6 +159,35 @@ export class AdvancedSearchComponent implements OnInit {
       this.advSearchSelected.advancedSearchContext.dateCardTo
     ).format('DD/MM/YYYY');
     this.table.executeSearch(this.advSearchSelected);
+  }
+  public runExport(): void {
+    if (!this.hasErrors()) {
+      this.advSearchSelected = this.advSearchSelected
+        ? this.advSearchSelected
+        : {
+            id: null,
+            name: null,
+            userId: null,
+            allUsers: true,
+            editable: true,
+            unionType: 'TYPE_AND',
+            advancedSearchItems: [],
+            advancedSearchCols: [],
+            advancedSearchContext: null
+          };
+      this.advSearchSelected.advancedSearchItems = this.criteria.getRawValue();
+      this.advSearchSelected.advancedSearchCols = this.columns.getRawValue();
+      this.advSearchSelected.advancedSearchContext = this.advSearchForm
+        .get('advancedSearchContext')
+        .getRawValue() as AdvancedSearchContext;
+      this.advSearchSelected.advancedSearchContext.dateCardFrom = moment(
+        this.advSearchSelected.advancedSearchContext.dateCardFrom
+      ).format('DD/MM/YYYY');
+      this.advSearchSelected.advancedSearchContext.dateCardTo = moment(
+        this.advSearchSelected.advancedSearchContext.dateCardTo
+      ).format('DD/MM/YYYY');
+      this.advSearchService.newSearchExport$.next(this.advSearchSelected);
+    }
   }
   public changeState(): void {
     const substateList = this.getSubstates();

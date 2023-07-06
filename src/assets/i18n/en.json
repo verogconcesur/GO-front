@@ -155,11 +155,19 @@
         "endDate": "End date",
         "export": "Export",
         "favSearch": "Favourite searches",
+        "information": {
+            "step1": "Specify a context (installation, workflow, state, sub-state, etc). As a minimum you must select a date range.",
+            "step2": "Add search criteria (ex: delivery date, customer name, etc).",
+            "step3": "Customize the columns you want to see (minimum one) and add all the data you are interested in.",
+            "step4": "Click on the columns you want to see (minimum one) and add all the data you are interested in.",
+            "title": "To perform an advanced search, follow the steps below."
+        },
         "initDate": "Init date",
         "itemsBetween": "{from} and {to}",
         "itemsInArray": "list of {num} items",
         "operator": "Operator",
         "optionSelected": "option selected",
+        "rangeDate": "Date range",
         "saveFav": "Save as favourite",
         "saveFavOperation": {
             "allUsers": "Allow all users to run this favorite search",

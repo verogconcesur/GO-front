@@ -1,3 +1,5 @@
+@import 'utils/core';
+@import 'utils/theme';
 .adv-search-table-container {
   width: 100%;
   height: 100%;
@@ -17,5 +19,24 @@
   }
   mat-paginator {
     width: 100%;
+  }
+  &__information {
+    padding: 20px;
+    box-sizing: border-box;
+    &__title {
+      font-weight: bold;
+      color: mat-contrast($primary, A100);
+      padding-bottom: 20px;
+      box-sizing: border-box;
+      font-size: 1.7rem;
+    }
+    &__steps {
+      color: mat-contrast($primary, A200);
+      font-size: 1rem;
+      ol {
+        padding-left: 25px;
+        line-height: 30px;
+      }
+    }
   }
 }
