@@ -27,3 +27,16 @@
     >
     </mat-paginator>
 </div>
+<div class="adv-search-table-container" *ngIf="!displayedColumns || !displayedColumns.length">
+    <div class="adv-search-table-container__information">
+        <div class="adv-search-table-container__information__title">{{ labels.title | translate }}</div>
+        <div class="adv-search-table-container__information__steps">
+            <ol type="1">
+                <li>{{ labels.step1 | translate }}</li>
+                <li>{{ labels.step2 | translate }}</li>
+                <li>{{ labels.step3 | translate }}</li>
+                <li>{{ labels.step4 | translate }}</li>
+            </ol>
+        </div>
+    </div>
+</div>

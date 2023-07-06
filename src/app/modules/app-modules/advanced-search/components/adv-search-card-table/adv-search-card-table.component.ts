@@ -17,7 +17,12 @@ import { finalize, take } from 'rxjs';
 })
 export class AdvSearchCardTableComponent implements OnInit {
   public labels = {
-    noDataToShow: marker('errors.noDataToShow')
+    noDataToShow: marker('errors.noDataToShow'),
+    title: marker('advSearch.information.title'),
+    step1: marker('advSearch.information.step1'),
+    step2: marker('advSearch.information.step2'),
+    step3: marker('advSearch.information.step3'),
+    step4: marker('advSearch.information.step4')
   };
   public paginationConfig = {
     length: 1,

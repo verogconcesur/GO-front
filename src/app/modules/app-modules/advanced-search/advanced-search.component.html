@@ -75,6 +75,7 @@
                         fxLayout="row"
                         fxLayoutAlign="space-between center"
                         [ngClass]="{ disabled: hasErrors() }"
+                        (click)="runExport()"
                     >
                         <span>{{ labels.export | translate }}</span>
                         <mat-icon>keyboard_arrow_down</mat-icon>
@@ -118,7 +119,24 @@
                                     fxLayout="row wrap"
                                     fxLayoutAlign="space-between start"
                                 >
-                                    <mat-form-field appearance="outline" floatLabel="always">
+                                    <mat-form-field appearance="outline" floatLabel="always" style="width: 100%">
+                                        <mat-label>{{ labels.rangeDate | translate }}</mat-label>
+                                        <mat-date-range-input [rangePicker]="campaignOnePicker">
+                                            <input
+                                                matStartDate
+                                                placeholder="{{ labels.initDate | translate }}"
+                                                formControlName="dateCardFrom"
+                                            />
+                                            <input
+                                                matEndDate
+                                                placeholder="{{ labels.endDate | translate }}"
+                                                formControlName="dateCardTo"
+                                            />
+                                        </mat-date-range-input>
+                                        <mat-datepicker-toggle matSuffix [for]="campaignOnePicker"></mat-datepicker-toggle>
+                                        <mat-date-range-picker #campaignOnePicker></mat-date-range-picker>
+                                    </mat-form-field>
+                                    <!-- <mat-form-field appearance="outline" floatLabel="always">
                                         <mat-label>{{ labels.initDate | translate }}</mat-label>
                                         <input
                                             matInput
@@ -143,8 +161,8 @@
                                         />
                                         <mat-datepicker-toggle matSuffix [for]="pickerEnd"></mat-datepicker-toggle>
                                         <mat-datepicker #pickerEnd></mat-datepicker>
-                                    </mat-form-field>
-                                    <mat-form-field appearance="outline" floatLabel="always">
+                                    </mat-form-field> -->
+                                    <mat-form-field appearance="outline" floatLabel="always" style="width: 48%">
                                         <mat-label>{{ labels.facilities | translate }}</mat-label>
                                         <mat-select formControlName="facilities" multiple>
                                             <button
@@ -168,7 +186,7 @@
                                             }}</mat-option>
                                         </mat-select>
                                     </mat-form-field>
-                                    <mat-form-field appearance="outline" floatLabel="always">
+                                    <mat-form-field appearance="outline" floatLabel="always" style="width: 48%">
                                         <mat-label>{{ labels.workflows | translate }}</mat-label>
                                         <mat-select formControlName="workflows" multiple (selectionChange)="changeWorkflow()">
                                             <button
@@ -192,7 +210,7 @@
                                             }}</mat-option>
                                         </mat-select>
                                     </mat-form-field>
-                                    <mat-form-field appearance="outline" floatLabel="always">
+                                    <mat-form-field appearance="outline" floatLabel="always" style="width: 48%">
                                         <mat-label>{{ labels.states | translate }}</mat-label>
                                         <mat-select formControlName="states" multiple (selectionChange)="changeState()">
                                             <mat-form-field
@@ -236,7 +254,7 @@
                                             >
                                         </mat-select>
                                     </mat-form-field>
-                                    <mat-form-field appearance="outline" floatLabel="always">
+                                    <mat-form-field appearance="outline" floatLabel="always" style="width: 48%">
                                         <mat-label>{{ labels.substates | translate }}</mat-label>
                                         <mat-select formControlName="substates" multiple>
                                             <mat-form-field

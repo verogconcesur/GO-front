@@ -155,11 +155,19 @@
         "endDate": "Fecha fin",
         "export": "Exportar",
         "favSearch": "Búsquedas favoritas",
+        "information": {
+            "step1": "Especificar un contexto (instalación, workflow, estado, subestado, etc). Como mínimo deberá seleccionar un rango de fechas.",
+            "step2": "Añadir criterios de búsqueda (ex: fecha de entrega, nombre de cliente, etc).",
+            "step3": "Personalizar las columnas que quieres ver (mínimo una) y añade todos los datos que te interesen.",
+            "step4": "Pulsa el botón 'Buscar'",
+            "title": "Para realizar una búsqueda avanzada, sigue los siguientes pasos"
+        },
         "initDate": "Fecha inicio",
         "itemsBetween": "{from} y {to}",
         "itemsInArray": "listado de {num} elementos",
         "operator": "Operador",
         "optionSelected": "opción seleccionada",
+        "rangeDate": "Rango de fechas",
         "saveFav": "Guardar como favorita",
         "saveFavOperation": {
             "allUsers": "Permitir a todos los usuarios ejecutar esta búsqueda favorita",
