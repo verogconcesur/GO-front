@@ -134,6 +134,16 @@ export class AdvancedSearchComponent implements OnInit {
   }
 
   public runSearch(): void {
+    this.setAdvSearchData();
+    this.table.executeSearch(this.advSearchSelected);
+  }
+  public runExport(): void {
+    if (!this.hasErrors()) {
+      this.setAdvSearchData();
+      this.advSearchService.newSearchExport$.next(this.advSearchSelected);
+    }
+  }
+  public setAdvSearchData(): void {
     this.advSearchSelected = this.advSearchSelected
       ? this.advSearchSelected
       : {
@@ -149,45 +159,14 @@ export class AdvancedSearchComponent implements OnInit {
         };
     this.advSearchSelected.advancedSearchItems = this.criteria.getRawValue();
     this.advSearchSelected.advancedSearchCols = this.columns.getRawValue();
-    this.advSearchSelected.advancedSearchContext = this.advSearchForm
-      .get('advancedSearchContext')
-      .getRawValue() as AdvancedSearchContext;
-    this.advSearchSelected.advancedSearchContext.dateCardFrom = moment(
-      this.advSearchSelected.advancedSearchContext.dateCardFrom
-    ).format('DD/MM/YYYY');
-    this.advSearchSelected.advancedSearchContext.dateCardTo = moment(
-      this.advSearchSelected.advancedSearchContext.dateCardTo
-    ).format('DD/MM/YYYY');
-    this.table.executeSearch(this.advSearchSelected);
-  }
-  public runExport(): void {
-    if (!this.hasErrors()) {
-      this.advSearchSelected = this.advSearchSelected
-        ? this.advSearchSelected
-        : {
-            id: null,
-            name: null,
-            userId: null,
-            allUsers: true,
-            editable: true,
-            unionType: 'TYPE_AND',
-            advancedSearchItems: [],
-            advancedSearchCols: [],
-            advancedSearchContext: null
-          };
-      this.advSearchSelected.advancedSearchItems = this.criteria.getRawValue();
-      this.advSearchSelected.advancedSearchCols = this.columns.getRawValue();
-      this.advSearchSelected.advancedSearchContext = this.advSearchForm
-        .get('advancedSearchContext')
-        .getRawValue() as AdvancedSearchContext;
-      this.advSearchSelected.advancedSearchContext.dateCardFrom = moment(
-        this.advSearchSelected.advancedSearchContext.dateCardFrom
-      ).format('DD/MM/YYYY');
-      this.advSearchSelected.advancedSearchContext.dateCardTo = moment(
-        this.advSearchSelected.advancedSearchContext.dateCardTo
-      ).format('DD/MM/YYYY');
-      this.advSearchService.newSearchExport$.next(this.advSearchSelected);
-    }
+    this.advSearchSelected.advancedSearchContext = {};
+    const context = this.advSearchForm.get('advancedSearchContext').getRawValue() as AdvancedSearchContext;
+    this.advSearchSelected.advancedSearchContext.dateCardFrom = moment(context.dateCardFrom).format('DD/MM/YYYY');
+    this.advSearchSelected.advancedSearchContext.dateCardTo = moment(context.dateCardTo).format('DD/MM/YYYY');
+    this.advSearchSelected.advancedSearchContext.facilitiesIds = context.facilities.map((f: FacilityDTO) => f.id);
+    this.advSearchSelected.advancedSearchContext.workflowsIds = context.workflows.map((f: FacilityDTO) => f.id);
+    this.advSearchSelected.advancedSearchContext.statesIds = context.states.map((f: FacilityDTO) => f.id);
+    this.advSearchSelected.advancedSearchContext.substatesIds = context.substates.map((f: FacilityDTO) => f.id);
   }
   public changeState(): void {
     const substateList = this.getSubstates();

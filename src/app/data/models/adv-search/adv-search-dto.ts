@@ -24,13 +24,12 @@ export interface AdvancedSearchItem {
   orderNumber?: number;
 }
 export interface AdvancedSearchContext {
-  id: number;
-  dateCardFrom: string;
-  dateCardTo: string;
-  facilitiesIds: number[];
-  workflowsIds: number[];
-  statesIds: number[];
-  substatesIds: any[];
+  dateCardFrom?: string;
+  dateCardTo?: string;
+  facilitiesIds?: number[];
+  workflowsIds?: number[];
+  statesIds?: number[];
+  substatesIds?: any[];
   facilities?: any[];
   workflows?: any[];
   states?: any[];
