@@ -37,27 +37,27 @@ export class AdvSearchService {
   public getWorkflowList(): Observable<WorkflowCreateCardDTO[]> {
     return this.http
       .get<WorkflowCreateCardDTO[]>(`${this.env.apiBaseUrl}${this.GET_ADV_SEARCH_PATH}${this.GET_WORKFLOW_PATH}`)
-      .pipe(catchError((error) => throwError(error as ConcenetError)));
+      .pipe(catchError((error) => throwError(error.error as ConcenetError)));
   }
   public getAdvSearchById(id: number): Observable<AdvSearchDTO> {
     return this.http
       .get<AdvSearchDTO>(`${this.env.apiBaseUrl}${this.GET_ADV_SEARCH_PATH}/${id}`)
-      .pipe(catchError((error) => throwError(error as ConcenetError)));
+      .pipe(catchError((error) => throwError(error.error as ConcenetError)));
   }
   public createAdvSearch(search: AdvSearchDTO): Observable<AdvSearchDTO> {
     return this.http
       .post<AdvSearchDTO>(`${this.env.apiBaseUrl}${this.GET_ADV_SEARCH_PATH}`, search)
-      .pipe(catchError((error) => throwError(error as ConcenetError)));
+      .pipe(catchError((error) => throwError(error.error as ConcenetError)));
   }
   public deleteAdvSearchById(id: number): Observable<AdvSearchDTO> {
     return this.http
       .delete<AdvSearchDTO>(`${this.env.apiBaseUrl}${this.GET_ADV_SEARCH_PATH}/${id}`)
-      .pipe(catchError((error) => throwError(error as ConcenetError)));
+      .pipe(catchError((error) => throwError(error.error as ConcenetError)));
   }
   public duplicateAdvSearch(id: number): Observable<AdvSearchDTO> {
     return this.http
       .get<AdvSearchDTO>(`${this.env.apiBaseUrl}${this.GET_ADV_SEARCH_PATH}${this.DUPLICATE_PATH}/${id}`)
-      .pipe(catchError((error) => throwError(error as ConcenetError)));
+      .pipe(catchError((error) => throwError(error.error as ConcenetError)));
   }
   public exportAdvSearch(search: AdvSearchDTO): Observable<FileAsyncDTO> {
     return this.http
@@ -72,14 +72,14 @@ export class AdvSearchService {
   public getAdvSearchList(): Observable<AdvSearchDTO[]> {
     return this.http
       .get<AdvSearchDTO[]>(`${this.env.apiBaseUrl}${this.GET_ADV_SEARCH_PATH}${this.LIST_PATH}`)
-      .pipe(catchError((error) => throwError(error as ConcenetError)));
+      .pipe(catchError((error) => throwError(error.error as ConcenetError)));
   }
   public getOptionsListForEntity(idVariable: number): Observable<{ id: number; value: string }[]> {
     return this.http
       .get<{ id: number; value: string }[]>(
         `${this.env.apiBaseUrl}${this.GET_ADV_SEARCH_PATH}${this.GET_LIST_OPTIONS_FOR_ENTITY}/${idVariable}`
       )
-      .pipe(catchError((error) => throwError(error as ConcenetError)));
+      .pipe(catchError((error) => throwError(error.error as ConcenetError)));
   }
   public getAdvSearchOperators(dataType?: string): Observable<AdvSearchOperatorDTO[]> {
     let url = `${this.env.apiBaseUrl}${this.GET_ADV_SEARCH_PATH}${this.OPERATORS_PATH}`;
@@ -94,16 +94,16 @@ export class AdvSearchService {
         `${this.env.apiBaseUrl}${this.GET_ADV_SEARCH_PATH}${this.RUN_PATH}${getPaginationUrlGetParams(pagination, true)}`,
         search
       )
-      .pipe(catchError((error) => throwError(error as ConcenetError)));
+      .pipe(catchError((error) => throwError(error.error as ConcenetError)));
   }
   public getCriteria(): Observable<AdvancedSearchOptionsDTO> {
     return this.http
       .get<AdvancedSearchOptionsDTO>(`${this.env.apiBaseUrl}${this.GET_ADV_SEARCH_PATH}${this.GET_CRITERIA_PATH}`)
-      .pipe(catchError((error) => throwError(error as ConcenetError)));
+      .pipe(catchError((error) => throwError(error.error as ConcenetError)));
   }
   public getColumns(): Observable<AdvancedSearchOptionsDTO> {
     return this.http
       .get<AdvancedSearchOptionsDTO>(`${this.env.apiBaseUrl}${this.GET_ADV_SEARCH_PATH}${this.GET_COLUMNS_PATH}`)
-      .pipe(catchError((error) => throwError(error as ConcenetError)));
+      .pipe(catchError((error) => throwError(error.error as ConcenetError)));
   }
 }
