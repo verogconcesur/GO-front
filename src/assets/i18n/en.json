@@ -271,7 +271,8 @@
             "CHANGE_STATE": "Change state",
             "EDIT_INFO": "Edit info",
             "INCOMING_CALL": "Incoming call",
-            "OUTCOMING_CALL": "Outcoming call"
+            "OUTCOMING_CALL": "Outcoming call",
+            "REMOTE_SIGN": "Remote sign"
         },
         "messages": {
             "chanels": "Channels",

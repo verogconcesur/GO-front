@@ -105,59 +105,63 @@ export class WorkflowCardComponent implements OnInit {
   public getLabel(tabItem: WorkflowCardTabItemDTO): string {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     let slot: any = null;
-    switch (tabItem.typeItem) {
-      case 'ACTION':
-        slot = tabItem.tabItemConfigAction;
-        break;
-      case 'INPUT':
-        slot = tabItem.tabItemConfigInput.cardTabItemInstance;
-        break;
-      case 'LINK':
-        slot = tabItem.tabItemConfigLink;
-        break;
-      case 'LIST':
-        let found = null;
-        if (tabItem.tabItemConfigList?.listItems?.length && tabItem.tabItemConfigList?.cardTabItemInstance?.value) {
-          found = tabItem.tabItemConfigList.listItems.find(
-            (item) => item.code === tabItem.tabItemConfigList.cardTabItemInstance.value
-          );
-        }
-        if (found) {
-          slot = found;
-        } else {
-          slot = tabItem.tabItemConfigList.cardTabItemInstance;
-        }
-        break;
-        break;
-      case 'OPTION':
-        slot = tabItem.tabItemConfigOption.variable;
-        break;
-      case 'TEXT':
-        slot = tabItem.tabItemConfigText.variable;
-        break;
-      case 'TITLE':
-        slot = tabItem.tabItemConfigTitle.variable;
-        break;
-      case 'VARIABLE':
-        slot = tabItem.tabItemConfigVariable.variable;
-        break;
-    }
-    const datePipe = new DatePipe('en-EN');
-    const dataType = slot?.dataType ? slot.dataType : '';
-    const attrname = slot?.attributeName ? slot.attributeName : '';
-    if (attrname === 'dueOutDateTime') {
-      return this.translateService.instant('workflows.dueOutDateTime', {
-        date: datePipe.transform(slot.value, 'dd/MM'),
-        time: datePipe.transform(slot.value, 'HH:mm')
-      });
-    }
-    switch (dataType) {
-      case 'DATE':
-        return datePipe.transform(slot.value, 'dd/MM/YYYY');
-      case 'DATETIME':
-        return datePipe.transform(slot.value, 'dd/MM/YYYY, HH:mm');
-      default:
-        return slot?.value ? slot.value : null;
+    if (tabItem) {
+      switch (tabItem.typeItem) {
+        case 'ACTION':
+          slot = tabItem.tabItemConfigAction;
+          break;
+        case 'INPUT':
+          slot = tabItem.tabItemConfigInput.cardTabItemInstance;
+          break;
+        case 'LINK':
+          slot = tabItem.tabItemConfigLink;
+          break;
+        case 'LIST':
+          let found = null;
+          if (tabItem.tabItemConfigList?.listItems?.length && tabItem.tabItemConfigList?.cardTabItemInstance?.value) {
+            found = tabItem.tabItemConfigList.listItems.find(
+              (item) => item.code === tabItem.tabItemConfigList.cardTabItemInstance.value
+            );
+          }
+          if (found) {
+            slot = found;
+          } else {
+            slot = tabItem.tabItemConfigList.cardTabItemInstance;
+          }
+          break;
+          break;
+        case 'OPTION':
+          slot = tabItem.tabItemConfigOption.variable;
+          break;
+        case 'TEXT':
+          slot = tabItem.tabItemConfigText.variable;
+          break;
+        case 'TITLE':
+          slot = tabItem.tabItemConfigTitle.variable;
+          break;
+        case 'VARIABLE':
+          slot = tabItem.tabItemConfigVariable.variable;
+          break;
+      }
+      const datePipe = new DatePipe('en-EN');
+      const dataType = slot?.dataType ? slot.dataType : '';
+      const attrname = slot?.attributeName ? slot.attributeName : '';
+      if (attrname === 'dueOutDateTime') {
+        return this.translateService.instant('workflows.dueOutDateTime', {
+          date: datePipe.transform(slot.value, 'dd/MM'),
+          time: datePipe.transform(slot.value, 'HH:mm')
+        });
+      }
+      switch (dataType) {
+        case 'DATE':
+          return datePipe.transform(slot.value, 'dd/MM/YYYY');
+        case 'DATETIME':
+          return datePipe.transform(slot.value, 'dd/MM/YYYY, HH:mm');
+        default:
+          return slot?.value ? slot.value : '';
+      }
+    } else {
+      return '';
     }
   }
 
