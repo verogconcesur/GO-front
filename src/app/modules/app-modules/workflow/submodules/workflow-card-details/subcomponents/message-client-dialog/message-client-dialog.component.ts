@@ -136,11 +136,11 @@ export class MessageClientDialogComponent extends ComponentToExtendForCustomDial
         }
       );
   }
-  public openAttachmentsModal(): void {
+  public openAttachmentsModal(messageClient: FormGroup): void {
     const data: CardInstanceAttachmentsModalVersionConfig = {
       cardInstanceAttachmentsConfig: this.cardInstanceAttachmentsConfig,
       data: this.attachments,
-      selected: this.attachmentsSelected,
+      selected: messageClient.get('attachments').value ? messageClient.get('attachments').value : [],
       cardInstanceWorkflowId: this.cardInstanceAttachmentsConfig.wcId,
       tabId: null,
       title: marker('common.selectAttacmentsToAdd'),
@@ -158,22 +158,16 @@ export class MessageClientDialogComponent extends ComponentToExtendForCustomDial
       .afterClosed()
       .pipe(take(1))
       .subscribe((resp: AttachmentDTO[]) => {
-        this.attachmentSelected(resp);
+        this.attachmentSelected(resp, messageClient);
       });
   }
-  public attachmentSelected(attachments: AttachmentDTO[]): void {
+  public attachmentSelected(attachments: AttachmentDTO[], messageClient: FormGroup): void {
     this.attachmentsSelected = attachments;
-    this.messageClientsForm.controls.forEach((fg: UntypedFormGroup) => {
-      // DGDC: descomentar cuando la landing esté preparada
-      // if (fg.value.messageChannelId === 1 || fg.value.messageChannelId === 2) {
-      if (fg.value.messageChannelId === 2) {
-        fg.get('attachments').setValue([...this.attachmentsSelected].map((item) => ({ id: item.id, name: item.name })));
-      }
-    });
+    messageClient.get('attachments').setValue([...this.attachmentsSelected].map((item) => ({ id: item.id, name: item.name })));
   }
-  public getAttachmentsName(): string {
-    if (this.attachmentsSelected?.length) {
-      return [...this.attachmentsSelected].map((item) => item.name).join(', ');
+  public getAttachmentsName(messageClient: FormGroup): string {
+    if (messageClient.get('attachments').value?.length) {
+      return [...messageClient.get('attachments').value].map((item) => item.name).join(', ');
     }
     return '';
   }
@@ -334,9 +328,10 @@ export class MessageClientDialogComponent extends ComponentToExtendForCustomDial
       (this.messageForm.get('messageChannels') as FormArray).push(
         this.fb.group({
           messageChannel: [channel],
-          selected: [false]
+          selected: [channel.id === 1]
         })
       );
     });
+    this.selectMessageChannel();
   }
 }
