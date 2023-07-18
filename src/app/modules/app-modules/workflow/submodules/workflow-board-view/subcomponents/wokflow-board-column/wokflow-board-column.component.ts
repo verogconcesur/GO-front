@@ -12,7 +12,8 @@ import { WorkflowsService } from '@data/services/workflows.service';
 import { WorkflowDragAndDropService } from '@modules/app-modules/workflow/aux-service/workflow-drag-and-drop.service';
 import { WorkflowPrepareAndMoveService } from '@modules/app-modules/workflow/aux-service/workflow-prepare-and-move-aux.service';
 import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
-import { Observable } from 'rxjs';
+import { ProgressSpinnerDialogService } from '@shared/services/progress-spinner-dialog.service';
+import { Observable, finalize, take } from 'rxjs';
 
 @UntilDestroy()
 @Component({
@@ -54,7 +55,8 @@ export class WokflowBoardColumnComponent implements OnInit {
   constructor(
     public workflowService: WorkflowsService,
     private dragAndDropService: WorkflowDragAndDropService,
-    private prepareAndMoveService: WorkflowPrepareAndMoveService
+    private prepareAndMoveService: WorkflowPrepareAndMoveService,
+    private spinnerService: ProgressSpinnerDialogService
   ) {}
 
   ngOnInit(): void {
@@ -174,44 +176,49 @@ export class WokflowBoardColumnComponent implements OnInit {
 
   public getAssociatedWSubstates(card: WorkflowCardDTO, itSelf?: string): string[] {
     let associatedWSubstates: string[] = null;
-    if (card?.movements?.length) {
+    // Habilitamos sólo los movimientos para reordenar dentro de un subestado
+    if (itSelf) {
       associatedWSubstates = [];
-      card.movements.forEach((move: WorkflowMoveDTO) => {
-        if (move.workflowSubstateTarget.workflowState?.front) {
-          move.workflowSubstateTarget.workflowSubstateUser.forEach((wUser: WorkflowSubstateUserDTO) => {
-            const idState = this.wCollapsedStateKey + move.workflowSubstateTarget.workflowState.id;
-            const id = this.wSubstateKey + move.workflowSubstateTarget.id + '-' + wUser.user.id;
-            if (associatedWSubstates.indexOf(idState) === -1) {
-              associatedWSubstates.push(idState);
-            }
-            if (associatedWSubstates.indexOf(id) === -1) {
-              associatedWSubstates.push(id);
-            }
-          });
-        } else {
-          const id = this.wSubstateKey + move.workflowSubstateTarget.id;
-          if (associatedWSubstates.indexOf(id) === -1) {
-            associatedWSubstates.push(id);
-          }
-          // DGDC: descomentar en el momento en el que se pueda ordenar dentro de un mismo subestado
-          // if (itSelf) {
-          //   associatedWSubstates.push(itSelf);
-          // }
-        }
-
-        //Ya no es necesario ya que back me devuelve estos movimientos (movimientos dentro del mismo subestado pero dif user)
-        // if (itSelf && move.workflowSubstateSource.workflowState.front) {
-        //   move.workflowSubstateSource.workflowSubstateUser.forEach((wUser: WorkflowSubstateUserDTO) => {
-        //     const id = this.wSubstateKey + move.workflowSubstateSource.id + '-' + wUser.user.id;
-        //     if (associatedWSubstates.indexOf(id) === -1 && id !== itSelf) {
-        //       associatedWSubstates.push(id);
-        //     }
-        //   });
-        // }
-      });
-    } else if (card?.movements && card.movements.length === 0) {
-      associatedWSubstates = [];
+      associatedWSubstates.push(itSelf);
     }
+    // if (card?.movements?.length) {
+    //   associatedWSubstates = [];
+    //   card.movements.forEach((move: WorkflowMoveDTO) => {
+    //     if (move.workflowSubstateTarget.workflowState?.front) {
+    //       move.workflowSubstateTarget.workflowSubstateUser.forEach((wUser: WorkflowSubstateUserDTO) => {
+    //         const idState = this.wCollapsedStateKey + move.workflowSubstateTarget.workflowState.id;
+    //         const id = this.wSubstateKey + move.workflowSubstateTarget.id + '-' + wUser.user.id;
+    //         if (associatedWSubstates.indexOf(idState) === -1) {
+    //           associatedWSubstates.push(idState);
+    //         }
+    //         if (associatedWSubstates.indexOf(id) === -1) {
+    //           associatedWSubstates.push(id);
+    //         }
+    //       });
+    //     } else {
+    //       const id = this.wSubstateKey + move.workflowSubstateTarget.id;
+    //       if (associatedWSubstates.indexOf(id) === -1) {
+    //         associatedWSubstates.push(id);
+    //       }
+    //       // DGDC: descomentar en el momento en el que se pueda ordenar dentro de un mismo subestado
+    //       // if (itSelf) {
+    //       //   associatedWSubstates.push(itSelf);
+    //       // }
+    //     }
+
+    //     //Ya no es necesario ya que back me devuelve estos movimientos (movimientos dentro del mismo subestado pero dif user)
+    //     // if (itSelf && move.workflowSubstateSource.workflowState.front) {
+    //     //   move.workflowSubstateSource.workflowSubstateUser.forEach((wUser: WorkflowSubstateUserDTO) => {
+    //     //     const id = this.wSubstateKey + move.workflowSubstateSource.id + '-' + wUser.user.id;
+    //     //     if (associatedWSubstates.indexOf(id) === -1 && id !== itSelf) {
+    //     //       associatedWSubstates.push(id);
+    //     //     }
+    //     //   });
+    //     // }
+    //   });
+    // } else if (card?.movements && card.movements.length === 0) {
+    //   associatedWSubstates = [];
+    // }
     return associatedWSubstates;
   }
 
@@ -277,49 +284,56 @@ export class WokflowBoardColumnComponent implements OnInit {
     }
   }
 
-  public drop(event: CdkDragDrop<string[]>, wSubState: WorkflowSubstateDTO, user: WorkflowSubstateUserDTO, dropZoneId: string) {
-    if (this.isDragAndDropEnabled) {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  public drop(event: CdkDragDrop<any[]>, wSubState: WorkflowSubstateDTO, user: WorkflowSubstateUserDTO, dropZoneId: string) {
+    if (!this.isDragAndDropEnabled) {
       return;
     }
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const item: any = event.previousContainer.data[event.previousIndex];
-    const request: Observable<WorkflowCardInstanceDTO> = null;
+    // const request: Observable<WorkflowCardInstanceDTO> = null;
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    let itemToReplace: any = null;
-    if (event.container.data[event.currentIndex]) {
-      //Se va a reemplazar el orden de un elemento
-      itemToReplace = event.container.data[event.currentIndex];
-    } else {
-      //Se va a posicionar en la última posición
-      itemToReplace = { orderNumber: null };
-    }
+    // let itemToReplace: any = null;
+    // if (event.container.data[event.currentIndex]) {
+    //   //Se va a reemplazar el orden de un elemento
+    //   itemToReplace = event.container.data[event.currentIndex];
+    // } else {
+    //   //Se va a posicionar en la última posición
+    //   itemToReplace = { orderNumber: null };
+    // }
     const sameDropZone =
       // `${this.wSubstateKey}${item.cardInstanceWorkflows[0].workflowSubstateId}` === dropZoneId ||
       event.container.id === event.previousContainer.id;
-    //Quitar cuando se pueda ordenar dentro de un mismo subestado
-    if (sameDropZone) {
-      return;
+    // Ordenar dentro de un mismo subestado
+    if ((event.previousContainer === event.container && event.previousIndex !== event.currentIndex) || sameDropZone) {
+      event.container.data.splice(event.previousIndex, 1);
+      event.container.data.splice(event.currentIndex, 0, item);
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      event.container.data.map((d: any, index) => {
+        d.orderNumber = index;
+        d.cardInstanceWorkflows[0].orderNumber = index;
+        return d;
+      });
+      const spinner = this.spinnerService.show();
+      this.workflowService
+        .reindexCards(
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
+          [...event.container.data].map((d: any) => d.cardInstanceWorkflows[0].id),
+          event.container.data[0].cardInstanceWorkflows[0].workflowSubstateId
+        )
+        .pipe(
+          take(1),
+          finalize(() => this.spinnerService.hide(spinner))
+        )
+        .subscribe({
+          next: (d) => {},
+          error: (e) => {
+            console.log(e);
+            this.prepareAndMoveService.reloadData$.next('MOVES_IN_THIS_WORKFLOW');
+          }
+        });
     }
-    // DGDC: descomentar en el momento en el que se pueda ordenar dentro de un mismo subestado
-    // if ((event.previousContainer === event.container && event.previousIndex !== event.currentIndex) || sameDropZone) {
-    // DGDC: quitar en el momento en el que se pueda ordenar dentro de un mismo subestado
-    // DGDC: comentada toda esta parte porque back devuelve los subestado de tipo portada y no ordenamos, siempre movemos
-    // if (event.previousContainer !== event.container && sameDropZone) {
-    //   const orderNumber =
-    //     event.previousIndex < event.currentIndex && (itemToReplace.orderNumber || itemToReplace.orderNumber === 0)
-    //       ? itemToReplace.orderNumber + 1
-    //       : itemToReplace.orderNumber;
-    //   item.orderNumber = orderNumber;
-    //   request = this.workflowService.changeOrderWorkflowCardInSubstate(
-    //     item.cardInstanceWorkflows[0].facilityId,
-    //     item,
-    //     user,
-    //     // DGDC: descomentar en el momento en el que se pueda ordenar dentro de un mismo subestado
-    //     // orderNumber
-    //     // DGDC: quitar en el momento en el que se pueda ordenar dentro de un mismo subestado
-    //     null
-    //   );
-    // } else if (event.previousContainer !== event.container && !sameDropZone) {
+    // else if (event.previousContainer !== event.container && !sameDropZone) {
     //   const move: WorkflowMoveDTO = item.movements.find(
     //     (wMove: WorkflowMoveDTO) => wMove.workflowSubstateTarget.id === wSubState.id
     //   );
@@ -334,18 +348,18 @@ export class WokflowBoardColumnComponent implements OnInit {
     // }
 
     //DGDC: busco siempre el movimiento ya que por lo pronto no se invocará el servicio de ordenar.
-    const move: WorkflowMoveDTO = item.movements
-      ? item.movements.find((wMove: WorkflowMoveDTO) => wMove.workflowSubstateTarget.id === wSubState.id)
-      : null;
-    item.orderNumber =
-      dropZoneId.indexOf(`${this.wSubstateKey}${item.cardInstanceWorkflows[0].workflowSubstateId}`) >= 0
-        ? itemToReplace.orderNumber
-        : null;
-    if (move?.id || move?.id === 0) {
-      this.prepareAndMoveService.prepareAndMove(item, move, wSubState, user, dropZoneId, itemToReplace);
-    } else if (item.workflowSubstate && wSubState) {
-      this.prepareAndMoveService.prepareAndMove(item, move, wSubState, user, dropZoneId, itemToReplace);
-    }
+    // const move: WorkflowMoveDTO = item.movements
+    //   ? item.movements.find((wMove: WorkflowMoveDTO) => wMove.workflowSubstateTarget.id === wSubState.id)
+    //   : null;
+    // item.orderNumber =
+    //   dropZoneId.indexOf(`${this.wSubstateKey}${item.cardInstanceWorkflows[0].workflowSubstateId}`) >= 0
+    //     ? itemToReplace.orderNumber
+    //     : null;
+    // if (move?.id || move?.id === 0) {
+    //   this.prepareAndMoveService.prepareAndMove(item, move, wSubState, user, dropZoneId, itemToReplace);
+    // } else if (item.workflowSubstate && wSubState) {
+    //   this.prepareAndMoveService.prepareAndMove(item, move, wSubState, user, dropZoneId, itemToReplace);
+    // }
 
     // if (request) {
     //   const spinner = this.spinnerService.show();

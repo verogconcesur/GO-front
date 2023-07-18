@@ -50,6 +50,7 @@ export class WorkflowsService {
   private readonly SYNCRONIZE_PATH = '/synchronize';
   private readonly GET_WORKFLOW_SUBSTATE_USERS_PATH = '/api/cardInstanceWorkflow/createCard/';
   private readonly GET_USERS_PATH = '/getUsers';
+  private readonly REINDEX_CARDS_PATH = '/reindexCards';
   constructor(@Inject(ENV) private env: Env, private http: HttpClient, private workflowFilterService: WorkflowFilterService) {}
 
   /**
@@ -271,6 +272,22 @@ export class WorkflowsService {
         `${this.env.apiBaseUrl}${this.GET_WORKFLOWS_PATH}/${card?.cardInstanceWorkflows[0]?.workflowId}` +
           `${this.GET_WORKFLOWS_MOVEMENT_PATH}/${targetId}`,
         cardInstanceWorkflow
+      )
+      .pipe(catchError((error) => throwError(error.error as ConcenetError)));
+  }
+
+  /**
+   * Reindex cards
+   *
+   * @param cardInstanceWorkflowds: number[]
+   * @param workflowSubstateId: number
+   * @returns boolean
+   */
+  public reindexCards(cardInstanceWorkflowds: number[], workflowSubstateId: number): Observable<boolean> {
+    return this.http
+      .post<boolean>(
+        `${this.env.apiBaseUrl}${this.GET_WORKFLOWS_PATH}${this.GET_WORKFLOWS_INSTANCE_PATH}${this.REINDEX_CARDS_PATH}`,
+        { cardInstanceWorkflowds, workflowSubstateId }
       )
       .pipe(catchError((error) => throwError(error.error as ConcenetError)));
   }
