@@ -106,6 +106,8 @@ export class WorkflowFilterService {
   }
 
   //Primero ordenamos por fecha ASC, luego por orderNumber DESC
+  //DGDC cuando pongamos el orden por drag and drop cambiar el orden
+  //Primero ordenamos por orderNumber DESC, luego por  fecha ASC
   public orderCardsByOrderNumber(cards: WorkflowCardDTO[]): WorkflowCardDTO[] {
     cards.sort((a, b) => a.cardInstanceWorkflows[0].dateAssignmentSubstate - b.cardInstanceWorkflows[0].dateAssignmentSubstate);
     return cards.sort((a, b) => b.cardInstanceWorkflows[0].orderNumber - a.cardInstanceWorkflows[0].orderNumber);
