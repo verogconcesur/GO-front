@@ -143,22 +143,26 @@ export class WorkflowCardComponent implements OnInit {
           slot = tabItem.tabItemConfigVariable.variable;
           break;
       }
-      const datePipe = new DatePipe('en-EN');
-      const dataType = slot?.dataType ? slot.dataType : '';
-      const attrname = slot?.attributeName ? slot.attributeName : '';
-      if (attrname === 'dueOutDateTime') {
-        return this.translateService.instant('workflows.dueOutDateTime', {
-          date: datePipe.transform(slot.value, 'dd/MM'),
-          time: datePipe.transform(slot.value, 'HH:mm')
-        });
-      }
-      switch (dataType) {
-        case 'DATE':
-          return datePipe.transform(slot.value, 'dd/MM/YYYY');
-        case 'DATETIME':
-          return datePipe.transform(slot.value, 'dd/MM/YYYY, HH:mm');
-        default:
-          return slot?.value ? slot.value : '';
+      if (slot?.value) {
+        const datePipe = new DatePipe('en-EN');
+        const dataType = slot?.dataType ? slot.dataType : '';
+        const attrname = slot?.attributeName ? slot.attributeName : '';
+        if (attrname === 'dueOutDateTime') {
+          return this.translateService.instant('workflows.dueOutDateTime', {
+            date: datePipe.transform(slot.value, 'dd/MM'),
+            time: datePipe.transform(slot.value, 'HH:mm')
+          });
+        }
+        switch (dataType) {
+          case 'DATE':
+            return datePipe.transform(slot.value, 'dd/MM/YYYY');
+          case 'DATETIME':
+            return datePipe.transform(slot.value, 'dd/MM/YYYY, HH:mm');
+          default:
+            return slot?.value ? slot.value : '';
+        }
+      } else {
+        return '';
       }
     } else {
       return '';
