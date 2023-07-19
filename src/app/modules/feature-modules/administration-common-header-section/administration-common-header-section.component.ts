@@ -18,6 +18,7 @@ export class AdministrationCommonHeaderSectionComponent implements OnInit {
   @Input() buttonSmallLabel: string;
   @Input() showSearchOfFilterInput = true;
   @Input() showFilterButton = false;
+  @Input() showCreateButton = true;
   @Input() title = '';
   @Input() areFiltersSettedAndActive = false;
   @Input() searchFn: (

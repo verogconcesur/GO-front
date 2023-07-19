@@ -5,13 +5,16 @@ import { ENV } from '@app/constants/global.constants';
 import { Env } from '@app/types/env';
 import { ConcenetError } from '@app/types/error';
 import { AttachmentDTO, CardAttachmentsDTO } from '@data/models/cards/card-attachments-dto';
-import { Observable, throwError } from 'rxjs';
+import CardInstanceRemoteSignatureDTO from '@data/models/cards/card-instance-remote-signature-dto';
+import { Observable, Subject, throwError } from 'rxjs';
 import { catchError, map } from 'rxjs/operators';
 
 @Injectable({
   providedIn: 'root'
 })
 export class CardAttachmentsService {
+  public remoteSignatureSubject$: Subject<CardInstanceRemoteSignatureDTO> = new Subject();
+
   private readonly GET_CARD_INSTANCE_PATH = '/api/cardInstanceWorkflow';
   private readonly DETAIL_PATH = '/detail';
   private readonly ATTACHMETS_PATH = '/attachments';
@@ -19,6 +22,8 @@ export class CardAttachmentsService {
   private readonly DELETE_PATH = '/delete';
   private readonly DOWNLOAD_PATH = '/download';
   private readonly HIDE_LANDING_PATH = '/hideLanding';
+  private readonly SEND_REMOTE_SIGNATURE_PATH = '/sendRemoteSignature';
+  private readonly CANCEL_REMOTE_SIGNATURE_PATH = '/cancelRemoteSignature';
 
   constructor(@Inject(ENV) private env: Env, private http: HttpClient) {}
 
@@ -93,6 +98,29 @@ export class CardAttachmentsService {
           },
           attachments: files
         }
+      )
+      .pipe(catchError((error) => throwError(error.error as ConcenetError)));
+  }
+
+  public sendRemoteSignature(
+    cardInstanceWorkflowId: number,
+    templateChecklistId: number,
+    fileId: number
+  ): Observable<CardInstanceRemoteSignatureDTO> {
+    return this.http
+      .post<CardInstanceRemoteSignatureDTO>(
+        `${this.env.apiBaseUrl}${this.GET_CARD_INSTANCE_PATH}${this.DETAIL_PATH}/` +
+          `${cardInstanceWorkflowId}${this.SEND_REMOTE_SIGNATURE_PATH}`,
+        { templateChecklistId, fileId }
+      )
+      .pipe(catchError((error) => throwError(error.error as ConcenetError)));
+  }
+
+  public cancelRemoteSignature(cardInstanceWorkflowId: number, remoteSignatureId: number): Observable<boolean> {
+    return this.http
+      .get<boolean>(
+        `${this.env.apiBaseUrl}${this.GET_CARD_INSTANCE_PATH}${this.DETAIL_PATH}/` +
+          `${cardInstanceWorkflowId}${this.CANCEL_REMOTE_SIGNATURE_PATH}/${remoteSignatureId}`
       )
       .pipe(catchError((error) => throwError(error.error as ConcenetError)));
   }

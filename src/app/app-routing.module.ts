@@ -90,6 +90,11 @@ const routes: Routes = [
           import('./modules/app-modules/administration/workflows/workflows.module').then((m) => m.WorkflowsModule)
       },
       {
+        path: RouteConstants.ADM_LANDING,
+        canActivate: [AuthGuardService],
+        loadChildren: () => import('./modules/app-modules/administration/landing/landing.module').then((m) => m.LandingModule)
+      },
+      {
         path: RouteConstants.OTHER,
         pathMatch: 'full',
         redirectTo: RouteConstants.USERS

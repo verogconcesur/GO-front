@@ -35,6 +35,7 @@ export interface TemplateChecklistItemDTO {
   orderNumber: number;
   sincronizedItems: number[];
   staticValue: boolean;
+  defaultValue: boolean;
   typeItem: 'SIGN' | 'TEXT' | 'VARIABLE' | 'CHECK' | 'DRAWING' | 'IMAGE';
   typeSign: null | 'SIGN_USER' | 'SIGN_CLIENT';
   variable: WorkflowCardSlotDTO;
@@ -75,6 +76,7 @@ export interface SignDocumentExchangeDTO {
 export default interface TemplatesChecklistsDTO {
   id: number;
   includeFile: boolean;
+  remoteSignature: boolean;
   template: TemplatesCommonDTO;
   templateChecklistItems: TemplateChecklistItemDTO[];
   templateFile: AttachmentDTO;

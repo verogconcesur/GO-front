@@ -15,6 +15,7 @@ import { finalize, take } from 'rxjs/operators';
 })
 export class SignDocumentAddFileComponent implements OnInit {
   @Input() wCardId: number;
+  @Input() mode: 'REMOTE' | 'NO_REMOTE';
   @Output() fileSelected: EventEmitter<{ file: AttachmentDTO; tabId: number }> = new EventEmitter();
   @ViewChild('fileDropRef')
   fileDropRef: ElementRef;

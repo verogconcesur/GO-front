@@ -21,7 +21,11 @@ import {
   MessageClientDialogComponentModalEnum
 } from '../message-client-dialog/message-client-dialog.component';
 import { MoveCardDialogComponent } from '../move-card-dialog/move-card-dialog.component';
+import CardInstanceRemoteSignatureDTO from '@data/models/cards/card-instance-remote-signature-dto';
+import { CardAttachmentsService } from '@data/services/card-attachments.service';
+import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
 
+@UntilDestroy()
 @Component({
   selector: 'app-workflow-column-actions-and-links',
   templateUrl: './workflow-column-actions-and-links.component.html',
@@ -36,6 +40,7 @@ export class WorkflowColumnActionsAndLinksComponent implements OnInit {
   public links: WorkflowCardTabItemDTO[];
   public shortCuts: WorkflowMoveDTO[];
   public idCard: number = null;
+  public sendMessageAction: WorkflowCardTabItemDTO[] = [];
   public labels = {
     move: marker('common.move'),
     send: marker('common.send'),
@@ -51,11 +56,19 @@ export class WorkflowColumnActionsAndLinksComponent implements OnInit {
     private dialog: MatDialog,
     private prepareAndMoveService: WorkflowPrepareAndMoveService,
     private customDialogService: CustomDialogService,
+    private cardAttachmentService: CardAttachmentsService,
     private router: Router
   ) {}
 
   ngOnInit(): void {
     this.idCard = parseInt(this.route?.snapshot?.params?.idCard, 10);
+    this.cardAttachmentService.remoteSignatureSubject$
+      .pipe(untilDestroyed(this))
+      .subscribe((remoteSignature: CardInstanceRemoteSignatureDTO) => {
+        if (this.sendMessageAction?.length) {
+          this.btnClick(this.sendMessageAction[0], remoteSignature);
+        }
+      });
     this.getData();
   }
 
@@ -68,6 +81,10 @@ export class WorkflowColumnActionsAndLinksComponent implements OnInit {
         .subscribe(
           (data: WorkflowCardTabItemDTO[]) => {
             this.actions = data.filter((item: WorkflowCardTabItemDTO) => item.typeItem === 'ACTION');
+            this.sendMessageAction = data.filter(
+              (item: WorkflowCardTabItemDTO) =>
+                item.typeItem === 'ACTION' && item.tabItemConfigAction.actionType === 'MESSAGE_CLIENT'
+            );
             this.links = data.filter((item: WorkflowCardTabItemDTO) => item.typeItem === 'LINK');
           },
           (error: ConcenetError) => {
@@ -94,7 +111,7 @@ export class WorkflowColumnActionsAndLinksComponent implements OnInit {
     }
   }
 
-  public btnClick(btn: WorkflowCardTabItemDTO): void {
+  public btnClick(btn: WorkflowCardTabItemDTO, remoteSignature: CardInstanceRemoteSignatureDTO = null): void {
     if (btn.typeItem === 'LINK') {
       let link = btn.tabItemConfigLink.link;
       if (btn.tabItemConfigLink.link.indexOf('http') === -1) {
@@ -113,7 +130,7 @@ export class WorkflowColumnActionsAndLinksComponent implements OnInit {
           this.customDialogService
             .open({
               component: MessageClientDialogComponent,
-              extendedComponentData: this.cardInstance,
+              extendedComponentData: { cardInstance: this.cardInstance, remoteSignature },
               id: MessageClientDialogComponentModalEnum.ID,
               panelClass: MessageClientDialogComponentModalEnum.PANEL_CLASS,
               disableClose: true,

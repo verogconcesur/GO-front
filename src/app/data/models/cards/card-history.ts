@@ -2,6 +2,7 @@ import UserDetailsDTO from '../user-permissions/user-details-dto';
 import WorkflowDTO from '../workflows/workflow-dto';
 import WorkflowSubstateDTO from '../workflows/workflow-substate-dto';
 import CardInstanceDTO from './card-instance-dto';
+import CardInstanceRemoteSignatureDTO from './card-instance-remote-signature-dto';
 import SwitchboardDataCall from './card-switchboard-data-call-dto';
 
 export default interface CardHistoryDTO {
@@ -23,4 +24,5 @@ export default interface CardHistoryDTO {
   switchboardDataCall?: SwitchboardDataCall;
   initial?: boolean;
   final?: boolean;
+  cardInstanceRemoteSignature?: CardInstanceRemoteSignatureDTO;
 }

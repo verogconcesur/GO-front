@@ -45,6 +45,14 @@
         left: 10px;
       }
     }
+    &.remoteSign {
+      #checklistPDF {
+        .checklistItemToDrag[data-type='IMAGE'],
+        .checklistItemToDrag[data-type='DRAWING'] {
+          display: none !important;
+        }
+      }
+    }
   }
   &__items {
     display: flex;
@@ -86,6 +94,9 @@
             content: ':';
           }
         }
+        .remote-signature {
+          margin-left: 15px;
+        }
       }
     }
   }
@@ -107,6 +118,9 @@
 
   .section-margin-bottom {
     margin-bottom: 20px;
+  }
+  .section-margin-left {
+    margin-left: 20px;
   }
 
   .image-input-preview {
@@ -143,6 +157,10 @@
   display: flex;
   justify-content: flex-start;
   align-items: center;
+  &.hidden {
+    display: none;
+    margin: 0;
+  }
   &.dropped {
     margin: 0;
     position: absolute !important;
