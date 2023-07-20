@@ -70,7 +70,7 @@ export class SignDocumentAuxService {
           forceId ? (item.auxSincronizedItems ? item.auxSincronizedItems : [item.auxOrderNumber]) : [item.auxOrderNumber]
         ],
         itemVal: this.fb.group({
-          booleanValue: [item.itemVal?.booleanValue ? item.itemVal?.booleanValue : null],
+          booleanValue: [item.itemVal?.booleanValue || item.itemVal?.booleanValue === false ? item.itemVal?.booleanValue : null],
           fileValue: this.fb.group({
             content: [item.itemVal?.fileValue?.content ? item.itemVal.fileValue.content : null],
             id: [item.itemVal?.fileValue?.id ? item.itemVal.fileValue.id : null],

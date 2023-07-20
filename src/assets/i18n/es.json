@@ -5,6 +5,7 @@
         "cards": "Tarjetas",
         "exit": "Salir de configuración",
         "facilities": "Instalaciones",
+        "landing": "Landing",
         "organization": "Organización",
         "records": "Fichas",
         "templates": {
@@ -40,6 +41,7 @@
                 "configError": "Faltan campos sin rellenar en la configuración de la plantilla",
                 "copyItemInPage": "Duplicar elemento en las páginas",
                 "create": "Crear checklist",
+                "defaultValue": "Valor por defecto",
                 "deleteConfirmation": "¿Realmente quieres eliminar esta plantilla?",
                 "deleteFileConfirmation": "Si continua eliminará el fichero y todos los campos insertados.",
                 "dropHere": "Suelta el archivo PDF de la plantilla aquí.",
@@ -52,6 +54,9 @@
                 "name": "Nombre del checklist",
                 "new": "Nuevo checklist",
                 "pdfPreview": "Vista preliminar",
+                "remoteChecklistPreviewer": "Previsualización de documento para firma remota",
+                "remoteSignature": "Firma remota (cliente)",
+                "remoteSignatureSendSuccess": "Documento enviado correctamente al cliente para su firma",
                 "selectCardAttachmentImage": "Archivos de imagen adjuntos",
                 "selectCardAttachmentPdf": "Archivos PDF adjuntos",
                 "selectDirectory": "Seleccion directorio",
@@ -94,6 +99,11 @@
                 "subject": "Asunto",
                 "text": "Notas",
                 "title": "Comunicación"
+            },
+            "sign": {
+                "modeTitle": "¿Qué tipo de documento quieres firmar?",
+                "noRemoteMode": "Firma interna (usuario)",
+                "remoteMode": "Firma remota (cliente)"
             },
             "title": "Plantillas"
         },
@@ -277,6 +287,7 @@
         "messages": {
             "chanels": "Canales",
             "communicationTemplate": "Plantilla de comunicación",
+            "signatureTitle": "¿Desea notificar al cliente sobre el documento que acaba de enviar?",
             "title": "Mensaje Cliente"
         },
         "migration": "Migración",
@@ -374,6 +385,7 @@
         "expand": "Expandir todo",
         "externalLinks": "Enlaces externos",
         "field": "Campo",
+        "fieldRequired": "Campo obligatorio",
         "fieldsType": "Tipo",
         "fileName": "Nombre de archivo",
         "files": "Ficheros",
@@ -473,6 +485,7 @@
         "users": "Usuarios",
         "vehicle": "Vehículo",
         "videoViewer": "Reproductor de vídeo",
+        "view": "Visualizar",
         "warning": "Advertencia",
         "whoSees": "Quien lo ve",
         "workOrder": "Orden de trabajo",
@@ -562,8 +575,41 @@
         "uploadOnlyOneFile": "Solo está permitido cargar un único archivo"
     },
     "landing": {
+        "banners": "Banners (ofertas y promociones)",
+        "bannersComponent": {
+            "banners": "Banners",
+            "description": "Descripción",
+            "endDate": "Fecha fin",
+            "image": "Imagen",
+            "initDate": "Fecha inicio",
+            "link": "Enlace",
+            "nameLink": "Nombre del enlace",
+            "newLink": "Nuevo enlace",
+            "title": "Título"
+        },
+        "bgImage": "Imagen de fondo",
+        "config": "Configuración",
+        "defaultTheme": "Paleta por defecto",
+        "facilities": "Instalaciones",
+        "facilitiesConfig": "Instalaciones a mostrar en la landing",
         "fileSharedWithCustomerInLanding": "Archivo compartido con el cliente.",
-        "stopSharingFileWithCustomerInLanding": "Dejar de compartir archivo con el cliente."
+        "imagesConfig": "Configuración de imágenes y logos",
+        "links": "Enlaces (menú y redes sociales)",
+        "linksComponent": {
+            "icon": "Icono",
+            "link": "Enlace",
+            "menu": "Menu",
+            "name": "Nombre",
+            "nameLink": "Nombre del enlace",
+            "newLink": "Nuevo enlace",
+            "social": "Redes Sociales"
+        },
+        "logo": "Logo",
+        "logoAlt": "Logo alternativo (contraste)",
+        "stopSharingFileWithCustomerInLanding": "Dejar de compartir archivo con el cliente.",
+        "theme": "Paleta de colores",
+        "themeConfig": "Configuración de colores",
+        "title": "Landing"
     },
     "login": {
         "description": "Por favor, introduzca sus credenciales",
@@ -735,6 +781,17 @@
     },
     "sample": {
         "text": "{count, plural, =0{No hay} one{Hay una} other{Hay varias}} {count, plural, =0{nada} one{cosa} other{cosas}}"
+    },
+    "signature": {
+        "cancelConfirmation": "¿Está seguro que desea cancelar la firma remota de este documento?",
+        "status": {
+            "canceled": "Cancelado",
+            "pending": "Pendiente",
+            "readen": "Leído",
+            "rejected": "Rechazado",
+            "signed": "Firmado",
+            "unreaden": "Sin leer"
+        }
     },
     "textEditor": {
         "htmlCodeInsertion": "Inserta el código html",

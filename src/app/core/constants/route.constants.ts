@@ -79,7 +79,13 @@ export enum RouteConstants {
   //Wokflows
   ADM_WORKFLOWS = 'workflows',
   CREATE_WORKFLOW = 'create',
-  ID_WORKFLOW = ':idWorkflow'
+  ID_WORKFLOW = ':idWorkflow',
+
+  //Landing
+  ADM_LANDING = 'landing',
+  ADM_LANDING_GLOBAL_CONFIG = 'config',
+  ADM_LANDING_LINKS_CONFIG = 'links',
+  ADM_LANDING_BANNERS_CONFIG = 'banners'
 }
 
 export const RoutePermissionConstants: Record<string, PermissionConstants[]> = {

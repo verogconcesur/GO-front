@@ -1,0 +1,16 @@
+@import 'utils/core';
+@import 'utils/theme';
+.template-mode-selector {
+  &__modes {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    button {
+      margin: 15px 0;
+      width: 95%;
+      height: 50px;
+    }
+  }
+}

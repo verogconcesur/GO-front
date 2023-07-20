@@ -54,6 +54,12 @@
                                     <mat-checkbox formControlName="includeFile">{{
                                         labels.includeFile | translate
                                     }}</mat-checkbox>
+                                    <mat-checkbox
+                                        formControlName="remoteSignature"
+                                        class="remote-signature"
+                                        (change)="setItemListToShow()"
+                                        >{{ labels.remoteSignature | translate }}</mat-checkbox
+                                    >
                                 </section>
                             </div>
                         </div>
@@ -179,30 +185,71 @@
                                                 "
                                                 class="section-margin-bottom"
                                             >
-                                                <mat-checkbox formControlName="staticValue">{{
-                                                    labels.staticValue | translate
-                                                }}</mat-checkbox>
+                                                <mat-checkbox
+                                                    formControlName="staticValue"
+                                                    (change)="staticOrDefaultValueChange('staticValue', syncGroup.selectedItem)"
+                                                    >{{ labels.staticValue | translate }}</mat-checkbox
+                                                >
+                                            </section>
+                                            <!-- Default value -->
+                                            <section
+                                                *ngIf="groupByType.typeItem === 'TEXT' || groupByType.typeItem === 'CHECK'"
+                                                class="section-margin-bottom"
+                                            >
+                                                <mat-checkbox
+                                                    formControlName="defaultValue"
+                                                    (change)="
+                                                        staticOrDefaultValueChange('defaultValue', syncGroup.selectedItem);
+                                                        refreshItemValWithSyncItems(syncGroup.selectedItem)
+                                                    "
+                                                    >{{ labels.defaultValue | translate }}</mat-checkbox
+                                                >
                                             </section>
                                             <!-- Static value TEXT-->
                                             <section
                                                 *ngIf="
                                                     groupByType.typeItem === 'TEXT' &&
-                                                    getChecklistItemByOrderNumber(syncGroup.selectedItem).get('staticValue').value
+                                                    (getChecklistItemByOrderNumber(syncGroup.selectedItem).get('staticValue')
+                                                        .value ||
+                                                        getChecklistItemByOrderNumber(syncGroup.selectedItem).get('defaultValue')
+                                                            .value)
                                                 "
                                                 formGroupName="itemVal"
                                                 class="section-margin-bottom"
                                             >
                                                 <mat-form-field appearance="outline" floatLabel="always" style="width: 100%">
                                                     <mat-label>{{ labels.staticValueInput | translate }} *</mat-label>
-                                                    <input matInput formControlName="textValue" />
+                                                    <input
+                                                        matInput
+                                                        formControlName="textValue"
+                                                        (change)="refreshItemValWithSyncItems(syncGroup.selectedItem)"
+                                                    />
                                                 </mat-form-field>
+                                            </section>
+                                            <!-- Default value CHECK-->
+                                            <section
+                                                *ngIf="
+                                                    groupByType.typeItem === 'CHECK' &&
+                                                    getChecklistItemByOrderNumber(syncGroup.selectedItem).get('defaultValue')
+                                                        .value
+                                                "
+                                                formGroupName="itemVal"
+                                                class="section-margin-bottom section-margin-left"
+                                            >
+                                                <mat-checkbox
+                                                    formControlName="booleanValue"
+                                                    (change)="refreshItemValWithSyncItems(syncGroup.selectedItem)"
+                                                    >{{ labels.staticValueInput | translate }}</mat-checkbox
+                                                >
                                             </section>
                                         </section>
                                         <!-- Static value IMAGE-->
                                         <section
                                             *ngIf="
                                                 groupByType.typeItem === 'IMAGE' &&
-                                                getChecklistItemByOrderNumber(syncGroup.selectedItem).get('staticValue').value
+                                                (getChecklistItemByOrderNumber(syncGroup.selectedItem).get('staticValue').value ||
+                                                    getChecklistItemByOrderNumber(syncGroup.selectedItem).get('defaultValue')
+                                                        .value)
                                             "
                                             fxLayoutAlign="space-between center"
                                             class="section-margin-bottom"
@@ -280,7 +327,7 @@
             </mat-accordion>
         </div>
     </div>
-    <div class="checklist-config__column checklist-config__pdf">
+    <div class="checklist-config__column checklist-config__pdf" [ngClass]="{ remoteSign: isRemoteSign() }">
         <ng-container class="checklist-config__pdf__viewer" *ngIf="fileTemplateBase64 | async as base64; else dropZone">
             <ngx-extended-pdf-viewer
                 id="checklistPDF"
@@ -342,7 +389,12 @@
                 </div>
             </div>
         </div>
-        <div class="checklistItemToDrag undropped" id="checklistItemToDrag__drawing" data-type="DRAWING">
+        <div
+            class="checklistItemToDrag undropped"
+            id="checklistItemToDrag__drawing"
+            data-type="DRAWING"
+            [ngClass]="{ hidden: isRemoteSign() }"
+        >
             <div class="resizable" style="height: 50px; width: 124px">
                 <div class="checklistItemToDrag__drawing checklistItemToDrag__label">
                     <label>{{ labels.drawing | translate }}</label>
@@ -363,7 +415,12 @@
                 </div>
             </div>
         </div>
-        <div class="checklistItemToDrag undropped" id="checklistItemToDrag__image" data-type="IMAGE">
+        <div
+            class="checklistItemToDrag undropped"
+            id="checklistItemToDrag__image"
+            data-type="IMAGE"
+            [ngClass]="{ hidden: isRemoteSign() }"
+        >
             <div class="resizable" style="height: 50px; width: 124px">
                 <div class="checklistItemToDrag__image checklistItemToDrag__label">
                     <label>{{ labels.image | translate }}</label>

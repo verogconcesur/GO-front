@@ -62,6 +62,7 @@ export class CreateEditChecklistComponent implements OnInit {
     name: marker('administration.templates.checklists.name'),
     nameRequired: marker('userProfile.nameRequired'),
     includeFile: marker('administration.templates.checklists.includeFile'),
+    remoteSignature: marker('administration.templates.checklists.remoteSignature'),
     dropHere: marker('administration.templates.checklists.dropHere'),
     noData: marker('errors.noDataToShow'),
     pages: marker('pagination.pages'),
@@ -74,6 +75,7 @@ export class CreateEditChecklistComponent implements OnInit {
     copyItemInPage: marker('administration.templates.checklists.copyItemInPage'),
     cancel: marker('common.cancel'),
     save: marker('common.save'),
+    defaultValue: marker('administration.templates.checklists.defaultValue'),
     staticValue: marker('administration.templates.checklists.staticValue'),
     staticValueInput: marker('administration.templates.checklists.staticValueInput'),
     staticValueImage: marker('administration.templates.checklists.staticValueImage')
@@ -138,6 +140,10 @@ export class CreateEditChecklistComponent implements OnInit {
     }
   }
 
+  public isRemoteSign(): boolean {
+    return this.checklistForm?.get('remoteSignature')?.value ? true : false;
+  }
+
   public getTitle(): string {
     if (this.checklistToEdit) {
       return this.checklistForm.value.template.name;
@@ -149,7 +155,12 @@ export class CreateEditChecklistComponent implements OnInit {
   }
 
   public setItemListToShow(): void {
-    const items: TemplateChecklistItemDTO[] = this.checklistForm?.get('templateChecklistItems').getRawValue();
+    let items: TemplateChecklistItemDTO[] = this.checklistForm?.get('templateChecklistItems').getRawValue();
+    if (this.isRemoteSign()) {
+      items = items.filter((item: TemplateChecklistItemDTO) => {
+        return item.typeItem !== 'DRAWING' && item.typeItem !== 'IMAGE';
+      });
+    }
     const groupByType: AuxChecklistItemsGroupByTypeDTO[] = [];
     items.forEach((item: TemplateChecklistItemDTO, index) => {
       const group = groupByType.find((g: AuxChecklistItemsGroupByTypeDTO) => g.typeItem === item.typeItem);
@@ -221,6 +232,7 @@ export class CreateEditChecklistComponent implements OnInit {
 
   public addStaticImage(item: FileList, itemOrderNumber: number): void {
     this.getImageFile(item, itemOrderNumber);
+    this.refreshItemValWithSyncItems(itemOrderNumber);
   }
 
   public getImagePreviewBase64(itemOrderNumber: number): string {
@@ -231,6 +243,38 @@ export class CreateEditChecklistComponent implements OnInit {
       }`;
     }
     return '';
+  }
+
+  public staticOrDefaultValueChange(field: 'staticValue' | 'defaultValue', itemOrderNumber: number): void {
+    const fg: UntypedFormGroup = this.getChecklistItemByOrderNumber(itemOrderNumber);
+    const field2 = field === 'staticValue' ? 'defaultValue' : 'staticValue';
+    if (fg?.get(field)?.value && fg?.get(field2).value) {
+      fg.get(field2).setValue(false);
+      this.updateValueAndValidityForm();
+    }
+  }
+
+  public refreshItemValWithSyncItems(itemOrderNumber: number): void {
+    const fg: UntypedFormGroup = this.getChecklistItemByOrderNumber(itemOrderNumber);
+    const value: TemplateChecklistItemDTO = fg.getRawValue();
+    const sincronizedItems = (value?.sincronizedItems?.length > 1 ? value.sincronizedItems : [value.orderNumber]).filter(
+      (orderNumber) => orderNumber !== value.orderNumber
+    );
+    sincronizedItems.forEach((sincItem) => {
+      const fg2: UntypedFormGroup = this.getChecklistItemByOrderNumber(sincItem);
+      if (fg2) {
+        if (fg2.get('defaultValue').value !== value.defaultValue) {
+          fg2.get('defaultValue').setValue(value.defaultValue);
+        }
+        if (fg2.get('itemVal')?.get('textValue').value !== value.itemVal?.textValue) {
+          fg2.get('itemVal').get('textValue').setValue(value.itemVal.textValue);
+        }
+        if (fg2.get('itemVal')?.get('booleanValue').value !== value.itemVal?.booleanValue) {
+          fg2.get('itemVal').get('booleanValue').setValue(value.itemVal.booleanValue);
+        }
+      }
+    });
+    this.updateValueAndValidityForm();
   }
 
   public eraseTemplatePDF(): void {
@@ -424,6 +468,7 @@ export class CreateEditChecklistComponent implements OnInit {
           }
         });
       });
+      this.refreshItemValWithSyncItems(syncGroup.selectedItem);
       this.setItemListToShow();
     }
   }
@@ -491,7 +536,11 @@ export class CreateEditChecklistComponent implements OnInit {
       const fg = this.getChecklistItemByOrderNumber(syncGroup.selectedItem);
       this.pagesSelectedToAddItem.value?.forEach((n: number) => {
         this.uniqueIdOrder++;
-        const result = this.createEditChecklistAuxService.copyItemForPage(fg.getRawValue(), n, this.uniqueIdOrder);
+        const value: TemplateChecklistItemDTO = fg.getRawValue();
+        if (value.itemVal) {
+          value.itemVal.id = null;
+        }
+        const result = this.createEditChecklistAuxService.copyItemForPage(value, n, this.uniqueIdOrder);
         (this.checklistForm.get('templateChecklistItems') as UntypedFormArray).push(result);
       });
       this.pagesSelectedToAddItem.setValue([]);
@@ -561,7 +610,7 @@ export class CreateEditChecklistComponent implements OnInit {
       .subscribe((ok: boolean) => {
         if (ok) {
           const spinner = this.spinnerService.show();
-          const data: any = this.checklistForm.getRawValue();
+          const data: TemplatesChecklistsDTO = this.checklistForm.getRawValue();
           const template: any = data.template;
           template.brands = template.brands.map((item: any) => {
             return { id: item.id };
@@ -576,15 +625,28 @@ export class CreateEditChecklistComponent implements OnInit {
             return { id: item.id };
           });
           data.template = template;
+          if (data.remoteSignature) {
+            data.templateChecklistItems = data.templateChecklistItems.filter((item: TemplateChecklistItemDTO) => {
+              return item.typeItem !== 'DRAWING' && item.typeItem !== 'IMAGE';
+            });
+          }
           data.templateChecklistItems.map((item: any) => {
             item.sincronizedItems = item.sincronizedItems.length === 1 || item.staticValue ? null : item.sincronizedItems;
             if (item.typeItem === 'VARIABLE') {
               item.variable = { id: item.variable.id };
             }
-            if (item.staticValue && item.typeItem !== 'SIGN' && item.typeItem !== 'DRAWING' && item.typeItem !== 'IMAGE') {
+            if (
+              (item.staticValue || item.defaultValue) &&
+              item.typeItem !== 'SIGN' &&
+              item.typeItem !== 'DRAWING' &&
+              item.typeItem !== 'IMAGE'
+            ) {
               item.itemVal.fileValue = null;
-            } else if (!item.staticValue) {
+            } else if (!(item.staticValue || item.defaultValue)) {
               item.itemVal = null;
+            }
+            if (item.defaultValue && item.typeItem === 'CHECK' && !item.itemVal.booleanValue) {
+              item.itemVal.booleanValue = false;
             }
             return item;
           });

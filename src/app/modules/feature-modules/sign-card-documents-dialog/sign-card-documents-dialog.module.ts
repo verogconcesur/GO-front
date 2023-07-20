@@ -10,6 +10,7 @@ import { SignDocumentChecklistComponent } from './subcomponents/sign-document-ch
 import { SignDocumentSaveLocationComponent } from './subcomponents/sign-document-save-location/sign-document-save-location.component';
 import { NgxExtendedPdfViewerModule } from 'ngx-extended-pdf-viewer';
 import { ChangeSignComponent } from './subcomponents/change-sign/change-sign.component';
+import { SignDocumentModeSelectorComponent } from './subcomponents/sign-document-mode-selector/sign-document-mode-selector.component';
 
 @NgModule({
   declarations: [
@@ -18,7 +19,8 @@ import { ChangeSignComponent } from './subcomponents/change-sign/change-sign.com
     SignDocumentAddFileComponent,
     SignDocumentChecklistComponent,
     SignDocumentSaveLocationComponent,
-    ChangeSignComponent
+    ChangeSignComponent,
+    SignDocumentModeSelectorComponent
   ],
   imports: [CommonModule, SharedModule, SignCardDocumentsDialogRoutingModule, NgxExtendedPdfViewerModule]
 })

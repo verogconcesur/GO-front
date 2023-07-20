@@ -1,0 +1,7 @@
+<div class="template-mode-selector">
+    <h4>{{ labels.signModeTitle | translate }}</h4>
+    <div class="template-mode-selector__modes">
+        <button mat-raised-button (click)="modeSelected.emit('NO_REMOTE')">{{ labels.noRemoteMode | translate }}</button>
+        <button mat-raised-button (click)="modeSelected.emit('REMOTE')">{{ labels.remoteMode | translate }}</button>
+    </div>
+</div>

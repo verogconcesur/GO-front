@@ -6,4 +6,5 @@ export default interface CardMessageRenderDTO {
   subjectRender?: string;
   attachments?: { id: number; name: string }[];
   messageChannel: MessageChannelDTO;
+  cardInstanceRemoteSignatureId?: number;
 }
