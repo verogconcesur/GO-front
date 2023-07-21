@@ -73,7 +73,11 @@
                     <app-workflow-card
                         *ngFor="let card of user.cardsBySubstateId[wSubstate.id]"
                         [card]="card"
-                        [disableDrag]="!isDragAndDropEnabled || user.cardsBySubstateId[wSubstate.id]?.length < 2"
+                        [disableDrag]="
+                            !isDragAndDropEnabled ||
+                            user.cardsBySubstateId[wSubstate.id]?.length < 2 ||
+                            !getAssociatedWSubstates(wSubstate.cards[0], wSubstateKey + wSubstate.id + '-' + user.user.id)
+                        "
                         (isDraggingEvent)="setOriginDropZone(wSubstateKey + wSubstate.id + '-' + user.user.id, $event)"
                         [wState]="wState"
                         [wSubstate]="wSubstate"
@@ -126,7 +130,11 @@
                     <app-workflow-card
                         *ngFor="let card of wSubstate.cards"
                         [card]="card"
-                        [disableDrag]="!isDragAndDropEnabled || wSubstate.cards?.length < 2"
+                        [disableDrag]="
+                            !isDragAndDropEnabled ||
+                            wSubstate.cards?.length < 2 ||
+                            !getAssociatedWSubstates(wSubstate.cards[0], wSubstateKey + wSubstate.id)
+                        "
                         (isDraggingEvent)="setOriginDropZone(wSubstateKey + wSubstate.id, $event)"
                         [wState]="wState"
                         [wSubstate]="wSubstate"

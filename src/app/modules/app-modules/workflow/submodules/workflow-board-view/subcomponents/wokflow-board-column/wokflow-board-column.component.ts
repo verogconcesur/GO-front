@@ -1,5 +1,6 @@
 import { CdkDragDrop } from '@angular/cdk/drag-drop';
 import { Component, Input, OnInit } from '@angular/core';
+import { AuthenticationService } from '@app/security/authentication.service';
 import { marker } from '@biesbjerg/ngx-translate-extract-marker';
 import WorkflowCardDTO from '@data/models/workflows/workflow-card-dto';
 import WorkflowCardInstanceDTO from '@data/models/workflows/workflow-card-instance-dto';
@@ -54,6 +55,7 @@ export class WokflowBoardColumnComponent implements OnInit {
 
   constructor(
     public workflowService: WorkflowsService,
+    private authService: AuthenticationService,
     private dragAndDropService: WorkflowDragAndDropService,
     private prepareAndMoveService: WorkflowPrepareAndMoveService,
     private spinnerService: ProgressSpinnerDialogService
@@ -177,7 +179,7 @@ export class WokflowBoardColumnComponent implements OnInit {
   public getAssociatedWSubstates(card: WorkflowCardDTO, itSelf?: string): string[] {
     let associatedWSubstates: string[] = null;
     // Habilitamos sólo los movimientos para reordenar dentro de un subestado
-    if (itSelf) {
+    if (itSelf && this.authService.hasUserAnyPermission(['REORDFICH'])) {
       associatedWSubstates = [];
       associatedWSubstates.push(itSelf);
     }
