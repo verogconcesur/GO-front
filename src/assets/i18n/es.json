@@ -80,12 +80,12 @@
                 "delete": "Eliminar plantilla de timeline de cliente",
                 "deleteConfirmation": "¿Realmente quieres eliminar esta plantilla?",
                 "edit": "Editar plantilla de timeline de cliente",
+                "email": "Email",
                 "itemConcept": "Concepto del elemento",
                 "items": "Elementos",
-                "landingMessage": "Texto a mostrar en la landing del cliente cuando su ficha entre en este punto del Timeline.",
                 "landingEmail": "Configuración de Email predefinido",
+                "landingMessage": "Texto a mostrar en la landing del cliente cuando su ficha entre en este punto del Timeline.",
                 "name": "Nombre de plantilla de timeline de cliente",
-                "email": "Email",
                 "title": "Timeline de cliente"
             },
             "communications": {
@@ -785,6 +785,7 @@
         "attachemntCategory": "Categoría de adjuntos",
         "attachmentTab": "Pestaña de adjuntos",
         "byFacilityGroupLabel": "Workflows de {facility}",
+        "calendar": "Límite horario",
         "card": {
             "cardTabs": "Pestañas de la ficha",
             "customerAssociatedCards": "Tarjetas asociadas al cliente",

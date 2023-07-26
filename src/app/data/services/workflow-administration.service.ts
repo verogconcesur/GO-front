@@ -13,7 +13,7 @@ import WorkflowViewDTO from '@data/models/workflow-admin/workflow-view-dto';
 import WorkflowDTO, { WorkFlowStatusEnum } from '@data/models/workflows/workflow-dto';
 import WorkflowSubstateUserDTO from '@data/models/workflows/workflow-substate-user-dto';
 import { WorkflowFilterService } from '@modules/app-modules/workflow/aux-service/workflow-filter.service';
-import { Observable, throwError } from 'rxjs';
+import { Observable, of, throwError } from 'rxjs';
 import { catchError } from 'rxjs/operators';
 import TemplatesCommonDTO from '@data/models/templates/templates-common-dto';
 import { WorkflowTimelineDTO } from '@data/models/workflow-admin/workflow-timeline-dto';
@@ -32,6 +32,7 @@ export class WorkflowAdministrationService {
   private readonly VIEW_PATH = '/views';
   private readonly ATTRIBUTES_PATH = '/attributes';
   private readonly TIMELINE_PATH = '/timeline';
+  private readonly HOURS_LIMIT_PATH = '/hoursLimits';
   private readonly ATTACHMENTS_PATH = '/attachments';
   private readonly TEMPLATES_PATH = '/listTemplates';
   private readonly BUDGET_PATH = '/budget';
@@ -245,6 +246,27 @@ export class WorkflowAdministrationService {
     return this.http
       .get<WorkflowTimelineDTO>(`${this.env.apiBaseUrl}${this.WORKFLOW_PATH}/${workflowId}${this.TIMELINE_PATH}`)
       .pipe(catchError((error) => throwError(error.error as ConcenetError)));
+  }
+
+  /**
+   * Obtener Hours Limits Configuration Workflow
+   *
+   * @returns WorkflowHoursLimitsDTO
+   */
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  public getWorkflowHoursLimitsConfiguration(workflowId: number): Observable<any> {
+    return of({
+      cardsLimit: true,
+      initTime: 8,
+      endTime: 18,
+      numCardsByHour: 3,
+      numCardsByDay: 24,
+      allowOverLimit: false,
+      substateDestiny: null
+    });
+    // return this.http
+    //   .get<any>(`${this.env.apiBaseUrl}${this.WORKFLOW_PATH}/${workflowId}${this.HOURS_LIMIT_PATH}`)
+    //   .pipe(catchError((error) => throwError(error.error as ConcenetError)));
   }
 
   /**

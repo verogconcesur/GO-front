@@ -38,6 +38,7 @@ export class WorkflowDetailComponent implements OnInit, OnDestroy, AfterViewInit
     cards: marker('administration.records'),
     cardConfig: marker('workflows.cardConfig'),
     states: marker('workflows.states'),
+    calendar: marker('workflows.calendar'),
     timeline: marker('administration.templates.clientTimeline.title'),
     budgets: marker('administration.templates.budgets.title'),
     save: marker('common.save'),
@@ -71,7 +72,7 @@ export class WorkflowDetailComponent implements OnInit, OnDestroy, AfterViewInit
 
   public initListeners(): void {
     this.workflowsCreateEditAuxService.nextStep$.pipe(untilDestroyed(this)).subscribe((goNext: boolean) => {
-      if (goNext && this.tabIndex < 7) {
+      if (goNext && this.tabIndex < 8) {
         this.tabIndex++;
       }
     });
