@@ -1,5 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { PageEvent } from '@angular/material/paginator';
+import { ActivatedRoute, Router } from '@angular/router';
+import { RouteConstants } from '@app/constants/route.constants';
 import { ConcenetError } from '@app/types/error';
 import { marker } from '@biesbjerg/ngx-translate-extract-marker';
 import AdvSearchDTO from '@data/models/adv-search/adv-search-dto';
@@ -7,6 +9,7 @@ import { AdvSearchService } from '@data/services/adv-search.service';
 import { TranslateService } from '@ngx-translate/core';
 import { GlobalMessageService } from '@shared/services/global-message.service';
 import { ProgressSpinnerDialogService } from '@shared/services/progress-spinner-dialog.service';
+import { replacerFunc } from '@shared/utils/replacer-function';
 import moment from 'moment';
 import { NGXLogger } from 'ngx-logger';
 import { finalize, take } from 'rxjs';
@@ -41,7 +44,9 @@ export class AdvSearchCardTableComponent implements OnInit {
     private spinnerService: ProgressSpinnerDialogService,
     private logger: NGXLogger,
     private globalMessageService: GlobalMessageService,
-    private translateService: TranslateService
+    private translateService: TranslateService,
+    private route: ActivatedRoute,
+    private router: Router
   ) {}
 
   public getData = (pageEvent?: PageEvent): void => {
@@ -99,6 +104,29 @@ export class AdvSearchCardTableComponent implements OnInit {
       this.displayedColumns.push(marker('vCalendarCardInstance.dateEvent'));
       this.getData();
     }
+  }
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  goDetailCard(item: any): void {
+    this.router.navigate(
+      [
+        {
+          outlets: {
+            card: [
+              RouteConstants.WORKFLOWS_ID_CARD,
+              item['cardInstanceWorkflow.id'],
+              RouteConstants.WORKFLOWS_ID_USER,
+              item['user.id'] ? item['user.id'] : null
+            ]
+          }
+        }
+      ],
+      {
+        relativeTo: this.route,
+        state: {
+          relativeTo: JSON.stringify(this.route, replacerFunc)
+        }
+      }
+    );
   }
   ngOnInit(): void {}
 }
