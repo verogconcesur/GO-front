@@ -262,7 +262,7 @@ export class WorkflowAdministrationService {
       numCardsByHour: 3,
       numCardsByDay: 24,
       allowOverLimit: false,
-      substateDestiny: null
+      substateTargetId: null
     });
     // return this.http
     //   .get<any>(`${this.env.apiBaseUrl}${this.WORKFLOW_PATH}/${workflowId}${this.HOURS_LIMIT_PATH}`)

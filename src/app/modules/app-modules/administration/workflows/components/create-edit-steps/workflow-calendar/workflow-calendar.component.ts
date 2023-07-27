@@ -47,9 +47,9 @@ export class WorkflowCalendarComponent extends WorkflowStepAbstractClass {
         cardsByDayLimit: [data?.workflowHoursLimits?.numCardsByDay ? true : false],
         numCardsByDay: [data?.workflowHoursLimits?.numCardsByDay],
         allowOverLimit: [data?.workflowHoursLimits?.allowOverLimit ? true : false],
-        substateDestiny: [
-          data?.workflowHoursLimits?.substateDestiny && this.workflowStates?.length
-            ? this.workflowStates.find((d) => d.id === data.workflowHoursLimits.substateDestiny.id)
+        substateTargetId: [
+          data?.workflowHoursLimits?.substateTargetId && this.workflowStates?.length
+            ? this.workflowStates.find((d) => d.id === data.workflowHoursLimits.substateTargetId.id)
             : null
         ]
       },
@@ -67,7 +67,7 @@ export class WorkflowCalendarComponent extends WorkflowStepAbstractClass {
           CombinedRequiredFieldsValidator.field1RequiredIfFieldsConditions('numCardsByDay', [
             { control: 'cardsByDayLimit', operation: 'equal', value: true }
           ]),
-          CombinedRequiredFieldsValidator.field1RequiredIfFieldsConditions('substateDestiny', [
+          CombinedRequiredFieldsValidator.field1RequiredIfFieldsConditions('substateTargetId', [
             { control: 'allowOverLimit', operation: 'equal', value: true }
           ])
         ]
