@@ -25,6 +25,7 @@ import { TranslateService } from '@ngx-translate/core';
 import { removeItemInFormArray } from '@shared/utils/removeItemInFormArray';
 import saveAs from 'file-saver';
 import { AttachmentDTO } from '@data/models/cards/card-attachments-dto';
+import { MatMenuTrigger } from '@angular/material/menu';
 
 @UntilDestroy()
 @Component({
@@ -35,6 +36,7 @@ import { AttachmentDTO } from '@data/models/cards/card-attachments-dto';
 export class NavbarComponent implements OnInit, OnDestroy {
   @ViewChild('notifications') notifications: NotificationsComponent;
   @ViewChild('mentions') mentions: MentionsComponent;
+  @ViewChild('downloadTrigger') downloadTrigger: MatMenuTrigger;
   public readonly WORKFLOW_PATH = RouteConstants.WORKFLOWS;
   public readonly CLIENTS_PATH = RouteConstants.CUSTOMERS;
   public readonly VEHICLES_PATH = RouteConstants.VEHICLES;
@@ -209,6 +211,8 @@ export class NavbarComponent implements OnInit, OnDestroy {
                 );
                 this.infoWarning.newFileDownloading = true;
                 this.authService.setWarningStatus(this.infoWarning);
+
+                this.downloadTrigger?.openMenu();
               }
             },
             error: (error: ConcenetError) => {

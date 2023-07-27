@@ -45,7 +45,13 @@
             <app-workflow-card-searcher [format]="'icon'"></app-workflow-card-searcher>
         </button>
         <!-- END Responsive search input -->
-        <button mat-icon-button aria-label="Downloads" (click)="showDownload()" [matMenuTriggerFor]="downloadMenu">
+        <button
+            mat-icon-button
+            aria-label="Downloads"
+            #downloadTrigger="matMenuTrigger"
+            (click)="showDownload()"
+            [matMenuTriggerFor]="downloadMenu"
+        >
             <mat-icon [ngClass]="{ active: highLightDownload() }">vertical_align_bottom</mat-icon>
         </button>
         <button mat-icon-button aria-label="Email" (click)="showMentions()" [matMenuTriggerFor]="mentionsMenu">

@@ -7,6 +7,7 @@ import { AdvSearchService } from '@data/services/adv-search.service';
 import { TranslateService } from '@ngx-translate/core';
 import { GlobalMessageService } from '@shared/services/global-message.service';
 import { ProgressSpinnerDialogService } from '@shared/services/progress-spinner-dialog.service';
+import moment from 'moment';
 import { NGXLogger } from 'ngx-logger';
 import { finalize, take } from 'rxjs';
 
@@ -63,7 +64,12 @@ export class AdvSearchCardTableComponent implements OnInit {
       .subscribe({
         next: (response) => {
           this.paginationConfig.length = response.totalElements;
-          this.dataSource = response.content;
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
+          this.dataSource = response.content.map((item: any) => ({
+            ...item,
+            'vCalendarCardInstance.id': `${item['cardInstanceWorkflow.id']}-${item['workflow.id']}-${item['user.id']}`,
+            'vCalendarCardInstance.dateEvent': moment(item['vCalendarCardInstance.dateEvent']).format('D/M/YYYY HH:mm')
+          }));
           this.spinnerService.hide(spinner);
         },
         error: (error: ConcenetError) => {
@@ -89,6 +95,8 @@ export class AdvSearchCardTableComponent implements OnInit {
           this.displayedColumns.push(element.tabItem.name);
         }
       });
+      this.displayedColumns.push(marker('vCalendarCardInstance.id'));
+      this.displayedColumns.push(marker('vCalendarCardInstance.dateEvent'));
       this.getData();
     }
   }

@@ -159,11 +159,13 @@
         },
         "criteriaWithoutConfig": "Configuración incorrecta",
         "customCol": "Personalizar columnas",
+        "dateEvent": "Fecha del evento",
         "deleteColumnConfirmation": "¿Está seguro que desea eliminar esta columna?",
         "deleteConfirmation": "¿Está seguro que desea eliminar esta búsqueda guardada?",
         "deleteCriteriaConfirmation": "¿Está seguro que desea eliminar este criterio de búsqueda?",
         "endDate": "Fecha fin",
         "export": "Exportar",
+        "exportConfirmation": "¿Está seguro que desea exportar a un fichero excel la búsqueda realizada o seleccionada?",
         "favSearch": "Búsquedas favoritas",
         "information": {
             "step1": "Especificar un contexto (instalación, workflow, estado, subestado, etc). Como mínimo deberá seleccionar un rango de fechas.",
@@ -855,6 +857,10 @@
         },
         "title": "Usuarios",
         "usersSelected": "{count} usuarios seleccionados"
+    },
+    "vCalendarCardInstance": {
+        "dateEvent": "Fecha evento",
+        "id": "Id"
     },
     "vehicle": {
         "searchDialog": "Buscador de vehículos"

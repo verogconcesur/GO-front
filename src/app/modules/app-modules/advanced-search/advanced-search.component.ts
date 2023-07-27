@@ -139,8 +139,18 @@ export class AdvancedSearchComponent implements OnInit {
   }
   public runExport(): void {
     if (!this.hasErrors()) {
-      this.setAdvSearchData();
-      this.advSearchService.newSearchExport$.next(this.advSearchSelected);
+      this.confirmationDialog
+        .open({
+          title: this.translateService.instant(marker('common.warning')),
+          message: this.translateService.instant(marker('advSearch.exportConfirmation'))
+        })
+        .pipe(take(1))
+        .subscribe((ok: boolean) => {
+          if (ok) {
+            this.setAdvSearchData();
+            this.advSearchService.newSearchExport$.next(this.advSearchSelected);
+          }
+        });
     }
   }
   public setAdvSearchData(): void {
