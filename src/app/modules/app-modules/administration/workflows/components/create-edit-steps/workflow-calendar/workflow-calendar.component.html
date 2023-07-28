@@ -1,1 +1,85 @@
-<p>workflow-calendar works!</p>
+<div *ngIf="form && originalData" class="cards-limit-container" [formGroup]="form">
+    <div class="cards-limit-container__section" fxLayout="row wrap">
+        <div class="cards-limit-container__section__title">
+            <h1>{{ labels.cardsLimit | translate }}</h1>
+        </div>
+    </div>
+    <!-- cardsLimit: [data?.workflowCardsLimits?.cardsLimit ? true : false],
+    initTime: [data?.workflowCardsLimits?.initTime],
+    endTime: [data?.workflowCardsLimits?.endTime],
+    numCardsByHour: [data?.workflowCardsLimits?.numCardsByHour],
+    cardsByDayLimit: [data?.workflowCardsLimits?.numCardsByDay ? true : false],
+    numCardsByDay: [data?.workflowCardsLimits?.numCardsByDay],
+    allowOverLimit: [data?.workflowCardsLimits?.allowOverLimit ? true : false],
+    workflowSubstate: -->
+    <div class="cards-limit-container__section smaller-mat-form-fields">
+        <mat-checkbox formControlName="cardsLimit">{{ labels.cardsLimitCheck | translate }}</mat-checkbox>
+    </div>
+    <div
+        class="cards-limit-container__section smaller-mat-form-fields"
+        fxLayout="row wrap"
+        fxLayoutAlign="start baseline"
+        *ngIf="form.controls.cardsLimit.value"
+    >
+        <mat-form-field appearance="outline" floatLabel="always">
+            <mat-label>{{ labels.initTime | translate }}</mat-label>
+            <input matInput type="number" min="0" max="23" formControlName="initTime" />
+            <mat-error class="cards-limit__error" *ngIf="form.controls.initTime.invalid">
+                {{ labels.required | translate }} ({{ labels.valueBetween | translate : { min: 0, max: 23 } }})
+            </mat-error>
+        </mat-form-field>
+        <mat-form-field appearance="outline" floatLabel="always">
+            <mat-label>{{ labels.endTime | translate }}</mat-label>
+            <input matInput type="number" min="0" max="23" formControlName="endTime" />
+            <mat-error class="cards-limit__error" *ngIf="form.controls.endTime.invalid">
+                {{ labels.required | translate }} ({{ labels.valueBetween | translate : { min: 0, max: 23 } }})
+            </mat-error>
+        </mat-form-field>
+        <mat-form-field appearance="outline" floatLabel="always">
+            <mat-label>{{ labels.numCardsByHour | translate }}</mat-label>
+            <input matInput type="number" formControlName="numCardsByHour" />
+            <mat-error class="cards-limit__error" *ngIf="form.controls.numCardsByHour.invalid">
+                {{ labels.required | translate }}
+            </mat-error>
+        </mat-form-field>
+    </div>
+    <div
+        class="cards-limit-container__section smaller-mat-form-fields"
+        fxLayout="row wrap"
+        fxLayoutAlign="start baseline"
+        *ngIf="form.controls.cardsLimit.value"
+    >
+        <mat-checkbox formControlName="cardsByDayLimit">{{ labels.cardsByDayLimit | translate }}</mat-checkbox>
+        <mat-form-field appearance="outline" floatLabel="always" *ngIf="form.controls.cardsByDayLimit.value">
+            <mat-label>{{ labels.numCardsByHour | translate }}</mat-label>
+            <input matInput type="number" formControlName="numCardsByDay" />
+            <mat-error class="cards-limit__error" *ngIf="form.controls.numCardsByDay.invalid">
+                {{ labels.required | translate }}
+            </mat-error>
+        </mat-form-field>
+    </div>
+    <div
+        class="cards-limit-container__section smaller-mat-form-fields"
+        fxLayout="row wrap"
+        fxLayoutAlign="start baseline"
+        *ngIf="form.controls.cardsLimit.value"
+    >
+        <mat-checkbox formControlName="allowOverLimit">{{ labels.allowOverLimit | translate }}</mat-checkbox>
+        <mat-form-field
+            appearance="outline"
+            floatLabel="always"
+            *ngIf="form.controls.allowOverLimit.value"
+            style="min-width: 350px"
+        >
+            <mat-label>{{ labels.workflowSubstateTargetCardsLimit | translate }}</mat-label>
+            <mat-select formControlName="workflowSubstate">
+                <mat-option *ngFor="let substate of workflowSubstates" [value]="substate"
+                    >{{ substate.workflowState.name }} - {{ substate.name }}</mat-option
+                >
+            </mat-select>
+            <mat-error *ngIf="form.controls.workflowSubstate.invalid">
+                <span>{{ labels.required | translate }}</span>
+            </mat-error>
+        </mat-form-field>
+    </div>
+</div>

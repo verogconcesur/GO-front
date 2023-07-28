@@ -7,9 +7,14 @@ import { WorkflowStepAbstractClass } from '../workflow-step-abstract-class';
 import { UntypedFormBuilder, Validators } from '@angular/forms';
 import { WorkflowAdministrationService } from '@data/services/workflow-administration.service';
 import { WorkflowAdministrationStatesSubstatesService } from '@data/services/workflow-administration-states-substates.service';
-import { forkJoin, take } from 'rxjs';
+import { finalize, forkJoin, take } from 'rxjs';
 import WorkflowStateDTO from '@data/models/workflows/workflow-state-dto';
 import CombinedRequiredFieldsValidator from '@shared/validators/combined-required-fields.validator';
+import WorkflowCardsLimitDTO from '@data/models/workflow-admin/workflow-card-limit-dto';
+import WorkflowSubstateDTO from '@data/models/workflows/workflow-substate-dto';
+import { GlobalMessageService } from '@shared/services/global-message.service';
+import { marker } from '@biesbjerg/ngx-translate-extract-marker';
+import { ConcenetError } from '@app/types/error';
 
 @Component({
   selector: 'app-workflow-calendar',
@@ -19,7 +24,20 @@ import CombinedRequiredFieldsValidator from '@shared/validators/combined-require
 export class WorkflowCalendarComponent extends WorkflowStepAbstractClass {
   @Input() workflowId: number;
   @Input() stepIndex: number;
-  public workflowStates: WorkflowStateDTO[] = [];
+  public workflowSubstates: WorkflowSubstateDTO[] = [];
+  public labels = {
+    cardsLimit: marker('workflows.cardsLimit'),
+    cardsLimitCheck: marker('workflows.cardsLimitCheck'),
+    initTime: marker('workflows.initTime'),
+    endTime: marker('workflows.endTime'),
+    required: marker('errors.required'),
+    valueBetween: marker('errors.valueBetween'),
+    numCardsByHour: marker('workflows.numCardsByHour'),
+    cardsByDayLimit: marker('workflows.cardsByDayLimit'),
+    numCardsByDay: marker('workflows.numCardsByDay'),
+    allowOverLimit: marker('workflows.allowOverLimit'),
+    workflowSubstateTargetCardsLimit: marker('workflows.workflowSubstateTargetCardsLimit')
+  };
   constructor(
     private fb: UntypedFormBuilder,
     public workflowsCreateEditAuxService: WorkflowsCreateEditAuxService,
@@ -27,29 +45,27 @@ export class WorkflowCalendarComponent extends WorkflowStepAbstractClass {
     public translateService: TranslateService,
     public workflowService: WorkflowAdministrationService,
     public workflowStateService: WorkflowAdministrationStatesSubstatesService,
-    private spinnerService: ProgressSpinnerDialogService
+    private spinnerService: ProgressSpinnerDialogService,
+    private globalMessageService: GlobalMessageService
   ) {
     super(workflowsCreateEditAuxService, confirmationDialog, translateService);
   }
 
-  public initForm(data: {
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    workflowHoursLimits: any;
-    workflowStates: WorkflowStateDTO[];
-  }): void {
-    this.workflowStates = data?.workflowStates ? data.workflowStates : [];
+  public initForm(data: { workflowCardsLimits: WorkflowCardsLimitDTO; workflowStates: WorkflowStateDTO[] }): void {
+    console.log(data, this.workflowSubstates);
     this.form = this.fb.group(
       {
-        cardsLimit: [data?.workflowHoursLimits?.cardsLimit ? true : false],
-        initTime: [data?.workflowHoursLimits?.initTime],
-        endTime: [data?.workflowHoursLimits?.endTime],
-        numCardsByHour: [data?.workflowHoursLimits?.numCardsByHour],
-        cardsByDayLimit: [data?.workflowHoursLimits?.numCardsByDay ? true : false],
-        numCardsByDay: [data?.workflowHoursLimits?.numCardsByDay],
-        allowOverLimit: [data?.workflowHoursLimits?.allowOverLimit ? true : false],
-        substateTargetId: [
-          data?.workflowHoursLimits?.substateTargetId && this.workflowStates?.length
-            ? this.workflowStates.find((d) => d.id === data.workflowHoursLimits.substateTargetId.id)
+        id: [data?.workflowCardsLimits?.id ? data.workflowCardsLimits.id : this.workflowId],
+        cardsLimit: [data?.workflowCardsLimits?.cardsLimit ? true : false],
+        initTime: [data?.workflowCardsLimits?.initTime, [Validators.max(23), Validators.min(0)]],
+        endTime: [data?.workflowCardsLimits?.endTime, [Validators.max(23), Validators.min(0)]],
+        numCardsByHour: [data?.workflowCardsLimits?.numCardsByHour, Validators.min(0)],
+        cardsByDayLimit: [data?.workflowCardsLimits?.numCardsByDay ? true : false],
+        numCardsByDay: [data?.workflowCardsLimits?.numCardsByDay, Validators.min(0)],
+        allowOverLimit: [data?.workflowCardsLimits?.allowOverLimit ? true : false],
+        workflowSubstate: [
+          data?.workflowCardsLimits?.workflowSubstate && this.workflowSubstates?.length
+            ? this.workflowSubstates.find((d) => d.id === data.workflowCardsLimits.workflowSubstate.id)
             : null
         ]
       },
@@ -80,21 +96,42 @@ export class WorkflowCalendarComponent extends WorkflowStepAbstractClass {
     const spinner = this.spinnerService.show();
     return new Promise((resolve, reject) => {
       const resquests = [
-        this.workflowService.getWorkflowHoursLimitsConfiguration(this.workflowId).pipe(take(1)),
+        this.workflowService.getWorkflowCardsLimitsConfiguration(this.workflowId).pipe(take(1)),
         this.workflowStateService.getWorkflowStatesAndSubstates(this.workflowId).pipe(take(1))
       ];
       forkJoin(resquests).subscribe(
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        (responses: [any, WorkflowStateDTO[]]) => {
+        (responses: [WorkflowCardsLimitDTO, WorkflowStateDTO[]]) => {
+          this.workflowSubstates = [];
+          responses[1] = responses[1]?.length ? responses[1] : [];
+          responses[1].forEach((state: WorkflowStateDTO) => {
+            state.workflowSubstates.forEach((substate: WorkflowSubstateDTO) => {
+              substate.workflowState = { ...state, workflowSubstates: [] };
+              this.workflowSubstates.push(substate);
+            });
+          });
           this.originalData = {
-            workflowHoursLimits: responses[0],
-            workflowStates: responses[1] ? responses[1] : []
+            workflowCardsLimits: responses[0],
+            workflowSubstates: this.workflowSubstates
           };
           this.spinnerService.hide(spinner);
           resolve(true);
         },
         (errors) => {
-          console.log(errors);
+          let message = '';
+          if (errors.length) {
+            errors.forEach((e: ConcenetError) => {
+              if (e.message) {
+                message = message ? ` - ${e.message}` : e.message;
+              }
+            });
+          }
+          if (message) {
+            this.globalMessageService.showError({
+              message,
+              actionText: this.translateService.instant(marker('common.close'))
+            });
+          }
           this.spinnerService.hide(spinner);
         }
       );
@@ -104,25 +141,26 @@ export class WorkflowCalendarComponent extends WorkflowStepAbstractClass {
   public async saveStep(): Promise<boolean> {
     const spinner = this.spinnerService.show();
     return new Promise((resolve, reject) => {
-      // const listRoles = this.form.getRawValue().card;
-      // this.workflowService
-      //   .postWorkflowCard(this.workflowId, listRoles)
-      //   .pipe(
-      //     take(1),
-      //     finalize(() => {
-      //       this.spinnerService.hide(spinner);
-      //       resolve(true);
-      //     })
-      //   )
-      //   .subscribe({
-      //     next: (response) => {
-      //       console.log(response);
-      //     },
-      //     error: (err) => {
-      //       this.logger.error(err);
-      //       resolve(false);
-      //     }
-      //   });
+      const data = this.form.getRawValue();
+      this.workflowService
+        .setWorkflowCardsLimitsConfiguration(data)
+        .pipe(
+          take(1),
+          finalize(() => {
+            this.spinnerService.hide(spinner);
+            resolve(true);
+          })
+        )
+        .subscribe({
+          next: (response) => {},
+          error: (err: ConcenetError) => {
+            this.globalMessageService.showError({
+              message: err.message,
+              actionText: this.translateService.instant(marker('common.close'))
+            });
+            resolve(false);
+          }
+        });
     });
   }
 }

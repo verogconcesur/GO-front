@@ -489,7 +489,8 @@
         "required": "Este campo es obligatorio.",
         "saveTabBeforeChange": "Debe guardar la información de la pestaña actual antes de poder abrir otra.",
         "unknown": "Error desconocido",
-        "uploadOnlyOneFile": "Solo está permitido cargar un único archivo"
+        "uploadOnlyOneFile": "Solo está permitido cargar un único archivo",
+        "valueBetween": "Valor entre {min} y {max}"
     },
     "landing": {
         "banners": "Banners (ofertas y promociones)",
@@ -782,10 +783,11 @@
         "addState": "Añadir estado",
         "addSubstate": "Añadir subestado",
         "allowAllMovements": "Permitir movimiento libre de tarjetas",
+        "allowOverLimit": "Permitir sobrepasar límite de tarjetas",
         "attachemntCategory": "Categoría de adjuntos",
         "attachmentTab": "Pestaña de adjuntos",
         "byFacilityGroupLabel": "Workflows de {facility}",
-        "calendar": "Límite horario",
+        "calendar": "Límite tarjetas",
         "card": {
             "cardTabs": "Pestañas de la ficha",
             "customerAssociatedCards": "Tarjetas asociadas al cliente",
@@ -796,9 +798,12 @@
         },
         "cardChangesDetected": "Se han detectado cambios en la ficha que está visualizando",
         "cardConfig": "Configuración de la tarjeta",
+        "cardsByDayLimit": "Establecer límite de tarjetas por día",
         "cardsInBoardView": "Tarjetas en vista pizarra",
         "cardsInCalendarView": "Tarjetas en vista calendario",
         "cardsInTableView": "Tarjetas en vista tablero",
+        "cardsLimit": "Límite de tarjetas",
+        "cardsLimitCheck": "Establecer límite de tarjetas por hora u hora/día a los subestados del workflow.",
         "changeCustomer": "Cambiar cliente",
         "changeRepairOrder": "Cambiar orden de reparación",
         "changeUser": "Cambiar asesor",
@@ -817,6 +822,7 @@
         "editSubstate": "Editar subestado",
         "editWorkflow": "Editar Workflow",
         "emptySubstate": "Subestado vacío",
+        "endTime": "Hora fin",
         "exitEvent": "Eventos de salida del subestado",
         "extraMovement": "Añadir movimiento extra",
         "filter": "Filtrar Workflows",
@@ -825,6 +831,7 @@
         "filterSubstate": "Filtrar Subestados",
         "filterUser": "Filtrar Usuarios",
         "historical": "Historial de la ficha",
+        "initTime": "Hora inicio",
         "inputEvent": "Eventos de entrada al subestado",
         "landingCardView": "Tarjetas en la Landing",
         "landingDetailView": "Detalle de la Landing",
@@ -836,6 +843,8 @@
         "newWorkflow": "Nuevo workflow",
         "noWorkflows": "Este usuario no tiene acceso a ningún workflow",
         "numCards": "{num} {num, plural, =0{fichas} one{ficha} other{fichas}}",
+        "numCardsByDay": "Límite de tarjetas por día",
+        "numCardsByHour": "Límite de tarjetas por hora",
         "originalSubstate": "Subestado de origen",
         "peopleWorking": "{num} {num, plural, =0{personas trabajando} one{persona trabajando} other{personas trabajando}}",
         "publishWarn": "¿Esta seguro de que desea publicar este workflow?",
@@ -906,6 +915,7 @@
         "timelineStates": "Estados de timeline",
         "whoSeeThisMovement": "Quién ve este movimiento",
         "workOrderInformation": "Información de la orden de trabajo",
+        "workflowSubstateTargetCardsLimit": "Subestado destino si sobrepasa el límite",
         "workflowSubstateTargetExtra": "Subestado destino del movimiento extra"
     }
 }

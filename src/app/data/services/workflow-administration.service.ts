@@ -18,6 +18,7 @@ import { catchError } from 'rxjs/operators';
 import TemplatesCommonDTO from '@data/models/templates/templates-common-dto';
 import { WorkflowTimelineDTO } from '@data/models/workflow-admin/workflow-timeline-dto';
 import { WorkflowAttachmentTimelineDTO } from '@data/models/workflow-admin/workflow-attachment-timeline-dto';
+import WorkflowCardsLimitDTO from '@data/models/workflow-admin/workflow-card-limit-dto';
 
 @Injectable({
   providedIn: 'root'
@@ -32,7 +33,7 @@ export class WorkflowAdministrationService {
   private readonly VIEW_PATH = '/views';
   private readonly ATTRIBUTES_PATH = '/attributes';
   private readonly TIMELINE_PATH = '/timeline';
-  private readonly HOURS_LIMIT_PATH = '/hoursLimits';
+  private readonly CARDS_LIMIT_PATH = '/cardsLimits';
   private readonly ATTACHMENTS_PATH = '/attachments';
   private readonly TEMPLATES_PATH = '/listTemplates';
   private readonly BUDGET_PATH = '/budget';
@@ -249,24 +250,24 @@ export class WorkflowAdministrationService {
   }
 
   /**
-   * Obtener Hours Limits Configuration Workflow
+   * Obtener Cards Limits Configuration Workflow
    *
    * @returns WorkflowHoursLimitsDTO
    */
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  public getWorkflowHoursLimitsConfiguration(workflowId: number): Observable<any> {
-    return of({
-      cardsLimit: true,
-      initTime: 8,
-      endTime: 18,
-      numCardsByHour: 3,
-      numCardsByDay: 24,
-      allowOverLimit: false,
-      substateTargetId: null
-    });
-    // return this.http
-    //   .get<any>(`${this.env.apiBaseUrl}${this.WORKFLOW_PATH}/${workflowId}${this.HOURS_LIMIT_PATH}`)
-    //   .pipe(catchError((error) => throwError(error.error as ConcenetError)));
+  public getWorkflowCardsLimitsConfiguration(workflowId: number): Observable<WorkflowCardsLimitDTO> {
+    return this.http
+      .get<WorkflowCardsLimitDTO>(`${this.env.apiBaseUrl}${this.WORKFLOW_PATH}/${workflowId}${this.CARDS_LIMIT_PATH}`)
+      .pipe(catchError((error) => throwError(error.error as ConcenetError)));
+  }
+  /**
+   * Editar Cards Limits Configuration Workflow
+   *
+   * @returns boolean
+   */
+  public setWorkflowCardsLimitsConfiguration(data: WorkflowCardsLimitDTO): Observable<boolean> {
+    return this.http
+      .post<boolean>(`${this.env.apiBaseUrl}${this.WORKFLOW_PATH}${this.CARDS_LIMIT_PATH}`, data)
+      .pipe(catchError((error) => throwError(error.error as ConcenetError)));
   }
 
   /**

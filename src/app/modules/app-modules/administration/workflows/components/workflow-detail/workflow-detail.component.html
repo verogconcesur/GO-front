@@ -29,15 +29,15 @@
             </mat-tab>
             <mat-tab label="{{ labels.states | translate }}" [disabled]="!workflowsCreateEditAuxService.enableTabStep(4)">
             </mat-tab>
-            <mat-tab label="{{ labels.timeline | translate }}" [disabled]="!workflowsCreateEditAuxService.enableTabStep(5)">
+            <mat-tab label="{{ labels.calendar | translate }}" [disabled]="!workflowsCreateEditAuxService.enableTabStep(5)">
             </mat-tab>
-            <mat-tab label="{{ labels.budgets | translate }}" [disabled]="!workflowsCreateEditAuxService.enableTabStep(6)">
+            <mat-tab label="{{ labels.timeline | translate }}" [disabled]="!workflowsCreateEditAuxService.enableTabStep(6)">
             </mat-tab>
-            <mat-tab label="{{ labels.calendar | translate }}" [disabled]="!workflowsCreateEditAuxService.enableTabStep(7)">
+            <mat-tab label="{{ labels.budgets | translate }}" [disabled]="!workflowsCreateEditAuxService.enableTabStep(7)">
             </mat-tab>
         </mat-tab-group>
         <div [ngSwitch]="tabIndex">
-            <!-- <app-workflow-states [workflowId]="workflowDetail?.id" [stepIndex]="0" *ngSwitchCase="0"></app-workflow-states> -->
+            <!-- <app-workflow-calendar [workflowId]="workflowDetail?.id" [stepIndex]="0" *ngSwitchCase="0"></app-workflow-calendar> -->
             <app-workflow-organization
                 [workflowId]="workflowDetail?.id"
                 [stepIndex]="0"
@@ -52,14 +52,14 @@
                 *ngSwitchCase="4"
             ></app-workflow-card-config>
             <app-workflow-states [workflowId]="workflowDetail?.id" [stepIndex]="5" *ngSwitchCase="5"></app-workflow-states>
-            <app-workflow-timeline [workflowId]="workflowDetail?.id" [stepIndex]="6" *ngSwitchCase="6"></app-workflow-timeline>
-            <app-workflow-budgets [workflowId]="workflowDetail?.id" [stepIndex]="7" *ngSwitchCase="7"></app-workflow-budgets>
-            <app-workflow-calendar
+            <app-workflow-calendar [workflowId]="workflowDetail?.id" [stepIndex]="6" *ngSwitchCase="6"></app-workflow-calendar>
+            <app-workflow-timeline [workflowId]="workflowDetail?.id" [stepIndex]="7" *ngSwitchCase="7"></app-workflow-timeline>
+            <app-workflow-budgets
                 [workflowId]="workflowDetail?.id"
                 [stepIndex]="8"
-                [lastStep]="true"
                 *ngSwitchCase="8"
-            ></app-workflow-calendar>
+                [lastStep]="true"
+            ></app-workflow-budgets>
         </div>
     </div>
     <div class="wf__footer" fxLayout="row-reverse" fxLayoutAlign="space-between center">
