@@ -4,14 +4,6 @@
             <h1>{{ labels.cardsLimit | translate }}</h1>
         </div>
     </div>
-    <!-- cardsLimit: [data?.workflowCardsLimits?.cardsLimit ? true : false],
-    initTime: [data?.workflowCardsLimits?.initTime],
-    endTime: [data?.workflowCardsLimits?.endTime],
-    numCardsByHour: [data?.workflowCardsLimits?.numCardsByHour],
-    cardsByDayLimit: [data?.workflowCardsLimits?.numCardsByDay ? true : false],
-    numCardsByDay: [data?.workflowCardsLimits?.numCardsByDay],
-    allowOverLimit: [data?.workflowCardsLimits?.allowOverLimit ? true : false],
-    workflowSubstate: -->
     <div class="cards-limit-container__section smaller-mat-form-fields">
         <mat-checkbox formControlName="cardsLimit">{{ labels.cardsLimitCheck | translate }}</mat-checkbox>
     </div>
@@ -51,7 +43,7 @@
     >
         <mat-checkbox formControlName="cardsByDayLimit">{{ labels.cardsByDayLimit | translate }}</mat-checkbox>
         <mat-form-field appearance="outline" floatLabel="always" *ngIf="form.controls.cardsByDayLimit.value">
-            <mat-label>{{ labels.numCardsByHour | translate }}</mat-label>
+            <mat-label>{{ labels.numCardsByDay | translate }}</mat-label>
             <input matInput type="number" formControlName="numCardsByDay" />
             <mat-error class="cards-limit__error" *ngIf="form.controls.numCardsByDay.invalid">
                 {{ labels.required | translate }}

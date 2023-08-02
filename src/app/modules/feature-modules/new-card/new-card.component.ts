@@ -22,6 +22,7 @@ import { TranslateService } from '@ngx-translate/core';
 import { ConfirmDialogService } from '@shared/services/confirm-dialog.service';
 import { GlobalMessageService } from '@shared/services/global-message.service';
 import { ProgressSpinnerDialogService } from '@shared/services/progress-spinner-dialog.service';
+import CombinedRequiredFieldsValidator from '@shared/validators/combined-required-fields.validator';
 import { NGXLogger } from 'ngx-logger';
 import { take, finalize } from 'rxjs/operators';
 
@@ -326,13 +327,28 @@ export class NewCardComponent implements OnInit {
     }
   }
   private initializeWorkflowForm(): void {
-    this.formWorkflow = this.fb.group({
-      workflow: ['', Validators.required],
-      facility: ['', Validators.required],
-      entryState: ['', Validators.required],
-      subState: ['', Validators.required],
-      subStateUser: ['']
-    });
+    this.formWorkflow = this.fb.group(
+      {
+        workflow: ['', Validators.required],
+        facility: ['', Validators.required],
+        cardsLimit: [false],
+        deadLineDate: [null],
+        deadLineHour: [null],
+        entryState: ['', Validators.required],
+        subState: ['', Validators.required],
+        subStateUser: ['']
+      },
+      {
+        validators: [
+          CombinedRequiredFieldsValidator.field1RequiredIfFieldsConditions('deadLineDate', [
+            { control: 'cardsLimit', operation: 'equal', value: true }
+          ]),
+          CombinedRequiredFieldsValidator.field1RequiredIfFieldsConditions('deadLineHour', [
+            { control: 'cardsLimit', operation: 'equal', value: true }
+          ])
+        ]
+      }
+    );
   }
   private initializeSteps(): void {
     this.steplist.push({

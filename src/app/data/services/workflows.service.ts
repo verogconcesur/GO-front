@@ -21,6 +21,7 @@ import { WorkflowSearchFilterDTO } from '@data/models/workflows/workflow-filter-
 import PaginationRequestI from '@data/interfaces/pagination-request';
 import { getPaginationUrlGetParams } from '@data/utils/pagination-aux';
 import PaginationResponseI from '@data/interfaces/pagination-response';
+import { CardLimitSlotByDayDTO } from '@data/models/workflow-admin/workflow-card-limit-dto';
 
 @Injectable({
   providedIn: 'root'
@@ -34,6 +35,7 @@ export class WorkflowsService {
   private readonly GET_WORKFLOWS_PATH = '/api/workflows';
   private readonly GET_MOCK_WORKFLOWS_PATH = '/api/mock/workflow';
   private readonly GET_WORKFLOWS_CREATECARD_PATH = '/api/cardInstanceWorkflow/createCard/getWorkflows';
+  private readonly GET_CARD_LIMITS_CREATECARD_PATH = '/api/cardInstanceWorkflow/createCard/getCardLimitSlots';
   private readonly GET_WORKFLOWS_LIST_PATH = '/list';
   private readonly GET_WORKFLOWS_SEARCH_PATH = '/search';
   private readonly GET_WORKFLOWS_SEARCH_PAGED_PATH = '/searchPaged';
@@ -145,6 +147,17 @@ export class WorkflowsService {
 
   /**
    * Devuelve el listado de workflow que el usuario logado puede ver para la creación de una ficha.
+   *
+   * @returns CardLimitSlotByDayDTO[]
+   */
+  public getCardLimitsCreatecardList(workflowId: number, facilityId: number): Observable<CardLimitSlotByDayDTO[]> {
+    return this.http
+      .get<CardLimitSlotByDayDTO[]>(`${this.env.apiBaseUrl}${this.GET_CARD_LIMITS_CREATECARD_PATH}/${workflowId}/${facilityId}`)
+      .pipe(catchError((error) => throwError(error.error as ConcenetError)));
+  }
+
+  /**
+   * Devuelve el listado fechas a partir de hoy con fichas en cada hora.
    *
    * @returns WorkflowDTO[]
    */

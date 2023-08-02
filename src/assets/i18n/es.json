@@ -579,6 +579,8 @@
         "saveConfirmation": "¿Está seguro que desea crear la ficha?",
         "step": "Paso ",
         "workflow": {
+            "deadLineDate": "Fecha límite",
+            "deadLineHour": "Hora límite",
             "entryState": "Estado de entrada",
             "facility": "Instalación",
             "header": "¿En qué workflow quieres crear la ficha?",
@@ -822,7 +824,7 @@
         "editSubstate": "Editar subestado",
         "editWorkflow": "Editar Workflow",
         "emptySubstate": "Subestado vacío",
-        "endTime": "Hora fin",
+        "endTime": "Hora fin (inclusive)",
         "exitEvent": "Eventos de salida del subestado",
         "extraMovement": "Añadir movimiento extra",
         "filter": "Filtrar Workflows",

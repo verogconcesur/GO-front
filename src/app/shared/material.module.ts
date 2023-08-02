@@ -3,7 +3,7 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
 import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MatChipsModule } from '@angular/material/chips';
-import { MatNativeDateModule, MAT_DATE_LOCALE } from '@angular/material/core';
+import { DateAdapter, MatNativeDateModule, MAT_DATE_LOCALE } from '@angular/material/core';
 import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatDialogModule } from '@angular/material/dialog';
 import { MatDividerModule } from '@angular/material/divider';
@@ -36,6 +36,7 @@ import {
   NGX_MAT_DATE_FORMATS
 } from '@angular-material-components/datetime-picker';
 import { NgxMatMomentModule } from '@angular-material-components/moment-adapter';
+import { CustomDateAdapter } from './providers/custom-date-picker-adapter';
 const CUSTOM_DATE_FORMATS: NgxMatDateFormats = {
   parse: {
     dateInput: 'DD/MM/YYYY HH:mm'
@@ -86,7 +87,8 @@ const CUSTOM_DATE_FORMATS: NgxMatDateFormats = {
   providers: [
     { provide: MatPaginatorIntl, useClass: MyCustomPaginatorIntl },
     { provide: MAT_DATE_LOCALE, useValue: 'es-ES' },
-    { provide: NGX_MAT_DATE_FORMATS, useValue: CUSTOM_DATE_FORMATS }
+    { provide: NGX_MAT_DATE_FORMATS, useValue: CUSTOM_DATE_FORMATS },
+    { provide: DateAdapter, useClass: CustomDateAdapter }
   ],
   exports: [
     MatButtonModule,

@@ -10,7 +10,7 @@ import { WorkflowAdministrationStatesSubstatesService } from '@data/services/wor
 import { finalize, forkJoin, take } from 'rxjs';
 import WorkflowStateDTO from '@data/models/workflows/workflow-state-dto';
 import CombinedRequiredFieldsValidator from '@shared/validators/combined-required-fields.validator';
-import WorkflowCardsLimitDTO from '@data/models/workflow-admin/workflow-card-limit-dto';
+import WorkflowCardsLimitDTO, { MAX_CARDS_LIMIT_BY_DAY } from '@data/models/workflow-admin/workflow-card-limit-dto';
 import WorkflowSubstateDTO from '@data/models/workflows/workflow-substate-dto';
 import { GlobalMessageService } from '@shared/services/global-message.service';
 import { marker } from '@biesbjerg/ngx-translate-extract-marker';
@@ -52,7 +52,6 @@ export class WorkflowCalendarComponent extends WorkflowStepAbstractClass {
   }
 
   public initForm(data: { workflowCardsLimits: WorkflowCardsLimitDTO; workflowStates: WorkflowStateDTO[] }): void {
-    console.log(data, this.workflowSubstates);
     this.form = this.fb.group(
       {
         id: [data?.workflowCardsLimits?.id ? data.workflowCardsLimits.id : this.workflowId],
@@ -60,8 +59,17 @@ export class WorkflowCalendarComponent extends WorkflowStepAbstractClass {
         initTime: [data?.workflowCardsLimits?.initTime, [Validators.max(23), Validators.min(0)]],
         endTime: [data?.workflowCardsLimits?.endTime, [Validators.max(23), Validators.min(0)]],
         numCardsByHour: [data?.workflowCardsLimits?.numCardsByHour, Validators.min(0)],
-        cardsByDayLimit: [data?.workflowCardsLimits?.numCardsByDay ? true : false],
-        numCardsByDay: [data?.workflowCardsLimits?.numCardsByDay, Validators.min(0)],
+        cardsByDayLimit: [
+          data?.workflowCardsLimits?.numCardsByDay && data?.workflowCardsLimits?.numCardsByDay !== MAX_CARDS_LIMIT_BY_DAY
+            ? true
+            : false
+        ],
+        numCardsByDay: [
+          data?.workflowCardsLimits?.numCardsByDay && data?.workflowCardsLimits?.numCardsByDay !== MAX_CARDS_LIMIT_BY_DAY
+            ? data?.workflowCardsLimits?.numCardsByDay
+            : 0,
+          Validators.min(0)
+        ],
         allowOverLimit: [data?.workflowCardsLimits?.allowOverLimit ? true : false],
         workflowSubstate: [
           data?.workflowCardsLimits?.workflowSubstate && this.workflowSubstates?.length
@@ -89,7 +97,6 @@ export class WorkflowCalendarComponent extends WorkflowStepAbstractClass {
         ]
       }
     );
-    console.log(data, this.form.getRawValue());
   }
 
   public async getWorkflowStepData(): Promise<boolean> {
@@ -142,6 +149,9 @@ export class WorkflowCalendarComponent extends WorkflowStepAbstractClass {
     const spinner = this.spinnerService.show();
     return new Promise((resolve, reject) => {
       const data = this.form.getRawValue();
+      if (!data.cardsByDayLimit) {
+        data.numCardsByDay = MAX_CARDS_LIMIT_BY_DAY;
+      }
       this.workflowService
         .setWorkflowCardsLimitsConfiguration(data)
         .pipe(
