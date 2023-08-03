@@ -100,7 +100,6 @@ export class TextEditorWrapperComponent implements OnInit, AfterViewInit {
           ['font', ['fontname', 'color']], //'fontsize'
           ['para', ['ul', 'ol', 'paragraph']],
           ['insert', ['table', 'link', 'picture', 'video']],
-          ['view', ['fullscreen', 'codeview', 'help']],
         ];
       }
       if (misc && misc.length) {
@@ -141,27 +140,27 @@ export class TextEditorWrapperComponent implements OnInit, AfterViewInit {
         callbacks: {
           onChange: (contents: any) => {
             this.summernoteHtmlContent = contents;
-            let html = this.summernoteHtmlContent;
-            if (
-              html.indexOf('<!--SummernoteStyles-->') === -1 &&
-              (html.indexOf('<table') >= 0 || html.indexOf('< table') >= 0 || html.indexOf('<a') >= 0 || html.indexOf('< a') >= 0)
-            ) {
-              html = `<!--SummernoteStyles--> ${html}`;
-            }
+            // let html = this.summernoteHtmlContent;
+            // if (
+            //   html.indexOf('<!--SummernoteStyles-->') === -1 &&
+            //   (html.indexOf('<table') >= 0 || html.indexOf('< table') >= 0 || html.indexOf('<a') >= 0 || html.indexOf('< a') >= 0)
+            // ) {
+            //   html = `<!--SummernoteStyles--> ${html}`;
+            // }
 
-            this.contentChanged.emit(html);
+            this.contentChanged.emit(this.summernoteHtmlContent);
 
 
           },
           onChangeCodeview: (contents: any) => {
             this.summernoteHtmlContent = contents;
 
-            if (
-              this.summernoteHtmlContent.indexOf('<!--SummernoteStyles-->') === -1 &&
-              (this.summernoteHtmlContent.indexOf('<table') >= 0 || this.summernoteHtmlContent.indexOf('< table') >= 0 || this.summernoteHtmlContent.indexOf('<a') >= 0 || this.summernoteHtmlContent.indexOf('< a') >= 0)
-            ) {
-              this.summernoteHtmlContent = `<!--SummernoteStyles--> ${this.summernoteHtmlContent}`;
-            }
+            // if (
+            //   this.summernoteHtmlContent.indexOf('<!--SummernoteStyles-->') === -1 &&
+            //   (this.summernoteHtmlContent.indexOf('<table') >= 0 || this.summernoteHtmlContent.indexOf('< table') >= 0 || this.summernoteHtmlContent.indexOf('<a') >= 0 || this.summernoteHtmlContent.indexOf('< a') >= 0)
+            // ) {
+            //   this.summernoteHtmlContent = `<!--SummernoteStyles--> ${this.summernoteHtmlContent}`;
+            // }
 
           this.summernoteNode.innerHTML = contents;
           this.contentChanged.emit(contents);
