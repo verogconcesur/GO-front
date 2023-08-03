@@ -12,6 +12,7 @@ import CardColumnTabDTO from '@data/models/cards/card-column-tab-dto';
 import CardColumnTabItemDTO from '@data/models/cards/card-column-tab-item-dto';
 import CardCreateDTO from '@data/models/cards/card-create-dto';
 import CardDTO from '@data/models/cards/card-dto';
+import WorkflowCreateCardDTO from '@data/models/workflows/workflow-create-card-dto';
 import WorkflowDTO from '@data/models/workflows/workflow-dto';
 import WorkflowSubstateDTO from '@data/models/workflows/workflow-substate-dto';
 import WorkflowSubstateEventDTO from '@data/models/workflows/workflow-substate-event-dto';
@@ -86,6 +87,16 @@ export class NewCardComponent implements OnInit {
     });
   }
 
+  public getCardDateLimit(): number {
+    if (this.formWorkflow.get('cardsLimit').value) {
+      const date = this.formWorkflow.get('deadLineDate').value as Date;
+      const hour = this.formWorkflow.get('deadLineHour').value;
+      date.setHours(hour.hourFrom);
+      return +date;
+    }
+    return null;
+  }
+
   public onSubmitCustomDialog(): void {
     this.confirmationDialog
       .open({
@@ -99,6 +110,7 @@ export class NewCardComponent implements OnInit {
             workflowId: this.formWorkflow.get('workflow').value.id,
             workflowSubstateId: this.formWorkflow.get('subState').value.id,
             facilityId: this.formWorkflow.get('facility').value.id,
+            dateAppliTimeLimit: this.getCardDateLimit(),
             cardInstance: {
               vehicleId: null,
               customerId: null,

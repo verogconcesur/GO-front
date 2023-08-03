@@ -41,10 +41,9 @@
                     [matDatepicker]="picker"
                     [min]="minDate"
                     [max]="maxDate"
+                    (dateChange)="changeDeadLine()"
                     formControlName="deadLineDate"
                 />
-                <!-- (dateChange)="changeDate()" -->
-                <!-- <mat-hint>DD/MM/YYYY</mat-hint> -->
                 <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
                 <mat-datepicker [dateClass]="dateClass" #picker></mat-datepicker>
                 <mat-error *ngIf="formWorkflow.controls?.deadLineDate?.invalid">
@@ -58,7 +57,7 @@
                 *ngIf="formWorkflow.controls?.workflow?.value?.workflowCardsLimit?.cardsLimit"
             >
                 <mat-label>{{ labels.deadLineHour | translate }}</mat-label>
-                <mat-select formControlName="deadLineHour">
+                <mat-select formControlName="deadLineHour" (selectionChange)="changeDeadLine()">
                     <mat-option
                         *ngFor="let hour of hoursList()"
                         [value]="hour"

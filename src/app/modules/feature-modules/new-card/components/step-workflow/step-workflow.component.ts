@@ -52,7 +52,7 @@ export class StepWorkflowComponent implements OnInit {
       this.formWorkflow.get('cardsLimit').setValue(false);
     }
     this.facilityList = this.formWorkflow.get('workflow').value ? this.formWorkflow.get('workflow').value.facilities : [];
-    this.entryStateList = this.formWorkflow.get('workflow').value ? this.formWorkflow.get('workflow').value.workflowStates : [];
+    this.setStateAndSubstate();
     const selectedFacility = this.formWorkflow.get('facility').value;
     if (selectedFacility) {
       this.formWorkflow.get('facility').setValue(
@@ -64,21 +64,53 @@ export class StepWorkflowComponent implements OnInit {
       this.formWorkflow.get('facility').setValue(this.facilityList[0], { emitEvent: false });
       this.initialiceLimitDates();
     }
-    const selectedEntryState = this.formWorkflow.get('entryState').value;
+  }
+  public setStateAndSubstate(cardsLimitMode?: boolean): void {
+    let selectedEntryState = this.formWorkflow.get('entryState').value;
+    if (cardsLimitMode) {
+      const wf: WorkflowCreateCardDTO = this.formWorkflow.get('workflow').value;
+      this.entryStateList = wf?.workflowCardsLimit?.workflowSubstate
+        ? [
+            {
+              ...wf.workflowCardsLimit.workflowSubstate.workflowState,
+              workflowSubstates: [{ ...wf.workflowCardsLimit.workflowSubstate, workflowState: null }]
+            }
+          ]
+        : [];
+      selectedEntryState = null;
+    } else {
+      this.entryStateList = this.formWorkflow.get('workflow').value ? this.formWorkflow.get('workflow').value.workflowStates : [];
+    }
+    // console.log(this.entryStateList);
     if (selectedEntryState) {
       this.formWorkflow.get('entryState').setValue(
         this.entryStateList.find((entryState: WorkflowStateDTO) => entryState.id === selectedEntryState.id),
         { emitEvent: false }
       );
-      this.initialiceSubStates();
+      this.initialiceSubStates(cardsLimitMode);
     } else if (this.entryStateList.length === 1) {
       this.formWorkflow.get('entryState').setValue(this.entryStateList[0], { emitEvent: false });
-      this.initialiceSubStates();
+      this.initialiceSubStates(cardsLimitMode);
+    }
+  }
+  public changeDeadLine(): void {
+    const date: Date = this.formWorkflow.get('deadLineDate').value;
+    const slot: CardLimitSlotDTO = this.formWorkflow.get('deadLineHour').value;
+    const wf: WorkflowCreateCardDTO = this.formWorkflow.get('workflow').value;
+    if (date && !this.checkDateDisponibility(date, wf)) {
+      this.setStateAndSubstate(true);
+    } else if (slot?.maxReached) {
+      this.setStateAndSubstate(true);
+    } else {
+      this.setStateAndSubstate();
     }
   }
   public initialiceLimitDates(): void {
     const wId = this.formWorkflow.get('workflow').value?.id;
     const fId = this.formWorkflow.get('facility').value?.id;
+    this.cardsLimits = [];
+    this.formWorkflow.get('deadLineDate').setValue(null);
+    this.formWorkflow.get('deadLineHour').setValue(null);
     if (wId && fId) {
       const spinner = this.spinnerService.show();
       this.workflowsService
@@ -91,97 +123,7 @@ export class StepWorkflowComponent implements OnInit {
         )
         .subscribe({
           next: (data: CardLimitSlotByDayDTO[]) => {
-            this.cardsLimits = data
-              ? data
-              : [
-                  {
-                    day: '02/08/2023',
-
-                    totalCards: 6,
-
-                    carLimitSlots: [
-                      {
-                        hourFrom: 11,
-
-                        hourTo: 12,
-
-                        cards: 2
-                      },
-
-                      {
-                        hourFrom: 12,
-
-                        hourTo: 13,
-
-                        cards: 1
-                      },
-
-                      {
-                        hourFrom: 13,
-
-                        hourTo: 14,
-
-                        cards: 1
-                      },
-
-                      {
-                        hourFrom: 14,
-
-                        hourTo: 15,
-
-                        cards: 1
-                      },
-
-                      {
-                        hourFrom: 15,
-
-                        hourTo: 16,
-
-                        cards: 1
-                      }
-                    ]
-                  },
-
-                  {
-                    day: '04/08/2023',
-
-                    totalCards: 1,
-
-                    carLimitSlots: [
-                      {
-                        hourFrom: 11,
-
-                        hourTo: 12,
-
-                        cards: 1
-                      }
-                    ]
-                  },
-
-                  {
-                    day: '05/08/2023',
-
-                    totalCards: 2,
-
-                    carLimitSlots: [
-                      {
-                        hourFrom: 11,
-
-                        hourTo: 12,
-
-                        cards: 1
-                      },
-
-                      {
-                        hourFrom: 12,
-
-                        hourTo: 13,
-
-                        cards: 1
-                      }
-                    ]
-                  }
-                ];
+            this.cardsLimits = data ? data : [];
             const wf: WorkflowCreateCardDTO = this.formWorkflow.get('workflow').value;
             this.cardsLimits.forEach((cl) => {
               const newSlots: CardLimitSlotDTO[] = [];
@@ -202,21 +144,19 @@ export class StepWorkflowComponent implements OnInit {
               }
               cl.carLimitSlots = newSlots;
             });
-            console.log(this.cardsLimits);
           },
           error: (e: ConcenetError) => {
             console.log(e);
           }
         });
-    } else {
     }
   }
-  public initialiceSubStates(): void {
+  public initialiceSubStates(cardsLimitMode?: boolean): void {
     this.subStateList = this.formWorkflow.get('entryState').value
       ? this.formWorkflow.get('entryState').value.workflowSubstates
       : [];
     const selectedSubState = this.formWorkflow.get('subState').value;
-    if (selectedSubState) {
+    if (selectedSubState && !cardsLimitMode) {
       this.formWorkflow.get('subState').setValue(
         this.subStateList.find((subState: WorkflowSubstateDTO) => subState.id === selectedSubState.id),
         { emitEvent: false }
@@ -259,7 +199,6 @@ export class StepWorkflowComponent implements OnInit {
       const dString = this.datePipe.transform(day, 'dd/MM/YYYY');
       const dayInfo = this.cardsLimits.filter((cl) => cl.day === dString)[0];
       if (dayInfo?.carLimitSlots?.length) {
-        console.log(dayInfo.carLimitSlots);
         return dayInfo.carLimitSlots;
       } else {
         const newSlots: CardLimitSlotDTO[] = [];
@@ -271,6 +210,11 @@ export class StepWorkflowComponent implements OnInit {
             maxReached: false
           };
           newSlots.push(slot);
+          this.cardsLimits.push({
+            day: dString,
+            totalCards: 0,
+            carLimitSlots: newSlots
+          });
         }
         return newSlots;
       }
