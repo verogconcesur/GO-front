@@ -32,6 +32,7 @@
         </div>
         <div class="newCard__content__form" fxLayoutAlign="left">
             <app-step1-workflow
+                #step1
                 [hidden]="stepIndex !== 1"
                 [formWorkflow]="formWorkflow"
                 [title]="labels.createCard | translate"

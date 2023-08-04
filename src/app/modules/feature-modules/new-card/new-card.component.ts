@@ -26,6 +26,7 @@ import { ProgressSpinnerDialogService } from '@shared/services/progress-spinner-
 import CombinedRequiredFieldsValidator from '@shared/validators/combined-required-fields.validator';
 import { NGXLogger } from 'ngx-logger';
 import { take, finalize } from 'rxjs/operators';
+import { StepWorkflowComponent } from './components/step-workflow/step-workflow.component';
 
 export const enum NewCardComponentModalEnum {
   ID = 'new-card-dialog-id',
@@ -45,6 +46,7 @@ export const enum NewCardComponentModalEnum {
 })
 export class NewCardComponent implements OnInit {
   @ViewChild('stepper') stepper: MatStepper;
+  @ViewChild('step1') step1: StepWorkflowComponent;
   public labels = {
     newCard: marker('newCard.newCard'),
     createCard: marker('newCard.create'),
@@ -146,6 +148,12 @@ export class NewCardComponent implements OnInit {
               },
               error: (error: ConcenetError) => {
                 this.logger.error(error);
+                if (error.code === 'CIW_OVER_LIMIT_HOUR' || error.code === 'CIW_OVER_LIMIT_DAY') {
+                  this.formWorkflow.get('deadLineDate').setValue(null);
+                  this.formWorkflow.get('deadLineHour').setValue(null);
+                  this.step1.initialiceLimitDates();
+                  this.stepIndex = 1;
+                }
                 this.globalMessageService.showError({
                   message: error.message,
                   actionText: this.translateService.instant(marker('common.close'))

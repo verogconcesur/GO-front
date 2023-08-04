@@ -669,6 +669,7 @@
         "lastPage": "Last page",
         "nextPage": "Next Page",
         "pageOf": "Page {num1} of {num2}",
+        "pageShortOf": "{num1} of {num2}",
         "pages": "Pages",
         "prevPage": "Previous page"
     },

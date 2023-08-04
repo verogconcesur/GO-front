@@ -33,7 +33,8 @@ export class StepWorkflowComponent implements OnInit {
     subStateUser: marker('newCard.workflow.subStateUser'),
     deadLineDate: marker('newCard.workflow.deadLineDate'),
     deadLineHour: marker('newCard.workflow.deadLineHour'),
-    required: marker('errors.required')
+    required: marker('errors.required'),
+    numOf: marker('pagination.pageShortOf')
   };
   public workflowList: WorkflowCreateCardDTO[] = [];
   public facilityList: { id: number; name: string }[] = [];
@@ -43,6 +44,7 @@ export class StepWorkflowComponent implements OnInit {
   public minDate = new Date();
   public maxDate = new Date(new Date().getFullYear() + 1, new Date().getMonth(), new Date().getDate());
   public cardsLimits: CardLimitSlotByDayDTO[] = [];
+  public maxCardsByHour = 0;
   private datePipe = new DatePipe('en-EN');
   constructor(private workflowsService: WorkflowsService, private spinnerService: ProgressSpinnerDialogService) {}
   public initialiceList(): void {
@@ -106,6 +108,7 @@ export class StepWorkflowComponent implements OnInit {
     }
   }
   public initialiceLimitDates(): void {
+    this.maxCardsByHour = (this.formWorkflow.get('workflow').value as WorkflowCreateCardDTO).workflowCardsLimit?.numCardsByHour;
     const wId = this.formWorkflow.get('workflow').value?.id;
     const fId = this.formWorkflow.get('facility').value?.id;
     this.cardsLimits = [];

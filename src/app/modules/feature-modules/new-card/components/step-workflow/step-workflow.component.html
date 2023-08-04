@@ -63,7 +63,9 @@
                         [value]="hour"
                         [ngClass]="hour.maxReached ? 'max-reached-date-class' : 'available-date-class'"
                         [disabled]="hour.maxReached && !allowOverLimitCards()"
-                        >{{ hour.hourFrom }}:00</mat-option
+                        >{{ hour.hourFrom }}:00 ({{
+                            labels.numOf | translate : { num1: hour.cards, num2: maxCardsByHour }
+                        }})</mat-option
                     >
                 </mat-select>
                 <mat-error *ngIf="formWorkflow.controls?.deadLineHour?.invalid">
