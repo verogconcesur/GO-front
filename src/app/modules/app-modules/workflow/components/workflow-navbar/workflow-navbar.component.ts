@@ -160,6 +160,9 @@ export class WorkflowNavbarComponent implements OnInit, OnDestroy {
         view = RouteConstants.WORKFLOWS_CALENDAR_VIEW;
     }
     if (this.currentUrl.indexOf(`/${view}`) > 0) {
+      if (view !== this.currentView) {
+        this.workflowService.workflowSelectedView$.next(view);
+      }
       this.currentView = view;
       return true;
     }

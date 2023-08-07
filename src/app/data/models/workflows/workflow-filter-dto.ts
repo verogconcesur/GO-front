@@ -12,6 +12,7 @@ export default interface WorkflowFilterDTO {
   states: WorkflowStateDTO[] | any[];
   subStates: WorkflowSubstateDTO[] | any[];
   users: WorkflowSubstateUserDTO[] | any[];
+  dateType: any;
   priorities: string[];
   substatesWithCards: 'BOTH' | 'WITH_CARDS' | 'WHITHOUT_CARDS';
 }

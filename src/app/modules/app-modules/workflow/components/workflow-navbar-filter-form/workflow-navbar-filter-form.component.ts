@@ -4,13 +4,21 @@ import { UntypedFormBuilder, UntypedFormGroup } from '@angular/forms';
 import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
 import WorkflowFilterDTO from '@data/models/workflows/workflow-filter-dto';
 import { marker } from '@biesbjerg/ngx-translate-extract-marker';
-import { map, startWith } from 'rxjs/operators';
+import { filter, map, startWith, take } from 'rxjs/operators';
 import WorkflowStateDTO from '@data/models/workflows/workflow-state-dto';
 import { forkJoin, Observable, of } from 'rxjs';
 import WorkflowSubstateDTO from '@data/models/workflows/workflow-substate-dto';
 import WorkflowSubstateUserDTO from '@data/models/workflows/workflow-substate-user-dto';
 import { WorkflowFilterService } from '../../aux-service/workflow-filter.service';
 import { WorkflowsService } from '@data/services/workflows.service';
+import { RouteConstants } from '@app/constants/route.constants';
+import WorkflowDTO from '@data/models/workflows/workflow-dto';
+import CardColumnDTO from '@data/models/cards/card-column-dto';
+import { WorkflowAdministrationService } from '@data/services/workflow-administration.service';
+import { ConcenetError } from '@app/types/error';
+import { TranslateService } from '@ngx-translate/core';
+import { GlobalMessageService } from '@shared/services/global-message.service';
+import { NGXLogger } from 'ngx-logger';
 
 @UntilDestroy()
 @Component({
@@ -20,13 +28,16 @@ import { WorkflowsService } from '@data/services/workflows.service';
 })
 export class WorkflowNavbarFilterFormComponent implements OnInit {
   @Input() hideSubstatesWithCardsButton: boolean;
+  public currentView: RouteConstants | string;
   public filterForm: UntypedFormGroup;
   public filterOptions: WorkflowFilterDTO = null;
+  public workflow: WorkflowDTO = null;
   public labels = {
     state: marker('common.state'),
     substate: marker('common.substate'),
     user: marker('common.user'),
     priority: marker('common.priority'),
+    dateType: marker('common.dateType'),
     filterState: marker('workflows.filterState'),
     filterSubstate: marker('workflows.filterSubstate'),
     filterUser: marker('workflows.filterUser'),
@@ -38,12 +49,16 @@ export class WorkflowNavbarFilterFormComponent implements OnInit {
   public statesOptions: Observable<WorkflowStateDTO[] | any[]>;
   public subStatesOptions: Observable<WorkflowSubstateDTO[] | any[]>;
   public usersOptions: Observable<WorkflowSubstateUserDTO[] | any[]>;
+  public dateTimeOptions: CardColumnDTO[] = [];
   private filterValue: WorkflowFilterDTO = null;
-
   constructor(
     private workflowService: WorkflowsService,
     private workflowFilterService: WorkflowFilterService,
-    private formBuilder: UntypedFormBuilder
+    private formBuilder: UntypedFormBuilder,
+    private workflowAdministrationService: WorkflowAdministrationService,
+    private globalMessageService: GlobalMessageService,
+    private logger: NGXLogger,
+    private translateService: TranslateService
   ) {}
 
   ngOnInit(): void {
@@ -52,6 +67,7 @@ export class WorkflowNavbarFilterFormComponent implements OnInit {
     this.initListeners();
   }
 
+  public isCalendarView = (): boolean => this.currentView && this.currentView === RouteConstants.WORKFLOWS_CALENDAR_VIEW;
   public isWorkflowFilterActive = (): boolean => this.workflowFilterService.isWorkflowFilterActive();
 
   public clearFilterData(): void {
@@ -67,16 +83,21 @@ export class WorkflowNavbarFilterFormComponent implements OnInit {
     if (this.filterForm.get('priorities').value.length) {
       this.filterForm.get('priorities').setValue([]);
     }
+    if (this.dateTimeOptions && this.dateTimeOptions.length) {
+      this.filterForm.get('dateType').setValue(this.dateTimeOptions[0]);
+    }
     if (this.filterForm.get('substatesWithCards').value) {
       this.filterForm.get('substatesWithCards').setValue('BOTH');
-      this.notifyChangesInFilter();
     }
+    this.notifyChangesInFilter();
   }
 
-  public hasDataSelected(option: 'states' | 'subStates' | 'users' | 'priorities' | 'substatesWithCards'): boolean {
+  public hasDataSelected(option: 'states' | 'subStates' | 'users' | 'priorities' | 'substatesWithCards' | 'dateType'): boolean {
     if (option !== 'substatesWithCards' && this.filterForm?.get(option)?.value?.length > 0) {
       return true;
     } else if (option === 'substatesWithCards' && this.filterForm?.get(option).value !== 'BOTH') {
+      return true;
+    } else if (option === 'dateType' && this.filterForm?.get(option).value) {
       return true;
     }
     return false;
@@ -116,6 +137,7 @@ export class WorkflowNavbarFilterFormComponent implements OnInit {
       states: [this.filterValue?.states ? this.filterValue.states : []],
       subStates: [this.filterValue?.subStates ? this.filterValue.subStates : []],
       users: [this.filterValue?.users ? this.filterValue.users : []],
+      dateType: [this.filterValue?.dateType ? this.filterValue.dateType : null],
       priorities: [this.filterValue?.priorities ? this.filterValue.priorities : []],
       substatesWithCards: [this.filterValue?.substatesWithCards ? this.filterValue?.substatesWithCards : 'BOTH'],
       statesSearch: [''],
@@ -125,6 +147,40 @@ export class WorkflowNavbarFilterFormComponent implements OnInit {
   }
 
   private initListeners(): void {
+    this.workflowService.workflowSelectedSubject$
+      .pipe(
+        untilDestroyed(this),
+        filter((workflow) => !!workflow)
+      )
+      .subscribe((workflow: WorkflowDTO) => {
+        this.workflow = workflow;
+        this.workflowAdministrationService
+          .getWorkflowDatetimes(this.workflow.id)
+          .pipe(take(1))
+          .subscribe({
+            next: (dateList) => {
+              this.dateTimeOptions = dateList;
+              if (this.dateTimeOptions && this.dateTimeOptions.length && !this.filterForm.get('dateType').value) {
+                this.filterForm.get('dateType').setValue(this.dateTimeOptions[0]);
+              } else if (this.filterForm.get('dateType').value) {
+                this.filterForm
+                  .get('dateType')
+                  .setValue(this.dateTimeOptions.find((option) => option.id === this.filterForm.get('dateType').value.id));
+              }
+            },
+            error: (error: ConcenetError) => {
+              this.dateTimeOptions = [];
+              this.logger.error(error);
+              this.globalMessageService.showError({
+                message: error.message,
+                actionText: this.translateService.instant(marker('common.close'))
+              });
+            }
+          });
+      });
+    this.workflowService.workflowSelectedView$.pipe(untilDestroyed(this)).subscribe((view) => {
+      this.currentView = view;
+    });
     this.workflowService.workflowSelectedSubject$.pipe(untilDestroyed(this)).subscribe((data) => {
       this.clearFilterData();
     });
@@ -142,6 +198,12 @@ export class WorkflowNavbarFilterFormComponent implements OnInit {
       });
     this.filterForm
       .get('users')
+      ?.valueChanges.pipe(untilDestroyed(this))
+      .subscribe((data) => {
+        this.notifyChangesInFilter();
+      });
+    this.filterForm
+      .get('dateType')
       ?.valueChanges.pipe(untilDestroyed(this))
       .subscribe((data) => {
         this.notifyChangesInFilter();
@@ -177,6 +239,7 @@ export class WorkflowNavbarFilterFormComponent implements OnInit {
       subStates: this.filterForm.get('subStates').value,
       users: this.filterForm.get('users').value,
       priorities: this.filterForm.get('priorities').value,
+      dateType: this.filterForm.get('dateType').value,
       substatesWithCards: this.filterForm.get('substatesWithCards').value
     };
     this.workflowFilterService.workflowFilterSubject$.next(filterValue);

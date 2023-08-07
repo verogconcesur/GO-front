@@ -6,6 +6,7 @@ import { RxStompService } from '@app/services/rx-stomp.service';
 import { Env } from '@app/types/env';
 import { marker } from '@biesbjerg/ngx-translate-extract-marker';
 import { TranslateService } from '@ngx-translate/core';
+import moment from 'moment';
 import { NGXLogger } from 'ngx-logger';
 
 @Component({
@@ -56,6 +57,8 @@ export class AppComponent implements OnInit {
         this.rxStompService.stompClient.forceDisconnect();
       });
     }
+    const locale = window.navigator.language;
+    moment.locale(locale);
   }
 
   private setVhProperty(): void {
