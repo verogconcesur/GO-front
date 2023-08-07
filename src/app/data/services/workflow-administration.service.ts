@@ -37,6 +37,7 @@ export class WorkflowAdministrationService {
   private readonly BUDGET_PATH = '/budget';
   private readonly VALIDATE_PATH = '/validatePublish';
   private readonly CHANGE_STATUS_PATH = '/changeStatus';
+  private readonly DATETIME_PATH = '/datetimes';
 
   constructor(@Inject(ENV) private env: Env, private http: HttpClient, private workflowFilterService: WorkflowFilterService) {}
 
@@ -171,6 +172,7 @@ export class WorkflowAdministrationService {
       .post<CardDTO[]>(`${this.env.apiBaseUrl}${this.WORKFLOW_PATH}/${workflowId}${this.CARD_PATH}`, card)
       .pipe(catchError((error) => throwError(error.error as ConcenetError)));
   }
+
   /**
    * Obtener Views Attributes Workflow
    *
@@ -179,6 +181,19 @@ export class WorkflowAdministrationService {
   public getWorkflowViewAttributes(workflowId: number): Observable<CardColumnDTO[]> {
     return this.http
       .get<CardColumnDTO[]>(`${this.env.apiBaseUrl}${this.WORKFLOW_PATH}/${workflowId}${this.VIEW_PATH}${this.ATTRIBUTES_PATH}`)
+      .pipe(catchError((error) => throwError(error.error as ConcenetError)));
+  }
+
+  /**
+   * Obtener Views Attributes Datetimes Workflow
+   *
+   * @returns CardColumnDTO[]
+   */
+  public getWorkflowDatetimes(workflowId: number): Observable<CardColumnDTO[]> {
+    return this.http
+      .get<CardColumnDTO[]>(
+        `${this.env.apiBaseUrl}${this.WORKFLOW_PATH}/${workflowId}${this.VIEW_PATH}${this.ATTRIBUTES_PATH}${this.DATETIME_PATH}`
+      )
       .pipe(catchError((error) => throwError(error.error as ConcenetError)));
   }
 

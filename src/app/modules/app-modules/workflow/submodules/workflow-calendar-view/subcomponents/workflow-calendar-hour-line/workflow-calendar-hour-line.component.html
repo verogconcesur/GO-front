@@ -1,0 +1,37 @@
+<div class="workflow-calendar-line">
+    <div class="workflow-calendar-line__header" *ngIf="first" fxLayout="row">
+        <div
+            class="workflow-calendar-line__header__cell"
+            *ngFor="let day of workflowHourLine.days"
+            fxLayout="row"
+            fxLayoutAlign="center center"
+            [ngClass]="{ highlight: compareTime(day.day) }"
+        >
+            <span>{{ day.day.format("dddd D") | titlecase }}</span>
+        </div>
+    </div>
+    <div class="workflow-calendar-line__hour" fxLayout="row">
+        <div
+            class="workflow-calendar-line__hour__cellhour"
+            *ngFor="let day of workflowHourLine.days; let i = index"
+            fxLayout="row wrap"
+            fxLayoutAlign="start start"
+            [ngClass]="{
+                highlight: compareTime(day.day, workflowHourLine.hour),
+                borderCalendar: i < workflowHourLine.days.length - 1
+            }"
+        >
+            <app-workflow-card
+                class="card-item"
+                *ngFor="let card of day.cards"
+                [card]="card"
+                [disableDrag]="true"
+                [forceSize]="'size-s'"
+                [navigationMode]="'absolute'"
+            ></app-workflow-card>
+        </div>
+        <div class="workflow-calendar-line__hour__time" fxLayout="row" fxLayoutAlign="center center" *ngIf="!first">
+            <span>{{ workflowHourLine.hour.format("H:mm") }}</span>
+        </div>
+    </div>
+</div>

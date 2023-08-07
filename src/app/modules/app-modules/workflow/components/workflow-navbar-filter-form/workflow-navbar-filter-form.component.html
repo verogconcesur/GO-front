@@ -10,6 +10,26 @@
         <mat-icon>close</mat-icon>
     </button>
     <mat-form-field
+        *ngIf="isCalendarView()"
+        appearance="outline"
+        floatLabel="always"
+        class="smaller-mat-form-fields__no-margin"
+        [ngClass]="{ dataSelected: hasDataSelected('dateType') }"
+    >
+        <mat-select
+            formControlName="dateType"
+            disableOptionCentering
+            [disabled]="!dateTimeOptions?.length"
+            [placeholder]="labels.dateType | translate"
+            [panelClass]="'workflow-panel-class bigger-selection-panel-class smaller-mat-form-fields'"
+            (click)="$event.stopPropagation()"
+        >
+            <mat-option *ngFor="let item of dateTimeOptions" [value]="item">
+                {{ item.name }}
+            </mat-option>
+        </mat-select>
+    </mat-form-field>
+    <mat-form-field
         appearance="outline"
         floatLabel="always"
         class="smaller-mat-form-fields__no-margin"
