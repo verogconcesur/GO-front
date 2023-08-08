@@ -246,10 +246,15 @@ export class WorkflowsService {
    * @param viewType 'BOARD' | 'CALENDAR' | 'TABLE'
    * @returns
    */
-  public getSingleWorkflowCalendarCard(cardId: number, viewType: 'BOARD' | 'CALENDAR' | 'TABLE'): Observable<WorkflowCardDTO> {
+  public getSingleWorkflowCalendarCard(
+    workflow: WorkflowDTO,
+    body: WorkflowCalendarBodyDTO,
+    cardId: number
+  ): Observable<WorkflowCardDTO> {
     return this.http
-      .get<WorkflowCardDTO>(
-        `${this.env.apiBaseUrl}${this.GET_WORKFLOWS_PATH}${this.GET_WORKFLOWS_VIEW_PATH}/${viewType}${this.GET_WORKFLOWS_CARD_PATH}/${cardId}`
+      .post<WorkflowCardDTO>(
+        `${this.env.apiBaseUrl}${this.GET_WORKFLOWS_PATH}/${workflow.id}${this.GET_CALENDAR_PATH}/${cardId}`,
+        body
       )
       .pipe(catchError((error) => throwError(error.error as ConcenetError)));
   }

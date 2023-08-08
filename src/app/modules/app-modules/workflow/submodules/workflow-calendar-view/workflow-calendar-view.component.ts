@@ -301,16 +301,40 @@ export class WorkflowCalendarViewComponent implements OnInit {
               .pipe(untilDestroyed(this), skip(1))
               .subscribe((resp) => {
                 if (resp && resp.cardInstanceWorkflowId) {
-                  this.workflowService
-                    .getSingleWorkflowCard(resp.cardInstanceWorkflowId, 'CALENDAR')
-                    .pipe(take(1))
-                    .subscribe((res) => {
-                      this.cardList = this.cardList.filter(
-                        (card: WorkflowCardDTO) => card.cardInstanceWorkflows[0].id !== resp.cardInstanceWorkflowId
+                  if (this.workflow && this.filters && this.filters.dateType) {
+                    const body: WorkflowCalendarBodyDTO = {
+                      facilityIds: this.facilities ? this.facilities.map((f: FacilityDTO) => f.id) : [],
+                      viewCalendarDateTimeItem: this.filters.dateType,
+                      fromDate: '',
+                      toDate: ''
+                    };
+                    if (this.modeActive('WEEK')) {
+                      body.fromDate = moment(this.formFilters.get('initDay').value).format('YYYY-MM-DD');
+                      body.toDate = moment(this.formFilters.get('initDay').value).add(6, 'day').format('YYYY-MM-DD');
+                    } else {
+                      body.fromDate = moment(this.formFilters.get('singleDay').value).format('YYYY-MM-DD');
+                      body.toDate = moment(this.formFilters.get('singleDay').value).format('YYYY-MM-DD');
+                    }
+                    this.workflowService
+                      .getSingleWorkflowCalendarCard(this.workflow, body, resp.cardInstanceWorkflowId)
+                      .pipe(take(1))
+                      .subscribe(
+                        (data: WorkflowCardDTO) => {
+                          this.cardList = this.cardList.filter(
+                            (card: WorkflowCardDTO) => card.cardInstanceWorkflows[0].id !== resp.cardInstanceWorkflowId
+                          );
+                          this.cardList.push(data);
+                          this.filterData();
+                        },
+                        (error: ConcenetError) => {
+                          this.logger.error(error);
+                          this.globalMessageService.showError({
+                            message: error.message,
+                            actionText: this.translateService.instant(marker('common.close'))
+                          });
+                        }
                       );
-                      this.cardList.push(res);
-                      this.filterData();
-                    });
+                  }
                 }
               });
           },
