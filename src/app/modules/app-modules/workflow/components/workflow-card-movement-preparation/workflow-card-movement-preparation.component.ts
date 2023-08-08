@@ -1,22 +1,33 @@
-import { Component, Inject, OnInit } from '@angular/core';
+import { DatePipe } from '@angular/common';
+import { Component, Inject, OnInit, ViewEncapsulation } from '@angular/core';
 import { FormBuilder, UntypedFormArray, UntypedFormControl, UntypedFormGroup, Validators } from '@angular/forms';
+import { MatCalendarCellClassFunction } from '@angular/material/datepicker';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { marker } from '@biesbjerg/ngx-translate-extract-marker';
 import { TemplateComunicationItemsDTO } from '@data/models/templates/templates-communication-dto';
+import WorkflowCardsLimitDTO, {
+  CardLimitSlotByDayDTO,
+  CardLimitSlotDTO
+} from '@data/models/workflow-admin/workflow-card-limit-dto';
 import WorkflowEventMailDTO from '@data/models/workflows/workflow-event-mail-dto';
 import WorkflowSubstateEventDTO from '@data/models/workflows/workflow-substate-event-dto';
 import WorkflowSubstateUserDTO from '@data/models/workflows/workflow-substate-user-dto';
+import { WorkflowsService } from '@data/services/workflows.service';
 // eslint-disable-next-line max-len
 import { TextEditorWrapperConfigI } from '@modules/feature-modules/text-editor-wrapper/interfaces/text-editor-wrapper-config.interface';
 import { TranslateService } from '@ngx-translate/core';
+import { ProgressSpinnerDialogService } from '@shared/services/progress-spinner-dialog.service';
+import { finalize, take } from 'rxjs';
 
 @Component({
   selector: 'app-workflow-card-movement-preparation',
   templateUrl: './workflow-card-movement-preparation.component.html',
-  styleUrls: ['./workflow-card-movement-preparation.component.scss']
+  styleUrls: ['./workflow-card-movement-preparation.component.scss'],
+  encapsulation: ViewEncapsulation.None
 })
 export class WorkflowCardMovementPreparationComponent implements OnInit {
   public taskForm: UntypedFormGroup = null;
+  public cardsLimitForm: UntypedFormGroup = null;
   public formsCreated = false;
   public userForm: UntypedFormGroup = null;
   public preparationIn: WorkflowSubstateEventDTO = null;
@@ -56,13 +67,23 @@ export class WorkflowCardMovementPreparationComponent implements OnInit {
     emails: marker('common.emails'),
     errorPatternMessage: marker('errors.emailPattern'),
     subject: marker('emails.subject'),
-    receivers: marker('emails.receivers')
+    receivers: marker('emails.receivers'),
+    deadLineDate: marker('newCard.workflow.deadLineDate'),
+    deadLineHour: marker('newCard.workflow.deadLineHour'),
+    numOf: marker('pagination.pageShortOf')
   };
   public tabsToShow: ('IN' | 'OUT' | 'MOV')[] = [];
   public tabToShow: 'IN' | 'OUT' | 'MOV';
   public sendToOtherWorkflow = false;
   public mainUserSelector = false;
+  public workflowCardsLimit: WorkflowCardsLimitDTO = null;
   public emailPattern = '^[a-z0-9._%+-]+@[a-z0-9.-]+\\.[a-z]{2,4}$';
+  public minDate = new Date();
+  public maxDate = new Date(new Date().getFullYear() + 1, new Date().getMonth(), new Date().getDate());
+  public cardsLimits: CardLimitSlotByDayDTO[] = [];
+  public maxCardsByHour = 0;
+  public cardsLimitsExceeded = false;
+  private datePipe = new DatePipe('en-EN');
 
   constructor(
     public dialogRef: MatDialogRef<WorkflowCardMovementPreparationComponent>,
@@ -75,9 +96,18 @@ export class WorkflowCardMovementPreparationComponent implements OnInit {
       view: 'MOVES_IN_THIS_WORKFLOW' | 'MOVES_IN_OTHER_WORKFLOWS';
       selectedUser: WorkflowSubstateUserDTO;
       mainUserSelector: boolean;
+      workflowCardsLimit: WorkflowCardsLimitDTO;
+      cardIntanceId: number;
+      altSubstateLimit: {
+        destinationName: string;
+        preparation: WorkflowSubstateEventDTO[];
+        usersIn: WorkflowSubstateUserDTO[];
+      };
     },
     private fb: FormBuilder,
-    private translateService: TranslateService
+    private workflowService: WorkflowsService,
+    private translateService: TranslateService,
+    private spinnerService: ProgressSpinnerDialogService
   ) {}
 
   ngOnInit(): void {
@@ -85,7 +115,103 @@ export class WorkflowCardMovementPreparationComponent implements OnInit {
     this.usersOut = this.data.usersOut;
     this.usersMov = this.data.usersIn?.length ? this.data.usersIn : this.data.usersOut;
     this.mainUserSelector = this.data.mainUserSelector;
-    this.data.preparation.forEach((p: WorkflowSubstateEventDTO) => {
+    this.workflowCardsLimit = this.data.workflowCardsLimit;
+    this.cardsLimits = [];
+
+    if (this.data.view === 'MOVES_IN_OTHER_WORKFLOWS') {
+      this.sendToOtherWorkflow = true;
+    }
+    if (this.sendToOtherWorkflow) {
+      this.taskForm = this.fb.group({
+        description: [null, Validators.required]
+      });
+    }
+
+    if (!this.workflowCardsLimit?.cardsLimit || !this.workflowCardsLimit.allowOverLimit) {
+      // eslint-disable-next-line max-len
+      //Si no hay límite de tarjetas o no se puede sobrepasar el límite, no puede darse el caso de que se cambiar el subestado destino
+      this.setMovesEventsFormsAndTabs();
+    }
+
+    if (this.workflowCardsLimit?.cardsLimit) {
+      this.maxCardsByHour = this.workflowCardsLimit?.numCardsByHour;
+      const spinner = this.spinnerService.show();
+      this.workflowService
+        .getCardLimitsCreatecardList(
+          this.workflowCardsLimit.workflowSubstate.workflowState.workflow.id,
+          null,
+          this.data.cardIntanceId
+        )
+        .pipe(
+          take(1),
+          finalize(() => this.spinnerService.hide(spinner))
+        )
+        .subscribe({
+          next: (data: CardLimitSlotByDayDTO[]) => {
+            this.cardsLimits = data ? data : [];
+            this.cardsLimits.forEach((cl) => {
+              const newSlots: CardLimitSlotDTO[] = [];
+              for (let x = this.workflowCardsLimit.initTime; x <= this.workflowCardsLimit.endTime; x++) {
+                let slot: CardLimitSlotDTO = cl.carLimitSlots.find((c) => c.hourFrom === x);
+                slot = slot
+                  ? slot
+                  : {
+                      cards: 0,
+                      hourFrom: x,
+                      hourTo: x + 1
+                    };
+                slot.maxReached = false;
+                if (slot.cards >= this.workflowCardsLimit.numCardsByHour) {
+                  slot.maxReached = true;
+                }
+                newSlots.push(slot);
+              }
+              cl.carLimitSlots = newSlots;
+            });
+            this.cardsLimitForm = this.fb.group({
+              deadLineDate: [null, Validators.required],
+              deadLineHour: [null, Validators.required]
+            });
+          },
+          error: (e) => {
+            console.log(e);
+          }
+        });
+    }
+  }
+
+  public changeDeadLine(resetSlot = false): void {
+    if (resetSlot) {
+      this.cardsLimitForm.get('deadLineHour').setValue(null);
+    }
+    const date: Date = this.cardsLimitForm.get('deadLineDate').value;
+    const slot: CardLimitSlotDTO = this.cardsLimitForm.get('deadLineHour').value;
+    this.cardsLimitsExceeded = false;
+    if (date && !this.checkDateDisponibility(date)) {
+      this.cardsLimitsExceeded = true;
+    } else if (slot?.maxReached) {
+      this.cardsLimitsExceeded = true;
+    }
+    this.tabsToShow = [];
+    this.formsCreated = false;
+    this.userForm = null;
+    this.preparationIn = null;
+    this.preparationInForm = null;
+    this.preparationOut = null;
+    this.preparationOutForm = null;
+    this.preparationMov = null;
+    this.preparationMovForm = null;
+    if (date && slot) {
+      this.setMovesEventsFormsAndTabs();
+    }
+  }
+
+  public setMovesEventsFormsAndTabs(): void {
+    const events: WorkflowSubstateEventDTO[] = this.cardsLimitsExceeded
+      ? this.data.altSubstateLimit.preparation
+      : this.data.preparation;
+    this.usersIn = this.cardsLimitsExceeded ? this.data.altSubstateLimit.usersIn : this.data.usersIn;
+    events.forEach((p: WorkflowSubstateEventDTO) => {
       if (
         p.substateEventType === 'IN' &&
         (p.requiredSize ||
@@ -119,9 +245,6 @@ export class WorkflowCardMovementPreparationComponent implements OnInit {
       }
     });
     this.tabToShow = this.tabsToShow[0];
-    if (this.data.view === 'MOVES_IN_OTHER_WORKFLOWS') {
-      this.sendToOtherWorkflow = true;
-    }
     if (this.data.selectedUser?.user?.id && this.findUserIn(this.data.selectedUser, this.usersIn)) {
       this.userInDisabled = true;
     }
@@ -130,6 +253,86 @@ export class WorkflowCardMovementPreparationComponent implements OnInit {
       this.userMovDisabled = true;
     }
     this.initForm();
+  }
+
+  hoursList(): CardLimitSlotDTO[] {
+    const day: Date = this.cardsLimitForm.get('deadLineDate').value;
+    if (this.workflowCardsLimit.cardsLimit && day) {
+      const dString = this.datePipe.transform(day, 'dd/MM/YYYY');
+      const dayInfo = this.cardsLimits.filter((cl) => cl.day === dString)[0];
+      if (dayInfo?.carLimitSlots?.length) {
+        return dayInfo.carLimitSlots;
+      } else {
+        const newSlots: CardLimitSlotDTO[] = [];
+        for (let x = this.workflowCardsLimit.initTime; x <= this.workflowCardsLimit.endTime; x++) {
+          const slot: CardLimitSlotDTO = {
+            cards: 0,
+            hourFrom: x,
+            hourTo: x + 1,
+            maxReached: false
+          };
+          newSlots.push(slot);
+          this.cardsLimits.push({
+            day: dString,
+            totalCards: 0,
+            carLimitSlots: newSlots
+          });
+        }
+        return newSlots;
+      }
+    }
+    return [];
+  }
+
+  dateClass: MatCalendarCellClassFunction<Date> = (cellDate, view) => {
+    // Only highligh dates inside the month view.
+    if (view === 'month') {
+      const d = cellDate;
+      if (
+        d.getFullYear() < new Date().getFullYear() ||
+        d.getMonth() < new Date().getMonth() ||
+        d.getDate() < new Date().getDate() ||
+        d.getDay() === 0
+      ) {
+        return '';
+      }
+      if (this.workflowCardsLimit.cardsLimit) {
+        return this.checkDateDisponibility(d) ? 'available-date-class' : 'max-reached-date-class';
+      }
+      return 'available-date-class';
+    }
+    return '';
+  };
+  datesLimitFilter = (d: Date | null): boolean => {
+    d = d ? d : new Date();
+    // Prevent Sunday from being selected.
+    if (d.getDay() === 0) {
+      return false;
+    }
+    if (this.workflowCardsLimit.cardsLimit && !this.workflowCardsLimit.allowOverLimit) {
+      return this.checkDateDisponibility(d);
+    }
+    return true;
+  };
+  checkDateDisponibility(d: Date): boolean {
+    const dString = this.datePipe.transform(d, 'dd/MM/YYYY');
+    const dayInfo = this.cardsLimits.filter((cl) => cl.day === dString)[0];
+    //Comprobamos que no sobrepase el limite diario
+    if (dayInfo && dayInfo.totalCards >= this.workflowCardsLimit.numCardsByDay) {
+      return false;
+    } else if (
+      dayInfo &&
+      dayInfo.carLimitSlots?.length &&
+      dayInfo.carLimitSlots.reduce((a: boolean, b: CardLimitSlotDTO) => {
+        if (!a || !b.maxReached) {
+          a = false;
+        }
+        return a;
+      }, true)
+    ) {
+      return false;
+    }
+    return true;
   }
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -167,11 +370,6 @@ export class WorkflowCardMovementPreparationComponent implements OnInit {
   }
 
   public initForm(): void {
-    if (this.sendToOtherWorkflow) {
-      this.taskForm = this.fb.group({
-        description: [null, Validators.required]
-      });
-    }
     if (this.mainUserSelector) {
       this.userForm = this.fb.group({
         user: [null, Validators.required]
@@ -355,6 +553,8 @@ export class WorkflowCardMovementPreparationComponent implements OnInit {
     const data = {
       task: this.taskForm ? this.taskForm.value : null,
       user: this.userForm ? this.userForm.value : null,
+      deadLine: this.cardsLimitForm ? this.cardsLimitForm.value : null,
+      targetId: this.cardsLimitsExceeded ? this.workflowCardsLimit.workflowSubstate.id : null,
       in: this.preparationInForm ? this.preparationInForm.value : null,
       out: this.preparationOutForm ? this.preparationOutForm.value : null,
       mov: this.preparationMovForm ? this.preparationMovForm.value : null
@@ -373,6 +573,9 @@ export class WorkflowCardMovementPreparationComponent implements OnInit {
   }
 
   public getModalTitle(): string {
+    if (this.cardsLimitsExceeded) {
+      return this.translateService.instant(this.labels.title, { destination: this.data.altSubstateLimit.destinationName });
+    }
     return this.translateService.instant(this.labels.title, { destination: this.data.destinationName });
   }
 }

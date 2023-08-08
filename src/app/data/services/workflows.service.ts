@@ -36,6 +36,7 @@ export class WorkflowsService {
   private readonly GET_MOCK_WORKFLOWS_PATH = '/api/mock/workflow';
   private readonly GET_WORKFLOWS_CREATECARD_PATH = '/api/cardInstanceWorkflow/createCard/getWorkflows';
   private readonly GET_CARD_LIMITS_CREATECARD_PATH = '/api/cardInstanceWorkflow/createCard/getCardLimitSlots';
+  private readonly GET_CARD_LIMITS_PATH = '/getCardLimitSlots';
   private readonly GET_WORKFLOWS_LIST_PATH = '/list';
   private readonly GET_WORKFLOWS_SEARCH_PATH = '/search';
   private readonly GET_WORKFLOWS_SEARCH_PAGED_PATH = '/searchPaged';
@@ -150,10 +151,20 @@ export class WorkflowsService {
    *
    * @returns CardLimitSlotByDayDTO[]
    */
-  public getCardLimitsCreatecardList(workflowId: number, facilityId: number): Observable<CardLimitSlotByDayDTO[]> {
-    return this.http
-      .get<CardLimitSlotByDayDTO[]>(`${this.env.apiBaseUrl}${this.GET_CARD_LIMITS_CREATECARD_PATH}/${workflowId}/${facilityId}`)
-      .pipe(catchError((error) => throwError(error.error as ConcenetError)));
+  public getCardLimitsCreatecardList(
+    workflowId: number,
+    facilityId?: number,
+    cardInstanceId?: number
+  ): Observable<CardLimitSlotByDayDTO[]> {
+    let url = '';
+    if (facilityId) {
+      url = `${this.env.apiBaseUrl}${this.GET_CARD_LIMITS_CREATECARD_PATH}/${workflowId}/${facilityId}`;
+    } else if (cardInstanceId) {
+      url =
+        `${this.env.apiBaseUrl}${this.GET_WORKFLOWS_PATH}${this.GET_CARD_INSTANCE_WORKFLOW}/${cardInstanceId}` +
+        `${this.GET_WORKFLOW_MOVEMENT_PATH}/getCardLimitSlots/${workflowId}`;
+    }
+    return this.http.get<CardLimitSlotByDayDTO[]>(url).pipe(catchError((error) => throwError(error.error as ConcenetError)));
   }
 
   /**
@@ -273,12 +284,14 @@ export class WorkflowsService {
     card: WorkflowCardDTO,
     targetId: number,
     wUser: WorkflowSubstateUserDTO,
-    newOrderNumber: number
+    newOrderNumber: number,
+    dateLimit?: number
   ): Observable<WorkflowMoveDTO[]> {
     const cardInstanceWorkflow: WorkflowCardInstanceDTO = card.cardInstanceWorkflows[0];
     cardInstanceWorkflow.orderNumber = newOrderNumber;
     cardInstanceWorkflow.cardInstanceId = card.id;
     cardInstanceWorkflow.cardInstanceWorkflowUsers[0].userId = wUser?.user ? wUser?.user?.id : null;
+    cardInstanceWorkflow.dateAppliTimeLimit = dateLimit;
     return this.http
       .post<WorkflowMoveDTO[]>(
         `${this.env.apiBaseUrl}${this.GET_WORKFLOWS_PATH}/${card?.cardInstanceWorkflows[0]?.workflowId}` +
