@@ -10,7 +10,7 @@
             <span>{{ day.day.format("dddd D") | titlecase }}</span>
         </div>
     </div>
-    <div class="workflow-calendar-line__hour" fxLayout="row">
+    <div class="workflow-calendar-line__hour" fxLayout="row" id="{{ isCurrentHour ? 'WorkflowLine' : '' }}">
         <div
             class="workflow-calendar-line__hour__cellhour"
             *ngFor="let day of workflowHourLine.days; let i = index"
@@ -33,5 +33,6 @@
         <div class="workflow-calendar-line__hour__time" fxLayout="row" fxLayoutAlign="center center" *ngIf="!first">
             <span>{{ workflowHourLine.hour.format("H:mm") }}</span>
         </div>
+        <div class="workflow-calendar-line__hour__timeLine" *ngIf="isCurrentHour" id="WorkflowTimeLine"></div>
     </div>
 </div>

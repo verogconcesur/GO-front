@@ -54,6 +54,21 @@
         top: -10px;
         color: lighten(mat-color($primary, 200), 10%);
       }
+      &__timeLine {
+        position: absolute;
+        min-width: 100%;
+        border-top: 1px solid lighten(mat-color($primary, 500), 10%);
+      }
+      &__timeLine::before {
+        position: absolute;
+        content: '';
+        background-color: lighten(mat-color($primary, 500), 10%);
+        border-radius: 50%;
+        height: 8px;
+        width: 8px;
+        left: -7px;
+        top: -4px;
+      }
     }
   }
 }
