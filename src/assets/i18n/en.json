@@ -5,7 +5,7 @@
         "cards": "Cards",
         "exit": "Exit settings",
         "facilities": "Facilities",
-        "landing": "Client's landing",
+        "landing": "Client's service",
         "organization": "Organization",
         "records": "Records",
         "templates": {
@@ -509,7 +509,7 @@
         "config": "Configuration",
         "defaultTheme": "Default theme",
         "facilities": "Facilities",
-        "facilitiesConfig": "Facilities to show in the landing",
+        "facilitiesConfig": "Facilities to show in the Client's service",
         "fileSharedWithCustomerInLanding": "File shared with the customer",
         "imagesConfig": "Images and logos to config",
         "links": "Social and menu links",
@@ -527,7 +527,7 @@
         "stopSharingFileWithCustomerInLanding": "Stop sharing file with the customer",
         "theme": "Theme",
         "themeConfig": "Theme config",
-        "title": "Client's landing"
+        "title": "Client's service"
     },
     "login": {
         "description": "Please enter your credentials",
@@ -839,8 +839,8 @@
         "historical": "Historical",
         "initTime": "Initial hour",
         "inputEvent": "Substate input events",
-        "landingCardView": "LandingCard in Landing",
-        "landingDetailView": "Landing Detail",
+        "landingCardView": "LandingCard in Client's service",
+        "landingDetailView": "Client's service Detail",
         "manualCreateCard": "Manual creation of cards",
         "movementCreateNewTask": "This movement creates a new task in workflow destination",
         "movementExtraAutoDescription": "Extra movement",
@@ -872,7 +872,7 @@
         "requiredSize": "Assign size",
         "requiredUser": "Assign to other user",
         "select": "Select a Workflow",
-        "selectAttachmentTab": "Select a category for the landing attachments",
+        "selectAttachmentTab": "Select a category for the Client's service attachments",
         "selectBrands": "To which brand?",
         "selectDepartments": "Select deparment from: {facility}",
         "selectFacilities": "Which facility do you belong to?",
