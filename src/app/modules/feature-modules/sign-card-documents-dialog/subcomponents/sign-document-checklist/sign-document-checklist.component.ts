@@ -186,7 +186,7 @@ export class SignDocumentChecklistComponent implements OnInit, AfterViewInit, On
               } else if (fg.get('typeItem').value === 'CHECK' && this.mode === 'NO_REMOTE') {
                 fg.get('itemVal')
                   .get('booleanValue')
-                  .setValue(data[k] === 'Yes' ? true : null);
+                  .setValue(data[k] ? true : null);
                 this.formDataIdValueMapByPdf[n] = data[k] === 'Yes' ? true : null;
               }
             });
