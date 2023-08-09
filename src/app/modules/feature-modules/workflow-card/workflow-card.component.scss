@@ -49,6 +49,13 @@
     align-items: flex-start;
     flex-direction: column;
     width: calc(100% - 20px);
+    &__date {
+      font-size: 0.85em;
+      color: lighten(mat-contrast($primary, 50), 20%);
+      position: absolute;
+      top: 7px;
+      right: 10px;
+    }
     &__tasks {
       font-size: 0.85em;
       color: lighten(mat-contrast($primary, 50), 20%);
@@ -56,12 +63,16 @@
       justify-content: center;
       align-items: center;
       position: absolute;
-      top: 10px;
+      top: 7px;
       right: 10px;
       border-radius: 4px;
-      padding: 2px 5px;
+      padding-left: 5px;
       mat-icon {
         padding-left: 5px;
+      }
+      &.bottom {
+        top: auto;
+        bottom: 13px;
       }
       &.completed {
         background-color: mat-color($primary, statusSuccess);

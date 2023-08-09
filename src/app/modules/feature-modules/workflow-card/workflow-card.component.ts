@@ -34,6 +34,8 @@ export class WorkflowCardComponent implements OnInit {
   @Input() additionalInfoIcon: string;
   @Input() showAdditionalInfo = false;
   @Input() viewedBtn = false;
+  @Input() dateToShow: number;
+  @Input() dateFormat = 'dd/MM/yy, HH:mm';
   @Output() viewedAction: EventEmitter<boolean> = new EventEmitter();
   @Output() isDraggingEvent: EventEmitter<boolean> = new EventEmitter();
   public cardSize = 'size-m';
