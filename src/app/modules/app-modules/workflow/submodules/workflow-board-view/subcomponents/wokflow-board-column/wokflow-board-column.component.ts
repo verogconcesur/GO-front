@@ -259,6 +259,12 @@ export class WokflowBoardColumnComponent implements OnInit {
     return classes;
   }
 
+  public getDateToShow(card: WorkflowCardDTO) {
+    if (card.cardInstanceWorkflows[0]?.dateAppliTimeLimit) {
+      return card.cardInstanceWorkflows[0]?.dateAppliTimeLimit;
+    }
+  }
+
   public mouseOverCollapsedCard(event: MouseEvent, action: 'over' | 'leave') {
     if (this.isDragAndDropEnabled) {
       return;
