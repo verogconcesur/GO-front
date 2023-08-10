@@ -10,7 +10,7 @@ export class WorkflowDragAndDropService {
   public droppableStates$: BehaviorSubject<string[]> = new BehaviorSubject(null);
   public expandedColumns$: BehaviorSubject<string[]> = new BehaviorSubject([]);
 
-  private readonly DRAG_AND_DROP_ENABLED = false;
+  private readonly DRAG_AND_DROP_ENABLED = true;
 
   constructor() {}
 
