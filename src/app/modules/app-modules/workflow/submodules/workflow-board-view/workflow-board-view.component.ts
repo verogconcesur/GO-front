@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { Component, ElementRef, HostListener, NgZone, OnDestroy, OnInit, ViewChild } from '@angular/core';
+import { Component, ElementRef, HostListener, Inject, NgZone, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { ChildActivationEnd, NavigationEnd, Router } from '@angular/router';
 import { RouteConstants } from '@app/constants/route.constants';
 import { ConcenetError } from '@app/types/error';
@@ -26,6 +26,8 @@ import { WorkflowFilterService } from '../../aux-service/workflow-filter.service
 import { WorkflowPrepareAndMoveService } from '../../aux-service/workflow-prepare-and-move-aux.service';
 import { WokflowBoardColumnComponent } from './subcomponents/wokflow-board-column/wokflow-board-column.component';
 import { PerformanceService } from '@app/services/performance.service';
+import { ENV } from '@app/constants/global.constants';
+import { Env } from '@app/types/env';
 
 @UntilDestroy()
 @Component({
@@ -62,6 +64,7 @@ export class WorkflowBoardViewComponent implements OnInit {
   // private renderedDataTimeStamp: number;
 
   constructor(
+    @Inject(ENV) private env: Env,
     private workflowService: WorkflowsService,
     private workflowFilterService: WorkflowFilterService,
     private spinnerService: ProgressSpinnerDialogService,
@@ -122,8 +125,12 @@ export class WorkflowBoardViewComponent implements OnInit {
     }
     this.prepareAndMoveService.reloadData$
       .pipe(untilDestroyed(this))
-      .subscribe((data: 'MOVES_IN_THIS_WORKFLOW' | 'MOVES_IN_OTHER_WORKFLOWS') => {
-        if (data === 'MOVES_IN_THIS_WORKFLOW' || data === 'MOVES_IN_OTHER_WORKFLOWS') {
+      .subscribe((data: 'MOVES_IN_THIS_WORKFLOW' | 'MOVES_IN_OTHER_WORKFLOWS' | 'UPDATE_INFORMATION') => {
+        if (
+          data === 'MOVES_IN_THIS_WORKFLOW' ||
+          data === 'MOVES_IN_OTHER_WORKFLOWS' ||
+          (data === 'UPDATE_INFORMATION' && !this.env.socketsEnabled)
+        ) {
           this.reloadCardData(+new Date());
           this.prepareAndMoveService.reloadData$.next(null);
         }
