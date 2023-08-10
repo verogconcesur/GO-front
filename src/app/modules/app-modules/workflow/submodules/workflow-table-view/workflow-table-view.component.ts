@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, Inject, OnInit } from '@angular/core';
 import { Router, NavigationEnd, ChildActivationEnd } from '@angular/router';
 import { RouteConstants } from '@app/constants/route.constants';
 import { ConcenetError } from '@app/types/error';
@@ -23,6 +23,8 @@ import { skip, take } from 'rxjs/operators';
 import { WorkflowFilterService } from '../../aux-service/workflow-filter.service';
 import { WorkflowPrepareAndMoveService } from '../../aux-service/workflow-prepare-and-move-aux.service';
 import { PerformanceService } from '@app/services/performance.service';
+import { ENV } from '@app/constants/global.constants';
+import { Env } from '@app/types/env';
 @UntilDestroy()
 @Component({
   selector: 'app-workflow-table-view',
@@ -50,6 +52,7 @@ export class WorkflowTableViewComponent implements OnInit {
   // private renderedDataTimeStamp: number;
 
   constructor(
+    @Inject(ENV) private env: Env,
     private workflowService: WorkflowsService,
     private workflowFilterService: WorkflowFilterService,
     private spinnerService: ProgressSpinnerDialogService,
@@ -85,8 +88,12 @@ export class WorkflowTableViewComponent implements OnInit {
     });
     this.prepareAndMoveService.reloadData$
       .pipe(untilDestroyed(this))
-      .subscribe((data: 'MOVES_IN_THIS_WORKFLOW' | 'MOVES_IN_OTHER_WORKFLOWS') => {
-        if (data === 'MOVES_IN_THIS_WORKFLOW' || data === 'MOVES_IN_OTHER_WORKFLOWS') {
+      .subscribe((data: 'MOVES_IN_THIS_WORKFLOW' | 'MOVES_IN_OTHER_WORKFLOWS' | 'UPDATE_INFORMATION') => {
+        if (
+          data === 'MOVES_IN_THIS_WORKFLOW' ||
+          data === 'MOVES_IN_OTHER_WORKFLOWS' ||
+          (data === 'UPDATE_INFORMATION' && !this.env.socketsEnabled)
+        ) {
           this.reloadCardData(+new Date());
           this.prepareAndMoveService.reloadData$.next(null);
         }

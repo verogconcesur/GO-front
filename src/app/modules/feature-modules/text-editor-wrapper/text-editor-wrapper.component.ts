@@ -21,6 +21,7 @@ export class TextEditorWrapperComponent implements OnInit, AfterViewInit {
   @Output() contentChanged = new EventEmitter();
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   public summerNoteconfig: any;
+  public summernoteHtmlContent: string;
   //Styles used to mantain the styles used by summernote on export
   private summernoteStyles = '';
 // eslint-disable-next-line max-len
@@ -28,7 +29,6 @@ export class TextEditorWrapperComponent implements OnInit, AfterViewInit {
     //'<style><!--SummernoteStyles-->table{border-collapse:collapse;width:100%}table td, table th{border:1px solid #ececec;padding:5px 3px}table.table-no-bordered td, table.table-no-bordered th{border:0px;}a{background-color:inherit;color:#337ab7;font-family:inherit;font-weight:inherit;text-decoration:inherit}a:focus, a:hover{color:#23527c;outline:0;text-decoration:underline}figure{margin:0}</style>';
   private summernoteNode: any;
   private lang: string;
-  private sumernoteHtmlContent = '';
 
   constructor(private translateService: TranslateService) {
     if (this.translateService.currentLang === 'en') {
@@ -99,7 +99,7 @@ export class TextEditorWrapperComponent implements OnInit, AfterViewInit {
           ['style', ['style', 'bold', 'italic', 'underline', 'clear']],
           ['font', ['fontname', 'color']], //'fontsize'
           ['para', ['ul', 'ol', 'paragraph']],
-          ['insert', ['table', 'link', 'picture', 'video']]
+          ['insert', ['table', 'link', 'picture', 'video']],
         ];
       }
       if (misc && misc.length) {
@@ -128,7 +128,7 @@ export class TextEditorWrapperComponent implements OnInit, AfterViewInit {
         placeholder: this.placeholder,
         disableResizeEditor: this.textEditorConfig.disableResizeEditor ? true : false,
         disableDragAndDrop: this.textEditorConfig.disableDragAndDrop ? true : false,
-        airMode: this.textEditorConfig.airMode ? true : false,
+        airMode:  this.textEditorConfig.airMode ? true : false,
         popover: {
           table: [
             ['add', ['addRowDown', 'addRowUp', 'addColLeft', 'addColRight']],
@@ -138,27 +138,32 @@ export class TextEditorWrapperComponent implements OnInit, AfterViewInit {
         },
         ...extra,
         callbacks: {
-          onChange: () => {
-            let html = this.summernoteNode.innerHTML;
-            if (
-              html.indexOf('<!--SummernoteStyles-->') === -1 &&
-              (html.indexOf('<table') >= 0 || html.indexOf('< table') >= 0 || html.indexOf('<a') >= 0 || html.indexOf('< a') >= 0)
-            ) {
-              html = `${this.summernoteStyles} ${html}`;
-            }
-            this.sumernoteHtmlContent = html;
-            this.contentChanged.emit(html);
+          onChange: (contents: any) => {
+            this.summernoteHtmlContent = contents;
+            // let html = this.summernoteHtmlContent;
+            // if (
+            //   html.indexOf('<!--SummernoteStyles-->') === -1 &&
+            //   (html.indexOf('<table') >= 0 || html.indexOf('< table') >= 0 || html.indexOf('<a') >= 0 || html.indexOf('< a') >= 0)
+            // ) {
+            //   html = `<!--SummernoteStyles--> ${html}`;
+            // }
+
+            this.contentChanged.emit(this.summernoteHtmlContent);
+
+
           },
           onChangeCodeview: (contents: any) => {
-            let html = contents;
-            if (
-              html.indexOf('<!--SummernoteStyles-->') === -1 &&
-              (html.indexOf('<table') >= 0 || html.indexOf('< table') >= 0 || html.indexOf('<a') >= 0 || html.indexOf('< a') >= 0)
-            ) {
-              html = `${this.summernoteStyles} ${html}`;
-            }
-            this.sumernoteHtmlContent = html;
-            this.contentChanged.emit(html);
+            this.summernoteHtmlContent = contents;
+
+            // if (
+            //   this.summernoteHtmlContent.indexOf('<!--SummernoteStyles-->') === -1 &&
+            //   (this.summernoteHtmlContent.indexOf('<table') >= 0 || this.summernoteHtmlContent.indexOf('< table') >= 0 || this.summernoteHtmlContent.indexOf('<a') >= 0 || this.summernoteHtmlContent.indexOf('< a') >= 0)
+            // ) {
+            //   this.summernoteHtmlContent = `<!--SummernoteStyles--> ${this.summernoteHtmlContent}`;
+            // }
+
+          this.summernoteNode.innerHTML = contents;
+          this.contentChanged.emit(contents);
           }
         }
       };
