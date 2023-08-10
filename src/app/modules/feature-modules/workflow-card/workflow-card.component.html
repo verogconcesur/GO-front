@@ -53,7 +53,7 @@
 
         <div
             class="workflow-card__info__tasks"
-            [ngClass]="{ completed: card.countCompletedTasks === card.countTotalTasks, bottom: dateToShow }"
+            [ngClass]="{ completed: card.countCompletedTasks === card.countTotalTasks }"
             *ngIf="card.countTotalTasks > 0"
             (click)="showTasks(); $event.stopPropagation()"
         >
