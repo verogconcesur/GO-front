@@ -63,17 +63,18 @@
       justify-content: center;
       align-items: center;
       position: absolute;
-      top: 7px;
+      // top: 7px;
+      bottom: 13px;
       right: 10px;
       border-radius: 4px;
       padding-left: 5px;
       mat-icon {
         padding-left: 5px;
       }
-      &.bottom {
-        top: auto;
-        bottom: 13px;
-      }
+      // &.bottom {
+      //   top: auto;
+      //   bottom: 13px;
+      // }
       &.completed {
         background-color: mat-color($primary, statusSuccess);
         color: mat-contrast($primary, 400);
