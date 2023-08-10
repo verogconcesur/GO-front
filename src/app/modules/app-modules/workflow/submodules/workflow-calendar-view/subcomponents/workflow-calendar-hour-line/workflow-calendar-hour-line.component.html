@@ -26,8 +26,7 @@
                 *ngFor="let card of day.cards"
                 [card]="card"
                 [disableDrag]="true"
-                [forceSize]="'size-s'"
-                [navigationMode]="'absolute'"
+                [dateToShow]="card.cardInstanceWorkflows[0].calendarDate"
             ></app-workflow-card>
         </div>
         <div class="workflow-calendar-line__hour__time" fxLayout="row" fxLayoutAlign="center center" *ngIf="!first">
