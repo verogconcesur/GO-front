@@ -24,6 +24,8 @@ import { Observable, of } from 'rxjs';
 import { WorkflowPrepareAndMoveService } from '@modules/app-modules/workflow/aux-service/workflow-prepare-and-move-aux.service';
 import CardDTO from '@data/models/cards/card-dto';
 import TreeNode from '@data/interfaces/tree-node';
+import { ENV } from '@app/constants/global.constants';
+import { Env } from '@app/types/env';
 
 export type MoveCardDialogConfig = {
   cardInstance: CardInstanceDTO;
@@ -91,6 +93,7 @@ export class MoveCardDialogComponent implements OnInit {
   public searchedWords$: Observable<string[]> = of([]);
 
   constructor(
+    @Inject(ENV) private env: Env,
     public dialogRef: MatDialogRef<MoveCardDialogComponent>,
     private cardService: CardService,
     private spinnerService: ProgressSpinnerDialogService,
@@ -128,8 +131,12 @@ export class MoveCardDialogComponent implements OnInit {
   public initListeners(): void {
     this.prepareAndMoveService.reloadData$
       .pipe(untilDestroyed(this))
-      .subscribe((data: 'MOVES_IN_THIS_WORKFLOW' | 'MOVES_IN_OTHER_WORKFLOWS') => {
-        if (data === 'MOVES_IN_THIS_WORKFLOW' || data === 'MOVES_IN_OTHER_WORKFLOWS') {
+      .subscribe((data: 'MOVES_IN_THIS_WORKFLOW' | 'MOVES_IN_OTHER_WORKFLOWS' | 'UPDATE_INFORMATION') => {
+        if (
+          data === 'MOVES_IN_THIS_WORKFLOW' ||
+          data === 'MOVES_IN_OTHER_WORKFLOWS' ||
+          (data === 'UPDATE_INFORMATION' && !this.env.socketsEnabled)
+        ) {
           this.dialogRef.close(true);
         }
       });
