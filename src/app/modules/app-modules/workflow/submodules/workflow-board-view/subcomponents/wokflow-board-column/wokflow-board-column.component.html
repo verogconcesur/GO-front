@@ -59,7 +59,7 @@
                     class="card-wrapper"
                     [ngClass]="getCardWrapperClasses(wSubstateKey + wSubstate.id + '-' + user.user.id)"
                     cdkDropList
-                    [cdkDropListDisabled]="!isDragAndDropEnabled"
+                    [cdkDropListDisabled]="!isDragAndDropEnabled || user.cardsBySubstateId[wSubstate.id]?.length < 2"
                     [id]="wSubstateKey + wSubstate.id + '-' + user.user.id"
                     [cdkDropListData]="user.cardsBySubstateId[wSubstate.id]"
                     [cdkDropListConnectedTo]="getAssociatedWSubstates(wSubstate.cards[0])"
@@ -67,13 +67,17 @@
                         drop($event, wSubstate, user, wSubstateKey + wSubstate.id);
                         setHideEmptyDropZone(wSubstateKey + wSubstate.id + '-' + user.user.id, false)
                     "
-                    (cdkDropListEntered)="setHideEmptyDropZone(wSubstateKey + wSubstate.id + '-' + user.user.id, true)"
-                    (cdkDropListExited)="setHideEmptyDropZone(wSubstateKey + wSubstate.id + '-' + user.user.id, false)"
                 >
+                    <!-- (cdkDropListEntered)="setHideEmptyDropZone(wSubstateKey + wSubstate.id + '-' + user.user.id, true)"
+                    (cdkDropListExited)="setHideEmptyDropZone(wSubstateKey + wSubstate.id + '-' + user.user.id, false)" -->
                     <app-workflow-card
                         *ngFor="let card of user.cardsBySubstateId[wSubstate.id]"
                         [card]="card"
-                        [disableDrag]="!isDragAndDropEnabled"
+                        [disableDrag]="
+                            !isDragAndDropEnabled ||
+                            user.cardsBySubstateId[wSubstate.id]?.length < 2 ||
+                            !getAssociatedWSubstates(wSubstate.cards[0], wSubstateKey + wSubstate.id + '-' + user.user.id)
+                        "
                         (isDraggingEvent)="setOriginDropZone(wSubstateKey + wSubstate.id + '-' + user.user.id, $event)"
                         [wState]="wState"
                         [wSubstate]="wSubstate"
@@ -112,7 +116,7 @@
                     class="card-wrapper"
                     [ngClass]="getCardWrapperClasses(wSubstateKey + wSubstate.id)"
                     cdkDropList
-                    [cdkDropListDisabled]="!isDragAndDropEnabled"
+                    [cdkDropListDisabled]="!isDragAndDropEnabled || wSubstate.cards?.length < 2"
                     [id]="wSubstateKey + wSubstate.id"
                     [cdkDropListData]="wSubstate.cards"
                     [cdkDropListConnectedTo]="getAssociatedWSubstates(wSubstate.cards[0])"
@@ -120,13 +124,17 @@
                         drop($event, wSubstate, null, wSubstateKey + wSubstate.i);
                         setHideEmptyDropZone(wSubstateKey + wSubstate.id, false)
                     "
-                    (cdkDropListEntered)="setHideEmptyDropZone(wSubstateKey + wSubstate.id, true)"
-                    (cdkDropListExited)="setHideEmptyDropZone(wSubstateKey + wSubstate.id, false)"
                 >
+                    <!-- (cdkDropListEntered)="setHideEmptyDropZone(wSubstateKey + wSubstate.id, true)"
+                    (cdkDropListExited)="setHideEmptyDropZone(wSubstateKey + wSubstate.id, false)" -->
                     <app-workflow-card
                         *ngFor="let card of wSubstate.cards"
                         [card]="card"
-                        [disableDrag]="!isDragAndDropEnabled"
+                        [disableDrag]="
+                            !isDragAndDropEnabled ||
+                            wSubstate.cards?.length < 2 ||
+                            !getAssociatedWSubstates(wSubstate.cards[0], wSubstateKey + wSubstate.id)
+                        "
                         (isDraggingEvent)="setOriginDropZone(wSubstateKey + wSubstate.id, $event)"
                         [wState]="wState"
                         [wSubstate]="wSubstate"

@@ -150,9 +150,10 @@ export class WfEditSubstateDialogComponent extends ComponentToExtendForCustomDia
           color: '',
           clickFn: () => this.editSubstateAuxService.resetForm$.next(true),
           hiddenFn: () =>
-            !(this.form.get(this.tabToShow.id).touched && this.form.get(this.tabToShow.id).dirty) ||
-            this.tabToShow?.id === 'MOVEMENTS' ||
-            this.tabToShow?.id === 'EVENTS'
+            this.tabToShow?.id &&
+            (!(this.form.get(this.tabToShow.id).touched && this.form.get(this.tabToShow.id).dirty) ||
+              this.tabToShow?.id === 'MOVEMENTS' ||
+              this.tabToShow?.id === 'EVENTS')
         },
         {
           type: 'custom',
@@ -163,6 +164,7 @@ export class WfEditSubstateDialogComponent extends ComponentToExtendForCustomDia
           hiddenFn: () => this.tabToShow?.id === 'MOVEMENTS',
           disabledFn: () =>
             !(
+              this.tabToShow?.id &&
               this.form.get(this.tabToShow.id).touched &&
               this.form.get(this.tabToShow.id).dirty &&
               this.form.get(this.tabToShow.id).valid

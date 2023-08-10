@@ -47,6 +47,10 @@
             {{ getAdditionalInfoString() }}
         </div>
 
+        <div class="workflow-card__info__date" *ngIf="dateToShow">
+            {{ dateToShow | date : dateFormat }}
+        </div>
+
         <div
             class="workflow-card__info__tasks"
             [ngClass]="{ completed: card.countCompletedTasks === card.countTotalTasks }"
