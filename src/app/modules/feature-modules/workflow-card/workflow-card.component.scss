@@ -104,6 +104,9 @@
         &:hover {
           background-color: mat-color($background, background-administration);
         }
+        &.tasks {
+          width: calc(100% - 60px);
+        }
       }
     }
     &__read-card {
