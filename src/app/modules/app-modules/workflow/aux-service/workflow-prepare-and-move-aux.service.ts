@@ -135,19 +135,22 @@ export class WorkflowPrepareAndMoveService {
                   ? {
                       destinationName: this.getDestinationName(workflowCardsLimit.workflowSubstate),
                       // preparation: responses?.length > 1 && responses[1] ? responses[1] : [],
-                      preparation: [...data]
-                        .map((d: WorkflowSubstateEventDTO) => {
-                          if (d.substateEventType === 'IN') {
-                            return workflowCardsLimit.workflowSubstate.workflowSubstateEvents.find(
-                              (e) => e.substateEventType === 'IN'
-                            );
-                          } else if (d.substateEventType === 'MOV') {
-                            return workflowCardsLimit.workflowSubstate.workflowSubstateEvents.find(
-                              (e) => e.substateEventType === 'MOV'
-                            );
-                          }
-                          return d;
-                        })
+                      preparation: [
+                        ...data.filter((d) => d.substateEventType === 'OUT'),
+                        ...workflowCardsLimit.workflowSubstate.workflowSubstateEvents
+                      ]
+                        // .map((d: WorkflowSubstateEventDTO) => {
+                        //   if (d.substateEventType === 'IN') {
+                        //     return workflowCardsLimit.workflowSubstate.workflowSubstateEvents.find(
+                        //       (e) => e.substateEventType === 'IN'
+                        //     );
+                        //   } else if (d.substateEventType === 'MOV') {
+                        //     return workflowCardsLimit.workflowSubstate.workflowSubstateEvents.find(
+                        //       (e) => e.substateEventType === 'MOV'
+                        //     );
+                        //   }
+                        //   return d;
+                        // })
                         .filter((d) => d),
                       usersIn: workflowCardsLimit.workflowSubstate.workflowSubstateUser
                     }
@@ -164,6 +167,7 @@ export class WorkflowPrepareAndMoveService {
                 user: { user: WorkflowSubstateUserDTO };
                 deadLine: { deadLineDate: Date; deadLineHour: CardLimitSlotDTO };
                 targetId: number;
+                cardsLimitsExceeded: boolean;
                 in: {
                   size: 'S' | 'M' | 'L' | 'XL';
                   user: WorkflowSubstateUserDTO;
@@ -215,10 +219,16 @@ export class WorkflowPrepareAndMoveService {
                   this.spinnerService.hide(this.spinner);
                   return;
                 }
+                const ungroupedEvents = res.cardsLimitsExceeded
+                  ? [
+                      ...data.filter((d) => d.substateEventType === 'OUT'),
+                      ...workflowCardsLimit.workflowSubstate.workflowSubstateEvents
+                    ].filter((d) => d)
+                  : data;
                 const events = {
-                  in: data.find((event: WorkflowSubstateEventDTO) => event.substateEventType === 'IN'),
-                  out: data.find((event: WorkflowSubstateEventDTO) => event.substateEventType === 'OUT'),
-                  mov: data.find((event: WorkflowSubstateEventDTO) => event.substateEventType === 'MOV')
+                  in: ungroupedEvents.find((event: WorkflowSubstateEventDTO) => event.substateEventType === 'IN'),
+                  out: ungroupedEvents.find((event: WorkflowSubstateEventDTO) => event.substateEventType === 'OUT'),
+                  mov: ungroupedEvents.find((event: WorkflowSubstateEventDTO) => event.substateEventType === 'MOV')
                 };
                 const newData: WorkflowSubstateEventDTO[] = [];
                 if (res.out && events.out) {

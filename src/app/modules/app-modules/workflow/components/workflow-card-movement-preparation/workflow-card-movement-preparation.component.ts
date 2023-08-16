@@ -554,6 +554,7 @@ export class WorkflowCardMovementPreparationComponent implements OnInit {
       task: this.taskForm ? this.taskForm.value : null,
       user: this.userForm ? this.userForm.value : null,
       deadLine: this.cardsLimitForm ? this.cardsLimitForm.value : null,
+      cardsLimitsExceeded: this.cardsLimitsExceeded,
       targetId: this.cardsLimitsExceeded ? this.workflowCardsLimit.workflowSubstate.id : null,
       in: this.preparationInForm ? this.preparationInForm.value : null,
       out: this.preparationOutForm ? this.preparationOutForm.value : null,
