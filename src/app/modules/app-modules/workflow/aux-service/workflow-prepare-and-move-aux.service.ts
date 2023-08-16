@@ -136,11 +136,18 @@ export class WorkflowPrepareAndMoveService {
                       destinationName: this.getDestinationName(workflowCardsLimit.workflowSubstate),
                       // preparation: responses?.length > 1 && responses[1] ? responses[1] : [],
                       preparation: [...data]
-                        .map((d: WorkflowSubstateEventDTO) =>
-                          d.substateEventType === 'IN'
-                            ? workflowCardsLimit.workflowSubstate.workflowSubstateEvents.find((e) => e.substateEventType === 'IN')
-                            : d
-                        )
+                        .map((d: WorkflowSubstateEventDTO) => {
+                          if (d.substateEventType === 'IN') {
+                            return workflowCardsLimit.workflowSubstate.workflowSubstateEvents.find(
+                              (e) => e.substateEventType === 'IN'
+                            );
+                          } else if (d.substateEventType === 'MOV') {
+                            return workflowCardsLimit.workflowSubstate.workflowSubstateEvents.find(
+                              (e) => e.substateEventType === 'MOV'
+                            );
+                          }
+                          return d;
+                        })
                         .filter((d) => d),
                       usersIn: workflowCardsLimit.workflowSubstate.workflowSubstateUser
                     }
