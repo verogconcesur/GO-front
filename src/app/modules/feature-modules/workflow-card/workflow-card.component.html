@@ -28,6 +28,7 @@
             matTooltip="{{ extraInfoValue() }}"
             appShowIfTruncated
             matTooltipPosition="below"
+            [ngClass]="{ tasks: card.countTotalTasks > 0 }"
             (click)="$event.stopPropagation(); expandCardInfo()"
         >
             {{ extraInfoValue() }}
@@ -39,6 +40,7 @@
             [matTooltip]="getAdditionalInfoString()"
             appShowIfTruncated
             matTooltipPosition="below"
+            [ngClass]="{ tasks: card.countTotalTasks > 0 }"
             (click)="$event.stopPropagation(); expandAddiontalInfo()"
         >
             <mat-icon *ngIf="additionalInfoIcon && additionalInfoIcon !== ''" style="height: 20px">{{
