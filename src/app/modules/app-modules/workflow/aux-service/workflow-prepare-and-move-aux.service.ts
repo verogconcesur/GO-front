@@ -92,7 +92,7 @@ export class WorkflowPrepareAndMoveService {
     forkJoin(requests).subscribe(
       (responses: WorkflowSubstateEventDTO[][]) => {
         const data = responses[0];
-        const altData = responses?.length > 1 ? responses[1] : [];
+        // const altData = responses?.length > 1 ? responses[1] : [];
         if (
           (data?.length &&
             // !data[0]?.requiredFields &&
@@ -130,31 +130,41 @@ export class WorkflowPrepareAndMoveService {
                 view,
                 selectedUser: user,
                 mainUserSelector: this.showMainUserSelector(user, move),
-                workflowCardsLimit,
-                altSubstateLimit: workflowCardsLimit.cardsLimit
-                  ? {
-                      destinationName: this.getDestinationName(workflowCardsLimit.workflowSubstate),
-                      // preparation: responses?.length > 1 && responses[1] ? responses[1] : [],
-                      preparation: [
-                        ...data.filter((d) => d.substateEventType === 'OUT'),
-                        ...workflowCardsLimit.workflowSubstate.workflowSubstateEvents
-                      ]
-                        // .map((d: WorkflowSubstateEventDTO) => {
-                        //   if (d.substateEventType === 'IN') {
-                        //     return workflowCardsLimit.workflowSubstate.workflowSubstateEvents.find(
-                        //       (e) => e.substateEventType === 'IN'
-                        //     );
-                        //   } else if (d.substateEventType === 'MOV') {
-                        //     return workflowCardsLimit.workflowSubstate.workflowSubstateEvents.find(
-                        //       (e) => e.substateEventType === 'MOV'
-                        //     );
-                        //   }
-                        //   return d;
-                        // })
-                        .filter((d) => d),
-                      usersIn: workflowCardsLimit.workflowSubstate.workflowSubstateUser
-                    }
-                  : null,
+                workflowCardsLimit:
+                  move.workflowSubstateSource.workflowState.workflow.id !==
+                    move.workflowSubstateTarget.workflowState.workflow.id &&
+                  move.workflowSubstateTarget.entryPoint &&
+                  workflowCardsLimit
+                    ? workflowCardsLimit
+                    : null,
+                altSubstateLimit:
+                  move.workflowSubstateSource.workflowState.workflow.id !==
+                    move.workflowSubstateTarget.workflowState.workflow.id &&
+                  move.workflowSubstateTarget.entryPoint &&
+                  workflowCardsLimit.cardsLimit
+                    ? {
+                        destinationName: this.getDestinationName(workflowCardsLimit.workflowSubstate),
+                        // preparation: responses?.length > 1 && responses[1] ? responses[1] : [],
+                        preparation: [
+                          ...data.filter((d) => d.substateEventType === 'OUT'),
+                          ...workflowCardsLimit.workflowSubstate.workflowSubstateEvents
+                        ]
+                          // .map((d: WorkflowSubstateEventDTO) => {
+                          //   if (d.substateEventType === 'IN') {
+                          //     return workflowCardsLimit.workflowSubstate.workflowSubstateEvents.find(
+                          //       (e) => e.substateEventType === 'IN'
+                          //     );
+                          //   } else if (d.substateEventType === 'MOV') {
+                          //     return workflowCardsLimit.workflowSubstate.workflowSubstateEvents.find(
+                          //       (e) => e.substateEventType === 'MOV'
+                          //     );
+                          //   }
+                          //   return d;
+                          // })
+                          .filter((d) => d),
+                        usersIn: workflowCardsLimit.workflowSubstate.workflowSubstateUser
+                      }
+                    : null,
                 cardIntanceId
               }
             })
@@ -407,7 +417,7 @@ export class WorkflowPrepareAndMoveService {
 
   private showMainUserSelector(user: WorkflowSubstateUserDTO, move: WorkflowMoveDTO): boolean {
     if (
-      !user &&
+      // !user &&
       move &&
       move.workflowSubstateTarget.workflowState.front &&
       move.workflowSubstateTarget.workflowSubstateUser?.length

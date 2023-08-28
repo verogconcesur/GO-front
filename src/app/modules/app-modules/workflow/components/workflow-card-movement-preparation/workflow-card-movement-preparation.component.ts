@@ -215,7 +215,8 @@ export class WorkflowCardMovementPreparationComponent implements OnInit {
       if (
         p.substateEventType === 'IN' &&
         (p.requiredSize ||
-          (p.requiredUser && !this.findUserIn(this.data.selectedUser, this.usersIn)) ||
+          // (p.requiredUser && !this.findUserIn(this.data.selectedUser, this.usersIn)) ||
+          p.requiredUser ||
           p.sendMail ||
           p.requiredHistoryComment ||
           p.requiredMovementExtra)
@@ -225,7 +226,8 @@ export class WorkflowCardMovementPreparationComponent implements OnInit {
       } else if (
         p.substateEventType === 'OUT' &&
         (p.requiredSize ||
-          (p.requiredUser && !this.findUserIn(this.data.selectedUser, this.usersOut)) ||
+          // (p.requiredUser && !this.findUserIn(this.data.selectedUser, this.usersOut)) ||
+          p.requiredUser ||
           p.sendMail ||
           p.requiredHistoryComment ||
           p.requiredMovementExtra)
@@ -235,7 +237,8 @@ export class WorkflowCardMovementPreparationComponent implements OnInit {
       } else if (
         p.substateEventType === 'MOV' &&
         (p.requiredSize ||
-          (p.requiredUser && !this.findUserIn(this.data.selectedUser, this.usersMov)) ||
+          // (p.requiredUser && !this.findUserIn(this.data.selectedUser, this.usersMov)) ||
+          p.requiredUser ||
           p.sendMail ||
           p.requiredHistoryComment ||
           p.requiredMovementExtra)
@@ -245,13 +248,13 @@ export class WorkflowCardMovementPreparationComponent implements OnInit {
       }
     });
     this.tabToShow = this.tabsToShow[0];
-    if (this.data.selectedUser?.user?.id && this.findUserIn(this.data.selectedUser, this.usersIn)) {
-      this.userInDisabled = true;
-    }
-    if (this.data.selectedUser?.user?.id && this.findUserIn(this.data.selectedUser, this.usersOut)) {
-      this.userOutDisabled = true;
-      this.userMovDisabled = true;
-    }
+    // if (this.data.selectedUser?.user?.id && this.findUserIn(this.data.selectedUser, this.usersIn)) {
+    //   this.userInDisabled = true;
+    // }
+    // if (this.data.selectedUser?.user?.id && this.findUserIn(this.data.selectedUser, this.usersOut)) {
+    //   this.userOutDisabled = true;
+    //   this.userMovDisabled = true;
+    // }
     this.initForm();
   }
 
@@ -372,7 +375,7 @@ export class WorkflowCardMovementPreparationComponent implements OnInit {
   public initForm(): void {
     if (this.mainUserSelector) {
       this.userForm = this.fb.group({
-        user: [null, Validators.required]
+        user: [this.findUserIn(this.data.selectedUser, this.usersIn), Validators.required]
       });
     }
     if (this.preparationIn) {
