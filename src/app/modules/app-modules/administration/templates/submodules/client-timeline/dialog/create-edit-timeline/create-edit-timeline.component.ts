@@ -18,7 +18,7 @@ import { FacilityService } from '@data/services/facility.sevice';
 import { SpecialtyService } from '@data/services/specialty.service';
 import { TemplatesTimelineService } from '@data/services/templates-timeline.service';
 import { VariablesService } from '@data/services/variables.service';
-import { ComponentToExtendForCustomDialog, CustomDialogFooterConfigI, CustomDialogService } from '@jenga/custom-dialog';
+import { ComponentToExtendForCustomDialog, CustomDialogFooterConfigI, CustomDialogService } from '@frontend/custom-dialog';
 // eslint-disable-next-line max-len
 import { TextEditorWrapperConfigI } from '@modules/feature-modules/text-editor-wrapper/interfaces/text-editor-wrapper-config.interface';
 import { TranslateService } from '@ngx-translate/core';
@@ -64,7 +64,6 @@ export class CreateEditTimelineComponent extends ComponentToExtendForCustomDialo
     insertText: marker('common.insertTextHere'),
     landingMessage: marker('administration.templates.clientTimeline.landingMessage'),
     landingEmail: marker('administration.templates.clientTimeline.landingEmail')
-
   };
   public timelineForm: UntypedFormGroup;
   public brandsAsyncList: Observable<BrandDTO[]>;
@@ -249,7 +248,7 @@ export class CreateEditTimelineComponent extends ComponentToExtendForCustomDialo
       orderNumber: [this.templateTimelineItems.length],
       closed: [false],
       messageLanding: ['', [Validators.required]],
-      recipientEmail: ['', [Validators.email]],
+      recipientEmail: ['', [Validators.email]]
     });
     this.templateTimelineItems.push(timelineItem);
   }
@@ -502,7 +501,7 @@ export class CreateEditTimelineComponent extends ComponentToExtendForCustomDialo
             orderNumber: [item.orderNumber],
             closed: [item.closed],
             messageLanding: [item.messageLanding, [Validators.required]],
-            recipientEmail: [item.recipientEmail, [Validators.email]],
+            recipientEmail: [item.recipientEmail, [Validators.email]]
           });
           timelineItems.push(timelineItem);
         });

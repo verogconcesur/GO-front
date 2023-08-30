@@ -5,7 +5,7 @@ import { Router } from '@angular/router';
 import { marker } from '@biesbjerg/ngx-translate-extract-marker';
 import PaginationResponseI from '@data/interfaces/pagination-response';
 import CustomerEntityDTO from '@data/models/entities/customer-entity-dto';
-import { CustomDialogService } from '@jenga/custom-dialog';
+import { CustomDialogService } from '@frontend/custom-dialog';
 import { ModalAssociatedCardsService } from '@modules/feature-modules/modal-associated-cards/modal-associated-cards.service';
 import { TranslateService } from '@ngx-translate/core';
 import { GlobalMessageService } from '@shared/services/global-message.service';

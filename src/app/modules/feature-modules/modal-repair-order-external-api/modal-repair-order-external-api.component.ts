@@ -5,7 +5,7 @@ import RepairOrderEntityApiDTO from '@data/models/entities/repair-order-entity-a
 import RepairOrderEntityDTO from '@data/models/entities/repair-order-entity-dto';
 import RepairOrderFilterDTO from '@data/models/entities/repair-order-filter-dto';
 import { EntitiesService } from '@data/services/entities.service';
-import { ComponentToExtendForCustomDialog, CustomDialogFooterConfigI } from '@jenga/custom-dialog';
+import { ComponentToExtendForCustomDialog, CustomDialogFooterConfigI } from '@frontend/custom-dialog';
 import { TranslateService } from '@ngx-translate/core';
 import { ConfirmDialogService } from '@shared/services/confirm-dialog.service';
 import { GlobalMessageService } from '@shared/services/global-message.service';

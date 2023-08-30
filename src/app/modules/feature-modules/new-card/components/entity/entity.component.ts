@@ -8,7 +8,7 @@ import UserEntityDTO from '@data/models/entities/user-entity-dto';
 import VehicleEntityDTO, { InventoryVehicle } from '@data/models/entities/vehicle-entity-dto';
 import { CardService } from '@data/services/cards.service';
 import { EntitiesService } from '@data/services/entities.service';
-import { CustomDialogService } from '@jenga/custom-dialog';
+import { CustomDialogService } from '@frontend/custom-dialog';
 import {
   CreateEditCustomerExternalApiComponentModalEnum,
   ModalCustomerExternalApiComponent

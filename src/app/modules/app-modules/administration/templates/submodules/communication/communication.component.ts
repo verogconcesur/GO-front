@@ -10,7 +10,7 @@ import TemplatesCommonDTO from '@data/models/templates/templates-common-dto';
 import TemplatesFilterDTO from '@data/models/templates/templates-filter-dto';
 import TemplatesCommunicationDTO from '@data/models/templates/templates-communication-dto';
 import { TemplatesCommunicationService } from '@data/services/templates-communication.service';
-import { CustomDialogService } from '@jenga/custom-dialog';
+import { CustomDialogService } from '@frontend/custom-dialog';
 import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
 import { TranslateService } from '@ngx-translate/core';
 // eslint-disable-next-line max-len

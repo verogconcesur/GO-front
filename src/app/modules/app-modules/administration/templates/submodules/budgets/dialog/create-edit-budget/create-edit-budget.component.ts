@@ -5,7 +5,7 @@ import { UntypedFormArray, UntypedFormBuilder, UntypedFormGroup, Validators } fr
 import { marker } from '@biesbjerg/ngx-translate-extract-marker';
 import TemplatesBudgetDetailsDTO, { TemplateBudgetLinesDTO } from '@data/models/templates/templates-budget-details-dto';
 import { TemplatesBudgetsService } from '@data/services/templates-budgets.service';
-import { ComponentToExtendForCustomDialog, CustomDialogFooterConfigI, CustomDialogService } from '@jenga/custom-dialog';
+import { ComponentToExtendForCustomDialog, CustomDialogFooterConfigI, CustomDialogService } from '@frontend/custom-dialog';
 import { TranslateService } from '@ngx-translate/core';
 import { ConfirmDialogService } from '@shared/services/confirm-dialog.service';
 import { GlobalMessageService } from '@shared/services/global-message.service';

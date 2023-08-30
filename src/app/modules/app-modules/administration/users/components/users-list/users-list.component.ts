@@ -12,7 +12,7 @@ import {
   CreateEditUserComponent,
   CreateEditUserComponentModalEnum
 } from '@modules/app-modules/administration/users/components/create-edit-user/create-edit-user.component';
-import { CustomDialogService } from '@jenga/custom-dialog';
+import { CustomDialogService } from '@frontend/custom-dialog';
 import { FilterDrawerService } from '@modules/feature-modules/filter-drawer/services/filter-drawer.service';
 import { Observable, of } from 'rxjs';
 import { finalize, map, take } from 'rxjs/operators';

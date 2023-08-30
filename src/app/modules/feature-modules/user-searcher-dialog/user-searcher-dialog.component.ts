@@ -11,7 +11,7 @@ import RoleDTO from '@data/models/user-permissions/role-dto';
 import UserDetailsDTO from '@data/models/user-permissions/user-details-dto';
 import UserFilterDTO from '@data/models/user-permissions/user-filter-dto';
 import { UserService } from '@data/services/user.service';
-import { ComponentToExtendForCustomDialog, CustomDialogFooterConfigI } from '@jenga/custom-dialog';
+import { ComponentToExtendForCustomDialog, CustomDialogFooterConfigI } from '@frontend/custom-dialog';
 import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
 import { TranslateService } from '@ngx-translate/core';
 import { ConfirmDialogService } from '@shared/services/confirm-dialog.service';

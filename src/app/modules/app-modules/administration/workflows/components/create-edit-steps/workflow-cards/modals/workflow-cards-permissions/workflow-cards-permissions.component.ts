@@ -10,7 +10,7 @@ import WorkflowCardTabPermissionsDTO, {
 } from '@data/models/workflow-admin/workflow-card-tab-permissions-dto';
 import { CardService } from '@data/services/cards.service';
 import { WorkflowAdministrationService } from '@data/services/workflow-administration.service';
-import { ComponentToExtendForCustomDialog, CustomDialogService, CustomDialogFooterConfigI } from '@jenga/custom-dialog';
+import { ComponentToExtendForCustomDialog, CustomDialogService, CustomDialogFooterConfigI } from '@frontend/custom-dialog';
 import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
 import { TranslateService } from '@ngx-translate/core';
 import { ConfirmDialogService } from '@shared/services/confirm-dialog.service';

@@ -15,7 +15,7 @@ import WorkflowRoleDTO from '@data/models/workflow-admin/workflow-role-dto';
 import WorkflowSubstateUserDTO from '@data/models/workflows/workflow-substate-user-dto';
 import { UserService } from '@data/services/user.service';
 import { WorkflowAdministrationService } from '@data/services/workflow-administration.service';
-import { CustomDialogService } from '@jenga/custom-dialog';
+import { CustomDialogService } from '@frontend/custom-dialog';
 import {
   CreateEditUserComponent,
   CreateEditUserComponentModalEnum

@@ -6,7 +6,7 @@ import { marker } from '@biesbjerg/ngx-translate-extract-marker';
 import PaginationResponseI from '@data/interfaces/pagination-response';
 import VehicleEntityDTO from '@data/models/entities/vehicle-entity-dto';
 import { EntitiesService } from '@data/services/entities.service';
-import { CustomDialogService } from '@jenga/custom-dialog';
+import { CustomDialogService } from '@frontend/custom-dialog';
 import { ModalAssociatedCardsService } from '@modules/feature-modules/modal-associated-cards/modal-associated-cards.service';
 import {
   CreateEditVehicleComponentModalEnum,

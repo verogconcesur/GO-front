@@ -3,7 +3,7 @@ import { FormArray, UntypedFormBuilder } from '@angular/forms';
 import { marker } from '@biesbjerg/ngx-translate-extract-marker';
 import { CardBudgetsDTO } from '@data/models/cards/card-budgets-dto';
 import { CardBudgetsService } from '@data/services/card-budgets.service';
-import { ComponentToExtendForCustomDialog, CustomDialogFooterConfigI } from '@jenga/custom-dialog';
+import { ComponentToExtendForCustomDialog, CustomDialogFooterConfigI } from '@frontend/custom-dialog';
 import { TranslateService } from '@ngx-translate/core';
 import { GlobalMessageService } from '@shared/services/global-message.service';
 import { ProgressSpinnerDialogService } from '@shared/services/progress-spinner-dialog.service';

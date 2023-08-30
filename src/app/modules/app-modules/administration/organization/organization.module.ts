@@ -17,7 +17,7 @@ import { CreateEditDepartmentComponent } from './components/create-edit-departme
 import { CreateEditSpecialtyComponent } from './components/create-edit-specialty/create-edit-specialty.component';
 import { OrganizationLevelsNestedCombosModule } from '@modules/feature-modules/organization-levels-nested-combos/organization-levels-nested-combos.module';
 import { AdministrationCommonHeaderSectionModule } from '@modules/feature-modules/administration-common-header-section/administration-common-header-section.module';
-import { BreadCrumbsModule } from '@jenga/bread-crumbs';
+import { BreadCrumbsModule } from '@frontend/bread-crumbs';
 import { GenericTreeNodeSearcherModule } from '@modules/feature-modules/generic-tree-node-searcher/generic-tree-node-searcher.module';
 import { CsvFileImportationComponent } from './components/csv-file-importation/csv-file-importation.component';
 

@@ -19,7 +19,7 @@ import TemplatesCommonDTO from '@data/models/templates/templates-common-dto';
 import { CardAttachmentsService } from '@data/services/card-attachments.service';
 import { CardMessagesService } from '@data/services/card-messages.service';
 import { TemplatesCommunicationService } from '@data/services/templates-communication.service';
-import { ComponentToExtendForCustomDialog, CustomDialogFooterConfigI } from '@jenga/custom-dialog';
+import { ComponentToExtendForCustomDialog, CustomDialogFooterConfigI } from '@frontend/custom-dialog';
 // eslint-disable-next-line max-len
 import CardInstanceAttachmentsConfig, {
   CardInstanceAttachmentsModalVersionConfig

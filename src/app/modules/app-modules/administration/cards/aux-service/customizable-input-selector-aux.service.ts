@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { ComponentToExtendForCustomDialog, CustomDialogService } from '@jenga/custom-dialog';
+import { ComponentToExtendForCustomDialog, CustomDialogService } from '@frontend/custom-dialog';
 import { Observable } from 'rxjs';
 import { ComponentType } from '@angular/cdk/portal';
 import { TabItemConfigInputComponent } from '../components/tab-items/tab-item-config-input/tab-item-config-input.component';

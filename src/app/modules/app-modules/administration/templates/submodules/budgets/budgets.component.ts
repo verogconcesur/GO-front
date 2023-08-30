@@ -10,7 +10,7 @@ import TemplatesBudgetDetailsDTO from '@data/models/templates/templates-budget-d
 import TemplatesBudgetDTO from '@data/models/templates/templates-budget-dto';
 import TemplatesFilterDTO from '@data/models/templates/templates-filter-dto';
 import { TemplatesBudgetsService } from '@data/services/templates-budgets.service';
-import { CustomDialogService } from '@jenga/custom-dialog';
+import { CustomDialogService } from '@frontend/custom-dialog';
 import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
 import { TranslateService } from '@ngx-translate/core';
 // eslint-disable-next-line max-len

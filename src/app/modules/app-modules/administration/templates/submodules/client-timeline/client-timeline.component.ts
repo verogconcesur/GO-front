@@ -8,7 +8,7 @@ import FacilityDTO from '@data/models/organization/facility-dto';
 import SpecialtyDTO from '@data/models/organization/specialty-dto';
 import TemplatesTimelineDTO from '@data/models/templates/templates-timeline-dto';
 import TemplatesFilterDTO from '@data/models/templates/templates-filter-dto';
-import { CustomDialogService } from '@jenga/custom-dialog';
+import { CustomDialogService } from '@frontend/custom-dialog';
 import { untilDestroyed } from '@ngneat/until-destroy';
 import { TranslateService } from '@ngx-translate/core';
 // eslint-disable-next-line max-len

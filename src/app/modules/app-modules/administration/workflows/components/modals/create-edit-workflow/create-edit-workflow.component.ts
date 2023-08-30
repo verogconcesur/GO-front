@@ -3,7 +3,7 @@ import { UntypedFormGroup, UntypedFormBuilder, FormGroup, Validators } from '@an
 import { marker } from '@biesbjerg/ngx-translate-extract-marker';
 import WorkflowDTO, { WorkFlowStatusEnum } from '@data/models/workflows/workflow-dto';
 import { WorkflowAdministrationService } from '@data/services/workflow-administration.service';
-import { ComponentToExtendForCustomDialog, CustomDialogFooterConfigI } from '@jenga/custom-dialog';
+import { ComponentToExtendForCustomDialog, CustomDialogFooterConfigI } from '@frontend/custom-dialog';
 import { TranslateService } from '@ngx-translate/core';
 import { ConfirmDialogService } from '@shared/services/confirm-dialog.service';
 import { GlobalMessageService } from '@shared/services/global-message.service';

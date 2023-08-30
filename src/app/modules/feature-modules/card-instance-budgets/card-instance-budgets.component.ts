@@ -8,7 +8,7 @@ import CardInstanceDTO from '@data/models/cards/card-instance-dto';
 import { CardAttachmentsService } from '@data/services/card-attachments.service';
 import { CardBudgetsService } from '@data/services/card-budgets.service';
 import { CardMessagesService } from '@data/services/card-messages.service';
-import { CustomDialogService } from '@jenga/custom-dialog';
+import { CustomDialogService } from '@frontend/custom-dialog';
 import { TranslateService } from '@ngx-translate/core';
 import { ConfirmDialogService } from '@shared/services/confirm-dialog.service';
 import { GlobalMessageService } from '@shared/services/global-message.service';

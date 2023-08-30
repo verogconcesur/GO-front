@@ -16,7 +16,7 @@ import CardInstanceDTO from '@data/models/cards/card-instance-dto';
 import { EntitiesService } from '@data/services/entities.service';
 import CustomerEntityDTO from '@data/models/entities/customer-entity-dto';
 import VehicleEntityDTO from '@data/models/entities/vehicle-entity-dto';
-import { CustomDialogService } from '@jenga/custom-dialog';
+import { CustomDialogService } from '@frontend/custom-dialog';
 import {
   CreateEditCustomerComponentModalEnum,
   ModalCustomerComponent

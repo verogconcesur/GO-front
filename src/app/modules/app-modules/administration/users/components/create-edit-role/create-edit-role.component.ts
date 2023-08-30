@@ -7,7 +7,7 @@ import RoleDTO from '@data/models/user-permissions/role-dto';
 import { PermissionsService } from '@data/services/permissions.service';
 import { RoleService } from '@data/services/role.service';
 import { TranslateService } from '@ngx-translate/core';
-import { CustomDialogFooterConfigI, ComponentToExtendForCustomDialog, CustomDialogService } from '@jenga/custom-dialog';
+import { CustomDialogFooterConfigI, ComponentToExtendForCustomDialog, CustomDialogService } from '@frontend/custom-dialog';
 import { ConfirmDialogService } from '@shared/services/confirm-dialog.service';
 import { GlobalMessageService } from '@shared/services/global-message.service';
 import { ProgressSpinnerDialogService } from '@shared/services/progress-spinner-dialog.service';

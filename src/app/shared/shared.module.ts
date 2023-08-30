@@ -7,7 +7,7 @@ import { ConfirmDialogComponent } from './components/confirm-dialog/confirm-dial
 import { GoBackComponent } from './components/go-back/go-back.component';
 import { ProgressSpinnerDialogComponent } from './components/progress-spinner-dialog/progress-spinner-dialog.component';
 import { MaterialModule } from './material.module';
-import { CustomDialogModule, CustomDialogService } from '@jenga/custom-dialog';
+import { CustomDialogModule, CustomDialogService } from '@frontend/custom-dialog';
 import { ConfirmDialogService } from './services/confirm-dialog.service';
 import { GlobalMessageService } from './services/global-message.service';
 import { ProgressSpinnerDialogService } from './services/progress-spinner-dialog.service';

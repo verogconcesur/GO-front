@@ -6,7 +6,7 @@ import MigrationDTO from '@data/models/organization/migration-dto';
 import WorkflowDTO from '@data/models/workflows/workflow-dto';
 import { FacilityService } from '@data/services/facility.sevice';
 import { WorkflowsService } from '@data/services/workflows.service';
-import { ComponentToExtendForCustomDialog, CustomDialogService, CustomDialogFooterConfigI } from '@jenga/custom-dialog';
+import { ComponentToExtendForCustomDialog, CustomDialogService, CustomDialogFooterConfigI } from '@frontend/custom-dialog';
 import { TranslateService } from '@ngx-translate/core';
 import { ConfirmDialogService } from '@shared/services/confirm-dialog.service';
 import { GlobalMessageService } from '@shared/services/global-message.service';
