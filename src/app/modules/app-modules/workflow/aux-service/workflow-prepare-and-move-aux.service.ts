@@ -58,7 +58,7 @@ export class WorkflowPrepareAndMoveService {
     this.spinner = this.spinnerService.show();
     view = view ? view : 'MOVES_IN_THIS_WORKFLOW';
     const workflowCardsLimit: WorkflowCardsLimitDTO = move?.workflowCardsLimit;
-    if (workflowCardsLimit.workflowSubstate) {
+    if (workflowCardsLimit?.workflowSubstate) {
       workflowCardsLimit.workflowSubstate.workflowSubstateEvents = workflowCardsLimit.workflowSubstate.workflowSubstateEvents
         ? workflowCardsLimit.workflowSubstate.workflowSubstateEvents
         : [];
