@@ -33,11 +33,11 @@
         </div>
         <div class="payments__main__header" *ngIf="data">
             <div class="payments__main__header__item" fxLayout="row">
-                <div fxFlex="30" fxLayoutAlign="left center" fxFill>{{ labels.description | translate }}</div>
+                <div fxFlex="25" fxLayoutAlign="left center" fxFill>{{ labels.description | translate }}</div>
                 <div fxFlex="20" fxLayoutAlign="center center" fxFill>{{ labels.paymentType | translate }}</div>
                 <div fxFlex="15" fxLayoutAlign="center center" fxFill>{{ labels.amount | translate }}</div>
                 <div fxFlex="20" fxLayoutAlign="center center" fxFill>{{ labels.state | translate }}</div>
-                <div fxFlex="15" fxLayoutAlign="center center" fxFill>{{ labels.actions | translate }}</div>
+                <div fxFlex="20" fxLayoutAlign="center center" fxFill>{{ labels.actions | translate }}</div>
             </div>
         </div>
         <div class="payments__main__container" fxLayout="column" *ngIf="data">
@@ -46,7 +46,7 @@
                 *ngFor="let payment of paymentLines; let i = index"
                 fxLayout="row"
             >
-                <div fxFlex="30" fxLayoutAlign="left center">
+                <div fxFlex="25" fxLayoutAlign="left center">
                     <div fxLayout="column">
                         <div class="description" matTooltip="{{ payment.description }}" matTooltipPosition="above">
                             {{ payment.description }}
@@ -61,7 +61,7 @@
                 </div>
                 <div fxFlex="15" fxLayoutAlign="center center">{{ payment.amount }}<span matSuffix>€</span></div>
                 <div fxFlex="20" fxLayoutAlign="center center">{{ payment.paymentState?.name }}</div>
-                <div fxFlex="15" fxLayoutAlign="center center" class="actions">
+                <div fxFlex="20" fxLayoutAlign="center center" class="actions">
                     <mat-icon
                         style="cursor: pointer; color: green"
                         [matBadge]="payment.attachments?.length"
