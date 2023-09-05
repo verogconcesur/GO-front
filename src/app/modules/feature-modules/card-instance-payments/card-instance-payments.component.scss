@@ -46,6 +46,9 @@
           -webkit-box-orient: vertical;
         }
         .actions {
+          mat-icon {
+            font-size: 1.3em;
+          }
           .mat-badge-content {
             width: 15px !important;
             height: 15px !important;
