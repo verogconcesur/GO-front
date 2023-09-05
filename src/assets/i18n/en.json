@@ -80,12 +80,12 @@
                 "delete": "Delete timeline template",
                 "deleteConfirmation": "Do you really want to delete this timeline template?",
                 "edit": "Edit timeline template",
+                "email": "Email",
                 "itemConcept": "Item concept",
                 "items": "Items",
-                "landingMessage": "Text to show when your card is in this state of the Timeline",
                 "landingEmail": "^Predetermined email configuration",
+                "landingMessage": "Text to show when your card is in this state of the Timeline",
                 "name": "timeline's template name",
-                "email": "Email",
                 "title": "Client timeline"
             },
             "communications": {
@@ -133,8 +133,13 @@
         },
         "payments": {
             "deleteConfirmation": "Are you sure you want to delete this payment line?",
+            "editLine": "Edit payment line",
+            "newLine": "New payment line",
+            "resend": "Resend payment line",
             "saveConfirmation": "Are you sure you want to save this payment line?",
-            "saveTotalConfirmation": "Are you sure you want to save this total?"
+            "saveTotalConfirmation": "Are you sure you want to save this total?",
+            "send": "Send payment line",
+            "sendConfirmation": "Are you sure you want to send this payment line?"
         }
     },
     "cards": {

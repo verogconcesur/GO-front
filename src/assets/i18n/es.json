@@ -80,12 +80,12 @@
                 "delete": "Eliminar plantilla de timeline de cliente",
                 "deleteConfirmation": "¿Realmente quieres eliminar esta plantilla?",
                 "edit": "Editar plantilla de timeline de cliente",
+                "email": "Email",
                 "itemConcept": "Concepto del elemento",
                 "items": "Elementos",
-                "landingMessage": "Texto a mostrar en el área de cliente del cliente cuando su ficha entre en este punto del Timeline.",
                 "landingEmail": "Configuración de Email predefinido",
+                "landingMessage": "Texto a mostrar en el área de cliente del cliente cuando su ficha entre en este punto del Timeline.",
                 "name": "Nombre de plantilla de timeline de cliente",
-                "email": "Email",
                 "title": "Timeline de cliente"
             },
             "communications": {
@@ -133,8 +133,13 @@
         },
         "payments": {
             "deleteConfirmation": "¿Está seguro que desea eliminar esta linea de pago?",
+            "editLine": "Editar línea de pago",
+            "newLine": "Crear línea de pago",
+            "resend": "Reenviar pago al área de clientes",
             "saveConfirmation": "¿Está seguro que desea guardar esta linea de pago?",
-            "saveTotalConfirmation": "¿Está seguro que desea guardar este total?"
+            "saveTotalConfirmation": "¿Está seguro que desea guardar este total?",
+            "send": "Enviar pago al área de clientes",
+            "sendConfirmation": "¿Está seguro que quiere enviar esta línea de pago al área de cliente?"
         }
     },
     "cards": {

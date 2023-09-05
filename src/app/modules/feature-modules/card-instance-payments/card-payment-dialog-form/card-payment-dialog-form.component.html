@@ -1,0 +1,66 @@
+<div class="create-edit-card-payment-line" fxLayout="column" fxLayoutAlign="center center">
+    <div class="create-edit-card-payment-line__form">
+        <form [formGroup]="paymentLineForm" *ngIf="paymentLineForm" class="smaller-mat-form-fields">
+            <!-- General Data -->
+            <div class="payment-line-data__section">
+                <div class="payment-line-data__section__group">
+                    <mat-form-field appearance="outline" floatLabel="always" class="w-100">
+                        <mat-label>{{ labels.description | translate }}</mat-label>
+                        <input matInput formControlName="description" />
+                        <mat-error *ngIf="form?.description.invalid">
+                            <span *ngIf="form.description.errors.required"> {{ labels.required | translate }} </span>
+                        </mat-error>
+                    </mat-form-field>
+                </div>
+                <div class="payment-line-data__section__group">
+                    <mat-form-field appearance="outline" floatLabel="always" class="w-100">
+                        <mat-label>{{ labels.observations | translate }}</mat-label>
+                        <textarea
+                            matInput
+                            formControlName="observations"
+                            cdkTextareaAutosize
+                            cdkAutosizeMinRows="5"
+                            cdkAutosizeMaxRows="5"
+                        ></textarea>
+                    </mat-form-field>
+                </div>
+                <div class="payment-line-data__section__group">
+                    <mat-form-field appearance="outline" floatLabel="always" class="w-33">
+                        <mat-label>{{ labels.paymentType | translate }}</mat-label>
+                        <mat-select
+                            formControlName="paymentType"
+                            [disabled]="paymentTypeDisabled()"
+                            (selectionChange)="changePaymentType()"
+                        >
+                            <mat-option *ngFor="let type of paymentTypes" [value]="type">{{ type.name }}</mat-option>
+                        </mat-select>
+                    </mat-form-field>
+                    <mat-form-field appearance="outline" floatLabel="always" class="w-33">
+                        <mat-label>{{ labels.amount | translate }}</mat-label>
+                        <input appTwoDigitDecimal matInput formControlName="amount" [disabled]="paymentAmountDisabled()" />
+                        <span matSuffix>€</span>
+                        <mat-error *ngIf="form.amount.invalid">
+                            <span>{{ labels.maxLengthError | translate : { length: maxAmount.toString().length } }}</span>
+                        </mat-error>
+                    </mat-form-field>
+                    <mat-form-field appearance="outline" floatLabel="always" class="w-33">
+                        <mat-label>{{ labels.state | translate }}</mat-label>
+                        <mat-select formControlName="paymentState" [disabled]="paymentStateDisabled()">
+                            <mat-option *ngFor="let state of paymentStates" [value]="state">{{ state.name }}</mat-option>
+                        </mat-select>
+                    </mat-form-field>
+                </div>
+                <div class="payment-line-data__section__group">
+                    <mat-form-field appearance="outline" floatLabel="always" class="w-100">
+                        <mat-label>{{ labels.attachments | translate }}</mat-label>
+                        <mat-select formControlName="attachments" multiple [compareWith]="compareAttachments">
+                            <mat-option *ngFor="let attachment of attachmentsList" [value]="attachment">{{
+                                attachment.file.name
+                            }}</mat-option>
+                        </mat-select>
+                    </mat-form-field>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>

@@ -29,6 +29,7 @@ import { MatAutocompleteModule } from '@angular/material/autocomplete';
 import { MatTreeModule } from '@angular/material/tree';
 import { DragDropModule } from '@angular/cdk/drag-drop';
 import { MatStepperModule } from '@angular/material/stepper';
+import { MatBadgeModule } from '@angular/material/badge';
 import {
   NgxMatTimepickerModule,
   NgxMatDatetimePickerModule,
@@ -81,7 +82,8 @@ const CUSTOM_DATE_FORMATS: NgxMatDateFormats = {
     MatStepperModule,
     NgxMatTimepickerModule,
     NgxMatDatetimePickerModule,
-    NgxMatMomentModule
+    NgxMatMomentModule,
+    MatBadgeModule
   ],
   providers: [
     { provide: MatPaginatorIntl, useClass: MyCustomPaginatorIntl },
@@ -120,7 +122,8 @@ const CUSTOM_DATE_FORMATS: NgxMatDateFormats = {
     MatStepperModule,
     NgxMatTimepickerModule,
     NgxMatDatetimePickerModule,
-    NgxMatMomentModule
+    NgxMatMomentModule,
+    MatBadgeModule
   ]
 })
 export class MaterialModule {}

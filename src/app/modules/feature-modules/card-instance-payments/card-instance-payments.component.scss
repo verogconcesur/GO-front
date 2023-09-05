@@ -29,6 +29,32 @@
           padding-top: 20px;
           max-width: 90%;
         }
+        .description {
+          overflow: hidden;
+          text-overflow: ellipsis;
+          display: -webkit-box;
+          -webkit-line-clamp: 1;
+          -webkit-box-orient: vertical;
+        }
+        .observation {
+          color: mat-contrast($primary, 50);
+          font-size: 0.95em;
+          overflow: hidden;
+          text-overflow: ellipsis;
+          display: -webkit-box;
+          -webkit-line-clamp: 2;
+          -webkit-box-orient: vertical;
+        }
+        .actions {
+          .mat-badge-content {
+            width: 15px !important;
+            height: 15px !important;
+            line-height: 15px !important;
+          }
+          .mat-badge-medium.mat-badge-overlap.mat-badge-before .mat-badge-content {
+            left: 0 !important;
+          }
+        }
       }
     }
     &__create {
