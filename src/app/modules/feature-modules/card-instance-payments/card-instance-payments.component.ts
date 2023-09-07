@@ -303,34 +303,19 @@ export class CardInstancePaymentsComponent implements OnInit {
   }
   ngOnInit(): void {
     this.paymentLines = this.data?.paymentLines?.length ? this.data.paymentLines : [];
-    //DGDC quitar
     this.paymentLines = this.paymentLines.map((line, index) => ({
       ...line,
-      paymentType: index === 0 ? { id: 5, name: 'Área cliente' } : line.paymentType,
-      paymentState: { id: 1, name: 'Creada' }
+      paymentState: line?.paymentState ? line.paymentState : { id: 1, name: 'Creada' }
     }));
-    //DGDC quitar fin
     const resquests = [
       this.attachmentService.getCardAttachmentsByInstance(this.cardInstanceWorkflowId).pipe(take(1)),
-      this.paymentsService.getCardPaymentTypes().pipe(take(1))
-      //DGDC invocar nuevo servicio para obtener posibles estados de un pago
+      this.paymentsService.getCardPaymentTypes().pipe(take(1)),
+      this.paymentsService.getCardPaymentStates().pipe(take(1))
     ];
     forkJoin(resquests).subscribe(
-      (responses: [CardAttachmentsDTO[], PaymentTypeDTO[]]) => {
+      (responses: [CardAttachmentsDTO[], PaymentTypeDTO[], PaymentTypeDTO[]]) => {
         this.paymentTypes = responses[1];
-        //DGDC quitar
-        this.paymentStates = [
-          { id: 1, name: 'Creada' },
-          { id: 2, name: 'Pendiente de pago' },
-          { id: 3, name: 'Pagada' },
-          { id: 4, name: 'Error en el pago' },
-          { id: 5, name: 'Rechazado' }
-        ];
-        this.paymentTypes.push({
-          id: 5,
-          name: 'Área cliente'
-        });
-        //DGDC quitar end
+        this.paymentStates = responses[2];
         this.attachmentsList = [];
         responses[0].forEach((attachment: CardAttachmentsDTO) => {
           attachment.attachments.forEach((att: AttachmentDTO) => {
