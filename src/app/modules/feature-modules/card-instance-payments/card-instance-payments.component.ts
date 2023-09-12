@@ -3,7 +3,7 @@ import { FormArray, FormBuilder, FormGroup, UntypedFormGroup, Validators } from 
 import { ConcenetError } from '@app/types/error';
 import { marker } from '@biesbjerg/ngx-translate-extract-marker';
 import { AttachmentDTO, CardAttachmentsDTO, CardPaymentAttachmentsDTO } from '@data/models/cards/card-attachments-dto';
-import { CardPaymentLineDTO, CardPaymentsDTO, PaymentStatesDTO, PaymentTypeDTO } from '@data/models/cards/card-payments-dto';
+import { CardPaymentLineDTO, CardPaymentsDTO, PaymentStatusDTO, PaymentTypeDTO } from '@data/models/cards/card-payments-dto';
 import CardInstanceDTO from '@data/models/cards/card-instance-dto';
 import { CardAttachmentsService } from '@data/services/card-attachments.service';
 import { CardPaymentsService } from '@data/services/card-payments.service';
@@ -54,7 +54,7 @@ export class CardInstancePaymentsComponent implements OnInit {
   };
   public formTotal: FormGroup;
   public paymentLines: CardPaymentLineDTO[];
-  public paymentStates: PaymentStatesDTO[];
+  public paymentStatus: PaymentStatusDTO[];
   public attachmentsList: CardPaymentAttachmentsDTO[];
   public paymentTypes: PaymentTypeDTO[];
   public prevTotal: number;
@@ -69,13 +69,14 @@ export class CardInstancePaymentsComponent implements OnInit {
     private confirmationDialog: ConfirmDialogService,
     private globalMessageService: GlobalMessageService,
     private customDialogService: CustomDialogService,
-    private attachmentService: CardAttachmentsService
+    private attachmentService: CardAttachmentsService,
+    private cardMessageService: CardMessagesService
   ) {}
   public compareAttachments(object1: CardPaymentAttachmentsDTO, object2: CardPaymentAttachmentsDTO) {
     return object1 && object2 && object1.file.id === object2.file.id;
   }
   public getSendLabel(payment: CardPaymentLineDTO): string {
-    if (payment.paymentState.id === 1) {
+    if (payment.paymentStatus.id === 1) {
       return this.labels.sendPayment;
     } else {
       return this.labels.resendPayment;
@@ -90,23 +91,22 @@ export class CardInstancePaymentsComponent implements OnInit {
       .pipe(take(1))
       .subscribe((ok: boolean) => {
         if (ok) {
-          console.log('DGDC falta Send payment service', payment);
-          // this.paymentsService
-          //   .deleteLine(this.cardInstanceWorkflowId, this.tabId, payment.id)
-          //   .pipe(take(1))
-          //   .subscribe(
-          //     (data) => {
-          //       this.reload.emit(true);
-          //     },
-          //     (error: ConcenetError) => {
-          //       this.logger.error(error);
+          this.cardMessageService
+            .sendPaymentMessageClient(this.cardInstanceWorkflowId, payment.id)
+            .pipe(take(1))
+            .subscribe(
+              (data) => {
+                this.reload.emit(true);
+              },
+              (error: ConcenetError) => {
+                this.logger.error(error);
 
-          //       this.globalMessageService.showError({
-          //         message: error.message,
-          //         actionText: this.translateService.instant(marker('common.close'))
-          //       });
-          //     }
-          //   );
+                this.globalMessageService.showError({
+                  message: error.message,
+                  actionText: this.translateService.instant(marker('common.close'))
+                });
+              }
+            );
         }
       });
   }
@@ -242,7 +242,7 @@ export class CardInstancePaymentsComponent implements OnInit {
         extendedComponentData: {
           payment,
           paymentTypes: this.paymentTypes,
-          paymentStates: this.paymentStates,
+          paymentStatus: this.paymentStatus,
           cardInstancePaymentDTO: { id: this.data.id },
           attachmentsList: this.attachmentsList
         },
@@ -273,7 +273,7 @@ export class CardInstancePaymentsComponent implements OnInit {
         extendedComponentData: {
           payment: null,
           paymentTypes: this.paymentTypes,
-          paymentStates: this.paymentStates,
+          paymentStatus: this.paymentStatus,
           cardInstancePaymentDTO: { id: this.data.id }
         },
         id: CardPaymentDialogEnum.ID,
@@ -305,17 +305,17 @@ export class CardInstancePaymentsComponent implements OnInit {
     this.paymentLines = this.data?.paymentLines?.length ? this.data.paymentLines : [];
     this.paymentLines = this.paymentLines.map((line, index) => ({
       ...line,
-      paymentState: line?.paymentState ? line.paymentState : { id: 1, name: 'Creada' }
+      paymentStatus: line?.paymentStatus ? line.paymentStatus : { id: 1, name: 'Creada' }
     }));
     const resquests = [
       this.attachmentService.getCardAttachmentsByInstance(this.cardInstanceWorkflowId).pipe(take(1)),
       this.paymentsService.getCardPaymentTypes().pipe(take(1)),
-      this.paymentsService.getCardPaymentStates().pipe(take(1))
+      this.paymentsService.getCardPaymentStatus().pipe(take(1))
     ];
     forkJoin(resquests).subscribe(
       (responses: [CardAttachmentsDTO[], PaymentTypeDTO[], PaymentTypeDTO[]]) => {
         this.paymentTypes = responses[1];
-        this.paymentStates = responses[2];
+        this.paymentStatus = responses[2];
         this.attachmentsList = [];
         responses[0].forEach((attachment: CardAttachmentsDTO) => {
           attachment.attachments.forEach((att: AttachmentDTO) => {

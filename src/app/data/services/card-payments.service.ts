@@ -112,7 +112,7 @@ export class CardPaymentsService {
    * @param tabId
    * @returns CardPaymentsDTO
    */
-  public getCardPaymentStates(): Observable<PaymentTypeDTO[]> {
+  public getCardPaymentStatus(): Observable<PaymentTypeDTO[]> {
     return this.http
       .get<PaymentTypeDTO[]>(
         // eslint-disable-next-line max-len

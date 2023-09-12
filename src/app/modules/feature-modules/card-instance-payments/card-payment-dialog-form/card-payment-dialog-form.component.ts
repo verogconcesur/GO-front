@@ -2,7 +2,7 @@ import { Component, OnDestroy, OnInit } from '@angular/core';
 import { FormBuilder, UntypedFormControl, UntypedFormGroup, Validators } from '@angular/forms';
 import { marker } from '@biesbjerg/ngx-translate-extract-marker';
 import { CardPaymentAttachmentsDTO } from '@data/models/cards/card-attachments-dto';
-import { CardPaymentLineDTO, CardPaymentsDTO, PaymentStatesDTO, PaymentTypeDTO } from '@data/models/cards/card-payments-dto';
+import { CardPaymentLineDTO, CardPaymentsDTO, PaymentStatusDTO, PaymentTypeDTO } from '@data/models/cards/card-payments-dto';
 import { ComponentToExtendForCustomDialog, CustomDialogFooterConfigI } from '@frontend/custom-dialog';
 import { TranslateService } from '@ngx-translate/core';
 import { ConfirmDialogService } from '@shared/services/confirm-dialog.service';
@@ -22,7 +22,7 @@ export const enum CardPaymentDialogEnum {
 export class CardPaymentDialogFormComponent extends ComponentToExtendForCustomDialog implements OnInit, OnDestroy {
   public paymentLine: CardPaymentLineDTO = null;
   public paymentTypes: PaymentTypeDTO[] = [];
-  public paymentStates: PaymentStatesDTO[] = [];
+  public paymentStatus: PaymentStatusDTO[] = [];
   public cardInstancePayment: CardPaymentsDTO = null;
   public paymentLineForm: UntypedFormGroup = null;
   public attachmentsList: CardPaymentAttachmentsDTO[];
@@ -55,7 +55,7 @@ export class CardPaymentDialogFormComponent extends ComponentToExtendForCustomDi
 
   ngOnInit(): void {
     this.paymentTypes = this.extendedComponentData.paymentTypes;
-    this.paymentStates = this.extendedComponentData.paymentStates;
+    this.paymentStatus = this.extendedComponentData.paymentStatus;
     this.cardInstancePayment = this.extendedComponentData.cardInstancePaymentDTO;
     this.attachmentsList = this.extendedComponentData.attachmentsList;
     if (this.extendedComponentData.payment) {
@@ -70,14 +70,14 @@ export class CardPaymentDialogFormComponent extends ComponentToExtendForCustomDi
   ngOnDestroy(): void {}
   public paymentAmountDisabled(): boolean {
     // Si ya está pagada se deshabilita
-    if (this.form?.paymentState?.value?.id === 3) {
+    if (this.form?.paymentStatus?.value?.id === 3) {
       this.form?.amount.disable();
       return true;
     }
     this.form?.amount.enable();
     return false;
   }
-  public paymentStateDisabled(): boolean {
+  public paymentStatusDisabled(): boolean {
     //Si el tipo de pago es área cliente se deshabilita
     if (this.form?.paymentType?.value?.id === 5) {
       return true;
@@ -85,7 +85,7 @@ export class CardPaymentDialogFormComponent extends ComponentToExtendForCustomDi
     return false;
   }
   public paymentTypeDisabled(): boolean {
-    if (this.form?.paymentState?.value?.id === 3) {
+    if (this.form?.paymentStatus?.value?.id === 3) {
       return true;
     }
     return false;
@@ -95,14 +95,14 @@ export class CardPaymentDialogFormComponent extends ComponentToExtendForCustomDi
   }
   public changePaymentType(): void {
     const type: PaymentTypeDTO = this.form.paymentType.value;
-    if (this.paymentLine?.paymentType?.id === type.id && this.paymentLine?.paymentState) {
+    if (this.paymentLine?.paymentType?.id === type.id && this.paymentLine?.paymentStatus) {
       this.paymentLineForm
-        .get('paymentState')
-        .setValue(this.paymentStates.find((p) => p.id === this.paymentLine.paymentState.id));
+        .get('paymentStatus')
+        .setValue(this.paymentStatus.find((p) => p.id === this.paymentLine.paymentStatus.id));
     } else if (type.id === 5) {
-      this.paymentLineForm.get('paymentState').setValue(this.paymentStates.find((p) => p.id === 1));
+      this.paymentLineForm.get('paymentStatus').setValue(this.paymentStatus.find((p) => p.id === 1));
     } else {
-      this.paymentLineForm.get('paymentState').setValue(null);
+      this.paymentLineForm.get('paymentStatus').setValue(null);
     }
   }
 
@@ -152,8 +152,8 @@ export class CardPaymentDialogFormComponent extends ComponentToExtendForCustomDi
         this.paymentLine?.paymentType ? this.paymentTypes.find((pt) => this.paymentLine.paymentType.id === pt.id) : null,
         [Validators.required]
       ],
-      paymentState: [
-        this.paymentLine?.paymentState ? this.paymentStates.find((ps) => this.paymentLine.paymentState.id === ps.id) : null,
+      paymentStatus: [
+        this.paymentLine?.paymentStatus ? this.paymentStatus.find((ps) => this.paymentLine.paymentStatus.id === ps.id) : null,
         [Validators.required]
       ],
       editMode: [true],

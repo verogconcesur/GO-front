@@ -10,7 +10,7 @@ export interface CardPaymentLineDTO {
   description?: string;
   observations?: string;
   paymentType?: PaymentTypeDTO;
-  paymentState?: PaymentStatesDTO;
+  paymentStatus?: PaymentStatusDTO;
 }
 
 export interface CardPaymentsDTO {
@@ -27,7 +27,7 @@ export interface PaymentTypeDTO {
   name: string;
 }
 
-export interface PaymentStatesDTO {
+export interface PaymentStatusDTO {
   id: number;
   name?: string;
 }

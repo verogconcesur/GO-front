@@ -33,11 +33,11 @@
         </div>
         <div class="payments__main__header" *ngIf="data">
             <div class="payments__main__header__item" fxLayout="row">
-                <div fxFlex="25" fxLayoutAlign="left center" fxFill>{{ labels.description | translate }}</div>
-                <div fxFlex="20" fxLayoutAlign="center center" fxFill>{{ labels.paymentType | translate }}</div>
+                <div fxFlex="25" fxLayoutAlign="start center" fxFill>{{ labels.description | translate }}</div>
+                <div fxFlex="20" fxLayoutAlign="start center" fxFill>{{ labels.paymentType | translate }}</div>
+                <div fxFlex="20" fxLayoutAlign="start center" fxFill>{{ labels.state | translate }}</div>
                 <div fxFlex="15" fxLayoutAlign="center center" fxFill>{{ labels.amount | translate }}</div>
-                <div fxFlex="20" fxLayoutAlign="center center" fxFill>{{ labels.state | translate }}</div>
-                <div fxFlex="20" fxLayoutAlign="center center" fxFill>{{ labels.actions | translate }}</div>
+                <div fxFlex="20" fxLayoutAlign="end center" fxFill>{{ labels.actions | translate }}</div>
             </div>
         </div>
         <div class="payments__main__container" fxLayout="column" *ngIf="data">
@@ -46,7 +46,7 @@
                 *ngFor="let payment of paymentLines; let i = index"
                 fxLayout="row"
             >
-                <div fxFlex="25" fxLayoutAlign="left center">
+                <div fxFlex="25" fxLayoutAlign="start center">
                     <div fxLayout="column">
                         <div class="description" matTooltip="{{ payment.description }}" matTooltipPosition="above">
                             {{ payment.description }}
@@ -56,12 +56,27 @@
                         </div>
                     </div>
                 </div>
-                <div fxFlex="20" fxLayoutAlign="center center">
+                <div fxFlex="20" fxLayoutAlign="start center">
                     {{ payment.paymentType?.name }}
                 </div>
+                <div fxFlex="20" fxLayoutAlign="start center">{{ payment.paymentStatus?.name }}</div>
                 <div fxFlex="15" fxLayoutAlign="center center">{{ payment.amount }}<span matSuffix>€</span></div>
-                <div fxFlex="20" fxLayoutAlign="center center">{{ payment.paymentState?.name }}</div>
-                <div fxFlex="20" fxLayoutAlign="center center" class="actions">
+                <div fxFlex="20" fxLayoutAlign="end center" class="actions">
+                    <mat-icon
+                        [color]="editingTotal ? '' : 'primary'"
+                        style="cursor: pointer"
+                        (click)="!editingTotal && sendPayment(payment)"
+                        matTooltip="{{ getSendLabel(payment) | translate }}"
+                        matTooltipPosition="above"
+                        *ngIf="
+                            payment.paymentType?.id === 5 &&
+                            (payment.paymentStatus?.id === 1 ||
+                                payment.paymentStatus?.id === 4 ||
+                                payment.paymentStatus?.id === 5)
+                        "
+                    >
+                        send
+                    </mat-icon>
                     <mat-icon
                         style="cursor: pointer; color: green"
                         [matBadge]="payment.attachments?.length"
@@ -78,19 +93,6 @@
                         *ngIf="!payment.attachments?.length"
                     >
                         attach_file
-                    </mat-icon>
-                    <mat-icon
-                        [color]="editingTotal ? '' : 'primary'"
-                        style="cursor: pointer"
-                        (click)="!editingTotal && sendPayment(payment)"
-                        matTooltip="{{ getSendLabel(payment) | translate }}"
-                        matTooltipPosition="above"
-                        *ngIf="
-                            payment.paymentType?.id === 5 &&
-                            (payment.paymentState?.id === 1 || payment.paymentState?.id === 4 || payment.paymentState?.id === 5)
-                        "
-                    >
-                        send
                     </mat-icon>
                     <mat-icon
                         [color]="editingTotal ? '' : 'primary'"
