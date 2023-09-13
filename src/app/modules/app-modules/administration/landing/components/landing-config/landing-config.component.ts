@@ -71,6 +71,7 @@ export class LandingConfigComponent implements OnInit {
             .setValue(imgBase64Path.split(';base64')[0].split('data:')[1], { emitEvent: true });
           this.landingForm.get(input).get('name').setValue(file.name, { emitEvent: true });
           this.landingForm.get(input).get('thumbnail').setValue(null, { emitEvent: true });
+          this.landingForm.get(input).get('id').setValue(null, { emitEvent: true });
           this.landingForm.get(input).markAsDirty();
           this.landingForm.get(input).markAsTouched();
         };
@@ -93,6 +94,7 @@ export class LandingConfigComponent implements OnInit {
       this.landingForm.get(input).get('size').setValue(null, { emitEvent: true });
       this.landingForm.get(input).get('logoB64').setValue(null, { emitEvent: true });
       this.landingForm.get(input).get('myfilename').setValue(null, { emitEvent: true });
+      this.landingForm.get(input).get('id').setValue(null, { emitEvent: true });
     }
   }
 
