@@ -71,6 +71,7 @@ export class LandingConfigComponent implements OnInit {
             .setValue(imgBase64Path.split(';base64')[0].split('data:')[1], { emitEvent: true });
           this.landingForm.get(input).get('name').setValue(file.name, { emitEvent: true });
           this.landingForm.get(input).get('thumbnail').setValue(null, { emitEvent: true });
+          this.landingForm.get(input).get('id').setValue(null, { emitEvent: true });
           this.landingForm.get(input).markAsDirty();
           this.landingForm.get(input).markAsTouched();
         };
@@ -93,6 +94,7 @@ export class LandingConfigComponent implements OnInit {
       this.landingForm.get(input).get('size').setValue(null, { emitEvent: true });
       this.landingForm.get(input).get('logoB64').setValue(null, { emitEvent: true });
       this.landingForm.get(input).get('myfilename').setValue(null, { emitEvent: true });
+      this.landingForm.get(input).get('id').setValue(null, { emitEvent: true });
     }
   }
 
@@ -195,7 +197,8 @@ export class LandingConfigComponent implements OnInit {
           this.landingConfig?.backgroundImage?.thumbnail ? this.landingConfig.backgroundImage.thumbnail : null,
           Validators.required
         ],
-        type: [this.landingConfig?.backgroundImage?.type ? this.landingConfig.backgroundImage.type : null, Validators.required]
+        type: [this.landingConfig?.backgroundImage?.type ? this.landingConfig.backgroundImage.type : null, Validators.required],
+        id: [this.landingConfig?.backgroundImage?.id ? this.landingConfig.backgroundImage.id : null]
       }),
       landingTheme: [
         this.landingConfig?.landingTheme
@@ -208,14 +211,16 @@ export class LandingConfigComponent implements OnInit {
         name: [this.landingConfig?.logo?.name ? this.landingConfig.logo.name : null, Validators.required],
         size: [this.landingConfig?.logo?.size ? this.landingConfig.logo.size : null, Validators.required],
         thumbnail: [this.landingConfig?.logo?.thumbnail ? this.landingConfig.logo.thumbnail : null, Validators.required],
-        type: [this.landingConfig?.logo?.type ? this.landingConfig.logo.type : null, Validators.required]
+        type: [this.landingConfig?.logo?.type ? this.landingConfig.logo.type : null, Validators.required],
+        id: [this.landingConfig?.logo?.id ? this.landingConfig.logo.id : null]
       }),
       logoAlt: this.fb.group({
         content: [this.landingConfig?.logoAlt?.content ? this.landingConfig.logoAlt.content : null, Validators.required],
         name: [this.landingConfig?.logoAlt?.name ? this.landingConfig.logoAlt.name : null, Validators.required],
         size: [this.landingConfig?.logoAlt?.size ? this.landingConfig.logoAlt.size : null, Validators.required],
         thumbnail: [this.landingConfig?.logoAlt?.thumbnail ? this.landingConfig.logoAlt.thumbnail : null, Validators.required],
-        type: [this.landingConfig?.logoAlt?.type ? this.landingConfig.logoAlt.type : null, Validators.required]
+        type: [this.landingConfig?.logoAlt?.type ? this.landingConfig.logoAlt.type : null, Validators.required],
+        id: [this.landingConfig?.logoAlt?.id ? this.landingConfig.logoAlt.id : null]
       })
       // banners: [[...this.landingConfig.banners]],
       // menuLinks: [[...this.landingConfig.menuLinks]],
