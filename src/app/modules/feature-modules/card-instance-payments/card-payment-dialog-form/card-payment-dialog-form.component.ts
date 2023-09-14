@@ -1,12 +1,15 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { FormBuilder, UntypedFormControl, UntypedFormGroup, Validators } from '@angular/forms';
 import { marker } from '@biesbjerg/ngx-translate-extract-marker';
-import { CardPaymentAttachmentsDTO } from '@data/models/cards/card-attachments-dto';
+import { AttachmentDTO, CardPaymentAttachmentsDTO } from '@data/models/cards/card-attachments-dto';
 import { CardPaymentLineDTO, CardPaymentsDTO, PaymentStatusDTO, PaymentTypeDTO } from '@data/models/cards/card-payments-dto';
+import { CardAttachmentsService } from '@data/services/card-attachments.service';
 import { ComponentToExtendForCustomDialog, CustomDialogFooterConfigI } from '@frontend/custom-dialog';
+import { MediaViewerService } from '@modules/feature-modules/media-viewer-dialog/media-viewer.service';
 import { TranslateService } from '@ngx-translate/core';
 import { ConfirmDialogService } from '@shared/services/confirm-dialog.service';
-import { Observable, of } from 'rxjs';
+import { ProgressSpinnerDialogService } from '@shared/services/progress-spinner-dialog.service';
+import { Observable, finalize, of, take } from 'rxjs';
 
 export const enum CardPaymentDialogEnum {
   ID = 'card-payment-dialog-id',
@@ -26,6 +29,7 @@ export class CardPaymentDialogFormComponent extends ComponentToExtendForCustomDi
   public cardInstancePayment: CardPaymentsDTO = null;
   public paymentLineForm: UntypedFormGroup = null;
   public attachmentsList: CardPaymentAttachmentsDTO[];
+  public cardInstanceWorkflowId: number;
   public labels = {
     newPaymentLine: marker('cardDetail.payments.newLine'),
     editPaymentLine: marker('cardDetail.payments.editLine'),
@@ -43,7 +47,10 @@ export class CardPaymentDialogFormComponent extends ComponentToExtendForCustomDi
   constructor(
     public fb: FormBuilder,
     public confirmDialogService: ConfirmDialogService,
-    public translateService: TranslateService
+    public translateService: TranslateService,
+    public mediaViewerService: MediaViewerService,
+    public cardAttachmentsService: CardAttachmentsService,
+    private spinnerService: ProgressSpinnerDialogService
   ) {
     super(CardPaymentDialogEnum.ID, CardPaymentDialogEnum.PANEL_CLASS, CardPaymentDialogEnum.TITLE);
   }
@@ -57,6 +64,7 @@ export class CardPaymentDialogFormComponent extends ComponentToExtendForCustomDi
     this.paymentTypes = this.extendedComponentData.paymentTypes;
     this.paymentStatus = this.extendedComponentData.paymentStatus;
     this.cardInstancePayment = this.extendedComponentData.cardInstancePaymentDTO;
+    this.cardInstanceWorkflowId = this.extendedComponentData.cardInstanceWorkflowId;
     this.attachmentsList = this.extendedComponentData.attachmentsList;
     if (this.extendedComponentData.payment) {
       this.paymentLine = this.extendedComponentData.payment;
@@ -103,6 +111,30 @@ export class CardPaymentDialogFormComponent extends ComponentToExtendForCustomDi
       this.paymentLineForm.get('paymentStatus').setValue(this.paymentStatus.find((p) => p.id === 1));
     } else {
       this.paymentLineForm.get('paymentStatus').setValue(null);
+    }
+  }
+
+  public openMedia(attachment: CardPaymentAttachmentsDTO): void {
+    const file: AttachmentDTO = attachment.file;
+    if (file.content) {
+      this.mediaViewerService.openMediaViewer(file);
+    } else {
+      const spinner = this.spinnerService.show();
+      this.cardAttachmentsService
+        .downloadAttachment(this.cardInstanceWorkflowId, null, file.id)
+        .pipe(
+          take(1),
+          finalize(() => this.spinnerService.hide(spinner))
+        )
+        .subscribe((data) => {
+          this.attachmentsList.map((att) => {
+            if (att.file.id === data.id) {
+              att.file.content = data.content;
+            }
+            return att;
+          });
+          this.mediaViewerService.openMediaViewer(data);
+        });
     }
   }
 

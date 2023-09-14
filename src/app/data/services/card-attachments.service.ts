@@ -151,11 +151,14 @@ export class CardAttachmentsService {
   }
 
   public downloadAttachment(cardInstanceWorkflowId: number, tabId: number, fileId: number): Observable<AttachmentDTO> {
-    return this.http
-      .get<AttachmentDTO>(
+    let url =
+      `${this.env.apiBaseUrl}${this.GET_CARD_INSTANCE_PATH}${this.DETAIL_PATH}/` +
+      `${cardInstanceWorkflowId}${this.ATTACHMETS_PATH}/${tabId}${this.DOWNLOAD_PATH}/${fileId}`;
+    if (!tabId) {
+      url =
         `${this.env.apiBaseUrl}${this.GET_CARD_INSTANCE_PATH}${this.DETAIL_PATH}/` +
-          `${cardInstanceWorkflowId}${this.ATTACHMETS_PATH}/${tabId}${this.DOWNLOAD_PATH}/${fileId}`
-      )
-      .pipe(catchError((error) => throwError(error.error as ConcenetError)));
+        `${cardInstanceWorkflowId}${this.ATTACHMETS_PATH}${this.DOWNLOAD_PATH}/${fileId}`;
+    }
+    return this.http.get<AttachmentDTO>(url).pipe(catchError((error) => throwError(error.error as ConcenetError)));
   }
 }

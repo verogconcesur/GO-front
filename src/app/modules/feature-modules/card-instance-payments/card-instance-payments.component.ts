@@ -244,7 +244,8 @@ export class CardInstancePaymentsComponent implements OnInit {
           paymentTypes: this.paymentTypes,
           paymentStatus: this.paymentStatus,
           cardInstancePaymentDTO: { id: this.data.id },
-          attachmentsList: this.attachmentsList
+          attachmentsList: this.attachmentsList,
+          cardInstanceWorkflowId: this.cardInstanceWorkflowId
         },
         id: CardPaymentDialogEnum.ID,
         panelClass: CardPaymentDialogEnum.PANEL_CLASS,
