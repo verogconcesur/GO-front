@@ -53,10 +53,13 @@
                 <div class="payment-line-data__section__group">
                     <mat-form-field appearance="outline" floatLabel="always" class="w-100">
                         <mat-label>{{ labels.attachments | translate }}</mat-label>
-                        <mat-select formControlName="attachments" multiple [compareWith]="compareAttachments">
+                        <mat-select #matSelect formControlName="attachments" multiple [compareWith]="compareAttachments">
                             <mat-option *ngFor="let attachment of attachmentsList" [value]="attachment">
                                 {{ attachment.file.name }}
-                                <mat-icon style="margin-left: 16px" (click)="openMedia(attachment); $event.stopPropagation()"
+                                <mat-icon
+                                    *ngIf="matSelect.panelOpen"
+                                    style="margin-left: 16px"
+                                    (click)="openMedia(attachment); $event.stopPropagation()"
                                     >remove_red_eye</mat-icon
                                 >
                             </mat-option>
