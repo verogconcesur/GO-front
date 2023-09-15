@@ -134,6 +134,7 @@
         "payments": {
             "deleteConfirmation": "Are you sure you want to delete this payment line?",
             "editLine": "Edit payment line",
+            "langindOnlyPositiveAmounts": "Negative quantities cannot be sent to the customer area.",
             "newLine": "New payment line",
             "resend": "Resend payment line",
             "saveConfirmation": "Are you sure you want to save this payment line?",

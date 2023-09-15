@@ -134,6 +134,7 @@
         "payments": {
             "deleteConfirmation": "¿Está seguro que desea eliminar esta linea de pago?",
             "editLine": "Editar línea de pago",
+            "langindOnlyPositiveAmounts": "No se pueden enviar cantidades negativas al área de cliente.",
             "newLine": "Crear línea de pago",
             "resend": "Reenviar pago al área de clientes",
             "saveConfirmation": "¿Está seguro que desea guardar esta linea de pago?",

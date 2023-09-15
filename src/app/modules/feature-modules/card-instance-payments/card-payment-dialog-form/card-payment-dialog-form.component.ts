@@ -8,6 +8,7 @@ import { ComponentToExtendForCustomDialog, CustomDialogFooterConfigI } from '@fr
 import { MediaViewerService } from '@modules/feature-modules/media-viewer-dialog/media-viewer.service';
 import { TranslateService } from '@ngx-translate/core';
 import { ConfirmDialogService } from '@shared/services/confirm-dialog.service';
+import { GlobalMessageService } from '@shared/services/global-message.service';
 import { ProgressSpinnerDialogService } from '@shared/services/progress-spinner-dialog.service';
 import { Observable, finalize, of, take } from 'rxjs';
 
@@ -50,7 +51,8 @@ export class CardPaymentDialogFormComponent extends ComponentToExtendForCustomDi
     public translateService: TranslateService,
     public mediaViewerService: MediaViewerService,
     public cardAttachmentsService: CardAttachmentsService,
-    private spinnerService: ProgressSpinnerDialogService
+    private spinnerService: ProgressSpinnerDialogService,
+    private globalMessageService: GlobalMessageService
   ) {
     super(CardPaymentDialogEnum.ID, CardPaymentDialogEnum.PANEL_CLASS, CardPaymentDialogEnum.TITLE);
   }
@@ -76,9 +78,16 @@ export class CardPaymentDialogFormComponent extends ComponentToExtendForCustomDi
   }
 
   ngOnDestroy(): void {}
+
+  // {id: 1, name: "Creada"}
+  // {id: 2, name: "Pendiente de pago"}
+  // {id: 3, name: "Pagada"}
+  // {id: 4, name: "Error en el pago"}
+  // {id: 5, name: "Rechazado"}
+  // {id: 6, name: "Denegado"}
   public paymentAmountDisabled(): boolean {
-    // Si ya está pagada se deshabilita
-    if (this.form?.paymentStatus?.value?.id === 3) {
+    // Si ya está pagada o denegada se deshabilita
+    if (this.form?.paymentStatus?.value?.id === 3 || this.form?.paymentStatus?.value?.id === 6) {
       this.form?.amount.disable();
       return true;
     }
@@ -86,14 +95,15 @@ export class CardPaymentDialogFormComponent extends ComponentToExtendForCustomDi
     return false;
   }
   public paymentStatusDisabled(): boolean {
-    //Si el tipo de pago es área cliente se deshabilita
-    if (this.form?.paymentType?.value?.id === 5) {
+    //Si el tipo de pago es área cliente se deshabilita o está denegada
+    if (this.form?.paymentType?.value?.id === 5 || this.form?.paymentStatus?.value?.id === 6) {
       return true;
     }
     return false;
   }
   public paymentTypeDisabled(): boolean {
-    if (this.form?.paymentStatus?.value?.id === 3) {
+    // Si ya está pagada o denegada se deshabilita
+    if (this.form?.paymentStatus?.value?.id === 3 || this.form?.paymentStatus?.value?.id === 6) {
       return true;
     }
     return false;
@@ -151,6 +161,13 @@ export class CardPaymentDialogFormComponent extends ComponentToExtendForCustomDi
 
   public onSubmitCustomDialog(): Observable<boolean | UntypedFormGroup> {
     if (this.paymentLineForm.touched && this.paymentLineForm.dirty) {
+      if (this.form?.paymentType?.value?.id === 5 && this.form?.amount?.value <= 0) {
+        this.globalMessageService.showError({
+          message: this.translateService.instant(marker('cardDetail.payments.langindOnlyPositiveAmounts')),
+          actionText: this.translateService.instant(marker('common.close'))
+        });
+        return of(false);
+      }
       return of(this.paymentLineForm);
     }
     return of(false);
