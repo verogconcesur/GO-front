@@ -1,0 +1,54 @@
+@import 'utils/core';
+@import 'utils/theme';
+.calendar-view-wrapper {
+  width: 100%;
+  height: 100%;
+  &__header {
+    height: 64px;
+    border-bottom: 2px solid mat-color($background, background-administration);
+    padding: 0 30px;
+    width: 100%;
+    box-sizing: border-box;
+    font-size: 0.8rem;
+    &__switcher {
+      span {
+        color: lighten(mat-contrast($primary, 50), 20%);
+        font-weight: 400;
+        margin: 0 10px;
+        cursor: pointer;
+        &.active {
+          color: mat-color($primary, 600);
+          font-weight: 600;
+        }
+      }
+    }
+    &__date {
+      font-size: 1rem;
+      font-weight: bold;
+      span {
+        margin: 0 10px;
+        cursor: pointer;
+      }
+    }
+    &__total {
+      span {
+        color: mat-color($primary, 600);
+        font-weight: 600;
+      }
+    }
+  }
+  &__content {
+    height: calc(100vh - 200px);
+    width: 100%;
+    overflow: auto;
+    padding: 0 40px 20px 80px;
+    box-sizing: border-box;
+  }
+  .empty-wrapper {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    min-height: 200px;
+  }
+}

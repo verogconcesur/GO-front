@@ -21,6 +21,8 @@ import { WorkflowSearchFilterDTO } from '@data/models/workflows/workflow-filter-
 import PaginationRequestI from '@data/interfaces/pagination-request';
 import { getPaginationUrlGetParams } from '@data/utils/pagination-aux';
 import PaginationResponseI from '@data/interfaces/pagination-response';
+import { RouteConstants } from '@app/constants/route.constants';
+import WorkflowCalendarBodyDTO from '@data/models/workflows/workflow-calendar-body-dto';
 
 @Injectable({
   providedIn: 'root'
@@ -28,6 +30,8 @@ import PaginationResponseI from '@data/interfaces/pagination-response';
 export class WorkflowsService {
   //Stores the selected workflow.
   public workflowSelectedSubject$: BehaviorSubject<WorkflowDTO> = new BehaviorSubject(null);
+  //Stores the selected view.
+  public workflowSelectedView$: BehaviorSubject<RouteConstants | string> = new BehaviorSubject(null);
   //Stores the selected facility.
   public facilitiesSelectedSubject$: BehaviorSubject<FacilityDTO[]> = new BehaviorSubject([]);
 
@@ -50,6 +54,7 @@ export class WorkflowsService {
   private readonly SYNCRONIZE_PATH = '/synchronize';
   private readonly GET_WORKFLOW_SUBSTATE_USERS_PATH = '/api/cardInstanceWorkflow/createCard/';
   private readonly GET_USERS_PATH = '/getUsers';
+  private readonly GET_CALENDAR_PATH = '/calendar';
   private readonly REINDEX_CARDS_PATH = '/reindexCards';
   constructor(@Inject(ENV) private env: Env, private http: HttpClient, private workflowFilterService: WorkflowFilterService) {}
 
@@ -219,6 +224,38 @@ export class WorkflowsService {
     return this.http
       .get<WorkflowCardDTO>(
         `${this.env.apiBaseUrl}${this.GET_WORKFLOWS_PATH}${this.GET_WORKFLOWS_VIEW_PATH}/${viewType}${this.GET_WORKFLOWS_CARD_PATH}/${cardId}`
+      )
+      .pipe(catchError((error) => throwError(error.error as ConcenetError)));
+  }
+
+  /**
+   * Get all cards of a workflow
+   *
+   * @param workflow WorkflowDTO
+   * @returns
+   */
+  public getWorkflowCardsCalendar(workflow: WorkflowDTO, body: WorkflowCalendarBodyDTO): Observable<WorkflowCardDTO[]> {
+    return this.http
+      .post<WorkflowCardDTO[]>(`${this.env.apiBaseUrl}${this.GET_WORKFLOWS_PATH}/${workflow.id}${this.GET_CALENDAR_PATH}`, body)
+      .pipe(catchError((error) => throwError(error.error as ConcenetError)));
+  }
+
+  /**
+   * Get one card of a workflow
+   *
+   * @param cardId number
+   * @param viewType 'BOARD' | 'CALENDAR' | 'TABLE'
+   * @returns
+   */
+  public getSingleWorkflowCalendarCard(
+    workflow: WorkflowDTO,
+    body: WorkflowCalendarBodyDTO,
+    cardId: number
+  ): Observable<WorkflowCardDTO> {
+    return this.http
+      .post<WorkflowCardDTO>(
+        `${this.env.apiBaseUrl}${this.GET_WORKFLOWS_PATH}/${workflow.id}${this.GET_CALENDAR_PATH}/${cardId}`,
+        body
       )
       .pipe(catchError((error) => throwError(error.error as ConcenetError)));
   }

@@ -18,6 +18,7 @@ export class WorkflowFilterService {
     subStates: [],
     users: [],
     priorities: [],
+    dateType: null,
     substatesWithCards: 'BOTH'
   });
   //Stores the filter options to show
@@ -26,6 +27,7 @@ export class WorkflowFilterService {
     subStates: [],
     users: [],
     priorities: [],
+    dateType: null,
     substatesWithCards: 'BOTH'
   });
 
@@ -37,6 +39,7 @@ export class WorkflowFilterService {
       subStates: [],
       users: [],
       priorities: [],
+      dateType: null,
       substatesWithCards: 'BOTH'
     };
     this.workflowFilterSubject$.next(filterR);
@@ -100,6 +103,7 @@ export class WorkflowFilterService {
       subStates: [...subStates],
       users: [...users],
       priorities: [...priorities],
+      dateType: null,
       substatesWithCards
     };
     this.workflowFilterOptionsSubject$.next(filterOptions);
@@ -411,5 +415,24 @@ export class WorkflowFilterService {
     }
 
     return wStatesData;
+  }
+
+  // Filters for calendar view
+  public filterDataCalendar(cards: WorkflowCardDTO[], filter: WorkflowFilterDTO): WorkflowCardDTO[] {
+    return cards.filter((card: WorkflowCardDTO) => {
+      let isReturnable = true;
+      if (filter.states && filter.states.length) {
+        isReturnable = !!filter.states.find((state: WorkflowStateDTO) => state.id === card.workflowSubstate.workflowState.id);
+      }
+      if (filter.subStates && filter.subStates.length) {
+        isReturnable = !!filter.subStates.find((substate: WorkflowSubstateDTO) => substate.id === card.workflowSubstate.id);
+      }
+      if (filter.users && filter.users.length) {
+        isReturnable = !!filter.users.find(
+          (user: WorkflowSubstateUserDTO) => user.id === card.cardInstanceWorkflows[0].cardInstanceWorkflowUsers[0].userId
+        );
+      }
+      return isReturnable;
+    });
   }
 }

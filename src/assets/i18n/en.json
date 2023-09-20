@@ -80,12 +80,12 @@
                 "delete": "Delete timeline template",
                 "deleteConfirmation": "Do you really want to delete this timeline template?",
                 "edit": "Edit timeline template",
+                "email": "Email",
                 "itemConcept": "Item concept",
                 "items": "Items",
-                "landingMessage": "Text to show when your card is in this state of the Timeline",
                 "landingEmail": "^Predetermined email configuration",
+                "landingMessage": "Text to show when your card is in this state of the Timeline",
                 "name": "timeline's template name",
-                "email": "Email",
                 "title": "Client timeline"
             },
             "communications": {
@@ -288,6 +288,7 @@
         "data": "Data",
         "dateEnd": "Final date",
         "dateIni": "Initial date",
+        "dateType": "Date",
         "delete": "Delete",
         "deleteConfirmation": "Do you really want to delete this item?",
         "deleteFile": "Delete file",
@@ -788,6 +789,12 @@
         "attachemntCategory": "Attachment Category",
         "attachmentTab": "Attachment Tab",
         "byFacilityGroupLabel": "{facility}'s workflows",
+        "calendar": {
+            "day": "Day",
+            "totalCardsDay": "{totalCards} cards this day",
+            "totalCardsWeek": "{totalCards} cards this week",
+            "week": "Week"
+        },
         "card": {
             "cardTabs": "Tabs of the card",
             "customerAssociatedCards": "Customer's cards",
