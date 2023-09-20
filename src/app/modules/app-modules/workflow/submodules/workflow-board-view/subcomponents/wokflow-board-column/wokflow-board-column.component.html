@@ -12,9 +12,12 @@
             <button mat-button *ngIf="!collapsed" (click)="changeCollapsed()">{{ labels.seeLess | translate }}</button>
         </div>
     </div>
+
+    <!-- Si se vuelve a dejar arrastrar tarjetas a las columnas para moverlas se debe recuperar esta forma de ocultar:
+        [ngStyle]="{ display: collapsed ? 'flex' : 'none' }" -->
     <div
         class="workflow-board-column__collapsed"
-        [ngStyle]="{ display: collapsed ? 'flex' : 'none' }"
+        *ngIf="collapsed"
         [ngClass]="getCollapsedDropZoneClass()"
         cdkDropList
         [cdkDropListDisabled]="!isDragAndDropEnabled"
@@ -45,8 +48,11 @@
         </div>
     </div>
     <!-- Usamos ngStyle en lugar de NgIf para que los cdkDropList estén renderizados y visibles en caso de que se expanda la columna haciendo el
-         drag sobre la tarjeta colapsada -->
-    <div class="workflow-board-column__expanded" [ngStyle]="{ display: collapsed ? 'none' : 'flex' }">
+         drag sobre la tarjeta colapsada
+         [ngStyle]="{ display: collapsed ? 'none' : 'flex' }"
+        Puesto que por lo pronto no se pueden arrastrar tarjetas sobre otros estados para moverlos volvemos a poner *ngIf
+        -->
+    <div class="workflow-board-column__expanded" *ngIf="!collapsed">
         <div
             class="workflow-board-column__expanded__block"
             cdkScrollable
