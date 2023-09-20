@@ -5,7 +5,7 @@
             *ngFor="let day of workflowHourLine.days"
             fxLayout="row"
             fxLayoutAlign="center center"
-            [ngClass]="{ highlight: compareTime(day.day) }"
+            [ngClass]="{ highlight: compareTime(day.day), week: workflowHourLine.days.length > 1 }"
         >
             <span>{{ day.day.format("dddd D") | titlecase }}</span>
         </div>
@@ -18,7 +18,8 @@
             fxLayoutAlign="start start"
             [ngClass]="{
                 highlight: compareTime(day.day, workflowHourLine.hour),
-                borderCalendar: i < workflowHourLine.days.length - 1
+                borderCalendar: i < workflowHourLine.days.length - 1,
+                week: workflowHourLine.days.length > 1
             }"
         >
             <app-workflow-card
