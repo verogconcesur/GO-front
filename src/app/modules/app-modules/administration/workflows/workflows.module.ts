@@ -35,6 +35,7 @@ import { GenericTreeNodeSearcherModule } from '@modules/feature-modules/generic-
 import { WfEditSubstateEventsDialogComponent } from './components/create-edit-steps/workflow-states/modals/wf-edit-substate-events-dialog/wf-edit-substate-events-dialog.component';
 import { WorkflowsCreateEditAuxService } from './aux-service/workflows-create-edit-aux.service';
 import { MatChipsInputFormFieldModule } from '@modules/feature-modules/mat-chips-input-form-field/mat-chips-input-form-field.module';
+import { WorkflowCalendarComponent } from './components/create-edit-steps/workflow-calendar/workflow-calendar.component';
 
 @NgModule({
   declarations: [
@@ -58,7 +59,8 @@ import { MatChipsInputFormFieldModule } from '@modules/feature-modules/mat-chips
     WfEditSubstateMovementsTabComponent,
     WfEditSubstateEventsTabComponent,
     WfEditPermissionsTabComponent,
-    WfEditSubstateEventsDialogComponent
+    WfEditSubstateEventsDialogComponent,
+    WorkflowCalendarComponent
   ],
   imports: [
     CommonModule,

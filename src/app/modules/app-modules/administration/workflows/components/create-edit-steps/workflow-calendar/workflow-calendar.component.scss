@@ -1,0 +1,18 @@
+@import 'utils/core';
+@import 'utils/theme';
+.cards-limit-container {
+  padding: 20px;
+  &__section {
+    margin-bottom: 20px;
+    &__title {
+      width: 100%;
+      font-weight: 600;
+    }
+    mat-form-field {
+      margin-right: 20px;
+    }
+    mat-checkbox {
+      margin-right: 20px;
+    }
+  }
+}

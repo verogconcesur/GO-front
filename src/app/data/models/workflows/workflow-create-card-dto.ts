@@ -1,4 +1,5 @@
 import CardDTO from '../cards/card-dto';
+import WorkflowCardsLimitDTO from '../workflow-admin/workflow-card-limit-dto';
 import WorkflowStateDTO from './workflow-state-dto';
 
 export default interface WorkflowCreateCardDTO {
@@ -8,4 +9,5 @@ export default interface WorkflowCreateCardDTO {
   facilities: { id: number; name: string }[];
   workflowStates: WorkflowStateDTO[];
   card: CardDTO;
+  workflowCardsLimit?: WorkflowCardsLimitDTO;
 }

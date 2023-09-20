@@ -28,11 +28,11 @@ export default class CombinedRequiredFieldsValidator {
 
       // Si no se cumplen las condiones previas nos saltamos el chequeo
       if (!prevConditionsOk || !control1) {
-        controls.get(controlToValidate)?.setErrors(null);
+        // controls.get(controlToValidate)?.setErrors(null);
         return null;
       }
       controlsToCheck.forEach((controlToCheck) => {
-        if (!showError && !control1.value) {
+        if (!showError && !control1.value && control1.value !== 0) {
           if (controlToCheck.operation === 'equal' && controls.get(controlToCheck.control)?.value === controlToCheck.value) {
             showError = true;
           } else if (
@@ -47,7 +47,7 @@ export default class CombinedRequiredFieldsValidator {
         controls.get(controlToValidate)?.setErrors({ required: true });
         return { required: true };
       }
-      controls.get(controlToValidate)?.setErrors(null);
+      // controls.get(controlToValidate)?.setErrors(null);
       return null;
     };
   }

@@ -88,6 +88,7 @@
                         [wState]="wState"
                         [wSubstate]="wSubstate"
                         [wUserId]="user.user.id"
+                        [dateToShow]="getDateToShow(card)"
                         [droppableStates]="
                             getAssociatedWSubstates(wSubstate.cards[0], wSubstateKey + wSubstate.id + '-' + user.user.id)
                         "
@@ -145,6 +146,7 @@
                         [wState]="wState"
                         [wSubstate]="wSubstate"
                         [wUserId]="null"
+                        [dateToShow]="getDateToShow(card)"
                         [droppableStates]="getAssociatedWSubstates(wSubstate.cards[0], wSubstateKey + wSubstate.id)"
                     ></app-workflow-card>
                     <div

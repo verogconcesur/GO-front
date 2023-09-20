@@ -12,6 +12,7 @@ import CardColumnTabDTO from '@data/models/cards/card-column-tab-dto';
 import CardColumnTabItemDTO from '@data/models/cards/card-column-tab-item-dto';
 import CardCreateDTO from '@data/models/cards/card-create-dto';
 import CardDTO from '@data/models/cards/card-dto';
+import WorkflowCreateCardDTO from '@data/models/workflows/workflow-create-card-dto';
 import WorkflowDTO from '@data/models/workflows/workflow-dto';
 import WorkflowSubstateDTO from '@data/models/workflows/workflow-substate-dto';
 import WorkflowSubstateEventDTO from '@data/models/workflows/workflow-substate-event-dto';
@@ -22,8 +23,10 @@ import { TranslateService } from '@ngx-translate/core';
 import { ConfirmDialogService } from '@shared/services/confirm-dialog.service';
 import { GlobalMessageService } from '@shared/services/global-message.service';
 import { ProgressSpinnerDialogService } from '@shared/services/progress-spinner-dialog.service';
+import CombinedRequiredFieldsValidator from '@shared/validators/combined-required-fields.validator';
 import { NGXLogger } from 'ngx-logger';
 import { take, finalize } from 'rxjs/operators';
+import { StepWorkflowComponent } from './components/step-workflow/step-workflow.component';
 
 export const enum NewCardComponentModalEnum {
   ID = 'new-card-dialog-id',
@@ -43,6 +46,7 @@ export const enum NewCardComponentModalEnum {
 })
 export class NewCardComponent implements OnInit {
   @ViewChild('stepper') stepper: MatStepper;
+  @ViewChild('step1') step1: StepWorkflowComponent;
   public labels = {
     newCard: marker('newCard.newCard'),
     createCard: marker('newCard.create'),
@@ -85,6 +89,16 @@ export class NewCardComponent implements OnInit {
     });
   }
 
+  public getCardDateLimit(): number {
+    if (this.formWorkflow.get('cardsLimit').value) {
+      const date = this.formWorkflow.get('deadLineDate').value as Date;
+      const hour = this.formWorkflow.get('deadLineHour').value;
+      date.setHours(hour.hourFrom);
+      return +date;
+    }
+    return null;
+  }
+
   public onSubmitCustomDialog(): void {
     this.confirmationDialog
       .open({
@@ -98,6 +112,7 @@ export class NewCardComponent implements OnInit {
             workflowId: this.formWorkflow.get('workflow').value.id,
             workflowSubstateId: this.formWorkflow.get('subState').value.id,
             facilityId: this.formWorkflow.get('facility').value.id,
+            dateAppliTimeLimit: this.getCardDateLimit(),
             cardInstance: {
               vehicleId: null,
               customerId: null,
@@ -133,6 +148,12 @@ export class NewCardComponent implements OnInit {
               },
               error: (error: ConcenetError) => {
                 this.logger.error(error);
+                if (error.code === 'CIW_OVER_LIMIT_HOUR' || error.code === 'CIW_OVER_LIMIT_DAY') {
+                  this.formWorkflow.get('deadLineDate').setValue(null);
+                  this.formWorkflow.get('deadLineHour').setValue(null);
+                  this.step1.initialiceLimitDates();
+                  this.stepIndex = 1;
+                }
                 this.globalMessageService.showError({
                   message: error.message,
                   actionText: this.translateService.instant(marker('common.close'))
@@ -326,13 +347,28 @@ export class NewCardComponent implements OnInit {
     }
   }
   private initializeWorkflowForm(): void {
-    this.formWorkflow = this.fb.group({
-      workflow: ['', Validators.required],
-      facility: ['', Validators.required],
-      entryState: ['', Validators.required],
-      subState: ['', Validators.required],
-      subStateUser: ['']
-    });
+    this.formWorkflow = this.fb.group(
+      {
+        workflow: ['', Validators.required],
+        facility: ['', Validators.required],
+        cardsLimit: [false],
+        deadLineDate: [null],
+        deadLineHour: [null],
+        entryState: ['', Validators.required],
+        subState: ['', Validators.required],
+        subStateUser: ['']
+      },
+      {
+        validators: [
+          CombinedRequiredFieldsValidator.field1RequiredIfFieldsConditions('deadLineDate', [
+            { control: 'cardsLimit', operation: 'equal', value: true }
+          ]),
+          CombinedRequiredFieldsValidator.field1RequiredIfFieldsConditions('deadLineHour', [
+            { control: 'cardsLimit', operation: 'equal', value: true }
+          ])
+        ]
+      }
+    );
   }
   private initializeSteps(): void {
     this.steplist.push({

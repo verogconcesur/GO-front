@@ -10,6 +10,7 @@ export default interface CardCreateDTO {
     userId?: number;
     repairOrderId?: number;
   };
+  dateAppliTimeLimit?: number;
   cardInstanceWorkflowUsers?: WorkflowSubstateUserDTO[];
   workflowSubstateId: number;
   facilityId: number;

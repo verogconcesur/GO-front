@@ -21,6 +21,49 @@
             </mat-form-field>
         </form>
     </div>
+    <div class="wc-movement-preparation__deadline" *ngIf="sendToOtherWorkflow && cardsLimitForm">
+        <form [formGroup]="cardsLimitForm">
+            <!-- DeadLineDate-->
+            <mat-form-field appearance="outline" floatLabel="always">
+                <mat-label>{{ labels.deadLineDate | translate }}</mat-label>
+                <input
+                    matInput
+                    readonly
+                    #deadLineDatePicker
+                    placeholder="DD/MM/YYYY"
+                    [matDatepickerFilter]="datesLimitFilter"
+                    [matDatepicker]="picker"
+                    [min]="minDate"
+                    [max]="maxDate"
+                    (dateChange)="changeDeadLine(true)"
+                    formControlName="deadLineDate"
+                />
+                <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+                <mat-datepicker [dateClass]="dateClass" #picker></mat-datepicker>
+                <mat-error *ngIf="cardsLimitForm.controls?.deadLineDate?.invalid">
+                    <span *ngIf="cardsLimitForm.controls.deadLineDate.errors.required">{{ labels.required | translate }}</span>
+                </mat-error>
+            </mat-form-field>
+            <!-- DeadLineHour -->
+            <mat-form-field appearance="outline" floatLabel="always">
+                <mat-label>{{ labels.deadLineHour | translate }}</mat-label>
+                <mat-select formControlName="deadLineHour" (selectionChange)="changeDeadLine()">
+                    <mat-option
+                        *ngFor="let hour of hoursList()"
+                        [value]="hour"
+                        [ngClass]="hour.maxReached ? 'max-reached-date-class' : 'available-date-class'"
+                        [disabled]="hour.maxReached && !workflowCardsLimit?.allowOverLimit"
+                        >{{ hour.hourFrom }}:00 ({{
+                            labels.numOf | translate : { num1: hour.cards, num2: maxCardsByHour }
+                        }})</mat-option
+                    >
+                </mat-select>
+                <mat-error *ngIf="cardsLimitForm.controls?.deadLineHour?.invalid">
+                    <span *ngIf="cardsLimitForm.controls.deadLineHour.errors.required">{{ labels.required | translate }}</span>
+                </mat-error>
+            </mat-form-field>
+        </form>
+    </div>
     <div class="preparation__section" *ngIf="userForm">
         <form [formGroup]="userForm">
             <div class="preparation__section__title">

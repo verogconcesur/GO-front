@@ -19,3 +19,23 @@
     }
   }
 }
+button.max-reached-date-class {
+  background: lighten(mat-color($primary, statusError), 5%);
+  border-radius: 100%;
+}
+button.available-date-class {
+  background: lighten(mat-color($primary, statusSuccess), 20%);
+  border-radius: 100%;
+}
+mat-option.max-reached-date-class {
+  background: lighten(mat-color($primary, statusError), 5%) !important;
+  &.mat-active {
+    background: lighten(mat-color($primary, statusError), 0%) !important;
+  }
+}
+mat-option.available-date-class {
+  background: lighten(mat-color($primary, statusSuccess), 20%) !important;
+  &.mat-active {
+    background: lighten(mat-color($primary, statusSuccess), 10%) !important;
+  }
+}

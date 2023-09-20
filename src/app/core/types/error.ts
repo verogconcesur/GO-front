@@ -4,4 +4,5 @@ export type ConcenetError = {
   error: string;
   message: string;
   path: string;
+  code?: string;
 };
