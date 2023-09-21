@@ -17,7 +17,7 @@ export default interface WorkflowSubstateUserDTO {
   move?: WorkflowMoveDTO;
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   cardInstanceWorkflow?: any;
-  dateAssignment?: string;
+  dateAssignment?: string | number;
   userId?: number;
   extra?: boolean;
   selected?: boolean;

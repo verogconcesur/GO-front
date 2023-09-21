@@ -221,8 +221,8 @@ export class WorkflowCardMovementPreparationComponent implements OnInit {
           p.requiredHistoryComment ||
           p.requiredMovementExtra)
       ) {
-        this.tabsToShow.push('IN');
         this.preparationIn = p;
+        this.addTabToShow(p.substateEventType, p);
       } else if (
         p.substateEventType === 'OUT' &&
         (p.requiredSize ||
@@ -232,8 +232,8 @@ export class WorkflowCardMovementPreparationComponent implements OnInit {
           p.requiredHistoryComment ||
           p.requiredMovementExtra)
       ) {
-        this.tabsToShow.push('OUT');
         this.preparationOut = p;
+        this.addTabToShow(p.substateEventType, p);
       } else if (
         p.substateEventType === 'MOV' &&
         (p.requiredSize ||
@@ -243,8 +243,8 @@ export class WorkflowCardMovementPreparationComponent implements OnInit {
           p.requiredHistoryComment ||
           p.requiredMovementExtra)
       ) {
-        this.tabsToShow.push('MOV');
         this.preparationMov = p;
+        this.addTabToShow(p.substateEventType, p);
       }
     });
     this.tabToShow = this.tabsToShow[0];
@@ -256,6 +256,12 @@ export class WorkflowCardMovementPreparationComponent implements OnInit {
     //   this.userMovDisabled = true;
     // }
     this.initForm();
+  }
+
+  addTabToShow(type: 'IN' | 'OUT' | 'MOV', p: WorkflowSubstateEventDTO): void {
+    if (p.requiredSize || p.sendMail || p.requiredHistoryComment || p.requiredMovementExtra) {
+      this.tabsToShow.push(type);
+    }
   }
 
   hoursList(): CardLimitSlotDTO[] {
@@ -347,24 +353,27 @@ export class WorkflowCardMovementPreparationComponent implements OnInit {
     if (
       type === 'IN' &&
       this.preparationIn &&
-      (!this.preparationIn.requiredMovementExtra ||
-        !this.preparationIn.movementExtraAuto ||
+      ((this.preparationIn.requiredMovementExtra && !this.preparationIn.movementExtraAuto) ||
+        (Object.keys(this.preparationInForm?.controls).length === 1 &&
+          Object.keys(this.preparationInForm?.controls)[0] !== 'user') ||
         Object.keys(this.preparationInForm?.controls).length > 1)
     ) {
       return true;
     } else if (
       type === 'OUT' &&
       this.preparationOut &&
-      (!this.preparationOut.requiredMovementExtra ||
-        !this.preparationOut.movementExtraAuto ||
+      ((this.preparationOut.requiredMovementExtra && !this.preparationOut.movementExtraAuto) ||
+        (Object.keys(this.preparationOutForm?.controls).length === 1 &&
+          Object.keys(this.preparationOutForm?.controls)[0] !== 'user') ||
         Object.keys(this.preparationOutForm?.controls).length > 1)
     ) {
       return true;
     } else if (
       type === 'MOV' &&
       this.preparationMov &&
-      (!this.preparationMov.requiredMovementExtra ||
-        !this.preparationMov.movementExtraAuto ||
+      ((this.preparationMov.requiredMovementExtra && !this.preparationMov.movementExtraAuto) ||
+        (Object.keys(this.preparationMovForm?.controls).length === 1 &&
+          Object.keys(this.preparationMovForm?.controls)[0] !== 'user') ||
         Object.keys(this.preparationMovForm?.controls).length > 1)
     ) {
       return true;
@@ -374,8 +383,11 @@ export class WorkflowCardMovementPreparationComponent implements OnInit {
 
   public initForm(): void {
     if (this.mainUserSelector) {
+      const user = this.findUserIn(this.data.selectedUser, this.usersIn)
+        ? this.findUserIn(this.data.selectedUser, this.usersIn)
+        : this.findUserIn(this.data.selectedUser, this.usersOut);
       this.userForm = this.fb.group({
-        user: [this.findUserIn(this.data.selectedUser, this.usersIn), Validators.required]
+        user: [user, Validators.required]
       });
     }
     if (this.preparationIn) {
@@ -386,9 +398,7 @@ export class WorkflowCardMovementPreparationComponent implements OnInit {
       if (this.preparationIn.requiredUser) {
         this.preparationInForm.addControl(
           'user',
-          this.fb.control(this.data.selectedUser ? this.findUserIn(this.data.selectedUser, this.usersIn) : null, [
-            Validators.required
-          ])
+          this.fb.control(this.data.selectedUser ? this.findUserIn(this.data.selectedUser, this.usersIn) : null)
         );
       }
       if (this.preparationIn.requiredHistoryComment) {
@@ -409,9 +419,7 @@ export class WorkflowCardMovementPreparationComponent implements OnInit {
       if (this.preparationOut.requiredUser) {
         this.preparationOutForm.addControl(
           'user',
-          this.fb.control(this.data.selectedUser ? this.findUserIn(this.data.selectedUser, this.usersOut) : null, [
-            Validators.required
-          ])
+          this.fb.control(this.data.selectedUser ? this.findUserIn(this.data.selectedUser, this.usersOut) : null)
         );
       }
       if (this.preparationOut.requiredHistoryComment) {
@@ -432,9 +440,7 @@ export class WorkflowCardMovementPreparationComponent implements OnInit {
       if (this.preparationMov.requiredUser) {
         this.preparationMovForm.addControl(
           'user',
-          this.fb.control(this.data.selectedUser ? this.findUserIn(this.data.selectedUser, this.usersMov) : null, [
-            Validators.required
-          ])
+          this.fb.control(this.data.selectedUser ? this.findUserIn(this.data.selectedUser, this.usersMov) : null)
         );
       }
       if (this.preparationMov.requiredHistoryComment) {
@@ -553,6 +559,18 @@ export class WorkflowCardMovementPreparationComponent implements OnInit {
   }
 
   public save(): void {
+    if (this.mainUserSelector && this.userForm.get('user').value) {
+      const user = this.userForm.get('user').value;
+      if (this.preparationOut?.requiredUser) {
+        this.preparationOutForm.get('user').setValue(user);
+      }
+      if (this.preparationIn?.requiredUser) {
+        this.preparationInForm.get('user').setValue(user);
+      }
+      if (this.preparationMov?.requiredUser) {
+        this.preparationMovForm.get('user').setValue(user);
+      }
+    }
     const data = {
       task: this.taskForm ? this.taskForm.value : null,
       user: this.userForm ? this.userForm.value : null,
