@@ -38,7 +38,7 @@ export class WorkflowDetailComponent implements OnInit, OnDestroy, AfterViewInit
     cards: marker('administration.records'),
     cardConfig: marker('workflows.cardConfig'),
     states: marker('workflows.states'),
-    calendar: marker('workflows.calendar'),
+    cardsLimit: marker('workflows.cardsLimit'),
     timeline: marker('administration.templates.clientTimeline.title'),
     budgets: marker('administration.templates.budgets.title'),
     save: marker('common.save'),
