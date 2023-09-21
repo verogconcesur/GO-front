@@ -146,7 +146,7 @@
                     </mat-error>
                 </mat-form-field>
             </div>
-            <div class="preparation__section" *ngIf="preparationIn.requiredUser && !userInDisabled">
+            <!-- <div class="preparation__section" *ngIf="preparationIn.requiredUser && !userInDisabled">
                 <div class="preparation__section__title">
                     {{ labels.user | translate }}
                 </div>
@@ -162,7 +162,7 @@
                         {{ labels.required | translate }}
                     </mat-error>
                 </mat-form-field>
-            </div>
+            </div> -->
 
             <mat-accordion *ngIf="preparationIn.sendMail">
                 <mat-expansion-panel *ngFor="let mailEvent of getWfEventsMailsFormArray('IN').controls; let i = index">
@@ -277,7 +277,7 @@
                     </mat-error>
                 </mat-form-field>
             </div>
-            <div class="preparation__section" *ngIf="preparationOut.requiredUser && !userOutDisabled">
+            <!-- <div class="preparation__section" *ngIf="preparationOut.requiredUser && !userOutDisabled">
                 <div class="preparation__section__title">
                     {{ labels.user | translate }}
                 </div>
@@ -293,7 +293,7 @@
                         {{ labels.required | translate }}
                     </mat-error>
                 </mat-form-field>
-            </div>
+            </div> -->
 
             <mat-accordion *ngIf="preparationOut.sendMail">
                 <mat-expansion-panel *ngFor="let mailEvent of getWfEventsMailsFormArray('OUT').controls; let i = index">
@@ -408,7 +408,7 @@
                     </mat-error>
                 </mat-form-field>
             </div>
-            <div class="preparation__section" *ngIf="preparationMov.requiredUser && !userMovDisabled">
+            <!-- <div class="preparation__section" *ngIf="preparationMov.requiredUser && !userMovDisabled">
                 <div class="preparation__section__title">
                     {{ labels.user | translate }}
                 </div>
@@ -424,7 +424,7 @@
                         {{ labels.required | translate }}
                     </mat-error>
                 </mat-form-field>
-            </div>
+            </div> -->
 
             <mat-accordion *ngIf="preparationMov.sendMail">
                 <mat-expansion-panel *ngFor="let mailEvent of getWfEventsMailsFormArray('MOV').controls; let i = index">

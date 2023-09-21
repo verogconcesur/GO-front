@@ -99,21 +99,21 @@ export class WorkflowPrepareAndMoveService {
             // !data[1]?.requiredFields &&
             // !data[2]?.requiredFields &&
             (data[0]?.requiredSize ||
-              data[0]?.requiredUser ||
+              // data[0]?.requiredUser ||
               data[0]?.requiredHistoryComment ||
               data[0]?.sendMail ||
               data[0]?.requiredMovementExtra ||
               data[1]?.requiredSize ||
-              data[1]?.requiredUser ||
+              // data[1]?.requiredUser ||
               data[1]?.requiredHistoryComment ||
               data[1]?.sendMail ||
               data[1]?.requiredMovementExtra ||
               data[2]?.requiredSize ||
-              data[2]?.requiredUser ||
+              // data[2]?.requiredUser ||
               data[2]?.requiredHistoryComment ||
               data[2]?.sendMail ||
               data[2]?.requiredMovementExtra)) ||
-          this.showMainUserSelector(user, move) ||
+          this.showMainUserSelector(user, move, data) ||
           view === 'MOVES_IN_OTHER_WORKFLOWS'
         ) {
           this.dialog
@@ -129,7 +129,7 @@ export class WorkflowPrepareAndMoveService {
                 usersIn,
                 view,
                 selectedUser: user,
-                mainUserSelector: this.showMainUserSelector(user, move),
+                mainUserSelector: this.showMainUserSelector(user, move, data),
                 workflowCardsLimit:
                   move.workflowSubstateSource.workflowState.workflow.id !==
                     move.workflowSubstateTarget.workflowState.workflow.id &&
@@ -141,27 +141,14 @@ export class WorkflowPrepareAndMoveService {
                   move.workflowSubstateSource.workflowState.workflow.id !==
                     move.workflowSubstateTarget.workflowState.workflow.id &&
                   move.workflowSubstateTarget.entryPoint &&
-                  workflowCardsLimit.cardsLimit
+                  workflowCardsLimit?.cardsLimit
                     ? {
                         destinationName: this.getDestinationName(workflowCardsLimit.workflowSubstate),
                         // preparation: responses?.length > 1 && responses[1] ? responses[1] : [],
                         preparation: [
                           ...data.filter((d) => d.substateEventType === 'OUT'),
                           ...workflowCardsLimit.workflowSubstate.workflowSubstateEvents
-                        ]
-                          // .map((d: WorkflowSubstateEventDTO) => {
-                          //   if (d.substateEventType === 'IN') {
-                          //     return workflowCardsLimit.workflowSubstate.workflowSubstateEvents.find(
-                          //       (e) => e.substateEventType === 'IN'
-                          //     );
-                          //   } else if (d.substateEventType === 'MOV') {
-                          //     return workflowCardsLimit.workflowSubstate.workflowSubstateEvents.find(
-                          //       (e) => e.substateEventType === 'MOV'
-                          //     );
-                          //   }
-                          //   return d;
-                          // })
-                          .filter((d) => d),
+                        ].filter((d) => d),
                         usersIn: workflowCardsLimit.workflowSubstate.workflowSubstateUser
                       }
                     : null,
@@ -415,12 +402,15 @@ export class WorkflowPrepareAndMoveService {
     );
   }
 
-  private showMainUserSelector(user: WorkflowSubstateUserDTO, move: WorkflowMoveDTO): boolean {
+  private showMainUserSelector(user: WorkflowSubstateUserDTO, move: WorkflowMoveDTO, data: WorkflowSubstateEventDTO[]): boolean {
     if (
-      // !user &&
-      move &&
-      move.workflowSubstateTarget.workflowState.front &&
-      move.workflowSubstateTarget.workflowSubstateUser?.length
+      (!user &&
+        move &&
+        move.workflowSubstateTarget.workflowState.front &&
+        move.workflowSubstateTarget.workflowSubstateUser?.length) ||
+      data[0]?.requiredUser ||
+      data[1]?.requiredUser ||
+      data[2]?.requiredUser
     ) {
       return true;
     }

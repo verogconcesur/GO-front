@@ -186,6 +186,10 @@ export class WorkflowColumnActionsAndLinksComponent implements OnInit {
   }
 
   public btnClickShortcut(move: WorkflowMoveDTO): void {
+    const user =
+      this.cardInstance.users?.length && this.cardInstance.users[0].user
+        ? { ...this.cardInstance.users[0], user: this.cardInstance.users[0].user }
+        : null;
     this.prepareAndMoveService.prepareAndMove(
       {
         cardId: null,
@@ -200,7 +204,7 @@ export class WorkflowColumnActionsAndLinksComponent implements OnInit {
       },
       move,
       null,
-      null,
+      user,
       '',
       null,
       move.workflowSubstateSource.workflowState.workflow.id !== move.workflowSubstateTarget.workflowState.workflow.id
