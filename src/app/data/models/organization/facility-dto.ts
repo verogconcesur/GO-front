@@ -25,4 +25,6 @@ export default interface FacilityDTO {
   configMailerUserName?: string;
   configMailerPass?: string;
   senderSms?: string;
+  whatsappPhoneNumber?: string;
+  whatsappSender?: string;
 }

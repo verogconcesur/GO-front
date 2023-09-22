@@ -3,10 +3,10 @@ import CardInstanceDTO from './card-instance-dto';
 
 export interface AttachmentDTO {
   content: string;
-  id: number;
+  id?: number;
   name: string;
-  size: number;
-  thumbnail: string;
+  size?: number;
+  thumbnail?: string;
   type: string;
   showInLanding?: boolean;
 }
@@ -42,4 +42,7 @@ export interface CardPaymentAttachmentsDTO {
     orderNumber: number;
   };
   id?: number;
+}
+export interface CardWhatsapptAttachmentDTO {
+  file: AttachmentDTO;
 }

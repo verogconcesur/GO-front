@@ -65,13 +65,17 @@
                                 textEditorId="{{ 'textEditor' + item.value.messageChannel.id }}"
                                 [initialValue]="item?.value?.text"
                                 [textEditorConfig]="
-                                    item.value.messageChannel.id === 3
+                                    item.value.messageChannel.id === 3 || item.value.messageChannel.id === 4
                                         ? textEditorToolbarOnlyMacroOptions
                                         : textEditorToolbarOptions
                                 "
                                 [placeholder]="labels.insertText | translate"
                                 (contentChanged)="
-                                    textEditorContentChanged($event, item.controls.text, item.value.messageChannel.id === 3)
+                                    textEditorContentChanged(
+                                        $event,
+                                        item.controls.text,
+                                        item.value.messageChannel.id === 3 || item.value.messageChannel.id === 4
+                                    )
                                 "
                             ></app-text-editor-wrapper>
                         </div>

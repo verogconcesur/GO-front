@@ -76,7 +76,7 @@
                                 (contentChanged)="textEditorContentChanged($event, item.controls.subjectRender, true)"
                             ></app-text-editor-wrapper>
                         </div>
-                        <div class="messageChannelImessage-datad__section__group">
+                        <div class="messageChannelImessage-datad__section__group" *ngIf="item.value.messageChannelId !== 4">
                             <div class="messageChannelImessage-datad__section__group__title">{{ labels.text | translate }}</div>
                             <app-text-editor-wrapper
                                 id="{{ 'textEditor' + item.value.messageChannelId }}"
@@ -96,6 +96,20 @@
                                     )
                                 "
                             ></app-text-editor-wrapper>
+                        </div>
+                        <div class="messageChannelImessage-datad__section__group" *ngIf="item.value.messageChannelId === 4">
+                            <div class="messageChannelImessage-datad__section__group__title">{{ labels.text | translate }}</div>
+                            <mat-form-field class="textarea-mat-form-field" appearance="outline" floatLabel="always">
+                                <!-- <mat-label>{{ labels.taskLabel | translate }}</mat-label> -->
+                                <textarea
+                                    matInput
+                                    [formControl]="item.controls.messageRender"
+                                    readonly
+                                    cdkTextareaAutosize
+                                    cdkAutosizeMinRows="3"
+                                    cdkAutosizeMaxRows="5"
+                                ></textarea>
+                            </mat-form-field>
                         </div>
                     </ng-template>
                 </mat-tab>

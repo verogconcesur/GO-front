@@ -34,6 +34,8 @@ import { ItemListComponent } from './subcomponents/workflow-column-customizable-
 import { ModalRepairOrderModule } from '@modules/feature-modules/modal-repair-order/modal-repair-order.module';
 import { WorkflowColumnTemplatesPaymentsComponent } from './subcomponents/workflow-column-templates-payments/workflow-column-templates-payments.component';
 import { CardInstancePaymentsModule } from '@modules/feature-modules/card-instance-payments/card-instance-payments.module';
+import { ModalStartConversationModule } from '@modules/feature-modules/modal-start-conversation/modal-start-conversation.module';
+import { ModalChatWhatsappModule } from '@modules/feature-modules/modal-chat-whatsapp/modal-chat-whatsapp.module';
 @NgModule({
   declarations: [
     WorkflowCardDetailsComponent,
@@ -70,7 +72,9 @@ import { CardInstancePaymentsModule } from '@modules/feature-modules/card-instan
     EntitiesSearcherDialogModule,
     ModalCustomerModule,
     ModalVehicleModule,
-    ModalRepairOrderModule
+    ModalRepairOrderModule,
+    ModalStartConversationModule,
+    ModalChatWhatsappModule
   ]
 })
 export class WorkflowCardDetailsModule {}

@@ -36,7 +36,8 @@ export class WorkflowTimelineComponent extends WorkflowStepAbstractClass {
     required: marker('errors.required'),
     selectAttachmentTab: marker('workflows.selectAttachmentTab'),
     attachmentTab: marker('workflows.attachmentTab'),
-    category: marker('workflows.attachemntCategory')
+    category: marker('workflows.attachemntCategory'),
+    selectAttachmentTabWhats: marker('workflows.selectAttachmentTabWhats')
   };
   public templateForm: FormControl;
   public substateList: WorkflowSubstateDTO[] = [];
@@ -76,7 +77,9 @@ export class WorkflowTimelineComponent extends WorkflowStepAbstractClass {
       templateTimelineDTO: [data?.workflowTimeline?.templateTimelineDTO],
       workflowSubstateTimelineItems: this.fb.array([]),
       tabId: [data?.workflowTimeline?.tabId],
-      templateAttachmentItemId: [data?.workflowTimeline?.templateAttachmentItemId]
+      templateAttachmentItemId: [data?.workflowTimeline?.templateAttachmentItemId],
+      whatsappTabId: [data?.workflowTimeline?.whatsappTabId],
+      whatsappTemplateAttachmentItemId: [data?.workflowTimeline?.whatsappTemplateAttachmentItemId]
     });
     if (data?.workflowTimeline?.workflowSubstateTimelineItems?.length > 0) {
       data.workflowTimeline.workflowSubstateTimelineItems.forEach((timelineItem: WorkflowSubstateTimelineItemDTO) => {
@@ -138,20 +141,38 @@ export class WorkflowTimelineComponent extends WorkflowStepAbstractClass {
     this.form.markAsTouched();
     this.form.markAsDirty();
   }
-  public removeAttachmentTab(): void {
-    this.form.get('tabId').setValue(null);
-    this.form.get('templateAttachmentItemId').setValue(null);
-  }
-  public getAttachmentItems(): TemplateAtachmentItemsDTO[] {
-    if (this.form.get('tabId')?.value) {
-      const attachmentTimeline = this.originalData.attachmentTemplates.find(
-        (attTime: WorkflowAttachmentTimelineDTO) => attTime.id === this.form.get('tabId')?.value
-      );
-      return attachmentTimeline?.template?.templateAttachmentItems?.length
-        ? attachmentTimeline.template.templateAttachmentItems
-        : [];
+  public removeAttachmentTab(type: 'whatsapp' | 'landing'): void {
+    if (type === 'whatsapp') {
+      this.form.get('whatsappTabId').setValue(null);
+      this.form.get('whatsappTemplateAttachmentItemId').setValue(null);
     } else {
-      return [];
+      this.form.get('tabId').setValue(null);
+      this.form.get('templateAttachmentItemId').setValue(null);
+    }
+  }
+  public getAttachmentItems(type: 'whatsapp' | 'landing'): TemplateAtachmentItemsDTO[] {
+    if (type === 'whatsapp') {
+      if (this.form.get('whatsappTabId')?.value) {
+        const attachmentTimeline = this.originalData.attachmentTemplates.find(
+          (attTime: WorkflowAttachmentTimelineDTO) => attTime.id === this.form.get('whatsappTabId')?.value
+        );
+        return attachmentTimeline?.template?.templateAttachmentItems?.length
+          ? attachmentTimeline.template.templateAttachmentItems
+          : [];
+      } else {
+        return [];
+      }
+    } else {
+      if (this.form.get('tabId')?.value) {
+        const attachmentTimeline = this.originalData.attachmentTemplates.find(
+          (attTime: WorkflowAttachmentTimelineDTO) => attTime.id === this.form.get('tabId')?.value
+        );
+        return attachmentTimeline?.template?.templateAttachmentItems?.length
+          ? attachmentTimeline.template.templateAttachmentItems
+          : [];
+      } else {
+        return [];
+      }
     }
   }
   public removeTemplate() {
@@ -185,9 +206,13 @@ export class WorkflowTimelineComponent extends WorkflowStepAbstractClass {
         });
     }
   }
-  public selectAttachmentTab() {
-    const tabItems = this.getAttachmentItems();
-    this.form.get('templateAttachmentItemId').setValue(tabItems.length ? tabItems[0] : null);
+  public selectAttachmentTab(type: 'whatsapp' | 'landing') {
+    const tabItems = this.getAttachmentItems(type);
+    if (type === 'whatsapp') {
+      this.form.get('whatsappTemplateAttachmentItemId').setValue(tabItems.length ? tabItems[0] : null);
+    } else {
+      this.form.get('templateAttachmentItemId').setValue(tabItems.length ? tabItems[0] : null);
+    }
   }
   public async getWorkflowStepData(): Promise<boolean> {
     const spinner = this.spinnerService.show();

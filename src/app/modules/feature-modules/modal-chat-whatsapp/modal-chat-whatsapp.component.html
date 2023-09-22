@@ -1,0 +1,82 @@
+<div class="chat-whatsapp-container">
+    <div class="chat-whatsapp-container__header" fxLayoutAlign="space-between center">
+        <h2 class="chat-whatsapp-container__header__title">{{ modalTitle }}</h2>
+        <button mat-button (click)="close()">
+            <mat-icon>close</mat-icon>
+        </button>
+    </div>
+    <div class="chat-whatsapp-container__messageList" [ngClass]="{ active: active }">
+        <div
+            class="chat-whatsapp-container__messageList__item"
+            fxLayout="column"
+            [ngClass]="{ client: message.direction === 'inbound' }"
+            *ngFor="let message of messageList"
+        >
+            <div class="chat-whatsapp-container__messageList__item__text">{{ message.body }}</div>
+            <div class="chat-whatsapp-container__messageList__item__attachment" *ngFor="let attach of message.attachments">
+                <div
+                    class="chat-whatsapp-container__messageList__item__attachment__container"
+                    fxLayout="row"
+                    fxLayoutAlign="space-between center"
+                    *ngIf="!attach.file.content || !attachIsAudio(attach.file)"
+                >
+                    <div
+                        [ngStyle]="{ 'background-image': getAttachIcon(attach.file) }"
+                        class="chat-whatsapp-container__messageList__item__attachment__container__iconAttach"
+                    ></div>
+                    <span>{{ attach.file.name }}</span>
+                    <mat-icon (click)="downloadAttachment(attach)" *ngIf="!attach.file.content">vertical_align_bottom</mat-icon>
+                    <mat-icon (click)="showAttachment(attach)" *ngIf="attach.file.content">remove_red_eye</mat-icon>
+                </div>
+                <div
+                    class="chat-whatsapp-container__messageList__item__attachment__containerAudio"
+                    fxLayout="row"
+                    fxLayoutAlign="start center"
+                    *ngIf="attach.file.content && attachIsAudio(attach.file)"
+                >
+                    <audio controls>
+                        <source [src]="getDataBase64(attach.file)" [type]="attach.file.type" />
+                        Your browser does not support the audio element.
+                    </audio>
+                </div>
+            </div>
+            <div class="chat-whatsapp-container__messageList__item__time" fxLayout="row" fxLayoutAlign="end center">
+                {{ getDateMessage(message)
+                }}<mat-icon *ngIf="message.direction === 'outbound-api'">{{ getStatusIcon(message) }}</mat-icon>
+            </div>
+        </div>
+    </div>
+    <div class="chat-whatsapp-container__footer smaller-mat-form-fields" fxLayoutAlign="space-between center" *ngIf="active">
+        <button mat-icon-button (click)="sendAttachments()" [disabled]="recording">
+            <mat-icon>attach_file</mat-icon>
+        </button>
+        <div class="chat-whatsapp-container__footer__input" fxLayoutAlign="end center" [formGroup]="chatForm">
+            <mat-form-field
+                appearance="outline"
+                floatLabel="always"
+                class="smaller-mat-form-fields__no-margin"
+                *ngIf="!recording && !form.audio.value"
+            >
+                <input matInput formControlName="text" />
+            </mat-form-field>
+            <div class="chat-whatsapp-container__footer__input__bars" *ngIf="recording" fxLayoutAlign="end center">
+                <div class="bar" *ngFor="let bar of barList"></div>
+            </div>
+            <div class="record" *ngIf="!recording && form.audio.value" fxLayoutAlign="end center">
+                <audio controls="true" [src]="form.audio.value.urlSrc"></audio>
+            </div>
+        </div>
+        <button mat-icon-button *ngIf="recording" (click)="pauseRecording()">
+            <mat-icon>pause</mat-icon>
+        </button>
+        <button mat-icon-button *ngIf="!recording && !form.audio.value" (click)="startRecording()">
+            <mat-icon>mic</mat-icon>
+        </button>
+        <button mat-icon-button *ngIf="!recording && form.audio.value" (click)="deleteRecording()">
+            <mat-icon>delete</mat-icon>
+        </button>
+        <button mat-icon-button [disabled]="recording" (click)="createMessage()">
+            <mat-icon>send</mat-icon>
+        </button>
+    </div>
+</div>

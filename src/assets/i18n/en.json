@@ -236,7 +236,8 @@
         "actionsTabItems": {
             "attachment": "Send attachment",
             "message": "Message to client",
-            "sign": "Sign document"
+            "sign": "Sign document",
+            "startConversation": "Start conversation"
         },
         "add": "Add",
         "addAttachments": "Add attachments",
@@ -271,6 +272,7 @@
         "concept": "Concept",
         "confEmail": "Configuration for email sending",
         "confSms": "Configuration for SMS sending",
+        "confWhatsapp": "Configuration for Whatsapp sending",
         "configSmsSender": "Sender name",
         "confirm": "Submit",
         "country": "Country",
@@ -342,6 +344,7 @@
         "notifications": "Notifications",
         "observations": "Observations",
         "okClient": "OK Client",
+        "openConversation": "View the conversation",
         "origin": "Origin",
         "others": "Others",
         "paragraph": "Paragraph",
@@ -349,6 +352,7 @@
         "payments": "Payments",
         "pdfViewer": "Pdf viewer",
         "pending": "Pending",
+        "phoneWhatsapp": "Sender phone",
         "port": "Port",
         "postalCode": "Postal Code",
         "price": "Price",
@@ -372,6 +376,7 @@
         "selectAttacmentsToAdd": "Select the attachments to add",
         "selectImageFile": "Select image file",
         "send": "Send",
+        "senderWhatsapp": "Sender name",
         "shortcut": "Link",
         "showAll": "Show all",
         "showPage": "Show page",
@@ -718,6 +723,12 @@
             "unreaden": "Unread"
         }
     },
+    "startConv": {
+        "message": "Message",
+        "phone": "Phone",
+        "template": "Communication template",
+        "title": "Start conversation"
+    },
     "textEditor": {
         "htmlCodeInsertion": "Insert html code",
         "invalidHtmlText": "Invalid html tags, the text can't contain: {tags}",
@@ -879,6 +890,7 @@
         "requiredUser": "Assign to other user",
         "select": "Select a Workflow",
         "selectAttachmentTab": "Select a category for the Client's service attachments",
+        "selectAttachmentTabWhats": "Select a category for the Whatsapp conversations",
         "selectBrands": "To which brand?",
         "selectDepartments": "Select deparment from: {facility}",
         "selectFacilities": "Which facility do you belong to?",

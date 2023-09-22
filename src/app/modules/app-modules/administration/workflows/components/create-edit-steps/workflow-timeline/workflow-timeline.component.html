@@ -1,6 +1,37 @@
 <div *ngIf="form && originalData" class="timeline-container">
     <div class="timeline-container__section" fxLayout="row wrap">
         <div class="timeline-container__section__title">
+            <h1>{{ labels.selectAttachmentTabWhats | translate }}</h1>
+        </div>
+    </div>
+    <div class="timeline-container__section smaller-mat-form-fields" [formGroup]="form" *ngIf="originalData?.attachmentTemplates">
+        <!-- Attachment tab -->
+        <mat-form-field appearance="outline" floatLabel="always">
+            <mat-label>{{ labels.attachmentTab | translate }}</mat-label>
+            <mat-select formControlName="whatsappTabId" (selectionChange)="selectAttachmentTab('whatsapp')">
+                <mat-option *ngFor="let template of originalData.attachmentTemplates" [value]="template.id">{{
+                    template.name
+                }}</mat-option>
+            </mat-select>
+            <button
+                matSuffix
+                mat-icon-button
+                aria-label="Clear"
+                (click)="removeAttachmentTab('whatsapp'); $event.stopPropagation()"
+            >
+                <mat-icon>close</mat-icon>
+            </button>
+        </mat-form-field>
+        <!-- Category -->
+        <mat-form-field appearance="outline" floatLabel="always">
+            <mat-label>{{ labels.category | translate }}</mat-label>
+            <mat-select formControlName="whatsappTemplateAttachmentItemId">
+                <mat-option *ngFor="let item of getAttachmentItems('whatsapp')" [value]="item.id">{{ item.name }}</mat-option>
+            </mat-select>
+        </mat-form-field>
+    </div>
+    <div class="timeline-container__section" fxLayout="row wrap">
+        <div class="timeline-container__section__title">
             <h1>{{ labels.selectAttachmentTab | translate }}</h1>
         </div>
     </div>
@@ -8,12 +39,17 @@
         <!-- Attachment tab -->
         <mat-form-field appearance="outline" floatLabel="always">
             <mat-label>{{ labels.attachmentTab | translate }}</mat-label>
-            <mat-select formControlName="tabId" (selectionChange)="selectAttachmentTab()">
+            <mat-select formControlName="tabId" (selectionChange)="selectAttachmentTab('landing')">
                 <mat-option *ngFor="let template of originalData.attachmentTemplates" [value]="template.id">{{
                     template.name
                 }}</mat-option>
             </mat-select>
-            <button matSuffix mat-icon-button aria-label="Clear" (click)="removeAttachmentTab(); $event.stopPropagation()">
+            <button
+                matSuffix
+                mat-icon-button
+                aria-label="Clear"
+                (click)="removeAttachmentTab('landing'); $event.stopPropagation()"
+            >
                 <mat-icon>close</mat-icon>
             </button>
         </mat-form-field>
@@ -21,7 +57,7 @@
         <mat-form-field appearance="outline" floatLabel="always">
             <mat-label>{{ labels.category | translate }}</mat-label>
             <mat-select formControlName="templateAttachmentItemId">
-                <mat-option *ngFor="let item of getAttachmentItems()" [value]="item.id">{{ item.name }}</mat-option>
+                <mat-option *ngFor="let item of getAttachmentItems('landing')" [value]="item.id">{{ item.name }}</mat-option>
             </mat-select>
         </mat-form-field>
     </div>

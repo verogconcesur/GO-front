@@ -83,8 +83,8 @@
                 "email": "Email",
                 "itemConcept": "Concepto del elemento",
                 "items": "Elementos",
-                "landingMessage": "Texto a mostrar en el área de cliente del cliente cuando su ficha entre en este punto del Timeline.",
                 "landingEmail": "Configuración de Email predefinido",
+                "landingMessage": "Texto a mostrar en la landing del cliente cuando su ficha entre en este punto del Timeline.",
                 "name": "Nombre de plantilla de timeline de cliente",
                 "title": "Timeline de cliente"
             },
@@ -236,7 +236,8 @@
         "actionsTabItems": {
             "attachment": "Enviar adjunto",
             "message": "Mensaje a cliente",
-            "sign": "Firmar documento"
+            "sign": "Firmar documento",
+            "startConversation": "Iniciar conversación"
         },
         "add": "Añadir",
         "addAttachments": "Añadir adjuntos",
@@ -271,6 +272,7 @@
         "concept": "Concepto",
         "confEmail": "Configuración para el envío de correos",
         "confSms": "Configuración para el envío de SMS",
+        "confWhatsapp": "Configuración para el envío de Whatsapp",
         "configSmsSender": "Nombre del remitente",
         "confirm": "Aceptar",
         "country": "País",
@@ -342,6 +344,7 @@
         "notifications": "Notificaciones",
         "observations": "Observaciones",
         "okClient": "OK Cliente",
+        "openConversation": "Ver conversación",
         "origin": "Origen",
         "others": "Otros",
         "paragraph": "Párrafo",
@@ -349,6 +352,7 @@
         "payments": "Pagos",
         "pdfViewer": "Visor de pdf",
         "pending": "Pendiente",
+        "phoneWhatsapp": "Teléfono del remitente",
         "port": "Puerto",
         "postalCode": "Código Postal",
         "price": "Precio",
@@ -372,6 +376,7 @@
         "selectAttacmentsToAdd": "Seleccione los adjuntos",
         "selectImageFile": "Selecciona una imagen",
         "send": "Enviar",
+        "senderWhatsapp": "Nombre del remitente",
         "shortcut": "Enlace externo",
         "showAll": "Ver todo",
         "showPage": "Pág",
@@ -715,6 +720,12 @@
             "unreaden": "Sin leer"
         }
     },
+    "startConv": {
+        "message": "Mensaje",
+        "phone": "Teléfono",
+        "template": "Plantilla de comunicación",
+        "title": "Iniciar conversación"
+    },
     "textEditor": {
         "htmlCodeInsertion": "Inserta el código html",
         "invalidHtmlText": "Etiquetas html inválidas, el texto no puede contener: {tags}",
@@ -876,6 +887,7 @@
         "requiredUser": "Asignar a un usuario",
         "select": "Selecciona un Workflow",
         "selectAttachmentTab": "Seleccione una categoría para los adjuntos del Área de clientes",
+        "selectAttachmentTabWhats": "Seleccione una categoría para las conversaciones de Whatsapp",
         "selectBrands": "¿A qué marca?",
         "selectDepartments": "Seleccione deparamento de: {facility}",
         "selectFacilities": "¿A qué instalación pertenece?",
