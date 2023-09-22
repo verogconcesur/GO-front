@@ -6,6 +6,8 @@ export interface WorkflowTimelineDTO {
   workflowSubstateTimelineItems?: WorkflowSubstateTimelineItemDTO[];
   templateAttachmentItemId: number;
   tabId: number;
+  whatsappTemplateAttachmentItemId: number;
+  whatsappTabId: number;
 }
 
 export interface WorkflowSubstateTimelineItemDTO {

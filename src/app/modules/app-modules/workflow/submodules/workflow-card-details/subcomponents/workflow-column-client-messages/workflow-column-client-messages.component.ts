@@ -1,4 +1,5 @@
 import { Component, EventEmitter, Inject, Input, OnDestroy, OnInit, Output } from '@angular/core';
+import { MatDialog } from '@angular/material/dialog';
 import { ActivatedRoute } from '@angular/router';
 import { ENV } from '@app/constants/global.constants';
 import { RxStompService } from '@app/services/rx-stomp.service';
@@ -8,6 +9,7 @@ import CardMessageDTO from '@data/models/cards/card-message';
 import MessageChannelDTO from '@data/models/templates/message-channels-dto';
 import WorkflowSocketCardDetailDTO from '@data/models/workflows/workflow-sockect-card-detail-dto';
 import { CardMessagesService } from '@data/services/card-messages.service';
+import { ModalChatWhatsappComponent } from '@modules/feature-modules/modal-chat-whatsapp/modal-chat-whatsapp.component';
 import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
 import { TranslateService } from '@ngx-translate/core';
 import { NotificationSoundService } from '@shared/services/notification-sounds.service';
@@ -23,7 +25,7 @@ export class WorkflowColumnClientMessagesComponent implements OnInit, OnDestroy 
   @Output() setShowLoading: EventEmitter<boolean> = new EventEmitter(false);
   @Output() newCommentsEvent: EventEmitter<boolean> = new EventEmitter(false);
   public messages: CardMessageDTO[] = [];
-  public labels = { customer: marker('common.customer') };
+  public labels = { customer: marker('common.customer'), openConversation: marker('common.openConversation') };
   public dataLoaded = false;
   public interval: NodeJS.Timeout;
   private idCard: number;
@@ -35,7 +37,8 @@ export class WorkflowColumnClientMessagesComponent implements OnInit, OnDestroy 
     private route: ActivatedRoute,
     private translateService: TranslateService,
     private notificationSoundService: NotificationSoundService,
-    private rxStompService: RxStompService
+    private rxStompService: RxStompService,
+    private dialog: MatDialog
   ) {}
 
   ngOnInit(): void {
@@ -98,5 +101,19 @@ export class WorkflowColumnClientMessagesComponent implements OnInit, OnDestroy 
   }
   public checkMessageSignature(message: CardMessageDTO): boolean {
     return message.cardInstanceRemoteSignature ? true : false;
+  }
+  public showConversationButton(message: CardMessageDTO): boolean {
+    return message.messageChannels && message.messageChannels.length === 1 && message.messageChannels[0].id === 4;
+  }
+  public openConversation(message: CardMessageDTO) {
+    this.dialog.open(ModalChatWhatsappComponent, {
+      width: '600px',
+      height: '600px',
+      maxHeight: '100%',
+      data: {
+        message,
+        cardInstanceWorkflowId: this.idCard
+      }
+    });
   }
 }

@@ -12,12 +12,18 @@
                 <mat-icon *ngIf="checkMessageChannel(message, 1)">person_pin</mat-icon>
                 <mat-icon *ngIf="checkMessageChannel(message, 2)">alternate_email</mat-icon>
                 <mat-icon *ngIf="checkMessageChannel(message, 3)">message</mat-icon>
+                <mat-icon fontSet="concenet" class="whatsapp" *ngIf="checkMessageChannel(message, 4)">whatsapp</mat-icon>
                 <mat-icon fontSet="concenet" *ngIf="checkMessageSignature(message)">signature</mat-icon>
             </div>
             <div class="date">
                 {{ message.dateComment | date : "dd/MM/yy, HH:mm" }}
             </div>
             <div class="message" [innerHtml]="message.comment"></div>
+            <div class="openConversation" fxLayout="row" fxLayoutAlign="center start" *ngIf="showConversationButton(message)">
+                <button mat-button (click)="openConversation(message)">
+                    <span> {{ labels.openConversation | translate }} </span>
+                </button>
+            </div>
         </div>
     </div>
 </div>

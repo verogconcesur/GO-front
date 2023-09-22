@@ -24,6 +24,10 @@
         mat-icon {
           margin-right: 5px;
         }
+        .whatsapp {
+          font-size: 1.4em;
+          margin-bottom: -1px;
+        }
       }
       .date {
         font-size: 0.8em;
@@ -32,6 +36,9 @@
       .message {
         margin-top: 5px;
         overflow-wrap: break-word;
+      }
+      .openConversation {
+        margin-top: 5px;
       }
       &.client {
         background-color: mat-color($primary, 500);

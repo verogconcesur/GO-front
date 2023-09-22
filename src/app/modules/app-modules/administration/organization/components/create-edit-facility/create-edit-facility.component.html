@@ -296,6 +296,37 @@
                     </mat-form-field>
                 </div>
             </div>
+
+            <!-- Whatsapp Configuration -->
+            <div class="facility-data__section">
+                <div class="facility-data__section__title">
+                    {{ labels.confWhatsapp | translate }}
+                </div>
+
+                <div class="facility-data__section__group">
+                    <!-- phoneWhatsapp -->
+                    <mat-form-field appearance="outline" floatLabel="always">
+                        <mat-label>{{ labels.phoneWhatsapp | translate }} </mat-label>
+                        <input matInput formControlName="whatsappPhoneNumber" />
+                        <mat-error
+                            *ngIf="facilityForm.controls.whatsappPhoneNumber.invalid && facilityForm.controls.whatsappPhoneNumber.touched"
+                        >
+                            {{ labels.required | translate }}
+                        </mat-error>
+                    </mat-form-field>
+                    <!-- senderWhatsapp -->
+                    <mat-form-field appearance="outline" floatLabel="always">
+                        <mat-label>{{ labels.senderWhatsapp | translate }} </mat-label>
+                        <input matInput formControlName="whatsappSender" />
+                        <mat-error
+                            *ngIf="facilityForm.controls.whatsappSender.invalid && facilityForm.controls.whatsappSender.touched"
+                        >
+                            {{ labels.minLength | translate : { length: this.minLength } }},
+                            {{ labels.maxLength | translate : { length: this.maxLength } }}
+                        </mat-error>
+                    </mat-form-field>
+                </div>
+            </div>
             <!-- Emails -->
             <div class="facility-data__section">
                 <div class="facility-data__section__title">

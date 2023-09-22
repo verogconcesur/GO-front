@@ -31,10 +31,11 @@ export class CustomActionsComponent implements OnInit {
     tabSign: marker('common.actionsTabItems.sign'),
     tabMerssage: marker('common.actionsTabItems.message'),
     tabAttachment: marker('common.actionsTabItems.attachment'),
+    tabStartConv: marker('common.actionsTabItems.startConversation'),
     shortcut: marker('common.shortcut'),
     actions: marker('common.actions')
   };
-
+  public actionsTabItems = actionsTabItems;
   constructor(
     private fb: UntypedFormBuilder,
     private translateService: TranslateService,
@@ -128,6 +129,32 @@ export class CustomActionsComponent implements OnInit {
               })
             })
           );
+        }
+      });
+      actionsTabItems.forEach((tabItem, index) => {
+        let tabItemSetted = false;
+        tab.tabItems.forEach((tabItemAux) => {
+          if (tabItemAux.typeItem === 'ACTION' && tabItemAux.tabItemConfigAction.actionType === tabItem.actionType) {
+            tabItemSetted = true;
+          }
+        });
+        if (!tabItemSetted) {
+          arrayForm.push(
+            this.fb.group({
+              id: [null],
+              tabId: [null],
+              typeItem: ['ACTION'],
+              orderNumber: [arrayForm.length, [Validators.required]],
+              name: [this.translateService.instant(tabItem.name), [Validators.required]],
+              tabItemConfigAction: this.fb.group({
+                id: [null],
+                tabItemId: [null],
+                actionType: [tabItem.actionType],
+                visible: [true]
+              })
+            })
+          );
+          moveItemInFormArray(arrayForm, arrayForm.length - 1, index);
         }
       });
     } else {

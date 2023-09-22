@@ -3,6 +3,7 @@ import { Inject, Injectable } from '@angular/core';
 import { ENV } from '@app/constants/global.constants';
 import { Env } from '@app/types/env';
 import { ConcenetError } from '@app/types/error';
+import CardInstanceWhatsappDTO from '@data/models/cards/card-instance-whatsapp-dto';
 import CardMessageDTO from '@data/models/cards/card-message';
 import CardMessageRenderDTO from '@data/models/cards/card-message-render';
 import TemplatesCommonDTO from '@data/models/templates/templates-common-dto';
@@ -21,6 +22,9 @@ export class CardMessagesService {
   private readonly CHANNELS = '/channels';
   private readonly SEND = '/send';
   private readonly BUDGET = '/budget';
+  private readonly WHATSAPP_PATH = '/whatsapp';
+  private readonly CONVERSATION_PATH = '/conversation';
+  private readonly ACTIVE_PATH = '/active';
 
   constructor(@Inject(ENV) private env: Env, private http: HttpClient) {}
 
@@ -103,6 +107,53 @@ export class CardMessagesService {
         // eslint-disable-next-line max-len
         `${this.env.apiBaseUrl}${this.GET_CARD_INSTANCE_PATH}${this.GET_DETAIL_PATH}${this.GET_MESSAGES_PATH}${this.SEND}/${cardWfId}${this.BUDGET}/${tabId}`,
         {}
+      )
+      .pipe(catchError((error) => throwError(error.error as ConcenetError)));
+  }
+
+  /**
+   * Inicia conversación por whatsapp
+   *
+   * @returns CardInstanceWhatsappDTO
+   */
+  public sendWhatsappConversation(
+    cardInstanceWhatsapp: CardInstanceWhatsappDTO,
+    cardWfId: number,
+    messageId?: number
+  ): Observable<null> {
+    let url =
+      `${this.env.apiBaseUrl}${this.GET_CARD_INSTANCE_PATH}${this.GET_DETAIL_PATH}${this.WHATSAPP_PATH}` +
+      `/${cardWfId}${this.CONVERSATION_PATH}`;
+    if (messageId) {
+      url += `/${messageId}`;
+    }
+    return this.http.post<null>(url, cardInstanceWhatsapp).pipe(catchError((error) => throwError(error.error as ConcenetError)));
+  }
+
+  /**
+   * Obtener la conversación activa actual
+   *
+   * @returns CardInstanceWhatsappDTO
+   */
+  public getWhatsappConversationMessages(cardWfId: number, messageId: number): Observable<CardInstanceWhatsappDTO[]> {
+    return this.http
+      .get<CardInstanceWhatsappDTO[]>(
+        `${this.env.apiBaseUrl}${this.GET_CARD_INSTANCE_PATH}${this.GET_DETAIL_PATH}${this.WHATSAPP_PATH}` +
+          `/${cardWfId}${this.CONVERSATION_PATH}/${messageId}`
+      )
+      .pipe(catchError((error) => throwError(error.error as ConcenetError)));
+  }
+
+  /**
+   * Obtener la conversación activa actual
+   *
+   * @returns CardInstanceWhatsappDTO
+   */
+  public checkWhatsappConversationActive(cardWfId: number): Observable<CardInstanceWhatsappDTO> {
+    return this.http
+      .get<CardInstanceWhatsappDTO>(
+        `${this.env.apiBaseUrl}${this.GET_CARD_INSTANCE_PATH}${this.GET_DETAIL_PATH}${this.WHATSAPP_PATH}` +
+          `/${cardWfId}${this.CONVERSATION_PATH}${this.ACTIVE_PATH}`
       )
       .pipe(catchError((error) => throwError(error.error as ConcenetError)));
   }

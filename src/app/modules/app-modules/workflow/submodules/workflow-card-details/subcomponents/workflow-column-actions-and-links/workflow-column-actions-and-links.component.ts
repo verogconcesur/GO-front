@@ -24,6 +24,13 @@ import { MoveCardDialogComponent } from '../move-card-dialog/move-card-dialog.co
 import CardInstanceRemoteSignatureDTO from '@data/models/cards/card-instance-remote-signature-dto';
 import { CardAttachmentsService } from '@data/services/card-attachments.service';
 import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
+import {
+  ModalStartConversationComponent,
+  StartConversationComponentModalEnum
+} from '@modules/feature-modules/modal-start-conversation/modal-start-conversation.component';
+import { CardMessagesService } from '@data/services/card-messages.service';
+import { ModalChatWhatsappComponent } from '@modules/feature-modules/modal-chat-whatsapp/modal-chat-whatsapp.component';
+import CardInstanceWhatsappDTO from '@data/models/cards/card-instance-whatsapp-dto';
 
 @UntilDestroy()
 @Component({
@@ -57,6 +64,7 @@ export class WorkflowColumnActionsAndLinksComponent implements OnInit {
     private prepareAndMoveService: WorkflowPrepareAndMoveService,
     private customDialogService: CustomDialogService,
     private cardAttachmentService: CardAttachmentsService,
+    private cardMessagesService: CardMessagesService,
     private router: Router
   ) {}
 
@@ -134,10 +142,50 @@ export class WorkflowColumnActionsAndLinksComponent implements OnInit {
               id: MessageClientDialogComponentModalEnum.ID,
               panelClass: MessageClientDialogComponentModalEnum.PANEL_CLASS,
               disableClose: true,
-              width: '700px'
+              width: '750px'
             })
             .pipe(take(1))
             .subscribe();
+          break;
+        case 'START_CON':
+          this.cardMessagesService
+            .checkWhatsappConversationActive(this.idCard)
+            .pipe(take(1))
+            .subscribe({
+              next: (ciW: CardInstanceWhatsappDTO) => {
+                if (ciW) {
+                  this.dialog.open(ModalChatWhatsappComponent, {
+                    width: '600px',
+                    height: '600px',
+                    maxHeight: '100%',
+                    data: {
+                      message: ciW.cardInstanceMessage,
+                      cardInstanceWorkflowId: this.idCard
+                    }
+                  });
+                } else {
+                  this.customDialogService
+                    .open({
+                      id: StartConversationComponentModalEnum.ID,
+                      panelClass: StartConversationComponentModalEnum.PANEL_CLASS,
+                      component: ModalStartConversationComponent,
+                      extendedComponentData: { cardInstance: this.cardInstance },
+                      disableClose: true,
+                      width: '750px'
+                    })
+                    .pipe(take(1))
+                    .subscribe((response) => {
+                      if (response) {
+                        this.globalMessageService.showSuccess({
+                          message: this.translateService.instant(marker('common.successOperation')),
+                          actionText: this.translateService.instant(marker('common.close'))
+                        });
+                      }
+                    });
+                }
+              },
+              error: () => {}
+            });
           break;
       }
     }

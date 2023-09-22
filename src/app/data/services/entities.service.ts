@@ -32,6 +32,7 @@ export class EntitiesService {
   private readonly SEARCH__EXTERNAL_API_PATH = 'searchExternalApi';
   private readonly SAVE__EXTERNAL_API_PATH = 'saveExternalApi/';
   private readonly SEARCH_PATH_PAG = 'searchPaged';
+  private readonly GET_CUSTOMER_CARD_INSTANCE_PATH = 'getCustomerByCardInstanceWorkflow';
 
   constructor(@Inject(ENV) private env: Env, private http: HttpClient) {}
 
@@ -143,6 +144,19 @@ export class EntitiesService {
   public getCustomer(idCustomer: number): Observable<CustomerEntityDTO> {
     return this.http
       .get<CustomerEntityDTO>(`${this.env.apiBaseUrl}${this.GET_CUSTOMERS_PATH}${idCustomer}`)
+      .pipe(catchError((error) => throwError(error.error as ConcenetError)));
+  }
+
+  /**
+   * Find customer
+   *
+   * @returns CustomerEntityDTO
+   */
+  public getCustomerByCardInstance(cardInstanceWorkflowId: number): Observable<CustomerEntityDTO> {
+    return this.http
+      .get<CustomerEntityDTO>(
+        `${this.env.apiBaseUrl}${this.GET_CUSTOMERS_PATH}${this.GET_CUSTOMER_CARD_INSTANCE_PATH}/${cardInstanceWorkflowId}`
+      )
       .pipe(catchError((error) => throwError(error.error as ConcenetError)));
   }
 

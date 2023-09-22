@@ -37,7 +37,7 @@ export default interface CardColumnTabItemDTO extends TreeNode {
 export interface TabItemConfigActionDTO {
   id?: number;
   tabItemId?: number;
-  actionType: 'SIGN_DOC' | 'MESSAGE_CLIENT' | 'ATTACH_DOC';
+  actionType: 'SIGN_DOC' | 'MESSAGE_CLIENT' | 'ATTACH_DOC' | 'START_CON';
   visible: boolean;
 }
 export interface CardTabItemInstanceDTO {

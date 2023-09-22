@@ -86,7 +86,10 @@ export class CreateEditFacilityComponent extends ComponentToExtendForCustomDialo
     minLength: marker('errors.minLength'),
     maxLength: marker('errors.maxLengthError'),
     confSms: marker('common.confSms'),
-    configSmsSender: marker('common.configSmsSender')
+    configSmsSender: marker('common.configSmsSender'),
+    confWhatsapp: marker('common.confWhatsapp'),
+    phoneWhatsapp: marker('common.phoneWhatsapp'),
+    senderWhatsapp: marker('common.senderWhatsapp')
   };
   public minLength = 3;
   public maxLength = 11;
@@ -204,7 +207,9 @@ export class CreateEditFacilityComponent extends ComponentToExtendForCustomDialo
         configMailerPort: formValue.configMailerPort,
         configMailerUserName: formValue.configMailerUserName,
         configMailerPass: formValue.configMailerPass,
-        senderSms: formValue.senderSms
+        senderSms: formValue.senderSms,
+        whatsappPhoneNumber: formValue.whatsappPhoneNumber,
+        whatsappSender: formValue.whatsappSender
       })
       .pipe(
         map((response) => {
@@ -496,6 +501,13 @@ export class CreateEditFacilityComponent extends ComponentToExtendForCustomDialo
         ],
         senderSms: [
           this.facilityToEdit && this.facilityToEdit.senderSms ? this.facilityToEdit.senderSms : null,
+          [Validators.minLength(this.minLength), Validators.maxLength(this.maxLength)]
+        ],
+        whatsappPhoneNumber: [
+          this.facilityToEdit && this.facilityToEdit.whatsappPhoneNumber ? this.facilityToEdit.whatsappPhoneNumber : null
+        ],
+        whatsappSender: [
+          this.facilityToEdit && this.facilityToEdit.whatsappSender ? this.facilityToEdit.whatsappSender : null,
           [Validators.minLength(this.minLength), Validators.maxLength(this.maxLength)]
         ]
       },
