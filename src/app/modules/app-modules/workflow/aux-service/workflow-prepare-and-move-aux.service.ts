@@ -77,6 +77,13 @@ export class WorkflowPrepareAndMoveService {
       ? substateTarget?.workflowSubstateUser
       : [];
     if (
+      user &&
+      !usersIn.find((u) => u.user?.id === user.user?.id || u.id === user.id || u.userId === user.userId) &&
+      view === 'MOVES_IN_OTHER_WORKFLOWS'
+    ) {
+      user = null;
+    }
+    if (
       !user &&
       move &&
       move.workflowSubstateTarget.workflowState.front &&
@@ -113,7 +120,7 @@ export class WorkflowPrepareAndMoveService {
               data[2]?.requiredHistoryComment ||
               data[2]?.sendMail ||
               data[2]?.requiredMovementExtra)) ||
-          this.showMainUserSelector(user, move, data) ||
+          this.showMainUserSelector(user, move, data, view) ||
           view === 'MOVES_IN_OTHER_WORKFLOWS'
         ) {
           this.dialog
@@ -129,7 +136,7 @@ export class WorkflowPrepareAndMoveService {
                 usersIn,
                 view,
                 selectedUser: user,
-                mainUserSelector: this.showMainUserSelector(user, move, data),
+                mainUserSelector: this.showMainUserSelector(user, move, data, view),
                 workflowCardsLimit:
                   move.workflowSubstateSource.workflowState.workflow.id !==
                     move.workflowSubstateTarget.workflowState.workflow.id &&
@@ -402,12 +409,17 @@ export class WorkflowPrepareAndMoveService {
     );
   }
 
-  private showMainUserSelector(user: WorkflowSubstateUserDTO, move: WorkflowMoveDTO, data: WorkflowSubstateEventDTO[]): boolean {
+  private showMainUserSelector(
+    user: WorkflowSubstateUserDTO,
+    move: WorkflowMoveDTO,
+    data: WorkflowSubstateEventDTO[],
+    view: 'MOVES_IN_THIS_WORKFLOW' | 'MOVES_IN_OTHER_WORKFLOWS'
+  ): boolean {
     if (
-      (!user &&
+      ((!user || (user && view === 'MOVES_IN_OTHER_WORKFLOWS')) &&
         move &&
         move.workflowSubstateTarget.workflowState.front &&
-        move.workflowSubstateTarget.workflowSubstateUser?.length) ||
+        move.workflowSubstateTarget.workflowSubstateUser?.length > 1) ||
       data[0]?.requiredUser ||
       data[1]?.requiredUser ||
       data[2]?.requiredUser
