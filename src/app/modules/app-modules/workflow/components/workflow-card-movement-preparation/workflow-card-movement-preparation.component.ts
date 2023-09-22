@@ -259,7 +259,7 @@ export class WorkflowCardMovementPreparationComponent implements OnInit {
   }
 
   addTabToShow(type: 'IN' | 'OUT' | 'MOV', p: WorkflowSubstateEventDTO): void {
-    if (p.requiredSize || p.sendMail || p.requiredHistoryComment || p.requiredMovementExtra) {
+    if (p.requiredSize || p.sendMail || p.requiredHistoryComment || (p.requiredMovementExtra && !p.movementExtraAuto)) {
       this.tabsToShow.push(type);
     }
   }
