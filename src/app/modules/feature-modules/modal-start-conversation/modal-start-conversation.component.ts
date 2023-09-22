@@ -8,7 +8,7 @@ import CustomerEntityDTO from '@data/models/entities/customer-entity-dto';
 import TemplatesCommonDTO from '@data/models/templates/templates-common-dto';
 import { CardMessagesService } from '@data/services/card-messages.service';
 import { EntitiesService } from '@data/services/entities.service';
-import { ComponentToExtendForCustomDialog, CustomDialogFooterConfigI } from '@jenga/custom-dialog';
+import { ComponentToExtendForCustomDialog, CustomDialogFooterConfigI } from '@frontend/custom-dialog';
 import { TranslateService } from '@ngx-translate/core';
 import { ConfirmDialogService } from '@shared/services/confirm-dialog.service';
 import { GlobalMessageService } from '@shared/services/global-message.service';
