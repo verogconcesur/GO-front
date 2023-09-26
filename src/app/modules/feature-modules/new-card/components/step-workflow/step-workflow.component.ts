@@ -54,7 +54,6 @@ export class StepWorkflowComponent implements OnInit {
       this.formWorkflow.get('cardsLimit').setValue(false);
     }
     this.facilityList = this.formWorkflow.get('workflow').value ? this.formWorkflow.get('workflow').value.facilities : [];
-    this.setStateAndSubstate();
     const selectedFacility = this.formWorkflow.get('facility').value;
     if (selectedFacility) {
       this.formWorkflow.get('facility').setValue(
@@ -66,6 +65,7 @@ export class StepWorkflowComponent implements OnInit {
       this.formWorkflow.get('facility').setValue(this.facilityList[0], { emitEvent: false });
       this.initialiceLimitDates();
     }
+    this.setStateAndSubstate();
   }
   public setStateAndSubstate(cardsLimitMode?: boolean): void {
     let selectedEntryState = this.formWorkflow.get('entryState').value;
