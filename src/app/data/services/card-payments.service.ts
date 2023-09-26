@@ -18,6 +18,7 @@ export class CardPaymentsService {
   private readonly PAYMENTS_PATH = '/payments';
   private readonly LINE_PATH = '/line';
   private readonly TYPES = '/types';
+  private readonly STATE = '/status';
 
   constructor(@Inject(ENV) private env: Env, private http: HttpClient) {}
 
@@ -101,6 +102,21 @@ export class CardPaymentsService {
       .get<PaymentTypeDTO[]>(
         // eslint-disable-next-line max-len
         `${this.env.apiBaseUrl}${this.GET_CARD_INSTANCE_PATH}${this.PAYMENTS_PATH}${this.TYPES}`
+      )
+      .pipe(catchError((error) => throwError(error.error as ConcenetError)));
+  }
+  /**
+   * Get card payments
+   *
+   * @param cardInstanceWorkflowId
+   * @param tabId
+   * @returns CardPaymentsDTO
+   */
+  public getCardPaymentStatus(): Observable<PaymentTypeDTO[]> {
+    return this.http
+      .get<PaymentTypeDTO[]>(
+        // eslint-disable-next-line max-len
+        `${this.env.apiBaseUrl}${this.GET_CARD_INSTANCE_PATH}${this.PAYMENTS_PATH}${this.STATE}`
       )
       .pipe(catchError((error) => throwError(error.error as ConcenetError)));
   }

@@ -84,7 +84,7 @@
                 "itemConcept": "Concepto del elemento",
                 "items": "Elementos",
                 "landingEmail": "Configuración de Email predefinido",
-                "landingMessage": "Texto a mostrar en la landing del cliente cuando su ficha entre en este punto del Timeline.",
+                "landingMessage": "Texto a mostrar en el área de cliente del cliente cuando su ficha entre en este punto del Timeline.",
                 "name": "Nombre de plantilla de timeline de cliente",
                 "title": "Timeline de cliente"
             },
@@ -133,8 +133,14 @@
         },
         "payments": {
             "deleteConfirmation": "¿Está seguro que desea eliminar esta linea de pago?",
+            "editLine": "Editar línea de pago",
+            "langindOnlyPositiveAmounts": "No se pueden enviar cantidades negativas al área de cliente.",
+            "newLine": "Crear línea de pago",
+            "resend": "Reenviar pago al área de clientes",
             "saveConfirmation": "¿Está seguro que desea guardar esta linea de pago?",
-            "saveTotalConfirmation": "¿Está seguro que desea guardar este total?"
+            "saveTotalConfirmation": "¿Está seguro que desea guardar este total?",
+            "send": "Enviar pago al área de clientes",
+            "sendConfirmation": "¿Está seguro que quiere enviar esta línea de pago al área de cliente?"
         }
     },
     "cards": {

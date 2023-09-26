@@ -1,9 +1,9 @@
-import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
-import { FormArray, FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { Component, EventEmitter, Input, OnInit, Output, ViewEncapsulation } from '@angular/core';
+import { FormArray, FormBuilder, FormGroup, UntypedFormGroup, Validators } from '@angular/forms';
 import { ConcenetError } from '@app/types/error';
 import { marker } from '@biesbjerg/ngx-translate-extract-marker';
 import { AttachmentDTO, CardAttachmentsDTO, CardPaymentAttachmentsDTO } from '@data/models/cards/card-attachments-dto';
-import { CardPaymentLineDTO, CardPaymentsDTO, PaymentTypeDTO } from '@data/models/cards/card-payments-dto';
+import { CardPaymentLineDTO, CardPaymentsDTO, PaymentStatusDTO, PaymentTypeDTO } from '@data/models/cards/card-payments-dto';
 import CardInstanceDTO from '@data/models/cards/card-instance-dto';
 import { CardAttachmentsService } from '@data/services/card-attachments.service';
 import { CardPaymentsService } from '@data/services/card-payments.service';
@@ -16,11 +16,16 @@ import { NGXLogger } from 'ngx-logger';
 import { take } from 'rxjs/operators';
 import CardInstancePaymentsConfig from './card-instance-payments-config-interface';
 import { forkJoin } from 'rxjs';
+import {
+  CardPaymentDialogEnum,
+  CardPaymentDialogFormComponent
+} from './card-payment-dialog-form/card-payment-dialog-form.component';
 
 @Component({
   selector: 'app-card-instance-payments',
   templateUrl: './card-instance-payments.component.html',
-  styleUrls: ['./card-instance-payments.component.scss']
+  styleUrls: ['./card-instance-payments.component.scss'],
+  encapsulation: ViewEncapsulation.None
 })
 export class CardInstancePaymentsComponent implements OnInit {
   @Input() cardInstancePaymentsConfig: CardInstancePaymentsConfig;
@@ -37,17 +42,19 @@ export class CardInstancePaymentsComponent implements OnInit {
     amount: marker('common.amount'),
     total: marker('common.total'),
     pending: marker('common.pending'),
+    state: marker('common.state'),
     actions: marker('common.actions'),
     newLine: marker('common.newLine'),
     send: marker('common.send'),
+    sendPayment: marker('cardDetail.payments.send'),
+    resendPayment: marker('cardDetail.payments.resend'),
     attachments: marker('common.attachments'),
     deleteConfirmation: marker('common.deleteConfirmation'),
     maxLengthError: marker('errors.maxLengthError')
   };
   public formTotal: FormGroup;
-  public formPayments: FormArray;
-  public currentPayment: CardPaymentsDTO;
   public paymentLines: CardPaymentLineDTO[];
+  public paymentStatus: PaymentStatusDTO[];
   public attachmentsList: CardPaymentAttachmentsDTO[];
   public paymentTypes: PaymentTypeDTO[];
   public prevTotal: number;
@@ -62,21 +69,48 @@ export class CardInstancePaymentsComponent implements OnInit {
     private confirmationDialog: ConfirmDialogService,
     private globalMessageService: GlobalMessageService,
     private customDialogService: CustomDialogService,
-    private attachmentService: CardAttachmentsService
+    private attachmentService: CardAttachmentsService,
+    private cardMessageService: CardMessagesService
   ) {}
   public compareAttachments(object1: CardPaymentAttachmentsDTO, object2: CardPaymentAttachmentsDTO) {
     return object1 && object2 && object1.file.id === object2.file.id;
   }
-  public cancelPayment(payment: FormGroup, index: number): void {
-    if (payment.value.id) {
-      payment.patchValue(this.currentPayment);
-      payment.get('editMode').setValue(false);
+  public getSendLabel(payment: CardPaymentLineDTO): string {
+    if (payment.paymentStatus.id === 1) {
+      return this.labels.sendPayment;
     } else {
-      this.formPayments.removeAt(index);
+      return this.labels.resendPayment;
     }
-    this.editing = false;
   }
-  public savePayment(payment: FormGroup): void {
+  public sendPayment(payment: CardPaymentLineDTO): void {
+    this.confirmationDialog
+      .open({
+        title: this.translateService.instant(marker('common.warning')),
+        message: this.translateService.instant(marker('cardDetail.payments.sendConfirmation'))
+      })
+      .pipe(take(1))
+      .subscribe((ok: boolean) => {
+        if (ok) {
+          this.cardMessageService
+            .sendPaymentMessageClient(this.cardInstanceWorkflowId, payment.id)
+            .pipe(take(1))
+            .subscribe(
+              (data) => {
+                this.reload.emit(true);
+              },
+              (error: ConcenetError) => {
+                this.logger.error(error);
+
+                this.globalMessageService.showError({
+                  message: error.message,
+                  actionText: this.translateService.instant(marker('common.close'))
+                });
+              }
+            );
+        }
+      });
+  }
+  public savePayment(payment: UntypedFormGroup): void {
     this.confirmationDialog
       .open({
         title: this.translateService.instant(marker('common.warning')),
@@ -139,7 +173,7 @@ export class CardInstancePaymentsComponent implements OnInit {
         }
       });
   }
-  public deletePayment(payment: FormGroup): void {
+  public deletePayment(payment: CardPaymentLineDTO, index: number): void {
     this.confirmationDialog
       .open({
         title: this.translateService.instant(marker('common.warning')),
@@ -149,7 +183,7 @@ export class CardInstancePaymentsComponent implements OnInit {
       .subscribe((ok: boolean) => {
         if (ok) {
           this.paymentsService
-            .deleteLine(this.cardInstanceWorkflowId, this.tabId, payment.value.id)
+            .deleteLine(this.cardInstanceWorkflowId, this.tabId, payment.id)
             .pipe(take(1))
             .subscribe(
               (data) => {
@@ -201,10 +235,30 @@ export class CardInstancePaymentsComponent implements OnInit {
       this.editingTotal = false;
     }
   }
-  public editPayment(payment: FormGroup): void {
-    this.editing = true;
-    this.currentPayment = payment.getRawValue();
-    payment.get('editMode').setValue(true);
+  public editPayment(payment: CardPaymentLineDTO, index: number): void {
+    this.customDialogService
+      .open({
+        component: CardPaymentDialogFormComponent,
+        extendedComponentData: {
+          payment,
+          paymentTypes: this.paymentTypes,
+          paymentStatus: this.paymentStatus,
+          cardInstancePaymentDTO: { id: this.data.id },
+          attachmentsList: this.attachmentsList,
+          cardInstanceWorkflowId: this.cardInstanceWorkflowId
+        },
+        id: CardPaymentDialogEnum.ID,
+        panelClass: CardPaymentDialogEnum.PANEL_CLASS,
+        disableClose: true,
+        width: '900px'
+      })
+      .pipe(take(1))
+      .subscribe((response) => {
+        if (response) {
+          console.log(response);
+          this.savePayment(response);
+        }
+      });
   }
   public editTotal(): void {
     this.prevTotal = this.formTotal.get('total').value;
@@ -214,20 +268,27 @@ export class CardInstancePaymentsComponent implements OnInit {
     return !payment.value.editMode;
   }
   public newLine() {
-    this.editing = true;
-    this.formPayments.push(
-      this.fb.group({
-        id: [null],
-        amount: ['', [Validators.max(this.maxAmount), Validators.required]],
-        attachments: [],
-        description: ['', Validators.required],
-        cardInstancePaymentDTO: [{ id: this.data.id }, [Validators.required]],
-        observations: [''],
-        paymentType: [null, [Validators.required]],
-        editMode: [true],
-        attachmentsOriginal: []
+    this.customDialogService
+      .open({
+        component: CardPaymentDialogFormComponent,
+        extendedComponentData: {
+          payment: null,
+          paymentTypes: this.paymentTypes,
+          paymentStatus: this.paymentStatus,
+          cardInstancePaymentDTO: { id: this.data.id }
+        },
+        id: CardPaymentDialogEnum.ID,
+        panelClass: CardPaymentDialogEnum.PANEL_CLASS,
+        disableClose: true,
+        width: '900px'
       })
-    );
+      .pipe(take(1))
+      .subscribe((response) => {
+        if (response) {
+          console.log(response);
+          this.savePayment(response);
+        }
+      });
   }
   public initializeForms() {
     this.formTotal = this.fb.group({
@@ -240,36 +301,22 @@ export class CardInstancePaymentsComponent implements OnInit {
       total: [this.data?.total ? this.data?.total : '', [Validators.max(this.maxAmount), Validators.required]],
       pending: [this.data?.pending ? this.data?.pending : '']
     });
-    this.formPayments = this.fb.array([]);
-    if (this.data && this.data.paymentLines?.length) {
-      this.data.paymentLines.forEach((data: CardPaymentLineDTO) => {
-        this.formPayments.push(
-          this.fb.group({
-            id: [data.id],
-            amount: [data.amount, [Validators.max(this.maxAmount), Validators.required]],
-            attachments: [data.attachments],
-            description: [data.description, [Validators.required]],
-            observations: [data.observations],
-            paymentType: [
-              data.paymentType ? this.paymentTypes.find((value: PaymentTypeDTO) => value.id === data.paymentType.id) : null,
-              [Validators.required]
-            ],
-            editMode: [false],
-            attachmentsOriginal: [data.attachments]
-          })
-        );
-      });
-    }
   }
   ngOnInit(): void {
     this.paymentLines = this.data?.paymentLines?.length ? this.data.paymentLines : [];
+    this.paymentLines = this.paymentLines.map((line, index) => ({
+      ...line,
+      paymentStatus: line?.paymentStatus ? line.paymentStatus : { id: 1, name: 'Creada' }
+    }));
     const resquests = [
       this.attachmentService.getCardAttachmentsByInstance(this.cardInstanceWorkflowId).pipe(take(1)),
-      this.paymentsService.getCardPaymentTypes().pipe(take(1))
+      this.paymentsService.getCardPaymentTypes().pipe(take(1)),
+      this.paymentsService.getCardPaymentStatus().pipe(take(1))
     ];
     forkJoin(resquests).subscribe(
-      (responses: [CardAttachmentsDTO[], PaymentTypeDTO[]]) => {
+      (responses: [CardAttachmentsDTO[], PaymentTypeDTO[], PaymentTypeDTO[]]) => {
         this.paymentTypes = responses[1];
+        this.paymentStatus = responses[2];
         this.attachmentsList = [];
         responses[0].forEach((attachment: CardAttachmentsDTO) => {
           attachment.attachments.forEach((att: AttachmentDTO) => {
