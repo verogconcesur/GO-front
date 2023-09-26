@@ -97,6 +97,7 @@ export class WorkflowCardMovementPreparationComponent implements OnInit {
       selectedUser: WorkflowSubstateUserDTO;
       mainUserSelector: boolean;
       workflowCardsLimit: WorkflowCardsLimitDTO;
+      workflowDestinatioId: number;
       cardIntanceId: number;
       altSubstateLimit: {
         destinationName: string;
@@ -137,11 +138,7 @@ export class WorkflowCardMovementPreparationComponent implements OnInit {
       this.maxCardsByHour = this.workflowCardsLimit?.numCardsByHour;
       const spinner = this.spinnerService.show();
       this.workflowService
-        .getCardLimitsCreatecardList(
-          this.workflowCardsLimit.workflowSubstate.workflowState.workflow.id,
-          null,
-          this.data.cardIntanceId
-        )
+        .getCardLimitsCreatecardList(this.data.workflowDestinatioId, null, this.data.cardIntanceId)
         .pipe(
           take(1),
           finalize(() => this.spinnerService.hide(spinner))
@@ -259,7 +256,7 @@ export class WorkflowCardMovementPreparationComponent implements OnInit {
   }
 
   addTabToShow(type: 'IN' | 'OUT' | 'MOV', p: WorkflowSubstateEventDTO): void {
-    if (p.requiredSize || p.sendMail || p.requiredHistoryComment || p.requiredMovementExtra) {
+    if (p.requiredSize || p.sendMail || p.requiredHistoryComment || (p.requiredMovementExtra && !p.movementExtraAuto)) {
       this.tabsToShow.push(type);
     }
   }

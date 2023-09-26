@@ -58,6 +58,9 @@ export class WorkflowPrepareAndMoveService {
     this.spinner = this.spinnerService.show();
     view = view ? view : 'MOVES_IN_THIS_WORKFLOW';
     const workflowCardsLimit: WorkflowCardsLimitDTO = move?.workflowCardsLimit;
+    if (!workflowCardsLimit.allowOverLimit) {
+      workflowCardsLimit.workflowSubstate = null;
+    }
     if (workflowCardsLimit?.workflowSubstate) {
       workflowCardsLimit.workflowSubstate.workflowSubstateEvents = workflowCardsLimit.workflowSubstate.workflowSubstateEvents
         ? workflowCardsLimit.workflowSubstate.workflowSubstateEvents
@@ -76,6 +79,13 @@ export class WorkflowPrepareAndMoveService {
       : substateTarget?.workflowSubstateUser
       ? substateTarget?.workflowSubstateUser
       : [];
+    if (
+      user &&
+      !usersIn.find((u) => u.user?.id === user.user?.id || u.id === user.id || u.userId === user.userId) &&
+      view === 'MOVES_IN_OTHER_WORKFLOWS'
+    ) {
+      user = null;
+    }
     if (
       !user &&
       move &&
@@ -113,7 +123,7 @@ export class WorkflowPrepareAndMoveService {
               data[2]?.requiredHistoryComment ||
               data[2]?.sendMail ||
               data[2]?.requiredMovementExtra)) ||
-          this.showMainUserSelector(user, move, data) ||
+          this.showMainUserSelector(user, move, data, view) ||
           view === 'MOVES_IN_OTHER_WORKFLOWS'
         ) {
           this.dialog
@@ -129,7 +139,8 @@ export class WorkflowPrepareAndMoveService {
                 usersIn,
                 view,
                 selectedUser: user,
-                mainUserSelector: this.showMainUserSelector(user, move, data),
+                mainUserSelector: this.showMainUserSelector(user, move, data, view),
+                workflowDestinatioId: move.workflowSubstateTarget.workflowState.workflow.id,
                 workflowCardsLimit:
                   move.workflowSubstateSource.workflowState.workflow.id !==
                     move.workflowSubstateTarget.workflowState.workflow.id &&
@@ -141,7 +152,9 @@ export class WorkflowPrepareAndMoveService {
                   move.workflowSubstateSource.workflowState.workflow.id !==
                     move.workflowSubstateTarget.workflowState.workflow.id &&
                   move.workflowSubstateTarget.entryPoint &&
-                  workflowCardsLimit?.cardsLimit
+                  workflowCardsLimit?.cardsLimit &&
+                  workflowCardsLimit?.allowOverLimit &&
+                  workflowCardsLimit.workflowSubstate
                     ? {
                         destinationName: this.getDestinationName(workflowCardsLimit.workflowSubstate),
                         // preparation: responses?.length > 1 && responses[1] ? responses[1] : [],
@@ -402,12 +415,17 @@ export class WorkflowPrepareAndMoveService {
     );
   }
 
-  private showMainUserSelector(user: WorkflowSubstateUserDTO, move: WorkflowMoveDTO, data: WorkflowSubstateEventDTO[]): boolean {
+  private showMainUserSelector(
+    user: WorkflowSubstateUserDTO,
+    move: WorkflowMoveDTO,
+    data: WorkflowSubstateEventDTO[],
+    view: 'MOVES_IN_THIS_WORKFLOW' | 'MOVES_IN_OTHER_WORKFLOWS'
+  ): boolean {
     if (
-      (!user &&
+      ((!user || (user && view === 'MOVES_IN_OTHER_WORKFLOWS')) &&
         move &&
         move.workflowSubstateTarget.workflowState.front &&
-        move.workflowSubstateTarget.workflowSubstateUser?.length) ||
+        move.workflowSubstateTarget.workflowSubstateUser?.length > 1) ||
       data[0]?.requiredUser ||
       data[1]?.requiredUser ||
       data[2]?.requiredUser
