@@ -58,6 +58,9 @@ export class WorkflowPrepareAndMoveService {
     this.spinner = this.spinnerService.show();
     view = view ? view : 'MOVES_IN_THIS_WORKFLOW';
     const workflowCardsLimit: WorkflowCardsLimitDTO = move?.workflowCardsLimit;
+    if (!workflowCardsLimit.allowOverLimit) {
+      workflowCardsLimit.workflowSubstate = null;
+    }
     if (workflowCardsLimit?.workflowSubstate) {
       workflowCardsLimit.workflowSubstate.workflowSubstateEvents = workflowCardsLimit.workflowSubstate.workflowSubstateEvents
         ? workflowCardsLimit.workflowSubstate.workflowSubstateEvents
@@ -137,6 +140,7 @@ export class WorkflowPrepareAndMoveService {
                 view,
                 selectedUser: user,
                 mainUserSelector: this.showMainUserSelector(user, move, data, view),
+                workflowDestinatioId: move.workflowSubstateTarget.workflowState.workflow.id,
                 workflowCardsLimit:
                   move.workflowSubstateSource.workflowState.workflow.id !==
                     move.workflowSubstateTarget.workflowState.workflow.id &&
@@ -148,7 +152,9 @@ export class WorkflowPrepareAndMoveService {
                   move.workflowSubstateSource.workflowState.workflow.id !==
                     move.workflowSubstateTarget.workflowState.workflow.id &&
                   move.workflowSubstateTarget.entryPoint &&
-                  workflowCardsLimit?.cardsLimit
+                  workflowCardsLimit?.cardsLimit &&
+                  workflowCardsLimit?.allowOverLimit &&
+                  workflowCardsLimit.workflowSubstate
                     ? {
                         destinationName: this.getDestinationName(workflowCardsLimit.workflowSubstate),
                         // preparation: responses?.length > 1 && responses[1] ? responses[1] : [],
