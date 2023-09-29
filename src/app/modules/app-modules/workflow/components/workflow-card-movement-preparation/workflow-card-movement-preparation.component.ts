@@ -128,7 +128,7 @@ export class WorkflowCardMovementPreparationComponent implements OnInit {
       });
     }
 
-    if (!this.workflowCardsLimit?.cardsLimit || !this.workflowCardsLimit.allowOverLimit) {
+    if (!this.workflowCardsLimit?.cardsLimit || !this.workflowCardsLimit?.allowOverLimit) {
       // eslint-disable-next-line max-len
       //Si no hay límite de tarjetas o no se puede sobrepasar el límite, no puede darse el caso de que se cambiar el subestado destino
       this.setMovesEventsFormsAndTabs();
@@ -263,7 +263,7 @@ export class WorkflowCardMovementPreparationComponent implements OnInit {
 
   hoursList(): CardLimitSlotDTO[] {
     const day: Date = this.cardsLimitForm.get('deadLineDate').value;
-    if (this.workflowCardsLimit.cardsLimit && day) {
+    if (this.workflowCardsLimit?.cardsLimit && day) {
       const dString = this.datePipe.transform(day, 'dd/MM/YYYY');
       const dayInfo = this.cardsLimits.filter((cl) => cl.day === dString)[0];
       if (dayInfo?.carLimitSlots?.length) {
@@ -302,7 +302,7 @@ export class WorkflowCardMovementPreparationComponent implements OnInit {
       ) {
         return '';
       }
-      if (this.workflowCardsLimit.cardsLimit) {
+      if (this.workflowCardsLimit?.cardsLimit) {
         return this.checkDateDisponibility(d) ? 'available-date-class' : 'max-reached-date-class';
       }
       return 'available-date-class';
@@ -315,7 +315,7 @@ export class WorkflowCardMovementPreparationComponent implements OnInit {
     if (d.getDay() === 0) {
       return false;
     }
-    if (this.workflowCardsLimit.cardsLimit && !this.workflowCardsLimit.allowOverLimit) {
+    if (this.workflowCardsLimit?.cardsLimit && !this.workflowCardsLimit?.allowOverLimit) {
       return this.checkDateDisponibility(d);
     }
     return true;
