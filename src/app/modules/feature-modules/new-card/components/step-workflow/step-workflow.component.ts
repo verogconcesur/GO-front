@@ -190,7 +190,7 @@ export class StepWorkflowComponent implements OnInit {
   }
   allowOverLimitCards(): boolean {
     const wf: WorkflowCreateCardDTO = this.formWorkflow.get('workflow').value;
-    if (wf.workflowCardsLimit.cardsLimit && wf.workflowCardsLimit.allowOverLimit) {
+    if (wf.workflowCardsLimit?.cardsLimit && wf.workflowCardsLimit?.allowOverLimit) {
       return true;
     }
     return false;
@@ -247,7 +247,7 @@ export class StepWorkflowComponent implements OnInit {
       ) {
         return '';
       }
-      if (wf.workflowCardsLimit.cardsLimit) {
+      if (wf.workflowCardsLimit?.cardsLimit) {
         return this.checkDateDisponibility(d, wf) ? 'available-date-class' : 'max-reached-date-class';
       }
       return 'available-date-class';
@@ -261,7 +261,7 @@ export class StepWorkflowComponent implements OnInit {
     if (d.getDay() === 0) {
       return false;
     }
-    if (wf.workflowCardsLimit.cardsLimit && !wf.workflowCardsLimit.allowOverLimit) {
+    if (wf.workflowCardsLimit?.cardsLimit && !wf.workflowCardsLimit?.allowOverLimit) {
       return this.checkDateDisponibility(d, wf);
     }
     return true;
