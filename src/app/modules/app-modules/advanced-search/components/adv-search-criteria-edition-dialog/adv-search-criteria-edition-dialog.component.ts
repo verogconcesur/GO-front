@@ -7,7 +7,7 @@ import { AdvancedSearchItem } from '@data/models/adv-search/adv-search-dto';
 import AdvSearchOperatorDTO from '@data/models/adv-search/adv-search-operator-dto';
 import RoleDTO from '@data/models/user-permissions/role-dto';
 import { AdvSearchService } from '@data/services/adv-search.service';
-import { ComponentToExtendForCustomDialog, CustomDialogFooterConfigI } from '@jenga/custom-dialog';
+import { ComponentToExtendForCustomDialog, CustomDialogFooterConfigI } from '@frontend/custom-dialog';
 import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
 import { TranslateService } from '@ngx-translate/core';
 import { ConfirmDialogService } from '@shared/services/confirm-dialog.service';
