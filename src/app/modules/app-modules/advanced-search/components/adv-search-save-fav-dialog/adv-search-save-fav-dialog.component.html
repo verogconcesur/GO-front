@@ -1,0 +1,22 @@
+<div class="save-fav">
+    <form [formGroup]="advSearchForm" class="save-fav__form" *ngIf="advSearchForm">
+        <div class="save-fav__form__row">
+            <mat-form-field appearance="outline" style="width: 100%">
+                <mat-label>{{ labels.name | translate }}</mat-label>
+                <input type="text" matInput formControlName="name" />
+                <mat-error *ngIf="form.name.invalid && form.name.touched">
+                    {{ labels.required | translate }}
+                </mat-error>
+            </mat-form-field>
+        </div>
+        <div class="save-fav__form__row" *ngIf="isAdmin">
+            <mat-checkbox formControlName="allUsers">{{ labels.allUsers | translate }}</mat-checkbox>
+        </div>
+        <div class="save-fav__form__row" *ngIf="form.editable.value && form.id.value">
+            <mat-checkbox [formControl]="saveAsNewFormControl">{{ labels.saveAsNew | translate }}</mat-checkbox>
+        </div>
+        <mat-error *ngIf="getSubmitError()">
+            {{ getSubmitError() }}
+        </mat-error>
+    </form>
+</div>

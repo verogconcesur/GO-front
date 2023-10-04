@@ -84,8 +84,37 @@
     }
     &__content {
       padding: 10px;
+      box-sizing: border-box;
       background-color: mat-contrast($primary, 500);
       height: calc(100% - 70px);
+      width: 100%;
+      &__item {
+        height: 50px;
+        width: 100%;
+        box-sizing: border-box;
+        padding: 10px;
+        margin-bottom: 10px;
+        border-radius: 6px;
+        background-color: mat-color($background, background);
+        &__name {
+          width: calc(100% - 30px);
+          height: 100%;
+          span {
+            max-width: 100%;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            display: inline-block;
+          }
+        }
+        &__icon {
+          width: 30px;
+          height: 100%;
+          mat-icon {
+            cursor: pointer;
+          }
+        }
+      }
     }
   }
 }

@@ -112,6 +112,89 @@
         "viewProfile": "Ver perfil",
         "workflows": "Workflows"
     },
+    "advSearch": {
+        "addColumn": "Añadir columna",
+        "addFilter": "Añadir filtro",
+        "cleanConf": "Limpiar configuración",
+        "columns": {
+            "cards": "Columnas pertenecientes al tipo de ficha",
+            "entities": "Columnas asociadas al tipo de dato",
+            "title": "Seleccionar columnas a visualizar"
+        },
+        "context": "Contexto",
+        "continueNewSearch": "Si continua se borraran los filtros actuales.",
+        "critSearch": "Criterios de búsqueda",
+        "criteria": {
+            "addTimeChip": "Añadir hora al criterio",
+            "cards": "Criterios pertenencientes al tipo de ficha",
+            "edition": {
+                "title": "Editar criterio de búsqueda"
+            },
+            "entities": "Criterios asociados al tipo de dato",
+            "insertDateChip": "Añadir fecha al listado del criterio",
+            "insertDateTimeChip": "Añadir fecha y hora al listado del criterio",
+            "insertNumberChip": "Añadir número al listado del criterio",
+            "insertStringChip": "Añadir texto al listado del criterio",
+            "insertTimeChip": "Añadir hora al listado del criterio",
+            "showAllNodes": "Mostrar todos",
+            "showSelectedNodes": "Mostrar seleccionados",
+            "title": "Seleccionar criterios de búsqueda",
+            "typeBoolean": "Tipo verdadero o falso",
+            "typeBooleanFalse": "Falso",
+            "typeBooleanTrue": "Verdadero",
+            "typeDate": "Tipo fecha",
+            "typeDateFrom": "Fecha desde",
+            "typeDateTime": "Tipo fecha y hora",
+            "typeDateTimeFrom": "Fecha y hora desde",
+            "typeDateTimeTo": "Fecha y hora hasta",
+            "typeDateTo": "Fecha hasta",
+            "typeEntity": "Tipo opciones",
+            "typeNumber": "Tipo numérico",
+            "typeNumberFrom": "Valor desde",
+            "typeNumberTo": "Valor hasta",
+            "typeString": "Tipo texto",
+            "typeTime": "Tipo hora",
+            "typeTimeFrom": "Hora desde",
+            "typeTimeTo": "Hora hasta"
+        },
+        "criteriaWithoutConfig": "Configuración incorrecta",
+        "customCol": "Personalizar columnas",
+        "dateEvent": "Fecha del evento",
+        "deleteColumnConfirmation": "¿Está seguro que desea eliminar esta columna?",
+        "deleteConfirmation": "¿Está seguro que desea eliminar esta búsqueda guardada?",
+        "deleteCriteriaConfirmation": "¿Está seguro que desea eliminar este criterio de búsqueda?",
+        "endDate": "Fecha fin",
+        "export": "Exportar",
+        "exportConfirmation": "¿Está seguro que desea exportar a un fichero excel la búsqueda realizada o seleccionada?",
+        "favSearch": "Búsquedas favoritas",
+        "information": {
+            "step1": "Especificar un contexto (instalación, workflow, estado, subestado, etc). Como mínimo deberá seleccionar un rango de fechas.",
+            "step2": "Añadir criterios de búsqueda (ex: fecha de entrega, nombre de cliente, etc).",
+            "step3": "Personalizar las columnas que quieres ver (mínimo una) y añade todos los datos que te interesen.",
+            "step4": "Pulsa el botón 'Buscar'",
+            "title": "Para realizar una búsqueda avanzada, sigue los siguientes pasos"
+        },
+        "initDate": "Fecha inicio",
+        "itemsBetween": "{from} y {to}",
+        "itemsInArray": "listado de {num} elementos",
+        "operator": "Operador",
+        "optionSelected": "opción seleccionada",
+        "rangeDate": "Rango de fechas",
+        "saveFav": "Guardar como favorita",
+        "saveFavOperation": {
+            "allUsers": "Permitir a todos los usuarios ejecutar esta búsqueda favorita",
+            "duplicateModeTitle": "Guardar búsqueda favorita como duplicada",
+            "editModeTitle": "Editar búsqueda favorita",
+            "errorSameName": "Debes modificar el nombre de la búsqueda para poder guardar",
+            "name": "Nombre de búsqueda favorita",
+            "newModeTitle": "Guardar búsqueda favorita",
+            "saveAsNew": "Guarda búsqueda favorita como una nueva búsqueda",
+            "title": "Guardar/editar búsqueda favorita"
+        },
+        "savedSearch": "Búsquedas guardadas",
+        "states": "Estados",
+        "subStates": "Subestados"
+    },
     "app": {
         "menu": {
             "administration": "Administración",
@@ -310,6 +393,7 @@
         "fieldRequired": "Campo obligatorio",
         "fieldsType": "Tipo",
         "fileName": "Nombre de archivo",
+        "files": "Ficheros",
         "filter": "Filtro",
         "filterAction": "Filtrar",
         "filterByType": "Filtrar por tipo",
@@ -373,6 +457,7 @@
         "seeLess": "Ver menos",
         "seeMore": "Ver más",
         "select": "Seleccionar",
+        "selectAll": "Seleccionar todo",
         "selectAttacmentsToAdd": "Seleccione los adjuntos",
         "selectImageFile": "Selecciona una imagen",
         "send": "Enviar",
@@ -788,6 +873,10 @@
         },
         "title": "Usuarios",
         "usersSelected": "{count} usuarios seleccionados"
+    },
+    "vCalendarCardInstance": {
+        "dateEvent": "Fecha evento",
+        "id": "Id"
     },
     "vehicle": {
         "searchDialog": "Buscador de vehículos"

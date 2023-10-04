@@ -25,7 +25,11 @@
                             [text]="node.name"
                             classToApply="selected"
                         ></div>
-                        <mat-icon>keyboard_arrow_right</mat-icon>
+                        <mat-icon *ngIf="!checkBoxSelection" [ngClass]="{ arrow: checkBoxSelection }"
+                            >keyboard_arrow_right</mat-icon
+                        >
+                        <mat-icon *ngIf="checkBoxSelection && node.selected">check_box</mat-icon>
+                        <mat-icon *ngIf="checkBoxSelection && !node.selected">check_box_outline_blank</mat-icon>
                     </button>
                 </mat-tree-node>
                 <mat-nested-tree-node *matTreeNodeDef="let node; when: hasChild">
