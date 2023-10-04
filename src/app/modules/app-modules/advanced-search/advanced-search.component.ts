@@ -24,7 +24,7 @@ import WorkflowSubstateDTO from '@data/models/workflows/workflow-substate-dto';
 import _ from 'lodash';
 import moment from 'moment';
 import AdvancedSearchOptionsDTO from '@data/models/adv-search/adv-search-options-dto';
-import { CustomDialogService } from '@jenga/custom-dialog';
+import { CustomDialogService } from '@frontend/custom-dialog';
 import {
   AdvSearchCriteriaDialogComponent,
   AdvSearchCriteriaDialogComponentModalEnum

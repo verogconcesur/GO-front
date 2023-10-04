@@ -5,7 +5,7 @@ import { AdvancedSearchItem } from '@data/models/adv-search/adv-search-dto';
 import AdvancedSearchOptionsDTO from '@data/models/adv-search/adv-search-options-dto';
 import AdvSearchVariableDTO from '@data/models/adv-search/adv-search-variable-dto';
 import CardColumnTabItemDTO from '@data/models/cards/card-column-tab-item-dto';
-import { ComponentToExtendForCustomDialog, CustomDialogFooterConfigI } from '@jenga/custom-dialog';
+import { ComponentToExtendForCustomDialog, CustomDialogFooterConfigI } from '@frontend/custom-dialog';
 // eslint-disable-next-line max-len
 import { GenericTreeNodeSearcherComponent } from '@modules/feature-modules/generic-tree-node-searcher/generic-tree-node-searcher.component';
 import { TranslateService } from '@ngx-translate/core';
