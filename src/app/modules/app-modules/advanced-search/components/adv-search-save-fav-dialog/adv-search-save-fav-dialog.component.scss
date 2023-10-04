@@ -1,0 +1,10 @@
+.save-fav {
+  margin: 10px 0;
+  &__form {
+    &__row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+  }
+}
