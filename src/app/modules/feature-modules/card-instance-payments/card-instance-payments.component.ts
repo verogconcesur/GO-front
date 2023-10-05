@@ -261,7 +261,7 @@ export class CardInstancePaymentsComponent implements OnInit {
           })
         );
       });
-      this.formTotal.get('pending').setValue(pending);
+      this.formTotal.get('pending').setValue(pending.toFixed(2));
     }
   }
   ngOnInit(): void {
