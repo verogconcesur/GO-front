@@ -241,8 +241,10 @@ export class CardInstancePaymentsComponent implements OnInit {
       pending: [this.data?.pending ? this.data?.pending : '']
     });
     this.formPayments = this.fb.array([]);
+    let pending = this.data?.total ? this.data.total : 0;
     if (this.data && this.data.paymentLines?.length) {
       this.data.paymentLines.forEach((data: CardPaymentLineDTO) => {
+        pending -= data.amount;
         this.formPayments.push(
           this.fb.group({
             id: [data.id],
@@ -259,6 +261,7 @@ export class CardInstancePaymentsComponent implements OnInit {
           })
         );
       });
+      this.formTotal.get('pending').setValue(pending);
     }
   }
   ngOnInit(): void {
