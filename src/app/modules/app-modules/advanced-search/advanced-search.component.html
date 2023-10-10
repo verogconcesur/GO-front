@@ -1,0 +1,432 @@
+<router-outlet name="card"></router-outlet>
+<mat-drawer-container class="adv-search" autosize [hasBackdrop]="true" *ngIf="advSearchForm">
+    <mat-drawer #favDrawer [mode]="'over'" [position]="'end'">
+        <div class="adv-search__sidenav" fxLayout="column" fxLayoutAlign="start start">
+            <div class="adv-search__sidenav__title" fxLayout="row wrap" fxLayoutAlign="start center">
+                <span> {{ labels.savedSearch | translate }}</span>
+            </div>
+            <div class="adv-search__sidenav__container" fxLayout="column" fxLayoutAlign="start start">
+                <div
+                    class="adv-search__sidenav__container__item"
+                    fxLayout="row"
+                    fxLayoutAlign="space-between center"
+                    *ngFor="let advSearch of advSearchFav"
+                >
+                    <span class="name" (click)="getFavSearch(advSearch)">{{ advSearch.name }}</span>
+                    <div class="icons" fxLayout="row" fxLayoutAlign="end center">
+                        <mat-icon (click)="duplicateFavSearch(advSearch); $event.stopPropagation()">filter_none</mat-icon>
+                        <mat-icon *ngIf="advSearch.editable" (click)="getFavSearch(advSearch, true); $event.stopPropagation()"
+                            >edit</mat-icon
+                        >
+                        <mat-icon *ngIf="advSearch.editable" (click)="deleteFavSearch(advSearch); $event.stopPropagation()"
+                            >close</mat-icon
+                        >
+                    </div>
+                </div>
+            </div>
+        </div>
+    </mat-drawer>
+    <mat-drawer-content>
+        <div class="adv-search__content">
+            <div class="adv-search__content__header" fxLayout="row" fxLayoutAlign="space-between center">
+                <div class="adv-search__content__header__title" fxLayout="row" fxLayoutAlign="start center">
+                    <div
+                        class="filterButton"
+                        (click)="openFilters('context')"
+                        fxLayout="row"
+                        fxLayoutAlign="space-between center"
+                    >
+                        <div class="filterLabel">{{ labels.context | translate }}</div>
+                        <div class="filerIcon"><mat-icon>keyboard_arrow_down</mat-icon></div>
+                        <div class="badgeInfo">
+                            <div class="badgeInfo__error" *ngIf="contextErrors()"><mat-icon>warning</mat-icon></div>
+                        </div>
+                    </div>
+                    <div
+                        class="filterButton"
+                        (click)="openFilters('criteria')"
+                        fxLayout="row"
+                        fxLayoutAlign="space-between center"
+                    >
+                        <div class="filterLabel">{{ labels.critSearch | translate }}</div>
+                        <div class="filerIcon"><mat-icon>keyboard_arrow_down</mat-icon></div>
+                        <div class="badgeInfo">
+                            <div class="badgeInfo__error" *ngIf="criteriaErrors()"><mat-icon>warning</mat-icon></div>
+                            <div class="badgeInfo__count" *ngIf="criteria.length">{{ criteria.length }}</div>
+                        </div>
+                    </div>
+                    <div class="filterButton" (click)="openFilters('column')" fxLayout="row" fxLayoutAlign="space-between center">
+                        <div class="filterLabel">{{ labels.customCol | translate }}</div>
+                        <div class="filerIcon"><mat-icon>keyboard_arrow_down</mat-icon></div>
+                        <div class="badgeInfo">
+                            <div class="badgeInfo__error" *ngIf="!columns.length"><mat-icon>warning</mat-icon></div>
+                            <div class="badgeInfo__count" *ngIf="columns.length">{{ columns.length }}</div>
+                        </div>
+                    </div>
+                    <button mat-flat-button color="primary" [disabled]="hasErrors()" (click)="runSearch()">
+                        {{ labels.search | translate }}
+                    </button>
+                    <div class="cleanButton" fxLayout="row" fxLayoutAlign="start center" (click)="cleanFilters()">
+                        <span> {{ labels.cleanConf | translate }}</span>
+                    </div>
+                </div>
+                <div fxLayout="row" fxLayoutAlign="end center" class="adv-search__content__header__sidetitle">
+                    <div
+                        class="custButton"
+                        fxLayout="row"
+                        fxLayoutAlign="space-between center"
+                        [ngClass]="{ disabled: hasErrors() }"
+                        (click)="runExport()"
+                    >
+                        <span>{{ labels.export | translate }}</span>
+                        <mat-icon fontSet="concenet">excel</mat-icon>
+                    </div>
+                    <div
+                        class="custButton"
+                        fxLayout="row"
+                        fxLayoutAlign="space-between center"
+                        (click)="!hasErrors() && saveFav()"
+                        [ngClass]="{ disabled: hasErrors() }"
+                    >
+                        <span>{{ labels.saveFav | translate }}</span>
+                        <mat-icon>star_border</mat-icon>
+                    </div>
+                    <div class="custButton" fxLayout="row" fxLayoutAlign="space-between center" (click)="favDrawer.toggle()">
+                        <span>{{ labels.favSearch | translate }}</span>
+                        <mat-icon>keyboard_arrow_left</mat-icon>
+                    </div>
+                </div>
+            </div>
+            <div class="adv-search__content__container">
+                <mat-drawer-container class="adv-search__content__container__drawer" autosize [hasBackdrop]="true">
+                    <mat-drawer #drawerCont [mode]="'over'">
+                        <ng-container class="adv-search__content__container__drawer__side" *ngIf="modeDrawer === 'context'">
+                            <form
+                                [formGroup]="advSearchForm"
+                                class="smaller-mat-form-fields adv-search__content__container__drawer__side"
+                            >
+                                <div
+                                    class="adv-search__content__container__drawer__side__header"
+                                    fxLayout="row"
+                                    fxLayoutAlign="space-between center"
+                                >
+                                    <div class="adv-search__content__container__drawer__side__header__title">
+                                        {{ labels.context | translate }}
+                                    </div>
+                                </div>
+                                <div
+                                    class="adv-search__content__container__drawer__side__content"
+                                    formGroupName="advancedSearchContext"
+                                    fxLayout="row wrap"
+                                    fxLayoutAlign="space-between start"
+                                >
+                                    <mat-form-field appearance="outline" floatLabel="always" style="width: 100%">
+                                        <mat-label>{{ labels.rangeDate | translate }}</mat-label>
+                                        <mat-date-range-input [rangePicker]="campaignOnePicker">
+                                            <input
+                                                matStartDate
+                                                placeholder="{{ labels.initDate | translate }}"
+                                                formControlName="dateCardFrom"
+                                            />
+                                            <input
+                                                matEndDate
+                                                placeholder="{{ labels.endDate | translate }}"
+                                                formControlName="dateCardTo"
+                                            />
+                                        </mat-date-range-input>
+                                        <mat-datepicker-toggle matSuffix [for]="campaignOnePicker"></mat-datepicker-toggle>
+                                        <mat-date-range-picker #campaignOnePicker></mat-date-range-picker>
+                                    </mat-form-field>
+                                    <!-- <mat-form-field appearance="outline" floatLabel="always">
+                                        <mat-label>{{ labels.initDate | translate }}</mat-label>
+                                        <input
+                                            matInput
+                                            #pickerIniInput
+                                            readonly
+                                            [matDatepicker]="pickerIni"
+                                            [placeholder]="labels.initDate | translate"
+                                            formControlName="dateCardFrom"
+                                        />
+                                        <mat-datepicker-toggle matSuffix [for]="pickerIni"></mat-datepicker-toggle>
+                                        <mat-datepicker #pickerIni></mat-datepicker>
+                                    </mat-form-field>
+                                    <mat-form-field appearance="outline" floatLabel="always">
+                                        <mat-label>{{ labels.endDate | translate }}</mat-label>
+                                        <input
+                                            matInput
+                                            #pickerEndInput
+                                            readonly
+                                            [matDatepicker]="pickerEnd"
+                                            [placeholder]="labels.endDate | translate"
+                                            formControlName="dateCardTo"
+                                        />
+                                        <mat-datepicker-toggle matSuffix [for]="pickerEnd"></mat-datepicker-toggle>
+                                        <mat-datepicker #pickerEnd></mat-datepicker>
+                                    </mat-form-field> -->
+                                    <mat-form-field appearance="outline" floatLabel="always" style="width: 48%">
+                                        <mat-label>{{ labels.facilities | translate }}</mat-label>
+                                        <mat-select formControlName="facilities" multiple>
+                                            <button
+                                                mat-button
+                                                class="mat-button-w-100-left"
+                                                *ngIf="!hasAllSelected(context.facilities, facilityList)"
+                                                (click)="selectAll(context.facilities, facilityList)"
+                                            >
+                                                {{ labels.selectAll | translate }}
+                                            </button>
+                                            <button
+                                                mat-button
+                                                class="mat-button-w-100-left"
+                                                *ngIf="hasAllSelected(context.facilities, facilityList)"
+                                                (click)="unselectAll('facilities', context.facilities)"
+                                            >
+                                                {{ labels.unselectAll | translate }}
+                                            </button>
+                                            <mat-option *ngFor="let facility of facilityList" [value]="facility">{{
+                                                facility.name
+                                            }}</mat-option>
+                                        </mat-select>
+                                    </mat-form-field>
+                                    <mat-form-field appearance="outline" floatLabel="always" style="width: 48%">
+                                        <mat-label>{{ labels.workflows | translate }}</mat-label>
+                                        <mat-select formControlName="workflows" multiple (selectionChange)="changeWorkflow()">
+                                            <button
+                                                mat-button
+                                                class="mat-button-w-100-left"
+                                                *ngIf="!hasAllSelected(context.workflows, workflowList)"
+                                                (click)="selectAll(context.workflows, workflowList)"
+                                            >
+                                                {{ labels.selectAll | translate }}
+                                            </button>
+                                            <button
+                                                mat-button
+                                                class="mat-button-w-100-left"
+                                                *ngIf="hasAllSelected(context.workflows, workflowList)"
+                                                (click)="unselectAll('workflows', context.workflows)"
+                                            >
+                                                {{ labels.unselectAll | translate }}
+                                            </button>
+                                            <mat-option *ngFor="let workflow of workflowList" [value]="workflow">{{
+                                                workflow.name
+                                            }}</mat-option>
+                                        </mat-select>
+                                    </mat-form-field>
+                                    <mat-form-field appearance="outline" floatLabel="always" style="width: 48%">
+                                        <mat-label>{{ labels.states | translate }}</mat-label>
+                                        <mat-select formControlName="states" multiple (selectionChange)="changeState()">
+                                            <mat-form-field
+                                                appearance="outline"
+                                                floatLabel="always"
+                                                class="smaller-mat-form-fields__no-margin selector-filter"
+                                            >
+                                                <input
+                                                    matInput
+                                                    type="text"
+                                                    matInput
+                                                    formControlName="filterStateForm"
+                                                    (keydown)="$event.stopPropagation()"
+                                            /></mat-form-field>
+                                            <button
+                                                mat-button
+                                                class="mat-button-w-100-left"
+                                                *ngIf="
+                                                    !hasAllSelected(context.states, getStates()) && !context.filterStateForm.value
+                                                "
+                                                (click)="selectAll(context.states, getStates())"
+                                            >
+                                                {{ labels.selectAll | translate }}
+                                            </button>
+                                            <button
+                                                mat-button
+                                                class="mat-button-w-100-left"
+                                                *ngIf="
+                                                    hasAllSelected(context.states, getStates()) && !context.filterStateForm.value
+                                                "
+                                                (click)="unselectAll('states', context.states)"
+                                            >
+                                                {{ labels.unselectAll | translate }}
+                                            </button>
+                                            <mat-option
+                                                *ngFor="let state of statesOptions | async"
+                                                [value]="state"
+                                                matTooltip="{{ state.workflow.name }} - {{ state.name }}"
+                                                matTooltipPosition="after"
+                                                >{{ state.workflow.name + " - " + state.name }}</mat-option
+                                            >
+                                        </mat-select>
+                                    </mat-form-field>
+                                    <mat-form-field appearance="outline" floatLabel="always" style="width: 48%">
+                                        <mat-label>{{ labels.substates | translate }}</mat-label>
+                                        <mat-select formControlName="substates" multiple>
+                                            <mat-form-field
+                                                appearance="outline"
+                                                floatLabel="always"
+                                                class="smaller-mat-form-fields__no-margin selector-filter"
+                                            >
+                                                <input
+                                                    matInput
+                                                    type="text"
+                                                    matInput
+                                                    formControlName="filterSubstateForm"
+                                                    (keydown)="$event.stopPropagation()"
+                                            /></mat-form-field>
+                                            <button
+                                                mat-button
+                                                class="mat-button-w-100-left"
+                                                *ngIf="
+                                                    !hasAllSelected(context.substates, getSubstates()) &&
+                                                    !context.filterSubstateForm.value
+                                                "
+                                                (click)="selectAll(context.substates, getSubstates())"
+                                            >
+                                                {{ labels.selectAll | translate }}
+                                            </button>
+                                            <button
+                                                mat-button
+                                                class="mat-button-w-100-left"
+                                                *ngIf="
+                                                    hasAllSelected(context.substates, getSubstates()) &&
+                                                    !context.filterSubstateForm.value
+                                                "
+                                                (click)="unselectAll('substates', context.substates)"
+                                            >
+                                                {{ labels.unselectAll | translate }}
+                                            </button>
+                                            <mat-option
+                                                *ngFor="let substate of subStatesOptions | async"
+                                                [value]="substate"
+                                                matTooltip="{{ substate.workflowState.workflow.name }} - {{
+                                                    substate.workflowState.name
+                                                }} - {{ substate.name }}"
+                                                matTooltipPosition="after"
+                                                >{{
+                                                    substate.workflowState.workflow.name +
+                                                        " - " +
+                                                        substate.workflowState.name +
+                                                        " - " +
+                                                        substate.name
+                                                }}</mat-option
+                                            >
+                                        </mat-select>
+                                    </mat-form-field>
+                                </div>
+                            </form>
+                        </ng-container>
+                        <ng-container class="adv-search__content__container__drawer__side" *ngIf="modeDrawer === 'criteria'">
+                            <div class="adv-search__content__container__drawer__side">
+                                <div
+                                    class="adv-search__content__container__drawer__side__header"
+                                    fxLayout="row"
+                                    fxLayoutAlign="space-between center"
+                                >
+                                    <div class="adv-search__content__container__drawer__side__header__title">
+                                        {{ labels.critSearch | translate }}
+                                    </div>
+                                    <div
+                                        class="adv-search__content__container__drawer__side__header__action"
+                                        fxLayout="row"
+                                        fxLayoutAlign="space-between center"
+                                        (click)="addCriteriaFilter()"
+                                    >
+                                        <span>{{ labels.addFilter | translate }}</span>
+                                        <mat-icon>add</mat-icon>
+                                    </div>
+                                </div>
+                                <div class="adv-search__content__container__drawer__side__content" cdkDropListGroup>
+                                    <div
+                                        class="adv-search__content__container__drawer__side__content__columns criteria-columns"
+                                        cdkDropList
+                                        (cdkDropListDropped)="drop($event, 'criteria')"
+                                    >
+                                        <div
+                                            cdkDrag
+                                            class="custom-actions-item mat-elevation-z2"
+                                            *ngFor="let col of criteria.controls; let i = index"
+                                        >
+                                            <div
+                                                fxLayout="row"
+                                                fxLayoutAlign="space-between center"
+                                                class="custom-actions-item-nameContainer"
+                                            >
+                                                <div class="left-side" fxLayout="row" fxLayoutAlign="start center">
+                                                    <mat-icon cdkDragHandle>drag_indicator</mat-icon>
+                                                    <div class="criteria-info">
+                                                        <div>{{ getColName(col) }}</div>
+                                                        <div *ngIf="!errorInCriteriaConfig(col)">{{ getCriteriaInfo(col) }}</div>
+                                                        <div class="error" *ngIf="errorInCriteriaConfig(col)">
+                                                            <mat-icon>warning</mat-icon> {{ errorInCriteriaConfig(col) }}
+                                                        </div>
+                                                    </div>
+                                                </div>
+
+                                                <div class="right-side">
+                                                    <mat-icon (click)="deleteCriteria(col); $event.stopPropagation()"
+                                                        >delete</mat-icon
+                                                    >
+                                                    <mat-icon (click)="editCriteria(col); $event.stopPropagation()"
+                                                        >edit</mat-icon
+                                                    >
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </ng-container>
+                        <ng-container class="adv-search__content__container__drawer__side" *ngIf="modeDrawer === 'column'">
+                            <div class="adv-search__content__container__drawer__side">
+                                <div
+                                    class="adv-search__content__container__drawer__side__header"
+                                    fxLayout="row"
+                                    fxLayoutAlign="space-between center"
+                                >
+                                    <div class="adv-search__content__container__drawer__side__header__title">
+                                        {{ labels.customCol | translate }}
+                                    </div>
+                                    <div
+                                        class="adv-search__content__container__drawer__side__header__action"
+                                        fxLayout="row"
+                                        fxLayoutAlign="space-between center"
+                                        (click)="addColumns()"
+                                    >
+                                        <span>{{ labels.addColumn | translate }}</span>
+                                        <mat-icon>add</mat-icon>
+                                    </div>
+                                </div>
+                                <div class="adv-search__content__container__drawer__side__content" cdkDropListGroup>
+                                    <div
+                                        class="adv-search__content__container__drawer__side__content__columns"
+                                        cdkDropList
+                                        (cdkDropListDropped)="drop($event, 'columns')"
+                                    >
+                                        <div
+                                            cdkDrag
+                                            class="custom-actions-item mat-elevation-z2"
+                                            fxLayoutAlign="none center"
+                                            *ngFor="let col of columns.controls; let i = index"
+                                        >
+                                            <div
+                                                fxLayout="row"
+                                                fxLayoutAlign="space-between center"
+                                                class="custom-actions-item-nameContainer"
+                                            >
+                                                <mat-icon cdkDragHandle>drag_indicator</mat-icon>
+                                                <span>{{ getColName(col) }}</span
+                                                ><mat-icon (click)="deleteColumn(col); $event.stopPropagation()">delete</mat-icon>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </ng-container>
+                    </mat-drawer>
+                    <mat-drawer-content>
+                        <div class="adv-search__content__container__drawer__content">
+                            <app-adv-search-card-table #searchTable></app-adv-search-card-table>
+                        </div>
+                    </mat-drawer-content>
+                </mat-drawer-container>
+            </div>
+        </div>
+    </mat-drawer-content>
+</mat-drawer-container>

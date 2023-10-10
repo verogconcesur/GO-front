@@ -51,7 +51,7 @@ export interface TabItemConfigCommonDTO {
   cardTabItemInstance?: CardTabItemInstanceDTO;
 }
 export interface TabItemConfigInputDTO extends TabItemConfigCommonDTO {
-  description: string;
+  description?: string;
   dataType: 'STRING' | 'NUMBER' | 'TEMPORAL';
   dateApplyColor?: boolean;
   dateColor?: string;
@@ -78,6 +78,7 @@ export interface TabItemConfigListItemDTO extends TabItemConfigCommonDTO {
   value: string;
   code: string;
   parentCode: string;
+  name?: string;
 }
 export interface TabItemConfigOptionDTO extends TabItemConfigCommonDTO {
   description?: string;

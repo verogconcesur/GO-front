@@ -49,6 +49,9 @@ export enum RouteConstants {
   //Users
   USERS = 'users',
 
+  //Advanced search
+  ADVANCED_SEARCH = 'advancedSearch',
+
   //Organization
   ORGANIZATION = 'organization',
   BRANDS = 'brands',
