@@ -293,7 +293,7 @@ export class WorkflowFilterService {
               .map((wss: WorkflowSubstateDTO) => {
                 wss.cards = wss.cards.filter((card: WorkflowCardDTO) => {
                   let found = false;
-                  card.cardInstanceWorkflows[0].cardInstanceWorkflowUsers.forEach((user: WorkflowSubstateUserDTO) => {
+                  card.cardInstanceWorkflows[0].cardInstanceWorkflowUsers?.forEach((user: WorkflowSubstateUserDTO) => {
                     if (usersToFilterIds.indexOf(user.userId) >= 0) {
                       found = true;
                     }
