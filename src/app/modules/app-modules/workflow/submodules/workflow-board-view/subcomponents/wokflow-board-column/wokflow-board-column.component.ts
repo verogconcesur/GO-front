@@ -167,9 +167,12 @@ export class WokflowBoardColumnComponent implements OnInit {
   }
 
   public getCardsFilteredByUser(user: WorkflowSubstateUserDTO, cards: WorkflowCardDTO[]): WorkflowCardDTO[] {
-    return cards.filter(
-      (card: WorkflowCardDTO) => card.cardInstanceWorkflows[0].cardInstanceWorkflowUsers[0].userId === user.user.id
-    );
+    return cards.filter((card: WorkflowCardDTO) => {
+      if (card.cardInstanceWorkflows?.length >= 1 && card.cardInstanceWorkflows[0].cardInstanceWorkflowUsers?.length >= 1) {
+        return card.cardInstanceWorkflows[0].cardInstanceWorkflowUsers[0].userId === user.user.id;
+      }
+      return false;
+    });
   }
 
   public getWSubstatesToShowByUser(user: WorkflowSubstateUserDTO, wState: WorkflowStateDTO): WorkflowSubstateDTO[] {

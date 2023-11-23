@@ -203,7 +203,15 @@ export class WorkflowBoardViewComponent implements OnInit {
         wSubstate.workflowSubstateUser.forEach((user: WorkflowSubstateUserDTO) => {
           const cardsBySubstateId = totalUsers[user.user.id] ? totalUsers[user.user.id].cardsBySubstateId : {};
           const substateCardsByUser = wSubstate.cards
-            .filter((card: WorkflowCardDTO) => card.cardInstanceWorkflows[0].cardInstanceWorkflowUsers[0].userId === user.user.id)
+            .filter((card: WorkflowCardDTO) => {
+              if (
+                card.cardInstanceWorkflows?.length >= 1 &&
+                card.cardInstanceWorkflows[0].cardInstanceWorkflowUsers?.length >= 1
+              ) {
+                return card.cardInstanceWorkflows[0].cardInstanceWorkflowUsers[0].userId === user.user.id;
+              }
+              return false;
+            })
             //Rompo recursividad
             .map((card) => ({
               ...card,
