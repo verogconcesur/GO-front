@@ -335,10 +335,13 @@ export class WorkflowFilterService {
       wStatesData = wStatesData.map((ws: WorkflowStateDTO) => {
         if (ws.front) {
           ws.workflowSubstates = ws.workflowSubstates.map((wss: WorkflowSubstateDTO) => {
-            wss.cards = wss.cards.filter(
-              (card: WorkflowCardDTO) =>
-                usersToFilterIds.indexOf(card.cardInstanceWorkflows[0].cardInstanceWorkflowUsers[0].userId) >= 0
-            );
+            wss.cards = wss.cards.filter((card: WorkflowCardDTO) => {
+              const userId =
+                card.cardInstanceWorkflows?.length >= 1 && card.cardInstanceWorkflows[0].cardInstanceWorkflowUsers?.length >= 1
+                  ? card.cardInstanceWorkflows[0].cardInstanceWorkflowUsers[0].userId
+                  : null;
+              return usersToFilterIds.indexOf(userId) >= 0;
+            });
             return wss;
           });
           return ws;
@@ -428,9 +431,12 @@ export class WorkflowFilterService {
         isReturnable = !!filter.subStates.find((substate: WorkflowSubstateDTO) => substate.id === card.workflowSubstate.id);
       }
       if (filter.users && filter.users.length) {
-        isReturnable = !!filter.users.find(
-          (user: WorkflowSubstateUserDTO) => user.id === card.cardInstanceWorkflows[0].cardInstanceWorkflowUsers[0].userId
-        );
+        isReturnable = !!filter.users.find((user: WorkflowSubstateUserDTO) => {
+          if (card.cardInstanceWorkflows?.length >= 1 && card.cardInstanceWorkflows[0].cardInstanceWorkflowUsers?.length >= 1) {
+            return card.cardInstanceWorkflows[0].cardInstanceWorkflowUsers[0].userId === user.id;
+          }
+          return false;
+        });
       }
       return isReturnable;
     });

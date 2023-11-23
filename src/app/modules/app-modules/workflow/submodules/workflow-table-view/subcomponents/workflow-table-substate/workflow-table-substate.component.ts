@@ -167,9 +167,12 @@ export class WorkflowTableSubstateComponent implements OnInit {
     }
   }
   public getUserName(card: WorkflowCardDTO): string {
-    const userDetail = this.wSubstate.workflowSubstateUser.find(
-      (user: WorkflowSubstateUserDTO) => user.user.id === card.cardInstanceWorkflows[0].cardInstanceWorkflowUsers[0].userId
-    );
+    const userDetail = this.wSubstate.workflowSubstateUser.find((user: WorkflowSubstateUserDTO) => {
+      if (card.cardInstanceWorkflows?.length >= 1 && card.cardInstanceWorkflows[0].cardInstanceWorkflowUsers?.length >= 1) {
+        return card.cardInstanceWorkflows[0].cardInstanceWorkflowUsers[0].userId === user.user.id;
+      }
+      return false;
+    });
     if (!userDetail) {
       return '';
     }
@@ -231,7 +234,11 @@ export class WorkflowTableSubstateComponent implements OnInit {
               RouteConstants.WORKFLOWS_ID_CARD,
               card.cardInstanceWorkflows[0].id,
               RouteConstants.WORKFLOWS_ID_USER,
-              this.wState.front ? card.cardInstanceWorkflows[0].cardInstanceWorkflowUsers[0].id : null
+              this.wState.front &&
+              card.cardInstanceWorkflows?.length >= 1 &&
+              card.cardInstanceWorkflows[0].cardInstanceWorkflowUsers?.length >= 1
+                ? card.cardInstanceWorkflows[0].cardInstanceWorkflowUsers[0].id
+                : null
             ]
           }
         }
