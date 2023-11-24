@@ -15,7 +15,7 @@ import WorkflowMoveDTO from '@data/models/workflows/workflow-move-dto';
 import WorkflowStateDTO from '@data/models/workflows/workflow-state-dto';
 import WorkflowSubstateUserDTO from '@data/models/workflows/workflow-substate-user-dto';
 import { WorkflowFilterService } from '@modules/app-modules/workflow/aux-service/workflow-filter.service';
-import { BehaviorSubject, Observable, of, throwError } from 'rxjs';
+import { BehaviorSubject, Observable, Subject, of, throwError } from 'rxjs';
 import { catchError, map } from 'rxjs/operators';
 import { WorkflowSearchFilterDTO } from '@data/models/workflows/workflow-filter-dto';
 import PaginationRequestI from '@data/interfaces/pagination-request';
@@ -35,6 +35,8 @@ export class WorkflowsService {
   public workflowSelectedView$: BehaviorSubject<RouteConstants | string> = new BehaviorSubject(null);
   //Stores the selected facility.
   public facilitiesSelectedSubject$: BehaviorSubject<FacilityDTO[]> = new BehaviorSubject([]);
+  //Stores the selected workflow.
+  public workflowHideCardsSubject$: Subject<boolean> = new Subject();
 
   private readonly GET_WORKFLOWS_PATH = '/api/workflows';
   private readonly GET_MOCK_WORKFLOWS_PATH = '/api/mock/workflow';

@@ -8,6 +8,7 @@ import WorkflowCardDTO from '@data/models/workflows/workflow-card-dto';
 import WorkflowCardTabItemDTO from '@data/models/workflows/workflow-card-tab-item-dto';
 import WorkflowStateDTO from '@data/models/workflows/workflow-state-dto';
 import WorkflowSubstateDTO from '@data/models/workflows/workflow-substate-dto';
+import { WorkflowsService } from '@data/services/workflows.service';
 import { WorkflowDragAndDropService } from '@modules/app-modules/workflow/aux-service/workflow-drag-and-drop.service';
 import { TasksModalComponent } from '@modules/feature-modules/workflow-card-tasks/tasks-modal/tasks-modal.component';
 import { TranslateService } from '@ngx-translate/core';
@@ -50,6 +51,7 @@ export class WorkflowCardComponent implements OnInit {
   constructor(
     private translateService: TranslateService,
     private dragAndDropService: WorkflowDragAndDropService,
+    private workflowService: WorkflowsService,
     private route: ActivatedRoute,
     private dialog: MatDialog,
     private router: Router
@@ -187,6 +189,7 @@ export class WorkflowCardComponent implements OnInit {
     //Firefox => para evitar que al arrastrar abra el detalle de la tarjeta
     if (!this.dragAndDropService.draggingCard$.value) {
       if (this.navigationMode === 'relative') {
+        this.workflowService.workflowHideCardsSubject$.next(true);
         this.router.navigate(
           [
             {

@@ -157,6 +157,11 @@ export class WorkflowCalendarViewComponent implements OnInit {
     });
   }
   public initListeners(): void {
+    this.workflowService.workflowHideCardsSubject$.pipe(untilDestroyed(this)).subscribe((hide: boolean) => {
+      if (hide) {
+        this.showCalendarView = false;
+      }
+    });
     this.workflowService.workflowSelectedSubject$.pipe(untilDestroyed(this)).subscribe((workflow: WorkflowDTO) => {
       this.workflow = workflow;
     });
