@@ -1,0 +1,45 @@
+<div class="sign-documents" fxLayoutAlign="center center">
+    <div class="sign-documents-modal" [ngClass]="{ 'small-modal': isSmallModal() }">
+        <div class="sign-documents-modal__header" fxLayoutAlign="space-between center">
+            <h2>{{ getTitle() | translate }}</h2>
+            <button mat-icon-button class="sign-documents-modal__header__close-btn opacity-04" (click)="closeDialog()">
+                <mat-icon>close</mat-icon>
+            </button>
+        </div>
+        <div class="sign-documents-modal__wrapper" *ngIf="wCardId">
+            <app-sign-document-mode-selector
+                (modeSelected)="modeSelected($event)"
+                *ngIf="stepIndex === 0 && !mode"
+            ></app-sign-document-mode-selector>
+            <app-sign-document-template-selector
+                [wCardId]="wCardId"
+                [mode]="mode"
+                (templateSelected)="templateSelected($event)"
+                *ngIf="stepIndex === 0 && mode"
+            ></app-sign-document-template-selector>
+            <app-sign-document-add-file
+                [wCardId]="wCardId"
+                [mode]="mode"
+                (fileSelected)="fileSelected($event)"
+                *ngIf="stepIndex === 1 && mode"
+            ></app-sign-document-add-file>
+            <app-sign-document-checklist
+                [wCardId]="wCardId"
+                [mode]="mode"
+                [pdf]="pdf"
+                (saveAction)="pdfSignedEvent($event)"
+                (setTitle)="setPdfName($event)"
+                *ngIf="stepIndex === 2 && mode"
+            ></app-sign-document-checklist>
+            <app-sign-document-save-location
+                [wCardId]="wCardId"
+                [pdf]="pdf"
+                *ngIf="stepIndex === 3 && mode === 'NO_REMOTE'"
+                (saveComplete)="closeDialog(true)"
+            ></app-sign-document-save-location>
+        </div>
+        <div class="sign-documents-modal__wrapper" *ngIf="!wCardId">
+            {{ labels.noDataToShow | translate }}
+        </div>
+    </div>
+</div>

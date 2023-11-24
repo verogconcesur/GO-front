@@ -1,0 +1,16 @@
+<router-outlet name="card"></router-outlet>
+<div class="list-view-wrapper" *ngIf="showListView" fxLayout="column">
+    <div class="list-view-wrapper_state" *ngIf="wAnchorState">
+        <app-workflow-table-state [workflow]="workflow" [wState]="wAnchorState"></app-workflow-table-state>
+    </div>
+    <div class="list-view-wrapper_state" *ngIf="wNormalStates?.length">
+        <app-workflow-table-state
+            *ngFor="let state of wNormalStates"
+            [workflow]="workflow"
+            [wState]="state"
+        ></app-workflow-table-state>
+    </div>
+    <div class="empty-wrapper" *ngIf="!wAnchorState && !wNormalStates?.length">
+        <h2>{{ labels.noData | translate }}</h2>
+    </div>
+</div>

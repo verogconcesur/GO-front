@@ -1,0 +1,13 @@
+@import 'utils/core';
+@import 'utils/theme';
+.list-view-wrapper {
+  width: 100%;
+  padding: 20px 40px;
+  .empty-wrapper {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    min-height: 200px;
+  }
+}

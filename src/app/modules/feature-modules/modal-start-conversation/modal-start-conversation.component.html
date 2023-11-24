@@ -1,0 +1,50 @@
+<div class="init-conversation" fxLayout="column" fxLayoutAlign="center center">
+    <div *ngIf="!isModalModeActive()">
+        <div class="init-conversation__title mat-display-2">{{ labels.title | translate }}</div>
+    </div>
+    <div class="init-conversation__form">
+        <form [formGroup]="conversationForm" *ngIf="conversationForm" class="smaller-mat-form-fields">
+            <!-- General Data -->
+            <div class="init-conversation-data__section">
+                <div class="init-conversation-data__section__group">
+                    <!-- Phone -->
+                    <mat-form-field appearance="outline" floatLabel="always">
+                        <mat-label>{{ labels.phone | translate }}</mat-label>
+                        <input matInput formControlName="phone" />
+                        <mat-error *ngIf="conversationForm.get('phone').invalid && conversationForm.get('phone').touched">
+                            <span>{{ labels.required | translate }}</span>
+                        </mat-error>
+                    </mat-form-field>
+                    <!-- Template -->
+                    <mat-form-field appearance="outline" floatLabel="always">
+                        <mat-label>{{ labels.template | translate }}</mat-label>
+                        <mat-select formControlName="template" (selectionChange)="changeComunicationTemplate()">
+                            <mat-option *ngFor="let template of templateList" [value]="template.id">
+                                {{ template.name }}</mat-option
+                            >
+                        </mat-select>
+                        <mat-error
+                            *ngIf="conversationForm.get('template').invalid && conversationForm.get('template').touched"
+                        ></mat-error>
+                    </mat-form-field>
+                    <div class="init-conversation-data__section__group" *ngIf="form.template.value">
+                        <div class="init-conversation-data__section__group__title">{{ labels.message | translate }}</div>
+                        <mat-form-field class="textarea-mat-form-field" appearance="outline" floatLabel="always">
+                            <textarea
+                                matInput
+                                [formControl]="form.body"
+                                readonly
+                                cdkTextareaAutosize
+                                cdkAutosizeMinRows="3"
+                                cdkAutosizeMaxRows="5"
+                            ></textarea>
+                        </mat-form-field>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+    <div class="init-conversation__buttons">
+        <!-- TODO: buttons used when the component is not opened with customDialogService -->
+    </div>
+</div>

@@ -1,0 +1,44 @@
+@import 'utils/core';
+@import 'utils/theme';
+.list-view-state {
+  width: 100%;
+  &__header {
+    padding: 15px 0 5px 0;
+    &__title {
+      &__label {
+        span {
+          word-break: break-word;
+          white-space: break-spaces;
+          font-size: 1.2rem;
+          font-weight: 800;
+        }
+      }
+      &__info {
+        span {
+          font-size: 0.8rem;
+          font-weight: 500;
+          padding-left: 10px;
+          white-space: nowrap;
+        }
+      }
+    }
+    &__buttons {
+      padding-left: 10px;
+      &__button {
+        font-weight: 500;
+        margin-right: 5px;
+        font-size: 0.8rem;
+        line-height: 20px;
+        height: 25px;
+        cursor: pointer;
+      }
+    }
+  }
+  &__substate {
+    .mat-expansion-panel-header-description {
+      justify-content: end;
+      font-weight: 500;
+      padding-top: 5px;
+    }
+  }
+}

@@ -1,0 +1,116 @@
+<div class="step-workflow">
+    <form [formGroup]="formWorkflow" class="smaller-mat-form-fields step-workflow__main">
+        <div class="step-workflow__main__group">
+            <div class="step-workflow__main__group__header">
+                <h3>{{ labels.workflowHeader | translate }}</h3>
+            </div>
+            <!-- Workflow -->
+            <mat-form-field appearance="outline" floatLabel="always">
+                <mat-label>{{ labels.workflowLabel | translate }}</mat-label>
+                <mat-select formControlName="workflow" (selectionChange)="initialiceList()">
+                    <mat-option *ngFor="let workflow of workflowList" [value]="workflow">{{ workflow.name }}</mat-option>
+                </mat-select>
+                <mat-error *ngIf="formWorkflow.controls?.workflow.invalid">
+                    <span *ngIf="formWorkflow.controls.workflow.errors.required">{{ labels.required | translate }}</span>
+                </mat-error>
+            </mat-form-field>
+            <!-- Facility -->
+            <mat-form-field appearance="outline" floatLabel="always" *ngIf="formWorkflow.get('workflow').value">
+                <mat-label>{{ labels.facility | translate }}</mat-label>
+                <mat-select formControlName="facility" (selectionChange)="initialiceLimitDates(); initialiceSubStateUsers()">
+                    <mat-option *ngFor="let facility of facilityList" [value]="facility">{{ facility.name }}</mat-option>
+                </mat-select>
+                <mat-error *ngIf="formWorkflow.controls?.facility.invalid">
+                    <span *ngIf="formWorkflow.controls.facility.errors.required">{{ labels.required | translate }}</span>
+                </mat-error>
+            </mat-form-field>
+            <!-- DeadLineDate-->
+            <mat-form-field
+                appearance="outline"
+                floatLabel="always"
+                *ngIf="formWorkflow.controls?.workflow?.value?.workflowCardsLimit?.cardsLimit"
+            >
+                <mat-label>{{ labels.deadLineDate | translate }}</mat-label>
+                <input
+                    matInput
+                    readonly
+                    #deadLineDatePicker
+                    [disabled]="!formWorkflow.controls?.facility?.value?.id"
+                    placeholder="DD/MM/YYYY"
+                    [matDatepickerFilter]="datesLimitFilter"
+                    [matDatepicker]="picker"
+                    [min]="minDate"
+                    [max]="maxDate"
+                    (dateChange)="changeDeadLine()"
+                    formControlName="deadLineDate"
+                />
+                <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+                <mat-datepicker [dateClass]="dateClass" #picker></mat-datepicker>
+                <mat-error *ngIf="formWorkflow.controls?.deadLineDate?.invalid">
+                    <span *ngIf="formWorkflow.controls.deadLineDate.errors.required">{{ labels.required | translate }}</span>
+                </mat-error>
+            </mat-form-field>
+            <!-- DeadLineHour -->
+            <mat-form-field
+                appearance="outline"
+                floatLabel="always"
+                *ngIf="formWorkflow.controls?.workflow?.value?.workflowCardsLimit?.cardsLimit"
+            >
+                <mat-label>{{ labels.deadLineHour | translate }}</mat-label>
+                <mat-select formControlName="deadLineHour" (selectionChange)="changeDeadLine()">
+                    <mat-option
+                        *ngFor="let hour of hoursList()"
+                        [value]="hour"
+                        [ngClass]="hour.maxReached ? 'max-reached-date-class' : 'available-date-class'"
+                        [disabled]="hour.maxReached && !allowOverLimitCards()"
+                        >{{ hour.hourFrom }}:00 ({{
+                            labels.numOf | translate : { num1: hour.cards, num2: maxCardsByHour }
+                        }})</mat-option
+                    >
+                </mat-select>
+                <mat-error *ngIf="formWorkflow.controls?.deadLineHour?.invalid">
+                    <span *ngIf="formWorkflow.controls.deadLineHour.errors.required">{{ labels.required | translate }}</span>
+                </mat-error>
+            </mat-form-field>
+        </div>
+        <div class="step-workflow__main__group" *ngIf="formWorkflow.get('workflow').value">
+            <div class="step-workflow__main__group__header">
+                <h3>{{ labels.status | translate }}</h3>
+            </div>
+            <!-- Entry State -->
+            <mat-form-field appearance="outline" floatLabel="always">
+                <mat-label>{{ labels.entryState | translate }}</mat-label>
+                <mat-select formControlName="entryState" (selectionChange)="initialiceSubStates()">
+                    <mat-option *ngFor="let entryState of entryStateList" [value]="entryState">{{ entryState.name }}</mat-option>
+                </mat-select>
+                <mat-error *ngIf="formWorkflow.controls?.entryState.invalid">
+                    <span *ngIf="formWorkflow.controls.entryState.errors.required">{{ labels.required | translate }}</span>
+                </mat-error>
+            </mat-form-field>
+            <!-- Sub State -->
+            <mat-form-field appearance="outline" floatLabel="always" *ngIf="formWorkflow.get('entryState').value">
+                <mat-label>{{ labels.subState | translate }}</mat-label>
+                <mat-select formControlName="subState" (selectionChange)="initialiceSubStateUsers()">
+                    <mat-option *ngFor="let subState of subStateList" [value]="subState">{{ subState.name }}</mat-option>
+                </mat-select>
+                <mat-error *ngIf="formWorkflow.controls?.subState.invalid">
+                    <span *ngIf="formWorkflow.controls.subState.errors.required">{{ labels.required | translate }}</span>
+                </mat-error>
+            </mat-form-field>
+            <!-- Sub State User -->
+            <mat-form-field
+                appearance="outline"
+                floatLabel="always"
+                *ngIf="formWorkflow.get('subState').value && formWorkflow.get('entryState').value.front"
+            >
+                <mat-label>{{ labels.subStateUser | translate }}</mat-label>
+                <mat-select formControlName="subStateUser">
+                    <mat-option *ngFor="let user of subStateUsersList" [value]="user">{{ user.fullName }}</mat-option>
+                </mat-select>
+                <mat-error *ngIf="formWorkflow.controls?.subStateUser.invalid">
+                    <span *ngIf="formWorkflow.controls.subStateUser.errors.required">{{ labels.required | translate }}</span>
+                </mat-error>
+            </mat-form-field>
+        </div>
+    </form>
+</div>

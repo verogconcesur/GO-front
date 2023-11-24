@@ -1,0 +1,35 @@
+<div class="card-comments">
+    <div class="card-comments__wrapper">
+        <div
+            class="card-comments__wrapper__comment"
+            *ngFor="let comment of comments"
+            (click)="selectComment(comment)"
+            [ngClass]="{ selected: commentSelected === comment }"
+        >
+            <div class="new-comment" *ngIf="comment.isNew"></div>
+            <div class="fullname">
+                {{ getUserFullname(comment.user) }}
+            </div>
+            <div class="date">
+                {{ comment.dateComment | date: "dd/MM/yy, HH:mm" }}
+            </div>
+            <div class="comment" [innerHtml]="comment.comment"></div>
+            <div class="mention-action" *ngIf="commentSelected === comment" mat-button (click)="answerComment(comment)">
+                <mat-icon>reply</mat-icon>@{{ comment.user.name }}
+            </div>
+        </div>
+    </div>
+    <div class="card-comments__new">
+        <app-text-editor-wrapper
+            #textEditorWrapper
+            *ngIf="dataLoaded"
+            id="commentEditor"
+            textEditorId="commentEditor"
+            [textEditorConfig]="textEditorConfig"
+            [initialValue]="newComment"
+            [placeholder]="labels.insertText | translate"
+            (contentChanged)="newCommentChange($event)"
+        ></app-text-editor-wrapper>
+        <button mat-icon-button (click)="sendComment()"><mat-icon>send</mat-icon></button>
+    </div>
+</div>

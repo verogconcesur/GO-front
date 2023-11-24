@@ -1,0 +1,35 @@
+<div class="organization-card">
+    <button
+        [matMenuTriggerFor]="cardMenu"
+        mat-icon-button
+        class="organization-card__button-menu"
+        (click)="$event.stopPropagation()"
+    >
+        <mat-icon>more_vert</mat-icon>
+    </button>
+    <div class="organization-card__title mat-headline">{{ title | translate }}</div>
+    <div class="organization-card__subtitle mat-subheading-2">{{ subtitle | translate }}</div>
+    <img *ngIf="bgImgB64" class="organization-card__bg-img" [src]="bgImgB64" />
+</div>
+
+<mat-menu #cardMenu="matMenu" class="organization-card__menu dark-theme">
+    <button mat-menu-item class="mat-button" (click)="duplicate.emit(item)">
+        <span>{{ labels.duplicate | translate }}</span>
+    </button>
+    <mat-divider></mat-divider>
+    <button mat-menu-item class="mat-button" (click)="edit.emit(item)">
+        <span>{{ labels.edit | translate }}</span>
+    </button>
+    <mat-divider></mat-divider>
+    <button mat-menu-item class="mat-button" (click)="showUsers.emit(item)">
+        <span>{{ labels.users | translate }}</span>
+    </button>
+    <mat-divider *ngIf="importView"></mat-divider>
+    <button mat-menu-item class="mat-button" (click)="import.emit(item)" *ngIf="importView">
+        <span>{{ labels.import | translate }}</span>
+    </button>
+    <mat-divider></mat-divider>
+    <button mat-menu-item class="mat-button" (click)="delete.emit(item)">
+        <span>{{ labels.delete | translate }}</span>
+    </button>
+</mat-menu>

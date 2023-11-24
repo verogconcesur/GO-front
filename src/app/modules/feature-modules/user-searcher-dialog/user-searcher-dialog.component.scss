@@ -1,0 +1,11 @@
+.user-searcher__input {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  &__search-form {
+    width: 60%;
+    mat-form-field {
+      width: 100%;
+    }
+  }
+}

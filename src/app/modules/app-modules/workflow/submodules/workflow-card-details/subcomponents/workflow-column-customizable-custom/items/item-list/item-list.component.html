@@ -1,0 +1,24 @@
+<div class="item-list" [formGroup]="tabItemForm">
+    <mat-form-field appearance="outline" floatLabel="always">
+        <mat-label>{{ tabItem.name }}</mat-label>
+        <mat-select
+            formControlName="value"
+            [multiple]="tabItem.tabItemConfigList.selectionType === 'MULTIPLE'"
+            [disabled]="!editMode"
+        >
+            <mat-option *ngFor="let option of listItems" [value]="option.code"> {{ option.value }}</mat-option>
+        </mat-select>
+        <button
+            matSuffix
+            mat-icon-button
+            aria-label="Clear"
+            (click)="removeValue(); $event.stopPropagation()"
+            [disabled]="!editMode"
+        >
+            <mat-icon>close</mat-icon>
+        </button>
+        <mat-error *ngIf="tabItemForm.controls?.value.invalid">
+            <span *ngIf="tabItemForm.controls.value.errors.required">{{ labels.required | translate }}</span>
+        </mat-error>
+    </mat-form-field>
+</div>

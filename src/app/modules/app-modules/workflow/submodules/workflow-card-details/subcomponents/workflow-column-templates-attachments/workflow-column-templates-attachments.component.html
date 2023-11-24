@@ -1,0 +1,11 @@
+<app-card-instance-attachments
+    [cardInstanceAttachmentsConfig]="cardInstanceAttachmentsConfig"
+    [data]="attachmentsAndTemplatesData"
+    [tabId]="tab.id"
+    [cardInstanceWorkflowId]="idCard"
+    (reload)="fetchData()"
+></app-card-instance-attachments>
+
+<h3 class="no-data" *ngIf="!attachmentsAndTemplatesData?.length && dataLoaded">
+    {{ labels.noDataToShow | translate }}
+</h3>

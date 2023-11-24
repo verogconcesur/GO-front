@@ -1,0 +1,146 @@
+<div class="custom-column-container">
+    <div class="custom-column-container__header" fxLayout="row wrap" fxLayoutAlign="start center">
+        <form [formGroup]="formCol" class="smaller-mat-form-fields">
+            <div class="custom-column-container__header__group grid-group">
+                <!-- Name -->
+                <mat-form-field appearance="outline" floatLabel="always">
+                    <mat-label>{{ labels.name | translate }}</mat-label>
+                    <input matInput formControlName="name" />
+                    <mat-error
+                        class="custom-column-container__header__group__error"
+                        *ngIf="form.name.invalid && form.name.touched"
+                    >
+                        {{ labels.nameRequired | translate }}
+                    </mat-error>
+                </mat-form-field>
+            </div>
+            <div class="custom-column-container__header__title">{{ labels.tabList | translate | uppercase }}</div>
+            <div class="custom-column-container__header__group grid-group" cdkDropListGroup fxLayout="row wrap">
+                <ng-container *ngIf="form?.orderNumber?.value && form.orderNumber.value === 2">
+                    <div class="custom-column-item-container">
+                        <div class="custom-column-item mat-elevation-z2" fxLayoutAlign="none center">
+                            <div fxLayout="row" fxLayoutAlign="center center" class="custom-column-item-nameContainer">
+                                <span>{{ labels.information | translate }}</span>
+                            </div>
+                        </div>
+                    </div>
+                </ng-container>
+                <ng-container *ngFor="let tab of tabs.controls; let i = index">
+                    <div
+                        class="custom-column-item-container"
+                        cdkDropList
+                        cdkDropListOrientation="vertical"
+                        [cdkDropListData]="{ tab: tab, index: i }"
+                        (cdkDropListDropped)="drop($event)"
+                    >
+                        <div
+                            cdkDrag
+                            class="custom-column-item mat-elevation-z2"
+                            fxLayoutAlign="none center"
+                            [ngClass]="{ selected: isTabSelected(tab), invalid: tab.invalid }"
+                            (click)="selectTab(tab)"
+                        >
+                            <div *cdkDragPlaceholder class="custom-column-placeholder"></div>
+                            <div fxLayout="row" fxLayoutAlign="space-between center" class="custom-column-item-nameContainer">
+                                <mat-icon>drag_indicator</mat-icon> <span>{{ tab.value.name }}</span
+                                ><mat-icon (click)="deleteTab(tab); $event.stopPropagation()">clear</mat-icon>
+                            </div>
+                        </div>
+                    </div>
+                </ng-container>
+                <ng-container>
+                    <div
+                        class="custom-column-container__header__group__tablist__button mat-elevation-z2"
+                        (click)="addTab()"
+                        fxLayout="row"
+                        fxLayoutAlign="space-between center"
+                    >
+                        {{ labels.newTab | translate }} <mat-icon>add</mat-icon>
+                    </div>
+                </ng-container>
+            </div>
+        </form>
+    </div>
+    <div class="custom-column-container__main" fxLayout="row wrap" fxLayoutAlign="start center">
+        <div class="custom-column-container__main__title">{{ labels.tabConfiguration | translate | uppercase }}</div>
+        <form
+            [formGroup]="formTab"
+            class="smaller-mat-form-fields custom-column-container__main__group"
+            fxLayout="row wrap"
+            fxLayoutAlign="start center"
+            *ngIf="formTab"
+        >
+            <!-- Name -->
+            <mat-form-field appearance="outline" floatLabel="always">
+                <mat-label>{{ labels.nameTab | translate }}</mat-label>
+                <input matInput formControlName="name" />
+                <mat-error class="custom-column-container__main__group__error" *ngIf="form.name.invalid && form.name.touched">
+                    {{ labels.nameRequired | translate }}
+                </mat-error>
+            </mat-form-field>
+            <!-- Type -->
+            <mat-form-field appearance="outline" floatLabel="always">
+                <mat-label>{{ labels.tabType | translate }}</mat-label>
+                <mat-select formControlName="type" (selectionChange)="getContentTypes()">
+                    <mat-option *ngFor="let type of tabTypeList" [value]="type.value">{{ type.label | translate }}</mat-option>
+                </mat-select>
+                <mat-error *ngIf="formTab.controls?.type.invalid">
+                    <span *ngIf="formTab.controls.type.errors.required">{{ labels.required | translate }}</span>
+                </mat-error>
+            </mat-form-field>
+            <!-- ContentType -->
+            <mat-form-field appearance="outline" floatLabel="always" *ngIf="tabContentTypeList && tabContentTypeList.length > 0">
+                <mat-label>{{ labels.tabContentType | translate }}</mat-label>
+                <mat-select formControlName="contentTypeId" (selectionChange)="changeContentType()">
+                    <mat-option *ngFor="let contentType of tabContentTypeList" [value]="contentType.id">{{
+                        contentType.name | translate
+                    }}</mat-option>
+                </mat-select>
+                <mat-error *ngIf="formTab.controls?.contentTypeId.invalid">
+                    <span *ngIf="formTab.controls.contentTypeId.errors.required">{{ labels.required | translate }}</span>
+                </mat-error>
+            </mat-form-field>
+            <!-- ContentSource -->
+            <mat-form-field
+                appearance="outline"
+                floatLabel="always"
+                *ngIf="tabContentSourceList && tabContentSourceList.length > 0"
+            >
+                <mat-label>{{ labels.tabContentSource | translate }}</mat-label>
+                <mat-select formControlName="contentSourceId" (selectionChange)="getTabSlots()">
+                    <mat-option *ngFor="let contentSource of tabContentSourceList" [value]="contentSource.id">{{
+                        contentSource.name | translate
+                    }}</mat-option>
+                </mat-select>
+                <mat-error *ngIf="formTab.controls?.contentSourceId.invalid">
+                    <span *ngIf="formTab.controls.contentSourceId.errors.required">{{ labels.required | translate }}</span>
+                </mat-error>
+            </mat-form-field>
+            <!-- Template -->
+            <mat-form-field appearance="outline" floatLabel="always" *ngIf="tabTemplateList && tabTemplateList.length > 0">
+                <mat-label>{{ labels.tabTemplate | translate }}</mat-label>
+                <mat-select formControlName="templateId">
+                    <mat-option *ngFor="let tabTemplate of tabTemplateList" [value]="tabTemplate.id">{{
+                        tabTemplate.name | translate
+                    }}</mat-option>
+                </mat-select>
+                <mat-error *ngIf="formTab.controls?.templateId.invalid">
+                    <span *ngIf="formTab.controls.templateId.errors.required">{{ labels.required | translate }}</span>
+                </mat-error>
+            </mat-form-field>
+        </form>
+        <app-entity-tab
+            [entityAttributesFormArray]="formTab?.controls?.tabItems"
+            *ngIf="
+                (formTab?.controls?.contentTypeId?.value === 1 || formTab?.controls?.contentTypeId?.value === 2) &&
+                formTab?.controls?.contentSourceId?.value
+            "
+        ></app-entity-tab>
+        <app-custom-tab
+            [tabItems]="formTab?.controls?.tabItems"
+            *ngIf="formTab?.controls?.contentTypeId?.value === 3"
+            (editTabItemEvent)="editTabItem($event)"
+            (newTabItemEvent)="newTabItem($event)"
+        ></app-custom-tab>
+    </div>
+</div>

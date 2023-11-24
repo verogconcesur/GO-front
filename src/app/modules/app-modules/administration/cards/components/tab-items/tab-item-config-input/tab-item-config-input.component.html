@@ -1,0 +1,95 @@
+<div class="tab-item-config-content" fxLayout="column" fxLayoutAlign="center center">
+    <div class="tab-item-config-content__form">
+        <form [formGroup]="tabItemForm" *ngIf="tabItemForm" class="smaller-mat-form-fields">
+            <!-- General Data -->
+            <div class="tab-item-config-content__form__section">
+                <!-- Name -->
+                <mat-form-field appearance="outline" floatLabel="always">
+                    <mat-label>{{ labels.name | translate }}</mat-label>
+                    <input matInput formControlName="name" />
+                    <mat-error
+                        class="tab-item-config-content__form__section__group__error"
+                        *ngIf="tabItemForm.controls.name.invalid && tabItemForm.controls.name.touched"
+                    >
+                        {{ labels.nameRequired | translate }} ({{ labels.minLength | translate: { length: this.minLength } }})
+                    </mat-error>
+                </mat-form-field>
+                <!-- Data Type -->
+                <mat-form-field appearance="outline" floatLabel="always" formGroupName="tabItemConfigInput">
+                    <mat-label>{{ labels.dataType | translate }}</mat-label>
+                    <mat-select formControlName="dataType" (selectionChange)="changeDataType()">
+                        <mat-option *ngFor="let dataType of inputDataTypes" [value]="dataType.value">{{
+                            dataType.label | translate
+                        }}</mat-option>
+                    </mat-select>
+                    <mat-error *ngIf="tabItemConfigInput.controls?.dataType.invalid">
+                        <span *ngIf="tabItemConfigInput.controls.dataType.errors.required">{{
+                            labels.required | translate
+                        }}</span>
+                    </mat-error>
+                </mat-form-field>
+                <!-- Mandatory -->
+                <section formGroupName="tabItemConfigInput">
+                    <mat-checkbox formControlName="mandatory">{{ labels.mandatory | translate }}</mat-checkbox>
+                </section>
+                <!-- Num Decimals -->
+                <mat-form-field
+                    appearance="outline"
+                    floatLabel="always"
+                    formGroupName="tabItemConfigInput"
+                    *ngIf="tabItemConfigInput.controls?.dataType?.value === 'NUMBER'"
+                >
+                    <mat-label>{{ labels.numDecimals | translate }}</mat-label>
+                    <input matInput formControlName="numDecimals" type="number" [min]="0" />
+                </mat-form-field>
+                <!-- Date Type -->
+                <mat-form-field
+                    appearance="outline"
+                    floatLabel="always"
+                    formGroupName="tabItemConfigInput"
+                    *ngIf="tabItemConfigInput.controls?.dataType?.value === 'TEMPORAL'"
+                >
+                    <mat-label>{{ labels.dateType | translate }}</mat-label>
+                    <mat-select formControlName="dateType">
+                        <mat-option *ngFor="let dateType of inputDateTypes" [value]="dateType.value">{{
+                            dateType.label | translate
+                        }}</mat-option>
+                    </mat-select>
+                    <mat-error *ngIf="tabItemConfigInput.controls?.dateType.invalid">
+                        <span *ngIf="tabItemConfigInput.controls.dateType.errors.required">{{
+                            labels.required | translate
+                        }}</span>
+                    </mat-error>
+                </mat-form-field>
+                <!-- Date Limit -->
+                <section
+                    formGroupName="tabItemConfigInput"
+                    *ngIf="
+                        tabItemConfigInput.controls?.dataType?.value === 'TEMPORAL' &&
+                        tabItemConfigInput.controls?.dateType?.value &&
+                        tabItemConfigInput.controls?.dateType?.value !== 'TIME'
+                    "
+                >
+                    <mat-checkbox formControlName="dateLimit">{{ labels.dateLimit | translate }}</mat-checkbox>
+                </section>
+                <!-- Date Apply Color -->
+                <section formGroupName="tabItemConfigInput" *ngIf="tabItemConfigInput.controls?.dateLimit?.value">
+                    <mat-checkbox formControlName="dateApplyColor">{{ labels.dateApplyColor | translate }}</mat-checkbox>
+                </section>
+                <!-- Date Color -->
+                <mat-form-field
+                    appearance="outline"
+                    floatLabel="always"
+                    formGroupName="tabItemConfigInput"
+                    *ngIf="tabItemConfigInput.controls?.dateLimit?.value && tabItemConfigInput.controls?.dateApplyColor?.value"
+                >
+                    <mat-label>{{ labels.dateColor | translate }}</mat-label>
+                    <input matInput formControlName="dateColor" type="color" />
+                </mat-form-field>
+            </div>
+        </form>
+    </div>
+    <div class="tab-item-config-content__buttons">
+        <!-- TODO: buttons used when the component is not opened with customDialogService -->
+    </div>
+</div>

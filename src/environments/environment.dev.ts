@@ -4,7 +4,8 @@ import { NgxLoggerLevel } from 'ngx-logger';
 export const environment: Env = {
   appVersion: `${require('../../package.json').version}-dev`,
   production: false,
-  // eslint-disable-next-line
-  apiBaseUrl: '${API_BASE_URL}',
+  socketsEnabled: false,
+  apiBaseUrl: 'https://concenet-dev.sdos.es/concenet-rest',
+  socketUrl: 'wss://concenet-dev.sdos.es/concenet-rest/socket/',
   logLevel: NgxLoggerLevel.DEBUG
 };

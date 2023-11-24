@@ -1,0 +1,72 @@
+<div class="adm-header-section" fxLayout="row wrap" fxLayoutAlign="space-between center">
+    <h1 class="adm-header-section__title mat-display-2">{{ title | translate }}</h1>
+
+    <div class="adm-header-section__actions-wrapper" fxLayout="row" fxLayoutAlign="end center">
+        <div class="adm-header-section__actions-wrapper__search-form-wrapper">
+            <form
+                *ngIf="showSearchOfFilterInput"
+                class="adm-header-section__actions-wrapper__search-form smaller-mat-form-fields"
+                fxLayout="row"
+                fxLayoutAlign="end center"
+                (ngSubmit)="searchAction()"
+            >
+                <mat-form-field
+                    appearance="outline"
+                    class="smaller-mat-form-fields__no-margin"
+                    [ngClass]="{ 'smaller-mat-form-fields__button-height': searchType === 'search' }"
+                >
+                    <input
+                        type="text"
+                        matInput
+                        [placeholder]="getSearchLabel() | translate"
+                        [formControl]="filterTextSearchControl"
+                        [matAutocomplete]="auto"
+                        (keyup.enter)="searchAction()"
+                    />
+                    <button
+                        mat-icon-button
+                        *ngIf="searchType === 'search'"
+                        aria-label="Search"
+                        type="button"
+                        matSuffix
+                        (click)="searchAction()"
+                    >
+                        <mat-icon>search</mat-icon>
+                    </button>
+                    <mat-autocomplete
+                        autoActiveFirstOption="false"
+                        #auto="matAutocomplete"
+                        [displayWith]="transformOptionLabel"
+                        (optionSelected)="searchAction()"
+                    >
+                        <mat-option *ngFor="let option of filteredOptions | async" [value]="option">
+                            {{ transformOptionLabel(option) }}
+                        </mat-option>
+                    </mat-autocomplete>
+                </mat-form-field>
+            </form>
+        </div>
+        <button
+            *ngIf="showFilterButton"
+            color="dark"
+            class="filter-action mat-square-icon"
+            (click)="buttonShowFilterDrawerAction.emit()"
+            [class.active]="areFiltersSettedAndActive"
+            mat-flat-button
+        >
+            <mat-icon>filter_list</mat-icon>
+        </button>
+        <button
+            class="create-action"
+            *ngIf="showCreateButton"
+            (click)="buttonCreateAction.emit()"
+            mat-raised-button
+            color="primary"
+        >
+            <span class="create-action__small-label">{{
+                buttonSmallLabel ? (buttonSmallLabel | translate) : (buttonLabel | translate)
+            }}</span>
+            <span class="create-action__normal-label">{{ buttonLabel | translate }}</span>
+        </button>
+    </div>
+</div>

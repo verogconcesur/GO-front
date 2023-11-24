@@ -1,0 +1,35 @@
+@import 'utils/core';
+@import 'utils/theme';
+
+.select-template-lines-content {
+  width: 100%;
+  &__main {
+    width: 100%;
+    padding: 15px;
+    &__header {
+      &__item {
+        font-weight: 600;
+        height: 40px;
+      }
+    }
+    &__container {
+      &__item {
+        height: 75px;
+        background-color: rgba(mat-color($primary, 100), 20%);
+        border-bottom: 1px solid mat-color($primary, 100);
+        mat-form-field {
+          padding-top: 20px;
+          max-width: 90%;
+        }
+      }
+    }
+    &__create {
+      padding: 15px 0;
+      &__item {
+        font-weight: 600;
+        color: mat-color($primary, A700);
+        cursor: pointer;
+      }
+    }
+  }
+}

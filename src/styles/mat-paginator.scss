@@ -1,0 +1,8 @@
+@import '@angular/material/theming';
+
+@mixin custom-mat-paginator-theme($theme, $main-typo) {
+  $primary: map-get($theme, primary);
+  .mat-paginator {
+    background-color: transparent;
+  }
+}

@@ -1,0 +1,277 @@
+@import 'utils/core';
+@import 'utils/theme';
+.wcard-details {
+  background-color: mat-contrast($primary, A200);
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: calc(var(--vw) - 20px);
+  height: calc(var(--vh) - 20px);
+  z-index: 100;
+  padding: 10px;
+
+  &__tab {
+    height: 57px;
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    &__wrapper {
+      background-color: mat-contrast($primary, A200);
+      display: flex;
+      justify-content: flex-start;
+      align-items: flex-end;
+      height: 100%;
+      min-width: 360px;
+      width: 60%;
+
+      @include respond-to(calc($desktop-large + 300px)) {
+        width: 70%;
+      }
+
+      @include respond-to(calc($desktop-large + 100px)) {
+        width: 80%;
+      }
+
+      @include respond-to($desktop) {
+        width: 100%;
+      }
+    }
+    &__header {
+      background-color: mat-contrast($primary, 500);
+      height: 100%;
+      overflow: hidden;
+      min-width: 300px;
+      width: calc(100% - 60px);
+      border-radius: 30px 30px 0 0;
+    }
+    &__bg {
+      background-color: mat-contrast($primary, 500);
+      height: 55px;
+      width: 36px;
+      position: relative;
+      z-index: 101;
+      margin-left: -1px;
+      &::before {
+        background-color: mat-contrast($primary, A200);
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        border-radius: 0 0 0 30px;
+        z-index: 100;
+      }
+    }
+    .buttons-wrapper {
+      display: flex;
+      justify-content: flex-end;
+      align-items: center;
+    }
+    &__changes {
+      color: mat-color($primary, statusWarning);
+      margin-right: 10px;
+      mat-icon {
+        font-size: 1.8em;
+      }
+
+      @include respond-to($tablet) {
+        margin-right: 5px;
+      }
+    }
+    &__close {
+      color: mat-contrast($primary, 400);
+      margin-right: 25px;
+      mat-icon {
+        font-size: 1.8em;
+      }
+
+      @include respond-to($tablet) {
+        margin-right: 3px;
+      }
+    }
+  }
+  &__wrapper {
+    background-color: mat-contrast($primary, 500);
+    height: calc(100% - 57px);
+    position: relative;
+    width: 100%;
+    border-radius: 0 30px 30px 30px;
+    &__sections {
+      &__controller {
+        width: 100%;
+      }
+      &__container {
+        width: 100%;
+        height: 100%;
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-start;
+
+        &.individual {
+          .wcard-details__wrapper__info-sections {
+            width: 0%;
+            height: calc(100% - 64px);
+            &__container {
+              height: 100%;
+              &__column1,
+              &__column2 {
+                width: 100%;
+                height: 100%;
+              }
+            }
+          }
+          .wcard-details__wrapper {
+            height: calc(100% - 64px);
+            width: 0%;
+            &__messages,
+            &__actions {
+              width: 100%;
+              height: calc(100% - 64px);
+            }
+          }
+          &.column1,
+          &.column2 {
+            .wcard-details__wrapper__info-sections {
+              width: 100%;
+              height: calc(100% - 64px);
+            }
+          }
+          &.messages,
+          &.actions {
+            .wcard-details__wrapper {
+              width: 100%;
+              height: calc(100% - 64px);
+            }
+          }
+        }
+
+        &.semi {
+          .tab-options-wrapper {
+            width: 56%;
+          }
+          .wcard-details__wrapper__info-sections {
+            width: 56%;
+            height: calc(100% - 64px);
+            &__container {
+              height: 100%;
+              &__column1,
+              &__column2 {
+                width: 100%;
+                height: 100%;
+              }
+            }
+          }
+
+          .wcard-details__wrapper {
+            height: 100%;
+            &__messages,
+            &__actions {
+              width: 22%;
+              height: 100%;
+            }
+          }
+        }
+
+        .wcard-details__wrapper__info-sections {
+          width: 66%;
+          height: 100%;
+          &__controller {
+            width: 100%;
+          }
+          &__container {
+            width: 100%;
+            height: 100%;
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            &__column1,
+            &__column2 {
+              height: 100%;
+              width: 50%;
+            }
+          }
+
+          .tab-options-wrapper {
+            .tab-option {
+              width: 50%;
+            }
+          }
+        }
+        .wcard-details__wrapper {
+          height: 100%;
+          &__messages,
+          &__actions {
+            height: 100%;
+          }
+          &__messages {
+            width: 17%;
+          }
+          &__actions {
+            width: 17%;
+          }
+        }
+      }
+    }
+
+    .tab-options-wrapper {
+      background-color: mat-color($background, background-administration);
+      width: 100%;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      height: 64px;
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      border-radius: 0 0 30px 30px;
+      .tab-option {
+        color: mat-color($primary, 800);
+        background-color: mat-color($background, background-administration);
+        border-top: 1px solid mat-color($background, background-administration);
+        margin-bottom: 1px;
+        height: 64px;
+        width: 25%;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        cursor: pointer;
+        label {
+          cursor: pointer;
+        }
+        mat-icon {
+          margin-right: 5px;
+          color: mat-color($primary, A700);
+        }
+        &:first-child {
+          border-radius: 0 0 0 30px;
+        }
+        &:nth-child(4) {
+          border-radius: 0 0 30px 0;
+        }
+        &:hover {
+          background-color: darken(mat-color($background, background-administration), 2%);
+          border-top: 1px solid lighten(mat-color($primary, A700), 25%);
+        }
+        &.active {
+          border-top: 1px solid mat-color($primary, A700);
+          background-color: darken(mat-color($background, background-administration), 5%);
+        }
+        &.new-data label {
+          position: relative;
+          &::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            right: -4px;
+            width: 5px;
+            height: 5px;
+            border-radius: 10px;
+            background-color: blue;
+          }
+        }
+      }
+    }
+  }
+}

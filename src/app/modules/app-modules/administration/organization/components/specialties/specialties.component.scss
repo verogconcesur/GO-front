@@ -1,0 +1,9 @@
+@import 'utils/core';
+
+.specialties {
+  margin-top: 20px;
+  &__no-specialties {
+    width: 100%;
+    text-align: center;
+  }
+}

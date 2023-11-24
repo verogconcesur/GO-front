@@ -1,0 +1,81 @@
+@import '@angular/material/theming';
+
+@mixin user-profile-component-theme($theme, $main-typo) {
+  $primary: map-get($theme, primary);
+  $warn: map-get($theme, warn);
+  $foreground: map-get($theme, foreground);
+
+  .user-profile-menu {
+    &.mat-menu-panel {
+      max-width: none;
+      border-radius: 16px;
+      box-shadow: 0 12px 24px 0 rgb(0 0 0 / 12%);
+
+      .mat-menu-content {
+        padding: 24px;
+        position: relative;
+
+        .user-profile-menu__title {
+          color: mat-contrast($primary, 100);
+          letter-spacing: normal;
+          text-transform: uppercase;
+        }
+
+        .user-data-group {
+          &__title {
+            color: mat-contrast($primary, 100);
+            font-size: 0.75rem;
+            font-weight: 600;
+            padding-bottom: 2px;
+            text-transform: uppercase;
+          }
+
+          &__content {
+            color: mat-color($foreground, secondary-text);
+            font-size: 0.875rem;
+            margin-bottom: 12px;
+          }
+        }
+
+        .actions-divider {
+          height: 1px;
+          margin: 16px -24px;
+          background-color: mat-color($primary, 50);
+        }
+
+        .edit-profile-btn {
+          color: mat-color($primary, 500);
+          font-size: 0.75rem;
+          font-weight: 600;
+          padding: 0;
+          text-align: left;
+          text-transform: uppercase;
+
+          &:hover {
+            background-color: transparent;
+          }
+        }
+
+        .logout-btn {
+          color: mat-color($warn, 500);
+          font-size: 0.75rem;
+          font-weight: 600;
+          padding: 0;
+          text-align: left;
+          text-transform: uppercase;
+
+          &:hover {
+            background-color: transparent;
+          }
+
+          .mat-icon {
+            color: mat-color($warn, 500);
+            margin-left: 16px;
+            margin-right: 0;
+            vertical-align: text-bottom;
+          }
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,76 @@
+@import 'utils/core';
+@import 'utils/theme';
+
+//Reutiliza estilos importados con el theme tanto del navbar como del user-profile
+// DGDC TODO: rehacer estilos!!
+.navbar {
+  &__searcher {
+    &.centered {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+  }
+  &__search {
+    mat-form-field {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .spinner {
+      margin-bottom: 4px;
+    }
+  }
+}
+
+.user-profile-menu {
+  .card {
+    width: 150px;
+  }
+}
+
+.search-option-card {
+  margin: 8px 0;
+  width: 300px;
+  height: 100px !important;
+  opacity: 0;
+  &.with-wf-name {
+    height: 150px !important;
+  }
+  &.with-wf-substate-name {
+    height: 125px !important;
+  }
+  &__wf-name {
+    line-height: 20px;
+    display: block;
+  }
+  .search-option-card__wf-name div {
+    margin-bottom: 9px;
+  }
+  .workflow-substate {
+    font-weight: bold;
+    color: #2020ab;
+  }
+}
+
+.search-option-spinner {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 10px 0;
+}
+
+.search-option-card.fade-in {
+  opacity: 1;
+  animation: fadeInAnimation 0.5s ease-in-out;
+}
+
+@keyframes fadeInAnimation {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}

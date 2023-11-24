@@ -1,0 +1,123 @@
+@import 'utils/core';
+@import 'utils/theme';
+.wcard-header {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0 15px;
+
+  &__wrapper {
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+    &:last-child {
+      margin-right: 20px;
+    }
+  }
+
+  &__reference {
+    font-weight: bold;
+    font-size: 1.1em;
+  }
+
+  &__colors {
+    width: 60px;
+    height: 6px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-right: 10px;
+    &__color {
+      border-radius: 8px;
+      height: 6px;
+      &.x-0 {
+        width: 100%;
+      }
+      &.x-1 {
+        width: 100%;
+      }
+      &.x-2 {
+        width: 46%;
+      }
+      &.x-3 {
+        width: 30%;
+      }
+      &.x-4 {
+        width: 22%;
+      }
+    }
+  }
+  @include respond-to($desktop) {
+    &__wrapper:first-child {
+      justify-content: center;
+      flex-direction: column-reverse;
+      min-width: 150px;
+      margin-right: 5px;
+    }
+    &__colors {
+      margin-top: 5px;
+      margin-right: 0px;
+      width: 100%;
+    }
+  }
+
+  &__chip {
+    margin: 0 10px;
+    padding: 5px 7px;
+    text-align: center;
+    border-radius: 10px;
+    color: mat-contrast($primary, 400);
+  }
+
+  &__location {
+    letter-spacing: 2px;
+    font-weight: bold;
+    color: darken(mat-color($primary, paginator), 20%);
+
+    @include respond-to($tablet-small) {
+      letter-spacing: 0px;
+      font-size: 0.85em;
+    }
+  }
+
+  &__follow-btn {
+    color: mat-contrast($primary, 400);
+    min-width: 131px;
+    margin: 0 10px 0 20px;
+    label {
+      margin-right: 10px;
+      cursor: pointer;
+    }
+
+    @include respond-to($tablet) {
+      min-width: auto;
+      margin: 0 0 0 10px;
+      border-radius: 50px;
+      padding: 1px 7px;
+      label {
+        display: none;
+      }
+    }
+  }
+
+  &__people-btn {
+    margin: 0 15px 0 0;
+    label {
+      margin-right: 10px;
+      font-weight: bold;
+      cursor: pointer;
+    }
+    mat-icon {
+      color: mat-color($primary, paginator);
+    }
+
+    @include respond-to($tablet) {
+      margin: 0;
+      label {
+        margin-right: 5px;
+      }
+    }
+  }
+}

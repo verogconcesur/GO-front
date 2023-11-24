@@ -1,0 +1,143 @@
+<div class="create-edit-template-content" fxLayout="column" fxLayoutAlign="center center">
+    <div *ngIf="!isModalModeActive()">
+        <div class="create-edit-template-content__title mat-display-2">{{ labels.title | translate }}</div>
+    </div>
+    <div class="create-edit-template-content__form">
+        <form [formGroup]="timelineForm" *ngIf="timelineForm" class="smaller-mat-form-fields">
+            <!-- General Data -->
+            <div class="template-data__section">
+                <div class="template-data__section__title first-child">
+                    {{ labels.data | translate }}
+                </div>
+                <div class="template-data__section__group grid-group" formGroupName="template">
+                    <!-- Name -->
+                    <mat-form-field appearance="outline" floatLabel="always" class="first-item">
+                        <mat-label>{{ labels.name | translate }}</mat-label>
+                        <input matInput formControlName="name" />
+                        <mat-error
+                            class="template-data__error"
+                            *ngIf="timelineForm.get('template.name').invalid && timelineForm.get('template.name').touched"
+                        >
+                            {{ labels.nameRequired | translate }}
+                        </mat-error>
+                    </mat-form-field>
+
+                    <app-organization-levels-nested-combos
+                        #OrganizationLevelsNestedCombos
+                        [form]="timelineForm.get('template')"
+                    ></app-organization-levels-nested-combos>
+                </div>
+            </div>
+            <!-- Timeline items -->
+            <div class="template-data__section">
+                <div class="template-data__section__title first-child">{{ labels.timelinesItems | translate }} *</div>
+                <div class="template-data__section__group">
+                    <div cdkDropListGroup>
+                        <div
+                            cdkDropList
+                            class="droplist-with-handle timelines-items-list"
+                            (cdkDropListDropped)="dropTimelineItem($event)"
+                        >
+                            <ng-container *ngFor="let itemForm of templateTimelineItems.controls; let i = index">
+                                <div
+                                    class="draggable-item timeline-item smaller-mat-form-fields"
+                                    [formGroup]="itemForm"
+                                    cdkDrag
+                                    cdkDragBoundary=".timelines-items-list"
+                                >
+                                    <div class="timeline-item-custom-placeholder" *cdkDragPlaceholder></div>
+                                    <div class="timeline-item__first-line">
+                                        <mat-icon cdkDragHandle class="opacity-04">drag_indicator</mat-icon>
+
+                                        <mat-form-field
+                                            appearance="outline"
+                                            floatLabel="always"
+                                            class="smaller-mat-form-fields__no-margin"
+                                        >
+                                            <mat-label>{{ labels.name | translate }}</mat-label>
+                                            <input matInput formControlName="name" />
+                                        </mat-form-field>
+
+                                        <mat-checkbox color="primary" formControlName="closed"
+                                            >{{ labels.closed | translate }}
+                                        </mat-checkbox>
+
+                                        <div class="timeline-item__actions">
+                                            <button
+                                                mat-button
+                                                [ngClass]="{ 'opacity-04': showingLandingMessageEditor !== i }"
+                                                (click)="showLandingMessageEditor(i)"
+                                                matTooltip="{{ labels.landingMessage | translate }}"
+                                                matTooltipPosition="above"
+                                            >
+                                                <mat-icon
+                                                    class="message"
+                                                    [ngClass]="{ active: showingLandingMessageEditor === i }"
+                                                    >textsms</mat-icon
+                                                >
+                                            </button>
+                                        </div>
+                                        <div class="timeline-item__actions">
+                                            <button
+                                                mat-button
+                                                [ngClass]="{ 'opacity-04': showingLandingEmailEditor !== i }"
+                                                (click)="showLandingEmailEditor(i)"
+                                                matTooltip="{{ labels.landingEmail | translate }}"
+                                                matTooltipPosition="above"
+                                            >
+                                                <mat-icon class="message" [ngClass]="{ active: showingLandingEmailEditor === i }"
+                                                    >alternate_email</mat-icon
+                                                >
+                                            </button>
+                                        </div>
+
+                                        <div class="timeline-item__actions">
+                                            <button mat-button class="opacity-04" (click)="deleteTimelineItem(i)">
+                                                <mat-icon>close</mat-icon>
+                                            </button>
+                                        </div>
+                                    </div>
+
+                                    <div class="timeline-item__message" *ngIf="showingLandingMessageEditor === i">
+                                        <app-text-editor-wrapper
+                                            *ngIf="textEditorToolbarOptions.macroListOptions.length"
+                                            id="{{ 'textEditor' + i }}"
+                                            textEditorId="{{ 'textEditor' + i }}"
+                                            [initialValue]="itemForm.get('messageLanding').value"
+                                            [textEditorConfig]="textEditorToolbarOptions"
+                                            [placeholder]="labels.insertText | translate"
+                                            (contentChanged)="textEditorContentChanged($event, itemForm)"
+                                        ></app-text-editor-wrapper>
+                                    </div>
+
+                                    <div *ngIf="showingLandingEmailEditor === i">
+                                        <mat-form-field appearance="outline" floatLabel="always" class="timeline-item__email">
+                                            <mat-label>{{ labels.email | translate }}</mat-label>
+                                            <input
+                                                matInput
+                                                formControlName="recipientEmail"
+                                                (contentChanged)="textEditorEmailChanged($event, itemForm)"
+                                            />
+                                        </mat-form-field>
+                                    </div>
+                                </div>
+                            </ng-container>
+                        </div>
+                    </div>
+                    <mat-error *ngIf="timelineForm.get('templateTimelineItems').invalid">
+                        <span *ngIf="timelineForm?.get('templateTimelineItems')?.errors?.required && timelineForm?.touched">{{
+                            labels.required | translate
+                        }}</span>
+                    </mat-error>
+                    <button mat-button class="v-align-bottom opacity-06 no-padding" (click)="addTimelineItem()">
+                        <mat-icon>add</mat-icon>
+                        {{ labels.newItem | translate }}
+                    </button>
+                </div>
+            </div>
+        </form>
+    </div>
+    <div class="create-edit-template-content__buttons">
+        <!-- TODO: buttons used when the component is not opened with customDialogService -->
+    </div>
+</div>

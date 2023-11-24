@@ -1,0 +1,36 @@
+<router-outlet name="card"></router-outlet>
+<div class="board-view-wrapper" cdkDropListGroup [cdkDropListGroupDisabled]="!isDragAndDropEnabled" *ngIf="showBoardView">
+    <!-- anchor state column -->
+    <div #AnchorColumn class="board-view-wrapper__anchor-column" *ngIf="wAnchorState" [ngClass]="{ hide: hideAnchorState() }">
+        <div class="board-view-wrapper__anchor-column__container">
+            <app-wokflow-board-column
+                #AnchorStateColumn
+                [workflow]="workflow"
+                [wState]="wAnchorState"
+                [divider]="false"
+            ></app-wokflow-board-column>
+        </div>
+        <div class="hide-show-button" (click)="toggleAnchorState()">
+            <mat-icon *ngIf="showAnchorState">keyboard_arrow_left</mat-icon>
+            <mat-icon *ngIf="!showAnchorState">keyboard_arrow_right</mat-icon>
+        </div>
+    </div>
+    <mat-divider *ngIf="wAnchorState" [vertical]="true" class="full-height"></mat-divider>
+    <!-- scroll states columns -->
+    <div
+        #ScrollColumns
+        class="board-view-wrapper__scroll-columns"
+        *ngIf="wNormalStates?.length"
+        cdkScrollable
+        (mousedown)="startDragging($event, false)"
+        (mouseup)="stopDragging($event, false)"
+        (mouseleave)="stopDragging($event, false)"
+        (mousemove)="moveEvent($event)"
+    >
+        <app-wokflow-board-column *ngFor="let wState of wNormalStates" [workflow]="workflow" [wState]="wState">
+        </app-wokflow-board-column>
+    </div>
+    <div class="empty-wrapper" *ngIf="!wAnchorState && !wNormalStates?.length">
+        <h2>{{ labels.noData | translate }}</h2>
+    </div>
+</div>

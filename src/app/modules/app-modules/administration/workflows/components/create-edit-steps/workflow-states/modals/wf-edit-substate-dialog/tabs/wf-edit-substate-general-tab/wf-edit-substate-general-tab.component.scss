@@ -1,0 +1,19 @@
+@import 'utils/core';
+@import 'utils/theme';
+.edit-state {
+  .check-line {
+    margin-bottom: 25px;
+  }
+  .label-info {
+    color: mat-color($primary, paginator);
+  }
+  .color-wrapper {
+    display: flex;
+    justify-content: flex-start;
+    align-items: baseline;
+    .color-picker-label,
+    .color-picker-reset {
+      margin-left: 5px;
+    }
+  }
+}

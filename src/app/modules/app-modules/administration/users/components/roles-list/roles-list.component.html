@@ -1,0 +1,26 @@
+<div class="items-list-wrapper">
+    <div class="items-list-container">
+        <div fxLayout="row wrap" fxLayoutAlign="start center" fxLayoutGap="20px" fxLayoutGap.xs="0">
+            <mat-card
+                class="mat-item-card"
+                fxFlex="calc(50% - 20px)"
+                fxFlex.sm="calc(50% - 20px)"
+                fxFlex.xs="100"
+                *ngFor="let role of roles"
+            >
+                <div fxLayout="row" fxLayoutAlign="space-between center">
+                    <div class="mat-item-card__title">{{ role.name }}</div>
+                    <div class="mat-item-card__icons">
+                        <!-- TODO: JF Uncomment when translations will be available -->
+                        <!-- <mat-icon fontSet="concenet">translate</mat-icon> -->
+                        <mat-icon fontSet="concenet" (click)="openCreateRoleDialog(role)">edit</mat-icon>
+                        <mat-icon fontSet="concenet" (click)="deleteRole(role.id)">delete</mat-icon>
+                    </div>
+                </div>
+            </mat-card>
+            <div class="roles-list-container__no-data" *ngIf="!roles || roles.length === 0">
+                {{ labels.noDataToShow | translate }}
+            </div>
+        </div>
+    </div>
+</div>

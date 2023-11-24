@@ -1,0 +1,101 @@
+@import '@angular/material/theming';
+
+@mixin custom-mat-button-theme($theme, $main-typo) {
+  $primary: map-get($theme, primary);
+  $warn: map-get($theme, warn);
+
+  // common
+  button {
+    &.mat-button,
+    &.mat-flat-button {
+      font-size: 1rem;
+
+      &.mat-button-fill {
+        width: 100%;
+      }
+    }
+
+    &.mat-button-w-100-left {
+      width: 100%;
+      text-align: left;
+    }
+
+    // mat-flat-button styles
+    &.mat-flat-button {
+      &:hover {
+        opacity: 0.85;
+      }
+    }
+
+    &.close-modal-button.mat-icon-button {
+      width: 30px;
+      height: 30px;
+      line-height: 30px;
+      border-radius: 5px;
+      // background-color: lighten(mat-color($primary, A100), 20%);
+      background-color: rgba(mat-color($primary, A100), 30%);
+      color: mat-color($primary, 900);
+      &:hover {
+        background-color: rgba(mat-color($primary, A100), 40%);
+      }
+    }
+
+    &.mat-square-icon {
+      border-radius: 5px;
+      padding: 0 0;
+      min-width: 36px;
+      line-height: 36px;
+      &.square-28 {
+        min-width: 28px;
+        line-height: 28px;
+      }
+    }
+
+    //COLORS
+    &.mat-dark {
+      background-color: rgba(mat-contrast($warn, A100), 90%);
+      color: mat-color($warn, A100);
+      &:hover {
+        background-color: rgba(mat-contrast($warn, A100), 70%);
+      }
+    }
+
+    .mat-icon {
+      overflow: visible;
+    }
+  }
+
+  // Disable styles for primary buttons
+  .mat-flat-button.mat-primary.mat-button-disabled,
+  .mat-flat-button.mat-button-disabled.mat-button-disabled,
+  .mat-raised-button.mat-primary.mat-button-disabled,
+  .mat-raised-button.mat-button-disabled.mat-button-disabled,
+  .mat-fab.mat-primary.mat-button-disabled,
+  .mat-fab.mat-button-disabled.mat-button-disabled,
+  .mat-mini-fab.mat-primary.mat-button-disabled,
+  .mat-mini-fab.mat-button-disabled.mat-button-disabled {
+    background-color: mat-color($primary, 500);
+    color: mat-contrast($primary, 400);
+    opacity: 0.5;
+  }
+
+  .mat-button.v-align-bottom .mat-button-wrapper > *,
+  .mat-flat-button.v-align-bottom .mat-button-wrapper > *,
+  .mat-stroked-button.v-align-bottom .mat-button-wrapper > *,
+  .mat-raised-button.v-align-bottom .mat-button-wrapper > *,
+  .mat-icon-button.v-align-bottom .mat-button-wrapper > *,
+  .mat-fab.v-align-bottom .mat-button-wrapper > *,
+  .mat-mini-fab.v-align-bottom .mat-button-wrapper > * {
+    vertical-align: text-bottom;
+  }
+
+  .mat-button.no-padding,
+  .mat-flat-button.no-padding,
+  .mat-stroked-button.no-padding,
+  .mat-raised-button.no-padding,
+  .mat-icon-button.no-padding,
+  .mat-fab.no-padding,
+  .mat-mini-fab.no-padding {
+    padding: 0px;
+  }
+}

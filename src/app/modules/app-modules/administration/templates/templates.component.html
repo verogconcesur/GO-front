@@ -1,0 +1,30 @@
+<div class="templates-container">
+    <div class="templates-container__header">
+        <app-administration-common-header-section
+            #templatesHeader
+            [searchType]="getSearchType()"
+            [buttonLabel]="getHeaderCreateButtonLabel()"
+            [buttonSmallLabel]="getHeaderCreateButtonLabel('small')"
+            [showFilterButton]="true"
+            [areFiltersSettedAndActive]="areFiltersSettedAndActive()"
+            [searchFn]="getFilteredData"
+            [title]="labels.title"
+            (buttonCreateAction)="buttonCreateAction()"
+            (buttonShowFilterDrawerAction)="buttonShowFilterDrawerAction()"
+            (buttonSearchAction)="buttonSearchAction($event)"
+        ></app-administration-common-header-section>
+    </div>
+    <mat-tab-group
+        class="mat-tab-page-sections"
+        mat-align-tabs="start"
+        [selectedIndex]="getSelectedTabIndex()"
+        (selectedTabChange)="changeSelectedTab($event)"
+    >
+        <mat-tab label="{{ labels.communication | translate }}"></mat-tab>
+        <mat-tab label="{{ labels.budgets | translate }}"></mat-tab>
+        <mat-tab label="{{ labels.checklists | translate }}"></mat-tab>
+        <mat-tab label="{{ labels.attachments | translate }}"></mat-tab>
+        <mat-tab label="{{ labels.clientTimeline | translate }}"></mat-tab>
+    </mat-tab-group>
+    <router-outlet (activate)="onActivate($event)"></router-outlet>
+</div>

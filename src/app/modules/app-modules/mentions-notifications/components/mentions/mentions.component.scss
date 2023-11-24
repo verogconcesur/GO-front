@@ -1,0 +1,39 @@
+.mentions-wrapper {
+  min-width: 650px;
+  .table-mentions {
+    margin-top: 36px;
+    .col1Container {
+      mat-icon {
+        font-size: 10px;
+        width: 12px;
+        height: 12px;
+      }
+      span {
+        white-space: normal !important;
+        &.noReadMargin {
+          margin-left: 12px;
+        }
+      }
+    }
+    .informationContainer {
+      mat-icon {
+        width: 70px;
+        height: 40px;
+      }
+      span {
+        white-space: normal !important;
+      }
+    }
+    mat-icon {
+      &.cross:after {
+        position: absolute;
+        transform: rotate(30deg);
+        content: '/';
+        font-weight: 700;
+        font-size: 1.7em;
+        left: 18px;
+        top: 4px;
+      }
+    }
+  }
+}

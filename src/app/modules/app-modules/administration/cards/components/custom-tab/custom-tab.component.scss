@@ -1,0 +1,40 @@
+:host {
+  width: 100%;
+
+  .custom-tab-group {
+    width: 100%;
+    padding-top: 10px;
+    &__itemList {
+      width: calc(100% - 270px);
+      &__container {
+        padding-right: 20px;
+      }
+    }
+    &__typeList {
+      width: 270px;
+      &__item {
+        border-radius: 6px;
+        width: 100%;
+        height: 50px;
+        padding: 0 10px;
+        margin-bottom: 10px;
+        font-weight: 600;
+        cursor: pointer;
+        mat-icon {
+          position: relative;
+          width: 18px;
+          height: 18px;
+          font-size: 18px;
+          margin: 0 8px;
+        }
+      }
+    }
+  }
+}
+// Reused styles from custom-actions.component.scss-theme for drag and drop
+.custom-actions-container__header__title {
+  font-size: 1rem;
+  font-weight: 600;
+  width: 100%;
+  margin-bottom: 20px;
+}

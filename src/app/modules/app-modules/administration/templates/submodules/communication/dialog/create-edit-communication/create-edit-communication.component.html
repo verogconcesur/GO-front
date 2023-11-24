@@ -1,0 +1,90 @@
+<div class="create-edit-template-content" fxLayout="column" fxLayoutAlign="center center" *ngIf="communicationForm">
+    <div *ngIf="!isModalModeActive()">
+        <div class="create-edit-template-content__title mat-display-2">{{ labels.title | translate }}</div>
+    </div>
+    <div class="create-edit-template-content__form">
+        <form [formGroup]="communicationForm" class="smaller-mat-form-fields">
+            <!-- General Data -->
+            <div class="template-data__section">
+                <div class="template-data__section__title first-child">
+                    {{ labels.data | translate }}
+                </div>
+                <div class="template-data__section__group grid-group" formGroupName="template">
+                    <!-- Name -->
+                    <mat-form-field appearance="outline" floatLabel="always" class="first-item">
+                        <mat-label>{{ labels.name | translate }}</mat-label>
+                        <input matInput formControlName="name" />
+                        <mat-error
+                            class="template-data__error"
+                            *ngIf="
+                                communicationForm.get('template.name').invalid && communicationForm.get('template.name').touched
+                            "
+                        >
+                            {{ labels.nameRequired | translate }}
+                        </mat-error>
+                    </mat-form-field>
+                    <app-organization-levels-nested-combos
+                        #OrganizationLevelsNestedCombos
+                        [form]="communicationForm.get('template')"
+                    ></app-organization-levels-nested-combos>
+                </div>
+                <mat-form-field appearance="outline" floatLabel="always">
+                    <mat-label>{{ labels.communicationType | translate }}</mat-label>
+                    <mat-select formControlName="comunicationType" (selectionChange)="changeComunicationType()">
+                        <mat-option *ngFor="let type of communicationTypes" [value]="type.value">
+                            {{ type.label | translate }}</mat-option
+                        >
+                    </mat-select>
+                    <mat-error
+                        *ngIf="
+                            communicationForm.get('comunicationType').invalid && communicationForm.get('comunicationType').touched
+                        "
+                    >
+                        <span>{{ labels.required | translate }}</span>
+                    </mat-error>
+                </mat-form-field>
+            </div>
+            <mat-tab-group class="mat-tab-page-sections" mat-align-tabs="start" *ngIf="listVariables">
+                <mat-tab *ngFor="let item of comItems.controls" [label]="getTabLabel(item)">
+                    <ng-template matTabContent class="template-data__section">
+                        <div class="template-data__section__group" *ngIf="item.value.messageChannel.id === 2">
+                            <div class="template-data__section__group__title">{{ labels.subject | translate }}</div>
+                            <app-text-editor-wrapper
+                                id="{{ 'textEditorSubject' + item.value.messageChannel.id }}"
+                                textEditorId="{{ 'textEditorSubject' + item.value.messageChannel.id }}"
+                                [initialValue]="item?.value?.subject"
+                                [textEditorConfig]="textEditorToolbarOnlyMacroOptions"
+                                [placeholder]="labels.insertText | translate"
+                                (contentChanged)="textEditorContentChanged($event, item.controls.subject, true)"
+                            ></app-text-editor-wrapper>
+                        </div>
+                        <div class="template-data__section__group">
+                            <div class="template-data__section__group__title">{{ labels.text | translate }}</div>
+                            <app-text-editor-wrapper
+                                id="{{ 'textEditor' + item.value.messageChannel.id }}"
+                                textEditorId="{{ 'textEditor' + item.value.messageChannel.id }}"
+                                [initialValue]="item?.value?.text"
+                                [textEditorConfig]="
+                                    item.value.messageChannel.id === 3 || item.value.messageChannel.id === 4
+                                        ? textEditorToolbarOnlyMacroOptions
+                                        : textEditorToolbarOptions
+                                "
+                                [placeholder]="labels.insertText | translate"
+                                (contentChanged)="
+                                    textEditorContentChanged(
+                                        $event,
+                                        item.controls.text,
+                                        item.value.messageChannel.id === 3 || item.value.messageChannel.id === 4
+                                    )
+                                "
+                            ></app-text-editor-wrapper>
+                        </div>
+                    </ng-template>
+                </mat-tab>
+            </mat-tab-group>
+        </form>
+    </div>
+    <div class="create-edit-template-content__buttons">
+        <!-- TODO: buttons used when the component is not opened with customDialogService -->
+    </div>
+</div>

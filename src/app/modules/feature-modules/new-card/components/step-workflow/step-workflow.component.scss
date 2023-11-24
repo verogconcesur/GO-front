@@ -1,0 +1,41 @@
+@import 'utils/core';
+@import 'utils/theme';
+.step-workflow {
+  .step-workflow__title {
+    margin-bottom: 15px;
+  }
+
+  .step-workflow__main {
+    .step-workflow__main__group {
+      .step-workflow__main__group__header {
+        color: mat-contrast($primary, 50);
+        margin-bottom: 10px;
+      }
+      margin-bottom: 10px;
+      width: 100%;
+      mat-form-field {
+        margin-right: 20px;
+      }
+    }
+  }
+}
+button.max-reached-date-class {
+  background: lighten(mat-color($primary, statusError), 5%);
+  border-radius: 100%;
+}
+button.available-date-class {
+  background: lighten(mat-color($primary, statusSuccess), 20%);
+  border-radius: 100%;
+}
+mat-option.max-reached-date-class {
+  background: lighten(mat-color($primary, statusError), 5%) !important;
+  &.mat-active {
+    background: lighten(mat-color($primary, statusError), 0%) !important;
+  }
+}
+mat-option.available-date-class {
+  background: lighten(mat-color($primary, statusSuccess), 20%) !important;
+  &.mat-active {
+    background: lighten(mat-color($primary, statusSuccess), 10%) !important;
+  }
+}

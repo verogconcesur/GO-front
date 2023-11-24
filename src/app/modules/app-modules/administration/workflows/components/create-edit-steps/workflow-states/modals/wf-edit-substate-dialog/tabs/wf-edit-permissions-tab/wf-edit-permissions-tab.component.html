@@ -1,0 +1,145 @@
+<div class="workflow-role-permissions-content__form">
+    <div class="workflow-role-permissions-content__form__title">
+        <h2>{{ labels.title | translate }}</h2>
+    </div>
+    <div class="workflow-role-permissions-content__form__main" fxLayout="row">
+        <div fxFlex="40" *ngIf="roleList && roleList.length">
+            <div>
+                <h2>{{ labels.roleList | translate }}</h2>
+            </div>
+            <div class="workflow-role-permissions-content__form__main__tabList">
+                <div
+                    *ngFor="let role of roleList"
+                    class="workflow-role-permissions-content__form__main__tabList__item"
+                    [ngClass]="{ selected: role?.id === roleSelected?.id }"
+                    fxLayout="row"
+                    (click)="selectRole(role); $event.stopPropagation()"
+                >
+                    <span>{{ role.name }}</span>
+                </div>
+            </div>
+        </div>
+        <div fxFlex="56" fxFlexOffset="4" *ngIf="roleSelected && allPermisionForm && users">
+            <div>
+                <h2>{{ roleSelected.name }}</h2>
+            </div>
+            <div class="workflow-role-permissions-content__form__main__permissions" fxLayout="column">
+                <div fxLayout="row" class="workflow-role-permissions-content__form__main__permissions__header">
+                    <div
+                        fxFlex="40"
+                        class="workflow-role-permissions-content__form__main__permissions__item"
+                        fxLayout="row"
+                        fxLayoutAlign="start center"
+                    >
+                        <span>{{ labels.whoSees | translate }}</span>
+                    </div>
+                    <div
+                        fxFlex="20"
+                        class="workflow-role-permissions-content__form__main__permissions__item"
+                        fxLayout="row"
+                        fxLayoutAlign="center center"
+                    >
+                        <span>{{ labels.hide | translate }}</span>
+                    </div>
+                    <div
+                        fxFlex="20"
+                        class="workflow-role-permissions-content__form__main__permissions__item"
+                        fxLayout="row"
+                        fxLayoutAlign="center center"
+                    >
+                        <span>{{ labels.show | translate }}</span>
+                    </div>
+                    <div
+                        fxFlex="20"
+                        class="workflow-role-permissions-content__form__main__permissions__item"
+                        fxLayout="row"
+                        fxLayoutAlign="center center"
+                    >
+                        <span>{{ labels.edit | translate }}</span>
+                    </div>
+                </div>
+                <div fxLayout="row" [formGroup]="allPermisionForm">
+                    <div
+                        fxFlex="40"
+                        class="workflow-role-permissions-content__form__main__permissions__item"
+                        fxLayout="row"
+                        fxLayoutAlign="start center"
+                    >
+                        <span>{{ labels.all | translate }}</span>
+                    </div>
+                    <mat-radio-group fxFlex="60" fxLayout="row" formControlName="permission">
+                        <div
+                            fxFlex="33"
+                            class="workflow-role-permissions-content__form__main__permissions__item"
+                            fxLayout="row"
+                            fxLayoutAlign="center center"
+                        >
+                            <mat-radio-button value="HIDE" (click)="changeAllPermissions('HIDE')"></mat-radio-button>
+                        </div>
+                        <div
+                            fxFlex="33"
+                            class="workflow-role-permissions-content__form__main__permissions__item"
+                            fxLayout="row"
+                            fxLayoutAlign="center center"
+                        >
+                            <mat-radio-button value="SHOW" (click)="changeAllPermissions('SHOW')"></mat-radio-button>
+                        </div>
+                        <div
+                            fxFlex="33"
+                            class="workflow-role-permissions-content__form__main__permissions__item"
+                            fxLayout="row"
+                            fxLayoutAlign="center center"
+                        >
+                            <mat-radio-button value="EDIT" (click)="changeAllPermissions('EDIT')"></mat-radio-button></div
+                    ></mat-radio-group>
+                </div>
+                <div fxLayout="row">
+                    <mat-divider></mat-divider>
+                </div>
+                <div *ngFor="let user of users.controls" [formGroup]="user">
+                    <div *ngIf="user.value.user.role.id === roleSelected.id" fxLayout="row">
+                        <div
+                            fxFlex="40"
+                            class="workflow-role-permissions-content__form__main__permissions__item"
+                            fxLayout="row"
+                            fxLayoutAlign="start center"
+                        >
+                            <span>{{ getUserFullName(user?.value) }}</span>
+                        </div>
+                        <!-- <mat-radio-group
+                            formControlName="permissionType"
+                            fxFlex="60"
+                            fxLayout="row"
+                            [disabled]="user?.value?.user?.showAll"
+                        > -->
+                        <mat-radio-group formControlName="permissionType" fxFlex="60" fxLayout="row">
+                            <div
+                                fxFlex="33"
+                                class="workflow-role-permissions-content__form__main__permissions__item"
+                                fxLayout="row"
+                                fxLayoutAlign="center center"
+                            >
+                                <mat-radio-button value="HIDE"></mat-radio-button>
+                            </div>
+                            <div
+                                fxFlex="33"
+                                class="workflow-role-permissions-content__form__main__permissions__item"
+                                fxLayout="row"
+                                fxLayoutAlign="center center"
+                            >
+                                <mat-radio-button value="SHOW"></mat-radio-button>
+                            </div>
+                            <div
+                                fxFlex="33"
+                                class="workflow-role-permissions-content__form__main__permissions__item"
+                                fxLayout="row"
+                                fxLayoutAlign="center center"
+                            >
+                                <mat-radio-button value="EDIT"></mat-radio-button></div
+                        ></mat-radio-group>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

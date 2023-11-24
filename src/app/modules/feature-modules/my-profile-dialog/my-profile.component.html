@@ -1,0 +1,175 @@
+<div class="profile-content" fxLayout="column" fxLayoutAlign="center center">
+    <div *ngIf="!isModalModeActive()">
+        <div class="profile-content__title mat-display-2">{{ labels.title | translate }}</div>
+    </div>
+    <div class="profile-content__form">
+        <form [formGroup]="profileForm" *ngIf="profileForm" class="smaller-mat-form-fields">
+            <!-- General Data -->
+            <div class="user-data__section">
+                <div class="user-data__section__title first-child">
+                    {{ labels.data | translate }}
+                </div>
+                <div class="user-data__section__group grid-group">
+                    <!-- Name -->
+                    <mat-form-field appearance="outline" floatLabel="always">
+                        <mat-label>{{ labels.name | translate }}</mat-label>
+                        <input matInput formControlName="name" />
+                        <mat-error
+                            class="user-data__error"
+                            *ngIf="profileForm.controls.name.invalid && profileForm.controls.name.touched"
+                        >
+                            {{ labels.nameRequired | translate }}
+                        </mat-error>
+                    </mat-form-field>
+                    <!-- firstName -->
+                    <mat-form-field appearance="outline" floatLabel="always">
+                        <mat-label>{{ labels.firstName | translate }}</mat-label>
+                        <input matInput formControlName="firstName" />
+                        <mat-error
+                            class="user-data__error"
+                            *ngIf="profileForm.controls.firstName.invalid && profileForm.controls.firstName.touched"
+                        >
+                            {{ labels.firstNameRequired | translate }}
+                        </mat-error>
+                    </mat-form-field>
+                    <!-- lastName -->
+                    <mat-form-field appearance="outline" floatLabel="always">
+                        <mat-label>{{ labels.lastName | translate }}</mat-label>
+                        <input matInput formControlName="lastName" />
+                    </mat-form-field>
+                    <!-- Email -->
+                    <mat-form-field appearance="outline" floatLabel="always">
+                        <mat-label>{{ labels.email | translate }}</mat-label>
+                        <input matInput formControlName="email" />
+                    </mat-form-field>
+                    <!-- userName -->
+                    <mat-form-field appearance="outline" floatLabel="always">
+                        <mat-label>{{ labels.userName | translate }}</mat-label>
+                        <input matInput formControlName="userName" />
+                    </mat-form-field>
+                    <!-- role -->
+                    <mat-form-field appearance="outline" floatLabel="always">
+                        <mat-label>{{ labels.role | translate }}</mat-label>
+                        <input matInput formControlName="role" />
+                    </mat-form-field>
+                    <!-- password -->
+                    <mat-form-field appearance="outline" floatLabel="always" *ngIf="showPasswordFields">
+                        <mat-label>{{ labels.password | translate }}</mat-label>
+                        <input matInput formControlName="password" type="password" />
+                        <mat-error class="restore-password-content__error" *ngIf="form.password.errors && form.password.touched">
+                            <span *ngIf="form.password.errors.required">{{ labels.passwordRequired | translate }}</span>
+                        </mat-error>
+                    </mat-form-field>
+                    <!-- newPassword -->
+                    <mat-form-field
+                        appearance="outline"
+                        floatLabel="always"
+                        matTooltip="{{ labels.passwordPattern | translate }}"
+                        matTooltipPosition="above"
+                        *ngIf="showPasswordFields"
+                    >
+                        <mat-label>{{ labels.password1 | translate }}<mat-icon>info</mat-icon></mat-label>
+                        <input matInput formControlName="newPassword" type="password" />
+                        <mat-error
+                            class="restore-password-content__error"
+                            *ngIf="form.newPassword.errors && form.newPassword.touched"
+                        >
+                            <span *ngIf="form.newPassword.errors.required">{{ labels.passwordRequired | translate }}</span>
+                            <span *ngIf="form.newPassword.errors.pattern">{{ labels.passwordPatternError | translate }}</span>
+                        </mat-error>
+                    </mat-form-field>
+                    <!-- newPasswordConfirmation -->
+                    <mat-form-field appearance="outline" floatLabel="always" *ngIf="showPasswordFields">
+                        <mat-label>{{ labels.password2 | translate }}</mat-label>
+                        <input matInput formControlName="newPasswordConfirmation" type="password" />
+                        <mat-error
+                            class="restore-password-content__error"
+                            *ngIf="form.newPasswordConfirmation.invalid && form.newPasswordConfirmation.touched"
+                        >
+                            <span *ngIf="form.newPasswordConfirmation.errors.required">{{
+                                labels.passwordRequired | translate
+                            }}</span>
+                            <span *ngIf="form.newPasswordConfirmation.errors.matching">{{
+                                labels.passwordMatch | translate
+                            }}</span>
+                        </mat-error>
+                    </mat-form-field>
+                </div>
+            </div>
+
+            <!-- Organization -->
+            <div class="user-data__section">
+                <div class="user-data__section__title">
+                    {{ labels.organization | translate }}
+                </div>
+
+                <div class="user-data__section__group grid-group">
+                    <!-- brands -->
+                    <mat-form-field
+                        appearance="outline"
+                        floatLabel="always"
+                        matTooltip="{{ profileForm.get('brands').value }}"
+                        [matTooltipDisabled]="disableTooltip(profileForm.get('brands').value)"
+                        matTooltipPosition="above"
+                        matTooltipShowDelay="700"
+                    >
+                        <mat-label>{{ labels.brand | translate }}</mat-label>
+                        <input matInput formControlName="brands" />
+                    </mat-form-field>
+                    <!-- facilities -->
+                    <mat-form-field
+                        appearance="outline"
+                        floatLabel="always"
+                        matTooltip="{{ profileForm.get('facilities').value }}"
+                        [matTooltipDisabled]="disableTooltip(profileForm.get('facilities').value)"
+                        matTooltipPosition="above"
+                        matTooltipShowDelay="700"
+                    >
+                        <mat-label>{{ labels.facility | translate }}</mat-label>
+                        <input matInput formControlName="facilities" />
+                    </mat-form-field>
+                    <!-- departments -->
+                    <mat-form-field
+                        appearance="outline"
+                        floatLabel="always"
+                        matTooltip="{{ profileForm.get('departments').value }}"
+                        [matTooltipDisabled]="disableTooltip(profileForm.get('departments').value)"
+                        matTooltipPosition="above"
+                        matTooltipShowDelay="700"
+                    >
+                        <mat-label>{{ labels.department | translate }}</mat-label>
+                        <input matInput formControlName="departments" />
+                    </mat-form-field>
+                    <!-- specialties -->
+                    <mat-form-field
+                        appearance="outline"
+                        floatLabel="always"
+                        matTooltip="{{ profileForm.get('specialties').value }}"
+                        [matTooltipDisabled]="disableTooltip(profileForm.get('specialties').value)"
+                        matTooltipPosition="above"
+                        matTooltipShowDelay="700"
+                    >
+                        <mat-label>{{ labels.specialty | translate }}</mat-label>
+                        <input matInput formControlName="specialties" />
+                    </mat-form-field>
+                </div>
+            </div>
+
+            <!-- Sign -->
+            <div class="user-data__section">
+                <div class="user-data__section__title">
+                    {{ labels.sign | translate }}
+                </div>
+                <div class="sign-wrapper" (click)="editSign()">
+                    <img [src]="getSignSrc()" />
+                    <button mat-icon-button>
+                        <mat-icon>edit</mat-icon>
+                    </button>
+                </div>
+            </div>
+        </form>
+    </div>
+    <div class="profile-content__buttons">
+        <!-- TODO: buttons used when the component is not opened with customDialogService -->
+    </div>
+</div>

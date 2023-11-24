@@ -1,0 +1,44 @@
+@import '@angular/material/theming';
+
+@mixin custom-mat-table-theme($theme, $main-typo) {
+  $primary: map-get($theme, primary);
+  $background: map-get($theme, background);
+  $foregroung: map-get($theme, foreground);
+
+  .mat-table {
+    background-color: transparent;
+    &.table-ellipsis {
+      width: 100%;
+      table-layout: fixed;
+      th,
+      td {
+        overflow: hidden;
+        width: auto;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+        padding-left: 10px;
+        &.no-ellipsis {
+          overflow: inherit;
+        }
+      }
+    }
+    .mat-header-row .mat-header-cell {
+      text-transform: uppercase;
+      font-weight: 600;
+      font-size: 12px;
+      color: mat-contrast($primary, 100);
+    }
+    tr.mat-row {
+      background-color: mat-color($background, background);
+      height: 65px;
+      .mat-cell {
+        font-size: 16px;
+        color: mat-color($foregroung, secondary-text);
+        &.action-buttons {
+          color: mat-color($primary, 500);
+          font-size: 24px;
+        }
+      }
+    }
+  }
+}

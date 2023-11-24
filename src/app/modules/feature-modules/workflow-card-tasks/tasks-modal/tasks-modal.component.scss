@@ -1,0 +1,17 @@
+.tasks-wrapper {
+  padding: 10px;
+  position: relative;
+  .close-button {
+    position: absolute;
+    top: -20px;
+    right: -20px;
+  }
+
+  .empty-wrapper {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    min-height: 200px;
+  }
+}

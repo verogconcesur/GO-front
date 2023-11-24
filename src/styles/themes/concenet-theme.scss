@@ -1,0 +1,149 @@
+$concenet-theme-colors: (
+  50: #e9e9f4,
+  100: #c8c8e3,
+  200: #a3a3d1,
+  300: #7e7ebf,
+  400: #6362b1,
+  500: #4746a3,
+  600: #403f9b,
+  700: #373791,
+  800: #2f2f88,
+  900: #202077,
+  A100: #b5b5ff,
+  A200: #8282ff,
+  A400: #4f4fff,
+  A700: #3535ff,
+  statusNeutral: #848484,
+  statusSuccess: #42c778,
+  statusWarning: #ffb025,
+  statusError: #f34040,
+  statusPending: #fb7b25,
+  paginator: #979797,
+  contrast: (
+    50: #6f708b,
+    100: #454560,
+    200: #d7d7e8,
+    300: #d6d6e1,
+    400: #ffffff,
+    500: #f5f5fa,
+    600: #f8f8fa,
+    700: #ffffff,
+    800: #434377,
+    900: #2f2f53,
+    // Used like black
+    A100: #000000,
+    A200: #313142,
+    A400: rgb(204, 204, 204),
+    A700: #ffffff,
+    statusNeutral: #fff,
+    //Used like WHITE
+    statusSuccess: #fff,
+    statusWarning: #fff,
+    statusError: #fff
+  )
+);
+
+$concenet-warn-colors: (
+  50: #fce3ea,
+  100: #f8b8cb,
+  200: #f489a9,
+  300: #ef5987,
+  400: #eb366d,
+  500: #e81253,
+  600: #e5104c,
+  700: #e20d42,
+  800: #de0a39,
+  900: #d80529,
+  A100: #ffffff,
+  A200: #ffced4,
+  A400: #ff9ba7,
+  A700: #ff8191,
+  contrast: (
+    50: #000000,
+    100: #000000,
+    200: #000000,
+    300: #000000,
+    400: #ffffff,
+    500: #ffffff,
+    600: #ffffff,
+    700: #ffffff,
+    800: #ffffff,
+    900: #ffffff,
+    A100: #000000,
+    A200: #000000,
+    A400: #000000,
+    A700: #f34040
+  )
+);
+
+$concenet-main-typography: mat-typography-config(
+  $font-family: 'Saira',
+  $display-4: mat-typography-level(112px, 112px, 400, $letter-spacing: -0.05em),
+  $display-3: mat-typography-level(56px, 56px, 900, $letter-spacing: -0.02em),
+  $display-2: mat-typography-level(40px, 1.2, 900),
+  $display-1: mat-typography-level(32px, 1.13, 600),
+  $headline: mat-typography-level(24px, 32px, 900),
+  $title: mat-typography-level(20px, 28px, 600),
+  $subheading-2: mat-typography-level(16px, 28px, 400),
+  $subheading-1: mat-typography-level(14px, 1em, 600, $letter-spacing: 3px),
+  $body-2: mat-typography-level(18px, 26px, 400),
+  $body-1: mat-typography-level(16px, 20px, 400),
+  $caption: mat-typography-level(12px, 20px, 400),
+  $button: mat-typography-level(14px, 14px, 600),
+  $input: mat-typography-level(inherit, 1.125, 400)
+) !default;
+
+$concenet-primary: mat-palette($concenet-theme-colors);
+$concenet-accent: mat-palette($mat-indigo, 200);
+$concenet-warn: mat-palette($concenet-warn-colors);
+
+$concenet-background: (
+  status-bar: map-get($mat-grey, 300),
+  app-bar: map-get($mat-grey, 100),
+  background: #ffffff,
+  background-administration: #f0f0f5,
+  hover: rgba(black, 0.04),
+  card: white,
+  dialog: white,
+  disabled-button: #f7f7f7,
+  raised-button: white,
+  focused-button: $dark-focused,
+  selected-button: map-get($mat-grey, 300),
+  selected-disabled-button: map-get($mat-grey, 400),
+  disabled-button-toggle: map-get($mat-grey, 200),
+  unselected-chip: map-get($mat-grey, 300),
+  disabled-list-option: map-get($mat-grey, 200),
+  tooltip: map-get($mat-grey, 700),
+  icon-background: rgba(black, 0.5),
+  note-background: rgba(#fff, 0.9),
+  version-chip: #f2f2f2,
+  snackbar: #454751
+);
+
+$concenet-foreground: (
+  base: #121212,
+  divider: $dark-dividers,
+  dividers: $dark-dividers,
+  disabled: $dark-disabled-text,
+  disabled-button: rgba(#121212, 0.26),
+  disabled-text: $dark-disabled-text,
+  elevation: #121212,
+  hint-text: $dark-disabled-text,
+  secondary-text: #26273b,
+  icon: rgba(#121212, 0.54),
+  icons: rgba(#121212, 0.54),
+  text: #121212,
+  slider-min: rgba(#121212, 0.87),
+  slider-off: rgba(#121212, 0.26),
+  slider-off-active: rgba(#121212, 0.38)
+);
+
+//$concenet-theme: mat-light-theme($concenet-primary, $concenet-accent, $concenet-warn);
+$concenet-theme: (
+  primary: $concenet-primary,
+  accent: $concenet-accent,
+  warn: $concenet-warn,
+  is-dark: false,
+  foreground: $concenet-foreground,
+  background: $concenet-background
+);

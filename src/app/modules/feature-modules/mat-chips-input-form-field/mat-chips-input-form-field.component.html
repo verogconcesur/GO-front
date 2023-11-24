@@ -1,0 +1,19 @@
+<mat-form-field class="select-wrapper" [ngClass]="matFormFieldClasses" appearance="outline" floatLabel="always" *ngIf="fControl">
+    <mat-label>{{ matFormLabel | translate }}</mat-label>
+    <mat-chip-list #chipList>
+        <mat-chip *ngFor="let chip of getChips()" (removed)="removeChip(chip)">
+            {{ chip }}
+            <button matChipRemove>
+                <mat-icon>cancel</mat-icon>
+            </button>
+        </mat-chip>
+        <input
+            class="chip-input"
+            [placeholder]="inputPlaceholder | translate"
+            [matChipInputFor]="chipList"
+            [matChipInputSeparatorKeyCodes]="separatorKeysCodes"
+            [matChipInputAddOnBlur]="true"
+            (matChipInputTokenEnd)="addChip($event)"
+        />
+    </mat-chip-list>
+</mat-form-field>

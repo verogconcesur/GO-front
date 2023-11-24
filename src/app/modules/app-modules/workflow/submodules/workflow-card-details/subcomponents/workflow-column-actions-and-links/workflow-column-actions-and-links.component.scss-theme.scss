@@ -1,0 +1,65 @@
+@import '@angular/material/theming';
+
+@mixin workflow-column-actions-and-links-component-theme($theme, $main-typo) {
+  $primary: map-get($theme, primary);
+  // $foreground: map-get($theme, foreground);
+
+  .actions-wrapper {
+    h5 {
+      font-weight: bold;
+      color: mat-color($primary, statusNeutral);
+      letter-spacing: 2px;
+      height: 20px;
+      margin-bottom: 12px;
+    }
+    &__move {
+      .buttons {
+        button {
+          .mat-button-wrapper {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            label {
+              font-size: 1.25em;
+              cursor: pointer;
+            }
+            mat-icon {
+              position: relative;
+              color: mat-contrast($primary, 400);
+              font-size: 3em;
+              width: 30px;
+              height: 30px;
+              margin-top: -10px;
+              margin-right: 20px;
+              overflow: visible;
+            }
+          }
+          &.send {
+            background-color: mat-color($primary, A200);
+            label {
+              color: mat-contrast($primary, 400);
+            }
+            mat-icon {
+              transform: rotate(90deg);
+              font-size: 2.7em;
+              width: 30px;
+              height: 30px;
+            }
+          }
+          &.move mat-icon {
+            &::before {
+              content: '';
+              background-color: mat-contrast($primary, 400);
+              position: absolute;
+              top: 18px;
+              left: 6px;
+              width: 7px;
+              height: 7px;
+              border-radius: 10px;
+            }
+          }
+        }
+      }
+    }
+  }
+}

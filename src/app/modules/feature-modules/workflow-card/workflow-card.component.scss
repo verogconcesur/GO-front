@@ -1,0 +1,124 @@
+@import 'utils/theme';
+.workflow-card {
+  background-color: mat-contrast($primary, 400);
+  overflow: hidden;
+  cursor: pointer;
+  width: 300px;
+  padding: 8px;
+  margin: 10px 0;
+  border-radius: 8px;
+  box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.04);
+  min-height: 60px;
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+  position: relative;
+  transition: height 0.5s ease;
+  transition: min-height 0.5s ease;
+
+  &__colors {
+    width: 6px;
+    position: absolute;
+    height: 90%;
+    top: 5%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-direction: column;
+    &__color {
+      border-radius: 8px;
+      width: 6px;
+      &.x-1 {
+        height: 100%;
+      }
+      &.x-2 {
+        height: 46%;
+      }
+      &.x-3 {
+        height: 30%;
+      }
+      &.x-4 {
+        height: 22%;
+      }
+    }
+  }
+  &__info {
+    margin: 0 0 0 20px;
+    display: flex;
+    justify-content: flex-start;
+    align-items: flex-start;
+    flex-direction: column;
+    width: calc(100% - 20px);
+    &__date {
+      font-size: 0.85em;
+      color: lighten(mat-contrast($primary, 50), 20%);
+      position: absolute;
+      top: 7px;
+      right: 10px;
+    }
+    &__tasks {
+      font-size: 0.85em;
+      color: lighten(mat-contrast($primary, 50), 20%);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      position: absolute;
+      // top: 7px;
+      bottom: 13px;
+      right: 10px;
+      border-radius: 4px;
+      padding-left: 5px;
+      mat-icon {
+        padding-left: 5px;
+      }
+      // &.bottom {
+      //   top: auto;
+      //   bottom: 13px;
+      // }
+      &.completed {
+        background-color: mat-color($primary, statusSuccess);
+        color: mat-contrast($primary, 400);
+      }
+    }
+    &__data {
+      line-height: initial !important;
+      font-size: 14px;
+      color: mat-contrast($primary, 50);
+      &:first-child {
+        font-size: 18px;
+        font-weight: bold;
+        color: mat-color($foreground, secondary-text);
+      }
+      &:nth-child(2) {
+        font-weight: 500;
+      }
+
+      &.extra-info {
+        width: 100%;
+        padding: 2px;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        display: inline-block;
+        border-radius: 5px;
+        &:hover {
+          background-color: mat-color($background, background-administration);
+        }
+        &.tasks {
+          width: calc(100% - 60px);
+        }
+      }
+    }
+    &__read-card {
+      position: absolute;
+      top: 5px;
+      right: 5px;
+      cursor: pointer;
+      color: mat-color($primary, A700);
+    }
+  }
+  &.expanded .workflow-card__info .workflow-card__info__data.extra-info {
+    white-space: normal;
+    text-overflow: clip;
+  }
+}

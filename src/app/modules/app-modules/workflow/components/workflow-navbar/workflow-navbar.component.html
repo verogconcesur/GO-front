@@ -1,0 +1,126 @@
+<div class="workflow-navbar" fxLayoutAlign="space-between center">
+    <div class="workflow-navbar__searcher smaller-mat-form-fields">
+        <h2 class="workflow-navbar__searcher__no-workflows" *ngIf="workflowList?.length === 0">
+            {{ labels.noWorkflows | translate }}
+        </h2>
+        <form [formGroup]="workflowForm" *ngIf="workflowList?.length">
+            <mat-form-field
+                appearance="outline"
+                floatLabel="always"
+                class="smaller-mat-form-fields__no-margin mat-form-field__no-border"
+                [ngClass]="{ 'workflow-and-facility-combo': hasMoreThanOneFacility() }"
+            >
+                <mat-select
+                    formControlName="workflow"
+                    disableOptionCentering
+                    [placeholder]="labels.selectWorkflow | translate"
+                    class="capitalize redPlaceholder"
+                    [panelClass]="'workflow-panel-class bigger-selection-panel-class smaller-mat-form-fields'"
+                    (selectionChange)="workflowSelectionChange($event)"
+                >
+                    <mat-form-field
+                        appearance="outline"
+                        floatLabel="always"
+                        class="smaller-mat-form-fields__no-margin workflow-navbar__selector-filter"
+                    >
+                        <input
+                            matInput
+                            type="text"
+                            matInput
+                            formControlName="workflowSearch"
+                            [placeholder]="labels.filterWorkflow | translate"
+                        />
+                    </mat-form-field>
+
+                    <mat-divider></mat-divider>
+
+                    <mat-select-trigger *ngIf="workflowSelected">
+                        {{ getWorkflowLabel(workflowSelected, true) || "" }}
+                    </mat-select-trigger>
+
+                    <mat-option
+                        *ngFor="let workflow of workflowOptions | async"
+                        [value]="workflow"
+                        class="workflow-name capitalize"
+                    >
+                        {{ getWorkflowLabel(workflow) }}
+                    </mat-option>
+                </mat-select>
+            </mat-form-field>
+            <!-- Facilities -->
+            <mat-form-field
+                appearance="outline"
+                floatLabel="always"
+                class="smaller-mat-form-fields__no-margin mat-form-field__no-border workflow-and-facility-combo"
+                *ngIf="hasMoreThanOneFacility()"
+            >
+                <mat-select
+                    formControlName="facility"
+                    disableOptionCentering
+                    [placeholder]="getFacilitiesPlaceholder()"
+                    class="capitalize"
+                    multiple
+                    [panelClass]="'workflow-panel-class bigger-selection-panel-class smaller-mat-form-fields'"
+                    (selectionChange)="facilitySelectionChange($event)"
+                >
+                    <mat-form-field
+                        appearance="outline"
+                        floatLabel="always"
+                        class="smaller-mat-form-fields__no-margin workflow-navbar__selector-filter"
+                    >
+                        <input
+                            matInput
+                            type="text"
+                            matInput
+                            formControlName="facilitySearch"
+                            [placeholder]="labels.filterFacility | translate"
+                        />
+                    </mat-form-field>
+
+                    <mat-divider></mat-divider>
+
+                    <mat-select-trigger>
+                        {{ getFacilitiesLabel() }}
+                    </mat-select-trigger>
+
+                    <mat-option
+                        *ngFor="let facility of facilitiesOptions | async"
+                        [value]="facility"
+                        class="workflow-name capitalize"
+                    >
+                        {{ facility.name }}
+                    </mat-option>
+                </mat-select>
+            </mat-form-field>
+        </form>
+        <!-- <button
+            mat-icon-button
+            class="responsive__tablet_or_more"
+            *ngIf="workflowSelected"
+            (click)="!synchronizingData && syncData()"
+        > -->
+        <button mat-icon-button class="responsive__tablet_or_more" *ngIf="false" (click)="!synchronizingData && syncData()">
+            <mat-spinner style="margin-left: 10px" diameter="20" *ngIf="synchronizingData"></mat-spinner>
+            <mat-icon *ngIf="!synchronizingData">cloud_download</mat-icon>
+        </button>
+    </div>
+    <div fxLayoutAlign="space-between center">
+        <app-workflow-navbar-filter></app-workflow-navbar-filter>
+        <mat-divider [vertical]="true"></mat-divider>
+        <div class="workflow-navbar__view-options">
+            <mat-icon class="opt-view table-view" (click)="goToView('tableView')" [ngClass]="{ active: isView('tableView') }">
+                menu
+            </mat-icon>
+            <mat-icon class="opt-view board-view" (click)="goToView('boardView')" [ngClass]="{ active: isView('boardView') }">
+                bar_chart
+            </mat-icon>
+            <mat-icon
+                class="opt-view calendar-view"
+                (click)="goToView('calendarView')"
+                [ngClass]="{ active: isView('calendarView') }"
+            >
+                calendar_today
+            </mat-icon>
+        </div>
+    </div>
+</div>

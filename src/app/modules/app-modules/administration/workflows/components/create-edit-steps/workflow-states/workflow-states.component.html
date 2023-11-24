@@ -1,0 +1,87 @@
+<form [formGroup]="form" *ngIf="form" class="smaller-mat-form-fields states-container" cdkDropListGroup>
+    <section
+        class="states-container__states"
+        formArrayName="states"
+        cdkDropList
+        cdkDropListOrientation="horizontal"
+        (cdkDropListDropped)="dropState($event)"
+    >
+        <div
+            class="states-container__state mat-elevation-z2"
+            *ngFor="let state of getStatesFormArray().controls; let i = index"
+            cdkDragBoundary=".states-container__states"
+            [cdkDragDisabled]="state.controls.anchor.value"
+            cdkDrag
+        >
+            <div *cdkDragPlaceholder class="wf-state-placeholder"></div>
+            <section [formGroupName]="i">
+                <div class="states-container__state__line">
+                    <mat-icon class="drag-line-icon" *ngIf="!state.controls.anchor.value" cdkDragHandle>drag_indicator</mat-icon>
+                    <mat-icon class="drag-line-icon" *ngIf="state.controls.anchor.value">anchor</mat-icon>
+                    <div class="line-name" (click)="edit(state.value)">
+                        <div
+                            class="name uppercase bold"
+                            matTooltipPosition="above"
+                            [matTooltip]="state.controls.name.value"
+                            appShowIfTruncated
+                        >
+                            {{ state.controls.name.value }}
+                        </div>
+                        <mat-icon class="edit-line-icon">edit</mat-icon>
+                    </div>
+                    <mat-icon class="delete-line-icon" (click)="deleteState(state.value)">close</mat-icon>
+                </div>
+                <mat-divider></mat-divider>
+                <section
+                    formArrayName="workflowSubstates"
+                    class="states-container__state__substates"
+                    cdkDropList
+                    cdkDropListOrientation="vertical"
+                    (cdkDropListDropped)="dropSubstate($event, state)"
+                >
+                    <div
+                        class="states-container__state__substate"
+                        *ngFor="let substate of getSubstatesFormArray(state).controls; let i2 = index"
+                        cdkDragBoundary=".states-container__state__substates"
+                        cdkDrag
+                    >
+                        <div *cdkDragPlaceholder class="wf-substate-placeholder"></div>
+                        <section [formGroupName]="i2">
+                            <div class="states-container__state__substate__line">
+                                <mat-icon class="drag-line-icon" cdkDragHandle>drag_indicator</mat-icon>
+                                <div class="line-name" (click)="edit(state.value, substate.value)">
+                                    <div
+                                        class="name"
+                                        matTooltipPosition="above"
+                                        [matTooltip]="substate.controls.name.value"
+                                        appShowIfTruncated
+                                    >
+                                        {{ substate.controls.name.value }}
+                                    </div>
+                                    <mat-icon class="edit-line-icon">edit</mat-icon>
+                                </div>
+                                <mat-icon class="delete-line-icon" (click)="deleteSubstate(state.value, substate.value)"
+                                    >close</mat-icon
+                                >
+                            </div>
+                        </section>
+                        <mat-divider></mat-divider>
+                    </div>
+
+                    <div class="states-container__state__substate pointer" (click)="addSubstate(state.value)">
+                        <div class="add-state__substate__label">
+                            <mat-icon>add</mat-icon>
+                            <span class="bold">{{ labels.addSubstate | translate }}</span>
+                        </div>
+                    </div>
+                </section>
+            </section>
+        </div>
+        <div class="states-container__state add-state mat-elevation-z2" (click)="addState()">
+            <div class="add-state__label">
+                <mat-icon>add</mat-icon>
+                <span class="bold">{{ labels.addState | translate }}</span>
+            </div>
+        </div>
+    </section>
+</form>

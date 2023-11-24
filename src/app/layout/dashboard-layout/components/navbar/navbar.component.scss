@@ -1,0 +1,57 @@
+@import 'utils/core';
+.navbar {
+  mat-divider {
+    margin: 0 15px;
+    height: 40px;
+  }
+
+  &__right {
+    button {
+      margin-left: 5px;
+    }
+    @include respond-to(calc(#{$mobile} + 50px)) {
+      button {
+        margin: 0;
+      }
+    }
+    &__createCard {
+      display: flex;
+      justify-content: space-around;
+      align-items: center;
+      mat-icon {
+        margin-right: 5px;
+      }
+    }
+  }
+
+  //Responsive
+  .responsive__desktop-and-tablet {
+    display: block;
+  }
+  .responsive__mobile {
+    display: none;
+  }
+  .responsive__tablet_or_more {
+    display: block;
+  }
+  .responsive__less-than-tablet {
+    display: none;
+  }
+  @include respond-to($desktop) {
+    .responsive__desktop-and-tablet {
+      display: none;
+    }
+    .responsive__mobile {
+      display: block;
+    }
+  }
+
+  @include respond-to(calc(#{$mobile} + 50px)) {
+    .responsive__tablet_or_more {
+      display: none;
+    }
+    .responsive__less-than-tablet {
+      display: block;
+    }
+  }
+}

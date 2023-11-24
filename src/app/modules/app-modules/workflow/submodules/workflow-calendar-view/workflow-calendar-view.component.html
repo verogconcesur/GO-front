@@ -1,0 +1,50 @@
+<router-outlet name="card"></router-outlet>
+<div class="calendar-view-wrapper" *ngIf="showCalendarView">
+    <div class="calendar-view-wrapper__header" fxLayout="row" fxLayoutAlign="space-between center">
+        <div class="calendar-view-wrapper__header__switcher" fxLayout="row" fxLayoutAlign="start center">
+            <span [ngClass]="{ active: modeActive('WEEK') }" (click)="changeMode('WEEK')">{{ labels.week | translate }}</span>
+            <span [ngClass]="{ active: modeActive('DAY') }" (click)="changeMode('DAY')">{{ labels.day | translate }}</span>
+        </div>
+        <div class="calendar-view-wrapper__header__date" fxLayout="row" fxLayoutAlign="center center" [formGroup]="formFilters">
+            <button mat-icon-button (click)="changeDate('DOWN')">
+                <mat-icon>keyboard_arrow_left</mat-icon>
+            </button>
+            <span (click)="openPicker()">{{ getDate() }}</span>
+            <mat-form-field style="width: 1px; visibility: hidden">
+                <input matInput [matDatepicker]="picker" formControlName="singleDay" />
+                <mat-datepicker #picker></mat-datepicker>
+            </mat-form-field>
+            <mat-form-field style="width: 1px; visibility: hidden">
+                <mat-date-range-input [rangePicker]="rangePicker">
+                    <input matStartDate formControlName="initDay" />
+                    <input matEndDate formControlName="endDay" />
+                </mat-date-range-input>
+                <mat-datepicker-toggle matIconSuffix [for]="rangePicker"></mat-datepicker-toggle>
+                <mat-date-range-picker #rangePicker></mat-date-range-picker>
+            </mat-form-field>
+            <button mat-icon-button (click)="changeDate('UP')">
+                <mat-icon>keyboard_arrow_right</mat-icon>
+            </button>
+        </div>
+        <div class="calendar-view-wrapper__header__total" fxLayout="row" fxLayoutAlign="end center">
+            <span *ngIf="modeActive('WEEK')">{{ labels.totalCardsWeek | translate : totalCards }}</span>
+            <span *ngIf="modeActive('DAY')">{{ labels.totalCardsDay | translate : totalCards }}</span>
+        </div>
+    </div>
+    <div
+        class="calendar-view-wrapper__content"
+        *ngIf="calendarLines && calendarLines.length"
+        fxLayout="column"
+        fxLayoutAlign="start start"
+    >
+        <app-workflow-calendar-hour-line
+            *ngFor="let line of calendarLines; let i = index"
+            [workflowHourLine]="line"
+            [mode]="formFilters.get('mode').value"
+            [first]="i === 0"
+        ></app-workflow-calendar-hour-line>
+    </div>
+    <div class="empty-wrapper" *ngIf="!calendarLines || !calendarLines.length">
+        <h2>{{ labels.noData | translate }}</h2>
+    </div>
+</div>

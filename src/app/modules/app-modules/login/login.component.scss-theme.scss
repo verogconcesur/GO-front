@@ -1,0 +1,23 @@
+@import '@angular/material/theming';
+
+@mixin login-component-theme($theme, $main-typo) {
+  $primary: map-get($theme, primary);
+  $foreground: map-get($theme, foreground);
+
+  .login {
+    .login-content {
+      &__description {
+        color: mat-contrast($primary, 50);
+        font-weight: 500;
+      }
+
+      &__forgotPassword {
+        color: mat-color($foreground, secondary-text);
+
+        &:hover {
+          color: mat-color($primary, 500);
+        }
+      }
+    }
+  }
+}

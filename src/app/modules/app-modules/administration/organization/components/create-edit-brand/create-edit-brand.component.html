@@ -1,0 +1,92 @@
+<div class="create-edit-brand-content" fxLayout="column" fxLayoutAlign="center center">
+    <div *ngIf="!isModalModeActive()">
+        <div class="create-edit-brand-content__title mat-display-2">{{ labels.title | translate }}</div>
+    </div>
+    <div class="create-edit-brand-content__form">
+        <form [formGroup]="brandForm" *ngIf="brandForm" class="smaller-mat-form-fields">
+            <!-- General Data -->
+            <div class="brand-data__section">
+                <div class="brand-data__section__title first-child">
+                    {{ labels.data | translate }}
+                </div>
+                <div class="brand-data__section__group grid-group">
+                    <!-- Name -->
+                    <mat-form-field appearance="outline" floatLabel="always">
+                        <mat-label>{{ labels.name | translate }}</mat-label>
+                        <input matInput formControlName="name" />
+                        <mat-error
+                            class="brand-data__error"
+                            *ngIf="brandForm.controls.name.invalid && brandForm.controls.name.touched"
+                        >
+                            {{ labels.nameRequired | translate }} ({{ labels.minLength | translate: { length: this.minLength } }})
+                        </mat-error>
+                    </mat-form-field>
+                </div>
+            </div>
+
+            <!-- Emails -->
+            <div class="brand-data__section">
+                <div class="brand-data__section__title">
+                    {{ labels.emails | translate }}
+                </div>
+                <!-- Cabecera -->
+                <div class="brand-data__section__group">
+                    <div class="brand-data__section__group__title">{{ labels.header | translate }}</div>
+                    <app-text-editor-wrapper
+                        id="headerEditor"
+                        textEditorId="headerEditor"
+                        [initialValue]="form?.header?.value"
+                        [textEditorConfig]="textEditorToolbarOptions"
+                        [placeholder]="labels.insertText | translate"
+                        (contentChanged)="textEditorContentChanged('header', $event)"
+                    ></app-text-editor-wrapper>
+                </div>
+                <!-- Footer -->
+                <div class="brand-data__section__group">
+                    <div class="brand-data__section__group__title">{{ labels.footer | translate }}</div>
+                    <app-text-editor-wrapper
+                        id="footerEditor"
+                        textEditorId="footerEditor"
+                        [initialValue]="form?.footer?.value"
+                        [textEditorConfig]="textEditorToolbarOptions"
+                        [placeholder]="labels.insertText | translate"
+                        (contentChanged)="textEditorContentChanged('footer', $event)"
+                    ></app-text-editor-wrapper>
+                </div>
+            </div>
+
+            <!-- Logo -->
+            <div class="brand-data__section">
+                <div class="brand-data__section__title">
+                    {{ labels.logo | translate }}
+                </div>
+                <div class="brand-data__section__group logo-section">
+                    <!-- Logo -->
+                    <mat-form-field appearance="outline" floatLabel="always">
+                        <!-- Readonly Input to show File names -->
+                        <mat-label>{{ labels.logo | translate }}</mat-label>
+                        <input matInput formControlName="myfilename" readonly />
+
+                        <!-- Fetch selected filed on change -->
+                        <input
+                            type="file"
+                            #UploadFileInput
+                            id="fileUpload"
+                            (change)="fileChangeEvent($event)"
+                            name="fileUpload"
+                            accept="image/*"
+                        />
+                    </mat-form-field>
+
+                    <!-- Browse Button -->
+                    <button class="select-button" mat-flat-button color="primary" (click)="UploadFileInput.click()">
+                        {{ labels.select | translate }}
+                    </button>
+                </div>
+            </div>
+        </form>
+    </div>
+    <div class="create-edit-brand-content__buttons">
+        <!-- TODO: buttons used when the component is not opened with customDialogService -->
+    </div>
+</div>

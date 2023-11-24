@@ -1,0 +1,169 @@
+<div
+    class="workflow-board-column"
+    [ngClass]="{
+        divider: divider,
+        collapsed: collapsed
+    }"
+>
+    <div class="workflow-board-column__state-name">
+        <h2 class="workflow-board-column__state-name__title">{{ wState.name }}</h2>
+        <div class="workflow-board-column__state-name__more" *ngIf="wState.front">
+            <button mat-button *ngIf="collapsed" (click)="changeCollapsed()">{{ labels.seeMore | translate }}</button>
+            <button mat-button *ngIf="!collapsed" (click)="changeCollapsed()">{{ labels.seeLess | translate }}</button>
+        </div>
+    </div>
+
+    <!-- Si se vuelve a dejar arrastrar tarjetas a las columnas para moverlas se debe recuperar esta forma de ocultar:
+        [ngStyle]="{ display: collapsed ? 'flex' : 'none' }" -->
+    <div
+        class="workflow-board-column__collapsed"
+        *ngIf="collapsed"
+        [ngClass]="getCollapsedDropZoneClass()"
+        cdkDropList
+        [cdkDropListDisabled]="!isDragAndDropEnabled"
+        [id]="wCollapsedStateKey + wState.id"
+        (cdkDropListEntered)="mouseOverCollapsedCard($event, 'over')"
+        (cdkDropListExited)="mouseOverCollapsedCard($event, 'leave')"
+    >
+        <div class="collapsed-card" [ngClass]="getCollapsedWDroppedClasses()">
+            <div class="collapsed-card__third collapsed-card__common"></div>
+            <div class="collapsed-card__second collapsed-card__common"></div>
+            <div class="collapsed-card__first collapsed-card__common">
+                <div class="collapsed-card__info-wrapper">
+                    <div class="collapsed-card__info">
+                        <mat-icon>people_outline</mat-icon>
+                        <label>{{ labels.workers | translate : { num: wState.userCount } }}</label>
+                    </div>
+                    <div class="collapsed-card__info">
+                        <mat-icon>create_new_folder</mat-icon>
+                        <label>{{ labels.nCards | translate : { num: wState.cardCount } }}</label>
+                    </div>
+                </div>
+                <div class="collapsed-card__see-more">
+                    <button mat-button class="uppercase" (click)="changeCollapsed()">
+                        {{ labels.seeCards | translate }}
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Usamos ngStyle en lugar de NgIf para que los cdkDropList estén renderizados y visibles en caso de que se expanda la columna haciendo el
+         drag sobre la tarjeta colapsada
+         [ngStyle]="{ display: collapsed ? 'none' : 'flex' }"
+        Puesto que por lo pronto no se pueden arrastrar tarjetas sobre otros estados para moverlos volvemos a poner *ngIf
+        -->
+    <div class="workflow-board-column__expanded" *ngIf="!collapsed">
+        <div
+            class="workflow-board-column__expanded__block"
+            cdkScrollable
+            *ngFor="let user of wState.front ? wState.workflowUsers : []"
+        >
+            <h4>{{ getUserName(user) }}</h4>
+            <div class="workflow-substate front" *ngFor="let wSubstate of getWSubstatesToShowByUser(user, wState)">
+                <h3 class="title uppercase">{{ wSubstate.name }}</h3>
+                <div
+                    class="card-wrapper"
+                    [ngClass]="getCardWrapperClasses(wSubstateKey + wSubstate.id + '-' + user.user.id)"
+                    cdkDropList
+                    [cdkDropListDisabled]="!isDragAndDropEnabled || user.cardsBySubstateId[wSubstate.id]?.length < 2"
+                    [id]="wSubstateKey + wSubstate.id + '-' + user.user.id"
+                    [cdkDropListData]="user.cardsBySubstateId[wSubstate.id]"
+                    [cdkDropListConnectedTo]="getAssociatedWSubstates(wSubstate.cards[0])"
+                    (cdkDropListDropped)="
+                        drop($event, wSubstate, user, wSubstateKey + wSubstate.id);
+                        setHideEmptyDropZone(wSubstateKey + wSubstate.id + '-' + user.user.id, false)
+                    "
+                >
+                    <!-- (cdkDropListEntered)="setHideEmptyDropZone(wSubstateKey + wSubstate.id + '-' + user.user.id, true)"
+                    (cdkDropListExited)="setHideEmptyDropZone(wSubstateKey + wSubstate.id + '-' + user.user.id, false)" -->
+                    <app-workflow-card
+                        *ngFor="let card of user.cardsBySubstateId[wSubstate.id]"
+                        [card]="card"
+                        [disableDrag]="
+                            !isDragAndDropEnabled ||
+                            user.cardsBySubstateId[wSubstate.id]?.length < 2 ||
+                            !getAssociatedWSubstates(wSubstate.cards[0], wSubstateKey + wSubstate.id + '-' + user.user.id)
+                        "
+                        (isDraggingEvent)="setOriginDropZone(wSubstateKey + wSubstate.id + '-' + user.user.id, $event)"
+                        [wState]="wState"
+                        [wSubstate]="wSubstate"
+                        [wUserId]="user.user.id"
+                        [dateToShow]="getDateToShow(card)"
+                        [droppableStates]="
+                            getAssociatedWSubstates(wSubstate.cards[0], wSubstateKey + wSubstate.id + '-' + user.user.id)
+                        "
+                    ></app-workflow-card>
+                    <div
+                        class="empty-substate"
+                        *ngIf="
+                            !user.cardsBySubstateId[wSubstate.id]?.length &&
+                            !getHideEmptyDropZone(wSubstateKey + wSubstate.id + '-' + user.user.id)
+                        "
+                    >
+                        <label>{{ labels.emptySubstate | translate }}</label>
+                    </div>
+                    <div class="substate-drop-cover" *ngIf="showDropCover(wSubstateKey + wSubstate.id + '-' + user.user.id)">
+                        <label>{{ labels.dropHere | translate }}</label>
+                    </div>
+
+                    <!-- DGDC: quitar en el momento en el que se pueda ordenar dentro de un mismo subestado -->
+                    <div
+                        class="substate-origin-substate"
+                        *ngIf="showOriginSubstateZone(wSubstateKey + wSubstate.id + '-' + user.user.id)"
+                    >
+                        <label>{{ labels.originSubstate | translate }}</label>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="workflow-board-column__expanded__block" cdkScrollable *ngIf="!wState.front">
+            <div class="workflow-substate no-front" *ngFor="let wSubstate of wState.workflowSubstates">
+                <h3 class="title uppercase">{{ wSubstate.name }}</h3>
+                <div
+                    class="card-wrapper"
+                    [ngClass]="getCardWrapperClasses(wSubstateKey + wSubstate.id)"
+                    cdkDropList
+                    [cdkDropListDisabled]="!isDragAndDropEnabled || wSubstate.cards?.length < 2"
+                    [id]="wSubstateKey + wSubstate.id"
+                    [cdkDropListData]="wSubstate.cards"
+                    [cdkDropListConnectedTo]="getAssociatedWSubstates(wSubstate.cards[0])"
+                    (cdkDropListDropped)="
+                        drop($event, wSubstate, null, wSubstateKey + wSubstate.i);
+                        setHideEmptyDropZone(wSubstateKey + wSubstate.id, false)
+                    "
+                >
+                    <!-- (cdkDropListEntered)="setHideEmptyDropZone(wSubstateKey + wSubstate.id, true)"
+                    (cdkDropListExited)="setHideEmptyDropZone(wSubstateKey + wSubstate.id, false)" -->
+                    <app-workflow-card
+                        *ngFor="let card of wSubstate.cards"
+                        [card]="card"
+                        [disableDrag]="
+                            !isDragAndDropEnabled ||
+                            wSubstate.cards?.length < 2 ||
+                            !getAssociatedWSubstates(wSubstate.cards[0], wSubstateKey + wSubstate.id)
+                        "
+                        (isDraggingEvent)="setOriginDropZone(wSubstateKey + wSubstate.id, $event)"
+                        [wState]="wState"
+                        [wSubstate]="wSubstate"
+                        [wUserId]="null"
+                        [dateToShow]="getDateToShow(card)"
+                        [droppableStates]="getAssociatedWSubstates(wSubstate.cards[0], wSubstateKey + wSubstate.id)"
+                    ></app-workflow-card>
+                    <div
+                        class="empty-substate"
+                        *ngIf="!wSubstate.cards?.length && !getHideEmptyDropZone(wSubstateKey + wSubstate.id)"
+                    >
+                        <label>{{ labels.emptySubstate | translate }}</label>
+                    </div>
+                    <div class="substate-drop-cover" *ngIf="showDropCover(wSubstateKey + wSubstate.id)">
+                        <label>{{ labels.dropHere | translate }}</label>
+                    </div>
+                    <!-- DGDC: quitar en el momento en el que se pueda ordenar dentro de un mismo subestado -->
+                    <div class="substate-origin-substate" *ngIf="showOriginSubstateZone(wSubstateKey + wSubstate.id)">
+                        <label>{{ labels.originSubstate | translate }}</label>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

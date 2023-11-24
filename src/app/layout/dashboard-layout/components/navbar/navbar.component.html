@@ -1,0 +1,160 @@
+<mat-toolbar class="navbar" fxLayout="row" fxLayoutAlign="space-between center" color="primary">
+    <!-- Left side -->
+    <div class="navbar__left" fxLayout="row" fxLayoutAlign="start center">
+        <!-- Responsive: Shown for mobile -->
+        <div class="responsive__mobile">
+            <button mat-icon-button [matMenuTriggerFor]="appMenu" aria-label="Menu">
+                <mat-icon>menu</mat-icon>
+            </button>
+        </div>
+        <!-- END Shown for mobile -->
+        <div class="navbar__title">
+            {{ labels.title | translate }}
+        </div>
+        <!-- Responsive: Shown for desktop and tablet -->
+        <div class="responsive__desktop-and-tablet">
+            <div fxLayout="row" fxLayoutAlign="start center">
+                <mat-divider [vertical]="true"></mat-divider>
+                <button mat-button [routerLink]="WORKFLOW_PATH" routerLinkActive="active">Workflows</button>
+                <button mat-button [routerLink]="CLIENTS_PATH" routerLinkActive="active">{{ labels.clients | translate }}</button>
+                <button mat-button [routerLink]="VEHICLES_PATH" routerLinkActive="active">
+                    {{ labels.vehicles | translate }}
+                </button>
+                <button mat-button [routerLink]="ADVANCED_SEARCH_PATH" routerLinkActive="active">
+                    {{ labels.advanceSearch | translate }}
+                </button>
+                <button mat-button *ngIf="isAdmin()" (click)="navigateToAdministration()">
+                    {{ labels.administration | translate }}
+                </button>
+            </div>
+        </div>
+        <!-- END Shown for desktop and tablet -->
+    </div>
+    <!-- Right side -->
+    <div fxLayout="row" class="navbar__right" fxLayoutAlign="end center">
+        <!-- Responsive search input -->
+        <div class="responsive__tablet_or_more">
+            <app-workflow-card-searcher [format]="'input'"></app-workflow-card-searcher>
+        </div>
+        <button mat-raised-button class="responsive__tablet_or_more" (click)="openNewCardDialog()">
+            <span class="navbar__right__createCard">
+                <mat-icon color="primary">create_new_folder</mat-icon>{{ labels.createCard | translate }}
+            </span>
+        </button>
+        <button class="responsive__less-than-tablet" mat-icon-button aria-label="Search">
+            <app-workflow-card-searcher [format]="'icon'"></app-workflow-card-searcher>
+        </button>
+        <!-- END Responsive search input -->
+        <button
+            mat-icon-button
+            aria-label="Downloads"
+            #downloadTrigger="matMenuTrigger"
+            (click)="showDownload()"
+            [matMenuTriggerFor]="downloadMenu"
+        >
+            <mat-icon [ngClass]="{ active: highLightDownload() }">vertical_align_bottom</mat-icon>
+        </button>
+        <button mat-icon-button aria-label="Email" (click)="showMentions()" [matMenuTriggerFor]="mentionsMenu">
+            <mat-icon fontSet="concenet" [ngClass]="{ active: highLightMentions() }">comments</mat-icon>
+        </button>
+        <button mat-icon-button aria-label="Notification" (click)="showNotifications()" [matMenuTriggerFor]="notificationsMenu">
+            <mat-icon fontSet="concenet" [ngClass]="{ active: highLightNotifications() }">notifications-on</mat-icon>
+        </button>
+
+        <!-- User Profile Component -->
+        <app-user-profile></app-user-profile>
+    </div>
+</mat-toolbar>
+
+<mat-menu #appMenu="matMenu">
+    <button mat-menu-item [routerLink]="WORKFLOW_PATH">
+        <span>Workflows</span>
+    </button>
+    <button mat-menu-item [routerLink]="CLIENTS_PATH">
+        <span>{{ labels.clients | translate }}</span>
+    </button>
+    <button mat-menu-item [routerLink]="VEHICLES_PATH">
+        <span>{{ labels.vehicles | translate }}</span>
+    </button>
+    <button mat-menu-item [routerLink]="ADVANCED_SEARCH_PATH">
+        <span>{{ labels.advanceSearch | translate }}</span>
+    </button>
+    <button mat-menu-item (click)="navigateToAdministration()">
+        <span>{{ labels.administration | translate }}</span>
+    </button>
+</mat-menu>
+
+<mat-menu #notificationsMenu="matMenu" class="notification-mention-menu">
+    <div class="navbar-warning-menu">
+        <div fxLayout="row" fxLayoutAlign="space-between center">
+            <h2 class="navbar-warning-menu__header">
+                {{ labels.notifications | translate }}
+            </h2>
+            <button
+                class="navbar-warning-menu__button"
+                mat-icon-button
+                color="primary"
+                [routerLink]="NOTIFICATIONS_PATH"
+                routerLinkActive="active"
+            >
+                <mat-icon>list</mat-icon>
+            </button>
+        </div>
+        <mat-divider></mat-divider>
+        <div class="navbar-warning-menu__content">
+            <app-notifications #notifications></app-notifications>
+        </div>
+    </div>
+</mat-menu>
+
+<mat-menu #mentionsMenu="matMenu" class="notification-mention-menu">
+    <div class="navbar-warning-menu">
+        <div fxLayout="row" fxLayoutAlign="space-between center">
+            <h2 class="navbar-warning-menu__header">
+                {{ labels.mentions | translate }}
+            </h2>
+            <button
+                class="navbar-warning-menu__button"
+                mat-icon-button
+                color="primary"
+                [routerLink]="MENTIONS_PATH"
+                routerLinkActive="active"
+            >
+                <mat-icon>list</mat-icon>
+            </button>
+        </div>
+        <mat-divider></mat-divider>
+        <div class="navbar-warning-menu__content">
+            <app-mentions #mentions></app-mentions>
+        </div>
+    </div>
+</mat-menu>
+
+<mat-menu #downloadMenu="matMenu" class="notification-mention-menu">
+    <div class="navbar-warning-menu" *ngIf="searchExportForm">
+        <div fxLayout="row" fxLayoutAlign="start center">
+            <h2 class="navbar-warning-menu__header">
+                {{ labels.files | translate }}
+            </h2>
+        </div>
+        <mat-divider></mat-divider>
+        <div class="navbar-warning-menu__content">
+            <div
+                class="navbar-warning-menu__content__item"
+                *ngFor="let fileAsync of searchExportForm.controls"
+                fxLayout="row"
+                fxLayoutAlign="start center"
+            >
+                <div class="navbar-warning-menu__content__item__name" fxLayout="row" fxLayoutAlign="start center">
+                    <span matTooltip="{{ fileAsync.value.name }}" matTooltipPosition="left">{{ fileAsync.value.name }}</span>
+                </div>
+                <div class="navbar-warning-menu__content__item__icon" fxLayout="row" fxLayoutAlign="center center">
+                    <mat-icon *ngIf="fileAsync.value.attachment" (click)="downloadFile(fileAsync)"
+                        >vertical_align_bottom</mat-icon
+                    >
+                    <mat-spinner [diameter]="20" *ngIf="!fileAsync.value.attachment"></mat-spinner>
+                </div>
+            </div>
+        </div>
+    </div>
+</mat-menu>

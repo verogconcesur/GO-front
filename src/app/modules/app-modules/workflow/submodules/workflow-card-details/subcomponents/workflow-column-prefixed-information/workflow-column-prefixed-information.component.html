@@ -1,0 +1,81 @@
+<div
+    class="w-colunm-entity-container smaller-mat-form-fields"
+    fxLayout="column"
+    *ngIf="informationForm"
+    [formGroup]="informationForm"
+>
+    <div class="w-colunm-entity-data">
+        <label class="w-colunm-entity-data__label">{{ labels.workOrderInformation | translate }}</label>
+        <div class="w-colunm-entity-data__value" *ngIf="!editMode">
+            <p>{{ cardInstance.information.orderInformation }}</p>
+            <p>{{ cardInstance.information.instanceInformation }}</p>
+        </div>
+        <div class="w-colunm-entity-data__value" *ngIf="editMode">
+            <p>{{ cardInstance.information.orderInformation }}</p>
+            <mat-form-field appearance="outline" floatLabel="always">
+                <textarea
+                    matInput
+                    formControlName="instanceInformation"
+                    cdkTextareaAutosize
+                    cdkAutosizeMinRows="3"
+                    cdkAutosizeMaxRows="3"
+                ></textarea>
+                <mat-error *ngIf="informationForm.controls.instanceInformation.invalid">
+                    {{ labels.required | translate }}
+                </mat-error>
+            </mat-form-field>
+        </div>
+    </div>
+    <div class="w-colunm-entity-data">
+        <label class="w-colunm-entity-data__label">{{ labels.updatedOn | translate }}</label>
+        <div class="w-colunm-entity-data__value">
+            {{ cardInstance.information.dateAssignmentSubstate | date : "dd/MM/yyyy, HH:mm" }}
+        </div>
+    </div>
+    <div class="w-colunm-entity-data">
+        <label class="w-colunm-entity-data__label">{{ labels.origin | translate }}</label>
+        <div class="w-colunm-entity-data__value">{{ cardInstance.information.sourceText }}</div>
+    </div>
+    <div class="w-colunm-entity-data">
+        <label class="w-colunm-entity-data__label">{{ labels.taskDescription | translate }}</label>
+        <div class="w-colunm-entity-data__value">{{ cardInstance.information.userInformation }}</div>
+    </div>
+    <div class="w-colunm-entity-data">
+        <label class="w-colunm-entity-data__label">{{ labels.tag | translate }} 1</label>
+        <div class="w-colunm-entity-data__value" *ngIf="!editMode">{{ cardInstance.information.tag1 }}</div>
+        <div class="w-colunm-entity-data__value" *ngIf="editMode">
+            <mat-form-field appearance="outline" floatLabel="always">
+                <input matInput formControlName="tag1" />
+            </mat-form-field>
+        </div>
+    </div>
+    <div class="w-colunm-entity-data">
+        <label class="w-colunm-entity-data__label">{{ labels.tag | translate }} 2</label>
+        <div class="w-colunm-entity-data__value" *ngIf="!editMode">{{ cardInstance.information.tag2 }}</div>
+        <div class="w-colunm-entity-data__value" *ngIf="editMode">
+            <mat-form-field appearance="outline" floatLabel="always">
+                <input matInput formControlName="tag2" />
+            </mat-form-field>
+        </div>
+    </div>
+    <div class="w-colunm-entity-data">
+        <label class="w-colunm-entity-data__label">{{ labels.tag | translate }} 3</label>
+        <div class="w-colunm-entity-data__value" *ngIf="!editMode">{{ cardInstance.information.tag3 }}</div>
+        <div class="w-colunm-entity-data__value" *ngIf="editMode">
+            <mat-form-field appearance="outline" floatLabel="always">
+                <input matInput formControlName="tag3" />
+            </mat-form-field>
+        </div>
+    </div>
+</div>
+<div class="buttons-container" fxLayoutAlign="space-between center" *ngIf="editMode">
+    <button mat-stroked-button color="warn" (click)="cancel()">{{ labels.cancel | translate }}</button>
+    <button mat-flat-button color="primary" (click)="save()" [disabled]="informationForm.invalid || !informationForm.touched">
+        {{ labels.save | translate }}
+    </button>
+</div>
+<div class="buttons-container" fxLayoutAlign="end center" *ngIf="!editMode">
+    <button mat-flat-button color="primary" (click)="edit()">
+        {{ labels.edit | translate }}
+    </button>
+</div>

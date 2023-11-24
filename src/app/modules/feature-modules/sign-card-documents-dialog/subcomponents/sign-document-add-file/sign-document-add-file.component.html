@@ -1,0 +1,34 @@
+<div class="template-add-file">
+    <h4>{{ labels.selectOrAddPdf | translate }}</h4>
+    <div class="template-add-file__selector smaller-mat-form-fields">
+        <div>{{ labels.selectCardAttachmentPdf | translate }}</div>
+        <mat-form-field appearance="outline">
+            <mat-label>{{ labels.attachment | translate }}</mat-label>
+            <mat-select (selectionChange)="attachmentSelected($event)">
+                <mat-option></mat-option>
+                <mat-optgroup *ngFor="let group of attachmentsByGroup" [label]="group.tabName">
+                    <mat-option *ngFor="let attachment of group.attachments" [value]="{ attachment: attachment, group }">
+                        {{ attachment.name }}
+                    </mat-option>
+                </mat-optgroup>
+            </mat-select>
+        </mat-form-field>
+        <section *ngIf="mode === 'NO_REMOTE'">
+            <div>{{ labels.addAttachmentPdf | translate }}</div>
+            <div class="template-add-file__selector__drop-zone" appDropZone (fileDropped)="fileDropped($event)">
+                <button mat-icon-button color="primary" class="add-pdf-template-btn" (click)="fileDropRef.click()">
+                    <mat-icon>add</mat-icon>
+                </button>
+                {{ labels.dropHere | translate }}
+            </div>
+            <input
+                type="file"
+                style="display: none"
+                #fileDropRef
+                accept=".pdf"
+                id="fileDropRef"
+                (change)="fileBrowseHandler($event.target.files)"
+            />
+        </section>
+    </div>
+</div>

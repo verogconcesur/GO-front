@@ -1,0 +1,139 @@
+@import 'utils/core';
+@import 'utils/theme';
+
+.chat-whatsapp-container {
+  height: 100%;
+  &__header {
+    height: 60px;
+    &__title {
+      width: calc(100% - 100px);
+      overflow: hidden;
+    }
+  }
+  &__messageList {
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    padding: 10px;
+    box-sizing: border-box;
+    height: calc(100% - 60px);
+    &.active {
+      height: calc(100% - 140px);
+    }
+    &__item {
+      width: 70%;
+      padding: 10px;
+      border-radius: 8px;
+      margin-bottom: 10px;
+      font-size: 0.9em;
+      background-color: mat-color($primary, 500);
+      color: mat-contrast($primary, 500);
+      margin-left: auto;
+      margin-bottom: 10px;
+      &__attachment {
+        &__container {
+          background-color: mat-contrast($primary, 500);
+          color: mat-color($primary, 500);
+          padding: 5px;
+          margin-top: 10px;
+          box-sizing: border-box;
+          &__iconAttach {
+            width: 30px;
+            height: 30px;
+            background-position: center;
+            background-size: contain;
+            background-repeat: no-repeat;
+          }
+          span {
+            width: calc(100% - 60px);
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            display: inline-block;
+            border-radius: 4px;
+          }
+          mat-icon {
+            font-size: 25px;
+            width: 25px;
+            height: 25px;
+            cursor: pointer;
+          }
+        }
+        &__containerAudio {
+          audio {
+            width: 100%;
+          }
+        }
+      }
+      &__time {
+        margin-top: 10px;
+        text-align: end;
+        mat-icon {
+          font-size: 17px;
+          width: 17px;
+          height: 17px;
+          margin-left: 5px;
+        }
+      }
+      &.client {
+        background-color: mat-contrast($primary, 500);
+        color: mat-color($primary, 500);
+        margin-left: 0;
+        &__attachment {
+          background-color: mat-color($primary, 500);
+          color: mat-contrast($primary, 500);
+        }
+      }
+    }
+  }
+  &__footer {
+    height: 80px;
+    border-top: 1px solid lighten(mat-color($primary, statusNeutral), 20%);
+    &__input {
+      width: calc(100% - 135px);
+      mat-form-field {
+        width: 100%;
+      }
+      &__bars {
+        height: 30px;
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        .bar {
+          background: lighten(mat-color($primary, statusNeutral), 20%);
+          height: 3px;
+          width: 3px;
+          margin-left: 2px;
+          animation: sound 0ms -800ms linear infinite alternate;
+        }
+
+        @keyframes sound {
+          0% {
+            opacity: 0.35;
+            height: 3px;
+          }
+          100% {
+            opacity: 1;
+            height: 28px;
+          }
+        }
+
+        .bar:nth-child(n) {
+          animation-duration: 400ms;
+        }
+        .bar:nth-child(2n) {
+          animation-duration: 474ms;
+        }
+        .bar:nth-child(3n) {
+          animation-duration: 500ms;
+        }
+        .bar:nth-child(4n) {
+          animation-duration: 489ms;
+        }
+        .bar:nth-child(5n) {
+          animation-duration: 449ms;
+        }
+      }
+    }
+  }
+}

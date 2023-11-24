@@ -1,0 +1,120 @@
+@import '@angular/material/theming';
+
+@mixin navbar-component-theme($theme, $main-typo) {
+  $primary: map-get($theme, primary);
+  .navbar {
+    mat-divider {
+      background-color: mat-contrast($primary, statusNeutral);
+      opacity: 0.2;
+    }
+
+    &__right {
+      &__createCard {
+        color: mat-color($primary, 500);
+      }
+      .mat-icon.active {
+        animation-name: color-notification;
+        animation-duration: 2s;
+        animation-iteration-count: infinite;
+      }
+
+      @keyframes color-notification {
+        0% {
+          color: mat-contrast($primary, 500);
+        }
+        50% {
+          color: mat-color($primary, statusWarning);
+        }
+        100% {
+          color: mat-contrast($primary, 500);
+        }
+      }
+    }
+    button.active .mat-button-wrapper {
+      border-bottom: 1px solid mat-contrast($primary, 400);
+    }
+    &__search {
+      color: mat-contrast($primary, statusNeutral);
+      mat-form-field {
+        width: 180px;
+      }
+      .spinner {
+        display: inline-block;
+        margin-bottom: -5px;
+        margin-left: -20px;
+        circle {
+          stroke: mat-contrast($primary, 400) !important;
+        }
+      }
+      .mat-form-field-appearance-outline .mat-form-field-wrapper {
+        margin: 0 0;
+        padding: 0 0;
+        border-radius: 6px;
+        font-size: 0.9em;
+        overflow: hidden;
+        background-color: rgba(mat-contrast($primary, A100), 24%);
+        .mat-form-field-infix {
+          border-top: 0;
+          padding: 0.6em 0 0.5em 0;
+        }
+        .mat-form-field-suffix {
+          top: 0.5em;
+        }
+      }
+      ::placeholder {
+        /* Chrome, Firefox, Opera, Safari 10.1+ */
+        color: darken(mat-contrast($primary, statusNeutral), 10%);
+        opacity: 1; /* Firefox */
+      }
+      ::-ms-input-placeholder {
+        /* Microsoft Edge */
+        color: darken(mat-contrast($primary, statusNeutral), 10%);
+      }
+    }
+  }
+
+  .navbar-warning-menu {
+    width: 280px;
+    height: 100%;
+    &__header {
+      padding: 10px 10px 0 10px;
+    }
+    &__button {
+      margin-bottom: 10px !important;
+    }
+    &__content {
+      padding: 10px;
+      box-sizing: border-box;
+      background-color: mat-contrast($primary, 500);
+      height: calc(100% - 70px);
+      width: 100%;
+      &__item {
+        height: 50px;
+        width: 100%;
+        box-sizing: border-box;
+        padding: 10px;
+        margin-bottom: 10px;
+        border-radius: 6px;
+        background-color: mat-color($background, background);
+        &__name {
+          width: calc(100% - 30px);
+          height: 100%;
+          span {
+            max-width: 100%;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            display: inline-block;
+          }
+        }
+        &__icon {
+          width: 30px;
+          height: 100%;
+          mat-icon {
+            cursor: pointer;
+          }
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,61 @@
+<div class="csv-file-importation-content" fxLayout="column" fxLayoutAlign="center center">
+    <div *ngIf="!isModalModeActive()">
+        <div class="csv-file-importation-content__title mat-display-2">{{ labels.title | translate }}</div>
+    </div>
+    <div class="csv-file-importation-content__form">
+        <form [formGroup]="importForm" *ngIf="importForm" class="smaller-mat-form-fields">
+            <!-- General Data -->
+            <div class="import-data__section">
+                <div class="import-data__section__title first-child">
+                    {{ labels.data | translate }}
+                </div>
+                <div class="import-data__section__group">
+                    <!-- workflow -->
+                    <mat-form-field appearance="outline" floatLabel="always">
+                        <mat-label>{{ labels.workflow | translate }}</mat-label>
+                        <mat-select formControlName="workflow" [placeholder]="labels.select | translate">
+                            <mat-option *ngFor="let workflow of workflowList" [value]="workflow"> {{ workflow.name }}</mat-option>
+                        </mat-select>
+                        <mat-error *ngIf="importForm.controls.workflow.invalid && importForm.controls.workflow.touched">
+                            {{ labels.required | translate }}
+                        </mat-error>
+                    </mat-form-field>
+
+                    <mat-checkbox formControlName="historic">{{ labels.historic | translate }}</mat-checkbox>
+
+                    <mat-checkbox class="retry-last-migration" formControlName="retryLastMigration">{{
+                        labels.retryLastMigration | translate
+                    }}</mat-checkbox>
+                </div>
+                <div class="retry-last-migration-info" *ngIf="retryLastMigrationSelected()">
+                    {{ labels.retryLastMigrationInfo | translate }}
+                </div>
+                <div class="import-data__section__group">
+                    <button mat-stroked-button color="primary" class="fileButton" (click)="downloadTemplate()">
+                        {{ labels.downloadTemplate | translate }}
+                    </button>
+                    <button mat-stroked-button color="primary" class="fileButton" (click)="fileDropRef.click()">
+                        {{ labels.uploadFile | translate }}
+                    </button>
+                    <input
+                        type="file"
+                        style="display: none"
+                        #fileDropRef
+                        accept=".xlsx"
+                        id="fileDropRef"
+                        (change)="addFile($event.target.files)"
+                    />
+                </div>
+                <div class="import-data__section__title" *ngIf="importForm.value.file">
+                    {{ labels.fileSelected | translate }}
+                </div>
+                <div class="import-data__section__group" *ngIf="importForm.value.file">
+                    <h2>{{ importForm.value.file.name }}</h2>
+                </div>
+            </div>
+        </form>
+    </div>
+    <div class="csv-file-importation-content__buttons">
+        <!-- TODO: buttons used when the component is not opened with customDialogService -->
+    </div>
+</div>

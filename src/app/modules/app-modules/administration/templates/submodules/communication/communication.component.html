@@ -1,0 +1,29 @@
+<div class="items-list-wrapper">
+    <div class="items-list-container" fxLayout="column">
+        <mat-card
+            class="mat-template-card"
+            fxFlex="calc(100% - 20px)"
+            *ngFor="let item of dataSource"
+        >
+            <div fxLayout="row" fxLayoutAlign="space-between center">
+                <div class="mat-item-card__title">{{ item.name }}</div>
+                <div class="mat-item-card__icons">
+                    <mat-icon fontSet="concenet" (click)="editAction(item)">edit</mat-icon>
+                    <mat-icon fontSet="concenet" (click)="deleteCommunication(item.id)">delete</mat-icon>
+                </div>
+            </div>
+        </mat-card>
+        <div class="roles-list-container__no-data" *ngIf="!dataSource || dataSource.length === 0">
+            {{ labels.noDataToShow | translate }}
+        </div>
+    </div>
+    <mat-paginator
+        [length]="paginationConfig.length"
+        [pageSize]="paginationConfig.pageSize"
+        [pageSizeOptions]="paginationConfig.pageSizeOptions"
+        [pageIndex]="paginationConfig.page"
+        (page)="getData($event)"
+        aria-label="Select page"
+    >
+    </mat-paginator>
+</div>

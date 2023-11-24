@@ -1,0 +1,69 @@
+@import '@angular/material/theming';
+@import 'utils/core';
+
+@mixin custom-column-component-theme($theme, $main-typo) {
+  $primary: map-get($theme, primary);
+  $background: map-get($theme, background);
+
+  .custom-column-container {
+    &__header {
+      &__group {
+        &__tablist {
+          &__button {
+            border: 1px solid mat-color($primary, 100);
+          }
+        }
+      }
+      &__title {
+        color: mat-color($primary, 500);
+      }
+    }
+    &__main {
+      &__title {
+        color: mat-color($primary, 500);
+      }
+    }
+  }
+  .custom-column-item-container {
+    width: 250px;
+    height: 35px;
+    padding-top: 10px;
+  }
+  .custom-column-item {
+    background-color: mat-color($background, background);
+    border-radius: 6px;
+    width: 240px;
+    height: 37px;
+    padding: 0 10px;
+    cursor: pointer;
+    &.selected {
+      border: 1px solid mat-color($primary, 500);
+    }
+    &.invalid {
+      border: 1px solid mat-color($primary, statusError);
+    }
+    .custom-column-item-nameContainer {
+      width: 100%;
+    }
+    mat-icon {
+      width: 18px;
+      height: 18px;
+      font-size: 18px;
+      margin-left: 10px;
+    }
+    mat-icon:first-child {
+      margin: 0 8px;
+    }
+    span {
+      max-width: 180px;
+      overflow: hidden;
+      white-space: nowrap;
+      text-overflow: ellipsis;
+    }
+  }
+  .custom-column-placeholder {
+    background-color: transparent;
+    width: 240px;
+    height: 15px;
+  }
+}

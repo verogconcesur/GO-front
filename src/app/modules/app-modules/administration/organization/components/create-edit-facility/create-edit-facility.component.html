@@ -1,0 +1,374 @@
+<div class="create-edit-facility-content" fxLayout="column" fxLayoutAlign="center center">
+    <div *ngIf="!isModalModeActive()">
+        <div class="create-edit-facility-content__title mat-display-2">{{ labels.title | translate }}</div>
+    </div>
+    <div class="create-edit-facility-content__form">
+        <form [formGroup]="facilityForm" *ngIf="facilityForm" class="smaller-mat-form-fields">
+            <!-- General Data -->
+            <div class="facility-data__section">
+                <div class="facility-data__section__title first-child">
+                    {{ labels.data | translate }}
+                </div>
+                <div class="facility-data__section__group grid-group">
+                    <!-- Name -->
+                    <mat-form-field appearance="outline" floatLabel="always">
+                        <mat-label>{{ labels.name | translate }}</mat-label>
+                        <input matInput formControlName="name" />
+                        <mat-error
+                            class="facility-data__error"
+                            *ngIf="facilityForm.controls.name.invalid && facilityForm.controls.name.touched"
+                        >
+                            {{ labels.nameRequired | translate }} ({{
+                                labels.minLength | translate : { length: this.minLength }
+                            }})
+                        </mat-error>
+                    </mat-form-field>
+                    <!-- brand -->
+                    <mat-form-field appearance="outline" floatLabel="always">
+                        <mat-label>{{ labels.brands | translate }}</mat-label>
+                        <mat-select formControlName="brands" multiple>
+                            <button
+                                mat-button
+                                class="mat-button-w-100-left"
+                                *ngIf="!hasAllSelected(facilityForm.controls.brands, brandsList)"
+                                (click)="selectAll(facilityForm.controls.brands, brandsList)"
+                            >
+                                {{ labels.selectAll | translate }}
+                            </button>
+                            <button
+                                mat-button
+                                class="mat-button-w-100-left"
+                                *ngIf="hasAllSelected(facilityForm.controls.brands, brandsList)"
+                                (click)="unselectAll(facilityForm.controls.brands)"
+                            >
+                                {{ labels.unselectAll | translate }}
+                            </button>
+                            <mat-option *ngFor="let brand of brandsAsyncList | async" [value]="brand">{{
+                                brand.name
+                            }}</mat-option>
+                        </mat-select>
+                        <mat-error *ngIf="facilityForm.controls?.brands.invalid && facilityForm.controls?.brands.touched">
+                            <span *ngIf="facilityForm.controls.brands.errors.required">{{ labels.required | translate }}</span>
+                        </mat-error>
+                    </mat-form-field>
+
+                    <!-- Address -->
+                    <mat-form-field appearance="outline" floatLabel="always">
+                        <mat-label>{{ labels.address | translate }}</mat-label>
+                        <input matInput formControlName="address" />
+                    </mat-form-field>
+
+                    <!-- Country -->
+                    <mat-form-field appearance="outline" floatLabel="always">
+                        <mat-label>{{ labels.country | translate }}</mat-label>
+                        <mat-select formControlName="country">
+                            <mat-option *ngFor="let country of countryAsyncList | async" [value]="country">{{
+                                country.name
+                            }}</mat-option>
+                        </mat-select>
+                    </mat-form-field>
+
+                    <!-- Province -->
+                    <mat-form-field appearance="outline" floatLabel="always">
+                        <mat-label>{{ labels.province | translate }}</mat-label>
+                        <mat-select formControlName="province">
+                            <mat-option *ngFor="let province of provinceList" [value]="province">{{ province.name }}</mat-option>
+                        </mat-select>
+                    </mat-form-field>
+
+                    <!-- Town -->
+                    <mat-form-field appearance="outline" floatLabel="always">
+                        <mat-label>{{ labels.town | translate }}</mat-label>
+                        <mat-select formControlName="town">
+                            <mat-option *ngFor="let town of townList" [value]="town">{{ town.name }}</mat-option>
+                        </mat-select>
+                    </mat-form-field>
+
+                    <!-- PostalCode -->
+                    <mat-form-field appearance="outline" floatLabel="always">
+                        <mat-label>{{ labels.postalCode | translate }}</mat-label>
+                        <input matInput formControlName="postalCode" />
+                    </mat-form-field>
+
+                    <!-- Cif -->
+                    <mat-form-field appearance="outline" floatLabel="always">
+                        <mat-label>{{ labels.cif | translate }}</mat-label>
+                        <input matInput formControlName="cif" />
+                    </mat-form-field>
+
+                    <!-- Email -->
+                    <mat-form-field appearance="outline" floatLabel="always">
+                        <mat-label>{{ labels.email | translate }}</mat-label>
+                        <input matInput formControlName="email" />
+                        <mat-error
+                            class="facility-data__error"
+                            *ngIf="
+                                facilityForm.controls.email.invalid &&
+                                facilityForm.controls.email.touched &&
+                                facilityForm.controls.email.hasError('email')
+                            "
+                        >
+                            {{ labels.emailError | translate }}
+                        </mat-error>
+                    </mat-form-field>
+                </div>
+            </div>
+            <!-- Integration Data -->
+            <div class="facility-data__section">
+                <div class="facility-data__section__title first-child">
+                    {{ labels.integration | translate }}
+                </div>
+                <div class="facility-data__section__group">
+                    <mat-checkbox formControlName="requireConfigApiExt" (change)="requiredConfigChange($event.checked)">{{
+                        labels.requireConfigApiExt | translate
+                    }}</mat-checkbox>
+                </div>
+                <div class="facility-data__section__group grid-group">
+                    <!-- Code -->
+                    <mat-form-field
+                        appearance="outline"
+                        floatLabel="always"
+                        *ngIf="facilityForm.controls.requireConfigApiExt.value"
+                    >
+                        <mat-label>{{ labels.code | translate }}</mat-label>
+                        <input matInput formControlName="code" />
+                        <mat-error
+                            class="facility-data__error"
+                            *ngIf="facilityForm.controls.code.invalid && facilityForm.controls.code.touched"
+                        >
+                            {{ labels.required | translate }}
+                        </mat-error>
+                    </mat-form-field>
+                    <!-- EnterpriseId -->
+                    <mat-form-field
+                        appearance="outline"
+                        floatLabel="always"
+                        *ngIf="facilityForm.controls.requireConfigApiExt.value"
+                    >
+                        <mat-label>{{ labels.enterpriseId | translate }}</mat-label>
+                        <input matInput formControlName="enterpriseId" />
+                        <mat-error
+                            class="facility-data__error"
+                            *ngIf="facilityForm.controls.enterpriseId.invalid && facilityForm.controls.enterpriseId.touched"
+                        >
+                            {{ labels.required | translate }}
+                        </mat-error>
+                    </mat-form-field>
+                    <!-- StoreId -->
+                    <mat-form-field
+                        appearance="outline"
+                        floatLabel="always"
+                        *ngIf="facilityForm.controls.requireConfigApiExt.value"
+                    >
+                        <mat-label>{{ labels.storeId | translate }}</mat-label>
+                        <input matInput formControlName="storeId" />
+                        <mat-error
+                            class="facility-data__error"
+                            *ngIf="facilityForm.controls.storeId.invalid && facilityForm.controls.storeId.touched"
+                        >
+                            {{ labels.required | translate }}
+                        </mat-error>
+                    </mat-form-field>
+                </div>
+                <div class="facility-data__section__group substateList">
+                    <!-- workflowSubstate -->
+                    <mat-form-field
+                        appearance="outline"
+                        floatLabel="always"
+                        [matMenuTriggerFor]="attrSearcherMenu"
+                        *ngIf="facilityForm.controls.requireConfigApiExt.value"
+                    >
+                        <mat-label>{{ labels.workflowSubstate | translate }}</mat-label>
+                        <mat-select formControlName="workflowSubstate" [placeholder]="labels.select | translate">
+                            <mat-option style="display: none" *ngFor="let substate of substateList" [value]="substate">
+                                {{ substate.workflowState.workflow.name }}/{{ substate.workflowState.name }}/{{
+                                    substate.name
+                                }}</mat-option
+                            >
+                        </mat-select>
+                        <button matSuffix mat-icon-button aria-label="Clear" (click)="removeSubstate(); $event.stopPropagation()">
+                            <mat-icon>close</mat-icon>
+                        </button>
+                    </mat-form-field>
+                </div>
+            </div>
+            <!-- Email Configuration -->
+            <div class="facility-data__section">
+                <div class="facility-data__section__title">
+                    {{ labels.confEmail | translate }}
+                </div>
+
+                <mat-error *ngIf="facilityForm.invalid && facilityForm.errors?.configMailerRequired" class="error-message">
+                    <span>{{ labels.requireConfigEmail | translate }}</span>
+                </mat-error>
+
+                <div class="facility-data__section__group grid-group">
+                    <!-- configMailerHost -->
+                    <mat-form-field appearance="outline" floatLabel="always">
+                        <mat-label
+                            >{{ labels.configMailerHost | translate }}
+                            <span
+                                *ngIf="
+                                    facilityForm.invalid &&
+                                    facilityForm.errors?.configMailerRequired &&
+                                    !facilityForm.controls.configMailerHost.value
+                                "
+                                >*</span
+                            ></mat-label
+                        >
+                        <input matInput formControlName="configMailerHost" />
+                    </mat-form-field>
+
+                    <!-- configMailerPort -->
+                    <mat-form-field appearance="outline" floatLabel="always">
+                        <mat-label
+                            >{{ labels.configMailerPort | translate }}
+                            <span
+                                *ngIf="
+                                    facilityForm.invalid &&
+                                    facilityForm.errors?.configMailerRequired &&
+                                    !facilityForm.controls.configMailerPort.value
+                                "
+                                >*</span
+                            ></mat-label
+                        >
+                        <input matInput formControlName="configMailerPort" type="number" />
+                        <mat-error *ngIf="facilityForm?.invalid && facilityForm?.errors?.configMailerRequired">
+                            <span>{{ labels.requireConfigEmail | translate }}</span>
+                        </mat-error>
+                    </mat-form-field>
+
+                    <!-- configMailerUserName -->
+                    <mat-form-field appearance="outline" floatLabel="always">
+                        <mat-label
+                            >{{ labels.configMailerUserName | translate
+                            }}<span
+                                *ngIf="
+                                    facilityForm.invalid &&
+                                    facilityForm.errors?.configMailerRequired &&
+                                    !facilityForm.controls.configMailerUserName.value
+                                "
+                                >*</span
+                            ></mat-label
+                        >
+                        <input matInput formControlName="configMailerUserName" />
+                        <mat-error *ngIf="facilityForm?.invalid && facilityForm?.errors?.configMailerRequired">
+                            <span>{{ labels.requireConfigEmail | translate }}</span>
+                        </mat-error>
+                    </mat-form-field>
+
+                    <!-- configMailerPass -->
+                    <mat-form-field appearance="outline" floatLabel="always">
+                        <mat-label
+                            >{{ labels.configMailerPass | translate
+                            }}<span
+                                *ngIf="
+                                    facilityForm.invalid &&
+                                    facilityForm.errors?.configMailerRequired &&
+                                    !facilityForm.controls.configMailerPass.value
+                                "
+                                >*</span
+                            ></mat-label
+                        >
+                        <input matInput formControlName="configMailerPass" type="password" />
+                        <mat-error *ngIf="facilityForm?.invalid && facilityForm?.errors?.configMailerRequired">
+                            <span>{{ labels.requireConfigEmail | translate }}</span>
+                        </mat-error>
+                    </mat-form-field>
+                </div>
+            </div>
+
+            <!-- Sms Configuration -->
+            <div class="facility-data__section">
+                <div class="facility-data__section__title">
+                    {{ labels.confSms | translate }}
+                </div>
+
+                <div class="facility-data__section__group grid-group">
+                    <!-- configMailerHost -->
+                    <mat-form-field appearance="outline" floatLabel="always">
+                        <mat-label>{{ labels.configSmsSender | translate }} </mat-label>
+                        <input matInput formControlName="senderSms" />
+                        <mat-error *ngIf="facilityForm.controls.senderSms.invalid && facilityForm.controls.senderSms.touched">
+                            {{ labels.minLength | translate : { length: this.minLength } }},
+                            {{ labels.maxLength | translate : { length: this.maxLength } }}
+                        </mat-error>
+                    </mat-form-field>
+                </div>
+            </div>
+
+            <!-- Whatsapp Configuration -->
+            <div class="facility-data__section">
+                <div class="facility-data__section__title">
+                    {{ labels.confWhatsapp | translate }}
+                </div>
+
+                <div class="facility-data__section__group">
+                    <!-- phoneWhatsapp -->
+                    <mat-form-field appearance="outline" floatLabel="always">
+                        <mat-label>{{ labels.phoneWhatsapp | translate }} </mat-label>
+                        <input matInput formControlName="whatsappPhoneNumber" />
+                        <mat-error
+                            *ngIf="facilityForm.controls.whatsappPhoneNumber.invalid && facilityForm.controls.whatsappPhoneNumber.touched"
+                        >
+                            {{ labels.required | translate }}
+                        </mat-error>
+                    </mat-form-field>
+                    <!-- senderWhatsapp -->
+                    <mat-form-field appearance="outline" floatLabel="always">
+                        <mat-label>{{ labels.senderWhatsapp | translate }} </mat-label>
+                        <input matInput formControlName="whatsappSender" />
+                        <mat-error
+                            *ngIf="facilityForm.controls.whatsappSender.invalid && facilityForm.controls.whatsappSender.touched"
+                        >
+                            {{ labels.minLength | translate : { length: this.minLength } }},
+                            {{ labels.maxLength | translate : { length: this.maxLength } }}
+                        </mat-error>
+                    </mat-form-field>
+                </div>
+            </div>
+            <!-- Emails -->
+            <div class="facility-data__section">
+                <div class="facility-data__section__title">
+                    {{ labels.emails | translate }}
+                </div>
+                <!-- Cabecera -->
+                <div class="facility-data__section__group">
+                    <div class="facility-data__section__group__title">{{ labels.header | translate }}</div>
+                    <app-text-editor-wrapper
+                        id="headerEditor"
+                        textEditorId="headerEditor"
+                        [initialValue]="form?.header?.value"
+                        [textEditorConfig]="textEditorToolbarOptions"
+                        [placeholder]="labels.insertText | translate"
+                        (contentChanged)="textEditorContentChanged('header', $event)"
+                    ></app-text-editor-wrapper>
+                </div>
+                <!-- Footer -->
+                <div class="facility-data__section__group">
+                    <div class="facility-data__section__group__title">{{ labels.footer | translate }}</div>
+                    <app-text-editor-wrapper
+                        id="footerEditor"
+                        textEditorId="footerEditor"
+                        [initialValue]="form?.footer?.value"
+                        [textEditorConfig]="textEditorToolbarOptions"
+                        [placeholder]="labels.insertText | translate"
+                        (contentChanged)="textEditorContentChanged('footer', $event)"
+                    ></app-text-editor-wrapper>
+                </div>
+            </div>
+        </form>
+    </div>
+    <div class="create-edit-facility-content__buttons">
+        <!-- TODO: buttons used when the component is not opened with customDialogService -->
+    </div>
+</div>
+
+<button style="display: none" #menuTrigger="matMenuTrigger" [matMenuTriggerFor]="attrSearcherMenu"></button>
+<mat-menu #attrSearcherMenu="matMenu" class="attr-menu" (closed)="genericTreeNodeSearcher.resetFilter()">
+    <app-generic-tree-node-searcher
+        #genericTreeNodeSearcher
+        [originalData]="treeData"
+        (nodeSelected)="selectAttribute($event)"
+    ></app-generic-tree-node-searcher>
+</mat-menu>

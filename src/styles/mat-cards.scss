@@ -1,0 +1,27 @@
+@import '@angular/material/theming';
+
+@mixin custom-mat-card-theme($theme, $main-typo) {
+  $primary: map-get($theme, primary);
+  $foreground: map-get($theme, foreground);
+
+  .mat-item-card {
+    margin-bottom: 20px;
+    max-width: calc(50% - 20px);
+
+    &__title {
+      font-size: 1rem;
+      color: mat-color($foreground, secondary-text);
+    }
+
+    &__icons {
+      .mat-icon {
+        padding-right: 24px;
+        color: mat-color($primary, 500);
+
+        &:last-child {
+          padding-right: 0;
+        }
+      }
+    }
+  }
+}

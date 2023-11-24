@@ -1,0 +1,82 @@
+@font-face {
+  font-family: 'concenet';
+  src: url('/assets/fonts/concenet.eot?z9bjzz');
+  src: url('/assets/fonts/concenet.eot?z9bjzz#iefix') format('embedded-opentype'),
+    url('/assets/fonts/concenet.ttf?z9bjzz') format('truetype'), url('/assets/fonts/concenet.woff?z9bjzz') format('woff'),
+    url('/assets/fonts/concenet.svg?z9bjzz#concenet') format('svg');
+  font-weight: normal;
+  font-style: normal;
+  font-display: block;
+}
+
+.concenet {
+  /* use !important to prevent issues with browser extensions that change fonts */
+  font-family: 'concenet' !important;
+  speak: never;
+  font-style: normal;
+  font-weight: normal;
+  font-variant: normal;
+  font-size: 24px;
+  text-transform: none;
+  line-height: 1;
+
+  /* Enable Ligatures ================ */
+  letter-spacing: 0;
+  -webkit-font-feature-settings: 'liga';
+  -moz-font-feature-settings: 'liga=1';
+  -moz-font-feature-settings: 'liga';
+  -ms-font-feature-settings: 'liga' 1;
+  font-feature-settings: 'liga';
+  -webkit-font-variant-ligatures: discretionary-ligatures;
+  font-variant-ligatures: discretionary-ligatures;
+
+  /* Better Font Rendering =========== */
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+.search:before {
+  content: '\e90e';
+}
+.delete:before {
+  content: '\e90c';
+}
+.edit:before {
+  content: '\e90d';
+}
+.translate:before {
+  content: '\e90b';
+}
+.workflows:before {
+  content: '\e905';
+}
+.templates:before {
+  content: '\e906';
+}
+.organization:before {
+  content: '\e907';
+}
+.forms:before {
+  content: '\e908';
+}
+.users:before {
+  content: '\e909';
+}
+.user-profile:before {
+  content: '\e90a';
+}
+.user:before {
+  content: '\e900';
+}
+.notifications:before {
+  content: '\e901';
+}
+.notifications-on:before {
+  content: '\e902';
+}
+.comments:before {
+  content: '\e903';
+}
+.comments-on:before {
+  content: '\e904';
+}

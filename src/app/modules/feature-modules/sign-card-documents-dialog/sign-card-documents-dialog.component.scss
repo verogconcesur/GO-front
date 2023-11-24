@@ -1,0 +1,49 @@
+@import 'utils/core';
+@import 'utils/theme';
+.sign-documents {
+  background-color: rgba(mat-contrast($primary, A200), 0.32);
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: var(--vh);
+  z-index: 101;
+  padding: 10px;
+  .sign-documents-modal {
+    background-color: mat-contrast($primary, 500);
+    border-radius: 20px;
+    width: $desktop-large;
+    height: calc(var(--vh) - 20px);
+    overflow: hidden;
+    max-height: 960px;
+    position: relative;
+    @include respond-to(calc($desktop-large + 100px)) {
+      width: calc(100vw - 20px);
+      max-width: $desktop-large;
+    }
+    &.small-modal {
+      width: 480px;
+      height: 447px;
+      // 0 - $tablet-small
+      @include respond-to($tablet-small) {
+        width: calc(100vw - 20px);
+        height: calc(var(--vh) - 20px);
+        max-width: 480px;
+        max-height: 447px;
+      }
+    }
+
+    &__header {
+      margin: 10px;
+      h2 {
+        margin: 0 0 0 10px;
+      }
+    }
+
+    &__wrapper {
+      margin: 0 20px 20px 20px;
+      max-height: calc(100% - 80px);
+      overflow: auto;
+    }
+  }
+}

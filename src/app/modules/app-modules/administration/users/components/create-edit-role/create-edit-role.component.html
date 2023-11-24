@@ -1,0 +1,22 @@
+<div class="create-role-component">
+    <form [formGroup]="roleForm">
+        <mat-form-field appearance="outline" class="create-role__input">
+            <mat-label>{{ labels.roleName | translate }}</mat-label>
+            <input matInput formControlName="name" />
+            <mat-error class="create-role__error" *ngIf="roleForm.controls?.name.invalid && roleForm.controls?.name.touched">
+                <span *ngIf="roleForm.controls.name.errors.required">{{ labels.roleNameRequired | translate }}</span>
+                <span *ngIf="roleForm.controls.name.errors.maxlength">{{
+                    labels.maxLengthError | translate: { length: roleForm.controls.name.errors.maxlength.requiredLength }
+                }}</span>
+            </mat-error>
+        </mat-form-field>
+
+        <!-- Permissions -->
+        <app-users-permissions
+            #permissionsListComponent
+            [permissions]="permissions"
+            [permissionsToSelectByDefault]="getPermissionsSelectedByDefault()"
+            [type]="'CREATE_EDIT_ROLE'"
+        ></app-users-permissions>
+    </form>
+</div>

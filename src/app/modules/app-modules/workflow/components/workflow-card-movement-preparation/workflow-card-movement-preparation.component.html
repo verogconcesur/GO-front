@@ -1,0 +1,502 @@
+<div class="wc-movement-preparation">
+    <div class="wc-movement-preparation__header">
+        <h2 [innerHtml]="getModalTitle() | safeHtml"></h2>
+        <button mat-button (click)="close()">
+            <mat-icon>close</mat-icon>
+        </button>
+    </div>
+    <div class="wc-movement-preparation__task" *ngIf="sendToOtherWorkflow && taskForm">
+        <form [formGroup]="taskForm">
+            <mat-form-field appearance="outline" floatLabel="always">
+                <mat-label>{{ labels.taskLabel | translate }}</mat-label>
+                <textarea
+                    matInput
+                    formControlName="description"
+                    [placeholder]="labels.taskPlaceholder | translate"
+                    cdkTextareaAutosize
+                ></textarea>
+                <mat-error *ngIf="taskForm.invalid">
+                    <span>{{ labels.required | translate }}</span>
+                </mat-error>
+            </mat-form-field>
+        </form>
+    </div>
+    <div class="wc-movement-preparation__deadline" *ngIf="sendToOtherWorkflow && cardsLimitForm">
+        <form [formGroup]="cardsLimitForm">
+            <!-- DeadLineDate-->
+            <mat-form-field appearance="outline" floatLabel="always">
+                <mat-label>{{ labels.deadLineDate | translate }}</mat-label>
+                <input
+                    matInput
+                    readonly
+                    #deadLineDatePicker
+                    placeholder="DD/MM/YYYY"
+                    [matDatepickerFilter]="datesLimitFilter"
+                    [matDatepicker]="picker"
+                    [min]="minDate"
+                    [max]="maxDate"
+                    (dateChange)="changeDeadLine(true)"
+                    formControlName="deadLineDate"
+                />
+                <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+                <mat-datepicker [dateClass]="dateClass" #picker></mat-datepicker>
+                <mat-error *ngIf="cardsLimitForm.controls?.deadLineDate?.invalid">
+                    <span *ngIf="cardsLimitForm.controls.deadLineDate.errors.required">{{ labels.required | translate }}</span>
+                </mat-error>
+            </mat-form-field>
+            <!-- DeadLineHour -->
+            <mat-form-field appearance="outline" floatLabel="always">
+                <mat-label>{{ labels.deadLineHour | translate }}</mat-label>
+                <mat-select formControlName="deadLineHour" (selectionChange)="changeDeadLine()">
+                    <mat-option
+                        *ngFor="let hour of hoursList()"
+                        [value]="hour"
+                        [ngClass]="hour.maxReached ? 'max-reached-date-class' : 'available-date-class'"
+                        [disabled]="hour.maxReached && !workflowCardsLimit?.allowOverLimit"
+                        >{{ hour.hourFrom }}:00 ({{
+                            labels.numOf | translate : { num1: hour.cards, num2: maxCardsByHour }
+                        }})</mat-option
+                    >
+                </mat-select>
+                <mat-error *ngIf="cardsLimitForm.controls?.deadLineHour?.invalid">
+                    <span *ngIf="cardsLimitForm.controls.deadLineHour.errors.required">{{ labels.required | translate }}</span>
+                </mat-error>
+            </mat-form-field>
+        </form>
+    </div>
+    <div class="preparation__section" *ngIf="userForm">
+        <form [formGroup]="userForm">
+            <div class="preparation__section__title">
+                {{ labels.user | translate }}
+            </div>
+            <mat-form-field appearance="outline" floatLabel="always">
+                <mat-label>{{ labels.userPlaceholder | translate }}</mat-label>
+                <mat-select formControlName="user">
+                    <mat-option *ngFor="let user of usersIn" [value]="user">{{ getUserFullname(user) }}</mat-option>
+                </mat-select>
+                <mat-error class="preparation__error" *ngIf="userForm.controls.user.invalid && userForm.controls.user.touched">
+                    {{ labels.required | translate }}
+                </mat-error>
+            </mat-form-field>
+        </form>
+    </div>
+    <mat-tab-group
+        animationDuration="0ms"
+        mat-align-tabs="center"
+        (selectedTabChange)="tabSelected($event)"
+        *ngIf="tabsToShow?.length"
+    >
+        <mat-tab
+            *ngIf="showTab('OUT')"
+            [label]="getTabLabel('OUT')"
+            [labelClass]="{ 'text-red': preparationOutForm?.invalid }"
+        ></mat-tab>
+        <mat-tab
+            *ngIf="showTab('IN')"
+            [label]="getTabLabel('IN')"
+            [labelClass]="{ 'text-red': preparationInForm?.invalid }"
+        ></mat-tab>
+        <mat-tab
+            *ngIf="showTab('MOV')"
+            [label]="getTabLabel('MOV')"
+            [labelClass]="{ 'text-red': preparationMovForm?.invalid }"
+        ></mat-tab>
+    </mat-tab-group>
+    <div class="wc-movement-preparation__warnings" [hidden]="tabToShow !== 'IN'">
+        <form [formGroup]="preparationInForm" *ngIf="preparationInForm && formsCreated" class="smaller-mat-form-fields">
+            <div class="preparation__section" *ngIf="preparationIn.requiredHistoryComment">
+                <div class="preparation__section__title">
+                    {{ labels.size | translate }}
+                </div>
+                <mat-form-field appearance="outline" floatLabel="always">
+                    <mat-label>{{ labels.taskHistoricLabel | translate }}</mat-label>
+                    <textarea
+                        matInput
+                        formControlName="historyComment"
+                        [placeholder]="labels.taskHistoricalPlaceholder | translate"
+                        cdkTextareaAutosize
+                    ></textarea>
+                    <mat-error
+                        *ngIf="
+                            preparationInForm.controls.historyComment.invalid && preparationInForm.controls.historyComment.touched
+                        "
+                    >
+                        <span>{{ labels.required | translate }}</span>
+                    </mat-error>
+                </mat-form-field>
+            </div>
+
+            <div class="preparation__section" *ngIf="preparationIn.requiredSize">
+                <div class="preparation__section__title">
+                    {{ labels.size | translate }}
+                </div>
+                <mat-form-field appearance="outline" floatLabel="always">
+                    <mat-label>{{ labels.sizePlaceholder | translate }}</mat-label>
+                    <mat-select formControlName="size">
+                        <mat-option [value]="'S'">S</mat-option>
+                        <mat-option [value]="'M'">M</mat-option>
+                        <mat-option [value]="'L'">L</mat-option>
+                        <mat-option [value]="'XL'">XL</mat-option>
+                    </mat-select>
+                    <mat-error
+                        class="preparation__error"
+                        *ngIf="preparationInForm.controls.size.invalid && preparationInForm.controls.size.touched"
+                    >
+                        {{ labels.required | translate }}
+                    </mat-error>
+                </mat-form-field>
+            </div>
+            <!-- <div class="preparation__section" *ngIf="preparationIn.requiredUser && !userInDisabled">
+                <div class="preparation__section__title">
+                    {{ labels.user | translate }}
+                </div>
+                <mat-form-field appearance="outline" floatLabel="always">
+                    <mat-label>{{ labels.userPlaceholder | translate }}</mat-label>
+                    <mat-select formControlName="user" [disabled]="userInDisabled">
+                        <mat-option *ngFor="let user of usersIn" [value]="user">{{ getUserFullname(user) }}</mat-option>
+                    </mat-select>
+                    <mat-error
+                        class="preparation__error"
+                        *ngIf="preparationInForm.controls.user.invalid && preparationInForm.controls.user.touched"
+                    >
+                        {{ labels.required | translate }}
+                    </mat-error>
+                </mat-form-field>
+            </div> -->
+
+            <mat-accordion *ngIf="preparationIn.sendMail">
+                <mat-expansion-panel *ngFor="let mailEvent of getWfEventsMailsFormArray('IN').controls; let i = index">
+                    <mat-expansion-panel-header>
+                        <mat-panel-title>
+                            {{ getMailEventTitle(mailEvent, i, getWfEventsMailsFormArray("IN").controls.length) }}
+                        </mat-panel-title>
+                    </mat-expansion-panel-header>
+                    <div *ngFor="let item of mailEvent.controls.items.controls; let j = index">
+                        <section [formGroup]="item" class="mat-tab-page-sections">
+                            <section class="mat-tab-page-sections__title">
+                                <span>{{ item.value.messageChannel.name }}</span>
+                            </section>
+                            <app-mat-chips-input-form-field
+                                [matFormLabel]="labels.receivers"
+                                [inputPlaceholder]="labels.emails"
+                                [fControl]="item.controls?.processedEmail"
+                                [matFormFieldClasses]="'w100'"
+                                [inputPattern]="emailPattern"
+                                [errorPatternMessage]="labels.errorPatternMessage"
+                                *ngIf="item.value.messageChannel.id === 2"
+                            ></app-mat-chips-input-form-field>
+                            <mat-form-field
+                                appearance="outline"
+                                floatLabel="always"
+                                class="w100"
+                                *ngIf="item.value.messageChannel.id === 2"
+                            >
+                                <mat-label>{{ labels.subject | translate }}</mat-label>
+                                <textarea
+                                    matInput
+                                    formControlName="subject"
+                                    [placeholder]="labels.subject | translate"
+                                    cdkTextareaAutosize
+                                ></textarea>
+                                <mat-error *ngIf="item.controls.subject.invalid && item.controls.subject.touched">
+                                    <span>{{ labels.required | translate }}</span>
+                                </mat-error>
+                            </mat-form-field>
+                            <section class="w100">
+                                <app-text-editor-wrapper
+                                    id="{{ 'templateEditorIn' + i + j }}"
+                                    textEditorId="{{ 'templateEditorIn' + i + j }}"
+                                    [initialValue]="item?.controls?.template?.value"
+                                    [textEditorConfig]="textEditorToolbarOptions"
+                                    [placeholder]="labels.insertText | translate"
+                                    (contentChanged)="textEditorContentChanged($event, item)"
+                                ></app-text-editor-wrapper>
+                                <mat-error
+                                    class="preparation__error"
+                                    *ngIf="item.controls.template.invalid && item.controls.template.touched"
+                                >
+                                    {{ labels.required | translate }}
+                                </mat-error>
+                            </section>
+                        </section>
+                    </div>
+                </mat-expansion-panel>
+            </mat-accordion>
+
+            <div class="preparation__section" *ngIf="preparationIn.requiredMovementExtra && !preparationIn.movementExtraAuto">
+                <div class="preparation__section__title">
+                    {{ labels.extraMovement | translate }}
+                </div>
+                <mat-checkbox formControlName="movementExtraConfirm">
+                    <span [innerHtml]="getMovementExtraLabel(preparationIn) | safeHtml"></span
+                ></mat-checkbox>
+            </div>
+        </form>
+    </div>
+    <div class="wc-movement-preparation__warnings" [hidden]="tabToShow !== 'OUT'">
+        <form [formGroup]="preparationOutForm" *ngIf="preparationOutForm && formsCreated" class="smaller-mat-form-fields">
+            <div class="preparation__section" *ngIf="preparationOut.requiredHistoryComment">
+                <div class="preparation__section__title">
+                    {{ labels.size | translate }}
+                </div>
+                <mat-form-field appearance="outline" floatLabel="always">
+                    <mat-label>{{ labels.taskHistoricLabel | translate }}</mat-label>
+                    <textarea
+                        matInput
+                        formControlName="historyComment"
+                        [placeholder]="labels.taskHistoricalPlaceholder | translate"
+                        cdkTextareaAutosize
+                    ></textarea>
+                    <mat-error
+                        *ngIf="
+                            preparationOutForm.controls.historyComment.invalid &&
+                            preparationOutForm.controls.historyComment.touched
+                        "
+                    >
+                        <span>{{ labels.required | translate }}</span>
+                    </mat-error>
+                </mat-form-field>
+            </div>
+            <div class="preparation__section" *ngIf="preparationOut.requiredSize">
+                <div class="preparation__section__title">
+                    {{ labels.size | translate }}
+                </div>
+                <mat-form-field appearance="outline" floatLabel="always">
+                    <mat-label>{{ labels.sizePlaceholder | translate }}</mat-label>
+                    <mat-select formControlName="size">
+                        <mat-option [value]="'S'">S</mat-option>
+                        <mat-option [value]="'M'">M</mat-option>
+                        <mat-option [value]="'L'">L</mat-option>
+                        <mat-option [value]="'XL'">XL</mat-option>
+                    </mat-select>
+                    <mat-error
+                        class="preparation__error"
+                        *ngIf="preparationOutForm.controls.size.invalid && preparationOutForm.controls.size.touched"
+                    >
+                        {{ labels.required | translate }}
+                    </mat-error>
+                </mat-form-field>
+            </div>
+            <!-- <div class="preparation__section" *ngIf="preparationOut.requiredUser && !userOutDisabled">
+                <div class="preparation__section__title">
+                    {{ labels.user | translate }}
+                </div>
+                <mat-form-field appearance="outline" floatLabel="always">
+                    <mat-label>{{ labels.userPlaceholder | translate }}</mat-label>
+                    <mat-select formControlName="user" [disabled]="userOutDisabled">
+                        <mat-option *ngFor="let user of usersOut" [value]="user">{{ getUserFullname(user) }}</mat-option>
+                    </mat-select>
+                    <mat-error
+                        class="preparation__error"
+                        *ngIf="preparationOutForm.controls.user.invalid && preparationOutForm.controls.user.touched"
+                    >
+                        {{ labels.required | translate }}
+                    </mat-error>
+                </mat-form-field>
+            </div> -->
+
+            <mat-accordion *ngIf="preparationOut.sendMail">
+                <mat-expansion-panel *ngFor="let mailEvent of getWfEventsMailsFormArray('OUT').controls; let i = index">
+                    <mat-expansion-panel-header>
+                        <mat-panel-title>
+                            {{ getMailEventTitle(mailEvent, i, getWfEventsMailsFormArray("OUT").controls.length) }}
+                        </mat-panel-title>
+                    </mat-expansion-panel-header>
+                    <div *ngFor="let item of mailEvent.controls.items.controls; let j = index">
+                        <section [formGroup]="item" class="mat-tab-page-sections">
+                            <section>
+                                <span class="mat-tab-page-sections__title">{{ item.value.messageChannel.name }}</span>
+                            </section>
+                            <app-mat-chips-input-form-field
+                                [matFormLabel]="labels.receivers"
+                                [inputPlaceholder]="labels.emails"
+                                [fControl]="item.controls?.processedEmail"
+                                [matFormFieldClasses]="'w100'"
+                                [inputPattern]="emailPattern"
+                                [errorPatternMessage]="labels.errorPatternMessage"
+                                *ngIf="item.value.messageChannel.id === 2"
+                            ></app-mat-chips-input-form-field>
+                            <mat-form-field
+                                appearance="outline"
+                                floatLabel="always"
+                                class="w100"
+                                *ngIf="item.value.messageChannel.id === 2"
+                            >
+                                <mat-label>{{ labels.subject | translate }}</mat-label>
+                                <textarea
+                                    matInput
+                                    formControlName="subject"
+                                    [placeholder]="labels.subject | translate"
+                                    cdkTextareaAutosize
+                                ></textarea>
+                                <mat-error *ngIf="item.controls.subject.invalid && item.controls.subject.touched">
+                                    <span>{{ labels.required | translate }}</span>
+                                </mat-error>
+                            </mat-form-field>
+                            <section class="w100">
+                                <app-text-editor-wrapper
+                                    id="{{ 'templateEditorOut' + i + j }}"
+                                    textEditorId="{{ 'templateEditorOut' + i + j }}"
+                                    [initialValue]="item?.controls?.template?.value"
+                                    [textEditorConfig]="textEditorToolbarOptions"
+                                    [placeholder]="labels.insertText | translate"
+                                    (contentChanged)="textEditorContentChanged($event, item)"
+                                ></app-text-editor-wrapper>
+                                <mat-error
+                                    class="preparation__error"
+                                    *ngIf="item.controls.template.invalid && item.controls.template.touched"
+                                >
+                                    {{ labels.required | translate }}
+                                </mat-error>
+                            </section>
+                        </section>
+                    </div>
+                </mat-expansion-panel>
+            </mat-accordion>
+
+            <div class="preparation__section" *ngIf="preparationOut.requiredMovementExtra && !preparationOut.movementExtraAuto">
+                <div class="preparation__section__title">
+                    {{ labels.extraMovement | translate }}
+                </div>
+                <mat-checkbox formControlName="movementExtraConfirm"
+                    ><span [innerHtml]="getMovementExtraLabel(preparationOut) | safeHtml"></span
+                ></mat-checkbox>
+            </div>
+        </form>
+    </div>
+    <div class="wc-movement-preparation__warnings" [hidden]="tabToShow !== 'MOV'">
+        <form [formGroup]="preparationMovForm" *ngIf="preparationMovForm && formsCreated" class="smaller-mat-form-fields">
+            <div class="preparation__section" *ngIf="preparationMov.requiredHistoryComment">
+                <div class="preparation__section__title">
+                    {{ labels.taskHistoricLabel | translate }}
+                </div>
+                <mat-form-field appearance="outline" floatLabel="always">
+                    <mat-label>{{ labels.taskHistoricLabel | translate }}</mat-label>
+                    <textarea
+                        matInput
+                        formControlName="historyComment"
+                        [placeholder]="labels.taskHistoricalPlaceholder | translate"
+                        cdkTextareaAutosize
+                    ></textarea>
+                    <mat-error
+                        *ngIf="
+                            preparationMovForm.controls.historyComment.invalid &&
+                            preparationMovForm.controls.historyComment.touched
+                        "
+                    >
+                        <span>{{ labels.required | translate }}</span>
+                    </mat-error>
+                </mat-form-field>
+            </div>
+            <div class="preparation__section" *ngIf="preparationMov.requiredSize">
+                <div class="preparation__section__title">
+                    {{ labels.size | translate }}
+                </div>
+                <mat-form-field appearance="outline" floatLabel="always">
+                    <mat-label>{{ labels.sizePlaceholder | translate }}</mat-label>
+                    <mat-select formControlName="size">
+                        <mat-option [value]="'S'">S</mat-option>
+                        <mat-option [value]="'M'">M</mat-option>
+                        <mat-option [value]="'L'">L</mat-option>
+                        <mat-option [value]="'XL'">XL</mat-option>
+                    </mat-select>
+                    <mat-error
+                        class="preparation__error"
+                        *ngIf="preparationMovForm.controls.size.invalid && preparationMovForm.controls.size.touched"
+                    >
+                        {{ labels.required | translate }}
+                    </mat-error>
+                </mat-form-field>
+            </div>
+            <!-- <div class="preparation__section" *ngIf="preparationMov.requiredUser && !userMovDisabled">
+                <div class="preparation__section__title">
+                    {{ labels.user | translate }}
+                </div>
+                <mat-form-field appearance="outline" floatLabel="always">
+                    <mat-label>{{ labels.userPlaceholder | translate }}</mat-label>
+                    <mat-select formControlName="user" [disabled]="userMovDisabled">
+                        <mat-option *ngFor="let user of usersMov" [value]="user">{{ getUserFullname(user) }}</mat-option>
+                    </mat-select>
+                    <mat-error
+                        class="preparation__error"
+                        *ngIf="preparationMovForm.controls.user.invalid && preparationMovForm.controls.user.touched"
+                    >
+                        {{ labels.required | translate }}
+                    </mat-error>
+                </mat-form-field>
+            </div> -->
+
+            <mat-accordion *ngIf="preparationMov.sendMail">
+                <mat-expansion-panel *ngFor="let mailEvent of getWfEventsMailsFormArray('MOV').controls; let i = index">
+                    <mat-expansion-panel-header>
+                        <mat-panel-title>
+                            {{ getMailEventTitle(mailEvent, i, getWfEventsMailsFormArray("MOV").controls.length) }}
+                        </mat-panel-title>
+                    </mat-expansion-panel-header>
+                    <div *ngFor="let item of mailEvent.controls.items.controls; let j = index">
+                        <section [formGroup]="item" class="mat-tab-page-sections">
+                            <section>
+                                <span class="mat-tab-page-sections__title">{{ item.value.messageChannel.name }}</span>
+                            </section>
+                            <app-mat-chips-input-form-field
+                                [matFormLabel]="labels.receivers"
+                                [inputPlaceholder]="labels.emails"
+                                [fControl]="item.controls?.processedEmail"
+                                [matFormFieldClasses]="'w100'"
+                                [inputPattern]="emailPattern"
+                                [errorPatternMessage]="labels.errorPatternMessage"
+                                *ngIf="item.value.messageChannel.id === 2"
+                            ></app-mat-chips-input-form-field>
+                            <mat-form-field
+                                appearance="outline"
+                                floatLabel="always"
+                                class="w100"
+                                *ngIf="item.value.messageChannel.id === 2"
+                            >
+                                <mat-label>{{ labels.subject | translate }}</mat-label>
+                                <textarea
+                                    matInput
+                                    formControlName="subject"
+                                    [placeholder]="labels.subject | translate"
+                                    cdkTextareaAutosize
+                                ></textarea>
+                                <mat-error *ngIf="item.controls.subject.invalid && item.controls.subject.touched">
+                                    <span>{{ labels.required | translate }}</span>
+                                </mat-error>
+                            </mat-form-field>
+                            <section class="w100">
+                                <app-text-editor-wrapper
+                                    id="{{ 'templateEditorMov' + i + j }}"
+                                    textEditorId="{{ 'templateEditorMov' + i + j }}"
+                                    [initialValue]="item?.controls?.template?.value"
+                                    [textEditorConfig]="textEditorToolbarOptions"
+                                    [placeholder]="labels.insertText | translate"
+                                    (contentChanged)="textEditorContentChanged($event, item)"
+                                ></app-text-editor-wrapper>
+                                <mat-error
+                                    class="preparation__error"
+                                    *ngIf="item.controls.template.invalid && item.controls.template.touched"
+                                >
+                                    {{ labels.required | translate }}
+                                </mat-error>
+                            </section>
+                        </section>
+                    </div>
+                </mat-expansion-panel>
+            </mat-accordion>
+            <div class="preparation__section" *ngIf="preparationMov.requiredMovementExtra && !preparationMov.movementExtraAuto">
+                <div class="preparation__section__title">
+                    {{ labels.extraMovement | translate }}
+                </div>
+                <mat-checkbox formControlName="movementExtraConfirm">
+                    <span [innerHtml]="getMovementExtraLabel(preparationMov) | safeHtml"></span>
+                </mat-checkbox>
+            </div>
+        </form>
+    </div>
+    <div class="wc-movement-preparation__footer">
+        <button mat-flat-button color="primary" [disabled]="disableSaveButton()" (click)="save()">
+            {{ labels.save | translate }}
+        </button>
+    </div>
+</div>

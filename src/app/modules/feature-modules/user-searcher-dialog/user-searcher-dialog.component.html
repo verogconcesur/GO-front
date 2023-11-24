@@ -1,0 +1,124 @@
+<div class="user-searcher">
+    <div class="user-searcher__input">
+        <form class="user-searcher__input__search-form smaller-mat-form-fields" (ngSubmit)="searchAction()">
+            <mat-form-field
+                appearance="outline"
+                class="smaller-mat-form-fields__no-margin smaller-mat-form-fields__button-height"
+            >
+                <input
+                    type="text"
+                    matInput
+                    [placeholder]="labels.searchLabel | translate"
+                    [formControl]="filterTextSearchControl"
+                    (keyup.enter)="searchAction()"
+                />
+                <button mat-icon-button aria-label="Search" type="button" matSuffix (click)="searchAction()">
+                    <mat-icon>search</mat-icon>
+                </button>
+            </mat-form-field>
+        </form>
+        <div class="user-searcher__input__selection-count">
+            {{ this.getNumberOfUsersSelected() }}
+        </div>
+    </div>
+    <div class="user-searcher__table">
+        <table class="table-users table-ellipsis" mat-table [dataSource]="dataSource" style="width: 100%">
+            <!-- fullname Column -->
+            <ng-container matColumnDef="fullName">
+                <th mat-header-cell *matHeaderCellDef>{{ labels.fullName | translate }}</th>
+                <td mat-cell *matCellDef="let element">
+                    {{ element.name }}&nbsp;{{ element.firstName }}&nbsp;{{ element.lastName }}
+                </td>
+            </ng-container>
+
+            <!-- permissionsGroup Column -->
+            <ng-container matColumnDef="permissionsGroup">
+                <th mat-header-cell *matHeaderCellDef>{{ labels.permissionsGroup | translate }}</th>
+                <td mat-cell *matCellDef="let element">{{ element.role?.name }}</td>
+            </ng-container>
+
+            <!-- brand Column -->
+            <ng-container matColumnDef="brand">
+                <th mat-header-cell *matHeaderCellDef>{{ labels.brand | translate }}</th>
+                <td
+                    mat-cell
+                    *matCellDef="let element"
+                    matTooltipPosition="above"
+                    [matTooltip]="getUserOrganizationLabel(element?.brands)"
+                    appShowIfTruncated
+                >
+                    {{ getUserOrganizationLabel(element?.brands) }}
+                </td>
+            </ng-container>
+
+            <!-- facilities Column -->
+            <ng-container matColumnDef="facility">
+                <th mat-header-cell *matHeaderCellDef>{{ labels.facility | translate }}</th>
+                <td
+                    mat-cell
+                    *matCellDef="let element"
+                    matTooltipPosition="above"
+                    [matTooltip]="getUserOrganizationLabel(element?.facilities)"
+                    appShowIfTruncated
+                >
+                    {{ getUserOrganizationLabel(element?.facilities) }}
+                </td>
+            </ng-container>
+
+            <!-- departments Column -->
+            <ng-container matColumnDef="department">
+                <th mat-header-cell *matHeaderCellDef>{{ labels.department | translate }}</th>
+                <td
+                    mat-cell
+                    *matCellDef="let element"
+                    matTooltipPosition="above"
+                    [matTooltip]="getUserOrganizationLabel(element?.departments)"
+                    appShowIfTruncated
+                >
+                    {{ getUserOrganizationLabel(element?.departments) }}
+                </td>
+            </ng-container>
+
+            <!-- specialties Column -->
+            <ng-container matColumnDef="specialty">
+                <th mat-header-cell *matHeaderCellDef>{{ labels.specialty | translate }}</th>
+                <td
+                    mat-cell
+                    *matCellDef="let element"
+                    matTooltipPosition="above"
+                    [matTooltip]="getUserOrganizationLabel(element?.specialties)"
+                    appShowIfTruncated
+                >
+                    {{ getUserOrganizationLabel(element?.specialties) }}
+                </td>
+            </ng-container>
+
+            <!-- actions Column -->
+            <ng-container matColumnDef="actions">
+                <th mat-header-cell *matHeaderCellDef>{{ labels.actions | translate }}</th>
+                <td mat-cell *matCellDef="let element" class="action-buttons no-ellipsis">
+                    <button mat-button aria-label="add" (click)="addOrRemoveUser(element)">
+                        {{ getButtonLabel(element) | translate }}
+                    </button>
+                </td>
+            </ng-container>
+
+            <tr mat-header-row *matHeaderRowDef="displayedColumns; sticky: true"></tr>
+            <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
+            <tr class="mat-row" *matNoDataRow>
+                <td class="mat-cell" style="text-align: center" [attr.colspan]="displayedColumns.length">
+                    {{ labels.noDataToShow | translate }}
+                </td>
+            </tr>
+        </table>
+        <mat-paginator
+            [length]="paginationConfig.length"
+            [pageSize]="paginationConfig.pageSize"
+            [pageSizeOptions]="paginationConfig.pageSizeOptions"
+            [pageIndex]="paginationConfig.page"
+            (page)="searchAction($event)"
+            aria-label="Select page"
+        >
+        </mat-paginator>
+    </div>
+</div>

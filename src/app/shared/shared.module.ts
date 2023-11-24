@@ -1,35 +1,72 @@
 import { CommonModule } from '@angular/common';
 import { NgModule } from '@angular/core';
 import { FlexLayoutModule } from '@angular/flex-layout';
-import { ReactiveFormsModule } from '@angular/forms';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { TranslateModule } from '@ngx-translate/core';
 import { ConfirmDialogComponent } from './components/confirm-dialog/confirm-dialog.component';
+import { GoBackComponent } from './components/go-back/go-back.component';
 import { ProgressSpinnerDialogComponent } from './components/progress-spinner-dialog/progress-spinner-dialog.component';
 import { MaterialModule } from './material.module';
+import { CustomDialogModule, CustomDialogService } from '@frontend/custom-dialog';
 import { ConfirmDialogService } from './services/confirm-dialog.service';
 import { GlobalMessageService } from './services/global-message.service';
 import { ProgressSpinnerDialogService } from './services/progress-spinner-dialog.service';
+import { ShowToolbarIfTruncatedDirective } from './directives/showToolbarIfTruncated.directive';
+import { RemoveWrapperDirective } from './directives/removeWrapper.directive';
+import { ResponsiveTabsComponent } from './components/responsive-tabs/responsive-tabs.component';
+import { HighlightDirective } from './directives/highLight.directive';
+import { DropFilesZonetDirective } from './directives/dropFilesZone.directive';
+import { TwoDigitDecimalDirective } from './utils/two-digit-decimal.directive';
+import { CardTabItemTypePipePipe } from './utils/card-tab-item-type-pipe.pipe';
+import { SafeHtmlPipe } from './utils/safe-inner-html.pipe';
+import { ZoomDirective } from './directives/zoomImage.directive';
+import { MatAutocompleteOptionsScrollDirective } from './directives/matAutocompleteInfiniteScroll.directive';
 
 @NgModule({
-  declarations: [ProgressSpinnerDialogComponent, ConfirmDialogComponent],
+  declarations: [
+    ProgressSpinnerDialogComponent,
+    ConfirmDialogComponent,
+    GoBackComponent,
+    ShowToolbarIfTruncatedDirective,
+    RemoveWrapperDirective,
+    HighlightDirective,
+    MatAutocompleteOptionsScrollDirective,
+    DropFilesZonetDirective,
+    ResponsiveTabsComponent,
+    TwoDigitDecimalDirective,
+    ZoomDirective,
+    CardTabItemTypePipePipe,
+    SafeHtmlPipe
+  ],
   imports: [
     TranslateModule,
     CommonModule,
     MaterialModule,
     FlexLayoutModule,
     ReactiveFormsModule,
-    TranslateModule
+    FormsModule,
+    CustomDialogModule
   ],
-  providers: [
-    GlobalMessageService,
-    ConfirmDialogService,
-    ProgressSpinnerDialogService
-  ],
+  providers: [GlobalMessageService, ConfirmDialogService, ProgressSpinnerDialogService, CustomDialogService],
   exports: [
     TranslateModule,
     MaterialModule,
     FlexLayoutModule,
-    ReactiveFormsModule
+    ReactiveFormsModule,
+    ZoomDirective,
+    FormsModule,
+    GoBackComponent,
+    ResponsiveTabsComponent,
+    CommonModule,
+    ShowToolbarIfTruncatedDirective,
+    RemoveWrapperDirective,
+    HighlightDirective,
+    MatAutocompleteOptionsScrollDirective,
+    DropFilesZonetDirective,
+    CustomDialogModule,
+    TwoDigitDecimalDirective,
+    CardTabItemTypePipePipe,
+    SafeHtmlPipe
   ]
 })
 export class SharedModule {}

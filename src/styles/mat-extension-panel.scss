@@ -1,0 +1,69 @@
+@import '@angular/material/theming';
+
+@mixin custom-mat-extension-panel-theme($theme, $main-typo) {
+  $primary: map-get($theme, primary);
+
+  mat-expansion-panel.no-padding {
+    .mat-expansion-panel-header {
+      padding: 0 !important;
+    }
+    .mat-expansion-indicator {
+      padding: 0 10px;
+    }
+  }
+  // Header
+  .mat-expansion-panel-header {
+    border-radius: initial;
+    border-bottom: 1px solid mat-color($primary, 100);
+
+    &.mat-expanded {
+      height: 49px;
+    }
+
+    .mat-expansion-indicator {
+      border-width: 0 3px 3px 0;
+      color: mat-contrast($primary, 50);
+    }
+
+    .mat-expansion-panel-header-title {
+      color: mat-color($primary, 500);
+      font-size: 1rem;
+      font-weight: 600;
+    }
+  }
+
+  .header-color-primary {
+    .mat-expansion-panel-header {
+      background-color: mat-color($primary, 500) !important;
+      &:hover {
+        background-color: mat-color($primary, 600) !important;
+      }
+    }
+    .mat-expansion-indicator::after {
+      color: mat-contrast($primary, 400);
+    }
+    .mat-expansion-panel-header-title {
+      color: mat-contrast($primary, 400);
+    }
+  }
+
+  // Content
+  .mat-expanded > .mat-expansion-panel-content {
+    padding-top: 16px;
+  }
+
+  mat-expansion-panel.no-padding {
+    .mat-expansion-panel-content {
+      .mat-expansion-panel-body {
+        padding: 0 0 16px 0;
+      }
+    }
+  }
+
+  .mat-select-panel.bigger-selection-panel-class {
+    max-height: calc(100vh - 100px);
+    .mat-optgroup-label {
+      overflow: visible !important;
+    }
+  }
+}

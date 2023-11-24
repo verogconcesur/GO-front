@@ -1,0 +1,70 @@
+<div
+    class="workflow-card"
+    [ngClass]="getCardSizeClass()"
+    cdkDrag
+    [cdkDragDisabled]="disableDrag"
+    [cdkDragStartDelay]="dragStartDelay"
+    (cdkDragStarted)="setCardDragging(true)"
+    (cdkDragReleased)="setCardDragging(false)"
+    (click)="showCardInfo()"
+>
+    <div class="workflow-card__placeholder" [ngClass]="getCardSizeClass()" *cdkDragPlaceholder></div>
+    <div class="workflow-card__colors">
+        <div
+            class="workflow-card__colors__color"
+            *ngFor="let color of getColors()"
+            [style.background-color]="color"
+            [ngClass]="getColorsClass()"
+        ></div>
+    </div>
+    <div class="workflow-card__info">
+        <!-- CardId: {{ card.id }} - OrderNumber: {{ card.orderNumber }} -->
+        <div *ngFor="let tabItem of card.tabItems" class="workflow-card__info__data">
+            {{ getLabel(tabItem) }}
+        </div>
+        <div
+            class="workflow-card__info__data extra-info"
+            *ngIf="extraInfoValue() && extraInfoValue() !== '' && showExtraInfo"
+            matTooltip="{{ extraInfoValue() }}"
+            appShowIfTruncated
+            matTooltipPosition="below"
+            [ngClass]="{ tasks: card.countTotalTasks > 0 }"
+            (click)="$event.stopPropagation(); expandCardInfo()"
+        >
+            {{ extraInfoValue() }}
+        </div>
+
+        <div
+            class="workflow-card__info__data extra-info"
+            *ngIf="additionalInfo && additionalInfo !== '' && showAdditionalInfo"
+            [matTooltip]="getAdditionalInfoString()"
+            appShowIfTruncated
+            matTooltipPosition="below"
+            [ngClass]="{ tasks: card.countTotalTasks > 0 }"
+            (click)="$event.stopPropagation(); expandAddiontalInfo()"
+        >
+            <mat-icon *ngIf="additionalInfoIcon && additionalInfoIcon !== ''" style="height: 20px">{{
+                additionalInfoIcon
+            }}</mat-icon>
+            {{ getAdditionalInfoString() }}
+        </div>
+
+        <div class="workflow-card__info__date" *ngIf="dateToShow">
+            {{ dateToShow | date : dateFormat }}
+        </div>
+
+        <div
+            class="workflow-card__info__tasks"
+            [ngClass]="{ completed: card.countCompletedTasks === card.countTotalTasks }"
+            *ngIf="card.countTotalTasks > 0"
+            (click)="showTasks(); $event.stopPropagation()"
+        >
+            {{ card.countCompletedTasks }}/{{ card.countTotalTasks }}
+            <mat-icon>check_box</mat-icon>
+        </div>
+
+        <div class="workflow-card__info__read-card" *ngIf="viewedBtn" (click)="$event.stopPropagation(); viewedAction.emit(true)">
+            <mat-icon>visibility</mat-icon>
+        </div>
+    </div>
+</div>

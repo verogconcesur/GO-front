@@ -1,0 +1,73 @@
+@import 'utils/core';
+@import 'utils/theme';
+
+.profile-content {
+  width: 100%;
+  padding-right: 15px;
+  .profile-content__form {
+    width: 100%;
+    .user-data__section {
+      &__title {
+        color: mat-color($primary, 500);
+        font-size: 1rem;
+        font-weight: 600;
+        margin: 0 0 5px 0;
+        &.first-child {
+          margin-top: 0px;
+        }
+      }
+      &__group {
+        mat-form-field {
+          width: 97%;
+          margin: 0 7px;
+        }
+        &.grid-group {
+          display: grid;
+          justify-items: center;
+          gap: 1rem;
+          grid-template-columns: repeat(auto-fit, minmax(10rem, 1fr));
+          margin-bottom: 30px;
+        }
+        &__title {
+          color: mat-contrast($primary, 100);
+          font-size: 0.75rem;
+          font-weight: 600;
+          padding-bottom: 0px;
+          text-transform: uppercase;
+          margin-bottom: 0px;
+          padding-right: 0.5rem;
+          &::after {
+            content: ':';
+          }
+        }
+      }
+      // TODO: DGDC quitar
+      .sign-wrapper {
+        border: 1px #4746a3 solid;
+        width: 250px;
+        padding: 5px;
+        display: flex;
+        flex-direction: column;
+        align-items: flex-end;
+        border-radius: 8px;
+        img {
+          max-width: 240px;
+          max-height: 140px;
+        }
+      }
+    }
+
+    .smaller-mat-form-fields {
+      @include respond-to(calc(#{$tablet-small} - 25px)) {
+        mat-form-field {
+          width: 95%;
+        }
+      }
+      @include respond-to(calc(#{$mobile} - 120px)) {
+        mat-form-field {
+          width: 97%;
+        }
+      }
+    }
+  }
+}

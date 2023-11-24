@@ -1,0 +1,37 @@
+<div class="select-template-lines-content" fxLayout="column" fxLayoutAlign="center center">
+    <div class="select-template-lines-content__main">
+        <div class="select-template-lines-content__main__header">
+            <div class="select-template-lines-content__main__header__item" fxLayout="row">
+                <div fxFlex="20" fxLayoutAlign="center center" fxFill></div>
+                <div fxFlex="40" fxLayoutAlign="center center" fxFill>{{ labels.line | translate }}</div>
+                <div fxFlex="40" fxLayoutAlign="center center" fxFill>{{ labels.amount | translate }}</div>
+            </div>
+        </div>
+        <div class="select-template-lines-content__main__container" fxLayout="column">
+            <div
+                class="select-template-lines-content__main__container__item smaller-mat-form-fields"
+                *ngFor="let budget of budgetsForm.controls; let i = index"
+                fxLayout="row"
+                [formGroup]="budget"
+            >
+                <div fxFlex="20" fxLayoutAlign="center center">
+                    <mat-checkbox formControlName="selected"></mat-checkbox>
+                </div>
+                <div fxFlex="40" fxLayoutAlign="center center">
+                    <mat-form-field appearance="outline" floatLabel="always">
+                        <input type="text" matInput formControlName="description" [readonly]="true" />
+                    </mat-form-field>
+                </div>
+                <div fxFlex="40" fxLayoutAlign="center center">
+                    <mat-form-field appearance="outline" floatLabel="always">
+                        <input appTwoDigitDecimal matInput formControlName="amount" [readonly]="true" />
+                        <span matSuffix>€</span>
+                    </mat-form-field>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="select-template-lines-content__buttons">
+        <!-- TODO: buttons used when the component is not opened with customDialogService -->
+    </div>
+</div>

@@ -1,0 +1,82 @@
+<div class="create-cards-container" *ngIf="cardForm">
+    <div fxLayout="row wrap" fxLayout.gt-md="col wrap">
+        <div class="create-cards-container__side">
+            <div class="create-cards-container__side__header">
+                <div
+                    class="create-cards-container__side__header__section"
+                    fxLayout="row wrap"
+                    fxLayoutAlign="space-between center"
+                >
+                    <h1 class="create-cards-container__side__header__section__title mat-display-2">
+                        {{ cardToEdit ? (labels.edit | translate) : (labels.create | translate) }}
+                    </h1>
+                </div>
+            </div>
+            <div class="create-cards-container__side__section" fxLayout="row wrap" fxLayoutAlign="start center">
+                <form [formGroup]="cardForm" class="smaller-mat-form-fields">
+                    <div class="create-cards-container__side__section__group grid-group">
+                        <!-- Name -->
+                        <mat-form-field appearance="outline" floatLabel="always">
+                            <mat-label>{{ labels.name | translate }}</mat-label>
+                            <input matInput formControlName="name" />
+                            <mat-error
+                                class="create-cards-container__side__section__group__error"
+                                *ngIf="form.name.invalid && form.name.touched"
+                            >
+                                {{ labels.nameRequired | translate }}
+                            </mat-error>
+                        </mat-form-field>
+                    </div>
+                    <div *ngFor="let col of cols.controls" class="create-cards-container__side__section__column">
+                        <span
+                            (click)="changeColumn(col.value)"
+                            [ngClass]="{
+                                'create-cards-container__side__section__column--selected':
+                                    selectedCol === col.value.orderNumber ? true : false,
+                                'create-cards-container__side__section__column--invalid': col.invalid ? true : false
+                            }"
+                        >
+                            <mat-icon
+                                *ngIf="selectedCol === col.value.orderNumber"
+                                [ngClass]="{
+                                    'create-cards-container__side__section__column--selected':
+                                        selectedCol === col.value.orderNumber ? true : false,
+                                    'create-cards-container__side__section__column--invalid': col.invalid ? true : false
+                                }"
+                                >lens</mat-icon
+                            >{{ col.value.name ? col.value.name : "---" }}</span
+                        >
+                    </div>
+                </form>
+            </div>
+        </div>
+        <div class="create-cards-container__main">
+            <app-custom-column
+                [ngStyle]="{ display: selectedCol === 1 ? 'block' : 'none' }"
+                [formCol]="cols.controls[0]"
+                [colEdit]="cardToEdit ? cardToEdit.cols[0] : null"
+            ></app-custom-column>
+            <app-custom-column
+                [ngStyle]="{ display: selectedCol === 2 ? 'block' : 'none' }"
+                [formCol]="cols.controls[1]"
+                [colEdit]="cardToEdit ? cardToEdit.cols[1] : null"
+            ></app-custom-column>
+            <app-custom-comments
+                [ngStyle]="{ display: selectedCol === 3 ? 'block' : 'none' }"
+                [formCol]="cols.controls[2]"
+                [colEdit]="cardToEdit ? cardToEdit.cols[2] : null"
+            ></app-custom-comments>
+            <app-custom-actions
+                [ngStyle]="{ display: selectedCol === 4 ? 'block' : 'none' }"
+                [formCol]="cols.controls[3]"
+                [colEdit]="cardToEdit ? cardToEdit.cols[3] : null"
+            ></app-custom-actions>
+        </div>
+    </div>
+    <div class="create-cards-container__footer" fxLayoutAlign="space-between center">
+        <button mat-stroked-button color="warn" (click)="cancel()">{{ labels.cancel | translate }}</button>
+        <button mat-flat-button color="primary" [disabled]="isSaveDisabled()" (click)="save()">
+            {{ labels.save | translate }}
+        </button>
+    </div>
+</div>

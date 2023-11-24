@@ -1,0 +1,95 @@
+<div class="create-edit-template-content" fxLayout="column" fxLayoutAlign="center center">
+    <div *ngIf="!isModalModeActive()">
+        <div class="create-edit-template-content__title mat-display-2">{{ labels.title | translate }}</div>
+    </div>
+    <div class="create-edit-template-content__form">
+        <form [formGroup]="attachmentForm" *ngIf="attachmentForm" class="smaller-mat-form-fields">
+            <!-- General Data -->
+            <div class="template-data__section">
+                <div class="template-data__section__title first-child">
+                    {{ labels.data | translate }}
+                </div>
+                <div class="template-data__section__group grid-group" formGroupName="template">
+                    <!-- Name -->
+                    <mat-form-field appearance="outline" floatLabel="always" class="first-item">
+                        <mat-label>{{ labels.name | translate }}</mat-label>
+                        <input matInput formControlName="name" />
+                        <mat-error
+                            class="template-data__error"
+                            *ngIf="attachmentForm.get('template.name').invalid && attachmentForm.get('template.name').touched"
+                        >
+                            {{ labels.nameRequired | translate }}
+                        </mat-error>
+                    </mat-form-field>
+
+                    <app-organization-levels-nested-combos
+                        #OrganizationLevelsNestedCombos
+                        [form]="attachmentForm.get('template')"
+                    ></app-organization-levels-nested-combos>
+                </div>
+            </div>
+            <!-- Attachment items -->
+            <div class="template-data__section">
+                <div class="template-data__section__title first-child">{{ labels.attachmentsItems | translate }} *</div>
+                <div class="template-data__section__group">
+                    <div cdkDropListGroup>
+                        <div
+                            cdkDropList
+                            class="droplist-with-handle attachments-items-list"
+                            (cdkDropListDropped)="dropAttachmentItem($event)"
+                        >
+                            <ng-container *ngFor="let itemForm of templateAttachmentItems.controls; let i = index">
+                                <div
+                                    class="draggable-item attachment-item smaller-mat-form-fields"
+                                    [formGroup]="itemForm"
+                                    cdkDrag
+                                    cdkDragBoundary=".attachments-items-list"
+                                >
+                                    <div class="attachment-item-custom-placeholder" *cdkDragPlaceholder></div>
+                                    <mat-icon cdkDragHandle class="opacity-04">drag_indicator</mat-icon>
+                                    <!-- 
+                                    <mat-form-field
+                                        appearance="outline"
+                                        class="smaller-mat-form-fields__no-margin"
+                                        floatLabel="always"
+                                    >
+                                    <mat-label>{{ labels.name | translate }}</mat-label>
+                                        <input type="text" matInput formControlName="name" />
+                                        <input type="text" matInput [(ngModel)]="item.description" /> 
+                                    </mat-form-field> -->
+                                    <mat-form-field
+                                        appearance="outline"
+                                        floatLabel="always"
+                                        class="smaller-mat-form-fields__no-margin"
+                                    >
+                                        <mat-label>{{ labels.name | translate }}</mat-label>
+                                        <input matInput formControlName="name" />
+                                    </mat-form-field>
+
+                                    <div class="attachment-item__actions">
+                                        <button mat-button class="opacity-04" (click)="deleteAttachmentItem(i)">
+                                            <mat-icon>close</mat-icon>
+                                        </button>
+                                    </div>
+                                </div>
+                            </ng-container>
+                        </div>
+                    </div>
+                    <mat-error *ngIf="attachmentForm.get('templateAttachmentItems').invalid">
+                        <span
+                            *ngIf="attachmentForm?.get('templateAttachmentItems')?.errors?.required && attachmentForm?.touched"
+                            >{{ labels.required | translate }}</span
+                        >
+                    </mat-error>
+                    <button mat-button class="v-align-bottom opacity-06 no-padding" (click)="addAttachmentItem()">
+                        <mat-icon>add</mat-icon>
+                        {{ labels.newItem | translate }}
+                    </button>
+                </div>
+            </div>
+        </form>
+    </div>
+    <div class="create-edit-template-content__buttons">
+        <!-- TODO: buttons used when the component is not opened with customDialogService -->
+    </div>
+</div>

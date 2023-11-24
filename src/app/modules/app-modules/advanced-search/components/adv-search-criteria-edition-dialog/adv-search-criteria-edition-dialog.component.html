@@ -1,0 +1,305 @@
+<div class="criteria-edition">
+    <h2 class="criteria-edition__name">
+        {{ criteriaName }}
+    </h2>
+    <div class="criteria-edition__operator">
+        <mat-form-field appearance="outline" style="width: 100%" *ngIf="operators.length > 0">
+            <mat-label>{{ labels.operator | translate }}</mat-label>
+            <mat-select
+                [formControl]="operatorFormControl"
+                (selectionChange)="valueFormControl.setValue(null); valueFormControl2.setValue(null)"
+            >
+                <mat-option *ngFor="let op of operators" [value]="op">{{ op.name }}</mat-option>
+            </mat-select>
+        </mat-form-field>
+    </div>
+    <!-- Tipo entidad -->
+    <div
+        class="criteria-edition__value"
+        *ngIf="operatorCode && operatorCode !== 'ISNULL' && operatorCode !== 'NOTISNULL' && dataType === 'ENTITY'"
+    >
+        <mat-form-field appearance="outline" style="width: 100%">
+            <mat-label>{{ labels.tEntity | translate }}</mat-label>
+            <mat-select [formControl]="valueFormControl" *ngIf="operatorCode === 'IN' || operatorCode === 'NIN'" multiple>
+                <mat-option *ngFor="let op of valueOptions | async" [value]="op.id">{{ op.name }}</mat-option>
+            </mat-select>
+            <mat-select [formControl]="valueFormControl" *ngIf="operatorCode !== 'IN' && operatorCode !== 'NIN'">
+                <mat-option *ngFor="let op of valueOptions | async" [value]="op.id">{{ op.name }}</mat-option>
+            </mat-select>
+        </mat-form-field>
+    </div>
+    <!-- Tipo string -->
+    <div
+        class="criteria-edition__value"
+        *ngIf="operatorCode && operatorCode !== 'ISNULL' && operatorCode !== 'NOTISNULL' && dataType === 'STRING'"
+    >
+        <mat-form-field appearance="outline" style="width: 100%" *ngIf="operatorCode !== 'IN' && operatorCode !== 'NIN'">
+            <mat-label>{{ labels.tString | translate }}</mat-label>
+            <input type="text" matInput [formControl]="valueFormControl" />
+        </mat-form-field>
+        <mat-form-field style="width: 100%" appearance="outline" *ngIf="operatorCode === 'IN' || operatorCode === 'NIN'">
+            <mat-label>{{ labels.tString | translate }}</mat-label>
+            <mat-chip-list #chipList>
+                <mat-chip *ngFor="let opt of valueFormControl.value" (removed)="removeChip(opt)">
+                    {{ opt }}
+                    <button matChipRemove>
+                        <mat-icon>cancel</mat-icon>
+                    </button>
+                </mat-chip>
+                <input
+                    [placeholder]="labels.insertStringChip | translate"
+                    [matChipInputFor]="chipList"
+                    [matChipInputSeparatorKeyCodes]="separatorKeysCodes"
+                    [matChipInputAddOnBlur]="true"
+                    (matChipInputTokenEnd)="addChip($event)"
+                />
+            </mat-chip-list>
+        </mat-form-field>
+    </div>
+    <!-- Tipo number -->
+    <div
+        class="criteria-edition__value"
+        *ngIf="operatorCode && operatorCode !== 'ISNULL' && operatorCode !== 'NOTISNULL' && dataType === 'NUMBER'"
+    >
+        <mat-form-field
+            appearance="outline"
+            style="width: 100%"
+            *ngIf="operatorCode !== 'IN' && operatorCode !== 'NIN' && operatorCode !== 'BET'"
+        >
+            <mat-label>{{ labels.tNumber | translate }}</mat-label>
+            <input type="number" matInput [formControl]="valueFormControl" />
+        </mat-form-field>
+        <mat-form-field
+            style="width: 100%"
+            appearance="outline"
+            *ngIf="operatorCode !== 'BET' && (operatorCode === 'IN' || operatorCode === 'NIN')"
+        >
+            <mat-label>{{ labels.tNumber | translate }}</mat-label>
+            <mat-chip-list #chipList>
+                <mat-chip *ngFor="let opt of valueFormControl.value" (removed)="removeChip(opt)">
+                    {{ opt }}
+                    <button matChipRemove>
+                        <mat-icon>cancel</mat-icon>
+                    </button>
+                </mat-chip>
+                <input
+                    type="number"
+                    [placeholder]="labels.insertNumberChip | translate"
+                    [matChipInputFor]="chipList"
+                    [matChipInputSeparatorKeyCodes]="separatorKeysCodes"
+                    [matChipInputAddOnBlur]="true"
+                    (matChipInputTokenEnd)="addChip($event)"
+                />
+            </mat-chip-list>
+        </mat-form-field>
+        <mat-form-field appearance="outline" style="width: 47%" *ngIf="operatorCode === 'BET'">
+            <mat-label>{{ labels.tNumberFrom | translate }}</mat-label>
+            <input type="number" matInput [formControl]="valueFormControl" />
+        </mat-form-field>
+        <mat-form-field appearance="outline" style="width: 47%" *ngIf="operatorCode === 'BET'">
+            <mat-label>{{ labels.tNumberTo | translate }}</mat-label>
+            <input type="number" matInput [formControl]="valueFormControl2" />
+        </mat-form-field>
+    </div>
+    <!-- Tipo boolean -->
+    <div
+        class="criteria-edition__value"
+        *ngIf="operatorCode && operatorCode !== 'ISNULL' && operatorCode !== 'NOTISNULL' && dataType === 'BOOLEAN'"
+    >
+        <mat-form-field appearance="outline" style="width: 100%">
+            <mat-label>{{ labels.tBoolean | translate }}</mat-label>
+            <mat-select [formControl]="valueFormControl">
+                <mat-option *ngFor="let op of valueOptions | async" [value]="op.id">{{ op.label }}</mat-option>
+            </mat-select>
+        </mat-form-field>
+    </div>
+    <!-- Tipo Fecha -->
+    <div
+        class="criteria-edition__value"
+        *ngIf="operatorCode && operatorCode !== 'ISNULL' && operatorCode !== 'NOTISNULL' && dataType === 'DATE'"
+    >
+        <mat-form-field
+            appearance="outline"
+            style="width: 100%"
+            *ngIf="operatorCode !== 'IN' && operatorCode !== 'NIN' && operatorCode !== 'BET'"
+        >
+            <mat-label>{{ labels.tDate | translate }}</mat-label>
+            <input
+                matInput
+                readonly
+                #pickerIniInput
+                [matDatepicker]="pickerIni"
+                placeholder="DD/MM/YYYY"
+                [formControl]="valueFormControl"
+                (click)="pickerIni.open(); $event.stopPropagation()"
+            />
+            <mat-datepicker-toggle matSuffix [for]="pickerIni"></mat-datepicker-toggle>
+            <mat-datepicker #pickerIni></mat-datepicker>
+        </mat-form-field>
+        <mat-form-field
+            style="width: 100%"
+            appearance="outline"
+            *ngIf="operatorCode !== 'BET' && (operatorCode === 'IN' || operatorCode === 'NIN')"
+        >
+            <mat-label>{{ labels.tDate | translate }}</mat-label>
+            <mat-chip-list #chipList>
+                <mat-chip *ngFor="let opt of valueFormControl.value" (removed)="removeChip(opt)">
+                    {{ opt }}
+                    <button matChipRemove>
+                        <mat-icon>cancel</mat-icon>
+                    </button>
+                </mat-chip>
+                <input
+                    matInput
+                    readonly
+                    #pickerIniInput
+                    [matDatepicker]="pickerIni"
+                    placeholder="DD/MM/YYYY"
+                    [matChipInputFor]="chipList"
+                    (matChipInputTokenEnd)="addChip($event)"
+                    (click)="pickerIni.open(); $event.stopPropagation()"
+                    (dateChange)="addDateChip($event)"
+                />
+                <mat-datepicker-toggle matSuffix [for]="pickerIni"></mat-datepicker-toggle>
+                <mat-datepicker #pickerIni></mat-datepicker>
+            </mat-chip-list>
+        </mat-form-field>
+        <mat-form-field appearance="outline" style="width: 47%" *ngIf="operatorCode === 'BET'">
+            <mat-label>{{ labels.tDateFrom | translate }}</mat-label>
+            <input
+                matInput
+                readonly
+                #pickerIniInput
+                [matDatepicker]="pickerIni"
+                placeholder="DD/MM/YYYY"
+                [formControl]="valueFormControl"
+                (click)="pickerIni.open(); $event.stopPropagation()"
+            />
+            <mat-datepicker-toggle matSuffix [for]="pickerIni"></mat-datepicker-toggle>
+            <mat-datepicker #pickerIni></mat-datepicker>
+        </mat-form-field>
+        <mat-form-field appearance="outline" style="width: 47%" *ngIf="operatorCode === 'BET'">
+            <mat-label>{{ labels.tDateTo | translate }}</mat-label>
+            <input
+                matInput
+                readonly
+                #pickerIniInput
+                [matDatepicker]="pickerEnd"
+                placeholder="DD/MM/YYYY"
+                [formControl]="valueFormControl2"
+                (click)="pickerEnd.open(); $event.stopPropagation()"
+            />
+            <mat-datepicker-toggle matSuffix [for]="pickerEnd"></mat-datepicker-toggle>
+            <mat-datepicker #pickerEnd></mat-datepicker>
+        </mat-form-field>
+    </div>
+    <!-- Tipo Fecha y hora -->
+    <div
+        class="criteria-edition__value"
+        *ngIf="operatorCode && operatorCode !== 'ISNULL' && operatorCode !== 'NOTISNULL' && dataType === 'DATETIME'"
+    >
+        <mat-form-field
+            appearance="outline"
+            style="width: 100%"
+            *ngIf="operatorCode !== 'IN' && operatorCode !== 'NIN' && operatorCode !== 'BET'"
+        >
+            <mat-label>{{ labels.tDateTime | translate }}</mat-label>
+            <input
+                matInput
+                readonly
+                [ngxMatDatetimePicker]="pickerIni"
+                [formControl]="valueFormControl"
+                placeholder="DD/MM/YYYY HH:mm"
+                (click)="pickerIni.open(); $event.stopPropagation()"
+            />
+            <mat-datepicker-toggle matSuffix [for]="pickerIni"></mat-datepicker-toggle>
+            <ngx-mat-datetime-picker #pickerIni [showSeconds]="false" [enableMeridian]="false"> </ngx-mat-datetime-picker>
+        </mat-form-field>
+        <mat-form-field
+            style="width: 100%"
+            appearance="outline"
+            *ngIf="operatorCode !== 'BET' && (operatorCode === 'IN' || operatorCode === 'NIN')"
+        >
+            <mat-label>{{ labels.tDateTime | translate }}</mat-label>
+            <mat-chip-list #chipList>
+                <mat-chip *ngFor="let opt of valueFormControl.value" (removed)="removeChip(opt)">
+                    {{ opt }}
+                    <button matChipRemove>
+                        <mat-icon>cancel</mat-icon>
+                    </button>
+                </mat-chip>
+                <input
+                    matInput
+                    readonly
+                    placeholder="DD/MM/YYYY HH:mm"
+                    [ngxMatDatetimePicker]="pickerIni"
+                    [matChipInputFor]="chipList"
+                    (matChipInputTokenEnd)="addChip($event)"
+                    (click)="pickerIni.open(); $event.stopPropagation()"
+                    (dateChange)="addDateChip($event, 'DATETIME')"
+                />
+                <mat-datepicker-toggle matSuffix [for]="pickerIni"></mat-datepicker-toggle>
+                <ngx-mat-datetime-picker #pickerIni [showSeconds]="false" [enableMeridian]="false"> </ngx-mat-datetime-picker>
+            </mat-chip-list>
+        </mat-form-field>
+        <mat-form-field appearance="outline" style="width: 47%" *ngIf="operatorCode === 'BET'">
+            <mat-label>{{ labels.tDateTimeFrom | translate }}</mat-label>
+            <input
+                matInput
+                readonly
+                [ngxMatDatetimePicker]="pickerIni"
+                [formControl]="valueFormControl"
+                placeholder="DD/MM/YYYY HH:mm"
+                (click)="pickerIni.open(); $event.stopPropagation()"
+            />
+            <mat-datepicker-toggle matSuffix [for]="pickerIni"></mat-datepicker-toggle>
+            <ngx-mat-datetime-picker #pickerIni [showSeconds]="false" [enableMeridian]="false"> </ngx-mat-datetime-picker>
+        </mat-form-field>
+        <mat-form-field appearance="outline" style="width: 47%" *ngIf="operatorCode === 'BET'">
+            <mat-label>{{ labels.tDateTimeTo | translate }}</mat-label>
+            <input
+                matInput
+                readonly
+                [ngxMatDatetimePicker]="pickerEnd"
+                [formControl]="valueFormControl2"
+                placeholder="DD/MM/YYYY HH:mm"
+                (click)="pickerEnd.open(); $event.stopPropagation()"
+            />
+            <mat-datepicker-toggle matSuffix [for]="pickerEnd"></mat-datepicker-toggle>
+            <ngx-mat-datetime-picker #pickerEnd [showSeconds]="false" [enableMeridian]="false"> </ngx-mat-datetime-picker>
+        </mat-form-field>
+    </div>
+    <!-- Tipo hora -->
+    <div
+        class="criteria-edition__value"
+        *ngIf="operatorCode && operatorCode !== 'ISNULL' && operatorCode !== 'NOTISNULL' && dataType === 'TIME'"
+    >
+        <div style="width: 100%" *ngIf="operatorCode !== 'IN' && operatorCode !== 'NIN' && operatorCode !== 'BET'">
+            <h3 class="title-msg">{{ labels.tTime | translate }}</h3>
+            <ngx-mat-timepicker [formControl]="valueFormControl" [defaultTime]="[0, 0, 0]"></ngx-mat-timepicker>
+        </div>
+        <div style="width: 100%" *ngIf="operatorCode !== 'BET' && (operatorCode === 'IN' || operatorCode === 'NIN')">
+            <h3 class="title-msg">{{ labels.tTime | translate }}</h3>
+            <mat-chip-list aria-label="Dog selection">
+                <mat-chip *ngFor="let opt of valueFormControl.value" (removed)="removeChip(opt)">
+                    {{ opt }}
+                    <button matChipRemove>
+                        <mat-icon>cancel</mat-icon>
+                    </button>
+                </mat-chip>
+            </mat-chip-list>
+            <div fxLayout="row wrap" fxLayoutAlign="flex-start center">
+                <ngx-mat-timepicker [formControl]="valueTimeChipsFormControl" [defaultTime]="[0, 0, 0]"></ngx-mat-timepicker>
+                <button mat-stroked-button (click)="addTimeChip()">{{ labels.addTimeChip | translate }}</button>
+            </div>
+        </div>
+        <div style="width: 47%" *ngIf="operatorCode === 'BET'">
+            <h3 class="title-msg">{{ labels.tTimeFrom | translate }}</h3>
+            <ngx-mat-timepicker [formControl]="valueFormControl" [defaultTime]="[0, 0, 0]"></ngx-mat-timepicker>
+        </div>
+        <div style="width: 47%" *ngIf="operatorCode === 'BET'">
+            <h3 class="title-msg">{{ labels.tTimeTo | translate }}</h3>
+            <ngx-mat-timepicker [formControl]="valueFormControl2" [defaultTime]="[0, 0, 0]"></ngx-mat-timepicker>
+        </div>
+    </div>
+</div>

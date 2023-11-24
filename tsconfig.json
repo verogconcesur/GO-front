@@ -18,13 +18,14 @@
     "module": "es2020",
     "moduleResolution": "node",
     "importHelpers": true,
-    "target": "es2015",
+    "target": "es2020",
     "lib": ["es2018", "dom"],
     "resolveJsonModule": true,
     "esModuleInterop": true,
     "noImplicitAny": true
   },
   "angularCompilerOptions": {
+    "preserveSymlinks": true,
     "fullTemplateTypeCheck": true,
     "strictInjectionParameters": true
   }

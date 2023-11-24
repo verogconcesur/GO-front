@@ -1,0 +1,90 @@
+<mat-drawer-container class="administration-layout" autosize [hasBackdrop]="true">
+    <mat-drawer
+        #filterDrawer
+        class="administration-layout__filter"
+        [disableClose]="filterDrawerDisableClose"
+        position="end"
+        mode="over"
+        [opened]="false"
+    >
+        <app-filter-drawer [filterDrawer]="filterDrawer" (disableClose)="filterDrawerDisableClose = $event"></app-filter-drawer>
+    </mat-drawer>
+    <div class="administration-layout-component mat-app-background">
+        <!-- Mat toolbar -->
+        <mat-toolbar color="primary">
+            <mat-toolbar-row fxLayoutAlign="space-between center">
+                <div class="mat-toolbar-platform-name">
+                    <mat-icon (click)="menuDrawer.toggle()">menu</mat-icon>
+                    <span>{{ labels.title | translate }}</span>
+                </div>
+
+                <!-- Options -->
+                <div class="mat-toolbar-group">
+                    <!-- Exit administration -->
+                    <button mat-stroked-button class="mat-toolbar-group__btn" (click)="exitAdministration()">
+                        <span class="btn-text">{{ labels.exit | translate }}</span>
+                        <mat-icon>close</mat-icon>
+                    </button>
+
+                    <!-- Profile -->
+                    <div class="mat-toolbar-group__profile">
+                        <div fxLayout="row" fxLayoutAlign="center center" class="height-100">
+                            <!-- Profile image -->
+                            <div class="user-profile__img" (click)="viewMyProfile()">
+                                <mat-icon fontSet="concenet">user-profile</mat-icon>
+                            </div>
+
+                            <!-- User data -->
+                            <div class="user-profile-data">
+                                <div class="user-profile__name">
+                                    {{ this.userDetails?.name }}&nbsp;{{ this.userDetails?.firstName }}
+                                </div>
+                                <div class="user-profile__view" (click)="viewMyProfile()">
+                                    {{ labels.viewProfile | translate }}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </mat-toolbar-row>
+        </mat-toolbar>
+
+        <!-- Sidenav menu -->
+        <mat-drawer-container class="administration-container" autosize [hasBackdrop]="false">
+            <mat-drawer #menuDrawer class="left-sidenav-panel" mode="side" [opened]="false">
+                <!-- Administration menu -->
+                <ul class="left-menu">
+                    <li class="left-menu-option" [routerLink]="USERS_TEMPLATE_PATH" routerLinkActive="active">
+                        <mat-icon fontSet="concenet">users</mat-icon> {{ labels.users | translate }}
+                    </li>
+                    <li class="left-menu-option" [routerLink]="CARDS_PATH" routerLinkActive="active">
+                        <mat-icon fontSet="concenet">forms</mat-icon> {{ labels.records | translate }}
+                    </li>
+                    <li class="left-menu-option">
+                        <mat-icon fontSet="concenet">organization</mat-icon> {{ labels.organization | translate }}
+                    </li>
+                    <li class="left-menu-option secondary" [routerLink]="BRANDS_TEMPLATE_PATH" routerLinkActive="active">
+                        {{ labels.brands | translate }}
+                    </li>
+                    <li class="left-menu-option secondary" [routerLink]="FACILITIES_TEMPLATE_PATH" routerLinkActive="active">
+                        {{ labels.facilities | translate }}
+                    </li>
+                    <li class="left-menu-option" [routerLink]="TEMPLATES_PATH" routerLinkActive="active">
+                        <mat-icon fontSet="concenet">templates</mat-icon> {{ labels.templates | translate }}
+                    </li>
+                    <li class="left-menu-option" [routerLink]="WORKFLOWS_PATH" routerLinkActive="active">
+                        <mat-icon fontSet="concenet">workflows</mat-icon> {{ labels.workflows | translate }}
+                    </li>
+                    <li class="left-menu-option" [routerLink]="LANDING_PATH" routerLinkActive="active">
+                        <mat-icon>important_devices</mat-icon> {{ labels.landing | translate }}
+                    </li>
+                </ul>
+            </mat-drawer>
+
+            <!-- Administration render container -->
+            <div class="left-sidenav-content">
+                <router-outlet></router-outlet>
+            </div>
+        </mat-drawer-container>
+    </div>
+</mat-drawer-container>

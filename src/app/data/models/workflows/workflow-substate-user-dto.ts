@@ -1,0 +1,24 @@
+import UserDTO from '../user-permissions/user-dto';
+import WorkflowCardDTO from './workflow-card-dto';
+import WorkflowMoveDTO from './workflow-move-dto';
+
+export default interface WorkflowSubstateUserDTO {
+  user: UserDTO;
+  id?: number;
+  permissionType?: string;
+  workflowSubstateId?: number;
+  workflowUserId?: number;
+  substatesIdsToFilter?: number[]; //Used on filter to group similar substates
+  cards?: WorkflowCardDTO[];
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  cardsBySubstateId?: any;
+  name?: string;
+  fullName?: string;
+  move?: WorkflowMoveDTO;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  cardInstanceWorkflow?: any;
+  dateAssignment?: string | number;
+  userId?: number;
+  extra?: boolean;
+  selected?: boolean;
+}

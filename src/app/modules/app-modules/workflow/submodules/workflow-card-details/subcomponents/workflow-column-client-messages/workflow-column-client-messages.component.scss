@@ -1,0 +1,55 @@
+@import 'utils/theme';
+.card-messages {
+  width: calc(100% - 30px);
+  height: calc(100% - 37px);
+  padding: 15px;
+  position: relative;
+  &__wrapper {
+    height: 100%;
+    overflow-y: auto;
+    &__message {
+      background-color: mat-contrast($primary, 500);
+      padding: 10px;
+      border-radius: 8px;
+      margin-bottom: 10px;
+      font-size: 0.9em;
+      position: relative;
+      .fullname {
+        color: mat-contrast($primary, 100);
+        font-size: 0.8em;
+        font-weight: 600;
+        text-transform: uppercase;
+      }
+      .icons {
+        mat-icon {
+          margin-right: 5px;
+        }
+        .whatsapp {
+          font-size: 1.4em;
+          margin-bottom: -1px;
+        }
+      }
+      .date {
+        font-size: 0.8em;
+        color: mat-contrast($primary, 50);
+      }
+      .message {
+        margin-top: 5px;
+        overflow-wrap: break-word;
+      }
+      .openConversation {
+        margin-top: 5px;
+      }
+      &.client {
+        background-color: mat-color($primary, 500);
+        color: mat-contrast($primary, statusSuccess);
+        .fullname {
+          color: mat-contrast($primary, statusSuccess);
+        }
+        .date {
+          color: mat-contrast($primary, statusSuccess);
+        }
+      }
+    }
+  }
+}

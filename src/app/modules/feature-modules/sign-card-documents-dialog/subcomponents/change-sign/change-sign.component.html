@@ -1,0 +1,23 @@
+<div class="paint-zone" fxLayout="column" fxLayoutAlign="flex-start, center">
+    <div class="paint-zone__header">
+        <button mat-icon-button class="opacity-04" (click)="cancelAction()">
+            <mat-icon>close</mat-icon>
+        </button>
+    </div>
+    <div id="paint-zone__canvas-wrapper" class="paint-zone__canvas-wrapper">
+        <canvas id="sign-canvas" width="400px" height="250px"></canvas>
+    </div>
+
+    <div class="paint-zone__footer">
+        <button mat-raised-button (click)="eraseSignature()">
+            {{ labels.erase | translate }}
+            <mat-icon>delete_outline</mat-icon>
+        </button>
+        <div class="color">
+            <input type="color" [formControl]="colorFormControl" id="change-sign-pen-color" (change)="colorChanged()" />
+        </div>
+        <button mat-flat-button color="primary" (click)="confirmAction()">
+            {{ labels.save | translate }}
+        </button>
+    </div>
+</div>

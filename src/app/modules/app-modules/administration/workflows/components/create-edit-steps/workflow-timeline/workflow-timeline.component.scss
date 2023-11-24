@@ -1,0 +1,59 @@
+@import 'utils/core';
+@import 'utils/theme';
+.timeline-container {
+  padding: 20px;
+  &__section {
+    margin-bottom: 20px;
+    &__title {
+      width: 100%;
+      font-weight: 600;
+    }
+    &__timelines {
+      width: calc(100% - 350px);
+      &__item {
+        width: 350px;
+        margin-right: 20px;
+        h2 {
+          color: mat-color($primary, 600);
+        }
+        &__container {
+          height: 300px;
+          border-radius: 4px;
+          overflow-y: auto;
+          border: 1px solid mat-contrast($primary, A100);
+          &__element {
+            width: 100%;
+            background-color: mat-color($primary, 600);
+            color: mat-contrast($primary, statusSuccess);
+            height: 60px;
+            border-radius: 4px;
+            mat-icon {
+              width: 30px;
+              margin: 0 10px;
+              cursor: pointer;
+            }
+            span {
+              max-width: calc(100% - 70px);
+              margin: 0 10px;
+              overflow: hidden;
+            }
+          }
+        }
+      }
+    }
+    &__states {
+      padding: 20px;
+      width: 350px;
+      &__item {
+        width: 100%;
+        background-color: mat-color($primary, 600);
+        color: mat-contrast($primary, statusSuccess);
+        height: 60px;
+        border-radius: 4px;
+      }
+    }
+    mat-form-field {
+      margin-right: 20px;
+    }
+  }
+}

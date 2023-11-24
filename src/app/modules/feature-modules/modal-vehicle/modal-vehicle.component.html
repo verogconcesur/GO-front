@@ -1,0 +1,78 @@
+<div class="create-edit-vehicle-content" fxLayout="column" fxLayoutAlign="center center">
+    <div *ngIf="!isModalModeActive()">
+        <div class="create-edit-vehicle-content__title mat-display-2">{{ labels.title | translate }}</div>
+    </div>
+    <div class="create-edit-vehicle-content__form">
+        <form [formGroup]="vehicleForm" *ngIf="vehicleForm" class="smaller-mat-form-fields">
+            <!-- General Data -->
+            <div class="vehicle-data__section">
+                <div class="vehicle-data__section__title first-child">
+                    {{ labels.data | translate }}
+                </div>
+                <div class="vehicle-data__section__group">
+                    <!-- licensePlate -->
+                    <mat-form-field appearance="outline" floatLabel="always">
+                        <mat-label>{{ labels.licensePlate | translate }}</mat-label>
+                        <input matInput formControlName="licensePlate" />
+                    </mat-form-field>
+                    <!-- vin -->
+                    <mat-form-field appearance="outline" floatLabel="always">
+                        <mat-label>{{ labels.vin | translate }}</mat-label>
+                        <input matInput formControlName="vin" />
+                    </mat-form-field>
+                    <!-- make -->
+                    <mat-form-field appearance="outline" floatLabel="always">
+                        <mat-label>{{ labels.make | translate }}</mat-label>
+                        <input matInput formControlName="make" />
+                    </mat-form-field>
+                    <!-- model -->
+                    <mat-form-field appearance="outline" floatLabel="always">
+                        <mat-label>{{ labels.model | translate }}</mat-label>
+                        <input matInput formControlName="model" />
+                    </mat-form-field>
+                    <!-- description -->
+                    <mat-form-field appearance="outline" floatLabel="always">
+                        <mat-label>{{ labels.description | translate }}</mat-label>
+                        <input matInput formControlName="description" />
+                    </mat-form-field>
+                    <!-- vehicleId -->
+                    <mat-form-field appearance="outline" floatLabel="always">
+                        <mat-label>{{ labels.vehicleId | translate }}</mat-label>
+                        <input matInput formControlName="vehicleId" />
+                    </mat-form-field>
+                    <!-- chassis -->
+                    <mat-form-field appearance="outline" floatLabel="always">
+                        <mat-label>{{ labels.chassis | translate }}</mat-label>
+                        <input matInput formControlName="chassis" />
+                    </mat-form-field>
+                </div>
+                <div class="vehicle-data__section__title first-child">
+                    {{ labels.orderData | translate }}
+                </div>
+                <div class="vehicle-data__section__group">
+                    <!-- commissionNumber -->
+                    <mat-form-field appearance="outline" floatLabel="always">
+                        <mat-label>{{ labels.commissionNumber | translate }}</mat-label>
+                        <input matInput formControlName="commissionNumber" (change)="changeCommissionNumber()" />
+                    </mat-form-field>
+                    <!-- Facility -->
+                    <mat-form-field appearance="outline" floatLabel="always">
+                        <mat-label>{{ labels.facility | translate }}</mat-label>
+                        <mat-select formControlName="facility" [disabled]="!form.commissionNumber.value">
+                            <mat-option *ngFor="let facility of facilityList" [value]="facility">{{ facility.name }}</mat-option>
+                        </mat-select>
+                        <button matSuffix mat-icon-button aria-label="Clear" (click)="removeFacility(); $event.stopPropagation()">
+                            <mat-icon>close</mat-icon>
+                        </button>
+                        <mat-error *ngIf="form?.facility.invalid">
+                            <span *ngIf="form.facility.errors.required"> {{ labels.required | translate }} </span>
+                        </mat-error>
+                    </mat-form-field>
+                </div>
+            </div>
+        </form>
+    </div>
+    <div class="create-edit-vehicle-content__buttons">
+        <!-- TODO: buttons used when the component is not opened with customDialogService -->
+    </div>
+</div>

@@ -1,0 +1,73 @@
+@import '@angular/material/theming';
+
+@mixin workflow-card-component-theme($theme, $main-typo) {
+  $primary: map-get($theme, primary);
+  $foreground: map-get($theme, foreground);
+
+  .card-wrapper {
+    min-width: 300px;
+    min-height: 60px;
+    // Necesario definir aquí para que tenga en cuenta el dropzone
+    .workflow-card__placeholder {
+      background: #ccc;
+      width: 300px;
+      transition: transform 250ms cubic-bezier(0, 0, 0.2, 1);
+      height: 60;
+      min-height: 60px;
+      border: dotted 3px #999;
+      padding: 8px;
+    }
+    .workflow-card.size-s,
+    .workflow-card__placeholder.size-s {
+      height: 80px;
+    }
+    .workflow-card.size-m,
+    .workflow-card__placeholder.size-m {
+      height: 106px;
+    }
+    .workflow-card.size-l,
+    .workflow-card__placeholder.size-l {
+      height: 156px;
+    }
+    .workflow-card.size-xl,
+    .workflow-card__placeholder.size-xl {
+      height: 286px;
+    }
+
+    .workflow-card.expanded.size-s,
+    .workflow-card.expanded .workflow-card__placeholder.size-s {
+      min-height: 80px;
+      height: auto;
+    }
+    .workflow-card.expanded.size-m,
+    .workflow-card.expanded .workflow-card__placeholder.size-m {
+      min-height: 106px;
+      height: auto;
+    }
+    .workflow-card.expanded.size-l,
+    .workflow-card.expanded .workflow-card__placeholder.size-l {
+      min-height: 156px;
+      height: auto;
+    }
+    .workflow-card.expanded.size-xl,
+    .workflow-card.expanded .workflow-card__placeholder.size-xl {
+      min-height: 286px;
+      height: auto;
+    }
+
+    &.undroppable {
+      .workflow-card__placeholder {
+        height: 0;
+        min-height: 0;
+        border: dotted 0px #999;
+        padding: 0px;
+      }
+      .workflow-card__placeholder.size-s,
+      .workflow-card__placeholder.size-m,
+      .workflow-card__placeholder.size-l,
+      .workflow-card__placeholder.size-xl {
+        height: 0;
+      }
+    }
+  }
+}

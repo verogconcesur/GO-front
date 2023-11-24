@@ -1,0 +1,128 @@
+@import 'utils/theme';
+
+.card-history {
+  height: calc(100% - 25px);
+  margin: 10px 5px;
+  position: relative;
+  &__filter {
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    margin: 10px 0;
+    .filter-form {
+      button {
+        width: 30px;
+      }
+      mat-form-field {
+        margin: 0 2px;
+        width: 110px;
+        &.date-picker {
+          width: 100px;
+          mat-datepicker-toggle {
+            margin-right: -6px;
+          }
+        }
+      }
+    }
+  }
+  &__data {
+    height: calc(100% - 50px);
+    overflow-y: auto;
+    .no-data {
+      font-weight: bold;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      margin: 20px 0;
+      width: 100%;
+    }
+    &__item {
+      width: 100%;
+      height: auto;
+      display: flex;
+      justify-content: flex-start;
+      position: relative;
+      .history-status {
+        height: 100%;
+        width: 30px;
+        position: absolute;
+        &__prev {
+          border-left: 3px solid transparent;
+          height: 25px;
+          width: 1px;
+          margin-left: 14px;
+          &.active {
+            border-left: 3px solid mat-color($primary, 500);
+          }
+        }
+        &__circle {
+          width: 10px;
+          height: 10px;
+          border-radius: 10px;
+          border: 3px solid mat-color($primary, 500);
+          margin-left: 7px;
+          &.active {
+            background-color: mat-color($primary, 500);
+          }
+        }
+        &__after {
+          border-left: 3px solid transparent;
+          height: calc(100% - 40px);
+          width: 1px;
+          margin-left: 14px;
+          &.active {
+            border-left: 3px solid mat-color($primary, 500);
+          }
+        }
+      }
+      .history-info {
+        width: calc(100% - 40px);
+        margin-left: 20px;
+        margin-right: 10px;
+        padding: 10px 0 10px 10px;
+        border-bottom: 1px solid mat-contrast($primary, 50);
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        &__line {
+          display: flex;
+          justify-content: space-between;
+          align-items: center;
+        }
+        &__workflow {
+          font-weight: bold;
+          color: mat-color($foreground, secondary-text);
+        }
+        &__user {
+          font-size: 0.85em;
+          font-weight: 500;
+          color: mat-contrast($primary, 100);
+        }
+        &__description {
+          font-size: 0.95em;
+          color: mat-contrast($primary, 50);
+          display: flex;
+          justify-content: flex-start;
+          align-items: center;
+          mat-icon {
+            font-size: 1.4em;
+          }
+          .substate-target {
+            background-color: mat-color($primary, 500);
+            color: mat-contrast($primary, 400);
+            padding: 0px 5px;
+            border-radius: 7px;
+          }
+        }
+        &__date {
+          font-size: 0.85em;
+          color: mat-contrast($primary, 50);
+        }
+        &__comment {
+          font-size: 0.95em;
+          color: mat-contrast($primary, 50);
+        }
+      }
+    }
+  }
+}

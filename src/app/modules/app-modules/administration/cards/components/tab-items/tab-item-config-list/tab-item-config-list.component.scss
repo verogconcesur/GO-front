@@ -1,0 +1,41 @@
+@import 'utils/core';
+@import 'utils/theme';
+
+.tab-item-config-content {
+  width: 100%;
+  padding-right: 15px;
+  &__form {
+    width: 100%;
+    &__section {
+      mat-form-field {
+        margin-right: 10px;
+      }
+      section {
+        display: inline-block;
+        margin-right: 10px;
+        width: 200px;
+      }
+      &__title {
+        font-size: 1rem;
+        font-weight: 600;
+        width: 100%;
+        color: mat-color($primary, 500);
+        margin-bottom: 10px;
+      }
+      &__listItem {
+        margin-bottom: 10px;
+        mat-icon {
+          cursor: pointer;
+        }
+        &.addButton {
+          padding: 0 10px;
+          background-color: mat-color($background, background);
+          border: 0.5px solid mat-contrast($primary, A200);
+          border-radius: 6px;
+          height: 50px;
+          cursor: pointer;
+        }
+      }
+    }
+  }
+}

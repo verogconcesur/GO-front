@@ -1,0 +1,26 @@
+<div class="permissions-list" [ngClass]="{ roleList: type === 'CREATE_EDIT_ROLE' }">
+    <div class="permissions-list__overflow" *ngIf="showOverFlowLayer">
+        <div class="permissions-list__overflow__text">
+            {{ overFlowLayerLabel | translate }}
+        </div>
+    </div>
+    <div fxLayout="row" fxLayoutAlign="space-between center" class="permissions-list__header">
+        {{ labels.selectAll | translate }}
+        <mat-checkbox color="primary" [checked]="allSelected" [indeterminate]="someSelected()" (change)="setAll($event.checked)">
+        </mat-checkbox>
+    </div>
+    <div class="permissions-list__content">
+        <mat-spinner *ngIf="!showOverFlowLayer && !permissionsStructure?.permissions" diameter="36"></mat-spinner>
+        <ul>
+            <li
+                fxLayout="row"
+                fxLayoutAlign="space-between center"
+                class="permissions-list__content-element"
+                *ngFor="let permission of permissionsStructure?.permissions"
+            >
+                <span>{{ permission.description }}</span>
+                <mat-checkbox [(ngModel)]="permission.completed" (ngModelChange)="updateAllComplete()"> </mat-checkbox>
+            </li>
+        </ul>
+    </div>
+</div>

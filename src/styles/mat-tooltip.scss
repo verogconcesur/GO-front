@@ -1,0 +1,8 @@
+@import '@angular/material/theming';
+
+@mixin custom-mat-tooltip-theme($theme, $main-typo) {
+  .mat-tooltip {
+    font-size: 0.9em;
+    max-width: 350px !important;
+  }
+}

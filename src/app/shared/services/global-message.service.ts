@@ -1,9 +1,6 @@
 import { Injectable } from '@angular/core';
-import {
-  MatSnackBar,
-  MatSnackBarHorizontalPosition,
-  MatSnackBarVerticalPosition
-} from '@angular/material/snack-bar';
+import { MatSnackBar, MatSnackBarHorizontalPosition, MatSnackBarVerticalPosition } from '@angular/material/snack-bar';
+import { TranslateService } from '@ngx-translate/core';
 import {
   GLOBAL_MESSAGE_DEFAULT_DURATION,
   GLOBAL_MESSAGE_DEFAULT_HORIZONTAL_POSITION,
@@ -43,7 +40,7 @@ export type GlobalMessageConfig = {
 
 @Injectable()
 export class GlobalMessageService {
-  constructor(private snackBar: MatSnackBar) {}
+  constructor(private snackBar: MatSnackBar, private translateService: TranslateService) {}
 
   /**
    * Shows a message with "error" styles
@@ -73,11 +70,14 @@ export class GlobalMessageService {
   }
 
   private showMessage(className: string, config: GlobalMessageConfig): void {
+    if (!config.message && className !== GLOBAL_MESSAGE_ERROR_CLASS) {
+      return;
+    } else if (!config.message && className === GLOBAL_MESSAGE_ERROR_CLASS) {
+      config.message = this.translateService.instant('errors.unknown');
+    }
     const duration = config.duration || GLOBAL_MESSAGE_DEFAULT_DURATION;
-    const horizontalPosition =
-      config.horizontalPosition || GLOBAL_MESSAGE_DEFAULT_HORIZONTAL_POSITION;
-    const verticalPosition =
-      config.verticalPosition || GLOBAL_MESSAGE_DEFAULT_VERTICAL_POSITION;
+    const horizontalPosition = config.horizontalPosition || GLOBAL_MESSAGE_DEFAULT_HORIZONTAL_POSITION;
+    const verticalPosition = config.verticalPosition || GLOBAL_MESSAGE_DEFAULT_VERTICAL_POSITION;
 
     this.snackBar.open(config.message, config.actionText, {
       duration,

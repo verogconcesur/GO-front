@@ -1,0 +1,23 @@
+@import 'utils/core';
+.filter-drawer-wrapper {
+  height: 100vh;
+  padding: 20px 35px;
+  &__header {
+    width: 100%;
+    .close-button {
+      margin-left: -12px;
+    }
+    h2 {
+      margin: 20px 0;
+      @include respond-to($mobile) {
+        margin: 5px 0;
+      }
+    }
+  }
+  &__content {
+    height: auto;
+  }
+  &__footer {
+    width: 100%;
+  }
+}

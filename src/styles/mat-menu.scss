@@ -1,0 +1,17 @@
+@import '@angular/material/theming';
+
+@mixin custom-mat-menu-theme($theme, $main-typo) {
+  $primary: map-get($theme, primary);
+  $foreground: map-get($theme, foreground);
+
+  .mat-menu-panel.dark-theme {
+    min-width: 150px;
+    background-color: mat-contrast($primary, 100);
+    .mat-menu-item {
+      color: mat-contrast($primary, 400);
+    }
+    .mat-divider {
+      background-color: mat-contrast($primary, 50);
+    }
+  }
+}

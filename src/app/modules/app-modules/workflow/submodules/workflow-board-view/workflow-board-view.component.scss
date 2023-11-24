@@ -1,0 +1,73 @@
+@import 'utils/core';
+@import 'utils/theme';
+.board-view-wrapper {
+  -webkit-user-select: none; /* Safari */
+  -ms-user-select: none; /* IE 10 and IE 11 */
+  user-select: none; /* Standard syntax */
+  height: calc(100vh - 136px);
+  width: calc(var(--vw) - 20px);
+  overflow-y: hidden;
+  overflow-x: hidden;
+  display: flex;
+  justify-content: flex-start;
+  align-items: flex-start;
+  mat-divider.full-height {
+    margin: 0;
+    height: calc(100vh - 136px);
+    border-right-width: 3px;
+  }
+  &__anchor-column {
+    max-width: 50%;
+    position: relative;
+    transition: max-width 0.3s ease-in-out;
+    transition: min-width 0.3s ease-in-out;
+    &.hide {
+      max-width: 15px;
+      min-width: 15px;
+      overflow-x: hidden;
+    }
+    &__container {
+      width: 100%;
+      overflow-x: auto;
+    }
+  }
+
+  .hide-show-button {
+    background-color: mat-contrast($primary, 300);
+    color: mat-contrast($primary, 50);
+    z-index: 5;
+    cursor: pointer;
+    position: absolute;
+    top: calc(50vh - 88px);
+    right: 0;
+    width: 12px;
+    padding-left: 2px;
+    height: 50px;
+    display: flex;
+    // display: none;
+    justify-content: center;
+    align-items: center;
+    border-radius: 10px 0 0 10px;
+    // @include respond-to($desktop-large) {
+    //   display: flex;
+    // }
+    mat-icon {
+      width: 15px;
+      right: 3px;
+      position: absolute;
+    }
+  }
+  &__scroll-columns {
+    display: flex;
+    justify-content: flex-start;
+    align-items: flex-start;
+    overflow-x: auto;
+  }
+  .empty-wrapper {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    min-height: 200px;
+  }
+}
