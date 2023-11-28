@@ -32,6 +32,12 @@
             {{ cardInstance.information.dateAssignmentSubstate | date : "dd/MM/yyyy, HH:mm" }}
         </div>
     </div>
+    <div class="w-colunm-entity-data" *ngIf="dateToShow">
+        <label class="w-colunm-entity-data__label">{{ labels.limitDate | translate }}</label>
+        <div class="w-colunm-entity-data__value">
+            {{ dateToShow | date : "dd/MM/yy, HH:mm" }}
+        </div>
+    </div>
     <div class="w-colunm-entity-data">
         <label class="w-colunm-entity-data__label">{{ labels.origin | translate }}</label>
         <div class="w-colunm-entity-data__value">{{ cardInstance.information.sourceText }}</div>

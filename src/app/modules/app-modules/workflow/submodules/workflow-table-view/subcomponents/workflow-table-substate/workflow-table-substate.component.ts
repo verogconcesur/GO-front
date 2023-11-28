@@ -28,11 +28,14 @@ export class WorkflowTableSubstateComponent implements OnInit {
     noCards: marker('errors.noCardsToShow'),
     noFields: marker('errors.noFieldsDefined'),
     actions: marker('common.actions'),
-    information: marker('common.information')
+    information: marker('common.information'),
+    limitDate: marker('workflows.limitDate')
   };
   public dataSource: WorkflowDTO[] = [];
   public displayedColumns: string[];
   public headers: { col: string; label: string }[] = [];
+  public hasLimitDate = false;
+  public employeePosition = 0;
   public showData = false;
 
   constructor(
@@ -49,8 +52,14 @@ export class WorkflowTableSubstateComponent implements OnInit {
       this.wSubstate.cards[0].tabItems.length
     ) {
       this.displayedColumns = [];
+      if (this.wSubstate.cards[0].cardInstanceWorkflows[0].dateAppliTimeLimit) {
+        this.displayedColumns.push('limitDate');
+        this.hasLimitDate = true;
+        this.headers.push({ col: 'limitDate', label: this.translateService.instant(this.labels.limitDate) });
+      }
       if (this.wState.front) {
         this.displayedColumns.push('employee');
+        this.employeePosition = this.headers.length;
         this.headers.push({ col: 'employee', label: this.translateService.instant(this.labels.employee) });
       }
       this.wSubstate.cards[0].tabItems.forEach((tabItem: WorkflowCardTabItemDTO) => {
@@ -191,6 +200,13 @@ export class WorkflowTableSubstateComponent implements OnInit {
       }
       return fullName;
     }
+  }
+  public getDateLimit(card: WorkflowCardDTO): string {
+    if (card.cardInstanceWorkflows[0]?.dateAppliTimeLimit) {
+      const datePipe = new DatePipe('en-EN');
+      return datePipe.transform(card.cardInstanceWorkflows[0]?.dateAppliTimeLimit, 'dd/MM/YYYY, HH:mm');
+    }
+    return null;
   }
   public getColors(card: WorkflowCardDTO): string[] {
     return card?.colors?.length ? card.colors : [];

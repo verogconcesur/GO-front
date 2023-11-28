@@ -682,6 +682,7 @@
             "title": "Workflow and status"
         }
     },
+    "no": "",
     "notifications": {
         "dateFrom": "Date from",
         "dateTo": "Date to",
@@ -890,7 +891,10 @@
         "addState": "Add state",
         "addSubstate": "Add substate",
         "allowAllMovements": "Allow free movements",
+        "allowMinDaysAdvanceNotice": "Establish a minimum number of days in advance necessary to establish a date.",
         "allowOverLimit": "Allow over card limit",
+        "allowOverLimitRoles": "Roles that can exceed the limit",
+        "allowOverLimitRolesInfo": "If no roles are selected or all roles are selected, all users will be able to exceed the limit.",
         "attachemntCategory": "Attachment Category",
         "attachmentTab": "Attachment Tab",
         "byFacilityGroupLabel": "{facility}'s workflows",
@@ -947,7 +951,10 @@
         "inputEvent": "Substate input events",
         "landingCardView": "LandingCard in Client's service",
         "landingDetailView": "Client's service Detail",
+        "limitDate": "Limit date",
         "manualCreateCard": "Manual creation of cards",
+        "minDaysAdvanceNotice": "Minimum advance notice days",
+        "minDaysAdvanceNoticeInfo": "The days indicated will not take into account Saturdays or Sundays. If a minimum notice of two days is established and it is Thursday, reservations can be made starting Tuesday.",
         "movementCreateNewTask": "This movement creates a new task in workflow destination",
         "movementExtraAutoDescription": "Extra movement",
         "newState": "New state",

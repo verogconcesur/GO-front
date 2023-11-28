@@ -15,6 +15,7 @@ import WorkflowSubstateDTO from '@data/models/workflows/workflow-substate-dto';
 import { GlobalMessageService } from '@shared/services/global-message.service';
 import { marker } from '@biesbjerg/ngx-translate-extract-marker';
 import { ConcenetError } from '@app/types/error';
+import RoleDTO from '@data/models/user-permissions/role-dto';
 
 @Component({
   selector: 'app-workflow-calendar',
@@ -25,6 +26,7 @@ export class WorkflowCalendarComponent extends WorkflowStepAbstractClass {
   @Input() workflowId: number;
   @Input() stepIndex: number;
   public workflowSubstates: WorkflowSubstateDTO[] = [];
+  public workflowUsersRoles: RoleDTO[] = [];
   public labels = {
     cardsLimit: marker('workflows.cardsLimit'),
     cardsLimitCheck: marker('workflows.cardsLimitCheck'),
@@ -36,7 +38,12 @@ export class WorkflowCalendarComponent extends WorkflowStepAbstractClass {
     cardsByDayLimit: marker('workflows.cardsByDayLimit'),
     numCardsByDay: marker('workflows.numCardsByDay'),
     allowOverLimit: marker('workflows.allowOverLimit'),
-    workflowSubstateTargetCardsLimit: marker('workflows.workflowSubstateTargetCardsLimit')
+    workflowSubstateTargetCardsLimit: marker('workflows.workflowSubstateTargetCardsLimit'),
+    allowMinDaysAdvanceNotice: marker('workflows.allowMinDaysAdvanceNotice'),
+    minDaysAdvanceNotice: marker('workflows.minDaysAdvanceNotice'),
+    allowOverLimitRoles: marker('workflows.allowOverLimitRoles'),
+    allowOverLimitRolesInfo: marker('workflows.allowOverLimitRolesInfo'),
+    minDaysAdvanceNoticeInfo: marker('workflows.minDaysAdvanceNoticeInfo')
   };
   constructor(
     private fb: UntypedFormBuilder,
@@ -75,6 +82,17 @@ export class WorkflowCalendarComponent extends WorkflowStepAbstractClass {
           data?.workflowCardsLimits?.workflowSubstate && this.workflowSubstates?.length
             ? this.workflowSubstates.find((d) => d.id === data.workflowCardsLimits.workflowSubstate.id)
             : null
+        ],
+        allowMinDaysAdvanceNotice: [data?.workflowCardsLimits?.minDaysAdvanceNotice ? true : false],
+        minDaysAdvanceNotice: [
+          data?.workflowCardsLimits?.minDaysAdvanceNotice ? data?.workflowCardsLimits?.minDaysAdvanceNotice : 0
+        ],
+        allowOverLimitRoles: [
+          data?.workflowCardsLimits?.allowOverLimitRoles
+            ? data?.workflowCardsLimits?.allowOverLimitRoles
+                .map((role) => this.workflowUsersRoles.find((r) => role.id === r.id))
+                .filter((r) => r)
+            : []
         ]
       },
       {
@@ -93,6 +111,9 @@ export class WorkflowCalendarComponent extends WorkflowStepAbstractClass {
           ]),
           CombinedRequiredFieldsValidator.field1RequiredIfFieldsConditions('substateTargetId', [
             { control: 'allowOverLimit', operation: 'equal', value: true }
+          ]),
+          CombinedRequiredFieldsValidator.field1RequiredIfFieldsConditions('minDaysAdvanceNotice', [
+            { control: 'allowMinDaysAdvanceNotice', operation: 'equal', value: true }
           ])
         ]
       }
@@ -104,11 +125,12 @@ export class WorkflowCalendarComponent extends WorkflowStepAbstractClass {
     return new Promise((resolve, reject) => {
       const resquests = [
         this.workflowService.getWorkflowCardsLimitsConfiguration(this.workflowId).pipe(take(1)),
-        this.workflowStateService.getWorkflowStatesAndSubstates(this.workflowId).pipe(take(1))
+        this.workflowStateService.getWorkflowStatesAndSubstates(this.workflowId).pipe(take(1)),
+        this.workflowService.getWorkflowUserRoles(this.workflowId).pipe(take(1))
       ];
       forkJoin(resquests).subscribe(
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        (responses: [WorkflowCardsLimitDTO, WorkflowStateDTO[]]) => {
+        (responses: [WorkflowCardsLimitDTO, WorkflowStateDTO[], RoleDTO[]]) => {
           this.workflowSubstates = [];
           responses[1] = responses[1]?.length ? responses[1] : [];
           responses[1].forEach((state: WorkflowStateDTO) => {
@@ -117,6 +139,7 @@ export class WorkflowCalendarComponent extends WorkflowStepAbstractClass {
               this.workflowSubstates.push(substate);
             });
           });
+          this.workflowUsersRoles = responses[2];
           this.originalData = {
             workflowCardsLimits: responses[0],
             workflowSubstates: this.workflowSubstates
