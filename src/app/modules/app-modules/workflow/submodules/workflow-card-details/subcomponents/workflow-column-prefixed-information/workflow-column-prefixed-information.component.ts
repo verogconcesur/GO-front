@@ -18,6 +18,7 @@ import { take } from 'rxjs';
 export class WorkflowColumnPrefixedInformationComponent implements OnInit {
   @Input() tab: CardColumnTabDTO = null;
   @Input() cardInstance: CardInstanceDTO;
+  public dateToShow: number;
 
   public labels = {
     workOrderInformation: marker('workflows.workOrderInformation'),
@@ -29,7 +30,8 @@ export class WorkflowColumnPrefixedInformationComponent implements OnInit {
     cancel: marker('common.cancel'),
     edit: marker('common.edit'),
     save: marker('common.save'),
-    required: marker('errors.required')
+    required: marker('errors.required'),
+    limitDate: marker('workflows.limitDate')
   };
   public informationForm: FormGroup;
   public editMode = false;
@@ -42,6 +44,9 @@ export class WorkflowColumnPrefixedInformationComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
+    if (this.cardInstance.cardInstanceWorkflow?.dateAppliTimeLimit) {
+      this.dateToShow = this.cardInstance.cardInstanceWorkflow?.dateAppliTimeLimit;
+    }
     this.initForm();
   }
   public initForm(): void {

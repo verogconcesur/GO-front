@@ -954,6 +954,7 @@
         "inputEvent": "Eventos de entrada al subestado",
         "landingCardView": "Tarjetas en el Área de clientes",
         "landingDetailView": "Detalle del Área de clientes",
+        "limitDate": "Fecha límite",
         "manualCreateCard": "Creación manual de fichas",
         "minDaysAdvanceNotice": "Días de antelación mínima",
         "minDaysAdvanceNoticeInfo": "Los días indicados no tendrán en cuenta los sábados ni domingos. Si se establecen dos días de antelación mínima y estamos a jueves, se podrá reservar a partir del martes.",
