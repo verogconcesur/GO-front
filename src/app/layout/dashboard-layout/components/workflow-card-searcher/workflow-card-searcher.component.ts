@@ -62,6 +62,12 @@ export class WorkflowCardSearcherComponent implements OnInit {
     this.cards = [];
   }
 
+  public getDateToShow(card: WorkflowCardDTO) {
+    if (card.cardInstanceWorkflows[0]?.dateAppliTimeLimit) {
+      return card.cardInstanceWorkflows[0]?.dateAppliTimeLimit;
+    }
+  }
+
   public showWorkflowName(index: number): boolean {
     if (this.cards?.length && index > 0) {
       const prevCard = this.cards[index - 1];

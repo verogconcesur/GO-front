@@ -49,7 +49,7 @@
             {{ getAdditionalInfoString() }}
         </div>
 
-        <div class="workflow-card__info__date" *ngIf="dateToShow">
+        <div class="workflow-card__info__date" *ngIf="dateToShow" [ngClass]="dateToShowClass">
             {{ dateToShow | date : dateFormat }}
         </div>
 
