@@ -950,6 +950,7 @@
         "inputEvent": "Eventos de entrada al subestado",
         "landingCardView": "Tarjetas en el Área de clientes",
         "landingDetailView": "Detalle del Área de clientes",
+        "limitDate": "Fecha límite",
         "manualCreateCard": "Creación manual de fichas",
         "movementCreateNewTask": "Este movimiento crea una nueva tarea en el workflow de destino",
         "movementExtraAutoDescription": "Realizar movimiento extra de forma automática sin requerir validación por parte del usuario.",

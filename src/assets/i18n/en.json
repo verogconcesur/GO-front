@@ -953,6 +953,7 @@
         "inputEvent": "Substate input events",
         "landingCardView": "LandingCard in Client's service",
         "landingDetailView": "Client's service Detail",
+        "limitDate": "Limit date",
         "manualCreateCard": "Manual creation of cards",
         "movementCreateNewTask": "This movement creates a new task in workflow destination",
         "movementExtraAutoDescription": "Extra movement",
