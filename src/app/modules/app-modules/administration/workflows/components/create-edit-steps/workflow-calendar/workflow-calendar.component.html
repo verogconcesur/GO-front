@@ -55,7 +55,7 @@
             labels.allowMinDaysAdvanceNotice | translate
         }}</mat-checkbox>
         <mat-form-field appearance="outline" floatLabel="always" *ngIf="form.controls.allowMinDaysAdvanceNotice.value">
-            <mat-label>{{ labels.minDaysAdvanceNotice | translate }}*</mat-label>
+            <mat-label>*{{ labels.minDaysAdvanceNotice | translate }}</mat-label>
             <input matInput type="number" formControlName="minDaysAdvanceNotice" />
             <mat-error class="cards-limit__error" *ngIf="form.controls.minDaysAdvanceNotice.invalid">
                 {{ labels.required | translate }}
@@ -76,9 +76,8 @@
             *ngIf="form.controls.allowOverLimit.value"
         >
             <mat-label
-                >{{ labels.allowOverLimitRoles | translate }}*<span *ngIf="form.controls.allowMinDaysAdvanceNotice.value"
-                    >*</span
-                ></mat-label
+                >*<span *ngIf="form.controls.allowMinDaysAdvanceNotice.value">*</span
+                >{{ labels.allowOverLimitRoles | translate }}</mat-label
             >
             <mat-select formControlName="allowOverLimitRoles" multiple>
                 <mat-option *ngFor="let rol of workflowUsersRoles" [value]="rol">{{ rol.name }}</mat-option>
