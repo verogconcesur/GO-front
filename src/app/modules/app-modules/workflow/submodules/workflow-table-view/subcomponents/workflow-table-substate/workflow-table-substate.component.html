@@ -3,13 +3,22 @@
         <ng-container *ngFor="let head of headers; let i = index" [matColumnDef]="head.col">
             <th mat-header-cell *matHeaderCellDef>{{ head.label }}</th>
             <td mat-cell *matCellDef="let element">
-                <div *ngIf="!wState.front && i < headers.length - 2">
+                <div *ngIf="!wState.front && !hasLimitDate && i < headers.length - 2">
                     <span class="tableValue">{{ getValue(element, i) }}</span>
                 </div>
-                <div *ngIf="wState.front && i === 0">
+                <div *ngIf="hasLimitDate && i === 0">
+                    <span class="tableValue">{{ getDateLimit(element) }}</span>
+                </div>
+                <div *ngIf="wState.front && i === employeePosition">
                     <span class="tableValue">{{ getUserName(element) }}</span>
                 </div>
-                <div *ngIf="wState.front && i > 0 && i < headers.length - 2">
+                <div *ngIf="wState.front && hasLimitDate && i > 1 && i < headers.length - 2">
+                    <span class="tableValue">{{ getValue(element, i - 2) }}</span>
+                </div>
+                <div *ngIf="wState.front && !hasLimitDate && i > 0 && i < headers.length - 2">
+                    <span class="tableValue">{{ getValue(element, i - 1) }}</span>
+                </div>
+                <div *ngIf="!wState.front && hasLimitDate && i > 0 && i < headers.length - 2">
                     <span class="tableValue">{{ getValue(element, i - 1) }}</span>
                 </div>
                 <div *ngIf="i === headers.length - 2">
