@@ -53,11 +53,11 @@
       font-size: 0.85em;
       color: lighten(mat-contrast($primary, 50), 20%);
       position: absolute;
-      top: 2px;
+      top: 0px;
       right: 6px;
       &.searchPosition {
-        top: -10px;
-        left: 150px;
+        top: -17px;
+        left: 160px;
       }
     }
     &__tasks {

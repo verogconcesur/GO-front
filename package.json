@@ -6,7 +6,6 @@
         "ng": "ng",
         "start": "ng serve --hmr",
         "build": "ng build",
-        "postbuild": "gzipper c --verbose ./dist",
         "build_dev": "npm run build -- --configuration=dev",
         "build_qa": "npm run build -- --configuration=qa",
         "build_pre": "npm run build -- --configuration=pre",
