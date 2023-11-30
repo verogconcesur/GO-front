@@ -83,9 +83,13 @@ export class WorkflowCalendarComponent extends WorkflowStepAbstractClass {
             ? this.workflowSubstates.find((d) => d.id === data.workflowCardsLimits.workflowSubstate.id)
             : null
         ],
-        allowMinDaysAdvanceNotice: [data?.workflowCardsLimits?.minDaysAdvanceNotice ? true : false],
+        allowMinDaysAdvanceNotice: [
+          data?.workflowCardsLimits?.minDaysAdvanceNotice || data?.workflowCardsLimits?.minDaysAdvanceNotice === 0 ? true : false
+        ],
         minDaysAdvanceNotice: [
-          data?.workflowCardsLimits?.minDaysAdvanceNotice ? data?.workflowCardsLimits?.minDaysAdvanceNotice : 0
+          data?.workflowCardsLimits?.minDaysAdvanceNotice || data?.workflowCardsLimits?.minDaysAdvanceNotice === 0
+            ? data?.workflowCardsLimits?.minDaysAdvanceNotice
+            : null
         ],
         allowOverLimitRoles: [
           data?.workflowCardsLimits?.allowOverLimitRoles
@@ -127,6 +131,7 @@ export class WorkflowCalendarComponent extends WorkflowStepAbstractClass {
         this.workflowService.getWorkflowCardsLimitsConfiguration(this.workflowId).pipe(take(1)),
         this.workflowStateService.getWorkflowStatesAndSubstates(this.workflowId).pipe(take(1)),
         this.workflowService.getWorkflowUserRoles(this.workflowId).pipe(take(1))
+        // this.workflowService.getWorkflowRoles(this.workflowId).pipe(take(1))
       ];
       forkJoin(resquests).subscribe(
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -174,6 +179,9 @@ export class WorkflowCalendarComponent extends WorkflowStepAbstractClass {
       const data = this.form.getRawValue();
       if (!data.cardsByDayLimit) {
         data.numCardsByDay = MAX_CARDS_LIMIT_BY_DAY;
+      }
+      if (!data.allowMinDaysAdvanceNotice) {
+        data.minDaysAdvanceNotice = null;
       }
       this.workflowService
         .setWorkflowCardsLimitsConfiguration(data)

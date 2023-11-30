@@ -20,6 +20,14 @@
       mat-form-field {
         width: 100%;
       }
+      &.limit-date {
+        display: flex;
+        justify-content: start;
+        align-items: center;
+        button {
+          margin-left: 15px;
+        }
+      }
     }
   }
 }
