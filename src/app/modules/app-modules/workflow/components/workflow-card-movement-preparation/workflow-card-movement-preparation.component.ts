@@ -3,6 +3,7 @@ import { Component, Inject, OnInit, ViewEncapsulation } from '@angular/core';
 import { FormBuilder, UntypedFormArray, UntypedFormControl, UntypedFormGroup, Validators } from '@angular/forms';
 import { MatCalendarCellClassFunction } from '@angular/material/datepicker';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
+import { AuthenticationService } from '@app/security/authentication.service';
 import { marker } from '@biesbjerg/ngx-translate-extract-marker';
 import { TemplateComunicationItemsDTO } from '@data/models/templates/templates-communication-dto';
 import WorkflowCardsLimitDTO, {
@@ -89,6 +90,8 @@ export class WorkflowCardMovementPreparationComponent implements OnInit {
     public dialogRef: MatDialogRef<WorkflowCardMovementPreparationComponent>,
     @Inject(MAT_DIALOG_DATA)
     public data: {
+      titel?: string;
+      forceDateLimit?: boolean;
       destinationName: string;
       preparation: WorkflowSubstateEventDTO[];
       usersIn: WorkflowSubstateUserDTO[];
@@ -108,7 +111,8 @@ export class WorkflowCardMovementPreparationComponent implements OnInit {
     private fb: FormBuilder,
     private workflowService: WorkflowsService,
     private translateService: TranslateService,
-    private spinnerService: ProgressSpinnerDialogService
+    private spinnerService: ProgressSpinnerDialogService,
+    private authService: AuthenticationService
   ) {}
 
   ngOnInit(): void {
@@ -119,16 +123,16 @@ export class WorkflowCardMovementPreparationComponent implements OnInit {
     this.workflowCardsLimit = this.data.workflowCardsLimit;
     this.cardsLimits = [];
 
-    if (this.data.view === 'MOVES_IN_OTHER_WORKFLOWS') {
+    if (this.data.view === 'MOVES_IN_OTHER_WORKFLOWS' || this.data.forceDateLimit) {
       this.sendToOtherWorkflow = true;
     }
-    if (this.sendToOtherWorkflow) {
+    if (this.sendToOtherWorkflow && !this.data.forceDateLimit) {
       this.taskForm = this.fb.group({
         description: [null, Validators.required]
       });
     }
 
-    if (!this.workflowCardsLimit?.cardsLimit || !this.workflowCardsLimit?.allowOverLimit) {
+    if (!this.workflowCardsLimit?.cardsLimit || !this.allowOverLimit()) {
       // eslint-disable-next-line max-len
       //Si no hay límite de tarjetas o no se puede sobrepasar el límite, no puede darse el caso de que se cambiar el subestado destino
       this.setMovesEventsFormsAndTabs();
@@ -184,9 +188,9 @@ export class WorkflowCardMovementPreparationComponent implements OnInit {
     const date: Date = this.cardsLimitForm.get('deadLineDate').value;
     const slot: CardLimitSlotDTO = this.cardsLimitForm.get('deadLineHour').value;
     this.cardsLimitsExceeded = false;
-    if (date && !this.checkDateDisponibility(date)) {
+    if (date && !this.checkDateDisponibility(date) && !this.data.forceDateLimit) {
       this.cardsLimitsExceeded = true;
-    } else if (slot?.maxReached) {
+    } else if (slot?.maxReached && !this.data.forceDateLimit) {
       this.cardsLimitsExceeded = true;
     }
     this.tabsToShow = [];
@@ -208,7 +212,7 @@ export class WorkflowCardMovementPreparationComponent implements OnInit {
       ? this.data.altSubstateLimit.preparation
       : this.data.preparation;
     this.usersIn = this.cardsLimitsExceeded ? this.data.altSubstateLimit.usersIn : this.data.usersIn;
-    events.forEach((p: WorkflowSubstateEventDTO) => {
+    events?.forEach((p: WorkflowSubstateEventDTO) => {
       if (
         p.substateEventType === 'IN' &&
         (p.requiredSize ||
@@ -296,10 +300,15 @@ export class WorkflowCardMovementPreparationComponent implements OnInit {
       const d = cellDate;
       if (
         d.getFullYear() < new Date().getFullYear() ||
-        d.getMonth() < new Date().getMonth() ||
-        d.getDate() < new Date().getDate() ||
+        (d.getFullYear() === new Date().getFullYear() && d.getMonth() < new Date().getMonth()) ||
+        (d.getFullYear() === new Date().getFullYear() &&
+          d.getMonth() === new Date().getMonth() &&
+          d.getDate() < new Date().getDate()) ||
         d.getDay() === 0
       ) {
+        return '';
+      }
+      if (!this.minDaysAdvanceNotice(d)) {
         return '';
       }
       if (this.workflowCardsLimit?.cardsLimit) {
@@ -309,13 +318,35 @@ export class WorkflowCardMovementPreparationComponent implements OnInit {
     }
     return '';
   };
+  minDaysAdvanceNotice = (d: Date | null): boolean => {
+    if (
+      !this.allowOverLimit() &&
+      (this.workflowCardsLimit?.minDaysAdvanceNotice || this.workflowCardsLimit?.minDaysAdvanceNotice === 0)
+    ) {
+      const days = this.workflowCardsLimit?.minDaysAdvanceNotice;
+      let diferenciaDias = Math.floor((+d - +new Date()) / (1000 * 60 * 60 * 24));
+      const diffDias = diferenciaDias;
+      // Iterar sobre cada día entre las dos fechas
+      for (let i = 0; i <= diffDias; i++) {
+        const fecha = new Date();
+        fecha.setDate(fecha.getDate() + i + 1);
+        if (fecha.getDay() === 0 || fecha.getDay() === 6) {
+          diferenciaDias--;
+        }
+      }
+      if (diferenciaDias < days) {
+        return false;
+      }
+    }
+    return true;
+  };
   datesLimitFilter = (d: Date | null): boolean => {
     d = d ? d : new Date();
     // Prevent Sunday from being selected.
-    if (d.getDay() === 0) {
+    if (d.getDay() === 0 || !this.minDaysAdvanceNotice(d)) {
       return false;
     }
-    if (this.workflowCardsLimit?.cardsLimit && !this.workflowCardsLimit?.allowOverLimit) {
+    if (this.workflowCardsLimit?.cardsLimit && !this.allowOverLimit()) {
       return this.checkDateDisponibility(d);
     }
     return true;
@@ -339,6 +370,18 @@ export class WorkflowCardMovementPreparationComponent implements OnInit {
       return false;
     }
     return true;
+  }
+  allowOverLimit(): boolean {
+    const userRol = this.authService.getUserRole();
+    if (
+      this.workflowCardsLimit?.allowOverLimit &&
+      (!this.workflowCardsLimit.allowOverLimitRoles ||
+        this.workflowCardsLimit.allowOverLimitRoles.length === 0 ||
+        this.workflowCardsLimit.allowOverLimitRoles.find((r) => r.id === userRol.id))
+    ) {
+      return true;
+    }
+    return false;
   }
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -592,7 +635,9 @@ export class WorkflowCardMovementPreparationComponent implements OnInit {
   }
 
   public getModalTitle(): string {
-    if (this.cardsLimitsExceeded) {
+    if (this.data.titel) {
+      return this.data.titel;
+    } else if (this.cardsLimitsExceeded) {
       return this.translateService.instant(this.labels.title, { destination: this.data.altSubstateLimit.destinationName });
     }
     return this.translateService.instant(this.labels.title, { destination: this.data.destinationName });

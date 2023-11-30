@@ -32,10 +32,13 @@
             {{ cardInstance.information.dateAssignmentSubstate | date : "dd/MM/yyyy, HH:mm" }}
         </div>
     </div>
-    <div class="w-colunm-entity-data" *ngIf="dateToShow">
+    <div class="w-colunm-entity-data limit-date" *ngIf="dateLimitToShow">
         <label class="w-colunm-entity-data__label">{{ labels.limitDate | translate }}</label>
-        <div class="w-colunm-entity-data__value">
-            {{ dateToShow | date : "dd/MM/yy, HH:mm" }}
+        <div class="w-colunm-entity-data__value limit-date">
+            <span>{{ dateLimitToShow | date : "dd/MM/yy, HH:mm" }}</span>
+            <button *ngIf="editMode" mat-raised-button (click)="editDateLimit()">
+                {{ labels.edit | translate }} {{ labels.limitDate | translate | lowercase }}
+            </button>
         </div>
     </div>
     <div class="w-colunm-entity-data">
@@ -76,7 +79,12 @@
 </div>
 <div class="buttons-container" fxLayoutAlign="space-between center" *ngIf="editMode">
     <button mat-stroked-button color="warn" (click)="cancel()">{{ labels.cancel | translate }}</button>
-    <button mat-flat-button color="primary" (click)="save()" [disabled]="informationForm.invalid || !informationForm.touched">
+    <button
+        mat-flat-button
+        color="primary"
+        (click)="save()"
+        [disabled]="(informationForm.invalid || !informationForm.touched) && (dateLimitForm.invalid || !dateLimitForm.touched)"
+    >
         {{ labels.save | translate }}
     </button>
 </div>

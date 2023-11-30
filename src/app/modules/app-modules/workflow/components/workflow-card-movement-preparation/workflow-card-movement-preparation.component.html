@@ -21,7 +21,11 @@
             </mat-form-field>
         </form>
     </div>
-    <div class="wc-movement-preparation__deadline" *ngIf="sendToOtherWorkflow && cardsLimitForm">
+    <div
+        class="wc-movement-preparation__deadline"
+        *ngIf="sendToOtherWorkflow && cardsLimitForm"
+        [ngClass]="{ mt: data.forceDateLimit }"
+    >
         <form [formGroup]="cardsLimitForm">
             <!-- DeadLineDate-->
             <mat-form-field appearance="outline" floatLabel="always">
