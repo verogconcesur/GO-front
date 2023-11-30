@@ -7,6 +7,7 @@ import CardColumnTabDTO from '@data/models/cards/card-column-tab-dto';
 import CardInstanceDTO, { CardInstanceInformationDTO } from '@data/models/cards/card-instance-dto';
 import WorkflowCardsLimitDTO, { CardLimitSlotDTO } from '@data/models/workflow-admin/workflow-card-limit-dto';
 import { CardService } from '@data/services/cards.service';
+import { WorkflowAdministrationService } from '@data/services/workflow-administration.service';
 import { WorkflowPrepareAndMoveService } from '@modules/app-modules/workflow/aux-service/workflow-prepare-and-move-aux.service';
 // eslint-disable-next-line max-len
 import { WorkflowCardMovementPreparationComponent } from '@modules/app-modules/workflow/components/workflow-card-movement-preparation/workflow-card-movement-preparation.component';
@@ -24,6 +25,7 @@ export class WorkflowColumnPrefixedInformationComponent implements OnInit {
   @Input() tab: CardColumnTabDTO = null;
   @Input() cardInstance: CardInstanceDTO;
   public dateLimitToShow: number = null;
+  public workflowCardsLimit: WorkflowCardsLimitDTO;
 
   public labels = {
     workOrderInformation: marker('workflows.workOrderInformation'),
@@ -49,7 +51,8 @@ export class WorkflowColumnPrefixedInformationComponent implements OnInit {
     private fb: FormBuilder,
     private prepareAndMoveService: WorkflowPrepareAndMoveService,
     private dialog: MatDialog,
-    private spinnerService: ProgressSpinnerDialogService
+    private spinnerService: ProgressSpinnerDialogService,
+    private workflowAdministrationService: WorkflowAdministrationService
   ) {}
 
   ngOnInit(): void {
@@ -117,165 +120,24 @@ export class WorkflowColumnPrefixedInformationComponent implements OnInit {
   }
 
   public editDateLimit(): void {
-    const workflowCardsLimit: WorkflowCardsLimitDTO = {
-      id: 34,
-      cardsLimit: true,
-      initTime: 11,
-      endTime: 13,
-      numCardsByHour: 2,
-      numCardsByDay: 5,
-      allowOverLimit: true,
-      workflowSubstate: {
-        id: 171,
-        workflowState: {
-          id: 79,
-          workflow: {
-            id: 34,
-            name: 'Prueba diego contabilidad',
-            status: 'PUBLISHED',
-            manualCreateCard: true,
-            allowAllMovements: true,
-            facilities: null
-          },
-          name: 'Inicial',
-          orderNumber: 1,
-          front: false,
-          anchor: true,
-          hideBoard: false,
-          color: '#f5f5f5',
-          locked: false,
-          workflowSubstates: null
-        },
-        name: 'En espera',
-        orderNumber: 1,
-        entryPoint: true,
-        exitPoint: false,
-        hideBoard: false,
-        color: '#a59292',
-        locked: false,
-        workflowSubstateUser: [
-          {
-            id: 707,
-            user: {
-              id: 9,
-              name: 'contabilidad1',
-              firstName: 'Test',
-              lastName: 'Demo',
-              role: null,
-              email: null,
-              userName: null,
-              password: null,
-              permissions: null,
-              brands: null,
-              facilities: null,
-              departments: null,
-              specialties: null,
-              signature: null,
-              signatureContentType: null,
-              fullName: 'contabilidad1 Test Demo',
-              code: null,
-              userType: null,
-              dueDatePass: null,
-              customer: null,
-              userSendPassType: null
-            },
-            workflowUserId: 159,
-            workflowSubstateId: 171,
-            permissionType: 'EDIT'
-          },
-          {
-            id: 708,
-            user: {
-              id: 11,
-              name: 'contabilidad3',
-              firstName: 'Test',
-              lastName: 'Demo',
-              role: null,
-              email: null,
-              userName: null,
-              password: null,
-              permissions: null,
-              brands: null,
-              facilities: null,
-              departments: null,
-              specialties: null,
-              signature: null,
-              signatureContentType: null,
-              fullName: 'contabilidad3 Test Demo',
-              code: null,
-              userType: null,
-              dueDatePass: null,
-              customer: null,
-              userSendPassType: null
-            },
-            workflowUserId: 160,
-            workflowSubstateId: 171,
-            permissionType: 'EDIT'
-          },
-          {
-            id: 715,
-            user: {
-              id: 1009,
-              name: 'Diego Contabilidad',
-              firstName: null,
-              lastName: null,
-              role: null,
-              email: null,
-              userName: null,
-              password: null,
-              permissions: null,
-              brands: null,
-              facilities: null,
-              departments: null,
-              specialties: null,
-              signature: null,
-              signatureContentType: null,
-              fullName: 'Diego Contabilidad',
-              code: null,
-              userType: null,
-              dueDatePass: null,
-              customer: null,
-              userSendPassType: null
-            },
-            workflowUserId: 328,
-            workflowSubstateId: 171,
-            permissionType: 'EDIT'
-          },
-          {
-            id: 913,
-            user: {
-              id: 2,
-              name: 'adminDemo',
-              firstName: 'Test',
-              lastName: 'Demo ',
-              role: null,
-              email: null,
-              userName: null,
-              password: null,
-              permissions: null,
-              brands: null,
-              facilities: null,
-              departments: null,
-              specialties: null,
-              signature: null,
-              signatureContentType: null,
-              fullName: 'adminDemo Test Demo ',
-              code: null,
-              userType: null,
-              dueDatePass: null,
-              customer: null,
-              userSendPassType: null
-            },
-            workflowUserId: 397,
-            workflowSubstateId: 171,
-            permissionType: 'EDIT'
-          }
-        ],
-        workflowSubstateEvents: []
-      },
-      minDaysAdvanceNotice: 5,
-      allowOverLimitRoles: []
-    };
+    if (this.workflowCardsLimit) {
+      this.openEditDateLimitModal();
+    } else {
+      const spinner = this.spinnerService.show();
+      this.workflowAdministrationService
+        .getWorkflowCardsLimitsConfiguration(this.cardInstance.workflowId)
+        .pipe(take(1))
+        .subscribe((config: WorkflowCardsLimitDTO) => {
+          this.workflowCardsLimit = config;
+          this.workflowCardsLimit.allowOverLimit = true;
+          this.workflowCardsLimit.allowOverLimitRoles = [];
+          this.spinnerService.hide(spinner);
+          this.openEditDateLimitModal();
+        });
+    }
+  }
+
+  private openEditDateLimitModal(): void {
     this.dialog
       .open(WorkflowCardMovementPreparationComponent, {
         maxWidth: '655px',
@@ -287,7 +149,7 @@ export class WorkflowColumnPrefixedInformationComponent implements OnInit {
           workflowDestinatioId: this.cardInstance.workflowId,
           cardIntanceId: this.cardInstance.cardInstanceWorkflow.id,
           forceDateLimit: true,
-          workflowCardsLimit
+          workflowCardsLimit: this.workflowCardsLimit
         }
       })
       .afterClosed()
