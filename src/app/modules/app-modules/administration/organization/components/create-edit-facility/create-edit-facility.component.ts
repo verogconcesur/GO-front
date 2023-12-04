@@ -31,6 +31,7 @@ import { WorkflowAdministrationStatesSubstatesService } from '@data/services/wor
 import WorkflowStateDTO from '@data/models/workflows/workflow-state-dto';
 import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
 import { validateConfigMailers } from '@shared/validators/configEmail-required-fields.validator';
+import CombinedRequiredFieldsValidator from '@shared/validators/combined-required-fields.validator';
 
 export const enum CreateEditFacilityComponentModalEnum {
   ID = 'create-edit-facility-dialog-id',
@@ -89,7 +90,11 @@ export class CreateEditFacilityComponent extends ComponentToExtendForCustomDialo
     configSmsSender: marker('common.configSmsSender'),
     confWhatsapp: marker('common.confWhatsapp'),
     phoneWhatsapp: marker('common.phoneWhatsapp'),
-    senderWhatsapp: marker('common.senderWhatsapp')
+    senderWhatsapp: marker('common.senderWhatsapp'),
+    confTpv: marker('tpv.confTpv'),
+    keyCommerce: marker('tpv.keyCommerce'),
+    tpvCode: marker('tpv.tpvCode'),
+    tpvTerminal: marker('tpv.tpvTerminal')
   };
   public minLength = 3;
   public maxLength = 11;
@@ -209,7 +214,10 @@ export class CreateEditFacilityComponent extends ComponentToExtendForCustomDialo
         configMailerPass: formValue.configMailerPass,
         senderSms: formValue.senderSms,
         whatsappPhoneNumber: formValue.whatsappPhoneNumber,
-        whatsappSender: formValue.whatsappSender
+        whatsappSender: formValue.whatsappSender,
+        keyCommerce: formValue.keyCommerce,
+        tpvCode: formValue.tpvCode,
+        tpvTerminal: formValue.tpvTerminal
       })
       .pipe(
         map((response) => {
@@ -509,10 +517,33 @@ export class CreateEditFacilityComponent extends ComponentToExtendForCustomDialo
         whatsappSender: [
           this.facilityToEdit && this.facilityToEdit.whatsappSender ? this.facilityToEdit.whatsappSender : null,
           [Validators.minLength(this.minLength), Validators.maxLength(this.maxLength)]
-        ]
+        ],
+        keyCommerce: [this.facilityToEdit && this.facilityToEdit.keyCommerce ? this.facilityToEdit.keyCommerce : null],
+        tpvCode: [this.facilityToEdit && this.facilityToEdit.tpvCode ? this.facilityToEdit.tpvCode : null],
+        tpvTerminal: [this.facilityToEdit && this.facilityToEdit.tpvTerminal ? this.facilityToEdit.tpvTerminal : null]
       },
       {
-        validators: validateConfigMailers
+        validators: [
+          validateConfigMailers,
+          CombinedRequiredFieldsValidator.field1RequiredIfFieldsConditions('keyCommerce', [
+            { control: 'tpvCode', operation: 'diff', value: null }
+          ]),
+          CombinedRequiredFieldsValidator.field1RequiredIfFieldsConditions('keyCommerce', [
+            { control: 'tpvTerminal', operation: 'diff', value: null }
+          ]),
+          CombinedRequiredFieldsValidator.field1RequiredIfFieldsConditions('tpvCode', [
+            { control: 'tpvTerminal', operation: 'diff', value: null }
+          ]),
+          CombinedRequiredFieldsValidator.field1RequiredIfFieldsConditions('tpvCode', [
+            { control: 'keyCommerce', operation: 'diff', value: null }
+          ]),
+          CombinedRequiredFieldsValidator.field1RequiredIfFieldsConditions('tpvTerminal', [
+            { control: 'tpvCode', operation: 'diff', value: null }
+          ]),
+          CombinedRequiredFieldsValidator.field1RequiredIfFieldsConditions('tpvTerminal', [
+            { control: 'keyCommerce', operation: 'diff', value: null }
+          ])
+        ]
       }
     );
 

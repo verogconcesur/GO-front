@@ -826,6 +826,12 @@
             "varOptions": "Insertar variable"
         }
     },
+    "tpv": {
+        "confTpv": "Configuración TPV",
+        "keyCommerce": "Clave de comercio",
+        "tpvCode": "Código de TPV",
+        "tpvTerminal": "Terminal TPV"
+    },
     "user": {
         "add": "Añadir usuario",
         "delete": "Eliminar usuario",

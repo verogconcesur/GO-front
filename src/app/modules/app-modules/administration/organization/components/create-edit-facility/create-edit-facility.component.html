@@ -309,7 +309,10 @@
                         <mat-label>{{ labels.phoneWhatsapp | translate }} </mat-label>
                         <input matInput formControlName="whatsappPhoneNumber" />
                         <mat-error
-                            *ngIf="facilityForm.controls.whatsappPhoneNumber.invalid && facilityForm.controls.whatsappPhoneNumber.touched"
+                            *ngIf="
+                                facilityForm.controls.whatsappPhoneNumber.invalid &&
+                                facilityForm.controls.whatsappPhoneNumber.touched
+                            "
                         >
                             {{ labels.required | translate }}
                         </mat-error>
@@ -327,6 +330,41 @@
                     </mat-form-field>
                 </div>
             </div>
+
+            <!-- TPV Configuration -->
+            <div class="facility-data__section">
+                <div class="facility-data__section__title">
+                    {{ labels.confTpv | translate }}
+                </div>
+
+                <div class="facility-data__section__group">
+                    <!-- keyCommerce -->
+                    <mat-form-field appearance="outline" floatLabel="always">
+                        <mat-label>{{ labels.keyCommerce | translate }} </mat-label>
+                        <input matInput formControlName="keyCommerce" />
+                        <mat-error *ngIf="facilityForm.controls.keyCommerce.invalid">
+                            {{ labels.required | translate }}
+                        </mat-error>
+                    </mat-form-field>
+                    <!-- tpvCode -->
+                    <mat-form-field appearance="outline" floatLabel="always">
+                        <mat-label>{{ labels.tpvCode | translate }} </mat-label>
+                        <input matInput formControlName="tpvCode" />
+                        <mat-error *ngIf="facilityForm.controls.tpvCode.invalid">
+                            {{ labels.required | translate }}
+                        </mat-error>
+                    </mat-form-field>
+                    <!-- tpvTerminal -->
+                    <mat-form-field appearance="outline" floatLabel="always">
+                        <mat-label>{{ labels.tpvTerminal | translate }} </mat-label>
+                        <input matInput formControlName="tpvTerminal" />
+                        <mat-error *ngIf="facilityForm.controls.tpvTerminal.invalid">
+                            {{ labels.required | translate }}
+                        </mat-error>
+                    </mat-form-field>
+                </div>
+            </div>
+
             <!-- Emails -->
             <div class="facility-data__section">
                 <div class="facility-data__section__title">

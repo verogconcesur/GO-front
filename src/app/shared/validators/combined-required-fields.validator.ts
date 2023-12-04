@@ -32,13 +32,14 @@ export default class CombinedRequiredFieldsValidator {
         return null;
       }
       controlsToCheck.forEach((controlToCheck) => {
+        let value = controls.get(controlToCheck.control)?.value;
+        if (!value && value !== 0 && !controlToCheck.value && controlToCheck.value !== value) {
+          value = controlToCheck.value;
+        }
         if (!showError && !control1.value && control1.value !== 0) {
-          if (controlToCheck.operation === 'equal' && controls.get(controlToCheck.control)?.value === controlToCheck.value) {
+          if (controlToCheck.operation === 'equal' && value === controlToCheck.value) {
             showError = true;
-          } else if (
-            controlToCheck.operation === 'diff' &&
-            controls.get(controlToCheck.control)?.value !== controlToCheck.value
-          ) {
+          } else if (controlToCheck.operation === 'diff' && value !== controlToCheck.value) {
             showError = true;
           }
         }
@@ -46,6 +47,8 @@ export default class CombinedRequiredFieldsValidator {
       if (showError) {
         controls.get(controlToValidate)?.setErrors({ required: true });
         return { required: true };
+      } else {
+        controls.get(controlToValidate)?.setErrors(null);
       }
       // controls.get(controlToValidate)?.setErrors(null);
       return null;

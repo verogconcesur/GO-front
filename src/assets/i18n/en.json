@@ -829,6 +829,12 @@
             "varOptions": "Insert variable"
         }
     },
+    "tpv": {
+        "confTpv": "TPV configuration",
+        "keyCommerce": "Commerce key",
+        "tpvCode": "TPV's code",
+        "tpvTerminal": "TPV's terminal"
+    },
     "user": {
         "add": "Add user",
         "delete": "Delete user",
