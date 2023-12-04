@@ -828,9 +828,9 @@
     },
     "tpv": {
         "confTpv": "Configuración TPV",
-        "keyCommerce": "Clave de comercio",
-        "tpvCode": "Código de TPV",
-        "tpvTerminal": "Terminal TPV"
+        "keyCommerce": "Clave de firma",
+        "tpvCode": "Número de comercio",
+        "tpvTerminal": "Número de terminal"
     },
     "user": {
         "add": "Añadir usuario",
