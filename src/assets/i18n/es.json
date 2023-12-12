@@ -688,6 +688,7 @@
             "title": "Workflow y estados"
         }
     },
+    "no": "",
     "notifications": {
         "dateFrom": "Fecha desde",
         "dateTo": "Fecha hasta",
@@ -919,6 +920,7 @@
         },
         "cardChangesDetected": "Se han detectado cambios en la ficha que está visualizando",
         "cardConfig": "Configuración de la tarjeta",
+        "cardDetailHeaderField": "Información cabecera detalle tarjeta",
         "cardsByDayLimit": "Establecer límite de tarjetas por día",
         "cardsInBoardView": "Tarjetas en vista pizarra",
         "cardsInCalendarView": "Tarjetas en vista calendario",

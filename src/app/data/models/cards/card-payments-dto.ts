@@ -13,12 +13,21 @@ export interface CardPaymentLineDTO {
   paymentStatus?: PaymentStatusDTO;
 }
 
+export interface CardTotalLineDTO {
+  id?: number;
+  amount?: number;
+  attachments?: CardPaymentAttachmentsDTO[];
+  cardInstancePaymentDTO?: CardPaymentsDTO;
+  description?: string;
+}
+
 export interface CardPaymentsDTO {
   id?: number;
   cardInstance?: CardInstanceDTO;
   paymentLines?: CardPaymentLineDTO[];
   pending?: number;
-  total?: number;
+  totals?: CardTotalLineDTO[];
+  total?: number; //DGDC QUITAR cuando esté el servicio nuevo
   tab?: CardColumnTabDTO;
 }
 

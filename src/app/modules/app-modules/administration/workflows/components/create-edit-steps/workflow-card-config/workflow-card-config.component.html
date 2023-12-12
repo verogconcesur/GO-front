@@ -142,6 +142,52 @@
         </div>
     </div>
     <div class="card-config__item">
+        <h2 class="card-config__item__title">{{ labels.cardDetailHeaderField | translate }}</h2>
+        <div class="card-config__item__card">
+            <div class="card-config__item__card__colors">
+                <div class="card-config__item__card__colors__color x-1"></div>
+            </div>
+            <div class="card-config__item__card__info">
+                <section formGroupName="DETAIL">
+                    <section
+                        class="field-section"
+                        *ngFor="let ind of getNumberOfFields('DETAIL')"
+                        [formGroupName]="'field' + ind"
+                    >
+                        <mat-form-field
+                            appearance="outline"
+                            floatLabel="always"
+                            [matMenuTriggerFor]="attrSearcherMenu"
+                            (click)="$event.stopPropagation(); setTabItemTo('DETAIL', ind)"
+                        >
+                            <mat-label>{{ labels.field | translate }} {{ ind }}</mat-label>
+                            <mat-select formControlName="tabItem" [placeholder]="labels.select | translate">
+                                <mat-option
+                                    style="display: none"
+                                    *ngFor="let tabItem of originalData?.tabItems"
+                                    [value]="tabItem"
+                                    >{{ tabItem.frontName }}</mat-option
+                                >
+                            </mat-select>
+                            <mat-error class="custom-actions-container__header__group__error" *ngIf="hasErrorIn('DETAIL', ind)">
+                                {{ labels.required | translate }}
+                            </mat-error>
+                        </mat-form-field>
+                        <button
+                            aria-label="Clear"
+                            class="clear-field-button"
+                            mat-icon-button
+                            *ngIf="hasValue('DETAIL', ind)"
+                            (click)="clearField('DETAIL', ind)"
+                        >
+                            <mat-icon>clear</mat-icon>
+                        </button>
+                    </section>
+                </section>
+            </div>
+        </div>
+    </div>
+    <div class="card-config__item">
         <h2 class="card-config__item__title">{{ labels.landingCardView | translate }}</h2>
         <div class="card-config__item__card">
             <div class="card-config__item__card__colors">
