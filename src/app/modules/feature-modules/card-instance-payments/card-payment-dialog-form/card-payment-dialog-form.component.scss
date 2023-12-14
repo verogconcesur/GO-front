@@ -8,12 +8,12 @@
     width: 100%;
     .payment-line-data__section {
       &__title {
-        margin: 0 0 10px 0;
+        padding: 0 0 10px 0;
         color: mat-color($primary, 500);
         font-size: 1rem;
         font-weight: 600;
         &.first-child {
-          margin-top: 0px;
+          padding-top: 0px;
         }
       }
       &__group {
@@ -26,6 +26,11 @@
           &.w-33 {
             width: calc(33% - 20px);
           }
+        }
+        .link {
+          color: mat-color($primary, A700);
+          padding-top: 5px;
+          cursor: pointer;
         }
       }
     }

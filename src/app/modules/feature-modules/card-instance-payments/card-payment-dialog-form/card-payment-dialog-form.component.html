@@ -12,7 +12,7 @@
                         </mat-error>
                     </mat-form-field>
                 </div>
-                <div class="payment-line-data__section__group">
+                <div class="payment-line-data__section__group" *ngIf="mode === 'PAYMENT'">
                     <mat-form-field appearance="outline" floatLabel="always" class="w-100">
                         <mat-label>{{ labels.observations | translate }}</mat-label>
                         <textarea
@@ -24,7 +24,7 @@
                         ></textarea>
                     </mat-form-field>
                 </div>
-                <div class="payment-line-data__section__group">
+                <div class="payment-line-data__section__group" *ngIf="mode === 'PAYMENT'">
                     <mat-form-field appearance="outline" floatLabel="always" class="w-33">
                         <mat-label>{{ labels.paymentType | translate }}</mat-label>
                         <mat-select
@@ -50,6 +50,16 @@
                         </mat-select>
                     </mat-form-field>
                 </div>
+                <div class="payment-line-data__section__group" *ngIf="mode === 'TOTAL'">
+                    <mat-form-field appearance="outline" floatLabel="always" class="w-50">
+                        <mat-label>{{ labels.amount | translate }}</mat-label>
+                        <input appTwoDigitDecimal matInput formControlName="amount" [disabled]="paymentAmountDisabled()" />
+                        <span matSuffix>€</span>
+                        <mat-error *ngIf="form.amount.invalid">
+                            <span>{{ labels.maxLengthError | translate : { length: maxAmount.toString().length } }}</span>
+                        </mat-error>
+                    </mat-form-field>
+                </div>
                 <div class="payment-line-data__section__group">
                     <mat-form-field appearance="outline" floatLabel="always" class="w-100">
                         <mat-label>{{ labels.attachments | translate }}</mat-label>
@@ -65,6 +75,21 @@
                             </mat-option>
                         </mat-select>
                     </mat-form-field>
+                </div>
+
+                <div class="payment-line-data__section__group" *ngIf="paymentLineForm?.get('attachments')?.value?.length">
+                    <label>{{ labels.attachmentsAssociated | translate }}</label>
+                    <div
+                        *ngFor="
+                            let attach of paymentLineForm?.get('attachments')?.value
+                                ? paymentLineForm?.get('attachments').value
+                                : []
+                        "
+                        (click)="openMedia(attach)"
+                        class="link"
+                    >
+                        {{ attach.file.name }}
+                    </div>
                 </div>
             </div>
         </form>

@@ -1,36 +1,136 @@
 <div class="payments" fxFill *ngIf="formTotal">
-    <div class="payments__main">
-        <div class="payments__main__total smaller-mat-form-fields" fxLayout="row" fxLayoutAlign=" center" [formGroup]="formTotal">
-            <mat-form-field appearance="outline" floatLabel="always">
-                <mat-label>{{ labels.total | translate }}</mat-label>
-                <input appTwoDigitDecimal matInput formControlName="total" [readonly]="!editingTotal" />
-                <span matSuffix>€</span>
-                <mat-icon
-                    style="cursor: pointer"
-                    color="primary"
-                    matPrefix
-                    (click)="saveTotal(); $event.stopPropagation()"
-                    *ngIf="editingTotal"
-                    >check</mat-icon
-                >
-                <mat-icon
-                    style="cursor: pointer"
-                    color="primary"
-                    matPrefix
-                    (click)="editTotal(); $event.stopPropagation()"
-                    *ngIf="!editingTotal"
-                    >edit</mat-icon
-                >
-                <mat-error *ngIf="formTotal.get('total').invalid">
-                    <span>{{ labels.maxLengthError | translate : { length: maxAmount.toString().length } }}</span>
-                </mat-error>
-            </mat-form-field>
-            <mat-form-field appearance="outline" floatLabel="always">
-                <mat-label>{{ labels.pending | translate }}</mat-label>
-                <input appTwoDigitDecimal matInput formControlName="pending" [readonly]="true" />
-                <span matSuffix>€</span>
-            </mat-form-field>
+    <div class="payments__main" [formGroup]="formTotal">
+        <div class="payments__main__header" *ngIf="data">
+            <div class="payments__main__header__item" fxLayout="row">
+                <div fxFlex="40" fxLayoutAlign="start center" fxFill>{{ labels.description | translate }}</div>
+                <div fxFlex="45" fxLayoutAlign="center center" fxFill>{{ labels.value | translate }}</div>
+                <div fxFlex="15" fxLayoutAlign="end center" fxFill>{{ labels.actions | translate }}</div>
+            </div>
         </div>
+
+        <div class="payments__main__total item smaller-mat-form-fields" fxLayout="row">
+            <div fxFlex="40" fxLayoutAlign="start center">{{ labels.customerAccount | translate }}</div>
+            <div fxFlex="45" fxLayoutAlign="center center">
+                <mat-form-field appearance="outline" floatLabel="always" *ngIf="editingAccount">
+                    <mat-label>{{ labels.customerAccount | translate }}</mat-label>
+                    <input matInput formControlName="customerAccount" [readonly]="!editingAccount" />
+
+                    <mat-icon
+                        style="cursor: pointer"
+                        color="primary"
+                        matPrefix
+                        (click)="saveCustomerAccount(); $event.stopPropagation()"
+                        *ngIf="editingAccount"
+                        >check</mat-icon
+                    >
+                </mat-form-field>
+                <div *ngIf="!editingAccount">
+                    {{ formTotal?.get("customerAccount")?.value ? formTotal?.get("customerAccount")?.value : "" }}
+                </div>
+            </div>
+            <div fxFlex="15" fxLayoutAlign="end center" class="actions">
+                <mat-icon
+                    [color]="editingAccount ? '' : 'primary'"
+                    style="cursor: pointer"
+                    (click)="editAccount(); $event.stopPropagation()"
+                >
+                    edit
+                </mat-icon>
+            </div>
+        </div>
+
+        <div class="payments__main__total item smaller-mat-form-fields" fxLayout="row">
+            <div fxFlex="40" fxLayoutAlign="start center">{{ labels.pendingDescription | translate }}</div>
+            <div fxFlex="45" fxLayoutAlign="center center">
+                {{ formTotal?.get("pending")?.value ? formTotal?.get("pending")?.value : 0 }}<span matSuffix>€</span>
+            </div>
+            <div fxFlex="15" fxLayoutAlign="end center" class="actions"></div>
+        </div>
+
+        <div class="payments__main__total item smaller-mat-form-fields" fxLayout="row">
+            <div fxFlex="40" fxLayoutAlign="start center">{{ labels.total | translate }}</div>
+            <div fxFlex="45" fxLayoutAlign="center center">
+                <mat-form-field appearance="outline" floatLabel="always" *ngIf="editingTotal">
+                    <mat-label>{{ labels.total | translate }}</mat-label>
+                    <input matInput formControlName="total" [readonly]="!editingTotal" />
+                    <span matSuffix>€</span>
+                    <mat-icon
+                        style="cursor: pointer"
+                        color="primary"
+                        matPrefix
+                        (click)="saveTotal(); $event.stopPropagation()"
+                        *ngIf="editingTotal"
+                        >check</mat-icon
+                    >
+                </mat-form-field>
+                <div *ngIf="!editingTotal">
+                    {{ formTotal?.get("total")?.value ? formTotal?.get("total")?.value : "" }}<span matSuffix> €</span>
+                </div>
+            </div>
+            <div fxFlex="15" fxLayoutAlign="end center" class="actions">
+                <mat-icon
+                    [color]="editingTotal ? '' : 'primary'"
+                    style="cursor: pointer"
+                    (click)="editTotal(); $event.stopPropagation()"
+                >
+                    edit
+                </mat-icon>
+            </div>
+        </div>
+
+        <div
+            class="payments__main__total item smaller-mat-form-fields"
+            fxLayout="row"
+            *ngFor="let item of totalLines; let i = index"
+        >
+            <div fxFlex="40" fxLayoutAlign="start center">{{ item.description }}</div>
+            <div fxFlex="45" fxLayoutAlign="center center">{{ item.amount }}<span matSuffix> €</span></div>
+            <div fxFlex="15" fxLayoutAlign="end center" class="actions">
+                <mat-icon
+                    [color]="'primary'"
+                    style="cursor: pointer; color: green"
+                    [matBadge]="item.attachments?.length"
+                    matBadgePosition="before"
+                    (click)="editTotalLine(item, i)"
+                    *ngIf="item.attachments?.length"
+                >
+                    attach_file
+                </mat-icon>
+                <mat-icon
+                    [color]="'primary'"
+                    style="cursor: pointer"
+                    (click)="editTotalLine(item, i)"
+                    *ngIf="!item.attachments?.length"
+                >
+                    attach_file
+                </mat-icon>
+                <mat-icon
+                    [color]="'primary'"
+                    style="cursor: pointer"
+                    (click)="editTotalLine(item, i)"
+                    *ngIf="!cardInstancePaymentsConfig.disableIndividualDeleteAction"
+                >
+                    edit
+                </mat-icon>
+                <mat-icon
+                    [color]="'primary'"
+                    style="cursor: pointer"
+                    (click)="!editingTotal && deleteTotalLine(item, i)"
+                    *ngIf="!cardInstancePaymentsConfig.disableIndividualDeleteAction"
+                >
+                    delete
+                </mat-icon>
+            </div>
+        </div>
+        <div
+            class="payments__main__create"
+            fxLayout="row"
+            fxLayoutAlign="end none"
+            *ngIf="!cardInstancePaymentsConfig.disablePaymentsAdditionAction && !editingTotal && !editingAccount && data"
+        >
+            <span class="payments__main__create__item" (click)="newTotalLine()">+ {{ labels.newTotalLine | translate }}</span>
+        </div>
+
         <div class="payments__main__header" *ngIf="data">
             <div class="payments__main__header__item" fxLayout="row">
                 <div fxFlex="25" fxLayoutAlign="start center" fxFill>{{ labels.description | translate }}</div>
@@ -117,7 +217,7 @@
             class="payments__main__create"
             fxLayout="row"
             fxLayoutAlign="end none"
-            *ngIf="!editing && !cardInstancePaymentsConfig.disablePaymentsAdditionAction && !editingTotal && data"
+            *ngIf="!cardInstancePaymentsConfig.disablePaymentsAdditionAction && !editingTotal && !editingAccount && data"
         >
             <span class="payments__main__create__item" (click)="newLine()">+ {{ labels.newLine | translate }}</span>
         </div>

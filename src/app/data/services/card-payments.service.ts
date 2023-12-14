@@ -4,7 +4,7 @@ import { Inject, Injectable } from '@angular/core';
 import { ENV } from '@app/constants/global.constants';
 import { Env } from '@app/types/env';
 import { ConcenetError } from '@app/types/error';
-import { CardPaymentLineDTO, CardPaymentsDTO, PaymentTypeDTO } from '@data/models/cards/card-payments-dto';
+import { CardPaymentLineDTO, CardPaymentsDTO, CardTotalLineDTO, PaymentTypeDTO } from '@data/models/cards/card-payments-dto';
 import { Observable, throwError } from 'rxjs';
 import { catchError } from 'rxjs/operators';
 
@@ -19,6 +19,8 @@ export class CardPaymentsService {
   private readonly LINE_PATH = '/line';
   private readonly TYPES = '/types';
   private readonly STATE = '/status';
+  private readonly ACCOUNT = '/account';
+  private readonly TOTAL = '/total';
 
   constructor(@Inject(ENV) private env: Env, private http: HttpClient) {}
 
@@ -57,6 +59,24 @@ export class CardPaymentsService {
   }
 
   /**
+   * Add total lines to card tab
+   *
+   * @param cardInstanceWorkflowId
+   * @param tabId
+   * @param line
+   * @returns CardPaymentsDTO
+   */
+  public addEditTotalLine(cardInstanceWorkflowId: number, tabId: number, line: CardTotalLineDTO): Observable<CardTotalLineDTO> {
+    return this.http
+      .post<CardTotalLineDTO>(
+        // eslint-disable-next-line max-len
+        `${this.env.apiBaseUrl}${this.GET_CARD_INSTANCE_PATH}${this.DETAIL_PATH}/${cardInstanceWorkflowId}${this.PAYMENTS_PATH}/${tabId}${this.TOTAL}`,
+        line
+      )
+      .pipe(catchError((error) => throwError(error.error as ConcenetError)));
+  }
+
+  /**
    * Delete payment line
    *
    * @param cardInstanceWorkflowId
@@ -69,6 +89,22 @@ export class CardPaymentsService {
       .delete<CardPaymentsDTO>(
         // eslint-disable-next-line max-len
         `${this.env.apiBaseUrl}${this.GET_CARD_INSTANCE_PATH}${this.DETAIL_PATH}/${cardInstanceWorkflowId}${this.PAYMENTS_PATH}/${tabId}${this.LINE_PATH}/${idLine}`
+      )
+      .pipe(catchError((error) => throwError(error.error as ConcenetError)));
+  }
+  /**
+   * Delete total line
+   *
+   * @param cardInstanceWorkflowId
+   * @param tabId
+   * @param idLine
+   * @returns CardPaymentsDTO
+   */
+  public deleteTotalLine(cardInstanceWorkflowId: number, tabId: number, idLine: number): Observable<CardPaymentsDTO> {
+    return this.http
+      .delete<CardPaymentsDTO>(
+        // eslint-disable-next-line max-len
+        `${this.env.apiBaseUrl}${this.GET_CARD_INSTANCE_PATH}${this.DETAIL_PATH}/${cardInstanceWorkflowId}${this.PAYMENTS_PATH}/${tabId}${this.TOTAL}/${idLine}`
       )
       .pipe(catchError((error) => throwError(error.error as ConcenetError)));
   }
@@ -90,6 +126,26 @@ export class CardPaymentsService {
       )
       .pipe(catchError((error) => throwError(error.error as ConcenetError)));
   }
+
+  /**
+   * Save Customer account information
+   *
+   * @param cardInstanceWorkflowId
+   * @param tabId
+   * @param customerAccount
+   * @param paymentDto
+   * @returns boolean
+   */
+  public saveCustomerAccount(cardInstanceWorkflowId: number, tabId: number, payment: CardPaymentsDTO): Observable<boolean> {
+    return this.http
+      .post<boolean>(
+        // eslint-disable-next-line max-len
+        `${this.env.apiBaseUrl}${this.GET_CARD_INSTANCE_PATH}${this.DETAIL_PATH}/${cardInstanceWorkflowId}${this.PAYMENTS_PATH}/${tabId}${this.ACCOUNT}`,
+        payment
+      )
+      .pipe(catchError((error) => throwError(error.error as ConcenetError)));
+  }
+
   /**
    * Get card payments
    *

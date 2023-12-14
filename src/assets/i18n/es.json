@@ -215,13 +215,19 @@
             "sendConfirmation": "¿Está seguro que desea enviar el presupuesto al cliente?"
         },
         "payments": {
+            "customerAccount": "Cuenta cliente",
             "deleteConfirmation": "¿Está seguro que desea eliminar esta linea de pago?",
             "editLine": "Editar línea de pago",
+            "editTotalLine": "Editar línea de total",
             "langindOnlyPositiveAmounts": "No se pueden enviar cantidades negativas al área de cliente.",
-            "newLine": "Crear línea de pago",
+            "newLine": "Nueva línea de pago",
+            "newTotalLine": "Nueva línea de total",
+            "pendingAmount": "Cantidad pendiente de pagar",
             "resend": "Reenviar pago al área de clientes",
             "saveConfirmation": "¿Está seguro que desea guardar esta linea de pago?",
+            "saveCustomerAccountConfirmation": "¿Está seguro que desea guardar la cuenta de cliente insertada?",
             "saveTotalConfirmation": "¿Está seguro que desea guardar este total?",
+            "saveTotalLineConfirmation": "¿Está seguro que desea guardar esta línea de total?",
             "send": "Enviar pago al área de clientes",
             "sendConfirmation": "¿Está seguro que quiere enviar esta línea de pago al área de cliente?"
         }
@@ -339,6 +345,7 @@
         "askForConfirmation": "¿Desea continuar?",
         "attachment": "Adjunto",
         "attachments": "Adjuntos",
+        "attachmentsAssociated": "Adjuntos asociados",
         "audioViewer": "Reproductor de audio",
         "auto": "Auto",
         "back": "Atrás",
@@ -497,6 +504,7 @@
         "uploadImage": "Subir imagen",
         "user": "Usuario",
         "users": "Usuarios",
+        "value": "Valor",
         "vehicle": "Vehículo",
         "videoViewer": "Reproductor de vídeo",
         "view": "Visualizar",

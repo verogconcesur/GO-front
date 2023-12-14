@@ -2,7 +2,13 @@ import { Component, OnDestroy, OnInit } from '@angular/core';
 import { FormBuilder, UntypedFormControl, UntypedFormGroup, Validators } from '@angular/forms';
 import { marker } from '@biesbjerg/ngx-translate-extract-marker';
 import { AttachmentDTO, CardPaymentAttachmentsDTO } from '@data/models/cards/card-attachments-dto';
-import { CardPaymentLineDTO, CardPaymentsDTO, PaymentStatusDTO, PaymentTypeDTO } from '@data/models/cards/card-payments-dto';
+import {
+  CardPaymentLineDTO,
+  CardPaymentsDTO,
+  CardTotalLineDTO,
+  PaymentStatusDTO,
+  PaymentTypeDTO
+} from '@data/models/cards/card-payments-dto';
 import { CardAttachmentsService } from '@data/services/card-attachments.service';
 import { ComponentToExtendForCustomDialog, CustomDialogFooterConfigI } from '@frontend/custom-dialog';
 import { MediaViewerService } from '@modules/feature-modules/media-viewer-dialog/media-viewer.service';
@@ -31,9 +37,12 @@ export class CardPaymentDialogFormComponent extends ComponentToExtendForCustomDi
   public paymentLineForm: UntypedFormGroup = null;
   public attachmentsList: CardPaymentAttachmentsDTO[];
   public cardInstanceWorkflowId: number;
+  public mode: 'PAYMENT' | 'TOTAL' = 'PAYMENT';
   public labels = {
     newPaymentLine: marker('cardDetail.payments.newLine'),
     editPaymentLine: marker('cardDetail.payments.editLine'),
+    newTotalLine: marker('cardDetail.payments.newTotalLine'),
+    editTotalLine: marker('cardDetail.payments.editTotalLine'),
     okClient: marker('common.okClient'),
     description: marker('common.description'),
     observations: marker('common.observations'),
@@ -41,6 +50,7 @@ export class CardPaymentDialogFormComponent extends ComponentToExtendForCustomDi
     amount: marker('common.amount'),
     state: marker('common.state'),
     attachments: marker('common.attachments'),
+    attachmentsAssociated: marker('common.attachmentsAssociated'),
     maxLengthError: marker('errors.maxLengthError'),
     required: marker('errors.required')
   };
@@ -68,11 +78,17 @@ export class CardPaymentDialogFormComponent extends ComponentToExtendForCustomDi
     this.cardInstancePayment = this.extendedComponentData.cardInstancePaymentDTO;
     this.cardInstanceWorkflowId = this.extendedComponentData.cardInstanceWorkflowId;
     this.attachmentsList = this.extendedComponentData.attachmentsList;
+    this.mode = this.extendedComponentData.mode ? this.extendedComponentData.mode : 'PAYMENT';
     if (this.extendedComponentData.payment) {
       this.paymentLine = this.extendedComponentData.payment;
       this.MODAL_TITLE = this.labels.editPaymentLine;
-    } else {
+    } else if (this.mode === 'PAYMENT') {
       this.MODAL_TITLE = this.labels.newPaymentLine;
+    } else if (this.extendedComponentData.total) {
+      this.paymentLine = this.extendedComponentData.total;
+      this.MODAL_TITLE = this.labels.editTotalLine;
+    } else {
+      this.MODAL_TITLE = this.labels.newTotalLine;
     }
     this.initForm();
   }
@@ -86,6 +102,9 @@ export class CardPaymentDialogFormComponent extends ComponentToExtendForCustomDi
   // {id: 5, name: "Rechazado"}
   // {id: 6, name: "Denegado"}
   public paymentAmountDisabled(): boolean {
+    if (this.mode === 'TOTAL') {
+      return false;
+    }
     // Si ya está pagada o denegada se deshabilita
     if (this.form?.paymentStatus?.value?.id === 3 || this.form?.paymentStatus?.value?.id === 6) {
       this.form?.amount.disable();
@@ -190,23 +209,35 @@ export class CardPaymentDialogFormComponent extends ComponentToExtendForCustomDi
   }
 
   private initForm(): void {
-    this.paymentLineForm = this.fb.group({
-      id: [this.paymentLine?.id ? this.paymentLine.id : null],
-      amount: [this.paymentLine?.amount ? this.paymentLine.amount : '', [Validators.max(this.maxAmount), Validators.required]],
-      attachments: [this.paymentLine?.attachments ? this.paymentLine.attachments : null],
-      description: [this.paymentLine?.description ? this.paymentLine.description : '', Validators.required],
-      cardInstancePaymentDTO: [this.cardInstancePayment, [Validators.required]],
-      observations: [this.paymentLine?.observations ? this.paymentLine.observations : ''],
-      paymentType: [
-        this.paymentLine?.paymentType ? this.paymentTypes.find((pt) => this.paymentLine.paymentType.id === pt.id) : null,
-        [Validators.required]
-      ],
-      paymentStatus: [
-        this.paymentLine?.paymentStatus ? this.paymentStatus.find((ps) => this.paymentLine.paymentStatus.id === ps.id) : null,
-        [Validators.required]
-      ],
-      editMode: [true],
-      attachmentsOriginal: [this.paymentLine?.attachments ? this.paymentLine.attachments : null]
-    });
+    if (this.mode === 'PAYMENT') {
+      this.paymentLineForm = this.fb.group({
+        id: [this.paymentLine?.id ? this.paymentLine.id : null],
+        amount: [this.paymentLine?.amount ? this.paymentLine.amount : '', [Validators.max(this.maxAmount), Validators.required]],
+        attachments: [this.paymentLine?.attachments ? this.paymentLine.attachments : null],
+        description: [this.paymentLine?.description ? this.paymentLine.description : '', Validators.required],
+        cardInstancePaymentDTO: [this.cardInstancePayment, [Validators.required]],
+        observations: [this.paymentLine?.observations ? this.paymentLine.observations : ''],
+        paymentType: [
+          this.paymentLine?.paymentType ? this.paymentTypes.find((pt) => this.paymentLine.paymentType.id === pt.id) : null,
+          [Validators.required]
+        ],
+        paymentStatus: [
+          this.paymentLine?.paymentStatus ? this.paymentStatus.find((ps) => this.paymentLine.paymentStatus.id === ps.id) : null,
+          [Validators.required]
+        ],
+        editMode: [true],
+        attachmentsOriginal: [this.paymentLine?.attachments ? this.paymentLine.attachments : null]
+      });
+    } else {
+      this.paymentLineForm = this.fb.group({
+        id: [this.paymentLine?.id ? this.paymentLine.id : null],
+        amount: [this.paymentLine?.amount ? this.paymentLine.amount : '', [Validators.max(this.maxAmount), Validators.required]],
+        attachments: [this.paymentLine?.attachments ? this.paymentLine.attachments : null],
+        description: [this.paymentLine?.description ? this.paymentLine.description : '', Validators.required],
+        cardInstancePaymentDTO: [this.cardInstancePayment, [Validators.required]],
+        editMode: [true],
+        attachmentsOriginal: [this.paymentLine?.attachments ? this.paymentLine.attachments : null]
+      });
+    }
   }
 }

@@ -26,9 +26,10 @@ export interface CardPaymentsDTO {
   cardInstance?: CardInstanceDTO;
   paymentLines?: CardPaymentLineDTO[];
   pending?: number;
-  totals?: CardTotalLineDTO[];
-  total?: number; //DGDC QUITAR cuando esté el servicio nuevo
+  paymentTotals?: CardTotalLineDTO[];
+  total?: number;
   tab?: CardColumnTabDTO;
+  customerAccount?: string;
 }
 
 export interface PaymentTypeDTO {

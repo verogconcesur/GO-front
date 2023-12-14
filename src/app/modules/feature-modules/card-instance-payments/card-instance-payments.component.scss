@@ -7,10 +7,39 @@
     overflow-y: auto;
     &__total {
       flex-wrap: wrap;
+      .value {
+        font-weight: bold;
+      }
       mat-form-field {
         margin-right: 15px;
         mat-icon {
           font-size: 20px;
+        }
+      }
+      &.item {
+        height: 55px;
+        background-color: rgba(mat-color($primary, 100), 20%);
+        border-bottom: 1px solid mat-color($primary, 100);
+
+        .description {
+          overflow: hidden;
+          text-overflow: ellipsis;
+          display: -webkit-box;
+          -webkit-line-clamp: 1;
+          -webkit-box-orient: vertical;
+        }
+        .actions {
+          mat-icon {
+            font-size: 1.3em;
+          }
+          .mat-badge-content {
+            width: 15px !important;
+            height: 15px !important;
+            line-height: 15px !important;
+          }
+          .mat-badge-medium.mat-badge-overlap.mat-badge-before .mat-badge-content {
+            left: 0 !important;
+          }
         }
       }
     }
