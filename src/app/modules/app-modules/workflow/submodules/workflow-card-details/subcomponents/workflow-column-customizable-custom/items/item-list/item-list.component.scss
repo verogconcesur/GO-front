@@ -2,4 +2,7 @@
 @import 'utils/theme';
 .item-list {
   margin-bottom: 10px;
+  .w-100 {
+    width: 100%;
+  }
 }

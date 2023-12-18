@@ -1,8 +1,16 @@
 <div class="item-input" [ngSwitch]="tabItem?.tabItemConfigInput?.dataType" [formGroup]="tabItemForm">
     <div *ngSwitchCase="'STRING'">
-        <mat-form-field appearance="outline" floatLabel="always">
+        <mat-form-field appearance="outline" floatLabel="always" class="w-100">
             <mat-label>{{ tabItem.name }}</mat-label>
-            <input matInput formControlName="value" [readonly]="!editMode" />
+            <!-- <input matInput formControlName="value" [readonly]="!editMode" /> -->
+            <textarea
+                matInput
+                formControlName="value"
+                [readonly]="!editMode"
+                cdkTextareaAutosize
+                cdkAutosizeMinRows="5"
+                cdkAutosizeMaxRows="5"
+            ></textarea>
             <mat-error *ngIf="tabItemForm.get('value').invalid">
                 <span>{{ labels.required | translate }}</span>
             </mat-error>
