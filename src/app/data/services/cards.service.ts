@@ -50,6 +50,8 @@ export class CardService {
   private readonly SYNCRONIZE_PATH = '/synchronize';
   private readonly PRIORITIES_PATH = '/priorities';
   private readonly INFORMATION = '/informations';
+  private readonly INFO_PATH = '/info';
+  private readonly EDIT_DATE_LIMIT_PATH = '/editDateLimit';
 
   constructor(@Inject(ENV) private env: Env, private http: HttpClient) {}
 
@@ -323,6 +325,24 @@ export class CardService {
       .post<CardInstanceInformationDTO>(
         `${this.env.apiBaseUrl}${this.GET_CARD_INSTANCE_PATH}${this.GET_DETAIL_PATH}/${idCard}${this.INFORMATION}`,
         information
+      )
+      .pipe(catchError((error) => throwError(error.error as ConcenetError)));
+  }
+
+  /**
+   * Change limit date
+   *
+   * @return boolean
+   */
+  public changeDateLimit(idCard: number, date: number): Observable<boolean> {
+    return this.http
+      .post<boolean>(
+        // eslint-disable-next-line max-len
+        `${this.env.apiBaseUrl}${this.GET_CARD_INSTANCE_PATH}${this.GET_DETAIL_PATH}${this.INFO_PATH}${this.EDIT_DATE_LIMIT_PATH}`,
+        {
+          id: idCard,
+          dateAppliTimeLimit: date
+        }
       )
       .pipe(catchError((error) => throwError(error.error as ConcenetError)));
   }

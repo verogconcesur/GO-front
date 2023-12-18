@@ -22,6 +22,9 @@
   }
   &__deadline {
     margin-top: 10px;
+    &.mt {
+      padding-top: 25px;
+    }
     form {
       width: 100%;
       display: flex;

@@ -1,3 +1,4 @@
+import RoleDTO from '../user-permissions/role-dto';
 import WorkflowSubstateDTO from '../workflows/workflow-substate-dto';
 
 export const MAX_CARDS_LIMIT_BY_DAY = 888888;
@@ -22,4 +23,6 @@ export default interface WorkflowCardsLimitDTO {
   numCardsByHour: number;
   allowOverLimit: boolean;
   workflowSubstate: WorkflowSubstateDTO;
+  minDaysAdvanceNotice: number;
+  allowOverLimitRoles: RoleDTO[];
 }
