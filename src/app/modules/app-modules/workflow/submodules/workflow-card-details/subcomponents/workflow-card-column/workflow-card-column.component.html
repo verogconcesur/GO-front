@@ -1,5 +1,13 @@
 <div class="w-column">
-    <h5 class="uppercase">
+    <h5
+        class="uppercase"
+        [ngClass]="{
+            required: requiredFieldsAuxService.isColRequired(column.id)
+        }"
+        matTooltipPosition="above"
+        [matTooltip]="requiredFieldsAuxService.getColTooltip(column.id)"
+        [matTooltipDisabled]="!requiredFieldsAuxService.isColRequired(column.id)"
+    >
         {{ column.name }}
 
         <button mat-icon-button *ngIf="containerClass === 'actions'" (click)="!synchronizingData && syncData()">

@@ -2,4 +2,10 @@
 @import 'utils/theme';
 .item-option {
   margin-bottom: 10px;
+  .required {
+    color: mat-color($primary, statusError);
+    &:after {
+      content: ' *';
+    }
+  }
 }

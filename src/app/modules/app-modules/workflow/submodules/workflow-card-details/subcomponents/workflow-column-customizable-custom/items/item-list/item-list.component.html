@@ -1,6 +1,11 @@
 <div class="item-list" [formGroup]="tabItemForm">
     <mat-form-field appearance="outline" floatLabel="always" class="w-100">
-        <mat-label>{{ tabItem.name }}</mat-label>
+        <mat-label
+            [ngClass]="{
+                required: requiredFieldsAuxService.isFieldRequired(tabItem.tabId, tabItem.id)
+            }"
+            >{{ tabItem.name }}</mat-label
+        >
         <mat-select
             formControlName="value"
             [multiple]="tabItem.tabItemConfigList.selectionType === 'MULTIPLE'"

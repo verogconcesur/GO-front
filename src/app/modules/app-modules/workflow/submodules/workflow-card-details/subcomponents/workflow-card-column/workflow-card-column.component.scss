@@ -9,6 +9,12 @@
     letter-spacing: 2px;
     height: 20px;
     margin-bottom: 12px;
+    &.required {
+      color: mat-color($primary, statusError);
+      &:after {
+        content: ' *';
+      }
+    }
   }
   &__container {
     background-color: mat-contrast($primary, 400);

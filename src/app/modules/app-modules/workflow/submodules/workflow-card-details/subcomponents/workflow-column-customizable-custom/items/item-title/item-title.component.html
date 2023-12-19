@@ -1,3 +1,8 @@
-<div class="item-title">
+<div
+    class="item-title"
+    [ngClass]="{
+        required: requiredFieldsAuxService.isFieldRequired(tabItem.tabId, tabItem.id)
+    }"
+>
     <h1>{{ tabItem?.tabItemConfigTitle?.value }}</h1>
 </div>

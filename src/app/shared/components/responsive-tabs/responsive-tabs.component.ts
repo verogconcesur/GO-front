@@ -15,6 +15,7 @@ import {
   ViewChildren
 } from '@angular/core';
 import { marker } from '@biesbjerg/ngx-translate-extract-marker';
+import { WorkflowRequiredFieldsAuxService } from '@modules/app-modules/workflow/aux-service/workflow-required-fields-aux.service';
 import { TranslateService } from '@ngx-translate/core';
 
 export interface ResponsiveTabI {
@@ -24,6 +25,7 @@ export interface ResponsiveTabI {
   newData?: boolean;
   disabled?: () => boolean;
   disabledTooltip?: string;
+  colId?: number;
 }
 
 @Component({
@@ -48,7 +50,7 @@ export class ResponsiveTabsComponent implements OnInit, AfterViewInit, OnChanges
   public showMoreButton = false;
   public calculatingTabsWidth = false;
 
-  constructor(private translateService: TranslateService) {}
+  constructor(public requiredFieldsAuxService: WorkflowRequiredFieldsAuxService, private translateService: TranslateService) {}
 
   @HostListener('window:resize', ['$event']) onResize(event: { target: { innerWidth: number } }) {
     this.calculateTabsWidth();

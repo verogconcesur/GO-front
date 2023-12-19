@@ -1,7 +1,12 @@
 <div class="item-input" [ngSwitch]="tabItem?.tabItemConfigInput?.dataType" [formGroup]="tabItemForm">
     <div *ngSwitchCase="'STRING'">
         <mat-form-field appearance="outline" floatLabel="always" class="w-100">
-            <mat-label>{{ tabItem.name }}</mat-label>
+            <mat-label
+                [ngClass]="{
+                    required: requiredFieldsAuxService.isFieldRequired(tabItem.tabId, tabItem.id)
+                }"
+                >{{ tabItem.name }}</mat-label
+            >
             <!-- <input matInput formControlName="value" [readonly]="!editMode" /> -->
             <textarea
                 matInput
@@ -18,7 +23,12 @@
     </div>
     <div *ngSwitchCase="'NUMBER'">
         <mat-form-field appearance="outline" floatLabel="always">
-            <mat-label>{{ tabItem.name }}</mat-label>
+            <mat-label
+                [ngClass]="{
+                    required: requiredFieldsAuxService.isFieldRequired(tabItem.tabId, tabItem.id)
+                }"
+                >{{ tabItem.name }}</mat-label
+            >
             <input
                 appTwoDigitDecimal
                 [decimals]="tabItem?.tabItemConfigInput?.numDecimals"
@@ -35,7 +45,12 @@
         <div [ngSwitch]="tabItem?.tabItemConfigInput?.dateType">
             <div *ngSwitchCase="'DATE'">
                 <mat-form-field appearance="outline" class="smaller-mat-form-fields__no-margin date-picker" floatLabel="always">
-                    <mat-label>{{ tabItem.name }}</mat-label>
+                    <mat-label
+                        [ngClass]="{
+                            required: requiredFieldsAuxService.isFieldRequired(tabItem.tabId, tabItem.id)
+                        }"
+                        >{{ tabItem.name }}</mat-label
+                    >
                     <input
                         matInput
                         readonly
@@ -51,7 +66,12 @@
             </div>
             <div *ngSwitchCase="'DATETIME'">
                 <mat-form-field appearance="outline" class="smaller-mat-form-fields__no-margin date-picker" floatLabel="always">
-                    <mat-label>{{ tabItem.name }}</mat-label>
+                    <mat-label
+                        [ngClass]="{
+                            required: requiredFieldsAuxService.isFieldRequired(tabItem.tabId, tabItem.id)
+                        }"
+                        >{{ tabItem.name }}</mat-label
+                    >
                     <input matInput readonly [ngxMatDatetimePicker]="picker" formControlName="value" [disabled]="!editMode" />
                     <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
                     <ngx-mat-datetime-picker #picker [showSeconds]="false" [enableMeridian]="false"> </ngx-mat-datetime-picker>
@@ -61,7 +81,14 @@
                 </mat-form-field>
             </div>
             <div *ngSwitchCase="'TIME'" fxLayout="column">
-                <h3 class="title-msg">{{ tabItem.name }}</h3>
+                <h3
+                    class="title-msg"
+                    [ngClass]="{
+                        required: requiredFieldsAuxService.isFieldRequired(tabItem.tabId, tabItem.id)
+                    }"
+                >
+                    {{ tabItem.name }}
+                </h3>
                 <ngx-mat-timepicker formControlName="value" [disabled]="!editMode" [defaultTime]="[0, 0, 0]"></ngx-mat-timepicker>
                 <span class="error-msg" *ngIf="tabItemForm.get('value').invalid">{{ labels.required | translate }}</span>
             </div>

@@ -24,6 +24,12 @@
     white-space: break-spaces;
   }
 }
+.required {
+  color: mat-color($primary, statusError);
+  &:after {
+    content: ' *';
+  }
+}
 
 .w-colunm-entity-change-button {
   width: 100%;

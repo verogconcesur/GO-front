@@ -19,6 +19,7 @@ export const InputDateTypes = [
 export default interface CardColumnTabItemDTO extends TreeNode {
   id?: number;
   tabId?: number;
+  colId?: number;
   typeItem: string;
   orderNumber: number;
   name: string;
