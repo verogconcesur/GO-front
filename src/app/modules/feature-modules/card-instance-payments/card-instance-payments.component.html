@@ -33,6 +33,7 @@
                     [color]="editingAccount ? '' : 'primary'"
                     style="cursor: pointer"
                     (click)="editAccount(); $event.stopPropagation()"
+                    *ngIf="!cardInstancePaymentsConfig.disablePaymentsAdditionAction"
                 >
                     edit
                 </mat-icon>
@@ -72,6 +73,7 @@
                     [color]="editingTotal ? '' : 'primary'"
                     style="cursor: pointer"
                     (click)="editTotal(); $event.stopPropagation()"
+                    *ngIf="!cardInstancePaymentsConfig.disablePaymentsAdditionAction"
                 >
                     edit
                 </mat-icon>
@@ -126,7 +128,7 @@
             class="payments__main__create"
             fxLayout="row"
             fxLayoutAlign="end none"
-            *ngIf="!cardInstancePaymentsConfig.disablePaymentsAdditionAction && !editingTotal && !editingAccount && data"
+            *ngIf="!cardInstancePaymentsConfig.disablePaymentsAdditionAction"
         >
             <span class="payments__main__create__item" (click)="newTotalLine()">+ {{ labels.newTotalLine | translate }}</span>
         </div>
@@ -217,7 +219,7 @@
             class="payments__main__create"
             fxLayout="row"
             fxLayoutAlign="end none"
-            *ngIf="!cardInstancePaymentsConfig.disablePaymentsAdditionAction && !editingTotal && !editingAccount && data"
+            *ngIf="!cardInstancePaymentsConfig.disablePaymentsAdditionAction"
         >
             <span class="payments__main__create__item" (click)="newLine()">+ {{ labels.newLine | translate }}</span>
         </div>

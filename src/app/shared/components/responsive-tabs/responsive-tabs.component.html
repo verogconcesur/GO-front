@@ -29,8 +29,11 @@
         *ngIf="hiddenTabs?.length"
         [ngClass]="{ active: isHiddenTabSelected() }"
         [matMenuTriggerFor]="moreOptionsMenu"
+        matTooltipPosition="above"
+        [matTooltip]="getHiddenTabsTooltip()"
+        [matTooltipDisabled]="!isAnyHiddenTabRequired()"
     >
-        <label>{{ labels.more | translate }}</label>
+        <label [ngClass]="{ required: isAnyHiddenTabRequired() }">{{ labels.more | translate }}</label>
         <mat-icon>keyboard_arrow_down</mat-icon>
     </div>
 </div>
@@ -39,11 +42,23 @@
     <div
         class="r-tabs-tab"
         *ngFor="let tab of hiddenTabs"
-        [ngClass]="{ active: tab.id === tabSelected?.id, disabled: tab.disabled && tab.disabled() }"
+        [ngClass]="{
+            active: tab.id === tabSelected?.id,
+            disabled: tab.disabled && tab.disabled(),
+            required: requiredFieldsAuxService.isTabRequired(tab.colId, tab.id)
+        }"
         (click)="tabSelectedChange(tab)"
         matTooltipPosition="above"
-        [matTooltip]="getTabDisabledTooltip(tab)"
-        [matTooltipDisabled]="!(tab.disabled && tab.disabled()) || !tab.disabledTooltip"
+        [matTooltip]="
+            requiredFieldsAuxService.isTabRequired(tab.colId, tab.id)
+                ? requiredFieldsAuxService.getTabTooltip(tab.colId, tab.id)
+                : getTabDisabledTooltip(tab)
+        "
+        [matTooltipDisabled]="
+            requiredFieldsAuxService.isTabRequired(tab.colId, tab.id)
+                ? false
+                : !(tab.disabled && tab.disabled()) || !tab.disabledTooltip
+        "
     >
         {{ tab.label | translate }}
     </div>

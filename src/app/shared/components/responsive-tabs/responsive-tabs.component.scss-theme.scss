@@ -26,12 +26,6 @@
       color: mat-color($primary, paginator);
       cursor: not-allowed;
     }
-    &.required {
-      color: mat-color($primary, statusError);
-      &:after {
-        content: ' *';
-      }
-    }
     &.new-data {
       &::after {
         content: '';
@@ -47,6 +41,12 @@
     mat-icon {
       width: 20px;
       height: 20px;
+    }
+  }
+  .required {
+    color: mat-color($primary, statusError);
+    &:after {
+      content: ' *';
     }
   }
 }

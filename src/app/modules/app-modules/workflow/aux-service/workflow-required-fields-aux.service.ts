@@ -50,11 +50,19 @@ export class WorkflowRequiredFieldsAuxService {
   public getTabTooltip(colId: number, id: number): string {
     const requiredFields = this.requiredFields$.getValue();
     if (requiredFields?.length) {
+      return this.translateService.instant(marker('common.fieldRequired')) + ': ' + this.getTabRequiredFieldsString(colId, id);
+    }
+    return '';
+  }
+
+  public getTabRequiredFieldsString(colId: number, id: number): string {
+    const requiredFields = this.requiredFields$.getValue();
+    if (requiredFields?.length) {
       const fields = requiredFields
         .filter((item) => item.colId === colId && item.tabId === id)
         .map((f) => f.name)
         .join(', ');
-      return this.translateService.instant(marker('common.fieldRequired')) + ': ' + fields;
+      return fields;
     }
     return '';
   }

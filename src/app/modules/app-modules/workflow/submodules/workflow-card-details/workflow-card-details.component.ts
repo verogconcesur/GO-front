@@ -64,7 +64,7 @@ export class WorkflowCardDetailsComponent implements OnInit, OnDestroy {
     private rxStompService: RxStompService,
     private confirmationDialog: ConfirmDialogService,
     private authService: AuthenticationService,
-    private requiredFieldsAuxService: WorkflowRequiredFieldsAuxService
+    public requiredFieldsAuxService: WorkflowRequiredFieldsAuxService
   ) {}
 
   @HostListener('window:resize', ['$event']) onResize(event: { target: { innerWidth: number } }) {

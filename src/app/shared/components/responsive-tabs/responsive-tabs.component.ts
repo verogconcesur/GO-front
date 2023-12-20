@@ -131,4 +131,33 @@ export class ResponsiveTabsComponent implements OnInit, AfterViewInit, OnChanges
   public isHiddenTabSelected(): boolean {
     return this.hiddenTabs.filter((tab) => tab.id === this.tabSelected?.id).length > 0;
   }
+
+  public isAnyHiddenTabRequired(): boolean {
+    if (this.hiddenTabs?.length) {
+      return this.hiddenTabs.reduce((prev, curr) => {
+        if (prev) {
+          return prev;
+        } else {
+          return this.requiredFieldsAuxService.isTabRequired(curr.colId, curr.id);
+        }
+      }, false);
+    }
+
+    return false;
+  }
+
+  public getHiddenTabsTooltip(): string {
+    if (this.hiddenTabs?.length) {
+      const fields: string = this.hiddenTabs.reduce((prev, curr) => {
+        if (prev) {
+          return prev + ', ' + this.requiredFieldsAuxService.getTabRequiredFieldsString(curr.colId, curr.id);
+        } else {
+          return this.requiredFieldsAuxService.getTabRequiredFieldsString(curr.colId, curr.id);
+        }
+      }, '');
+      return this.translateService.instant(marker('common.fieldRequired')) + ': ' + fields;
+    }
+
+    return '';
+  }
 }

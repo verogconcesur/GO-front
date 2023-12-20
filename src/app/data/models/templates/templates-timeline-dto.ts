@@ -2,6 +2,7 @@ import BrandDTO from '../organization/brand-dto';
 import DepartmentDTO from '../organization/department-dto';
 import FacilityDTO from '../organization/facility-dto';
 import SpecialtyDTO from '../organization/specialty-dto';
+import VariablesDTO from '../variables-dto';
 
 export interface TemplatesTimelineItemsDTO {
   recipientEmail: string;
@@ -10,6 +11,7 @@ export interface TemplatesTimelineItemsDTO {
   orderNumber: number;
   messageLanding: string;
   closed: boolean;
+  variables?: VariablesDTO[];
 }
 
 export default interface TemplatesTimelineDTO {

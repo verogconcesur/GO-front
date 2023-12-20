@@ -348,7 +348,7 @@ export class CardInstancePaymentsComponent implements OnInit {
           payment,
           paymentTypes: this.paymentTypes,
           paymentStatus: this.paymentStatus,
-          cardInstancePaymentDTO: { id: this.data.id },
+          cardInstancePaymentDTO: { id: this.data?.id ? this.data.id : null },
           attachmentsList: this.attachmentsList,
           cardInstanceWorkflowId: this.cardInstanceWorkflowId
         },
@@ -373,7 +373,7 @@ export class CardInstancePaymentsComponent implements OnInit {
           total: line,
           paymentTypes: [],
           paymentStatus: [],
-          cardInstancePaymentDTO: { id: this.data.id },
+          cardInstancePaymentDTO: { id: this.data?.id ? this.data.id : null },
           attachmentsList: this.attachmentsList,
           cardInstanceWorkflowId: this.cardInstanceWorkflowId,
           mode: 'TOTAL'
@@ -415,7 +415,7 @@ export class CardInstancePaymentsComponent implements OnInit {
           paymentTypes: [],
           paymentStatus: [],
           attachmentsList: this.attachmentsList,
-          cardInstancePaymentDTO: { id: this.data.id },
+          cardInstancePaymentDTO: { id: this.data?.id ? this.data.id : null },
           mode: 'TOTAL'
         },
         id: CardPaymentDialogEnum.ID,
@@ -441,7 +441,7 @@ export class CardInstancePaymentsComponent implements OnInit {
           paymentTypes: this.paymentTypes,
           paymentStatus: this.paymentStatus,
           attachmentsList: this.attachmentsList,
-          cardInstancePaymentDTO: { id: this.data.id },
+          cardInstancePaymentDTO: { id: this.data?.id ? this.data.id : null },
           mode: 'PAYMENT'
         },
         id: CardPaymentDialogEnum.ID,
@@ -465,9 +465,9 @@ export class CardInstancePaymentsComponent implements OnInit {
         [Validators.required]
       ],
       tab: [this.data?.tab ? this.data?.tab : { id: this.tabId }, [Validators.required]],
-      total: [this.data?.total ? this.data?.total : '', [Validators.max(this.maxAmount), Validators.required]],
+      total: [this.data?.total ? this.data?.total : null, [Validators.max(this.maxAmount), Validators.required]],
       customerAccount: [this.data?.customerAccount ? this.data?.customerAccount : null],
-      pending: [this.data?.pending ? this.data?.pending : '']
+      pending: [this.data?.pending ? this.data?.pending : null]
     });
   }
   ngOnInit(): void {
