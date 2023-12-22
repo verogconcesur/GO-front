@@ -350,6 +350,7 @@ export class CardInstancePaymentsComponent implements OnInit {
           paymentStatus: this.paymentStatus,
           cardInstancePaymentDTO: { id: this.data?.id ? this.data.id : null },
           attachmentsList: this.attachmentsList,
+          editionDisabled: this.cardInstancePaymentsConfig.disablePaymentsAdditionAction,
           cardInstanceWorkflowId: this.cardInstanceWorkflowId
         },
         id: CardPaymentDialogEnum.ID,
@@ -376,6 +377,7 @@ export class CardInstancePaymentsComponent implements OnInit {
           cardInstancePaymentDTO: { id: this.data?.id ? this.data.id : null },
           attachmentsList: this.attachmentsList,
           cardInstanceWorkflowId: this.cardInstanceWorkflowId,
+          editionDisabled: this.cardInstancePaymentsConfig.disablePaymentsAdditionAction,
           mode: 'TOTAL'
         },
         id: CardPaymentDialogEnum.ID,
@@ -416,6 +418,7 @@ export class CardInstancePaymentsComponent implements OnInit {
           paymentStatus: [],
           attachmentsList: this.attachmentsList,
           cardInstancePaymentDTO: { id: this.data?.id ? this.data.id : null },
+          editionDisabled: this.cardInstancePaymentsConfig.disablePaymentsAdditionAction,
           mode: 'TOTAL'
         },
         id: CardPaymentDialogEnum.ID,
@@ -442,6 +445,7 @@ export class CardInstancePaymentsComponent implements OnInit {
           paymentStatus: this.paymentStatus,
           attachmentsList: this.attachmentsList,
           cardInstancePaymentDTO: { id: this.data?.id ? this.data.id : null },
+          editionDisabled: this.cardInstancePaymentsConfig.disablePaymentsAdditionAction,
           mode: 'PAYMENT'
         },
         id: CardPaymentDialogEnum.ID,

@@ -38,6 +38,7 @@ export class CardPaymentDialogFormComponent extends ComponentToExtendForCustomDi
   public attachmentsList: CardPaymentAttachmentsDTO[];
   public cardInstanceWorkflowId: number;
   public mode: 'PAYMENT' | 'TOTAL' = 'PAYMENT';
+  public editionDisabled = false;
   public labels = {
     newPaymentLine: marker('cardDetail.payments.newLine'),
     editPaymentLine: marker('cardDetail.payments.editLine'),
@@ -78,6 +79,7 @@ export class CardPaymentDialogFormComponent extends ComponentToExtendForCustomDi
     this.cardInstancePayment = this.extendedComponentData.cardInstancePaymentDTO;
     this.cardInstanceWorkflowId = this.extendedComponentData.cardInstanceWorkflowId;
     this.attachmentsList = this.extendedComponentData.attachmentsList;
+    this.editionDisabled = this.extendedComponentData.editionDisabled;
     this.mode = this.extendedComponentData.mode ? this.extendedComponentData.mode : 'PAYMENT';
     if (this.extendedComponentData.payment) {
       this.paymentLine = this.extendedComponentData.payment;
@@ -195,13 +197,21 @@ export class CardPaymentDialogFormComponent extends ComponentToExtendForCustomDi
   public setAndGetFooterConfig(): CustomDialogFooterConfigI | null {
     return {
       show: true,
-      leftSideButtons: [],
+      leftSideButtons: [
+        {
+          type: 'close',
+          label: marker('common.close'),
+          design: 'flat',
+          hiddenFn: () => !this.editionDisabled
+        }
+      ],
       rightSideButtons: [
         {
           type: 'submit',
           label: marker('common.save'),
           design: 'raised',
           color: 'primary',
+          hiddenFn: () => this.editionDisabled,
           disabledFn: () => !(this.paymentLineForm.touched && this.paymentLineForm.dirty && this.paymentLineForm.valid)
         }
       ]
