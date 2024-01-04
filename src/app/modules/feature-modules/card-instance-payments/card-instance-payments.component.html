@@ -85,7 +85,7 @@
             fxLayout="row"
             *ngFor="let item of totalLines; let i = index"
         >
-            <div fxFlex="40" fxLayoutAlign="start center">{{ item.description }}</div>
+            <div fxFlex="40" fxLayoutAlign="start center">{{ item.description.description }}</div>
             <div fxFlex="45" fxLayoutAlign="center center">{{ item.amount }}<span matSuffix> €</span></div>
             <div fxFlex="15" fxLayoutAlign="end center" class="actions">
                 <mat-icon
@@ -135,7 +135,7 @@
 
         <div class="payments__main__header" *ngIf="data">
             <div class="payments__main__header__item" fxLayout="row">
-                <div fxFlex="25" fxLayoutAlign="start center" fxFill>{{ labels.description | translate }}</div>
+                <div fxFlex="25" fxLayoutAlign="start center" fxFill>{{ labels.paymentLine | translate }}</div>
                 <div fxFlex="20" fxLayoutAlign="start center" fxFill>{{ labels.paymentType | translate }}</div>
                 <div fxFlex="20" fxLayoutAlign="start center" fxFill>{{ labels.state | translate }}</div>
                 <div fxFlex="15" fxLayoutAlign="center center" fxFill>{{ labels.amount | translate }}</div>
@@ -150,8 +150,8 @@
             >
                 <div fxFlex="25" fxLayoutAlign="start center">
                     <div fxLayout="column">
-                        <div class="description" matTooltip="{{ payment.description }}" matTooltipPosition="above">
-                            {{ payment.description }}
+                        <div class="description" matTooltip="{{ payment.description.description }}" matTooltipPosition="above">
+                            {{ payment.description.description }}
                         </div>
                         <div class="observation" matTooltip="{{ payment.observations }}" matTooltipPosition="above">
                             {{ payment.observations }}
@@ -222,6 +222,76 @@
             *ngIf="!cardInstancePaymentsConfig.disablePaymentsAdditionAction"
         >
             <span class="payments__main__create__item" (click)="newLine()">+ {{ labels.newLine | translate }}</span>
+        </div>
+
+        <div class="payments__main__header" *ngIf="data">
+            <div class="payments__main__header__item" fxLayout="row">
+                <div fxFlex="65" fxLayoutAlign="start center" fxFill>{{ labels.paymentTotalDetail | translate }}</div>
+                <div fxFlex="15" fxLayoutAlign="center center" fxFill>{{ labels.amount | translate }}</div>
+                <div fxFlex="20" fxLayoutAlign="end center" fxFill>{{ labels.actions | translate }}</div>
+            </div>
+        </div>
+        <div class="payments__main__container" fxLayout="column" *ngIf="data">
+            <div
+                class="payments__main__container__item smaller-mat-form-fields"
+                *ngFor="let line of totalDetailLines; let i = index"
+                fxLayout="row"
+            >
+                <div fxFlex="65" fxLayoutAlign="start center">
+                    <div fxLayout="column">
+                        <div class="description" matTooltip="{{ line.description.description }}" matTooltipPosition="above">
+                            {{ line.description.description }}
+                        </div>
+                        <div class="observation" matTooltip="{{ line.observations }}" matTooltipPosition="above">
+                            {{ line.observations }}
+                        </div>
+                    </div>
+                </div>
+                <div fxFlex="15" fxLayoutAlign="center center">{{ line.amount }}<span matSuffix>€</span></div>
+                <div fxFlex="20" fxLayoutAlign="end center" class="actions">
+                    <mat-icon
+                        style="cursor: pointer; color: green"
+                        [matBadge]="line.attachments?.length"
+                        matBadgePosition="before"
+                        (click)="!editingTotal && editTotalDetailLine(line, i)"
+                        *ngIf="line.attachments?.length"
+                    >
+                        attach_file
+                    </mat-icon>
+                    <mat-icon
+                        [color]="editingTotal ? '' : 'primary'"
+                        style="cursor: pointer"
+                        (click)="!editingTotal && editTotalDetailLine(line, i)"
+                        *ngIf="!line.attachments?.length"
+                    >
+                        attach_file
+                    </mat-icon>
+                    <mat-icon
+                        [color]="editingTotal ? '' : 'primary'"
+                        style="cursor: pointer"
+                        (click)="!editingTotal && editTotalDetailLine(line, i)"
+                        *ngIf="!cardInstancePaymentsConfig.disableIndividualDeleteAction"
+                    >
+                        edit
+                    </mat-icon>
+                    <mat-icon
+                        [color]="editingTotal ? '' : 'primary'"
+                        style="cursor: pointer"
+                        (click)="!editingTotal && deleteTotalDetailLine(line, i)"
+                        *ngIf="!cardInstancePaymentsConfig.disableIndividualDeleteAction"
+                    >
+                        delete
+                    </mat-icon>
+                </div>
+            </div>
+        </div>
+        <div
+            class="payments__main__create"
+            fxLayout="row"
+            fxLayoutAlign="end none"
+            *ngIf="!cardInstancePaymentsConfig.disablePaymentsAdditionAction"
+        >
+            <span class="payments__main__create__item" (click)="newTotalDetail()">+ {{ labels.newTotalDetail | translate }}</span>
         </div>
     </div>
 </div>

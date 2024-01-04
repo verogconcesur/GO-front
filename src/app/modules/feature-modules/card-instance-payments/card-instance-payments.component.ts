@@ -7,7 +7,10 @@ import { AttachmentDTO, CardAttachmentsDTO, CardPaymentAttachmentsDTO } from '@d
 import {
   CardPaymentLineDTO,
   CardPaymentsDTO,
+  CardTotalDetailDTO,
   CardTotalLineDTO,
+  PaymentDescriptionDTO,
+  PaymentPosibleDescriptionDTO,
   PaymentStatusDTO,
   PaymentTypeDTO
 } from '@data/models/cards/card-payments-dto';
@@ -53,8 +56,11 @@ export class CardInstancePaymentsComponent implements OnInit {
     customerAccount: marker('cardDetail.payments.customerAccount'),
     state: marker('common.state'),
     actions: marker('common.actions'),
+    paymentLine: marker('cardDetail.payments.paymentLine'),
+    paymentTotalDetail: marker('cardDetail.payments.paymentTotalDetail'),
     newLine: marker('cardDetail.payments.newLine'),
     newTotalLine: marker('cardDetail.payments.newTotalLine'),
+    newTotalDetail: marker('cardDetail.payments.newTotalDetail'),
     send: marker('common.send'),
     sendPayment: marker('cardDetail.payments.send'),
     resendPayment: marker('cardDetail.payments.resend'),
@@ -66,7 +72,9 @@ export class CardInstancePaymentsComponent implements OnInit {
   public formTotal: FormGroup;
   public paymentLines: CardPaymentLineDTO[];
   public totalLines: CardTotalLineDTO[];
+  public totalDetailLines: CardTotalDetailDTO[];
   public paymentStatus: PaymentStatusDTO[];
+  public paymentDescriptions: PaymentPosibleDescriptionDTO;
   public attachmentsList: CardPaymentAttachmentsDTO[];
   public paymentTypes: PaymentTypeDTO[];
   public prevTotal: number;
@@ -107,6 +115,51 @@ export class CardInstancePaymentsComponent implements OnInit {
         if (ok) {
           this.cardMessageService
             .sendPaymentMessageClient(this.cardInstanceWorkflowId, payment.id)
+            .pipe(take(1))
+            .subscribe(
+              (data) => {
+                this.reload.emit(true);
+              },
+              (error: ConcenetError) => {
+                this.logger.error(error);
+
+                this.globalMessageService.showError({
+                  message: error.message,
+                  actionText: this.translateService.instant(marker('common.close'))
+                });
+              }
+            );
+        }
+      });
+  }
+  public saveTotalDetail(totalDetail: UntypedFormGroup): void {
+    this.confirmationDialog
+      .open({
+        title: this.translateService.instant(marker('common.warning')),
+        message: this.translateService.instant(marker('cardDetail.payments.saveTotalDetailConfirmation'))
+      })
+      .pipe(take(1))
+      .subscribe((ok: boolean) => {
+        if (ok) {
+          const totalDetailData = totalDetail.getRawValue();
+          if (totalDetailData.attachments?.length) {
+            totalDetailData.attachments = totalDetailData.attachments.map((att1: CardPaymentAttachmentsDTO) => {
+              let attachment = att1;
+              if (
+                totalDetailData.attachmentsOriginal?.length &&
+                totalDetailData.attachmentsOriginal.find((att2: CardPaymentAttachmentsDTO) => att1.file.id === att2.file.id)
+              ) {
+                attachment = totalDetailData.attachmentsOriginal.find(
+                  (att2: CardPaymentAttachmentsDTO) => att1.file.id === att2.file.id
+                );
+              }
+              return attachment;
+            });
+          } else {
+            totalDetailData.attachments = [];
+          }
+          this.paymentsService
+            .addEditTotalDetail(this.cardInstanceWorkflowId, this.tabId, totalDetailData)
             .pipe(take(1))
             .subscribe(
               (data) => {
@@ -306,6 +359,35 @@ export class CardInstancePaymentsComponent implements OnInit {
       });
   }
 
+  public deleteTotalDetailLine(line: CardTotalDetailDTO, index: number): void {
+    this.confirmationDialog
+      .open({
+        title: this.translateService.instant(marker('common.warning')),
+        message: this.translateService.instant(marker('cardDetail.payments.deleteTotalDetailConfirmation'))
+      })
+      .pipe(take(1))
+      .subscribe((ok: boolean) => {
+        if (ok) {
+          this.paymentsService
+            .deleteTotalDetailLine(this.cardInstanceWorkflowId, this.tabId, line.id)
+            .pipe(take(1))
+            .subscribe(
+              (data) => {
+                this.reload.emit(true);
+              },
+              (error: ConcenetError) => {
+                this.logger.error(error);
+
+                this.globalMessageService.showError({
+                  message: error.message,
+                  actionText: this.translateService.instant(marker('common.close'))
+                });
+              }
+            );
+        }
+      });
+  }
+
   public saveCustomerAccount(): void {
     if (this.formTotal.get('customerAccount').dirty && this.formTotal.get('customerAccount').touched) {
       this.confirmationDialog
@@ -348,10 +430,12 @@ export class CardInstancePaymentsComponent implements OnInit {
           payment,
           paymentTypes: this.paymentTypes,
           paymentStatus: this.paymentStatus,
+          paymentDescriptions: this.paymentDescriptions,
           cardInstancePaymentDTO: { id: this.data?.id ? this.data.id : null },
           attachmentsList: this.attachmentsList,
           editionDisabled: this.cardInstancePaymentsConfig.disablePaymentsAdditionAction,
-          cardInstanceWorkflowId: this.cardInstanceWorkflowId
+          cardInstanceWorkflowId: this.cardInstanceWorkflowId,
+          mode: 'PAYMENT'
         },
         id: CardPaymentDialogEnum.ID,
         panelClass: CardPaymentDialogEnum.PANEL_CLASS,
@@ -374,6 +458,7 @@ export class CardInstancePaymentsComponent implements OnInit {
           total: line,
           paymentTypes: [],
           paymentStatus: [],
+          paymentDescriptions: this.paymentDescriptions,
           cardInstancePaymentDTO: { id: this.data?.id ? this.data.id : null },
           attachmentsList: this.attachmentsList,
           cardInstanceWorkflowId: this.cardInstanceWorkflowId,
@@ -389,6 +474,33 @@ export class CardInstancePaymentsComponent implements OnInit {
       .subscribe((response) => {
         if (response) {
           this.saveTotalLine(response);
+        }
+      });
+  }
+  public editTotalDetailLine(line: CardTotalDetailDTO, index: number): void {
+    this.customDialogService
+      .open({
+        component: CardPaymentDialogFormComponent,
+        extendedComponentData: {
+          totalDetail: line,
+          paymentTypes: [],
+          paymentStatus: [],
+          paymentDescriptions: this.paymentDescriptions,
+          cardInstancePaymentDTO: { id: this.data?.id ? this.data.id : null },
+          attachmentsList: this.attachmentsList,
+          cardInstanceWorkflowId: this.cardInstanceWorkflowId,
+          editionDisabled: this.cardInstancePaymentsConfig.disablePaymentsAdditionAction,
+          mode: 'TOTAL_DETAIL'
+        },
+        id: CardPaymentDialogEnum.ID,
+        panelClass: CardPaymentDialogEnum.PANEL_CLASS,
+        disableClose: true,
+        width: '900px'
+      })
+      .pipe(take(1))
+      .subscribe((response) => {
+        if (response) {
+          this.saveTotalDetail(response);
         }
       });
   }
@@ -414,8 +526,10 @@ export class CardInstancePaymentsComponent implements OnInit {
         extendedComponentData: {
           payment: null,
           total: null,
+          totalDetail: null,
           paymentTypes: [],
           paymentStatus: [],
+          paymentDescriptions: this.paymentDescriptions,
           attachmentsList: this.attachmentsList,
           cardInstancePaymentDTO: { id: this.data?.id ? this.data.id : null },
           editionDisabled: this.cardInstancePaymentsConfig.disablePaymentsAdditionAction,
@@ -434,6 +548,35 @@ export class CardInstancePaymentsComponent implements OnInit {
         }
       });
   }
+  public newTotalDetail() {
+    this.customDialogService
+      .open({
+        component: CardPaymentDialogFormComponent,
+        extendedComponentData: {
+          payment: null,
+          total: null,
+          totalDetail: null,
+          paymentTypes: [],
+          paymentStatus: [],
+          paymentDescriptions: this.paymentDescriptions,
+          attachmentsList: this.attachmentsList,
+          cardInstancePaymentDTO: { id: this.data?.id ? this.data.id : null },
+          editionDisabled: this.cardInstancePaymentsConfig.disablePaymentsAdditionAction,
+          mode: 'TOTAL_DETAIL'
+        },
+        id: CardPaymentDialogEnum.ID,
+        panelClass: CardPaymentDialogEnum.PANEL_CLASS,
+        disableClose: true,
+        width: '900px'
+      })
+      .pipe(take(1))
+      .subscribe((response) => {
+        if (response) {
+          console.log(response);
+          this.saveTotalDetail(response);
+        }
+      });
+  }
   public newLine() {
     this.customDialogService
       .open({
@@ -441,8 +584,10 @@ export class CardInstancePaymentsComponent implements OnInit {
         extendedComponentData: {
           payment: null,
           total: null,
+          totalDetail: null,
           paymentTypes: this.paymentTypes,
           paymentStatus: this.paymentStatus,
+          paymentDescriptions: this.paymentDescriptions,
           attachmentsList: this.attachmentsList,
           cardInstancePaymentDTO: { id: this.data?.id ? this.data.id : null },
           editionDisabled: this.cardInstancePaymentsConfig.disablePaymentsAdditionAction,
@@ -476,6 +621,7 @@ export class CardInstancePaymentsComponent implements OnInit {
   }
   ngOnInit(): void {
     this.totalLines = this.data?.paymentTotals?.length ? this.data.paymentTotals : [];
+    this.totalDetailLines = this.data?.paymentTotalDetails?.length ? this.data.paymentTotalDetails : [];
     this.paymentLines = this.data?.paymentLines?.length ? this.data.paymentLines : [];
     this.paymentLines = this.paymentLines.map((line, index) => ({
       ...line,
@@ -484,12 +630,14 @@ export class CardInstancePaymentsComponent implements OnInit {
     const resquests = [
       this.attachmentService.getCardAttachmentsByInstance(this.cardInstanceWorkflowId).pipe(take(1)),
       this.paymentsService.getCardPaymentTypes().pipe(take(1)),
-      this.paymentsService.getCardPaymentStatus().pipe(take(1))
+      this.paymentsService.getCardPaymentStatus().pipe(take(1)),
+      this.paymentsService.getCardDesciptionsTypes().pipe(take(1))
     ];
     forkJoin(resquests).subscribe(
-      (responses: [CardAttachmentsDTO[], PaymentTypeDTO[], PaymentTypeDTO[]]) => {
+      (responses: [CardAttachmentsDTO[], PaymentTypeDTO[], PaymentTypeDTO[], PaymentPosibleDescriptionDTO]) => {
         this.paymentTypes = responses[1];
         this.paymentStatus = responses[2];
+        this.paymentDescriptions = responses[3];
         this.attachmentsList = [];
         responses[0].forEach((attachment: CardAttachmentsDTO) => {
           attachment.attachments.forEach((att: AttachmentDTO) => {
