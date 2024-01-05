@@ -170,12 +170,7 @@
                         (click)="!editingTotal && sendPayment(payment)"
                         matTooltip="{{ getSendLabel(payment) | translate }}"
                         matTooltipPosition="above"
-                        *ngIf="
-                            payment.paymentType?.id === 5 &&
-                            (payment.paymentStatus?.id === 1 ||
-                                payment.paymentStatus?.id === 4 ||
-                                payment.paymentStatus?.id === 5)
-                        "
+                        *ngIf="payment.paymentType?.id === 5 && payment.paymentStatus?.id === 1"
                     >
                         send
                     </mat-icon>
