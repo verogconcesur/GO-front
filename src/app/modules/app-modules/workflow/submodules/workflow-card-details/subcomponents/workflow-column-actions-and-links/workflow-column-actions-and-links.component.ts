@@ -31,6 +31,8 @@ import {
 import { CardMessagesService } from '@data/services/card-messages.service';
 import { ModalChatWhatsappComponent } from '@modules/feature-modules/modal-chat-whatsapp/modal-chat-whatsapp.component';
 import CardInstanceWhatsappDTO from '@data/models/cards/card-instance-whatsapp-dto';
+import WorkflowSubstateDTO from '@data/models/workflows/workflow-substate-dto';
+import WorkflowDTO from '@data/models/workflows/workflow-dto';
 
 @UntilDestroy()
 @Component({
@@ -45,7 +47,7 @@ export class WorkflowColumnActionsAndLinksComponent implements OnInit {
   @Input() idUser: number = null;
   public actions: WorkflowCardTabItemDTO[];
   public links: WorkflowCardTabItemDTO[];
-  public shortCuts: WorkflowMoveDTO[];
+  public shortCuts: { [key: string]: { workflow: WorkflowDTO; moves: WorkflowMoveDTO[] } } = {};
   public idCard: number = null;
   public sendMessageAction: WorkflowCardTabItemDTO[] = [];
   public labels = {
@@ -107,7 +109,18 @@ export class WorkflowColumnActionsAndLinksComponent implements OnInit {
         .pipe(take(1))
         .subscribe(
           (data: WorkflowMoveDTO[]) => {
-            this.shortCuts = data;
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
+            this.shortCuts = data.reduce((acc: any, move: WorkflowMoveDTO) => {
+              if (!acc[move.workflowSubstateTarget.workflowState.workflow.id]) {
+                acc[move.workflowSubstateTarget.workflowState.workflow.id + ''] = {
+                  workflow: move.workflowSubstateTarget.workflowState.workflow,
+                  moves: []
+                };
+              }
+              acc[move.workflowSubstateTarget.workflowState.workflow.id + ''].moves.push(move);
+              return acc;
+            }, {});
+            console.log(this.shortCuts);
           },
           (error: ConcenetError) => {
             this.globalMessageService.showError({
@@ -189,6 +202,12 @@ export class WorkflowColumnActionsAndLinksComponent implements OnInit {
           break;
       }
     }
+  }
+
+  public getShortCutsGroups(): { workflow: WorkflowDTO; moves: WorkflowMoveDTO[] }[] {
+    return Object.keys(this.shortCuts)
+      .sort((a, b) => this.shortCuts[a].moves[0].orderNumber - this.shortCuts[b].moves[0].orderNumber)
+      .map((key: string) => this.shortCuts[key]);
   }
 
   public signDocument(): void {

@@ -4,18 +4,27 @@
             <button mat-raised-button *ngFor="let action of actions" (click)="btnClick(action)">{{ action.name }}</button>
         </div>
 
-        <h5 class="uppercase" *ngIf="shortCuts?.length">{{ labels.directLinks | translate }}</h5>
-        <div class="buttons">
-            <button
-                mat-raised-button
-                *ngFor="let shortcut of shortCuts"
-                (click)="btnClickShortcut(shortcut)"
-                [style.background-color]="getBgColor(null, shortcut.shortcutColor)"
-                [style.color]="getFontColor(null, shortcut.shortcutColor)"
-            >
-                {{ shortcut.shortcutName }}
-            </button>
-        </div>
+        <h5 class="uppercase" *ngIf="getShortCutsGroups()?.length">{{ labels.directLinks | translate }}</h5>
+        <mat-accordion>
+            <mat-expansion-panel class="zero-padding" *ngFor="let group of getShortCutsGroups()">
+                <mat-expansion-panel-header>
+                    <mat-panel-title> {{ group.workflow.name }} </mat-panel-title>
+                    <!-- <mat-panel-description>
+                </mat-panel-description> -->
+                </mat-expansion-panel-header>
+                <div class="buttons">
+                    <button
+                        mat-raised-button
+                        *ngFor="let shortcut of group.moves"
+                        (click)="btnClickShortcut(shortcut)"
+                        [style.background-color]="getBgColor(null, shortcut.shortcutColor)"
+                        [style.color]="getFontColor(null, shortcut.shortcutColor)"
+                    >
+                        {{ shortcut.shortcutName }}
+                    </button>
+                </div>
+            </mat-expansion-panel>
+        </mat-accordion>
 
         <h5 class="uppercase" *ngIf="links?.length">{{ labels.externalLinks | translate }}</h5>
         <div class="buttons">
