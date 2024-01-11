@@ -50,6 +50,10 @@ export class UserService {
       .pipe(catchError((error) => throwError(error as ConcenetError)));
   }
 
+  public getUserRoleId(): number {
+    return this.userLogged$.value?.role?.id;
+  }
+
   public addUser(userData: UserDetailsDTO): Observable<UserDetailsDTO> {
     return this.http
       .post<UserDetailsDTO>(`${this.env.apiBaseUrl}${this.USER_ADD_PATH}`, userData)
