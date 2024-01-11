@@ -16,11 +16,28 @@
             <div fxLayout="row" fxLayoutAlign="start center">
                 <mat-divider [vertical]="true"></mat-divider>
                 <button mat-button [routerLink]="WORKFLOW_PATH" routerLinkActive="active">Workflows</button>
-                <button mat-button [routerLink]="CLIENTS_PATH" routerLinkActive="active">{{ labels.clients | translate }}</button>
-                <button mat-button [routerLink]="VEHICLES_PATH" routerLinkActive="active">
+                <button
+                    mat-button
+                    *ngIf="authService.hasUserAnyPermission(['ACCESSTOCLIENTSTAB']) || isAdmin()"
+                    [routerLink]="CLIENTS_PATH"
+                    routerLinkActive="active"
+                >
+                    {{ labels.clients | translate }}
+                </button>
+                <button
+                    mat-button
+                    *ngIf="authService.hasUserAnyPermission(['ACCESSTOVEHICLESTAB']) || isAdmin()"
+                    [routerLink]="VEHICLES_PATH"
+                    routerLinkActive="active"
+                >
                     {{ labels.vehicles | translate }}
                 </button>
-                <button mat-button [routerLink]="ADVANCED_SEARCH_PATH" routerLinkActive="active">
+                <button
+                    mat-button
+                    *ngIf="authService.hasUserAnyPermission(['ACCESSTOADVANCEDSEARCHTAB']) || isAdmin()"
+                    [routerLink]="ADVANCED_SEARCH_PATH"
+                    routerLinkActive="active"
+                >
                     {{ labels.advanceSearch | translate }}
                 </button>
                 <button mat-button *ngIf="isAdmin()" (click)="navigateToAdministration()">

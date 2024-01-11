@@ -62,7 +62,7 @@ export class NavbarComponent implements OnInit, OnDestroy {
   constructor(
     @Inject(ENV) private env: Env,
     private router: Router,
-    private authService: AuthenticationService,
+    public authService: AuthenticationService,
     public dialog: MatDialog,
     private notificationService: NotificationService,
     private notificationSoundService: NotificationSoundService,

@@ -31,10 +31,9 @@ import {
 import { CardMessagesService } from '@data/services/card-messages.service';
 import { ModalChatWhatsappComponent } from '@modules/feature-modules/modal-chat-whatsapp/modal-chat-whatsapp.component';
 import CardInstanceWhatsappDTO from '@data/models/cards/card-instance-whatsapp-dto';
-import WorkflowSubstateDTO from '@data/models/workflows/workflow-substate-dto';
 import WorkflowDTO from '@data/models/workflows/workflow-dto';
-import { UserService } from '@data/services/user.service';
 import RoleDTO from '@data/models/user-permissions/role-dto';
+import { AuthenticationService } from '@app/security/authentication.service';
 
 @UntilDestroy()
 @Component({
@@ -70,7 +69,7 @@ export class WorkflowColumnActionsAndLinksComponent implements OnInit {
     private cardAttachmentService: CardAttachmentsService,
     private cardMessagesService: CardMessagesService,
     private router: Router,
-    private userService: UserService
+    private authService: AuthenticationService
   ) {}
 
   ngOnInit(): void {
@@ -112,7 +111,7 @@ export class WorkflowColumnActionsAndLinksComponent implements OnInit {
         .pipe(take(1))
         .subscribe(
           (data: WorkflowMoveDTO[]) => {
-            const userRoleId: number = this.userService.getUserRoleId();
+            const userRoleId: number = this.authService.getUserRole().id;
             data = data.filter((move: WorkflowMoveDTO) => move.roles.find((role: RoleDTO) => role.id === userRoleId));
             // eslint-disable-next-line @typescript-eslint/no-explicit-any
             this.shortCuts = data.reduce((acc: any, move: WorkflowMoveDTO) => {
