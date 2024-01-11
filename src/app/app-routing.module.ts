@@ -23,16 +23,19 @@ const routes: Routes = [
       },
       {
         path: RouteConstants.CUSTOMERS,
+        data: { notPermissions: RoutePermissionConstants.CUSTOMERS },
         canActivate: [AuthGuardService],
         loadChildren: () => import('./modules/app-modules/clients/clients/clients.module').then((m) => m.ClientsModule)
       },
       {
         path: RouteConstants.VEHICLES,
+        data: { notPermissions: RoutePermissionConstants.VEHICLES },
         canActivate: [AuthGuardService],
         loadChildren: () => import('./modules/app-modules/vehicles/vehicles/vehicles.module').then((m) => m.VehiclesModule)
       },
       {
         path: RouteConstants.ADVANCED_SEARCH,
+        data: { notPermissions: RoutePermissionConstants.ADVANCED_SEARCH },
         canActivate: [AuthGuardService],
         loadChildren: () =>
           import('./modules/app-modules/advanced-search/advanced-search.module').then((m) => m.AdvancedSearchModule)

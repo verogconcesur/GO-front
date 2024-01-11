@@ -92,5 +92,8 @@ export const RoutePermissionConstants: Record<string, PermissionConstants[]> = {
   //For routes with permissions specify an array with the permissions that the user must have to access
   // (as long as one is met, he can access)
   DASHBOARD: [],
-  ADMINISTRATION: [PermissionConstants.ISADMIN]
+  ADMINISTRATION: [PermissionConstants.ISADMIN],
+  CUSTOMERS: [PermissionConstants.HIDECLIENTSTAB],
+  VEHICLES: [PermissionConstants.HIDEVEHICLESTAB],
+  ADVANCED_SEARCH: [PermissionConstants.HIDEADVANCEDSEARCHTAB]
 };
