@@ -57,6 +57,7 @@ export class CardPaymentDialogFormComponent extends ComponentToExtendForCustomDi
     attachments: marker('common.attachments'),
     attachmentsAssociated: marker('common.attachmentsAssociated'),
     maxLengthError: marker('errors.maxLengthError'),
+    valueBetween: marker('errors.valueBetween'),
     required: marker('errors.required')
   };
   public maxAmount = 99999999;
@@ -247,7 +248,10 @@ export class CardPaymentDialogFormComponent extends ComponentToExtendForCustomDi
     if (this.mode === 'PAYMENT') {
       this.paymentLineForm = this.fb.group({
         id: [this.paymentLine?.id ? this.paymentLine.id : null],
-        amount: [this.paymentLine?.amount ? this.paymentLine.amount : '', [Validators.max(this.maxAmount), Validators.required]],
+        amount: [
+          this.paymentLine?.amount ? this.paymentLine.amount : '',
+          [Validators.min(0), Validators.max(this.maxAmount), Validators.required]
+        ],
         attachments: [this.paymentLine?.attachments ? this.paymentLine.attachments : null],
         cardInstancePaymentDTO: [this.cardInstancePayment, [Validators.required]],
         observations: [this.paymentLine?.observations ? this.paymentLine.observations : ''],
@@ -269,7 +273,10 @@ export class CardPaymentDialogFormComponent extends ComponentToExtendForCustomDi
     } else if (this.mode === 'TOTAL') {
       this.paymentLineForm = this.fb.group({
         id: [this.paymentLine?.id ? this.paymentLine.id : null],
-        amount: [this.paymentLine?.amount ? this.paymentLine.amount : '', [Validators.max(this.maxAmount), Validators.required]],
+        amount: [
+          this.paymentLine?.amount ? this.paymentLine.amount : '',
+          [Validators.min(0), Validators.max(this.maxAmount), Validators.required]
+        ],
         attachments: [this.paymentLine?.attachments ? this.paymentLine.attachments : null],
         description: [
           this.paymentLine?.description ? this.getDescriptions().find((pt) => this.paymentLine.description.id === pt.id) : null,

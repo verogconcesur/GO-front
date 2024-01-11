@@ -18,7 +18,7 @@
                 <button mat-button [routerLink]="WORKFLOW_PATH" routerLinkActive="active">Workflows</button>
                 <button
                     mat-button
-                    *ngIf="authService.hasUserAnyPermission(['ACCESSTOCLIENTSTAB']) || isAdmin()"
+                    *ngIf="authService.hasUserAnyPermission(['HIDECLIENTSTAB']) || isAdmin()"
                     [routerLink]="CLIENTS_PATH"
                     routerLinkActive="active"
                 >
@@ -26,7 +26,7 @@
                 </button>
                 <button
                     mat-button
-                    *ngIf="authService.hasUserAnyPermission(['ACCESSTOVEHICLESTAB']) || isAdmin()"
+                    *ngIf="authService.hasUserAnyPermission(['HIDEVEHICLESTAB']) || isAdmin()"
                     [routerLink]="VEHICLES_PATH"
                     routerLinkActive="active"
                 >
@@ -34,7 +34,7 @@
                 </button>
                 <button
                     mat-button
-                    *ngIf="authService.hasUserAnyPermission(['ACCESSTOADVANCEDSEARCHTAB']) || isAdmin()"
+                    *ngIf="authService.hasUserAnyPermission(['HIDEADVANCEDSEARCHTAB']) || isAdmin()"
                     [routerLink]="ADVANCED_SEARCH_PATH"
                     routerLinkActive="active"
                 >
