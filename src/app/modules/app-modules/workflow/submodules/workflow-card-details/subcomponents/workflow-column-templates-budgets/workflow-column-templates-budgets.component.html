@@ -4,6 +4,7 @@
     [tabId]="tab.id"
     [cardInstanceWorkflowId]="idCard"
     [cardInstance]="cardInstance.cardInstanceWorkflow.cardInstance"
+    [originalCardInstance]="cardInstance"
     (reload)="fetchData()"
     *ngIf="dataLoaded"
 ></app-card-instance-budgets>
