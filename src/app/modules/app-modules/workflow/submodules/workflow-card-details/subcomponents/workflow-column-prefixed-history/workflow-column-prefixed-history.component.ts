@@ -343,7 +343,7 @@ export class WorkflowColumnPrefixedHistoryComponent implements OnInit, OnChanges
       if (!this.historyFilterOptions.workflows.find((w) => w.id === h.workflow.id)) {
         this.historyFilterOptions.workflows.push(h.workflow);
       }
-      console.log(this.historyFilterOptions);
+      // console.log(this.historyFilterOptions);
     });
 
     if (this.historyOriginalData?.length) {
