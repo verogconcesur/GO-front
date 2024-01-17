@@ -34,6 +34,7 @@ import CardInstanceWhatsappDTO from '@data/models/cards/card-instance-whatsapp-d
 import WorkflowDTO from '@data/models/workflows/workflow-dto';
 import RoleDTO from '@data/models/user-permissions/role-dto';
 import { AuthenticationService } from '@app/security/authentication.service';
+import { PermissionConstants } from '@app/constants/permission.constants';
 
 @UntilDestroy()
 @Component({
@@ -212,6 +213,14 @@ export class WorkflowColumnActionsAndLinksComponent implements OnInit {
     return Object.keys(this.shortCuts)
       .sort((a, b) => this.shortCuts[a].moves[0].orderNumber - this.shortCuts[b].moves[0].orderNumber)
       .map((key: string) => this.shortCuts[key]);
+  }
+
+  public hasPermission(btn: 'move' | 'send'): boolean {
+    if (btn === 'move') {
+      return !this.authService.getUserPermissions().find((permission) => permission.code === PermissionConstants.HIDEMOVEBUTTON);
+    } else {
+      return !this.authService.getUserPermissions().find((permission) => permission.code === PermissionConstants.HIDESENDBUTTON);
+    }
   }
 
   public signDocument(): void {
