@@ -12,6 +12,23 @@
                 appearance="outline"
                 floatLabel="always"
                 class="smaller-mat-form-fields__no-margin"
+                [ngClass]="{ dataSelected: hasData('users') }"
+            >
+                <mat-select
+                    formControlName="users"
+                    multiple
+                    [placeholder]="labels.user | translate"
+                    [panelClass]="'workflow-panel-class  smaller-mat-form-fields'"
+                >
+                    <mat-option *ngFor="let item of historyFilterOptions.users" [value]="item" (click)="filterChange()">
+                        {{ item.fullName }}
+                    </mat-option>
+                </mat-select>
+            </mat-form-field>
+            <mat-form-field
+                appearance="outline"
+                floatLabel="always"
+                class="smaller-mat-form-fields__no-margin"
                 [ngClass]="{ dataSelected: hasData('eventHistoryTypes') }"
             >
                 <mat-select
