@@ -127,9 +127,7 @@ export class CardInstanceAttachmentsComponent implements OnInit, OnChanges {
   }
 
   public hasUerPermissionToDeleteFiles(): boolean {
-    return !this.authService
-      .getUserPermissions()
-      .find((permission) => permission.code === PermissionConstants.DISABLEDELETEFILES);
+    return !!this.authService.getUserPermissions().find((permission) => permission.code === PermissionConstants.ALLOWDELETEFILES);
   }
 
   public hasPreview(item: AttachmentDTO): boolean {
