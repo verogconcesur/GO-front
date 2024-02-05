@@ -129,7 +129,11 @@
                 </mat-icon>
             </div>
         </div>
-        <div *ngIf="data && totalLines?.length" class="payments__main__total item smaller-mat-form-fields" fxLayout="row">
+        <div
+            *ngIf="data && totalLines?.length"
+            class="payments__main__total item summatory-line smaller-mat-form-fields"
+            fxLayout="row"
+        >
             <div fxFlex="40" fxLayoutAlign="start center" class="bold">{{ labels.summation | translate }}</div>
             <div fxFlex="45" fxLayoutAlign="center center" class="bold">{{ getTotalsSummation() }}<span matSuffix> €</span></div>
             <div fxFlex="15" fxLayoutAlign="end center" class="actions"></div>
@@ -223,7 +227,7 @@
         </div>
         <div
             *ngIf="data && paymentLines?.length"
-            class="payments__main__container__item item smaller-mat-form-fields"
+            class="payments__main__container__item item summatory-line smaller-mat-form-fields"
             fxLayout="row"
         >
             <div fxFlex="45" fxLayoutAlign="start center" class="bold">{{ labels.summationPending | translate }}</div>
@@ -235,7 +239,7 @@
         </div>
         <div
             *ngIf="data && paymentLines?.length"
-            class="payments__main__container__item item smaller-mat-form-fields"
+            class="payments__main__container__item item summatory-line smaller-mat-form-fields"
             fxLayout="row"
         >
             <div fxFlex="45" fxLayoutAlign="start center" class="bold">{{ labels.summationPayed | translate }}</div>
@@ -247,7 +251,7 @@
         </div>
         <div
             *ngIf="data && paymentLines?.length"
-            class="payments__main__container__item item smaller-mat-form-fields"
+            class="payments__main__container__item item summatory-line smaller-mat-form-fields"
             fxLayout="row"
         >
             <div fxFlex="45" fxLayoutAlign="start center" class="bold">{{ labels.summation | translate }}</div>
@@ -329,7 +333,7 @@
         </div>
         <div
             *ngIf="data && totalDetailLines?.length"
-            class="payments__main__container__item item smaller-mat-form-fields"
+            class="payments__main__container__item item summatory-line smaller-mat-form-fields"
             fxLayout="row"
         >
             <div fxFlex="65" fxLayoutAlign="start center" class="bold">{{ labels.summation | translate }}</div>
