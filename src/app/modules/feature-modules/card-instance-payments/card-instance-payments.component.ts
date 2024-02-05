@@ -67,7 +67,12 @@ export class CardInstancePaymentsComponent implements OnInit {
     attachments: marker('common.attachments'),
     deleteConfirmation: marker('common.deleteConfirmation'),
     maxLengthError: marker('errors.maxLengthError'),
-    value: marker('common.value')
+    value: marker('common.value'),
+    generalInfo: marker('cardDetail.payments.generalInfo'),
+    totals: marker('cardDetail.payments.totals'),
+    summation: marker('cardDetail.payments.summation'),
+    summationPayed: marker('cardDetail.payments.summationPayed'),
+    summationPending: marker('cardDetail.payments.summationPending')
   };
   public formTotal: FormGroup;
   public paymentLines: CardPaymentLineDTO[];
@@ -576,6 +581,43 @@ export class CardInstancePaymentsComponent implements OnInit {
           this.saveTotalDetail(response);
         }
       });
+  }
+  public getTotalsSummation(): number {
+    let total = 0;
+    this.totalLines.forEach((line: CardTotalLineDTO) => {
+      total += line.amount * 100;
+    });
+    if (total) {
+      return total / 100;
+    }
+    return total;
+  }
+  public getTotalDeatilsSummation(): number {
+    let total = 0;
+    this.totalDetailLines.forEach((line: CardTotalDetailDTO) => {
+      total += line.amount * 100;
+    });
+    if (total) {
+      return total / 100;
+    }
+    return total;
+  }
+
+  public getPaymentLinesSummation(type?: 'pending' | 'payed'): number {
+    let total = 0;
+    this.paymentLines.forEach((line: CardPaymentLineDTO) => {
+      if (type === 'pending' && (line.paymentStatus.id === 1 || line.paymentStatus.id === 2)) {
+        total += line.amount * 100;
+      } else if (type === 'payed' && line.paymentStatus.id === 3) {
+        total += line.amount * 100;
+      } else if (!type && (line.paymentStatus.id === 1 || line.paymentStatus.id === 2 || line.paymentStatus.id === 3)) {
+        total += line.amount * 100;
+      }
+    });
+    if (total) {
+      return total / 100;
+    }
+    return total;
   }
   public newLine() {
     this.customDialogService
