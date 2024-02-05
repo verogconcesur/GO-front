@@ -683,8 +683,12 @@ export class SignDocumentChecklistComponent implements OnInit, AfterViewInit, On
           this.renderingDrawingItems = false;
         });
       }
-      p.touchMoved = (event) => {
+      p.touchMoved = (event: any) => {
         try {
+          console.log(event);
+          if (event.touches.length > 1 || event.targetTouches.length > 1) {
+            return;
+          }
           let type = 'pencil';
           if ($('#sign-document-pen-eraser:checked').length) {
             type = 'eraser';
