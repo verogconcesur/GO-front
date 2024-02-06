@@ -1,13 +1,13 @@
 <div class="payments" fxFill *ngIf="formTotal">
     <div class="payments__main" [formGroup]="formTotal">
+        <!-- Información general -->
         <div class="payments__main__header" *ngIf="data">
             <div class="payments__main__header__item" fxLayout="row">
-                <div fxFlex="40" fxLayoutAlign="start center" fxFill>{{ labels.description | translate }}</div>
+                <div fxFlex="40" fxLayoutAlign="start center" fxFill>{{ labels.generalInfo | translate }}</div>
                 <div fxFlex="45" fxLayoutAlign="center center" fxFill>{{ labels.value | translate }}</div>
                 <div fxFlex="15" fxLayoutAlign="end center" fxFill>{{ labels.actions | translate }}</div>
             </div>
         </div>
-
         <div class="payments__main__total item smaller-mat-form-fields" fxLayout="row">
             <div fxFlex="40" fxLayoutAlign="start center">{{ labels.customerAccount | translate }}</div>
             <div fxFlex="45" fxLayoutAlign="center center">
@@ -39,15 +39,6 @@
                 </mat-icon>
             </div>
         </div>
-
-        <div class="payments__main__total item smaller-mat-form-fields" fxLayout="row">
-            <div fxFlex="40" fxLayoutAlign="start center">{{ labels.pendingDescription | translate }}</div>
-            <div fxFlex="45" fxLayoutAlign="center center">
-                {{ formTotal?.get("pending")?.value ? formTotal?.get("pending")?.value : 0 }}<span matSuffix>€</span>
-            </div>
-            <div fxFlex="15" fxLayoutAlign="end center" class="actions"></div>
-        </div>
-
         <div class="payments__main__total item smaller-mat-form-fields" fxLayout="row">
             <div fxFlex="40" fxLayoutAlign="start center">{{ labels.total | translate }}</div>
             <div fxFlex="45" fxLayoutAlign="center center">
@@ -79,7 +70,21 @@
                 </mat-icon>
             </div>
         </div>
-
+        <div class="payments__main__total item smaller-mat-form-fields" fxLayout="row">
+            <div fxFlex="40" fxLayoutAlign="start center">{{ labels.pendingDescription | translate }}</div>
+            <div fxFlex="45" fxLayoutAlign="center center">
+                {{ formTotal?.get("pending")?.value ? formTotal?.get("pending")?.value : 0 }}<span matSuffix>€</span>
+            </div>
+            <div fxFlex="15" fxLayoutAlign="end center" class="actions"></div>
+        </div>
+        <!-- Totales -->
+        <div class="payments__main__header mt-20" *ngIf="data">
+            <div class="payments__main__header__item" fxLayout="row">
+                <div fxFlex="40" fxLayoutAlign="start center" fxFill>{{ labels.totals | translate }}</div>
+                <div fxFlex="45" fxLayoutAlign="center center" fxFill>{{ labels.amount | translate }}</div>
+                <div fxFlex="15" fxLayoutAlign="end center" fxFill>{{ labels.actions | translate }}</div>
+            </div>
+        </div>
         <div
             class="payments__main__total item smaller-mat-form-fields"
             fxLayout="row"
@@ -125,6 +130,15 @@
             </div>
         </div>
         <div
+            *ngIf="data && totalLines?.length"
+            class="payments__main__total item summatory-line smaller-mat-form-fields"
+            fxLayout="row"
+        >
+            <div fxFlex="40" fxLayoutAlign="start center" class="bold">{{ labels.summation | translate }}</div>
+            <div fxFlex="45" fxLayoutAlign="center center" class="bold">{{ getTotalsSummation() }}<span matSuffix> €</span></div>
+            <div fxFlex="15" fxLayoutAlign="end center" class="actions"></div>
+        </div>
+        <div
             class="payments__main__create"
             fxLayout="row"
             fxLayoutAlign="end none"
@@ -133,6 +147,7 @@
             <span class="payments__main__create__item" (click)="newTotalLine()">+ {{ labels.newTotalLine | translate }}</span>
         </div>
 
+        <!-- Líneas de pago -->
         <div class="payments__main__header" *ngIf="data">
             <div class="payments__main__header__item" fxLayout="row">
                 <div fxFlex="25" fxLayoutAlign="start center" fxFill>{{ labels.paymentLine | translate }}</div>
@@ -211,6 +226,42 @@
             </div>
         </div>
         <div
+            *ngIf="data && paymentLines?.length"
+            class="payments__main__container__item item summatory-line smaller-mat-form-fields"
+            fxLayout="row"
+        >
+            <div fxFlex="45" fxLayoutAlign="start center" class="bold">{{ labels.summationPending | translate }}</div>
+            <div fxFlex="20" fxLayoutAlign="start center"></div>
+            <div fxFlex="15" fxLayoutAlign="center center" class="bold">
+                {{ getPaymentLinesSummation("pending") }}<span matSuffix> €</span>
+            </div>
+            <div fxFlex="20" fxLayoutAlign="end center" class="actions"></div>
+        </div>
+        <div
+            *ngIf="data && paymentLines?.length"
+            class="payments__main__container__item item summatory-line smaller-mat-form-fields"
+            fxLayout="row"
+        >
+            <div fxFlex="45" fxLayoutAlign="start center" class="bold">{{ labels.summationPayed | translate }}</div>
+            <div fxFlex="20" fxLayoutAlign="start center"></div>
+            <div fxFlex="15" fxLayoutAlign="center center" class="bold">
+                {{ getPaymentLinesSummation("payed") }}<span matSuffix> €</span>
+            </div>
+            <div fxFlex="20" fxLayoutAlign="end center" class="actions"></div>
+        </div>
+        <div
+            *ngIf="data && paymentLines?.length"
+            class="payments__main__container__item item summatory-line smaller-mat-form-fields"
+            fxLayout="row"
+        >
+            <div fxFlex="45" fxLayoutAlign="start center" class="bold">{{ labels.summation | translate }}</div>
+            <div fxFlex="20" fxLayoutAlign="start center"></div>
+            <div fxFlex="15" fxLayoutAlign="center center" class="bold">
+                {{ getPaymentLinesSummation() }}<span matSuffix> €</span>
+            </div>
+            <div fxFlex="20" fxLayoutAlign="end center" class="actions"></div>
+        </div>
+        <div
             class="payments__main__create"
             fxLayout="row"
             fxLayoutAlign="end none"
@@ -218,7 +269,7 @@
         >
             <span class="payments__main__create__item" (click)="newLine()">+ {{ labels.newLine | translate }}</span>
         </div>
-
+        <!-- Descipción de totales -->
         <div class="payments__main__header" *ngIf="data">
             <div class="payments__main__header__item" fxLayout="row">
                 <div fxFlex="65" fxLayoutAlign="start center" fxFill>{{ labels.paymentTotalDetail | translate }}</div>
@@ -279,6 +330,17 @@
                     </mat-icon>
                 </div>
             </div>
+        </div>
+        <div
+            *ngIf="data && totalDetailLines?.length"
+            class="payments__main__container__item item summatory-line smaller-mat-form-fields"
+            fxLayout="row"
+        >
+            <div fxFlex="65" fxLayoutAlign="start center" class="bold">{{ labels.summation | translate }}</div>
+            <div fxFlex="15" fxLayoutAlign="center center" class="bold">
+                {{ getTotalDeatilsSummation() }}<span matSuffix> €</span>
+            </div>
+            <div fxFlex="20" fxLayoutAlign="end center"></div>
         </div>
         <div
             class="payments__main__create"

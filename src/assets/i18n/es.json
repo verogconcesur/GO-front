@@ -221,6 +221,7 @@
             "editLine": "Editar línea de pago",
             "editTotalDescriptionLine": "Editar detalle de total",
             "editTotalLine": "Editar línea de total",
+            "generalInfo": "Información general",
             "langindOnlyPositiveAmounts": "No se pueden enviar cantidades negativas al área de cliente.",
             "newLine": "Nueva línea de pago",
             "newTotalDescriptionLine": "Nuevo detalle de total",
@@ -236,7 +237,11 @@
             "saveTotalDetailConfirmation": "¿Está seguro que desea guardar este detalle de total?",
             "saveTotalLineConfirmation": "¿Está seguro que desea guardar esta línea de total?",
             "send": "Enviar pago al área de clientes",
-            "sendConfirmation": "¿Está seguro que quiere enviar esta línea de pago al área de cliente?"
+            "sendConfirmation": "¿Está seguro que quiere enviar esta línea de pago al área de cliente?",
+            "summation": "Sumatorio",
+            "summationPayed": "Cantidad pagada",
+            "summationPending": "Cantidad pendiente",
+            "totals": "Totales"
         }
     },
     "cards": {
