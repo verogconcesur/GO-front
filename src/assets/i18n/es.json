@@ -464,6 +464,7 @@
         "phoneWhatsapp": "Teléfono del remitente",
         "port": "Puerto",
         "postalCode": "Código Postal",
+        "previous": "",
         "price": "Precio",
         "priority": "Prioridad",
         "province": "Provincia",
@@ -823,6 +824,14 @@
     },
     "signature": {
         "cancelConfirmation": "¿Está seguro que desea cancelar la firma remota de este documento?",
+        "formStep": "Formulario",
+        "formTitle": "Campos a rellenar",
+        "nextStep": "Siguiente",
+        "nextStepToFillFields": "Tras leer el documento haga click sobre el botón \"siguiente\" para completar el formulario.",
+        "nextStepToSignDocument": "Revise y compruebe haber rellenado el formulario. Si detecta algún fallo revise los pasos anteriores. Si está conforme haga click sobre el botón \"guardar\".",
+        "confirmationStep": "Confirmación",
+        "previewStep": "Documento",
+        "previewTitle": "Previsualización",
         "status": {
             "canceled": "Cancelado",
             "pending": "Pendiente",

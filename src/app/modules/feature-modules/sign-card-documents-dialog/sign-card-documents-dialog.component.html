@@ -23,14 +23,22 @@
                 (fileSelected)="fileSelected($event)"
                 *ngIf="stepIndex === 1 && mode"
             ></app-sign-document-add-file>
-            <app-sign-document-checklist
+            <!-- <app-sign-document-checklist
                 [wCardId]="wCardId"
                 [mode]="mode"
                 [pdf]="pdf"
                 (saveAction)="pdfSignedEvent($event)"
                 (setTitle)="setPdfName($event)"
                 *ngIf="stepIndex === 2 && mode"
-            ></app-sign-document-checklist>
+            ></app-sign-document-checklist> -->
+            <app-sign-document-checklist-new
+                [wCardId]="wCardId"
+                [mode]="mode"
+                [pdf]="pdf"
+                (saveAction)="pdfSignedEvent($event)"
+                (setTitle)="setPdfName($event)"
+                *ngIf="stepIndex === 2 && mode"
+            ></app-sign-document-checklist-new>
             <app-sign-document-save-location
                 [wCardId]="wCardId"
                 [pdf]="pdf"

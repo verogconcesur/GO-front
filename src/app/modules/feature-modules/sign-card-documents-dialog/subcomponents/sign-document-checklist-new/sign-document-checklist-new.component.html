@@ -1,3 +1,27 @@
+<div class="cheklist-steps">
+    <mat-stepper linear #stepper color="primary" [selectedIndex]="currentStep" labelPosition="bottom">
+        <mat-step>
+            <ng-template matStepLabel>
+                <span>{{ labels.remoteSignaturePreview | translate }} </span>
+            </ng-template>
+        </mat-step>
+        <mat-step>
+            <ng-template matStepLabel>
+                <span>{{ labels.remoteSignatureForm | translate }} </span>
+            </ng-template>
+        </mat-step>
+        <mat-step>
+            <ng-template matStepLabel>
+                <span>{{ labels.remoteSignatureConfirmation | translate }} </span>
+            </ng-template>
+        </mat-step>
+        <ng-template matStepperIcon="edit" let-index="index" let-active="active">
+            <mat-icon *ngIf="index < stepper.selectedIndex; else default">done</mat-icon>
+            <ng-template #default>{{ index + 1 }}</ng-template>
+        </ng-template>
+    </mat-stepper>
+</div>
+
 <div class="checklist-sign">
     <div class="checklist-sign__no-data" [ngClass]="{ opacity0: pdfLoaded }">
         <h2>{{ labels.loadingPdfWait | translate }}.</h2>

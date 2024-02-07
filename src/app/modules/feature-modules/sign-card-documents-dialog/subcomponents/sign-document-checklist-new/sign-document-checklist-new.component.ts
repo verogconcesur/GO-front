@@ -12,7 +12,6 @@ import {
   Output,
   HostListener,
   AfterViewInit,
-  ViewEncapsulation,
   OnDestroy
 } from '@angular/core';
 import { UntypedFormArray, UntypedFormBuilder, UntypedFormGroup } from '@angular/forms';
@@ -37,16 +36,15 @@ import { Router } from '@angular/router';
 import { RouteConstants } from '@app/constants/route.constants';
 import { TemplatesChecklistsService } from '@data/services/templates-checklists.service';
 import { NGXLogger } from 'ngx-logger';
-import { MatExpansionPanel } from '@angular/material/expansion';
 import { AttachmentDTO, CardAttachmentsDTO } from '@data/models/cards/card-attachments-dto';
+import { MatStepper } from '@angular/material/stepper';
 
 @Component({
-  selector: 'app-sign-document-checklist',
-  templateUrl: './sign-document-checklist.component.html',
-  styleUrls: ['./sign-document-checklist.component.scss'],
-  encapsulation: ViewEncapsulation.None
+  selector: 'app-sign-document-checklist-new',
+  templateUrl: './sign-document-checklist-new.component.html',
+  styleUrls: ['./sign-document-checklist-new.component.scss']
 })
-export class SignDocumentChecklistComponent implements OnInit, AfterViewInit, OnDestroy {
+export class SignDocumentChecklistNewComponent implements OnInit, AfterViewInit, OnDestroy {
   @Input() wCardId: number;
   //En la firma remota bloqueamos el formulario
   @Input() mode: 'REMOTE' | 'NO_REMOTE' = 'NO_REMOTE';
@@ -55,27 +53,15 @@ export class SignDocumentChecklistComponent implements OnInit, AfterViewInit, On
   @Output() saveAction: EventEmitter<SignDocumentExchangeDTO> = new EventEmitter();
   @ViewChild('staticImage')
   staticImage: ElementRef;
-  @ViewChild('fieldsPanel')
-  fieldsPanel: MatExpansionPanel;
-  public itemToClone: JQuery<HTMLElement> = null;
-  public smallModal = false;
-  public signDocumentExchange: SignDocumentExchangeDTO;
-  public page: number;
-  public checklistForm: UntypedFormGroup;
-  public fileTemplateBase64 = new Subject<any>();
-  public pdfNumPages = 0;
-  public pdfLoaded = false;
-  public renderingDrawingItems = false;
-  public pages: number[] = [];
-  public itemListToShow: AuxChecklistItemsGroupByTypeDTO[] = [];
-  public expansionPanelOpened: any = {};
-  public auxOrderRelationRealOrder: any = {};
-  public realOrderRelationAuxOrder: any = {};
-  public selectedItemToUploadImage: number;
-  public attachmentsByGroup: CardAttachmentsDTO[] = [];
-  public showChangeSign = false;
-  public changeSignToOrderNumber: number = null;
+  @ViewChild('stepper') stepper: MatStepper;
+  public currentStep = 0;
   public labels: any = {
+    previous: marker('common.previous'),
+    remoteSignaturePreview: marker('signature.previewStep'),
+    remoteSignatureForm: marker('signature.formStep'),
+    remoteSignatureDrawFieldForm: marker('signature.drawFieldFormStep'),
+    remoteSignatureConfirmation: marker('signature.confirmationStep'),
+    drawSignError: marker('signature.drawSignError'),
     itemsInTemplate: marker('administration.templates.checklists.itemsInTemplate'),
     insertTextHere: marker('common.insertTextHere'),
     pdfPreview: marker('administration.templates.checklists.pdfPreview'),
@@ -99,6 +85,25 @@ export class SignDocumentChecklistComponent implements OnInit, AfterViewInit, On
     changeSign: marker('common.changeSign'),
     selectCardAttachmentImage: marker('administration.templates.checklists.selectCardAttachmentImage')
   };
+
+  public itemToClone: JQuery<HTMLElement> = null;
+  public smallModal = false;
+  public signDocumentExchange: SignDocumentExchangeDTO;
+  public page: number;
+  public checklistForm: UntypedFormGroup;
+  public fileTemplateBase64 = new Subject<any>();
+  public pdfNumPages = 0;
+  public pdfLoaded = false;
+  public renderingDrawingItems = false;
+  public pages: number[] = [];
+  public itemListToShow: AuxChecklistItemsGroupByTypeDTO[] = [];
+  public expansionPanelOpened: any = {};
+  public auxOrderRelationRealOrder: any = {};
+  public realOrderRelationAuxOrder: any = {};
+  public selectedItemToUploadImage: number;
+  public attachmentsByGroup: CardAttachmentsDTO[] = [];
+  public showChangeSign = false;
+  public changeSignToOrderNumber: number = null;
   private checklistToEdit: TemplatesChecklistsDTO = null;
   private formDataIdValueMapByPdf: { [fieldName: string]: string | number | boolean } = {};
   private formDataIdValueMapByForm: { [fieldName: string]: string | number | boolean } = {};
@@ -197,18 +202,12 @@ export class SignDocumentChecklistComponent implements OnInit, AfterViewInit, On
     // this.repaintItemsInTemplate();
   }
 
-  @HostListener('window:resize', ['$event'])
-  onResize(event: any) {
-    this.checkWindowSize(window.innerWidth);
-  }
-
   ngOnInit(): void {
     this.getImageAttachments();
     this.preparePdf();
   }
 
   ngAfterViewInit(): void {
-    this.checkWindowSize(window.innerWidth);
     this.itemToClone = $(`#checklistItemToDrag`);
   }
 
@@ -221,15 +220,6 @@ export class SignDocumentChecklistComponent implements OnInit, AfterViewInit, On
       return '75vh';
     }
     return 'auto';
-  }
-
-  public checkWindowSize(width: number): void {
-    if (width < 1000) {
-      this.smallModal = true;
-    } else {
-      this.smallModal = false;
-      this.fieldsPanel.open();
-    }
   }
 
   public setItemListToShow(): void {
@@ -573,6 +563,15 @@ export class SignDocumentChecklistComponent implements OnInit, AfterViewInit, On
       const jQItem = $(`#${id}`);
       this.printItemImageInPdf(jQItem, this.getChecklistItemByOrderNumber(n));
     });
+  }
+
+  public getNextStepLabel(): string {
+    // if (this.stepper?.selectedIndex === 2 && this.finalRemoteSignDocumentPreview.userCustomerReducedDTO.hasPass) {
+    //   return marker('common.sign');
+    // } else if (this.stepper?.selectedIndex === 2 && !this.finalRemoteSignDocumentPreview.userCustomerReducedDTO.hasPass) {
+    //   return marker('signature.askForCode.title');
+    // }
+    return marker('signature.nextStep');
   }
 
   //Private methods
