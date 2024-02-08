@@ -49,7 +49,7 @@ export class WorkflowColumnActionsAndLinksComponent implements OnInit {
   @Input() idUser: number = null;
   public actions: WorkflowCardTabItemDTO[];
   public links: WorkflowCardTabItemDTO[];
-  public shortCuts: { [key: string]: { workflow: WorkflowDTO; moves: WorkflowMoveDTO[] } } = {};
+  public shortCuts: WorkflowMoveDTO[];
   public idCard: number = null;
   public sendMessageAction: WorkflowCardTabItemDTO[] = [];
   public labels = {
@@ -114,18 +114,7 @@ export class WorkflowColumnActionsAndLinksComponent implements OnInit {
           (data: WorkflowMoveDTO[]) => {
             const userRoleId: number = this.authService.getUserRole().id;
             data = data.filter((move: WorkflowMoveDTO) => move.roles.find((role: RoleDTO) => role.id === userRoleId));
-            // eslint-disable-next-line @typescript-eslint/no-explicit-any
-            this.shortCuts = data.reduce((acc: any, move: WorkflowMoveDTO) => {
-              if (!acc[move.workflowSubstateTarget.workflowState.workflow.id]) {
-                acc[move.workflowSubstateTarget.workflowState.workflow.id + ''] = {
-                  workflow: move.workflowSubstateTarget.workflowState.workflow,
-                  moves: []
-                };
-              }
-              acc[move.workflowSubstateTarget.workflowState.workflow.id + ''].moves.push(move);
-              return acc;
-            }, {});
-            console.log(this.shortCuts);
+            this.shortCuts = data;
           },
           (error: ConcenetError) => {
             this.globalMessageService.showError({
@@ -207,12 +196,6 @@ export class WorkflowColumnActionsAndLinksComponent implements OnInit {
           break;
       }
     }
-  }
-
-  public getShortCutsGroups(): { workflow: WorkflowDTO; moves: WorkflowMoveDTO[] }[] {
-    return Object.keys(this.shortCuts)
-      .sort((a, b) => this.shortCuts[a].moves[0].orderNumber - this.shortCuts[b].moves[0].orderNumber)
-      .map((key: string) => this.shortCuts[key]);
   }
 
   public hasPermission(btn: 'move' | 'send'): boolean {

@@ -62,7 +62,7 @@
                         <mat-icon
                             class="top-left"
                             *ngIf="
-                                !cardInstanceAttachmentsConfig.disableIndividualDeleteAction && hasUerPermissionToDeleteFiles()
+                                !cardInstanceAttachmentsConfig.disableIndividualDeleteAction || hasUerPermissionToDeleteFiles()
                             "
                             (click)="deleteAttachment(item)"
                             >delete</mat-icon
