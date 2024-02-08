@@ -29,14 +29,67 @@
             <mat-spinner matSuffix class="spinner" diameter="50"></mat-spinner>
         </div>
     </div>
-    <div class="checklist-sign__accordion" [ngClass]="{ opacity0: !pdfLoaded }">
-        <mat-accordion class="main-accordion" [hideToggle]="!smallModal" [multi]="!smallModal" [displayMode]="'flat'">
+    <!-- Preview pdf -->
+    <div class="checklist-sign__pdf" [ngClass]="{ opacity0: pdfLoaded && stepper.selectedIndex !== 0 }">
+        <div *ngIf="renderingDrawingItems" class="checklist-sign__pdf__spinner">
+            <mat-spinner matSuffix class="spinner" diameter="50"></mat-spinner>
+        </div>
+        <div class="paint-zone-controls" *ngIf="mode !== 'REMOTE'">
+            <div class="type">
+                <input type="radio" name="pen-type" id="sign-document-pen-pencil" class="pen-pencil" checked />
+                <label for="pen-pencil">
+                    <mat-icon>edit</mat-icon>
+                </label>
+                <input type="radio" name="pen-type" id="sign-document-pen-eraser" class="pen-eraser" />
+                <label for="pen-eraser">
+                    <mat-icon>edit_off</mat-icon>
+                </label>
+            </div>
+            <div class="size">
+                <input type="range" id="sign-document-pen-size" class="pen-size" min="1" max="30" value="3" />
+            </div>
+            <div class="color">
+                <input type="color" id="sign-document-pen-color" class="pen-color" value="#000" />
+            </div>
+        </div>
+        <ng-container class="checklist-sign__pdf__viewer" *ngIf="fileTemplateBase64 | async as base64">
+            <ngx-extended-pdf-viewer
+                id="checklistPDF"
+                [ngClass]="{ 'disable-pdf-form': mode === 'REMOTE' }"
+                [base64Src]="base64"
+                height="96%"
+                [minHeight]="getPdfMinHeight()"
+                [handTool]="false"
+                [useBrowserLocale]="true"
+                [zoom]="'page-fit'"
+                [zoomLevels]="['page-fit']"
+                [showZoomButtons]="true"
+                [showHandToolButton]="false"
+                [showPresentationModeButton]="false"
+                [showUnverifiedSignatures]="true"
+                [showRotateButton]="false"
+                [showFindButton]="false"
+                [showPrintButton]="false"
+                [showSpreadButton]="false"
+                [showDownloadButton]="false"
+                [showOpenFileButton]="false"
+                [(page)]="page"
+                (pageRendered)="pageRendered($event)"
+                (pdfLoaded)="pdfLoadedFn($event)"
+                (zoomChange)="pdfZoomChange($event)"
+                [textLayer]="false"
+                [(formData)]="formData"
+            >
+            </ngx-extended-pdf-viewer>
+        </ng-container>
+    </div>
+    <div class="checklist-sign__accordion" *ngIf="pdfLoaded">
+        <!-- <mat-accordion class="main-accordion" [hideToggle]="!smallModal" [multi]="!smallModal" [displayMode]="'flat'">
             <mat-expansion-panel #fieldsPanel class="expansion-panel-fields" [expanded]="true" [disabled]="!smallModal">
                 <mat-expansion-panel-header>
                     <mat-panel-title> {{ labels.itemsInTemplate | translate }}</mat-panel-title>
                 </mat-expansion-panel-header>
                 <div class="fields-wrapper">
-                    <!-- Group by type -->
                     <mat-accordion [multi]="true">
                         <mat-expansion-panel
                             *ngFor="let groupByType of itemListToShow; let i = index"
@@ -49,10 +102,6 @@
                                     {{ groupByType.typeLabel }}
                                 </mat-panel-title>
                                 <mat-panel-description fxLayoutAlign="flex-end center">
-                                    <!-- <div fxLayout="column" fxLayoutAlign="flex-start center">
-                                        <label> Id's: {{ groupByType.orderNumbers.join(", ") }} </label>
-                                    </div> -->
-                                    <!-- Show in page -->
                                     <div class="smaller-mat-form-fields">
                                         {{ labels.showInPage | translate }}:
                                         <mat-form-field style="width: 45px; margin-left: 5px" (click)="$event.stopPropagation()">
@@ -65,7 +114,6 @@
                                     </div>
                                 </mat-panel-description>
                             </mat-expansion-panel-header>
-                            <!-- Group by sync -->
                             <mat-accordion [multi]="true" [displayMode]="'flat'">
                                 <mat-expansion-panel
                                     *ngFor="let syncGroup of groupByType.syncGroups; let i = index"
@@ -231,10 +279,6 @@
                         <label for="pen-pencil">
                             <mat-icon>edit</mat-icon>
                         </label>
-                        <!-- <input type="radio" name="pen-type" id="sign-document-pen-brush" class="pen-brush" />
-                        <label for="pen-brush">
-                            <mat-icon>brush</mat-icon>
-                        </label> -->
                         <input type="radio" name="pen-type" id="sign-document-pen-eraser" class="pen-eraser" />
                         <label for="pen-eraser">
                             <mat-icon>edit_off</mat-icon>
@@ -247,7 +291,6 @@
                         <input type="color" id="sign-document-pen-color" class="pen-color" value="#000" />
                     </div>
                 </div>
-                <!-- Pdf preview -->
                 <ng-container class="checklist-sign__pdf__viewer" *ngIf="fileTemplateBase64 | async as base64">
                     <ngx-extended-pdf-viewer
                         id="checklistPDF"
@@ -277,10 +320,9 @@
                         [(formData)]="formData"
                     >
                     </ngx-extended-pdf-viewer>
-                    <!-- (textLayerRendered)="textLayerRendered($event)" -->
                 </ng-container>
             </mat-expansion-panel>
-        </mat-accordion>
+        </mat-accordion> -->
     </div>
     <div class="checklist-sign__footer">
         <button mat-flat-button color="primary" (click)="save()" *ngIf="mode !== 'REMOTE'">
