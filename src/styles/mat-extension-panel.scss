@@ -60,15 +60,6 @@
     }
   }
 
-  mat-expansion-panel.zero-padding {
-    .mat-expansion-panel-content {
-      padding: 0 !important;
-      .mat-expansion-panel-body {
-        padding: 0 !important;
-      }
-    }
-  }
-
   .mat-select-panel.bigger-selection-panel-class {
     max-height: calc(100vh - 100px);
     .mat-optgroup-label {
