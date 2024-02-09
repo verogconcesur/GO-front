@@ -212,10 +212,10 @@ export class CardPaymentDialogFormComponent extends ComponentToExtendForCustomDi
     let descriptions: PaymentDescriptionDTO[] = [];
     if (this.mode === 'PAYMENT' && this.paymentDescriptions?.paymentDescriptions?.length > 0) {
       descriptions = this.paymentDescriptions.paymentDescriptions;
-    } else if (this.mode === 'TOTAL_DETAIL' && this.paymentDescriptions?.totalBreakdownDescriptions?.length > 0) {
-      descriptions = this.paymentDescriptions.totalBreakdownDescriptions;
-    } else if (this.mode === 'TOTAL' && this.paymentDescriptions?.totalDetailDescriptions?.length > 0) {
+    } else if (this.mode === 'TOTAL_DETAIL' && this.paymentDescriptions?.totalDetailDescriptions?.length > 0) {
       descriptions = this.paymentDescriptions.totalDetailDescriptions;
+    } else if (this.mode === 'TOTAL' && this.paymentDescriptions?.totalBreakdownDescriptions?.length > 0) {
+      descriptions = this.paymentDescriptions.totalBreakdownDescriptions;
     }
     return descriptions;
   }
