@@ -61,9 +61,15 @@ export class SignCardDocumentsDialogComponent implements OnInit {
       case 1:
         return marker('cards.eventType.ADD_DOC');
       case 2:
-        return `${this.pdfName} - ${this.translateService.instant(
-          marker('administration.templates.checklists.remoteChecklistPreviewer')
-        )}`;
+        if (this.mode === 'REMOTE') {
+          return `${this.pdfName ? this.pdfName : ' '} - ${this.translateService.instant(
+            marker('administration.templates.checklists.remoteChecklistPreviewer')
+          )}`;
+        } else {
+          return `${this.pdfName ? this.pdfName : ' '} - ${this.translateService.instant(
+            marker('administration.templates.checklists.noRemoteChecklistPreviewer')
+          )}`;
+        }
       case 3:
         return marker('common.saveFile');
     }

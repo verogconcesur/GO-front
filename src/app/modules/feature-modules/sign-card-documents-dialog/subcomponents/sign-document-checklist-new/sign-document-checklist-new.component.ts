@@ -12,7 +12,8 @@ import {
   Output,
   HostListener,
   AfterViewInit,
-  OnDestroy
+  OnDestroy,
+  ViewEncapsulation
 } from '@angular/core';
 import { UntypedFormArray, UntypedFormBuilder, UntypedFormGroup } from '@angular/forms';
 import TemplatesChecklistsDTO, {
@@ -42,7 +43,8 @@ import { MatStepper } from '@angular/material/stepper';
 @Component({
   selector: 'app-sign-document-checklist-new',
   templateUrl: './sign-document-checklist-new.component.html',
-  styleUrls: ['./sign-document-checklist-new.component.scss']
+  styleUrls: ['./sign-document-checklist-new.component.scss'],
+  encapsulation: ViewEncapsulation.None
 })
 export class SignDocumentChecklistNewComponent implements OnInit, AfterViewInit, OnDestroy {
   @Input() wCardId: number;
@@ -104,6 +106,7 @@ export class SignDocumentChecklistNewComponent implements OnInit, AfterViewInit,
   public attachmentsByGroup: CardAttachmentsDTO[] = [];
   public showChangeSign = false;
   public changeSignToOrderNumber: number = null;
+  public steps: { type: string; label: string; page: number }[] = [];
   private checklistToEdit: TemplatesChecklistsDTO = null;
   private formDataIdValueMapByPdf: { [fieldName: string]: string | number | boolean } = {};
   private formDataIdValueMapByForm: { [fieldName: string]: string | number | boolean } = {};
@@ -574,6 +577,32 @@ export class SignDocumentChecklistNewComponent implements OnInit, AfterViewInit,
     return marker('signature.nextStep');
   }
 
+  public showSectionInStep(section: 'paintZone' | 'pdfViewer'): boolean {
+    const step = this.stepper?.selectedIndex;
+    if ((step === 0 || step) && this.steps && this.steps[step]) {
+      return this.steps[step].type === section;
+    }
+    return false;
+  }
+
+  public stepChanged(event: any): void {
+    const step = event.selectedIndex;
+    if ((step || step === 0) && this.steps && this.steps[step] && this.steps[step].type === 'paintZone') {
+      console.log('go to page', this.steps[step].page);
+      setTimeout(() => (this.page = this.steps[step].page), 100);
+    } else {
+      setTimeout(() => (this.page = 1), 100);
+    }
+  }
+
+  public clickOnChecklistItem(event: any): void {
+    console.log(event);
+    this.globalMessageService.showSuccess({
+      message: this.translateService.instant(marker('signature.nextStepToFillFields')),
+      actionText: this.translateService.instant(marker('common.close'))
+    });
+  }
+
   //Private methods
 
   private initForm() {
@@ -582,6 +611,29 @@ export class SignDocumentChecklistNewComponent implements OnInit, AfterViewInit,
       this.checklistForm.disable();
     }
     this.updateValueAndValidityForm();
+  }
+
+  private setSteps(): void {
+    this.steps = [
+      { type: 'pdfViewer', label: this.labels.remoteSignaturePreview, page: 1 },
+      { type: 'formViewer', label: this.labels.remoteSignatureForm, page: null }
+    ];
+    const drawingItems = this.checklistToEdit.templateChecklistItems
+      .filter((item) => item.typeItem === 'DRAWING')
+      .reduce((acc, item) => {
+        const sincronizedItems = acc.reduce((acc2, item2) => {
+          return item2.sincronizedItems ? [...acc2, ...item2.sincronizedItems] : acc2;
+        }, []);
+        if (sincronizedItems.indexOf(item.auxOrderNumber) === -1) {
+          return [...acc, item];
+        } else {
+          return acc;
+        }
+      }, []);
+    drawingItems.forEach((item) => {
+      this.steps.push({ type: 'paintZone', label: item.label, page: item.numPage });
+    });
+    this.steps.push({ type: 'pdfViewer', label: this.labels.remoteSignatureConfirmation, page: 1 });
   }
 
   private printItemImageInPdf(jItem: JQuery<HTMLElement>, templateItemFG: UntypedFormGroup): void {
@@ -640,8 +692,17 @@ export class SignDocumentChecklistNewComponent implements OnInit, AfterViewInit,
       });
       item.appendTo($('.canvasDropZone-page' + pageNumber));
     }
+    item.on('click', ($event) => {
+      this.clickOnChecklistItem($event);
+    });
     this.printItemImageInPdf(item, templateItemFG);
-    if (templateItemFG.get('typeItem').value === 'DRAWING' && !this.p5s[uniqueId] && $(`#${id_resizable}`).length) {
+    //Sólo dejo pintar a partir del paso 2
+    if (
+      this.stepper.selectedIndex > 1 &&
+      templateItemFG.get('typeItem').value === 'DRAWING' &&
+      !this.p5s[uniqueId] &&
+      $(`#${id_resizable}`).length
+    ) {
       new p5((p: p5) =>
         this.setDrawZone(
           p,
@@ -684,8 +745,7 @@ export class SignDocumentChecklistNewComponent implements OnInit, AfterViewInit,
       }
       p.touchMoved = (event: any) => {
         try {
-          console.log(event);
-          if (event?.touches?.length > 1 || event?.targetTouches?.length > 1) {
+          if (!this.showSectionInStep('paintZone') || event?.touches?.length > 1 || event?.targetTouches?.length > 1) {
             return;
           }
           let type = 'pencil';
@@ -811,6 +871,8 @@ export class SignDocumentChecklistNewComponent implements OnInit, AfterViewInit,
           });
           this.setTitle.emit(this.signDocumentExchange.templateChecklist.templateFile.name);
           this.fileTemplateBase64.next(data.procesedFile.content);
+          console.log(this.checklistToEdit);
+          this.setSteps();
           this.initForm();
           this.setItemListToShow();
           this.repaintItemsInTemplate();

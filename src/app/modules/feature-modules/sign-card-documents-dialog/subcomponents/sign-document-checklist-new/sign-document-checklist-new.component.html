@@ -1,18 +1,15 @@
-<div class="cheklist-steps">
-    <mat-stepper linear #stepper color="primary" [selectedIndex]="currentStep" labelPosition="bottom">
-        <mat-step>
+<div class="checklist-steps">
+    <mat-stepper
+        linear
+        #stepper
+        color="primary"
+        [selectedIndex]="currentStep"
+        (selectionChange)="stepChanged($event)"
+        labelPosition="bottom"
+    >
+        <mat-step *ngFor="let step of steps">
             <ng-template matStepLabel>
-                <span>{{ labels.remoteSignaturePreview | translate }} </span>
-            </ng-template>
-        </mat-step>
-        <mat-step>
-            <ng-template matStepLabel>
-                <span>{{ labels.remoteSignatureForm | translate }} </span>
-            </ng-template>
-        </mat-step>
-        <mat-step>
-            <ng-template matStepLabel>
-                <span>{{ labels.remoteSignatureConfirmation | translate }} </span>
+                <span>{{ step.label | translate }} </span>
             </ng-template>
         </mat-step>
         <ng-template matStepperIcon="edit" let-index="index" let-active="active">
@@ -23,18 +20,21 @@
 </div>
 
 <div class="checklist-sign">
-    <div class="checklist-sign__no-data" [ngClass]="{ opacity0: pdfLoaded }">
+    <!-- <div class="checklist-sign__no-data" [ngClass]="{ opacity0: pdfLoaded }">
         <h2>{{ labels.loadingPdfWait | translate }}.</h2>
         <div fxLayoutAlign="center center" style="width: 100%">
             <mat-spinner matSuffix class="spinner" diameter="50"></mat-spinner>
         </div>
-    </div>
+    </div> -->
     <!-- Preview pdf -->
-    <div class="checklist-sign__pdf" [ngClass]="{ opacity0: pdfLoaded && stepper.selectedIndex !== 0 }">
+    <div
+        class="checklist-sign__pdf"
+        [ngClass]="{ opacity0: !pdfLoaded || (!showSectionInStep('pdfViewer') && !showSectionInStep('paintZone')) }"
+    >
         <div *ngIf="renderingDrawingItems" class="checklist-sign__pdf__spinner">
             <mat-spinner matSuffix class="spinner" diameter="50"></mat-spinner>
         </div>
-        <div class="paint-zone-controls" *ngIf="mode !== 'REMOTE'">
+        <div class="paint-zone-controls" *ngIf="mode !== 'REMOTE' && showSectionInStep('paintZone')">
             <div class="type">
                 <input type="radio" name="pen-type" id="sign-document-pen-pencil" class="pen-pencil" checked />
                 <label for="pen-pencil">

@@ -1,6 +1,42 @@
 @import 'utils/core';
 @import 'utils/theme';
 
+.checklist-steps {
+  .mat-step-icon.mat-step-icon-state-edit {
+    mat-icon {
+      border-radius: 20px;
+      padding: 5px;
+      background-color: mat-color($primary, statusSuccess);
+    }
+  }
+  .mat-step-icon.mat-step-icon-state-number {
+    background-color: mat-color($primary, 800);
+  }
+  mat-stepper {
+    background-color: transparent;
+    min-width: 100%;
+    mat-step-header {
+      padding: 0 !important;
+      // min-width: 130px !important;
+      overflow: visible !important;
+      .mat-step-label {
+        padding: 5px 5px 0 5px !important;
+        font-size: 0.7rem;
+        .disabled {
+          color: mat-color($background, selected-disabled-button);
+        }
+      }
+    }
+  }
+  .mat-stepper-label-position-bottom .mat-horizontal-stepper-header:after,
+  .mat-stepper-label-position-bottom .mat-horizontal-stepper-header:before,
+  .mat-stepper-label-position-bottom .mat-stepper-horizontal-line {
+    top: 13px !important;
+  }
+  .mat-horizontal-content-container {
+    padding: 5px 0 0 0;
+  }
+}
 .checklist-sign {
   width: calc(100% - 20px);
   display: flex;
