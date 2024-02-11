@@ -2,6 +2,10 @@
 @import 'utils/theme';
 
 .checklist-steps {
+  width: calc(100% - 10px);
+  display: flex;
+  justify-content: center;
+  align-items: center;
   .mat-step-icon.mat-step-icon-state-edit {
     mat-icon {
       border-radius: 20px;
@@ -15,6 +19,7 @@
   mat-stepper {
     background-color: transparent;
     min-width: 100%;
+    padding: 3px 0;
     mat-step-header {
       padding: 0 !important;
       // min-width: 130px !important;
@@ -39,10 +44,9 @@
 }
 .checklist-sign {
   width: calc(100% - 20px);
-  display: flex;
-  justify-content: center;
-  align-items: flex-start;
-  padding: 10px 5px;
+  height: calc(100vh - 160px);
+  padding: 0px 5px;
+  position: relative;
   &__no-data {
     width: 105%;
     position: absolute;
@@ -58,12 +62,15 @@
     background-color: rgba(mat-contrast($primary, 200), 0.5);
     &.opacity0 {
       z-index: -5;
+      opacity: 0;
       pointer-events: none;
     }
   }
   &__pdf {
+    position: absolute;
+    top: 0;
     width: 100%;
-    height: calc(100vh - 160px);
+    height: calc(100vh - 215px);
     .firma_canvas_wrapper {
       width: 100%;
       display: flex;
@@ -92,47 +99,49 @@
     }
   }
   &__form {
+    position: absolute;
+    top: 0;
     width: 100%;
-    .template-data__section {
-      &__title {
-        margin: 0 0 5px 0;
-        &.first-child {
-          margin-top: 0px;
-        }
-      }
-      &__info {
-        margin: 0 0 5px 0;
-        line-height: 38px;
-      }
-      &__group {
-        &.grid-group {
-          display: grid;
-          justify-items: center;
-          gap: 1rem;
-          grid-template-columns: repeat(auto-fit, minmax(11rem, 1fr));
-          margin-bottom: 10px;
-          app-organization-levels-nested-combos {
-            display: contents;
-          }
-        }
-        &__title {
-          padding-bottom: 0px;
-          text-transform: uppercase;
-          margin-bottom: 0px;
-          padding-right: 0.5rem;
-          &::after {
-            content: ':';
-          }
-        }
-      }
-    }
-    .mat-form-field-appearance-outline.mat-form-field-disabled .mat-form-field-outline {
-      color: mat-color($primary, statusNeutral) !important;
-    }
+    height: calc(100vh - 215px);
+    // .template-data__section {
+    //   &__title {
+    //     margin: 0 0 5px 0;
+    //     &.first-child {
+    //       margin-top: 0px;
+    //     }
+    //   }
+    //   &__info {
+    //     margin: 0 0 5px 0;
+    //     line-height: 38px;
+    //   }
+    //   &__group {
+    //     &.grid-group {
+    //       display: grid;
+    //       justify-items: center;
+    //       gap: 1rem;
+    //       grid-template-columns: repeat(auto-fit, minmax(11rem, 1fr));
+    //       margin-bottom: 10px;
+    //       app-organization-levels-nested-combos {
+    //         display: contents;
+    //       }
+    //     }
+    //     &__title {
+    //       padding-bottom: 0px;
+    //       text-transform: uppercase;
+    //       margin-bottom: 0px;
+    //       padding-right: 0.5rem;
+    //       &::after {
+    //         content: ':';
+    //       }
+    //     }
+    //   }
+    // }
+    // .mat-form-field-appearance-outline.mat-form-field-disabled .mat-form-field-outline {
+    //   color: mat-color($primary, statusNeutral) !important;
+    // }
   }
 
   &__pdf {
-    position: relative;
     &__spinner {
       position: absolute;
       top: 0;
@@ -158,7 +167,7 @@
     position: absolute;
     bottom: 0;
     right: 0;
-    margin: 20px;
+    margin: 0 20px;
   }
 
   .inputColor {
@@ -170,21 +179,10 @@
     margin-bottom: 20px;
   }
 
-  .image-input-preview {
-    width: 150px;
-    height: 100px;
-    border: 1px solid mat-color($primary, 700);
-    overflow: hidden;
-    border-radius: 5px;
-    img {
-      width: 100%;
-      height: 100%;
-      inline-size: auto;
-    }
-  }
-
   .opacity0 {
     opacity: 0;
+    z-index: -5;
+    pointer-events: none;
   }
 }
 .change-sign-wrapper {

@@ -12,6 +12,7 @@ import { NgxExtendedPdfViewerModule } from 'ngx-extended-pdf-viewer';
 import { ChangeSignComponent } from './subcomponents/change-sign/change-sign.component';
 import { SignDocumentModeSelectorComponent } from './subcomponents/sign-document-mode-selector/sign-document-mode-selector.component';
 import { SignDocumentChecklistNewComponent } from './subcomponents/sign-document-checklist-new/sign-document-checklist-new.component';
+import { RemoteSignFormComponent } from './subcomponents/sign-document-checklist-new/steps/remote-sign-form/remote-sign-form.component';
 
 @NgModule({
   declarations: [
@@ -22,7 +23,8 @@ import { SignDocumentChecklistNewComponent } from './subcomponents/sign-document
     SignDocumentSaveLocationComponent,
     ChangeSignComponent,
     SignDocumentModeSelectorComponent,
-    SignDocumentChecklistNewComponent
+    SignDocumentChecklistNewComponent,
+    RemoteSignFormComponent
   ],
   imports: [CommonModule, SharedModule, SignCardDocumentsDialogRoutingModule, NgxExtendedPdfViewerModule]
 })

@@ -39,6 +39,7 @@ import { TemplatesChecklistsService } from '@data/services/templates-checklists.
 import { NGXLogger } from 'ngx-logger';
 import { AttachmentDTO, CardAttachmentsDTO } from '@data/models/cards/card-attachments-dto';
 import { MatStepper } from '@angular/material/stepper';
+import { RemoteSignFormComponent } from './steps/remote-sign-form/remote-sign-form.component';
 
 @Component({
   selector: 'app-sign-document-checklist-new',
@@ -56,6 +57,7 @@ export class SignDocumentChecklistNewComponent implements OnInit, AfterViewInit,
   @ViewChild('staticImage')
   staticImage: ElementRef;
   @ViewChild('stepper') stepper: MatStepper;
+  @ViewChild('signForm') signForm: RemoteSignFormComponent;
   public currentStep = 0;
   public labels: any = {
     previous: marker('common.previous'),
@@ -103,11 +105,11 @@ export class SignDocumentChecklistNewComponent implements OnInit, AfterViewInit,
   public auxOrderRelationRealOrder: any = {};
   public realOrderRelationAuxOrder: any = {};
   public selectedItemToUploadImage: number;
-  public attachmentsByGroup: CardAttachmentsDTO[] = [];
   public showChangeSign = false;
   public changeSignToOrderNumber: number = null;
   public steps: { type: string; label: string; page: number }[] = [];
   private checklistToEdit: TemplatesChecklistsDTO = null;
+  public templateChecklistItems: TemplateChecklistItemDTO[] = null;
   private formDataIdValueMapByPdf: { [fieldName: string]: string | number | boolean } = {};
   private formDataIdValueMapByForm: { [fieldName: string]: string | number | boolean } = {};
   private formDataIdValueMapByForNgxPdf: { [fieldName: string]: string | number | boolean } = {};
@@ -206,7 +208,6 @@ export class SignDocumentChecklistNewComponent implements OnInit, AfterViewInit,
   }
 
   ngOnInit(): void {
-    this.getImageAttachments();
     this.preparePdf();
   }
 
@@ -286,10 +287,6 @@ export class SignDocumentChecklistNewComponent implements OnInit, AfterViewInit,
       }
     });
     this.itemListToShow = groupByType;
-  }
-
-  public addStaticImage(item: FileList): void {
-    this.getImageFile(item, this.selectedItemToUploadImage);
   }
 
   public imageAttachmentSelected(event: { value: AttachmentDTO }, selectedItemToUploadImage: number) {
@@ -577,7 +574,7 @@ export class SignDocumentChecklistNewComponent implements OnInit, AfterViewInit,
     return marker('signature.nextStep');
   }
 
-  public showSectionInStep(section: 'paintZone' | 'pdfViewer'): boolean {
+  public showSectionInStep(section: 'paintZone' | 'pdfViewer' | 'formViewer'): boolean {
     const step = this.stepper?.selectedIndex;
     if ((step === 0 || step) && this.steps && this.steps[step]) {
       return this.steps[step].type === section;
@@ -586,9 +583,32 @@ export class SignDocumentChecklistNewComponent implements OnInit, AfterViewInit,
   }
 
   public stepChanged(event: any): void {
+    //Si el paso anterior era el del fomulario modifico los valores del formulario
+    if (event.previouslySelectedIndex === 1 && this.mode !== 'REMOTE') {
+      this.templateChecklistItems = this.signForm.getFormValue();
+      this.checklistToEdit.templateChecklistItems = this.checklistToEdit.templateChecklistItems.map(
+        (item: TemplateChecklistItemDTO) => {
+          let found = this.templateChecklistItems.find((item2: TemplateChecklistItemDTO) => item.id === item2.id);
+          if (!found) {
+            const syncItem = this.templateChecklistItems.find(
+              (item2: TemplateChecklistItemDTO) => item2.sincronizedItems.indexOf(item.orderNumber) >= 0
+            );
+            found = item;
+            if (syncItem) {
+              found.itemVal = syncItem.itemVal;
+            }
+          }
+          item.itemVal = found.itemVal;
+          // console.log('item', item, found);
+          return item;
+        }
+      );
+      this.initForm();
+      // console.log(this.formData);
+      setTimeout(() => this.repaintItemsInTemplate(), 200);
+    }
     const step = event.selectedIndex;
     if ((step || step === 0) && this.steps && this.steps[step] && this.steps[step].type === 'paintZone') {
-      console.log('go to page', this.steps[step].page);
       setTimeout(() => (this.page = this.steps[step].page), 100);
     } else {
       setTimeout(() => (this.page = 1), 100);
@@ -596,47 +616,14 @@ export class SignDocumentChecklistNewComponent implements OnInit, AfterViewInit,
   }
 
   public clickOnChecklistItem(event: any): void {
-    console.log(event);
+    // console.log(event);
     this.globalMessageService.showSuccess({
       message: this.translateService.instant(marker('signature.nextStepToFillFields')),
       actionText: this.translateService.instant(marker('common.close'))
     });
   }
 
-  //Private methods
-
-  private initForm() {
-    this.checklistForm = this.signDocumentAuxService.createChecklistForm(this.checklistToEdit, []);
-    if (this.mode === 'REMOTE') {
-      this.checklistForm.disable();
-    }
-    this.updateValueAndValidityForm();
-  }
-
-  private setSteps(): void {
-    this.steps = [
-      { type: 'pdfViewer', label: this.labels.remoteSignaturePreview, page: 1 },
-      { type: 'formViewer', label: this.labels.remoteSignatureForm, page: null }
-    ];
-    const drawingItems = this.checklistToEdit.templateChecklistItems
-      .filter((item) => item.typeItem === 'DRAWING')
-      .reduce((acc, item) => {
-        const sincronizedItems = acc.reduce((acc2, item2) => {
-          return item2.sincronizedItems ? [...acc2, ...item2.sincronizedItems] : acc2;
-        }, []);
-        if (sincronizedItems.indexOf(item.auxOrderNumber) === -1) {
-          return [...acc, item];
-        } else {
-          return acc;
-        }
-      }, []);
-    drawingItems.forEach((item) => {
-      this.steps.push({ type: 'paintZone', label: item.label, page: item.numPage });
-    });
-    this.steps.push({ type: 'pdfViewer', label: this.labels.remoteSignatureConfirmation, page: 1 });
-  }
-
-  private printItemImageInPdf(jItem: JQuery<HTMLElement>, templateItemFG: UntypedFormGroup): void {
+  public printItemImageInPdf(jItem: JQuery<HTMLElement>, templateItemFG: UntypedFormGroup): void {
     const item: TemplateChecklistItemDTO = templateItemFG.getRawValue();
     if (
       (item.typeItem === 'IMAGE' || item.typeItem === 'SIGN') &&
@@ -650,6 +637,39 @@ export class SignDocumentChecklistNewComponent implements OnInit, AfterViewInit,
           item.itemVal.fileValue.content ? item.itemVal.fileValue.content : item.itemVal.fileValue.thumbnail
         }")`
       });
+    }
+  }
+
+  //Private methods
+
+  private initForm() {
+    this.checklistForm = this.signDocumentAuxService.createChecklistForm(this.checklistToEdit, []);
+    if (this.mode === 'REMOTE') {
+      this.checklistForm.disable();
+    }
+    this.updateValueAndValidityForm();
+  }
+
+  private setSteps(): void {
+    this.steps = [{ type: 'pdfViewer', label: this.labels.remoteSignaturePreview, page: 1 }];
+    if (this.mode !== 'REMOTE') {
+      this.steps.push({ type: 'formViewer', label: this.labels.remoteSignatureForm, page: null });
+      const drawingItems = this.checklistToEdit.templateChecklistItems
+        .filter((item) => item.typeItem === 'DRAWING')
+        .reduce((acc, item) => {
+          const sincronizedItems = acc.reduce((acc2, item2) => {
+            return item2.sincronizedItems ? [...acc2, ...item2.sincronizedItems] : acc2;
+          }, []);
+          if (sincronizedItems.indexOf(item.auxOrderNumber) === -1) {
+            return [...acc, item];
+          } else {
+            return acc;
+          }
+        }, []);
+      drawingItems.forEach((item) => {
+        this.steps.push({ type: 'paintZone', label: item.label, page: item.numPage });
+      });
+      this.steps.push({ type: 'pdfViewer', label: this.labels.remoteSignatureConfirmation, page: 1 });
     }
   }
 
@@ -794,49 +814,6 @@ export class SignDocumentChecklistNewComponent implements OnInit, AfterViewInit,
     }
   };
 
-  private getBase64(file: File): Promise<any> {
-    const reader = new FileReader();
-    return new Promise((resolve) => {
-      reader.onload = (ev) => {
-        resolve(ev.target.result);
-      };
-      reader.readAsDataURL(file);
-    });
-  }
-
-  private async getImageFile(files: FileList, itemOrderNumber: number): Promise<void> {
-    if (files.length !== 1) {
-      this.globalMessageService.showError({
-        message: this.translateService.instant(marker('errors.uploadOnlyOneFile')),
-        actionText: this.translateService.instant(marker('common.close'))
-      });
-      return null;
-    }
-    const file = files[0];
-    if (file.type.toLowerCase().indexOf('image') === -1) {
-      this.globalMessageService.showError({
-        message: this.translateService.instant(marker('errors.fileFormat'), {
-          format: this.translateService.instant(marker('common.image'))
-        }),
-        actionText: this.translateService.instant(marker('common.close'))
-      });
-      return null;
-    }
-    const base64 = await this.getBase64(file);
-    const fg: UntypedFormGroup = this.getChecklistItemByOrderNumber(itemOrderNumber);
-    fg.get('itemVal').get('fileValue').get('id').setValue(null);
-    fg.get('itemVal').get('fileValue').get('name').setValue(file.name);
-    fg.get('itemVal').get('fileValue').get('type').setValue(file.type);
-    fg.get('itemVal').get('fileValue').get('size').setValue(file.size);
-    fg.get('itemVal').get('fileValue').get('content').setValue(base64.split(';base64,')[1], { emit: true });
-    this.checklistForm.markAsDirty();
-    this.checklistForm.markAsTouched();
-    const id = `item_${itemOrderNumber}`;
-    const jQItem = $(`#${id}`);
-    this.printItemImageInPdf(jQItem, fg);
-    this.staticImage.nativeElement.value = '';
-  }
-
   private preparePdf(): void {
     const spinner = this.spinnerService.show();
     this.templatesChecklistsService
@@ -869,45 +846,31 @@ export class SignDocumentChecklistNewComponent implements OnInit, AfterViewInit,
               ? [...item.sincronizedItems].map((n) => this.realOrderRelationAuxOrder[n])
               : item.sincronizedItems;
           });
+          let synchronizedItems: number[] = [];
+          this.templateChecklistItems = [...this.checklistToEdit.templateChecklistItems].filter(
+            (item: TemplateChecklistItemDTO) => {
+              if (
+                //Todos menos drawing
+                (item.typeItem === 'SIGN' ||
+                  item.typeItem === 'CHECK' ||
+                  item.typeItem === 'IMAGE' ||
+                  item.typeItem === 'TEXT') &&
+                !item.staticValue &&
+                synchronizedItems.indexOf(item.orderNumber) === -1
+              ) {
+                const add = item?.sincronizedItems ? item.sincronizedItems : [item.orderNumber];
+                synchronizedItems = [...synchronizedItems, ...add];
+                return true;
+              }
+              return false;
+            }
+          );
           this.setTitle.emit(this.signDocumentExchange.templateChecklist.templateFile.name);
           this.fileTemplateBase64.next(data.procesedFile.content);
-          console.log(this.checklistToEdit);
           this.setSteps();
           this.initForm();
           this.setItemListToShow();
           this.repaintItemsInTemplate();
-        },
-        error: (error) => {
-          this.logger.error(error);
-          this.globalMessageService.showError({
-            message: error.message,
-            actionText: this.translateService.instant(marker('common.close'))
-          });
-        }
-      });
-  }
-
-  private getImageAttachments(): void {
-    const spinner = this.spinnerService.show();
-    this.templatesChecklistsService
-      .getAttachmentsChecklistByWCardId(this.wCardId)
-      .pipe(
-        take(1),
-        finalize(() => this.spinnerService.hide(spinner))
-      )
-      .subscribe({
-        next: (data) => {
-          this.attachmentsByGroup = data
-            .map((d) => {
-              d.tabName = d.templateAttachmentItem.name;
-              d.attachments = d.attachments.filter((a) => a.type.toLowerCase().indexOf('image') >= 0);
-              // d.attachments.map((a) => {
-              //   a.content = a.content ? a.content : a.thumbnail;
-              //   return a;
-              // });
-              return d;
-            })
-            .filter((d) => d.attachments.length > 0);
         },
         error: (error) => {
           this.logger.error(error);

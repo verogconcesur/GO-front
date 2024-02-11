@@ -1,0 +1,104 @@
+<div class="sign-form flex justify-content-center align-items-center">
+    <form *ngIf="checklistForm" [formGroup]="checklistForm" class="smaller-mat-form-fields">
+        <section
+            formArrayName="templateChecklistItemsText"
+            *ngIf="checklistForm?.controls?.templateChecklistItemsText?.controls?.length"
+        >
+            <div
+                class="sign-form__text"
+                *ngFor="let text of checklistForm?.controls?.templateChecklistItemsText?.controls; let textIndex = index"
+            >
+                <mat-form-field appearance="outline" floatLabel="always" class="text-area m-2" [formGroupName]="textIndex">
+                    <mat-label>{{ text.value.label }}</mat-label>
+                    <textarea
+                        matInput
+                        [formControl]="getValueControl('TEXT', text)"
+                        cdkTextareaAutosize
+                        cdkAutosizeMinRows="5"
+                        cdkAutosizeMaxRows="5"
+                    ></textarea>
+                </mat-form-field>
+            </div>
+        </section>
+        <section
+            formArrayName="templateChecklistItemsImage"
+            *ngIf="checklistForm?.controls?.templateChecklistItemsImage?.controls?.length"
+        >
+            <div
+                class="sign-form__image m-2"
+                *ngFor="let imageFc of checklistForm?.controls?.templateChecklistItemsImage?.controls; let imageIndex = index"
+            >
+                <section [formGroupName]="imageIndex">
+                    <div class="sign-form__image__title">{{ imageFc.value?.label }}</div>
+                    <mat-form-field appearance="outline" style="width: 100%">
+                        <mat-label>{{ labels.selectCardAttachmentImage | translate }}</mat-label>
+                        <mat-select (selectionChange)="imageAttachmentSelected($event, imageFc)">
+                            <mat-option></mat-option>
+                            <mat-optgroup *ngFor="let group of attachmentsByGroup" [label]="group.tabName">
+                                <mat-option *ngFor="let attachment of group.attachments" [value]="attachment">
+                                    {{ attachment.name }}
+                                </mat-option>
+                            </mat-optgroup>
+                        </mat-select>
+                    </mat-form-field>
+                    <div fxLayoutAlign="start center">
+                        <div class="image-input-preview" fxLayoutAlign="center center">
+                            <img [src]="getImagePreviewBase64(imageFc)" />
+                        </div>
+                        <button
+                            mat-raised-button
+                            color="primary"
+                            class="add-static-image-btn"
+                            (click)="selectedItemToUploadImage = imageIndex; staticImage.click()"
+                        >
+                            <label>{{ labels.uploadImage | translate }}</label>
+                        </button>
+                    </div>
+                </section>
+            </div>
+        </section>
+        <section
+            formArrayName="templateChecklistItemsCheck"
+            *ngIf="checklistForm?.controls?.templateChecklistItemsCheck?.controls?.length"
+        >
+            <div
+                class="sign-form__check m-2"
+                *ngFor="let check of checklistForm?.controls?.templateChecklistItemsCheck?.controls; let checkIndex = index"
+            >
+                <section [formGroupName]="checkIndex">
+                    <mat-slide-toggle [formControl]="getValueControl('CHECK', check)"
+                        ><label class="sign-form__check__title">{{ check.value.label }}</label></mat-slide-toggle
+                    >
+                </section>
+            </div>
+        </section>
+        <section
+            formArrayName="templateChecklistItemsSign"
+            *ngIf="checklistForm?.controls?.templateChecklistItemsSign?.controls?.length"
+        >
+            <div
+                class="sign-form__sign m-2"
+                *ngFor="let sign of checklistForm?.controls?.templateChecklistItemsSign?.controls; let signIndex = index"
+            >
+                <div class="sign-form__sign__title">
+                    {{ sign.value.label }}
+                </div>
+                <div class="sign-wrapper" (click)="editSign(sign)">
+                    <img [src]="getSignSrc(sign)" />
+                    <button mat-icon-button>
+                        <mat-icon>edit</mat-icon>
+                    </button>
+                </div>
+            </div>
+        </section>
+    </form>
+</div>
+
+<input
+    type="file"
+    style="display: none"
+    #staticImage
+    accept="image/*"
+    id="staticImage"
+    (change)="addStaticImage($event.target.files)"
+/>
