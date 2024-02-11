@@ -825,13 +825,15 @@
     },
     "signature": {
         "cancelConfirmation": "¿Está seguro que desea cancelar la firma remota de este documento?",
+        "clickOnPencilButtonFirst": "Para dibujar pulse primero sobre el botón verde con un lápiz.",
+        "clickOnSend": "Persione sobre el botón enviar",
         "confirmationStep": "Confirmación",
         "drawFieldFormStep": "Campo de dibujo",
         "drawSignError": "Debes firmar el documento para poder continuar",
         "formStep": "Formulario",
         "formTitle": "Campos a rellenar",
+        "goToFormStepToEdit": "Debe ir al paso 2 (formulario) para poder rellenar este campo.",
         "nextStep": "Siguiente",
-        "nextStepToFillFields": "Debe ir al paso 2 para poder rellenar este campo.",
         "nextStepToSignDocument": "Revise y compruebe haber rellenado el formulario. Si detecta algún fallo revise los pasos anteriores. Si está conforme haga click sobre el botón \"guardar\".",
         "previewStep": "Documento",
         "previewTitle": "Previsualización",
@@ -842,7 +844,8 @@
             "rejected": "Rechazado",
             "signed": "Firmado",
             "unreaden": "Sin leer"
-        }
+        },
+        "toDrawInSelectStep": "Para dibujar en este campo seleccione el paso número {step} ({stepLabel})."
     },
     "startConv": {
         "message": "Mensaje",

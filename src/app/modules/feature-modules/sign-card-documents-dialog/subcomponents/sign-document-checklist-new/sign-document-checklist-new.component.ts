@@ -107,7 +107,8 @@ export class SignDocumentChecklistNewComponent implements OnInit, AfterViewInit,
   public selectedItemToUploadImage: number;
   public showChangeSign = false;
   public changeSignToOrderNumber: number = null;
-  public steps: { type: string; label: string; page: number }[] = [];
+  public steps: { type: string; label: string; page: number; item: TemplateChecklistItemDTO }[] = [];
+  public drawingModeEnabledForItem: TemplateChecklistItemDTO = null;
   private checklistToEdit: TemplatesChecklistsDTO = null;
   public templateChecklistItems: TemplateChecklistItemDTO[] = null;
   private formDataIdValueMapByPdf: { [fieldName: string]: string | number | boolean } = {};
@@ -374,6 +375,8 @@ export class SignDocumentChecklistNewComponent implements OnInit, AfterViewInit,
           );
         }
       });
+      this.drawingModeEnabledForItem = this.drawingModeEnabledForItem ? null : this.steps[this.stepper.selectedIndex].item;
+      this.showOrHideDrawingButtons();
     } else {
       this.renderingDrawingItems = false;
     }
@@ -583,6 +586,7 @@ export class SignDocumentChecklistNewComponent implements OnInit, AfterViewInit,
   }
 
   public stepChanged(event: any): void {
+    this.drawingModeEnabledForItem = null;
     //Si el paso anterior era el del fomulario modifico los valores del formulario
     if (event.previouslySelectedIndex === 1 && this.mode !== 'REMOTE') {
       this.templateChecklistItems = this.signForm.getFormValue();
@@ -605,23 +609,85 @@ export class SignDocumentChecklistNewComponent implements OnInit, AfterViewInit,
       );
       this.initForm();
       // console.log(this.formData);
-      setTimeout(() => this.repaintItemsInTemplate(), 200);
+      setTimeout(() => this.repaintItemsInTemplate(), 100);
     }
     const step = event.selectedIndex;
     if ((step || step === 0) && this.steps && this.steps[step] && this.steps[step].type === 'paintZone') {
-      setTimeout(() => (this.page = this.steps[step].page), 100);
+      setTimeout(() => {
+        this.page = this.steps[step].page;
+      }, 100);
     } else {
       setTimeout(() => (this.page = 1), 100);
     }
-  }
-
-  public clickOnChecklistItem(event: any): void {
-    // console.log(event);
-    this.globalMessageService.showSuccess({
-      message: this.translateService.instant(marker('signature.nextStepToFillFields')),
-      actionText: this.translateService.instant(marker('common.close'))
+    setTimeout(() => {
+      this.drawingModeEnabledForItem = this.steps[this.stepper.selectedIndex].item;
+      this.showOrHideDrawingButtons();
     });
   }
+
+  public showOrHideDrawingButtons(): void {
+    $('.checklistItemToDrag__edit').addClass('hidden');
+    $('.checklistItemToDrag__check').addClass('hidden');
+    const item = this.steps[this.stepper.selectedIndex]?.item;
+    if (item && this.steps[this.stepper.selectedIndex]?.type === 'paintZone') {
+      $(`#item_${item.orderNumber} .checklistItemToDrag__edit`).off('click');
+      $(`#item_${item.orderNumber} .checklistItemToDrag__check`).off('click');
+      if (this.drawingModeEnabledForItem) {
+        this.drawingModeEnabledForItem = null;
+        setTimeout(() => {
+          $(`#item_${item.orderNumber} .checklistItemToDrag__edit`).removeClass('hidden');
+          $(`#item_${item.orderNumber} .checklistItemToDrag__edit`).on('click', (event) => {
+            event.stopPropagation();
+            this.showOrHideDrawingButtons();
+          });
+        });
+      } else {
+        this.drawingModeEnabledForItem = this.steps[this.stepper.selectedIndex].item;
+        setTimeout(() => {
+          $(`#item_${item.orderNumber} .checklistItemToDrag__check`).removeClass('hidden');
+          $(`#item_${item.orderNumber} .checklistItemToDrag__check`).on('click', (event) => {
+            event.stopPropagation();
+            this.showOrHideDrawingButtons();
+          });
+        });
+      }
+    }
+  }
+
+  public clickOnChecklistItem = (event: any, item: any): void => {
+    // console.log(event, item, this.steps[this.stepper.selectedIndex]);
+    if (this.mode === 'REMOTE') {
+      this.globalMessageService.showSuccess({
+        message: this.translateService.instant(marker('signature.clickOnSend')),
+        actionText: this.translateService.instant(marker('common.close'))
+      });
+    } else if (item.typeItem !== 'DRAWING') {
+      this.globalMessageService.showSuccess({
+        message: this.translateService.instant(marker('signature.goToFormStepToEdit')),
+        actionText: this.translateService.instant(marker('common.close'))
+      });
+    } else if (item.typeItem === 'DRAWING' && this.steps[this.stepper.selectedIndex].item?.id === item.id) {
+      // console.log('here', this.drawingModeEnabledForItem?.id, item.id);
+      if (this.drawingModeEnabledForItem?.id !== item.id) {
+        this.globalMessageService.showSuccess({
+          message: this.translateService.instant(marker('signature.clickOnPencilButtonFirst')),
+          actionText: this.translateService.instant(marker('common.close'))
+        });
+      }
+    } else if (item.typeItem === 'DRAWING') {
+      const found = this.steps.find((step) => step.item?.id === item.id);
+      const index = this.steps.findIndex((step) => step.item?.id === item.id);
+      if (found) {
+        this.globalMessageService.showSuccess({
+          message: this.translateService.instant(marker('signature.toDrawInSelectStep'), {
+            step: index + 1,
+            stepLabel: found.label
+          }),
+          actionText: this.translateService.instant(marker('common.close'))
+        });
+      }
+    }
+  };
 
   public printItemImageInPdf(jItem: JQuery<HTMLElement>, templateItemFG: UntypedFormGroup): void {
     const item: TemplateChecklistItemDTO = templateItemFG.getRawValue();
@@ -651,9 +717,9 @@ export class SignDocumentChecklistNewComponent implements OnInit, AfterViewInit,
   }
 
   private setSteps(): void {
-    this.steps = [{ type: 'pdfViewer', label: this.labels.remoteSignaturePreview, page: 1 }];
+    this.steps = [{ type: 'pdfViewer', label: this.labels.remoteSignaturePreview, page: 1, item: null }];
     if (this.mode !== 'REMOTE') {
-      this.steps.push({ type: 'formViewer', label: this.labels.remoteSignatureForm, page: null });
+      this.steps.push({ type: 'formViewer', label: this.labels.remoteSignatureForm, page: null, item: null });
       const drawingItems = this.checklistToEdit.templateChecklistItems
         .filter((item) => item.typeItem === 'DRAWING')
         .reduce((acc, item) => {
@@ -667,9 +733,9 @@ export class SignDocumentChecklistNewComponent implements OnInit, AfterViewInit,
           }
         }, []);
       drawingItems.forEach((item) => {
-        this.steps.push({ type: 'paintZone', label: item.label, page: item.numPage });
+        this.steps.push({ type: 'paintZone', label: item.label, page: item.numPage, item });
       });
-      this.steps.push({ type: 'pdfViewer', label: this.labels.remoteSignatureConfirmation, page: 1 });
+      this.steps.push({ type: 'pdfViewer', label: this.labels.remoteSignatureConfirmation, page: 1, item: null });
     }
   }
 
@@ -696,10 +762,25 @@ export class SignDocumentChecklistNewComponent implements OnInit, AfterViewInit,
       item.addClass('dropped');
       item.attr('id', id);
       item.attr('data-id', uniqueId);
-      item
-        .children('.resizable')
-        .children('.checklistItemToDrag__label')
-        .prepend(`<div class="checklistItemToDrag__orderNumber">${uniqueId}</div> `);
+      if (templateItemFG.get('typeItem').value === 'DRAWING') {
+        item
+          .children('.resizable')
+          .children('.checklistItemToDrag__label')
+          .prepend(
+            `<div class="checklistItemToDrag__orderNumber">${uniqueId}</div>
+             <div class="checklistItemToDrag__edit hidden">
+             <mat-icon role="img" class="mat-icon notranslate material-icons mat-ligature-font mat-icon-no-color" aria-hidden="true" data-mat-icon-type="font">edit</mat-icon>
+             </div>
+             <div class="checklistItemToDrag__check hidden">
+             <mat-icon role="img" class="mat-icon notranslate material-icons mat-ligature-font mat-icon-no-color" aria-hidden="true" data-mat-icon-type="font">check</mat-icon>
+             </div> `
+          );
+      } else {
+        item
+          .children('.resizable')
+          .children('.checklistItemToDrag__label')
+          .prepend(`<div class="checklistItemToDrag__orderNumber">${uniqueId}</div> `);
+      }
       item.children('.resizable').attr('id', id_resizable);
       item.children('.resizable').attr('data-id', uniqueId);
       item.css({
@@ -713,7 +794,7 @@ export class SignDocumentChecklistNewComponent implements OnInit, AfterViewInit,
       item.appendTo($('.canvasDropZone-page' + pageNumber));
     }
     item.on('click', ($event) => {
-      this.clickOnChecklistItem($event);
+      this.clickOnChecklistItem($event, templateItemFG.value);
     });
     this.printItemImageInPdf(item, templateItemFG);
     //Sólo dejo pintar a partir del paso 2
@@ -765,7 +846,19 @@ export class SignDocumentChecklistNewComponent implements OnInit, AfterViewInit,
       }
       p.touchMoved = (event: any) => {
         try {
-          if (!this.showSectionInStep('paintZone') || event?.touches?.length > 1 || event?.targetTouches?.length > 1) {
+          // console.log(
+          //   event,
+          //   this.drawingModeEnabledForItem,
+          //   event.target.offsetParent.id,
+          //   `item_resizable_${this.drawingModeEnabledForItem?.orderNumber}`
+          // );
+          if (
+            !this.drawingModeEnabledForItem ||
+            !this.showSectionInStep('paintZone') ||
+            event?.touches?.length > 1 ||
+            event?.targetTouches?.length > 1 ||
+            event.target.offsetParent.id !== `item_resizable_${this.drawingModeEnabledForItem?.orderNumber}`
+          ) {
             return;
           }
           let type = 'pencil';
