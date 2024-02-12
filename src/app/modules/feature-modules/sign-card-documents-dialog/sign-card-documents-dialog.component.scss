@@ -15,7 +15,6 @@
     width: $desktop-large;
     height: calc(var(--vh) - 20px);
     overflow: hidden;
-    max-height: 960px;
     position: relative;
     @include respond-to(calc($desktop-large + 100px)) {
       width: calc(100vw - 20px);
