@@ -1,4 +1,4 @@
-<div class="checklist-steps">
+<div class="checklist-steps" [ngClass]="{ hide: mode === 'REMOTE' }">
     <mat-stepper
         linear
         #stepper
@@ -29,7 +29,11 @@
     <!-- Preview pdf -->
     <div
         class="checklist-sign__pdf"
-        [ngClass]="{ opacity0: !pdfLoaded || (!showSectionInStep('pdfViewer') && !showSectionInStep('paintZone')) }"
+        [ngClass]="{
+            opacity0: !pdfLoaded || (!showSectionInStep('pdfViewer') && !showSectionInStep('paintZone')),
+            'mt-30': !showSectionInStep('paintZone') && mode !== 'REMOTE',
+            'remote-mode': mode === 'REMOTE'
+        }"
     >
         <div *ngIf="renderingDrawingItems" class="checklist-sign__pdf__spinner">
             <mat-spinner matSuffix class="spinner" diameter="50"></mat-spinner>
@@ -57,8 +61,7 @@
                 id="checklistPDF"
                 class="disable-pdf-form"
                 [base64Src]="base64"
-                height="90%"
-                [minHeight]="getPdfMinHeight()"
+                [height]="getPdfHeight()"
                 [handTool]="false"
                 [useBrowserLocale]="true"
                 [zoom]="'page-fit'"
@@ -93,14 +96,22 @@
             (printItemImageInPdf)="printItemImageInPdf($event.jQItem, $event.fg)"
         ></app-remote-sign-form>
     </div>
-    <div class="checklist-sign__footer">
-        <button mat-flat-button color="primary" (click)="save()" *ngIf="mode !== 'REMOTE'">
-            {{ labels.save | translate }}
-        </button>
-        <button mat-flat-button color="primary" (click)="save()" *ngIf="mode === 'REMOTE'">
-            {{ labels.send | translate }}
-        </button>
-    </div>
+</div>
+
+<div class="checklist-footer">
+    <button mat-flat-button (click)="currentStep = currentStep - 1" *ngIf="stepper.selectedIndex > 0">
+        {{ labels.back | translate }}
+    </button>
+    <div class="checklist-footer__info" (click)="showStepInfo()"><mat-icon>info</mat-icon>{{ getStepInfo() }}</div>
+    <button mat-flat-button color="primary" (click)="currentStep = currentStep + 1" *ngIf="mode !== 'REMOTE' && !isLastStep()">
+        {{ labels.next | translate }}
+    </button>
+    <button mat-flat-button color="primary" (click)="save()" *ngIf="mode !== 'REMOTE' && isLastStep()">
+        {{ labels.save | translate }}
+    </button>
+    <button mat-flat-button color="primary" (click)="save()" *ngIf="mode === 'REMOTE'">
+        {{ labels.send | translate }}
+    </button>
 </div>
 
 <div class="checklistItemToDrag undropped" id="checklistItemToDrag">

@@ -8,6 +8,11 @@
   display: flex;
   justify-content: center;
   align-items: center;
+  &.hide {
+    opacity: 0;
+    position: absolute;
+    z-index: -111;
+  }
   .mat-step-icon.mat-step-icon-state-edit {
     mat-icon {
       border-radius: 20px;
@@ -47,7 +52,7 @@
 }
 .checklist-sign {
   width: calc(100% - 20px);
-  height: calc(100vh - 160px);
+  height: calc(100vh - 250px);
   padding: 0px 5px;
   position: relative;
   &__no-data {
@@ -73,7 +78,7 @@
     position: absolute;
     top: 0;
     width: 100%;
-    height: calc(100vh - 215px);
+    max-height: calc(100vh - 215px);
     .firma_canvas_wrapper {
       width: 100%;
       display: flex;
@@ -100,48 +105,15 @@
       max-width: calc(100% - 145px);
       overflow-y: auto;
     }
+    &.mt-30 {
+      margin-top: 30px;
+    }
   }
   &__form {
     position: absolute;
     top: 0;
     width: 100%;
-    height: calc(100vh - 215px);
-    // .template-data__section {
-    //   &__title {
-    //     margin: 0 0 5px 0;
-    //     &.first-child {
-    //       margin-top: 0px;
-    //     }
-    //   }
-    //   &__info {
-    //     margin: 0 0 5px 0;
-    //     line-height: 38px;
-    //   }
-    //   &__group {
-    //     &.grid-group {
-    //       display: grid;
-    //       justify-items: center;
-    //       gap: 1rem;
-    //       grid-template-columns: repeat(auto-fit, minmax(11rem, 1fr));
-    //       margin-bottom: 10px;
-    //       app-organization-levels-nested-combos {
-    //         display: contents;
-    //       }
-    //     }
-    //     &__title {
-    //       padding-bottom: 0px;
-    //       text-transform: uppercase;
-    //       margin-bottom: 0px;
-    //       padding-right: 0.5rem;
-    //       &::after {
-    //         content: ':';
-    //       }
-    //     }
-    //   }
-    // }
-    // .mat-form-field-appearance-outline.mat-form-field-disabled .mat-form-field-outline {
-    //   color: mat-color($primary, statusNeutral) !important;
-    // }
+    height: calc(100vh - 250px);
   }
 
   &__pdf {
@@ -158,19 +130,12 @@
       pointer-events: none;
     }
     .paint-zone-controls {
-      margin-top: -10px;
+      // margin-top: -10px;
       width: 100%;
       display: flex;
       justify-content: center;
       align-items: center;
     }
-  }
-
-  &__footer {
-    position: absolute;
-    bottom: 0;
-    right: 0;
-    margin: 0 20px;
   }
 
   .inputColor {
@@ -188,6 +153,31 @@
     pointer-events: none;
   }
 }
+
+.checklist-footer {
+  background-color: transparent;
+  width: calc(100% - 40px);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  padding: 20px;
+  z-index: 100;
+  &__info {
+    max-width: 75%;
+    padding: 0 5px;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    cursor: pointer;
+    mat-icon {
+      margin-bottom: -7px;
+    }
+  }
+}
+
 .change-sign-wrapper {
   position: absolute;
   top: 0;
@@ -198,18 +188,6 @@
   justify-content: center;
   align-items: center;
   background-color: rgba(mat-contrast($primary, 200), 0.5);
-}
-
-.checklist-footer {
-  width: 100%;
-  min-height: 65px;
-  position: absolute;
-  bottom: 0;
-  padding: 5px 20px;
-  background-color: mat-contrast($primary, 400);
-  &__error {
-    color: mat-color($primary, statusError);
-  }
 }
 
 .checklistItemToDrag {

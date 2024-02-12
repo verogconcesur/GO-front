@@ -8,8 +8,11 @@
                 class="sign-form__text"
                 *ngFor="let text of checklistForm?.controls?.templateChecklistItemsText?.controls; let textIndex = index"
             >
+                <div class="sign-form__text__title">
+                    {{ text.value.label }}
+                </div>
                 <mat-form-field appearance="outline" floatLabel="always" class="text-area m-2" [formGroupName]="textIndex">
-                    <mat-label>{{ text.value.label }}</mat-label>
+                    <!-- <mat-label>{{ text.value.label }}</mat-label> -->
                     <textarea
                         matInput
                         [formControl]="getValueControl('TEXT', text)"
@@ -66,7 +69,7 @@
                 *ngFor="let check of checklistForm?.controls?.templateChecklistItemsCheck?.controls; let checkIndex = index"
             >
                 <section [formGroupName]="checkIndex">
-                    <mat-slide-toggle [formControl]="getValueControl('CHECK', check)"
+                    <mat-slide-toggle [formControl]="getValueControl('CHECK', check)" labelPosition="before"
                         ><label class="sign-form__check__title">{{ check.value.label }}</label></mat-slide-toggle
                     >
                 </section>

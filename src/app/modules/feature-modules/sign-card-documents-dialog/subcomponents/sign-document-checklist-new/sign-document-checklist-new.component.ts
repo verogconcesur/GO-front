@@ -15,7 +15,7 @@ import {
   OnDestroy,
   ViewEncapsulation
 } from '@angular/core';
-import { UntypedFormArray, UntypedFormBuilder, UntypedFormGroup } from '@angular/forms';
+import { UntypedFormArray, UntypedFormBuilder, UntypedFormControl, UntypedFormGroup } from '@angular/forms';
 import TemplatesChecklistsDTO, {
   AuxChecklistItemsGroupBySyncDTO,
   AuxChecklistItemsGroupByTypeDTO,
@@ -87,7 +87,9 @@ export class SignDocumentChecklistNewComponent implements OnInit, AfterViewInit,
     save: marker('common.save'),
     send: marker('common.send'),
     changeSign: marker('common.changeSign'),
-    selectCardAttachmentImage: marker('administration.templates.checklists.selectCardAttachmentImage')
+    selectCardAttachmentImage: marker('administration.templates.checklists.selectCardAttachmentImage'),
+    back: marker('common.back'),
+    next: marker('common.next')
   };
 
   public itemToClone: JQuery<HTMLElement> = null;
@@ -220,11 +222,11 @@ export class SignDocumentChecklistNewComponent implements OnInit, AfterViewInit,
     this.removeP5s(true);
   }
 
-  public getPdfMinHeight(): string {
-    if (this.smallModal) {
-      return '75vh';
-    }
-    return 'auto';
+  public getPdfHeight(): string {
+    // if (this.mode === 'REMOTE') {
+    //   return '95%';
+    // }
+    return '90%';
   }
 
   public setItemListToShow(): void {
@@ -288,56 +290,6 @@ export class SignDocumentChecklistNewComponent implements OnInit, AfterViewInit,
       }
     });
     this.itemListToShow = groupByType;
-  }
-
-  public imageAttachmentSelected(event: { value: AttachmentDTO }, selectedItemToUploadImage: number) {
-    const file: AttachmentDTO = event.value;
-    const fg: UntypedFormGroup = this.getChecklistItemByOrderNumber(selectedItemToUploadImage);
-    fg.get('itemVal')
-      .get('fileValue')
-      .get('id')
-      .setValue(file.id ? file.id : null);
-    fg.get('itemVal')
-      .get('fileValue')
-      .get('name')
-      .setValue(file?.name ? file.name : null);
-    fg.get('itemVal')
-      .get('fileValue')
-      .get('type')
-      .setValue(file?.type ? file.type : null);
-    fg.get('itemVal')
-      .get('fileValue')
-      .get('size')
-      .setValue(file?.size ? file.size : null);
-    fg.get('itemVal')
-      .get('fileValue')
-      .get('content')
-      .setValue(file?.content ? file.content : null, { emit: true });
-    fg.get('itemVal')
-      .get('fileValue')
-      .get('thumbnail')
-      .setValue(file?.thumbnail ? file.thumbnail : null, { emit: true });
-    this.updateValueAndValidityForm();
-
-    const id = `item_${selectedItemToUploadImage}`;
-    const jQItem = $(`#${id}`);
-    this.printItemImageInPdf(jQItem, fg);
-  }
-
-  public getImagePreviewBase64(itemOrderNumber: number): string {
-    const fg: UntypedFormGroup = this.getChecklistItemByOrderNumber(itemOrderNumber);
-    if (
-      fg?.get('itemVal')?.get('fileValue')?.get('type')?.value &&
-      (fg?.get('itemVal')?.get('fileValue')?.get('content')?.value ||
-        fg?.get('itemVal')?.get('fileValue')?.get('thumbnail')?.value)
-    ) {
-      return `data:${fg.get('itemVal').get('fileValue').get('type').value};base64,${
-        fg.get('itemVal').get('fileValue').get('content').value
-          ? fg.get('itemVal').get('fileValue').get('content').value
-          : fg?.get('itemVal')?.get('fileValue')?.get('thumbnail')?.value
-      }`;
-    }
-    return '';
   }
 
   public pdfLoadedFn($event: any) {
@@ -515,7 +467,6 @@ export class SignDocumentChecklistNewComponent implements OnInit, AfterViewInit,
                   const domItem = document.getElementById('item_' + found.auxOrderNumber);
                   const canvas = domItem.querySelector('canvas.p5Canvas') as HTMLCanvasElement;
                   const dataUrl = canvas.toDataURL();
-
                   item.itemVal.fileValue.content = dataUrl.split(';base64,')[1];
                   item.itemVal.fileValue.type = dataUrl.split(';base64,')[0].split('data:')[1];
                   item.itemVal.fileValue.name = `${+new Date()}_draw.png`;
@@ -585,10 +536,42 @@ export class SignDocumentChecklistNewComponent implements OnInit, AfterViewInit,
     return false;
   }
 
+  public isLastStep(): boolean {
+    return this.stepper?.selectedIndex === this.steps.length - 1;
+  }
+
+  public getStepInfo(): string {
+    if (this.stepper?.selectedIndex === 0 && this.mode !== 'REMOTE') {
+      return this.translateService.instant(marker('signature.previewStepInfoDetails'));
+    } else if (this.stepper?.selectedIndex === 0 && this.mode === 'REMOTE') {
+      return this.translateService.instant(marker('signature.previewStepInfoRemoteDetails'));
+    } else if (this.stepper?.selectedIndex === 0) {
+      return this.translateService.instant(marker('signature.previewStepInfoDetails'));
+    } else if (this.stepper?.selectedIndex === 1) {
+      return this.translateService.instant(marker('signature.formStepInfoDetails'));
+    } else if (this.stepper?.selectedIndex === this.steps.length - 1) {
+      return this.translateService.instant(marker('signature.confirmationStepInfoDetails'));
+    } else if (this.steps[this.stepper?.selectedIndex]?.type === 'paintZone') {
+      return this.translateService.instant(marker('signature.paintStepInfoDetails'), {
+        fieldNumber: this.steps[this.stepper?.selectedIndex].item.orderNumber,
+        fieldName: this.steps[this.stepper?.selectedIndex].item.label
+      });
+    }
+    return '';
+  }
+
+  public showStepInfo(): void {
+    this.globalMessageService.showSuccess({
+      message: this.getStepInfo(),
+      actionText: this.translateService.instant(marker('common.close'))
+    });
+  }
+
   public stepChanged(event: any): void {
     this.drawingModeEnabledForItem = null;
+    const previousStep = event.previouslySelectedIndex;
     //Si el paso anterior era el del fomulario modifico los valores del formulario
-    if (event.previouslySelectedIndex === 1 && this.mode !== 'REMOTE') {
+    if (previousStep === 1 && this.mode !== 'REMOTE') {
       this.templateChecklistItems = this.signForm.getFormValue();
       this.checklistToEdit.templateChecklistItems = this.checklistToEdit.templateChecklistItems.map(
         (item: TemplateChecklistItemDTO) => {
@@ -611,16 +594,43 @@ export class SignDocumentChecklistNewComponent implements OnInit, AfterViewInit,
       // console.log(this.formData);
       setTimeout(() => this.repaintItemsInTemplate(), 100);
     }
-    const step = event.selectedIndex;
-    if ((step || step === 0) && this.steps && this.steps[step] && this.steps[step].type === 'paintZone') {
+    if (
+      this.mode !== 'REMOTE' &&
+      this.steps[previousStep]?.item?.typeItem === 'DRAWING' &&
+      this.p5sDraws[this.steps[previousStep].item.auxOrderNumber]
+    ) {
+      try {
+        const found = this.steps[previousStep].item;
+        const domItem = document.getElementById('item_' + found.auxOrderNumber);
+        const canvas = domItem.querySelector('canvas.p5Canvas') as HTMLCanvasElement;
+        const dataUrl = canvas.toDataURL();
+        // console.log(this.checklistForm.getRawValue(), found, dataUrl);
+        (this.checklistForm.get('templateChecklistItems') as UntypedFormArray).controls.forEach((fc: UntypedFormControl) => {
+          if (fc.get('id').value === found.id) {
+            fc.get('itemVal').get('fileValue').get('content').setValue(dataUrl.split(';base64,')[1]);
+            fc.get('itemVal').get('fileValue').get('type').setValue(dataUrl.split(';base64,')[0].split('data:')[1]);
+            // console.log(fc.value);
+          }
+        });
+      } catch (error) {
+        console.error('Setting drawing step form', error);
+      }
+    }
+    this.currentStep = event.selectedIndex;
+    if (
+      (this.currentStep || this.currentStep === 0) &&
+      this.steps &&
+      this.steps[this.currentStep] &&
+      this.steps[this.currentStep].type === 'paintZone'
+    ) {
       setTimeout(() => {
-        this.page = this.steps[step].page;
+        this.page = this.steps[this.currentStep].page;
       }, 100);
     } else {
       setTimeout(() => (this.page = 1), 100);
     }
     setTimeout(() => {
-      this.drawingModeEnabledForItem = this.steps[this.stepper.selectedIndex].item;
+      this.drawingModeEnabledForItem = this.steps[this.currentStep].item;
       this.showOrHideDrawingButtons();
     });
   }
@@ -691,8 +701,9 @@ export class SignDocumentChecklistNewComponent implements OnInit, AfterViewInit,
 
   public printItemImageInPdf(jItem: JQuery<HTMLElement>, templateItemFG: UntypedFormGroup): void {
     const item: TemplateChecklistItemDTO = templateItemFG.getRawValue();
+    // console.log('print', item);
     if (
-      (item.typeItem === 'IMAGE' || item.typeItem === 'SIGN') &&
+      (item.typeItem === 'IMAGE' || item.typeItem === 'SIGN' || item.typeItem === 'DRAWING') &&
       (item.itemVal.fileValue.content || item.itemVal.fileValue.thumbnail)
     ) {
       jItem.css({
@@ -763,6 +774,7 @@ export class SignDocumentChecklistNewComponent implements OnInit, AfterViewInit,
       item.attr('id', id);
       item.attr('data-id', uniqueId);
       if (templateItemFG.get('typeItem').value === 'DRAWING') {
+        // console.log('drawing info', templateItemFG.value);
         item
           .children('.resizable')
           .children('.checklistItemToDrag__label')

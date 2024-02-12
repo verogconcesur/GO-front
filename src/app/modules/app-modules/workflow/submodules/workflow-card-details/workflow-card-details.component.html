@@ -88,11 +88,11 @@
                 (click)="changeSelectedTab('column1')"
                 [ngClass]="{
                     active: isTabSelected('column1'),
-                    required: requiredFieldsAuxService.isColRequired(columnsConfig[0].id)
+                    required: columnsConfig?.length && requiredFieldsAuxService.isColRequired(columnsConfig[0].id)
                 }"
                 matTooltipPosition="above"
-                [matTooltip]="requiredFieldsAuxService.getColTooltip(columnsConfig[0].id)"
-                [matTooltipDisabled]="!requiredFieldsAuxService.isColRequired(columnsConfig[0].id)"
+                [matTooltip]="requiredFieldsAuxService.getColTooltip(columnsConfig?.length ? columnsConfig[0].id : null)"
+                [matTooltipDisabled]="!requiredFieldsAuxService.isColRequired(columnsConfig?.length ? columnsConfig[0].id : null)"
             >
                 <mat-icon>info</mat-icon>
                 <!-- <label>{{ labels.column1 | translate }}</label> -->
@@ -103,11 +103,11 @@
                 (click)="changeSelectedTab('column2')"
                 [ngClass]="{
                     active: isTabSelected('column2'),
-                    required: requiredFieldsAuxService.isColRequired(columnsConfig[1].id)
+                    required: requiredFieldsAuxService.isColRequired(columnsConfig?.length ? columnsConfig[1].id : null)
                 }"
                 matTooltipPosition="above"
-                [matTooltip]="requiredFieldsAuxService.getColTooltip(columnsConfig[1].id)"
-                [matTooltipDisabled]="!requiredFieldsAuxService.isColRequired(columnsConfig[1].id)"
+                [matTooltip]="requiredFieldsAuxService.getColTooltip(columnsConfig?.length ? columnsConfig[1].id : null)"
+                [matTooltipDisabled]="!requiredFieldsAuxService.isColRequired(columnsConfig?.length ? columnsConfig[1].id : null)"
             >
                 <mat-icon>build</mat-icon>
                 <!-- <label>{{ labels.column2 | translate }}</label> -->
