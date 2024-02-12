@@ -24,6 +24,7 @@ import WorkflowCardsLimitDTO, {
   CardLimitSlotByDayDTO,
   CardLimitSlotDTO
 } from '@data/models/workflow-admin/workflow-card-limit-dto';
+import { WorkflowRequiredFieldsAuxService } from './workflow-required-fields-aux.service';
 
 @Injectable({
   providedIn: 'root'
@@ -42,7 +43,8 @@ export class WorkflowPrepareAndMoveService {
     private logger: NGXLogger,
     private translateService: TranslateService,
     private globalMessageService: GlobalMessageService,
-    private spinnerService: ProgressSpinnerDialogService
+    private spinnerService: ProgressSpinnerDialogService,
+    private requiredFieldsAuxService: WorkflowRequiredFieldsAuxService
   ) {}
 
   public prepareAndMove(
@@ -56,6 +58,7 @@ export class WorkflowPrepareAndMoveService {
     view?: 'MOVES_IN_THIS_WORKFLOW' | 'MOVES_IN_OTHER_WORKFLOWS'
   ): void {
     this.spinner = this.spinnerService.show();
+    this.requiredFieldsAuxService.resetRequiredFields();
     view = view ? view : 'MOVES_IN_THIS_WORKFLOW';
     const workflowCardsLimit: WorkflowCardsLimitDTO = move?.workflowCardsLimit;
     if (workflowCardsLimit && !workflowCardsLimit?.allowOverLimit) {
@@ -404,7 +407,10 @@ export class WorkflowPrepareAndMoveService {
         // itemToReplace: any,
         // view?: 'MOVES_IN_THIS_WORKFLOW' | 'MOVES_IN_OTHER_WORKFLOWS'
       },
-      (error) => {
+      (error: ConcenetError) => {
+        if (error.requiredFields?.length) {
+          this.requiredFieldsAuxService.setRequiredFields(error.requiredFields);
+        }
         this.reloadData$.next('UPDATE_INFORMATION');
         this.spinnerService.hide(this.spinner);
         this.globalMessageService.showError({

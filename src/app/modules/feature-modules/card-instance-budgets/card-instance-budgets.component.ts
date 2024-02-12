@@ -19,6 +19,11 @@ import {
   SelectTemplateLinesComponent,
   SelectTemplateLinesComponentModalEnum
 } from './modals/select-template-lines/select-template-lines.component';
+import {
+  MessageClientDialogComponent,
+  MessageClientDialogComponentModalEnum
+  // eslint-disable-next-line max-len
+} from '@modules/app-modules/workflow/submodules/workflow-card-details/subcomponents/message-client-dialog/message-client-dialog.component';
 
 @Component({
   selector: 'app-card-instance-budgets',
@@ -31,6 +36,7 @@ export class CardInstanceBudgetsComponent implements OnInit {
   @Input() cardInstanceWorkflowId: number = null;
   @Input() tabId: number = null;
   @Input() cardInstance: CardInstanceDTO;
+  @Input() originalCardInstance: CardInstanceDTO;
   @Output() reload: EventEmitter<boolean> = new EventEmitter<boolean>();
   public labels = {
     okClient: marker('common.okClient'),
@@ -93,7 +99,20 @@ export class CardInstanceBudgetsComponent implements OnInit {
             .pipe(take(1))
             .subscribe(
               (data) => {
-                this.reload.emit(true);
+                // this.reload.emit(true);
+                this.customDialogService
+                  .open({
+                    component: MessageClientDialogComponent,
+                    extendedComponentData: { cardInstance: this.originalCardInstance, remoteSignature: null },
+                    id: MessageClientDialogComponentModalEnum.ID,
+                    panelClass: MessageClientDialogComponentModalEnum.PANEL_CLASS,
+                    disableClose: true,
+                    width: '750px'
+                  })
+                  .pipe(take(1))
+                  .subscribe(() => {
+                    this.reload.emit(true);
+                  });
               },
               (error: ConcenetError) => {
                 this.logger.error(error);

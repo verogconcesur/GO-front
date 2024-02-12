@@ -5,6 +5,15 @@ export enum PermissionConstants {
   ASIGFICH = 'ASIGFICH',
   //Reordenar fichas cuando sea posible
   REORDFICH = 'REORDFICH',
+  //OCultar rutas
+  HIDECLIENTSTAB = 'HIDECLIENTSTAB',
+  HIDEVEHICLESTAB = 'HIDEVEHICLESTAB',
+  HIDEADVANCEDSEARCHTAB = 'HIDEADVANCEDSEARCHTAB',
+  //Borrar archivos
+  ALLOWDELETEFILES = 'ALLOWDELETEFILES',
+  //Ocultar botones de enviar y mover ficha
+  HIDESENDBUTTON = 'HIDESENDBUTTON',
+  HIDEMOVEBUTTON = 'HIDEMOVEBUTTON',
 
   //Permisos en acciones
   //OCULTAR ACCIÓN

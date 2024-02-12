@@ -76,6 +76,7 @@ export class CreateEditTimelineComponent extends ComponentToExtendForCustomDialo
   public endDate: Date;
   public showingLandingMessageEditor: number;
   public showingLandingEmailEditor: number;
+  public listVariables: VariablesDTO[];
   public textEditorToolbarOptions: TextEditorWrapperConfigI = {
     addHtmlModificationOption: true,
     addMacroListOption: true,
@@ -145,6 +146,20 @@ export class CreateEditTimelineComponent extends ComponentToExtendForCustomDialo
       formValue.template.id = this.timelineToEdit.template.id;
     }
     const spinner = this.spinnerService.show();
+    if (formValue.templateTimelineItems?.length) {
+      formValue.templateTimelineItems = formValue.templateTimelineItems.map((item: TemplatesTimelineItemsDTO) => {
+        if (item.messageLanding) {
+          item.variables = this.listVariables.filter((variable) => {
+            let variableUsed = false;
+            if (item.messageLanding && item.messageLanding.indexOf(variable.name) !== -1) {
+              variableUsed = true;
+            }
+            return variableUsed;
+          });
+        }
+        return item;
+      });
+    }
     return this.timelineService.addOrEditTimeline(formValue).pipe(
       map((response) => {
         this.globalMessageService.showSuccess({
@@ -484,9 +499,13 @@ export class CreateEditTimelineComponent extends ComponentToExtendForCustomDialo
   };
 
   private getVariable(): void {
-    this.variablesService.searchVariables().subscribe((res) => {
-      this.textEditorToolbarOptions.macroListOptions = res.map((item: VariablesDTO) => item.name);
-    });
+    this.variablesService
+      .searchVariables()
+      .pipe(take(1))
+      .subscribe((res) => {
+        this.textEditorToolbarOptions.macroListOptions = res.map((item: VariablesDTO) => item.name);
+        this.listVariables = res;
+      });
   }
 
   private initializeForm(): void {

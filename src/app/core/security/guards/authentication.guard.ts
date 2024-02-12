@@ -12,6 +12,7 @@ export class AuthGuardService implements CanActivate {
   canActivate(route: ActivatedRouteSnapshot): boolean {
     //Roles are passed in route data
     const permissions = route.data.permissions as Array<string>;
+    const notPermissions = route.data.notPermissions as Array<string>;
     const userLogged = this.authenticationService.isUserLogged();
     if (userLogged) {
       this.authenticationService.keepTokenAlive();
@@ -22,6 +23,12 @@ export class AuthGuardService implements CanActivate {
         this.router.navigate([RouteConstants.DASHBOARD]);
       }
       return hasPermissions;
+    } else if (userLogged && notPermissions && Array.isArray(notPermissions) && notPermissions.length) {
+      const hasPermissions = this.authenticationService.hasUserAnyPermission(notPermissions);
+      if (hasPermissions) {
+        this.router.navigate([RouteConstants.DASHBOARD]);
+      }
+      return !hasPermissions;
     } else if (userLogged && permissions && (!Array.isArray(permissions) || permissions.length)) {
       return false;
     }

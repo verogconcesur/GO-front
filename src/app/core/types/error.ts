@@ -1,3 +1,5 @@
+import CardColumnTabItemDTO from '@data/models/cards/card-column-tab-item-dto';
+
 export type ConcenetError = {
   timeStamp: Date;
   status: number;
@@ -5,4 +7,5 @@ export type ConcenetError = {
   message: string;
   path: string;
   code?: string;
+  requiredFields?: CardColumnTabItemDTO[];
 };

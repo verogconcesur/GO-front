@@ -83,12 +83,32 @@
         </div>
 
         <div class="wcard-details__wrapper__sections__controller tab-options-wrapper" *ngIf="showMode === 'individual'">
-            <div class="tab-option" (click)="changeSelectedTab('column1')" [ngClass]="{ active: isTabSelected('column1') }">
+            <div
+                class="tab-option"
+                (click)="changeSelectedTab('column1')"
+                [ngClass]="{
+                    active: isTabSelected('column1'),
+                    required: requiredFieldsAuxService.isColRequired(columnsConfig[0].id)
+                }"
+                matTooltipPosition="above"
+                [matTooltip]="requiredFieldsAuxService.getColTooltip(columnsConfig[0].id)"
+                [matTooltipDisabled]="!requiredFieldsAuxService.isColRequired(columnsConfig[0].id)"
+            >
                 <mat-icon>info</mat-icon>
                 <!-- <label>{{ labels.column1 | translate }}</label> -->
                 <label>{{ columnsConfig?.length ? columnsConfig[0].name : "" }}</label>
             </div>
-            <div class="tab-option" (click)="changeSelectedTab('column2')" [ngClass]="{ active: isTabSelected('column2') }">
+            <div
+                class="tab-option"
+                (click)="changeSelectedTab('column2')"
+                [ngClass]="{
+                    active: isTabSelected('column2'),
+                    required: requiredFieldsAuxService.isColRequired(columnsConfig[1].id)
+                }"
+                matTooltipPosition="above"
+                [matTooltip]="requiredFieldsAuxService.getColTooltip(columnsConfig[1].id)"
+                [matTooltipDisabled]="!requiredFieldsAuxService.isColRequired(columnsConfig[1].id)"
+            >
                 <mat-icon>build</mat-icon>
                 <!-- <label>{{ labels.column2 | translate }}</label> -->
                 <label>{{ columnsConfig?.length ? columnsConfig[1].name : "" }}</label>

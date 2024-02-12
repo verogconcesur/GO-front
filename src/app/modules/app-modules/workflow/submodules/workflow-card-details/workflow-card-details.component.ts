@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { Component, HostListener, Inject, OnInit } from '@angular/core';
+import { Component, HostListener, Inject, OnDestroy, OnInit } from '@angular/core';
 import { Location } from '@angular/common';
 import { ActivatedRoute, Router } from '@angular/router';
 import WorkflowCardDTO from '@data/models/workflows/workflow-card-dto';
@@ -21,6 +21,7 @@ import { ConfirmDialogService } from '@shared/services/confirm-dialog.service';
 import { AuthenticationService } from '@app/security/authentication.service';
 import { Env } from '@app/types/env';
 import { ENV } from '@app/constants/global.constants';
+import { WorkflowRequiredFieldsAuxService } from '../../aux-service/workflow-required-fields-aux.service';
 
 @UntilDestroy()
 @Component({
@@ -28,7 +29,7 @@ import { ENV } from '@app/constants/global.constants';
   templateUrl: './workflow-card-details.component.html',
   styleUrls: ['./workflow-card-details.component.scss']
 })
-export class WorkflowCardDetailsComponent implements OnInit {
+export class WorkflowCardDetailsComponent implements OnInit, OnDestroy {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   public relativeTo: any = null;
   public card: WorkflowCardDTO = null;
@@ -62,7 +63,8 @@ export class WorkflowCardDetailsComponent implements OnInit {
     private prepareAndMoveService: WorkflowPrepareAndMoveService,
     private rxStompService: RxStompService,
     private confirmationDialog: ConfirmDialogService,
-    private authService: AuthenticationService
+    private authService: AuthenticationService,
+    public requiredFieldsAuxService: WorkflowRequiredFieldsAuxService
   ) {}
 
   @HostListener('window:resize', ['$event']) onResize(event: { target: { innerWidth: number } }) {
@@ -88,6 +90,10 @@ export class WorkflowCardDetailsComponent implements OnInit {
     this.initListeners();
     this.getCardInfo();
     this.initWebsocket();
+  }
+
+  ngOnDestroy(): void {
+    this.requiredFieldsAuxService.resetRequiredFields();
   }
 
   public setShowMode(width: number) {

@@ -27,4 +27,8 @@ export default interface FacilityDTO {
   senderSms?: string;
   whatsappPhoneNumber?: string;
   whatsappSender?: string;
+  //TPV config
+  keyCommerce?: string;
+  tpvCode?: string;
+  tpvTerminal?: string;
 }

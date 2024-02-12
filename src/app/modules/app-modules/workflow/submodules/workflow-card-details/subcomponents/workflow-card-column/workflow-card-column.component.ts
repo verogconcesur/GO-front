@@ -5,6 +5,7 @@ import CardColumnTabDTO from '@data/models/cards/card-column-tab-dto';
 import CardInstanceDTO from '@data/models/cards/card-instance-dto';
 import { CardService } from '@data/services/cards.service';
 import { WorkflowPrepareAndMoveService } from '@modules/app-modules/workflow/aux-service/workflow-prepare-and-move-aux.service';
+import { WorkflowRequiredFieldsAuxService } from '@modules/app-modules/workflow/aux-service/workflow-required-fields-aux.service';
 import { TranslateService } from '@ngx-translate/core';
 import { ResponsiveTabI } from '@shared/components/responsive-tabs/responsive-tabs.component';
 import { ConfirmDialogService } from '@shared/services/confirm-dialog.service';
@@ -28,9 +29,10 @@ export class WorkflowCardColumnComponent implements OnInit {
   public synchronizingData = false;
   public tabToShow: CardColumnTabDTO = null;
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  private tabsInfo: { id: any; label: string; newData: boolean; type: string }[] = [];
+  public tabsInfo: { id: any; label: string; newData: boolean; type: string; colId: number }[] = [];
 
   constructor(
+    public requiredFieldsAuxService: WorkflowRequiredFieldsAuxService,
     private cardService: CardService,
     private prepareAndMoveService: WorkflowPrepareAndMoveService,
     private confirmationDialog: ConfirmDialogService,
@@ -43,7 +45,8 @@ export class WorkflowCardColumnComponent implements OnInit {
       id: tab.id,
       label: tab.name,
       newData: false,
-      type: tab.type
+      type: tab.type,
+      colId: this.column.id
     }));
   }
 

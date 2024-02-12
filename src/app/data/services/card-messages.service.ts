@@ -23,6 +23,7 @@ export class CardMessagesService {
   private readonly SEND = '/send';
   private readonly BUDGET = '/budget';
   private readonly WHATSAPP_PATH = '/whatsapp';
+  private readonly PAYMENT = '/payment';
   private readonly CONVERSATION_PATH = '/conversation';
   private readonly ACTIVE_PATH = '/active';
 
@@ -106,6 +107,20 @@ export class CardMessagesService {
       .post<unknown>(
         // eslint-disable-next-line max-len
         `${this.env.apiBaseUrl}${this.GET_CARD_INSTANCE_PATH}${this.GET_DETAIL_PATH}${this.GET_MESSAGES_PATH}${this.SEND}/${cardWfId}${this.BUDGET}/${tabId}`,
+        {}
+      )
+      .pipe(catchError((error) => throwError(error.error as ConcenetError)));
+  }
+  /**
+   * Envía línea de pago al cliente
+   *
+   * @returns unknown
+   */
+  public sendPaymentMessageClient(cardWfId: number, paymentLineId: number): Observable<unknown> {
+    return this.http
+      .post<unknown>(
+        // eslint-disable-next-line max-len
+        `${this.env.apiBaseUrl}${this.GET_CARD_INSTANCE_PATH}${this.GET_DETAIL_PATH}${this.GET_MESSAGES_PATH}${this.SEND}/${cardWfId}${this.PAYMENT}/${paymentLineId}`,
         {}
       )
       .pipe(catchError((error) => throwError(error.error as ConcenetError)));

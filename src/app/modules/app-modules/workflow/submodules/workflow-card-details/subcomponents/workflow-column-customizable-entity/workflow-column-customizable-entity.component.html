@@ -1,7 +1,13 @@
 <div class="w-colunm-entity-container">
     <div class="w-colunm-entity">
         <div class="w-colunm-entity-data" *ngFor="let data of entityData">
-            <label class="w-colunm-entity-data__label">{{ data.name }}</label>
+            <label
+                class="w-colunm-entity-data__label"
+                [ngClass]="{
+                    required: requiredFieldsAuxService.isFieldRequired(data.tabId, data.id)
+                }"
+                >{{ data.name }}</label
+            >
             <div class="w-colunm-entity-data__value">{{ getDataValue(data) }}</div>
         </div>
 

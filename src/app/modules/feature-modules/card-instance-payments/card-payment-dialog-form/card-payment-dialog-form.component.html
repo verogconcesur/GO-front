@@ -1,0 +1,124 @@
+<div class="create-edit-card-payment-line" fxLayout="column" fxLayoutAlign="center center">
+    <div class="create-edit-card-payment-line__form">
+        <form [formGroup]="paymentLineForm" *ngIf="paymentLineForm" class="smaller-mat-form-fields">
+            <!-- General Data -->
+            <div class="payment-line-data__section">
+                <div class="payment-line-data__section__group">
+                    <mat-form-field appearance="outline" floatLabel="always" class="w-100">
+                        <mat-label>{{ labels.description | translate }}</mat-label>
+                        <!-- <input matInput formControlName="description" [readonly]="editionDisabled" /> -->
+                        <mat-select
+                            #matSelect
+                            formControlName="description"
+                            [compareWith]="compareDescriptions"
+                            [disabled]="editionDisabled"
+                        >
+                            <mat-option *ngFor="let description of getDescriptions()" [value]="description">
+                                {{ description.description }}
+                            </mat-option>
+                        </mat-select>
+                        <mat-error *ngIf="form?.description.invalid">
+                            <span *ngIf="form.description.errors.required"> {{ labels.required | translate }} </span>
+                        </mat-error>
+                    </mat-form-field>
+                </div>
+                <div class="payment-line-data__section__group" *ngIf="mode === 'PAYMENT' || mode === 'TOTAL_DETAIL'">
+                    <mat-form-field appearance="outline" floatLabel="always" class="w-100">
+                        <mat-label>{{ labels.observations | translate }}</mat-label>
+                        <textarea
+                            matInput
+                            formControlName="observations"
+                            [readonly]="editionDisabled"
+                            cdkTextareaAutosize
+                            cdkAutosizeMinRows="5"
+                            cdkAutosizeMaxRows="5"
+                        ></textarea>
+                    </mat-form-field>
+                </div>
+                <div class="payment-line-data__section__group" *ngIf="mode === 'PAYMENT'">
+                    <mat-form-field appearance="outline" floatLabel="always" class="w-33">
+                        <mat-label>{{ labels.paymentType | translate }}</mat-label>
+                        <mat-select
+                            formControlName="paymentType"
+                            [disabled]="paymentTypeDisabled() || editionDisabled"
+                            (selectionChange)="changePaymentType()"
+                        >
+                            <mat-option *ngFor="let type of paymentTypes" [value]="type">{{ type.name }}</mat-option>
+                        </mat-select>
+                    </mat-form-field>
+                    <mat-form-field appearance="outline" floatLabel="always" class="w-33">
+                        <mat-label>{{ labels.amount | translate }}</mat-label>
+                        <input
+                            appTwoDigitDecimal
+                            matInput
+                            formControlName="amount"
+                            [readonly]="paymentAmountDisabled() || editionDisabled"
+                        />
+                        <span matSuffix>€</span>
+                        <mat-error *ngIf="form.amount.invalid">
+                            <span>{{ labels.valueBetween | translate : { min: 0, max: maxAmount.toString().length } }}</span>
+                        </mat-error>
+                    </mat-form-field>
+                    <mat-form-field appearance="outline" floatLabel="always" class="w-33">
+                        <mat-label>{{ labels.state | translate }}</mat-label>
+                        <mat-select formControlName="paymentStatus" [disabled]="paymentStatusDisabled() || editionDisabled">
+                            <mat-option *ngFor="let state of paymentStatus" [value]="state">{{ state.name }}</mat-option>
+                        </mat-select>
+                    </mat-form-field>
+                </div>
+                <div class="payment-line-data__section__group" *ngIf="mode === 'TOTAL' || mode === 'TOTAL_DETAIL'">
+                    <mat-form-field appearance="outline" floatLabel="always" class="w-50">
+                        <mat-label>{{ labels.amount | translate }}</mat-label>
+                        <input
+                            appTwoDigitDecimal
+                            matInput
+                            formControlName="amount"
+                            [readonly]="paymentAmountDisabled() || editionDisabled"
+                        />
+                        <span matSuffix>€</span>
+                        <mat-error *ngIf="form.amount.invalid">
+                            <span>{{ labels.valueBetween | translate : { min: 0, max: maxAmount } }}</span>
+                        </mat-error>
+                    </mat-form-field>
+                </div>
+                <div class="payment-line-data__section__group">
+                    <mat-form-field appearance="outline" floatLabel="always" class="w-100">
+                        <mat-label>{{ labels.attachments | translate }}</mat-label>
+                        <mat-select
+                            #matSelect
+                            formControlName="attachments"
+                            multiple
+                            [compareWith]="compareAttachments"
+                            [disabled]="editionDisabled"
+                        >
+                            <mat-option *ngFor="let attachment of attachmentsList" [value]="attachment">
+                                {{ attachment.file.name }}
+                                <mat-icon
+                                    *ngIf="matSelect.panelOpen"
+                                    style="margin-left: 16px"
+                                    (click)="openMedia(attachment); $event.stopPropagation()"
+                                    >remove_red_eye</mat-icon
+                                >
+                            </mat-option>
+                        </mat-select>
+                    </mat-form-field>
+                </div>
+
+                <div class="payment-line-data__section__group" *ngIf="paymentLineForm?.get('attachments')?.value?.length">
+                    <label>{{ labels.attachmentsAssociated | translate }}</label>
+                    <div
+                        *ngFor="
+                            let attach of paymentLineForm?.get('attachments')?.value
+                                ? paymentLineForm?.get('attachments').value
+                                : []
+                        "
+                        (click)="openMedia(attach)"
+                        class="link"
+                    >
+                        {{ attach.file.name }}
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>

@@ -258,6 +258,12 @@
           border-top: 1px solid mat-color($primary, A700);
           background-color: darken(mat-color($background, background-administration), 5%);
         }
+        &.required {
+          color: mat-color($primary, statusError);
+          &:after {
+            content: ' *';
+          }
+        }
         &.new-data label {
           position: relative;
           &::after {

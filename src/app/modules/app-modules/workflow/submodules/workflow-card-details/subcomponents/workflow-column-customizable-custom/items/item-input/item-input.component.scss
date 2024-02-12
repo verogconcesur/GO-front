@@ -9,4 +9,13 @@
     color: mat-color($primary, 500);
     font-weight: 600;
   }
+  .w-100 {
+    width: 100%;
+  }
+  .required {
+    color: mat-color($primary, statusError);
+    &:after {
+      content: ' *';
+    }
+  }
 }

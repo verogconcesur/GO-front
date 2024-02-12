@@ -17,6 +17,8 @@ import CardInstanceAttachmentsConfig, {
   CardInstanceAttachmentsModalVersionConfig
 } from './card-instance-attachments-config-interface';
 import { RenameAttachmentComponent } from './subcomponets/rename-attachment/rename-attachment.component';
+import { PermissionConstants } from '@app/constants/permission.constants';
+import { AuthenticationService } from '@app/security/authentication.service';
 
 export const enum CardInstanceAttachmentsComponentEnum {
   ID = 'card-instances-attachments-id',
@@ -61,7 +63,8 @@ export class CardInstanceAttachmentsComponent implements OnInit, OnChanges {
     private confirmationDialog: ConfirmDialogService,
     private globalMessageService: GlobalMessageService,
     private spinnerService: ProgressSpinnerDialogService,
-    private mediaViewerService: MediaViewerService
+    private mediaViewerService: MediaViewerService,
+    private authService: AuthenticationService
   ) {}
 
   ngOnInit(): void {
@@ -121,6 +124,10 @@ export class CardInstanceAttachmentsComponent implements OnInit, OnChanges {
       }
     }
     return `url(/assets/img/unknown.svg)`;
+  }
+
+  public hasUerPermissionToDeleteFiles(): boolean {
+    return !!this.authService.getUserPermissions().find((permission) => permission.code === PermissionConstants.ALLOWDELETEFILES);
   }
 
   public hasPreview(item: AttachmentDTO): boolean {

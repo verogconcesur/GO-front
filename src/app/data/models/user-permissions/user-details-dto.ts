@@ -10,6 +10,7 @@ export default interface UserDetailsDTO {
   name: string;
   firstName: string;
   lastName: string;
+  fullName?: string;
   role: RoleDTO;
   email: string;
   code: string;

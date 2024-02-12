@@ -41,7 +41,8 @@ export class NotificationsComponent implements OnInit {
   //   'ADD_DOC',
   //   'ADD_MESSAGE_CLIENT'
   // ];
-  public typesList: string[] = ['ASIG_USER', 'END_WORK', 'ADD_MESSAGE_CLIENT'];
+  // ['ASIG_USER', 'END_WORK', 'ADD_MESSAGE_CLIENT'];
+  public typesList: string[] = ['ADD_MESSAGE_CLIENT'];
   private originalNotifications: NotificationDataListDTO[] = [];
   private notificationFilter: NotificationFilterDTO = null;
   constructor(
@@ -54,7 +55,8 @@ export class NotificationsComponent implements OnInit {
     this.notificationFilter = {
       userId: parseInt(this.authService.getUserId(), 10),
       readFilterType: 'NO_READ',
-      notificationTypes: ['ASIG_USER', 'END_WORK', 'ADD_MESSAGE_CLIENT']
+      // ['ASIG_USER', 'END_WORK', 'ADD_MESSAGE_CLIENT']
+      notificationTypes: ['ADD_MESSAGE_CLIENT']
     };
   }
 

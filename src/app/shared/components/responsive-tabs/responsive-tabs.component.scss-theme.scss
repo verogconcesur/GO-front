@@ -43,4 +43,10 @@
       height: 20px;
     }
   }
+  .required {
+    color: mat-color($primary, statusError);
+    &:after {
+      content: ' *';
+    }
+  }
 }

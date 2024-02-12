@@ -31,6 +31,10 @@ import {
 import { CardMessagesService } from '@data/services/card-messages.service';
 import { ModalChatWhatsappComponent } from '@modules/feature-modules/modal-chat-whatsapp/modal-chat-whatsapp.component';
 import CardInstanceWhatsappDTO from '@data/models/cards/card-instance-whatsapp-dto';
+import WorkflowDTO from '@data/models/workflows/workflow-dto';
+import RoleDTO from '@data/models/user-permissions/role-dto';
+import { AuthenticationService } from '@app/security/authentication.service';
+import { PermissionConstants } from '@app/constants/permission.constants';
 
 @UntilDestroy()
 @Component({
@@ -65,7 +69,8 @@ export class WorkflowColumnActionsAndLinksComponent implements OnInit {
     private customDialogService: CustomDialogService,
     private cardAttachmentService: CardAttachmentsService,
     private cardMessagesService: CardMessagesService,
-    private router: Router
+    private router: Router,
+    private authService: AuthenticationService
   ) {}
 
   ngOnInit(): void {
@@ -107,6 +112,8 @@ export class WorkflowColumnActionsAndLinksComponent implements OnInit {
         .pipe(take(1))
         .subscribe(
           (data: WorkflowMoveDTO[]) => {
+            const userRoleId: number = this.authService.getUserRole().id;
+            data = data.filter((move: WorkflowMoveDTO) => move.roles.find((role: RoleDTO) => role.id === userRoleId));
             this.shortCuts = data;
           },
           (error: ConcenetError) => {
@@ -188,6 +195,14 @@ export class WorkflowColumnActionsAndLinksComponent implements OnInit {
             });
           break;
       }
+    }
+  }
+
+  public hasPermission(btn: 'move' | 'send'): boolean {
+    if (btn === 'move') {
+      return !this.authService.getUserPermissions().find((permission) => permission.code === PermissionConstants.HIDEMOVEBUTTON);
+    } else {
+      return !this.authService.getUserPermissions().find((permission) => permission.code === PermissionConstants.HIDESENDBUTTON);
     }
   }
 

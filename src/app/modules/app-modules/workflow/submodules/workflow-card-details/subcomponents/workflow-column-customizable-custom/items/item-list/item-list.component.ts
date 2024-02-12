@@ -4,6 +4,7 @@ import { marker } from '@biesbjerg/ngx-translate-extract-marker';
 import CardColumnTabDTO from '@data/models/cards/card-column-tab-dto';
 import CardColumnTabItemDTO, { TabItemConfigListItemDTO } from '@data/models/cards/card-column-tab-item-dto';
 import CardInstanceDTO from '@data/models/cards/card-instance-dto';
+import { WorkflowRequiredFieldsAuxService } from '@modules/app-modules/workflow/aux-service/workflow-required-fields-aux.service';
 import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
 
 @UntilDestroy()
@@ -23,7 +24,7 @@ export class ItemListComponent implements OnInit {
   public labels = {
     required: marker('errors.required')
   };
-  constructor() {}
+  constructor(public requiredFieldsAuxService: WorkflowRequiredFieldsAuxService) {}
   public getOptions(valueCode: string) {
     this.listItems = this.tabItem.tabItemConfigList.listItems.filter(
       (listItem: TabItemConfigListItemDTO) => listItem.parentCode === valueCode

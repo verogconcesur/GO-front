@@ -30,6 +30,7 @@ import {
   CreateEditRepairOrderComponentModalEnum,
   ModalRepairOrderComponent
 } from '@modules/feature-modules/modal-repair-order/modal-repair-order.component';
+import { WorkflowRequiredFieldsAuxService } from '@modules/app-modules/workflow/aux-service/workflow-required-fields-aux.service';
 
 @Component({
   selector: 'app-workflow-column-customizable-entity',
@@ -62,6 +63,7 @@ export class WorkflowColumnCustomizableEntityComponent implements OnInit, OnChan
   public dataLoaded = false;
 
   constructor(
+    public requiredFieldsAuxService: WorkflowRequiredFieldsAuxService,
     private cardService: CardService,
     private route: ActivatedRoute,
     private globalMessageService: GlobalMessageService,

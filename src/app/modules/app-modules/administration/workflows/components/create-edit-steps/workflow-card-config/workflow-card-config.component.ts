@@ -40,10 +40,14 @@ export class WorkflowCardConfigComponent extends WorkflowStepAbstractClass imple
     field: marker('common.field'),
     required: marker('errors.required'),
     select: marker('common.select'),
-    addField: marker('workflows.addField')
+    addField: marker('workflows.addField'),
+    cardDetailHeaderField: marker('workflows.cardDetailHeaderField')
   };
   public treeData: TreeNode[] = [];
-  private lastInputSelected: { viewType: 'BOARD' | 'TABLE' | 'CALENDAR' | 'LANDING_CARD' | 'LANDING_DETAIL'; fieldIndex: number };
+  private lastInputSelected: {
+    viewType: 'BOARD' | 'TABLE' | 'CALENDAR' | 'LANDING_CARD' | 'LANDING_DETAIL' | 'DETAIL';
+    fieldIndex: number;
+  };
 
   constructor(
     private fb: UntypedFormBuilder,
@@ -69,16 +73,18 @@ export class WorkflowCardConfigComponent extends WorkflowStepAbstractClass imple
       CALENDAR: WorkflowViewDTO[];
       LANDING_CARD: WorkflowViewDTO[];
       LANDING_DETAIL: WorkflowViewDTO[];
+      DETAIL: WorkflowViewDTO[];
     } = {
       BOARD: [],
       TABLE: [],
       CALENDAR: [],
       LANDING_CARD: [],
-      LANDING_DETAIL: []
+      LANDING_DETAIL: [],
+      DETAIL: []
     };
     if (data?.view) {
-      ['TABLE', 'CALENDAR', 'BOARD', 'LANDING_CARD', 'LANDING_DETAIL'].forEach(
-        (view: 'TABLE' | 'CALENDAR' | 'BOARD' | 'LANDING_CARD' | 'LANDING_DETAIL') => {
+      ['TABLE', 'CALENDAR', 'BOARD', 'LANDING_CARD', 'LANDING_DETAIL', 'DETAIL'].forEach(
+        (view: 'TABLE' | 'CALENDAR' | 'BOARD' | 'LANDING_CARD' | 'LANDING_DETAIL' | 'DETAIL') => {
           dataByViewType[view] = data.view
             .filter((d: WorkflowViewDTO) => d.viewType === view)
             .sort((a: WorkflowViewDTO, b: WorkflowViewDTO) => a.orderNumber - b.orderNumber);
@@ -114,7 +120,10 @@ export class WorkflowCardConfigComponent extends WorkflowStepAbstractClass imple
         )
       }),
       LANDING_DETAIL: this.getLandingDetailViewFormGroups(dataByViewType.LANDING_DETAIL),
-      TABLE: this.getTableViewFormGroups(dataByViewType.TABLE)
+      TABLE: this.getTableViewFormGroups(dataByViewType.TABLE),
+      DETAIL: this.fb.group({
+        field1: this.getFieldFormGroup('DETAIL', 1, dataByViewType.DETAIL?.length >= 1 ? dataByViewType.DETAIL[0] : null)
+      })
     });
   }
 
@@ -162,7 +171,7 @@ export class WorkflowCardConfigComponent extends WorkflowStepAbstractClass imple
     return new Promise((resolve, reject) => {
       const rawData: any = this.form.getRawValue();
       const dataToSend: any = [];
-      ['CALENDAR', 'BOARD', 'TABLE', 'LANDING_CARD', 'LANDING_DETAIL'].forEach((viewType) => {
+      ['CALENDAR', 'BOARD', 'TABLE', 'LANDING_CARD', 'LANDING_DETAIL', 'DETAIL'].forEach((viewType) => {
         Object.keys(rawData[viewType]).forEach((k) => {
           if (rawData[viewType][k].tabItem) {
             dataToSend.push(rawData[viewType][k]);
@@ -191,7 +200,7 @@ export class WorkflowCardConfigComponent extends WorkflowStepAbstractClass imple
     });
   }
 
-  public getNumberOfFields(viewType: 'BOARD' | 'CALENDAR' | 'TABLE' | 'LANDING_CARD' | 'LANDING_DETAIL'): number[] {
+  public getNumberOfFields(viewType: 'BOARD' | 'CALENDAR' | 'TABLE' | 'LANDING_CARD' | 'LANDING_DETAIL' | 'DETAIL'): number[] {
     const arr = [];
     for (let x = 1; x <= Object.keys(this.form.get(viewType).value).length; x++) {
       arr.push(x);
@@ -199,7 +208,7 @@ export class WorkflowCardConfigComponent extends WorkflowStepAbstractClass imple
     return arr;
   }
 
-  public addField(viewType: 'BOARD' | 'CALENDAR' | 'TABLE' | 'LANDING_CARD' | 'LANDING_DETAIL'): void {
+  public addField(viewType: 'BOARD' | 'CALENDAR' | 'TABLE' | 'LANDING_CARD' | 'LANDING_DETAIL' | 'DETAIL'): void {
     const orderNumber: number = Object.keys(this.form.get(viewType).value).length + 1;
     (this.form.get(viewType) as UntypedFormGroup).addControl(
       `field${orderNumber}`,
@@ -207,37 +216,52 @@ export class WorkflowCardConfigComponent extends WorkflowStepAbstractClass imple
     );
   }
 
-  public deleteField(viewType: 'BOARD' | 'CALENDAR' | 'TABLE' | 'LANDING_CARD' | 'LANDING_DETAIL', fieldIndex: number): void {
+  public deleteField(
+    viewType: 'BOARD' | 'CALENDAR' | 'TABLE' | 'LANDING_CARD' | 'LANDING_DETAIL' | 'DETAIL',
+    fieldIndex: number
+  ): void {
     (this.form.get(viewType) as UntypedFormGroup).removeControl(`field${fieldIndex}`);
   }
 
   public isLastFieldAndNotFirst(
-    viewType: 'BOARD' | 'CALENDAR' | 'TABLE' | 'LANDING_CARD' | 'LANDING_DETAIL',
+    viewType: 'BOARD' | 'CALENDAR' | 'TABLE' | 'LANDING_CARD' | 'LANDING_DETAIL' | 'DETAIL',
     fieldIndex: number
   ): boolean {
     return fieldIndex !== 1 && Object.keys(this.form.get(viewType).value).length === fieldIndex;
   }
 
-  public hasErrorIn(viewType: 'BOARD' | 'CALENDAR' | 'TABLE' | 'LANDING_CARD' | 'LANDING_DETAIL', fieldIndex: number): boolean {
+  public hasErrorIn(
+    viewType: 'BOARD' | 'CALENDAR' | 'TABLE' | 'LANDING_CARD' | 'LANDING_DETAIL' | 'DETAIL',
+    fieldIndex: number
+  ): boolean {
     return !this.form.get(`${viewType}.field${fieldIndex}`)?.valid;
   }
 
-  public hasValue(viewType: 'BOARD' | 'CALENDAR' | 'TABLE' | 'LANDING_CARD' | 'LANDING_DETAIL', fieldIndex: number): boolean {
+  public hasValue(
+    viewType: 'BOARD' | 'CALENDAR' | 'TABLE' | 'LANDING_CARD' | 'LANDING_DETAIL' | 'DETAIL',
+    fieldIndex: number
+  ): boolean {
     return this.form.get(`${viewType}.field${fieldIndex}`)?.value?.tabItem?.id;
   }
 
-  public clearField(viewType: 'BOARD' | 'CALENDAR' | 'TABLE' | 'LANDING_CARD' | 'LANDING_DETAIL', fieldIndex: number): void {
+  public clearField(
+    viewType: 'BOARD' | 'CALENDAR' | 'TABLE' | 'LANDING_CARD' | 'LANDING_DETAIL' | 'DETAIL',
+    fieldIndex: number
+  ): void {
     this.form.get(`${viewType}.field${fieldIndex}.tabItem`)?.setValue(null);
     this.form.get(`${viewType}.field${fieldIndex}.tabItem`)?.markAsDirty();
     this.form.get(`${viewType}.field${fieldIndex}.tabItem`)?.markAsTouched();
   }
 
-  public setTabItemTo(viewType: 'BOARD' | 'CALENDAR' | 'TABLE' | 'LANDING_CARD' | 'LANDING_DETAIL', fieldIndex: number): void {
+  public setTabItemTo(
+    viewType: 'BOARD' | 'CALENDAR' | 'TABLE' | 'LANDING_CARD' | 'LANDING_DETAIL' | 'DETAIL',
+    fieldIndex: number
+  ): void {
     this.lastInputSelected = { viewType, fieldIndex };
   }
 
   private getFieldFormGroup(
-    viewType: 'BOARD' | 'CALENDAR' | 'TABLE' | 'LANDING_CARD' | 'LANDING_DETAIL',
+    viewType: 'BOARD' | 'CALENDAR' | 'TABLE' | 'LANDING_CARD' | 'LANDING_DETAIL' | 'DETAIL',
     orderNumber: number,
     data?: WorkflowViewDTO
   ): UntypedFormGroup {

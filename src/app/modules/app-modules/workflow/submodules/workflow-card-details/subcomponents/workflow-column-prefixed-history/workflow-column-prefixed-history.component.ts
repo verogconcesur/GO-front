@@ -6,6 +6,7 @@ import { marker } from '@biesbjerg/ngx-translate-extract-marker';
 import CardColumnTabDTO from '@data/models/cards/card-column-tab-dto';
 import CardHistoryDTO from '@data/models/cards/card-history';
 import CardHistoryFilterDTO from '@data/models/cards/card-history-filter';
+import UserDetailsDTO from '@data/models/user-permissions/user-details-dto';
 import { CardAttachmentsService } from '@data/services/card-attachments.service';
 import { CardHistoryService } from '@data/services/card-history.service';
 import { TranslateService } from '@ngx-translate/core';
@@ -28,6 +29,7 @@ export class WorkflowColumnPrefixedHistoryComponent implements OnInit, OnChanges
     eventHistoryTypes: marker('cards.eventHistoryTypes'),
     workflows: marker('cards.workflows'),
     migration: marker('cards.migration'),
+    user: marker('common.user'),
     from: marker('common.from'),
     to: marker('common.to'),
     noDataToShow: marker('errors.noDataToShow'),
@@ -37,6 +39,7 @@ export class WorkflowColumnPrefixedHistoryComponent implements OnInit, OnChanges
   public historyData: CardHistoryDTO[] = [];
   public historyFilter: CardHistoryFilterDTO = null;
   public historyFilterOptions: {
+    users: UserDetailsDTO[];
     dateEvent: { min: Date; max: Date };
     eventHistoryTypes: { key: string; label: string }[];
     workflows: {
@@ -45,6 +48,7 @@ export class WorkflowColumnPrefixedHistoryComponent implements OnInit, OnChanges
       status: string;
     }[];
   } = {
+    users: [],
     dateEvent: { min: null, max: null },
     eventHistoryTypes: [],
     workflows: []
@@ -124,6 +128,10 @@ export class WorkflowColumnPrefixedHistoryComponent implements OnInit, OnChanges
       const types = [...filter.eventHistoryTypes].map((type) => type.key);
       dataToShow = dataToShow.filter((item: CardHistoryDTO) => types.indexOf(item.eventHistoryType) >= 0);
     }
+    if (filter.users?.length) {
+      const ids = [...filter.users].map((user) => user.id);
+      dataToShow = dataToShow.filter((item: CardHistoryDTO) => ids.indexOf(item.user.id) >= 0);
+    }
     if (filter.workflows?.length) {
       const workflows = [...filter.workflows].map((w) => w.id);
       dataToShow = dataToShow.filter((item: CardHistoryDTO) => workflows.indexOf(item.workflow.id) >= 0);
@@ -151,14 +159,20 @@ export class WorkflowColumnPrefixedHistoryComponent implements OnInit, OnChanges
     if (this.historyFilterForm.get('eventHistoryTypes').value.length) {
       this.historyFilterForm.get('eventHistoryTypes').setValue([]);
     }
+    if (this.historyFilterForm.get('users').value.length) {
+      this.historyFilterForm.get('users').setValue([]);
+    }
     if (this.historyFilterForm.get('workflows').value.length) {
       this.historyFilterForm.get('workflows').setValue([]);
     }
     this.filterChange();
   }
 
-  public hasData(option: 'eventHistoryTypes' | 'workflows' | 'dateEventFrom' | 'dateEventTo'): boolean {
-    if ((option === 'eventHistoryTypes' || option === 'workflows') && this.historyFilterForm?.get(option)?.value?.length > 0) {
+  public hasData(option: 'eventHistoryTypes' | 'workflows' | 'dateEventFrom' | 'dateEventTo' | 'users'): boolean {
+    if (
+      (option === 'eventHistoryTypes' || option === 'workflows' || option === 'users') &&
+      this.historyFilterForm?.get(option)?.value?.length > 0
+    ) {
       return true;
     } else if ((option === 'dateEventFrom' || option === 'dateEventTo') && this.historyFilterForm?.get(option)?.value) {
       return true;
@@ -173,7 +187,8 @@ export class WorkflowColumnPrefixedHistoryComponent implements OnInit, OnChanges
       (filterValue.dateEventFrom ||
         filterValue.dateEventTo ||
         filterValue.eventHistoryTypes.length ||
-        filterValue.workflows.length)
+        filterValue.workflows.length ||
+        filterValue.users.length)
     ) {
       return true;
     }
@@ -316,17 +331,19 @@ export class WorkflowColumnPrefixedHistoryComponent implements OnInit, OnChanges
       if (!this.historyFilterOptions.dateEvent.max || +this.historyFilterOptions.dateEvent.max < h.dateEvent) {
         this.historyFilterOptions.dateEvent.max = new Date(date.getFullYear(), date.getMonth(), date.getDate(), 23, 59, 59);
       }
-
+      if (!this.historyFilterOptions.users.find((user) => user.id === h.user.id)) {
+        this.historyFilterOptions.users.push(h.user);
+      }
       if (!this.historyFilterOptions.eventHistoryTypes.find((eventType) => eventType.key === h.eventHistoryType)) {
         this.historyFilterOptions.eventHistoryTypes.push({
           key: h.eventHistoryType,
           label: 'cards.eventType.' + h.eventHistoryType
         });
       }
-
       if (!this.historyFilterOptions.workflows.find((w) => w.id === h.workflow.id)) {
         this.historyFilterOptions.workflows.push(h.workflow);
       }
+      // console.log(this.historyFilterOptions);
     });
 
     if (this.historyOriginalData?.length) {
@@ -334,6 +351,7 @@ export class WorkflowColumnPrefixedHistoryComponent implements OnInit, OnChanges
       this.historyFilterForm.get('dateEventTo').enable();
       this.historyFilterForm.get('eventHistoryTypes').enable();
       this.historyFilterForm.get('workflows').enable();
+      this.historyFilterForm.get('users').enable();
     }
   }
 
@@ -342,7 +360,8 @@ export class WorkflowColumnPrefixedHistoryComponent implements OnInit, OnChanges
       dateEventFrom: { disabled: true, value: null },
       dateEventTo: { disabled: true, value: null },
       eventHistoryTypes: { disabled: true, value: [] },
-      workflows: { disabled: true, value: [] }
+      workflows: { disabled: true, value: [] },
+      users: { disabled: true, value: [] }
     });
   }
 
