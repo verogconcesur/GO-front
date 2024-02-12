@@ -52,7 +52,7 @@
 }
 .checklist-sign {
   width: calc(100% - 20px);
-  height: calc(100vh - 250px);
+  height: calc(100vh - 215px);
   padding: 0px 5px;
   position: relative;
   &__no-data {
@@ -113,7 +113,7 @@
     position: absolute;
     top: 0;
     width: 100%;
-    height: calc(100vh - 250px);
+    height: calc(100vh - 215px);
   }
 
   &__pdf {
