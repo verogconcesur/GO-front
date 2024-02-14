@@ -36,7 +36,7 @@
             </div>
         </div>
         <div class="custom-actions-container__header__title">{{ labels.shortcutConfiguration | translate | uppercase }}</div>
-        <div class="custom-actions-container__header__group" cdkDropListGroup>
+        <div class="custom-actions-container__header__group" cdkDropListGroup *ngIf="listVariables">
             <div class="custom-links-item-container" cdkDropList (cdkDropListDropped)="dropLink($event)">
                 <div
                     cdkDrag
@@ -49,16 +49,26 @@
                         fxLayoutAlign="space-between center"
                         class="custom-links-item-nameContainer smaller-mat-form-fields"
                     >
-                        <mat-icon>drag_indicator</mat-icon>
-                        <div class="custom-links-item-formContainer" fxLayout="row wrap" fxLayoutAlign="left center">
+                        <mat-icon cdkDragHandle>drag_indicator</mat-icon>
+                        <div class="custom-links-item-formContainer" fxLayout="row" fxLayoutAlign="left center">
                             <mat-form-field appearance="outline" class="smaller-mat-form-fields__no-margin" floatLabel="always">
                                 <mat-label>{{ labels.name | translate }}</mat-label>
                                 <input type="text" matInput [formControl]="tabItem.get('name')" />
                             </mat-form-field>
-                            <mat-form-field appearance="outline" class="smaller-mat-form-fields__no-margin" floatLabel="always">
+                            <!-- <mat-form-field appearance="outline" class="smaller-mat-form-fields__no-margin" floatLabel="always">
                                 <mat-label>{{ labels.shortcut | translate }}</mat-label>
                                 <input type="text" matInput [formControl]="tabItem.get('tabItemConfigLink').get('link')" />
-                            </mat-form-field>
+                            </mat-form-field> -->
+                            <app-text-editor-wrapper
+                                id="{{ 'textEditorSubject' + tabItem.get('tabItemConfigLink').get('id').value }}"
+                                textEditorId="{{ 'textEditorSubject' + tabItem.get('tabItemConfigLink').get('id').value }}"
+                                [initialValue]="tabItem.get('tabItemConfigLink').get('link').value"
+                                [textEditorConfig]="textEditorToolbarOnlyMacroOptions"
+                                [placeholder]="'Link'"
+                                (contentChanged)="
+                                    textEditorContentChanged($event, tabItem.get('tabItemConfigLink').get('link'), true)
+                                "
+                            ></app-text-editor-wrapper>
                             <input
                                 type="color"
                                 class="custom-links-item-inputColor"

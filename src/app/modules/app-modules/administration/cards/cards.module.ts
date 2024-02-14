@@ -19,6 +19,7 @@ import { TabItemConfigListComponent } from './components/tab-items/tab-item-conf
 import { TabItemConfigOptionComponent } from './components/tab-items/tab-item-config-option/tab-item-config-option.component';
 import { TabItemConfigTextComponent } from './components/tab-items/tab-item-config-text/tab-item-config-text.component';
 import { TabItemConfigTitleComponent } from './components/tab-items/tab-item-config-title/tab-item-config-title.component';
+import { TextEditorWrapperModule } from '@modules/feature-modules/text-editor-wrapper/text-editor-wrapper.module';
 
 @NgModule({
   declarations: [
@@ -36,6 +37,13 @@ import { TabItemConfigTitleComponent } from './components/tab-items/tab-item-con
     TabItemConfigTextComponent,
     TabItemConfigTitleComponent
   ],
-  imports: [CommonModule, CardsRoutingModule, SharedModule, FilterDrawerModule, AdministrationCommonHeaderSectionModule]
+  imports: [
+    CommonModule,
+    CardsRoutingModule,
+    SharedModule,
+    FilterDrawerModule,
+    AdministrationCommonHeaderSectionModule,
+    TextEditorWrapperModule
+  ]
 })
 export class CardsModule {}

@@ -29,7 +29,7 @@ export class WorkflowDetailComponent implements OnInit, OnDestroy, AfterViewInit
   @ViewChild('tabGroup') tabs: MatTabGroup;
   public workflowDetail: WorkflowDTO = null;
   public firstLoad = false;
-  public tabIndex = 3;
+  public tabIndex = 0;
   public labels = {
     newWorkflow: marker('workflows.newWorkflow'),
     organization: marker('administration.organization'),
