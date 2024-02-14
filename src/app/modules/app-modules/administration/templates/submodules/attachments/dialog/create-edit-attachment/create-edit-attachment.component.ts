@@ -10,7 +10,7 @@ import BrandDTO from '@data/models/organization/brand-dto';
 import DepartmentDTO from '@data/models/organization/department-dto';
 import FacilityDTO from '@data/models/organization/facility-dto';
 import SpecialtyDTO from '@data/models/organization/specialty-dto';
-import TemplatesAttachmentDTO, { TemplateAtachmentItemsDTO } from '@data/models/templates/templates-attachment-dto';
+import { TemplatesAttachmentDTO, TemplateAtachmentItemsDTO } from '@data/models/templates/templates-attachment-dto';
 import { BrandService } from '@data/services/brand.service';
 import { DepartmentService } from '@data/services/deparment.service';
 import { FacilityService } from '@data/services/facility.sevice';

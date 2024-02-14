@@ -5,7 +5,7 @@ import { Env } from '@app/types/env';
 import { ConcenetError } from '@app/types/error';
 import PaginationRequestI from '@data/interfaces/pagination-request';
 import PaginationResponseI from '@data/interfaces/pagination-response';
-import TemplatesAttachmentDTO from '@data/models/templates/templates-attachment-dto';
+import { TemplatesAttachmentDTO } from '@data/models/templates/templates-attachment-dto';
 import TemplatesCommonDTO from '@data/models/templates/templates-common-dto';
 import TemplatesFilterDTO from '@data/models/templates/templates-filter-dto';
 import { getPaginationUrlGetParams } from '@data/utils/pagination-aux';

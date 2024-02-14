@@ -1,13 +1,17 @@
 import { Component, OnInit } from '@angular/core';
-import { FormArray, FormControl, FormGroup, UntypedFormBuilder } from '@angular/forms';
+import { FormArray, FormControl, FormGroup, UntypedFormBuilder, UntypedFormControl } from '@angular/forms';
 import { marker } from '@biesbjerg/ngx-translate-extract-marker';
 import CardColumnTabDTO from '@data/models/cards/card-column-tab-dto';
+import CardColumnTabItemDTO from '@data/models/cards/card-column-tab-item-dto';
 import CardDTO from '@data/models/cards/card-dto';
+import { TemplateAtachmentItemsDTO } from '@data/models/templates/templates-attachment-dto';
 import RoleDTO from '@data/models/user-permissions/role-dto';
 import WorkflowCardTabDTO from '@data/models/workflow-admin/workflow-card-tab-dto';
+import WorkflowCardTabItemPermissionDTO from '@data/models/workflow-admin/workflow-card-tab-item-permissions-dto';
 import WorkflowCardTabPermissionsDTO, {
   WorkFlowPermissionsEnum
 } from '@data/models/workflow-admin/workflow-card-tab-permissions-dto';
+import WorkflowCardTabTAIPermissionDTO from '@data/models/workflow-admin/workflow-card-tab-tai-permissions-dto';
 import { CardService } from '@data/services/cards.service';
 import { WorkflowAdministrationService } from '@data/services/workflow-administration.service';
 import { ComponentToExtendForCustomDialog, CustomDialogService, CustomDialogFooterConfigI } from '@frontend/custom-dialog';
@@ -51,7 +55,10 @@ export class WorkflowCardsPermissionsComponent extends ComponentToExtendForCusto
   public cardData: CardDTO;
   public roles: RoleDTO[];
   public selectedTab: CardColumnTabDTO;
+  public selectedTempAttch: TemplateAtachmentItemsDTO;
+  public selectedLinkItem: CardColumnTabItemDTO;
   public allPermisionForm: FormGroup;
+  public templateAttachments: TemplateAtachmentItemsDTO[];
   constructor(
     private fb: UntypedFormBuilder,
     private spinnerService: ProgressSpinnerDialogService,
@@ -68,8 +75,17 @@ export class WorkflowCardsPermissionsComponent extends ComponentToExtendForCusto
       WorkflowCardsPermissionsComponentModalEnum.TITLE
     );
   }
-  get workflowCardPermissions(): FormArray {
-    return this.cardTabForm.get('workflowCardTabPermissions') as FormArray;
+  get workflowCardPermissions(): UntypedFormControl[] {
+    if (this.selectedTab && this.selectedLinkItem) {
+      return (this.cardTabForm.get('workflowCardTabItemPermissions') as FormArray).controls.filter(
+        (fc) => fc.get('tabItemId').value === this.selectedLinkItem.id
+      ) as UntypedFormControl[];
+    } else if (this.selectedTab && this.selectedTempAttch) {
+      return (this.cardTabForm.get('workflowCardTabTAIPermissions') as FormArray).controls.filter(
+        (fc) => fc.get('templateAttachmentItemId').value === this.selectedTempAttch.id
+      ) as UntypedFormControl[];
+    }
+    return (this.cardTabForm.get('workflowCardTabPermissions') as FormArray).controls as UntypedFormControl[];
   }
   ngOnInit(): void {
     const spinner = this.spinnerService.show();
@@ -84,8 +100,28 @@ export class WorkflowCardsPermissionsComponent extends ComponentToExtendForCusto
       this.cardData = res[1];
       this.cardData.cols = [...this.cardData.cols.slice(0, 2), this.cardData.cols[3]];
       this.roles = res[2];
-      this.initializeForm();
-      this.spinnerService.hide(spinner);
+      //Dentro de los tabItems que hay por cada col debo buscar el tab con contentTypeId igual a 5 y quedarme con su id
+      let tabId = null;
+      this.cardData.cols.forEach((col) => {
+        col.tabs.forEach((tab) => {
+          if (tab.contentTypeId === 5) {
+            tabId = tab.id;
+          }
+        });
+      });
+      if (tabId) {
+        this.workflowService
+          .getWorkflowTemplateAttachments(tabId)
+          .pipe(take(1))
+          .subscribe((data) => {
+            this.templateAttachments = data;
+            this.initializeForm();
+            this.spinnerService.hide(spinner);
+          });
+      } else {
+        this.initializeForm();
+        this.spinnerService.hide(spinner);
+      }
     });
   }
   public selectAllTabs(): void {
@@ -150,6 +186,8 @@ export class WorkflowCardsPermissionsComponent extends ComponentToExtendForCusto
   }
   public selectTabToShow(tab: CardColumnTabDTO) {
     this.allPermisionForm.get('permission').setValue('');
+    this.selectedTempAttch = null;
+    this.selectedLinkItem = null;
     if (this.isTabSelected(tab)) {
       const index = this.permissionForm.getRawValue().findIndex((permission: WorkflowCardTabDTO) => permission.tabId === tab.id);
       this.cardTabForm = this.permissionForm.at(index) as FormGroup;
@@ -162,6 +200,25 @@ export class WorkflowCardsPermissionsComponent extends ComponentToExtendForCusto
       this.selectedTab = null;
     }
   }
+  public selectTmpAtchToShow(tab: CardColumnTabDTO, tmpAtch: TemplateAtachmentItemsDTO) {
+    this.selectedTab = tab;
+    this.selectedLinkItem = null;
+    this.selectedTempAttch = tmpAtch;
+    const index = this.permissionForm.getRawValue().findIndex((permission: WorkflowCardTabDTO) => permission.tabId === tab.id);
+    this.cardTabForm = this.permissionForm.at(index) as FormGroup;
+  }
+  public getLinkTabItems(tab: CardColumnTabDTO) {
+    return tab.tabItems.filter((item: CardColumnTabItemDTO) => item.typeItem === 'LINK');
+  }
+  public selectLinkItemToShow(tab: CardColumnTabDTO, linkItem: CardColumnTabItemDTO) {
+    console.log(tab, linkItem);
+    this.selectedTab = tab;
+    this.selectedTempAttch = null;
+    this.selectedLinkItem = linkItem;
+    const index = this.permissionForm.getRawValue().findIndex((permission: WorkflowCardTabDTO) => permission.tabId === tab.id);
+    this.cardTabForm = this.permissionForm.at(index) as FormGroup;
+  }
+
   public confirmCloseCustomDialog(): Observable<boolean> {
     if (this.permissionForm.touched) {
       return this.confirmDialogService.open({
@@ -246,15 +303,23 @@ export class WorkflowCardsPermissionsComponent extends ComponentToExtendForCusto
       id: [cardPermission.id],
       tabId: [cardPermission.tabId],
       workflowId: [cardPermission.workflowId],
-      workflowCardTabPermissions: this.fb.array([])
+      workflowCardTabPermissions: this.fb.array([]),
+      workflowCardTabItemPermissions: this.fb.array([]),
+      workflowCardTabTAIPermissions: this.fb.array([])
     });
-    if (cardPermission && cardPermission.workflowCardTabPermissions && cardPermission.workflowCardTabPermissions.length) {
-      cardPermission.workflowCardTabPermissions.forEach((permission: WorkflowCardTabPermissionsDTO) => {
-        if (this.roles.find((role: RoleDTO) => role?.id === permission?.role?.id)) {
-          (form.get('workflowCardTabPermissions') as FormArray).push(this.generateTabPermission(permission));
+    ['workflowCardTabPermissions', 'workflowCardTabItemPermissions', 'workflowCardTabTAIPermissions'].forEach(
+      (key: 'workflowCardTabPermissions' | 'workflowCardTabItemPermissions' | 'workflowCardTabTAIPermissions') => {
+        if (cardPermission && cardPermission[key] && cardPermission[key].length) {
+          cardPermission[key].forEach(
+            (permission: WorkflowCardTabPermissionsDTO | WorkflowCardTabItemPermissionDTO | WorkflowCardTabTAIPermissionDTO) => {
+              if (this.roles.find((role: RoleDTO) => role?.id === permission?.role?.id)) {
+                (form.get(key) as FormArray).push(this.generateTabPermission(permission));
+              }
+            }
+          );
         }
-      });
-    }
+      }
+    );
     const formData = form.getRawValue();
     this.roles.forEach((role) => {
       if (!formData.workflowCardTabPermissions.find((tabPer: WorkflowCardTabPermissionsDTO) => tabPer?.role?.id === role?.id)) {
@@ -263,13 +328,22 @@ export class WorkflowCardsPermissionsComponent extends ComponentToExtendForCusto
     });
     return form;
   }
-  private generateTabPermission(cardTabPermission: WorkflowCardTabPermissionsDTO): FormGroup {
-    return this.fb.group({
+  private generateTabPermission(
+    cardTabPermission: WorkflowCardTabPermissionsDTO | WorkflowCardTabItemPermissionDTO | WorkflowCardTabTAIPermissionDTO
+  ): FormGroup {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const data: any = {
       id: [cardTabPermission.id],
       permissionType: [cardTabPermission.permissionType],
       role: [cardTabPermission.role],
       workflowCardTabId: [cardTabPermission.workflowCardTabId]
-    });
+    };
+    if (cardTabPermission.hasOwnProperty('tabItemId')) {
+      data.tabItemId = [(cardTabPermission as WorkflowCardTabItemPermissionDTO).tabItemId];
+    } else if (cardTabPermission.hasOwnProperty('templateAttachmentItemId')) {
+      data.templateAttachmentItemId = [(cardTabPermission as WorkflowCardTabTAIPermissionDTO).templateAttachmentItemId];
+    }
+    return this.fb.group(data);
   }
   private generateFormPermissionByTab(tab: CardColumnTabDTO): FormGroup {
     const form = this.fb.group({

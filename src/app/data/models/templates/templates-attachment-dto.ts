@@ -9,7 +9,7 @@ export interface TemplateAtachmentItemsDTO {
   orderNumber: number;
 }
 
-export default interface TemplatesAttachmentDTO {
+export interface TemplatesAttachmentDTO {
   id: number;
   template: {
     brands: BrandDTO[];
