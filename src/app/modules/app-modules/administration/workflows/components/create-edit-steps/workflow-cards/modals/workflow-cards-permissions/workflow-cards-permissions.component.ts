@@ -211,7 +211,6 @@ export class WorkflowCardsPermissionsComponent extends ComponentToExtendForCusto
     return tab.tabItems.filter((item: CardColumnTabItemDTO) => item.typeItem === 'LINK');
   }
   public selectLinkItemToShow(tab: CardColumnTabDTO, linkItem: CardColumnTabItemDTO) {
-    console.log(tab, linkItem);
     this.selectedTab = tab;
     this.selectedTempAttch = null;
     this.selectedLinkItem = linkItem;

@@ -109,7 +109,7 @@
                             <span>{{ labels.edit | translate }}</span>
                         </div>
                     </div>
-                    <div fxLayout="row" [formGroup]="allPermisionForm">
+                    <div fxLayout="row" [formGroup]="allPermisionForm" *ngIf="!selectedLinkItem && !selectedTempAttch">
                         <div
                             fxFlex="40"
                             class="workflow-cards-permissions-content__form__main__permissions__item"
@@ -175,11 +175,12 @@
                             </div>
                             <div
                                 fxFlex="33"
+                                *ngIf="!selectedLinkItem"
                                 class="workflow-cards-permissions-content__form__main__permissions__item"
                                 fxLayout="row"
                                 fxLayoutAlign="center center"
                             >
-                                <mat-radio-button value="EDIT"></mat-radio-button></div
+                                <mat-radio-button *ngIf="!selectedLinkItem" value="EDIT"></mat-radio-button></div
                         ></mat-radio-group>
                     </div>
                 </div>
