@@ -53,6 +53,7 @@ export class WorkflowCardsPermissionsComponent extends ComponentToExtendForCusto
   public cardId: number;
   public originalPermissions: WorkflowCardTabDTO[];
   public cardData: CardDTO;
+  public tabs: CardColumnTabDTO[] = [];
   public roles: RoleDTO[];
   public selectedTab: CardColumnTabDTO;
   public selectedTempAttch: TemplateAtachmentItemsDTO;
@@ -104,6 +105,7 @@ export class WorkflowCardsPermissionsComponent extends ComponentToExtendForCusto
       let tabId = null;
       this.cardData.cols.forEach((col) => {
         col.tabs.forEach((tab) => {
+          this.tabs.push(tab);
           if (tab.contentTypeId === 5) {
             tabId = tab.id;
           }
@@ -207,7 +209,10 @@ export class WorkflowCardsPermissionsComponent extends ComponentToExtendForCusto
     const index = this.permissionForm.getRawValue().findIndex((permission: WorkflowCardTabDTO) => permission.tabId === tab.id);
     this.cardTabForm = this.permissionForm.at(index) as FormGroup;
   }
-  public getLinkTabItems(tab: CardColumnTabDTO) {
+  public getLinkTabItems(tab: CardColumnTabDTO): CardColumnTabItemDTO[] {
+    if (!tab?.tabItems?.length) {
+      return [];
+    }
     return tab.tabItems.filter((item: CardColumnTabItemDTO) => item.typeItem === 'LINK');
   }
   public selectLinkItemToShow(tab: CardColumnTabDTO, linkItem: CardColumnTabItemDTO) {
@@ -306,19 +311,66 @@ export class WorkflowCardsPermissionsComponent extends ComponentToExtendForCusto
       workflowCardTabItemPermissions: this.fb.array([]),
       workflowCardTabTAIPermissions: this.fb.array([])
     });
-    ['workflowCardTabPermissions', 'workflowCardTabItemPermissions', 'workflowCardTabTAIPermissions'].forEach(
-      (key: 'workflowCardTabPermissions' | 'workflowCardTabItemPermissions' | 'workflowCardTabTAIPermissions') => {
-        if (cardPermission && cardPermission[key] && cardPermission[key].length) {
-          cardPermission[key].forEach(
-            (permission: WorkflowCardTabPermissionsDTO | WorkflowCardTabItemPermissionDTO | WorkflowCardTabTAIPermissionDTO) => {
-              if (this.roles.find((role: RoleDTO) => role?.id === permission?.role?.id)) {
-                (form.get(key) as FormArray).push(this.generateTabPermission(permission));
-              }
-            }
-          );
+    if (cardPermission && cardPermission.workflowCardTabPermissions && cardPermission.workflowCardTabPermissions.length) {
+      cardPermission.workflowCardTabPermissions.forEach((permission: WorkflowCardTabPermissionsDTO) => {
+        if (this.roles.find((role: RoleDTO) => role?.id === permission?.role?.id)) {
+          (form.get('workflowCardTabPermissions') as FormArray).push(this.generateTabPermission(permission));
         }
+      });
+    }
+    // LINKS
+    cardPermission.workflowCardTabItemPermissions = cardPermission.workflowCardTabItemPermissions || [];
+    const tab = this.tabs.find((item: CardColumnTabDTO) => item.id === cardPermission.tabId);
+    this.getLinkTabItems(tab).forEach((linkItem) => {
+      if (
+        !cardPermission.workflowCardTabItemPermissions.find(
+          (tabPer: WorkflowCardTabItemPermissionDTO) => tabPer?.tabItemId === linkItem?.id
+        )
+      ) {
+        this.roles.forEach((role) => {
+          cardPermission.workflowCardTabItemPermissions.push({
+            id: null,
+            permissionType: WorkFlowPermissionsEnum.hide,
+            role,
+            tabItemId: linkItem.id,
+            workflowCardTabId: cardPermission.id
+          });
+        });
       }
-    );
+    });
+    if (cardPermission.workflowCardTabItemPermissions.length > 0) {
+      cardPermission.workflowCardTabItemPermissions.forEach((permission: WorkflowCardTabItemPermissionDTO) => {
+        if (this.roles.find((role: RoleDTO) => role?.id === permission?.role?.id)) {
+          (form.get('workflowCardTabItemPermissions') as FormArray).push(this.generateTabPermission(permission));
+        }
+      });
+    }
+    // Tabs adjuntos
+    cardPermission.workflowCardTabTAIPermissions = cardPermission.workflowCardTabTAIPermissions || [];
+    this.templateAttachments.forEach((tempAtt) => {
+      if (
+        !cardPermission.workflowCardTabTAIPermissions.find(
+          (item: WorkflowCardTabTAIPermissionDTO) => item?.templateAttachmentItemId === tempAtt?.id
+        )
+      ) {
+        this.roles.forEach((role) => {
+          cardPermission.workflowCardTabTAIPermissions.push({
+            id: null,
+            permissionType: WorkFlowPermissionsEnum.hide,
+            role,
+            templateAttachmentItemId: tempAtt.id,
+            workflowCardTabId: cardPermission.id
+          });
+        });
+      }
+    });
+    if (cardPermission.workflowCardTabTAIPermissions.length > 0) {
+      cardPermission.workflowCardTabTAIPermissions.forEach((permission: WorkflowCardTabTAIPermissionDTO) => {
+        if (this.roles.find((role: RoleDTO) => role?.id === permission?.role?.id)) {
+          (form.get('workflowCardTabTAIPermissions') as FormArray).push(this.generateTabPermission(permission));
+        }
+      });
+    }
     const formData = form.getRawValue();
     this.roles.forEach((role) => {
       if (!formData.workflowCardTabPermissions.find((tabPer: WorkflowCardTabPermissionsDTO) => tabPer?.role?.id === role?.id)) {

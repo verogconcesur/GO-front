@@ -45,7 +45,7 @@ export class CustomActionsComponent implements OnInit {
     onlyMacroOption: true,
     addMacroListOption: true,
     macroListOptions: [],
-    width: 550
+    width: 450
   };
   constructor(
     private fb: UntypedFormBuilder,
@@ -137,7 +137,8 @@ export class CustomActionsComponent implements OnInit {
                 id: [tabItem.tabItemConfigLink.id],
                 tabItemId: [tabItem.tabItemConfigLink.tabItemId],
                 link: [tabItem.tabItemConfigLink.link, [Validators.required]],
-                color: [tabItem.tabItemConfigLink.color, [Validators.required]]
+                color: [tabItem.tabItemConfigLink.color, [Validators.required]],
+                variables: [tabItem.tabItemConfigLink.variables]
               })
             })
           );
@@ -202,7 +203,8 @@ export class CustomActionsComponent implements OnInit {
           id: [null],
           tabItemId: [null],
           link: ['', [Validators.required]],
-          color: ['#FFFFFF']
+          color: ['#FFFFFF'],
+          variables: [null]
         })
       })
     );
@@ -216,7 +218,17 @@ export class CustomActionsComponent implements OnInit {
       if ((html === '' || this.convertToPlain(html) === '') && html.length < 20) {
         html = null;
       }
-      form.setValue(html, { emitEvent: true });
+      form.get('link').setValue(html, { emitEvent: true });
+      const variablesOnText = this.listVariables.filter((variable) => {
+        let variableUsed = false;
+        this.listVariables.forEach((item: VariablesDTO) => {
+          if (html && html.indexOf(`[${variable.name}]`) !== -1) {
+            variableUsed = true;
+          }
+        });
+        return variableUsed;
+      });
+      form.get('variables').setValue(variablesOnText);
       this.formCol.markAsDirty();
       this.formCol.markAsTouched();
     }
