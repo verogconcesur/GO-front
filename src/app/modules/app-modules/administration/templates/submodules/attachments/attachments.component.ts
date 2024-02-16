@@ -6,7 +6,7 @@ import BrandDTO from '@data/models/organization/brand-dto';
 import DepartmentDTO from '@data/models/organization/department-dto';
 import FacilityDTO from '@data/models/organization/facility-dto';
 import SpecialtyDTO from '@data/models/organization/specialty-dto';
-import TemplatesAttachmentDTO from '@data/models/templates/templates-attachment-dto';
+import { TemplatesAttachmentDTO } from '@data/models/templates/templates-attachment-dto';
 import TemplatesCommonDTO from '@data/models/templates/templates-common-dto';
 import TemplatesFilterDTO from '@data/models/templates/templates-filter-dto';
 import { TemplatesAttachmentService } from '@data/services/templates-attachment.service';

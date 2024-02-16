@@ -1,6 +1,7 @@
 import TreeNode from '@data/interfaces/tree-node';
 import { Moment } from 'moment';
 import WorkflowCardTabitemInstanceDTO from '../workflows/workflow-card-tabitem-instance-dto';
+import VariablesDTO from '../variables-dto';
 export const TabItemsCustomTypes = ['TITLE', 'TEXT', 'INPUT', 'OPTION', 'LIST'];
 export const InputDataTypes = [
   { value: 'STRING', label: 'cards.column.dataType.string' },
@@ -62,8 +63,11 @@ export interface TabItemConfigInputDTO extends TabItemConfigCommonDTO {
   numDecimals?: number;
 }
 export interface TabItemConfigLinkDTO extends TabItemConfigCommonDTO {
+  id: number;
+  tabItemId?: number;
   link: string;
   color: string;
+  variables?: VariablesDTO[];
 }
 export interface TabItemConfigListDTO extends TabItemConfigCommonDTO {
   cardTabItemInstance?: WorkflowCardTabitemInstanceDTO;
