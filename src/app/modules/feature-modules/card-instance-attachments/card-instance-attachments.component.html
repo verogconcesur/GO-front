@@ -62,7 +62,9 @@
                         <mat-icon
                             class="top-left"
                             *ngIf="
-                                !cardInstanceAttachmentsConfig.disableIndividualDeleteAction || hasUerPermissionToDeleteFiles()
+                                (!cardInstanceAttachmentsConfig.disableIndividualDeleteAction ||
+                                    hasUerPermissionToDeleteFiles()) &&
+                                template.permissionType === 'EDIT'
                             "
                             (click)="deleteAttachment(item)"
                             >delete</mat-icon
@@ -91,7 +93,11 @@
                         >
                         <mat-icon
                             class="bottom-left shared-in-landing"
-                            *ngIf="!cardInstanceAttachmentsConfig.disableLandingAction && item.showInLanding"
+                            *ngIf="
+                                !cardInstanceAttachmentsConfig.disableLandingAction &&
+                                item.showInLanding &&
+                                template.permissionType === 'EDIT'
+                            "
                             (click)="stopSharingFileInLanding(item)"
                             matTooltip="{{ labels.stopSharingFileWithCustomerInLanding | translate }}"
                             matTooltipPosition="above"
@@ -131,10 +137,10 @@
                     <div
                         class="file-name"
                         [ngClass]="{ editable: !cardInstanceAttachmentsConfig.disableEditFileName }"
-                        (click)="editAttachmentName(item, template)"
+                        (click)="template.permissionType === 'EDIT' && editAttachmentName(item, template)"
                     >
                         {{ item.name }}
-                        <mat-icon>edit</mat-icon>
+                        <mat-icon *ngIf="template.permissionType === 'EDIT'">edit</mat-icon>
                     </div>
                 </div>
             </div>
