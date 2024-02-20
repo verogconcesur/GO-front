@@ -37,6 +37,11 @@
         margin-bottom: 5px;
       }
       &__wrapper {
+        mat-form-field.groupName {
+          margin-top: 10px;
+          margin-bottom: -13px;
+          width: 100% !important;
+        }
         .subtitle {
           margin-bottom: 5px;
         }

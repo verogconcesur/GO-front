@@ -186,6 +186,16 @@
                         </mat-checkbox>
                     </div>
 
+                    <mat-form-field appearance="outline" class="groupName" floatLabel="always">
+                        <mat-label>{{ labels.movementGroup | translate }}</mat-label>
+                        <input type="text" matInput formControlName="groupName" [matAutocomplete]="auto" />
+                        <mat-autocomplete #auto="matAutocomplete">
+                            <mat-option *ngFor="let option of filteredGroupNames | async" [value]="option">
+                                {{ option }}
+                            </mat-option>
+                        </mat-autocomplete>
+                    </mat-form-field>
+
                     <mat-form-field
                         class="select-wrapper"
                         appearance="outline"

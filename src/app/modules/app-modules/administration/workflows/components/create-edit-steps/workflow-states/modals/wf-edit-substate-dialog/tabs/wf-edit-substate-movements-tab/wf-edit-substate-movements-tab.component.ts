@@ -1,5 +1,5 @@
 import { Component, OnInit, ViewChild, ViewEncapsulation } from '@angular/core';
-import { FormBuilder, UntypedFormArray, UntypedFormGroup, Validators } from '@angular/forms';
+import { FormBuilder, UntypedFormArray, UntypedFormControl, UntypedFormGroup, Validators } from '@angular/forms';
 import { MatMenuTrigger } from '@angular/material/menu';
 import { marker } from '@biesbjerg/ngx-translate-extract-marker';
 import WorkflowEventMailDTO from '@data/models/workflows/workflow-event-mail-dto';
@@ -19,6 +19,7 @@ import {
 } from '../../../wf-edit-substate-events-dialog/wf-edit-substate-events-dialog.component';
 import { WEditSubstateFormAuxService } from '../../aux-service/wf-edit-substate-aux.service';
 import { WfEditSubstateAbstractTabClass } from '../wf-edit-substate-abstract-tab-class';
+import { SortService } from '@shared/services/sort.service';
 
 @Component({
   selector: 'app-wf-edit-substate-movements-tab',
@@ -34,9 +35,11 @@ export class WfEditSubstateMovementsTabComponent extends WfEditSubstateAbstractT
     addMovement: marker('workflows.addMovement'),
     newTaskTooltip: marker('workflows.movementCreateNewTask'),
     configMovements: marker('workflows.configMovementEvents'),
-    requiredMovementExtraDescription: marker('workflows.requiredMovementExtraDescription')
+    requiredMovementExtraDescription: marker('workflows.requiredMovementExtraDescription'),
+    others: marker('workflows.withoutGroup')
   };
   public substateMovements: WorkflowMoveDTO[];
+  public groupNames: string[] = [];
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   public chipsStatus: any = {};
 
@@ -48,7 +51,8 @@ export class WfEditSubstateMovementsTabComponent extends WfEditSubstateAbstractT
     private logger: NGXLogger,
     private translateService: TranslateService,
     private globalMessageService: GlobalMessageService,
-    private customDialogService: CustomDialogService
+    private customDialogService: CustomDialogService,
+    private sortService: SortService
   ) {
     super(editSubstateAuxService, spinnerService);
   }
@@ -63,13 +67,36 @@ export class WfEditSubstateMovementsTabComponent extends WfEditSubstateAbstractT
 
   public initForm(movements: WorkflowMoveDTO[]): void {
     const fa: UntypedFormArray = this.fb.array([]);
-    movements?.forEach((move: WorkflowMoveDTO) => fa.push(this.createMovementFormGroup(move)));
+    this.groupNames = [];
+    movements?.forEach((move: WorkflowMoveDTO) => {
+      if (move?.groupName && this.groupNames.indexOf(move.groupName) === -1) {
+        this.groupNames.push(move.groupName);
+      }
+      fa.push(this.createMovementFormGroup(move));
+    });
+    this.groupNames = this.groupNames.sort(this.sortService.alphaNumericSort);
     const form = this.fb.group({
       movements: fa
     });
     this.editSubstateAuxService.setFormGroupByTab(form, this.tabId);
     this.editSubstateAuxService.setFormOriginalData(this.form.value, this.tabId);
     // console.log(this.form, this.form.value);
+  }
+
+  public getGroupNames() {
+    return [...this.groupNames, null];
+  }
+
+  public getMovementsByGroup(groupName: string): UntypedFormControl[] {
+    if (groupName) {
+      return this.movementsFa?.controls
+        .filter((control: UntypedFormControl) => control.get('groupName').value === groupName)
+        .sort((a, b) => a.get('orderNumber').value - b.get('orderNumber').value) as UntypedFormControl[];
+    } else {
+      return this.movementsFa?.controls
+        .filter((control: UntypedFormControl) => !control.get('groupName').value)
+        .sort((a, b) => a.get('orderNumber').value - b.get('orderNumber').value) as UntypedFormControl[];
+    }
   }
 
   public deleteMovement = (movefg: UntypedFormGroup) => {
@@ -101,6 +128,7 @@ export class WfEditSubstateMovementsTabComponent extends WfEditSubstateAbstractT
           state: this.state,
           substate: this.substate,
           move: movefg.value,
+          groupNames: this.groupNames,
           eventType: 'MOV'
         },
         id: WfEditSubstateEventsComponentModalEnum.ID,
@@ -180,6 +208,7 @@ export class WfEditSubstateMovementsTabComponent extends WfEditSubstateAbstractT
       shortcut: false,
       shortcutColor: null,
       shortcutName: null,
+      groupName: null,
       signDocument: false,
       workflowSubstateSource: {
         ...this.substate
@@ -240,6 +269,7 @@ export class WfEditSubstateMovementsTabComponent extends WfEditSubstateAbstractT
       shortcut: [move?.shortcut ? move.shortcut : false],
       shortcutColor: [move?.shortcutColor ? move.shortcutColor : null],
       shortcutName: [move?.shortcutName ? move.shortcutName : null],
+      groupName: [move?.groupName ? move.groupName : null],
       signDocument: [move?.signDocument ? move.signDocument : false],
       workflowSubstateSource: [move?.workflowSubstateSource ? move.workflowSubstateSource : null, [Validators.required]],
       workflowSubstateTarget: [move?.workflowSubstateTarget ? move.workflowSubstateTarget : null, [Validators.required]],
