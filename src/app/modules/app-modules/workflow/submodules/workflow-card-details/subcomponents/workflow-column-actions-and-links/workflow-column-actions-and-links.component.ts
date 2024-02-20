@@ -35,6 +35,7 @@ import WorkflowDTO from '@data/models/workflows/workflow-dto';
 import RoleDTO from '@data/models/user-permissions/role-dto';
 import { AuthenticationService } from '@app/security/authentication.service';
 import { PermissionConstants } from '@app/constants/permission.constants';
+import { SortService } from '@shared/services/sort.service';
 
 @UntilDestroy()
 @Component({
@@ -49,7 +50,8 @@ export class WorkflowColumnActionsAndLinksComponent implements OnInit {
   @Input() idUser: number = null;
   public actions: WorkflowCardTabItemDTO[];
   public links: WorkflowCardTabItemDTO[];
-  public shortCuts: WorkflowMoveDTO[];
+  public shortCuts: { [key: string]: { groupName: string; moves: WorkflowMoveDTO[] } } = {};
+  public shortCutsWithoutGroup: WorkflowMoveDTO[] = [];
   public idCard: number = null;
   public sendMessageAction: WorkflowCardTabItemDTO[] = [];
   public labels = {
@@ -70,7 +72,8 @@ export class WorkflowColumnActionsAndLinksComponent implements OnInit {
     private cardAttachmentService: CardAttachmentsService,
     private cardMessagesService: CardMessagesService,
     private router: Router,
-    private authService: AuthenticationService
+    private authService: AuthenticationService,
+    private sortService: SortService
   ) {}
 
   ngOnInit(): void {
@@ -114,7 +117,23 @@ export class WorkflowColumnActionsAndLinksComponent implements OnInit {
           (data: WorkflowMoveDTO[]) => {
             const userRoleId: number = this.authService.getUserRole().id;
             data = data.filter((move: WorkflowMoveDTO) => move.roles.find((role: RoleDTO) => role.id === userRoleId));
-            this.shortCuts = data;
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
+            this.shortCuts = data.reduce((acc: any, move: WorkflowMoveDTO) => {
+              const groupName = move.groupName ? move.groupName : null;
+              if (!groupName) {
+                this.shortCutsWithoutGroup.push(move);
+              } else {
+                if (!acc[groupName]) {
+                  acc[groupName] = {
+                    groupName,
+                    moves: []
+                  };
+                }
+                acc[groupName].moves.push(move);
+              }
+              return acc;
+            }, {});
+            console.log(this.shortCuts);
           },
           (error: ConcenetError) => {
             this.globalMessageService.showError({
@@ -196,6 +215,12 @@ export class WorkflowColumnActionsAndLinksComponent implements OnInit {
           break;
       }
     }
+  }
+
+  public getShortCutsGroups(): { groupName: string; moves: WorkflowMoveDTO[] }[] {
+    return Object.keys(this.shortCuts)
+      .sort(this.sortService.alphaNumericSort)
+      .map((key: string) => this.shortCuts[key]);
   }
 
   public hasPermission(btn: 'move' | 'send'): boolean {
