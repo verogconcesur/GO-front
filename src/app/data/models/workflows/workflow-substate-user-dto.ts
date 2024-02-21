@@ -21,4 +21,6 @@ export default interface WorkflowSubstateUserDTO {
   userId?: number;
   extra?: boolean;
   selected?: boolean;
+  hideMoveButton?: boolean;
+  hideSendButton?: boolean;
 }

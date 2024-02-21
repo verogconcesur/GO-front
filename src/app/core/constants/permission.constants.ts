@@ -11,9 +11,6 @@ export enum PermissionConstants {
   HIDEADVANCEDSEARCHTAB = 'HIDEADVANCEDSEARCHTAB',
   //Borrar archivos
   ALLOWDELETEFILES = 'ALLOWDELETEFILES',
-  //Ocultar botones de enviar y mover ficha
-  HIDESENDBUTTON = 'HIDESENDBUTTON',
-  HIDEMOVEBUTTON = 'HIDEMOVEBUTTON',
 
   //Permisos en acciones
   //OCULTAR ACCIÓN

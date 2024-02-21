@@ -54,10 +54,24 @@ export class WorkflowUsersComponent extends WorkflowStepAbstractClass implements
     specialty: marker('userProfile.specialty'),
     actions: marker('common.actions'),
     noDataToShow: marker('errors.noDataToShow'),
-    others: marker('common.others')
+    others: marker('common.others'),
+    sendPermission: marker('common.sendPermission'),
+    movePermission: marker('common.movePermission'),
+    withPermission: marker('common.withPermission'),
+    withoutPermission: marker('common.withoutPermission')
   };
 
-  public displayedColumns = ['fullName', 'permissionsGroup', 'brand', 'facility', 'department', 'specialty', 'actions'];
+  public displayedColumns = [
+    'fullName',
+    'permissionsGroup',
+    'brand',
+    'facility',
+    'department',
+    'specialty',
+    'actions',
+    'move',
+    'send'
+  ];
   private usersFilter: UserFilterByIdsDTO;
 
   constructor(
@@ -128,7 +142,13 @@ export class WorkflowUsersComponent extends WorkflowStepAbstractClass implements
               user,
               id: null,
               extra: false,
-              selected: wUsers.find((wUser) => wUser.user.id === user.id) ? true : false
+              selected: wUsers.find((wUser) => wUser.user.id === user.id) ? true : false,
+              hideMoveButton: wUsers.find((wUser) => wUser.user.id === user.id)
+                ? wUsers.find((wUser) => wUser.user.id === user.id).hideMoveButton
+                : false,
+              hideSendButton: wUsers.find((wUser) => wUser.user.id === user.id)
+                ? wUsers.find((wUser) => wUser.user.id === user.id).hideSendButton
+                : false
             }))
           : [];
         this.originalData = {
@@ -169,6 +189,37 @@ export class WorkflowUsersComponent extends WorkflowStepAbstractClass implements
           }
         });
     });
+  }
+
+  public allHidden(field: 'hideMoveButton' | 'hideSendButton', users: WorkflowSubstateUserDTO[]): boolean {
+    return users.reduce((acc, user) => {
+      if (user.selected && acc) {
+        acc = user[field];
+      }
+      return acc;
+    }, true);
+  }
+  public allVisible(field: 'hideMoveButton' | 'hideSendButton', users: WorkflowSubstateUserDTO[]): boolean {
+    return users.reduce((acc, user) => {
+      if (user.selected && acc) {
+        acc = !user[field];
+      }
+      return acc;
+    }, true);
+  }
+  public changePermission(field: 'hideMoveButton' | 'hideSendButton', users: WorkflowSubstateUserDTO[]): void {
+    let changeTo = true;
+    if (users.length === 1) {
+      changeTo = !users[0][field];
+    } else {
+      changeTo = !this.allHidden(field, users);
+    }
+    users.forEach((user) => {
+      if (user.selected) {
+        user[field] = changeTo;
+      }
+    });
+    this.userSelectionChange();
   }
 
   public addUser(): void {
@@ -335,7 +386,12 @@ export class WorkflowUsersComponent extends WorkflowStepAbstractClass implements
       const otherUsers: WorkflowSubstateUserDTO[] = [];
       [...wUsers].forEach((wUser) => {
         if (!orUsers.find((orUser) => orUser.user.id === wUser.user.id)) {
-          otherUsers.push({ ...wUser, selected: true });
+          otherUsers.push({
+            ...wUser,
+            selected: true,
+            hideMoveButton: false,
+            hideSendButton: false
+          });
         }
       });
       if (otherUsers.length) {

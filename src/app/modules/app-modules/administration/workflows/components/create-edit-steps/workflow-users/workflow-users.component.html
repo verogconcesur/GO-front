@@ -121,6 +121,82 @@
                             </td>
                         </ng-container>
 
+                        <ng-container matColumnDef="move">
+                            <th mat-header-cell *matHeaderCellDef>
+                                <button
+                                    mat-button
+                                    class="move indeterminate"
+                                    [ngClass]="{
+                                        hide: allHidden('hideMoveButton', roleData?.users),
+                                        visible: allVisible('hideMoveButton', roleData?.users)
+                                    }"
+                                    (click)="changePermission('hideMoveButton', roleData?.users)"
+                                >
+                                    <label>{{ labels.movePermission | translate }}</label>
+                                </button>
+                            </th>
+                            <td mat-cell *matCellDef="let element" class="no-ellipsis">
+                                <button
+                                    mat-button
+                                    class="move"
+                                    [ngClass]="{ hide: element.hideMoveButton }"
+                                    *ngIf="element.selected"
+                                    (click)="changePermission('hideMoveButton', [element])"
+                                >
+                                    <mat-icon
+                                        *ngIf="!element.hideMoveButton"
+                                        matTooltipPosition="above"
+                                        matTooltip="{{ labels.withPermission | translate }}"
+                                        >check</mat-icon
+                                    >
+                                    <mat-icon
+                                        *ngIf="element.hideMoveButton"
+                                        matTooltipPosition="above"
+                                        matTooltip="{{ labels.withoutPermission | translate }}"
+                                        >close</mat-icon
+                                    >
+                                </button>
+                            </td>
+                        </ng-container>
+
+                        <ng-container matColumnDef="send">
+                            <th mat-header-cell *matHeaderCellDef>
+                                <button
+                                    mat-button
+                                    class="send indeterminate"
+                                    [ngClass]="{
+                                        hide: allHidden('hideSendButton', roleData?.users),
+                                        visible: allVisible('hideSendButton', roleData?.users)
+                                    }"
+                                    (click)="changePermission('hideSendButton', roleData?.users)"
+                                >
+                                    <label>{{ labels.sendPermission | translate }}</label>
+                                </button>
+                            </th>
+                            <td mat-cell *matCellDef="let element" class="no-ellipsis">
+                                <button
+                                    mat-button
+                                    class="send"
+                                    [ngClass]="{ hide: element.hideSendButton }"
+                                    *ngIf="element.selected"
+                                    (click)="changePermission('hideSendButton', [element])"
+                                >
+                                    <mat-icon
+                                        *ngIf="!element.hideSendButton"
+                                        matTooltipPosition="above"
+                                        matTooltip="{{ labels.withPermission | translate }}"
+                                        >check</mat-icon
+                                    >
+                                    <mat-icon
+                                        *ngIf="element.hideSendButton"
+                                        matTooltipPosition="above"
+                                        matTooltip="{{ labels.withoutPermission | translate }}"
+                                        >close</mat-icon
+                                    >
+                                </button>
+                            </td>
+                        </ng-container>
+
                         <tr mat-header-row *matHeaderRowDef="displayedColumns; sticky: true"></tr>
                         <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
                         <tr class="mat-row" *matNoDataRow>

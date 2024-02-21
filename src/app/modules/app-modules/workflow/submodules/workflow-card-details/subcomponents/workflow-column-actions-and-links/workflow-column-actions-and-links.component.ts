@@ -36,6 +36,7 @@ import RoleDTO from '@data/models/user-permissions/role-dto';
 import { AuthenticationService } from '@app/security/authentication.service';
 import { PermissionConstants } from '@app/constants/permission.constants';
 import { SortService } from '@shared/services/sort.service';
+import WorkflowSubstateUserDTO from '@data/models/workflows/workflow-substate-user-dto';
 
 @UntilDestroy()
 @Component({
@@ -60,6 +61,7 @@ export class WorkflowColumnActionsAndLinksComponent implements OnInit {
     externalLinks: marker('common.externalLinks'),
     directLinks: marker('common.directLinks')
   };
+  private sendAndMovePermission: WorkflowSubstateUserDTO = { user: null, hideMoveButton: true, hideSendButton: true };
 
   constructor(
     private cardService: CardService,
@@ -86,6 +88,12 @@ export class WorkflowColumnActionsAndLinksComponent implements OnInit {
         }
       });
     this.getData();
+    this.cardService
+      .getUserPermissions(this.idCard)
+      .pipe(take(1))
+      .subscribe((userPermissions: WorkflowSubstateUserDTO) => {
+        this.sendAndMovePermission = userPermissions;
+      });
   }
 
   public getData(): void {
@@ -228,9 +236,9 @@ export class WorkflowColumnActionsAndLinksComponent implements OnInit {
 
   public hasPermission(btn: 'move' | 'send'): boolean {
     if (btn === 'move') {
-      return !this.authService.getUserPermissions().find((permission) => permission.code === PermissionConstants.HIDEMOVEBUTTON);
+      return !this.sendAndMovePermission.hideMoveButton;
     } else {
-      return !this.authService.getUserPermissions().find((permission) => permission.code === PermissionConstants.HIDESENDBUTTON);
+      return !this.sendAndMovePermission.hideSendButton;
     }
   }
 
