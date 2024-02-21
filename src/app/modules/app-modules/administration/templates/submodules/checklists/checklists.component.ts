@@ -134,6 +134,23 @@ export class ChecklistsComponent extends AdministrationCommonHeaderSectionClassT
       });
   }
 
+  public duplicateChecklist(id: number) {
+    this.checklistService
+      .duplicateChecklistById(id)
+      .pipe(take(1))
+      .subscribe({
+        next: (response) => {
+          this.getData();
+        },
+        error: (error) => {
+          this.globalMessageService.showError({
+            message: error.message,
+            actionText: this.translateService.instant(marker('common.close'))
+          });
+        }
+      });
+  }
+
   public deleteChecklist(id: number) {
     this.confirmDialogService
       .open({

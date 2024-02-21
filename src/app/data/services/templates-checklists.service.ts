@@ -23,6 +23,7 @@ export class TemplatesChecklistsService {
   private readonly SEARCH_COMMUNICATIONS_PATH = '/api/templates/search';
   private readonly TEMPLATE_CHECKLIST_PATH = '/api/templatechecklists';
   private readonly TEMPLATE_CHECKLIST = '/templateChecklist';
+  private readonly DUPLICATE_PATH = '/duplicate';
   private readonly TEMPLATE_ATTACHMENTS = '/attachments';
   private readonly TEMPLATE_SIGN_DOCUMENT = '/signDocument';
   private readonly CARD_INSTANCE_WORKFLOW = '/cardInstanceWorkflow';
@@ -114,6 +115,12 @@ export class TemplatesChecklistsService {
           `/${catId}${this.TEMPLATE_SIGN_DOCUMENT}`,
         signFile
       )
+      .pipe(catchError((error) => throwError(error.error as ConcenetError)));
+  }
+
+  public duplicateChecklistById(id: number): Observable<TemplatesChecklistsDTO> {
+    return this.http
+      .get<TemplatesChecklistsDTO>(`${this.env.apiBaseUrl}${this.TEMPLATE_CHECKLIST_PATH}${this.DUPLICATE_PATH}/${id}`)
       .pipe(catchError((error) => throwError(error.error as ConcenetError)));
   }
 }
