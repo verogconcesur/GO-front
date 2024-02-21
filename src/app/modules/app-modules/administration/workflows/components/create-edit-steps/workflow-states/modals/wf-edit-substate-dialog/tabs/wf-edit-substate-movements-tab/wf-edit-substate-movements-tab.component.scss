@@ -71,6 +71,7 @@
         }
       }
     }
+
     &__substate {
       background-color: mat-contrast($primary, 400);
       padding: 10px 15px;
@@ -260,5 +261,15 @@
   .mat-menu-content:not(:empty) {
     padding-top: 0px;
     padding-bottom: 0px;
+  }
+}
+
+.substate-movements__column__substate.cdk-drag-dragging,
+.substate-movements__column__substate.cdk-drag-preview {
+  .line {
+    display: none !important;
+  }
+  .move-options {
+    display: none !important;
   }
 }

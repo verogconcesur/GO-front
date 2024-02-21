@@ -11,7 +11,7 @@ import { TranslateService } from '@ngx-translate/core';
 import { GlobalMessageService } from '@shared/services/global-message.service';
 import { ProgressSpinnerDialogService } from '@shared/services/progress-spinner-dialog.service';
 import { NGXLogger } from 'ngx-logger';
-import { Observable } from 'rxjs';
+import { Observable, forkJoin } from 'rxjs';
 import { finalize, take } from 'rxjs/operators';
 import {
   WfEditSubstateEventsComponentModalEnum,
@@ -20,6 +20,8 @@ import {
 import { WEditSubstateFormAuxService } from '../../aux-service/wf-edit-substate-aux.service';
 import { WfEditSubstateAbstractTabClass } from '../wf-edit-substate-abstract-tab-class';
 import { SortService } from '@shared/services/sort.service';
+import { CdkDragDrop } from '@angular/cdk/drag-drop';
+import { ConfirmDialogService } from '@shared/services/confirm-dialog.service';
 
 @Component({
   selector: 'app-wf-edit-substate-movements-tab',
@@ -52,7 +54,8 @@ export class WfEditSubstateMovementsTabComponent extends WfEditSubstateAbstractT
     private translateService: TranslateService,
     private globalMessageService: GlobalMessageService,
     private customDialogService: CustomDialogService,
-    private sortService: SortService
+    private sortService: SortService,
+    private confirmationDialog: ConfirmDialogService
   ) {
     super(editSubstateAuxService, spinnerService);
   }
@@ -99,24 +102,73 @@ export class WfEditSubstateMovementsTabComponent extends WfEditSubstateAbstractT
     }
   }
 
-  public deleteMovement = (movefg: UntypedFormGroup) => {
-    const spinner = this.spinnerService.show();
-    this.substatesService
-      .deleteWorkflowSubstateMovement(this.workflowId, this.substate.id, movefg.get('id').value)
-      .pipe(take(1))
-      .subscribe(
-        (res) => {
-          this.getDataAndInitForm(spinner);
-        },
-        (error) => {
-          this.spinnerService.hide(spinner);
-          this.logger.error(error);
-          this.globalMessageService.showError({
-            message: error.message,
-            actionText: this.translateService.instant(marker('common.close'))
-          });
+  public drop(event: CdkDragDrop<string[]>, group: string) {
+    const movementsFc = this.getMovementsByGroup(group);
+    const startIndex = event.previousIndex;
+    const endIndex = event.currentIndex;
+    const movedItem = movementsFc[startIndex];
+    const movementsToSave: WorkflowMoveDTO[] = [];
+    const requests: Observable<WorkflowMoveDTO>[] = [];
+    if (startIndex !== endIndex) {
+      if (startIndex > endIndex) {
+        for (let i = endIndex; i <= startIndex; i++) {
+          if (movementsFc[i].get('orderNumber').value !== i + 1) {
+            movementsFc[i].get('orderNumber').setValue(i + 1);
+            movementsToSave.push(movementsFc[i].value);
+          }
         }
-      );
+      } else {
+        for (let i = startIndex; i <= endIndex; i++) {
+          if (movementsFc[i].get('orderNumber').value !== i) {
+            movementsFc[i].get('orderNumber').setValue(i);
+            movementsToSave.push(movementsFc[i].value);
+          }
+        }
+      }
+      movedItem.get('orderNumber').setValue(endIndex);
+      movementsToSave.push(movedItem.value);
+      movementsToSave.forEach((move: WorkflowMoveDTO) => {
+        requests.push(this.substatesService.postWorkflowSubstateMovements(this.workflowId, this.substate.id, move));
+      });
+      if (requests.length > 0) {
+        const spinner = this.spinnerService.show();
+        forkJoin(requests)
+          .pipe(take(1))
+          .subscribe((res) => {
+            this.getDataAndInitForm(spinner);
+          });
+      }
+    }
+  }
+
+  public deleteMovement = (movefg: UntypedFormGroup) => {
+    this.confirmationDialog
+      .open({
+        title: this.translateService.instant(marker('common.warning')),
+        message: this.translateService.instant(marker('common.deleteConfirmation'))
+      })
+      .pipe(take(1))
+      .subscribe((ok: boolean) => {
+        if (ok) {
+          const spinner = this.spinnerService.show();
+          this.substatesService
+            .deleteWorkflowSubstateMovement(this.workflowId, this.substate.id, movefg.get('id').value)
+            .pipe(take(1))
+            .subscribe(
+              (res) => {
+                this.getDataAndInitForm(spinner);
+              },
+              (error) => {
+                this.spinnerService.hide(spinner);
+                this.logger.error(error);
+                this.globalMessageService.showError({
+                  message: error.message,
+                  actionText: this.translateService.instant(marker('common.close'))
+                });
+              }
+            );
+        }
+      });
   };
 
   public editMoveEvent = (movefg: UntypedFormGroup) => {

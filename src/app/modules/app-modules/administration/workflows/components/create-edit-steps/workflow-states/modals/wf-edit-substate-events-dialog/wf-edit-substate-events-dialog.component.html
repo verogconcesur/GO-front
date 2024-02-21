@@ -186,7 +186,12 @@
                         </mat-checkbox>
                     </div>
 
-                    <mat-form-field appearance="outline" class="groupName" floatLabel="always">
+                    <mat-form-field
+                        appearance="outline"
+                        class="groupName"
+                        floatLabel="always"
+                        *ngIf="form.controls?.shortcut?.value"
+                    >
                         <mat-label>{{ labels.movementGroup | translate }}</mat-label>
                         <input type="text" matInput formControlName="groupName" [matAutocomplete]="auto" />
                         <mat-autocomplete #auto="matAutocomplete">

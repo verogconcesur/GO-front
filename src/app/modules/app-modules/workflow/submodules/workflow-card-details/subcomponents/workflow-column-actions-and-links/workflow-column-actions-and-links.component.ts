@@ -133,7 +133,10 @@ export class WorkflowColumnActionsAndLinksComponent implements OnInit {
               }
               return acc;
             }, {});
-            console.log(this.shortCuts);
+            this.shortCutsWithoutGroup = this.shortCutsWithoutGroup.sort((a, b) => a.orderNumber - b.orderNumber);
+            Object.keys(this.shortCuts).forEach((key: string) => {
+              this.shortCuts[key].moves = this.shortCuts[key].moves.sort((a, b) => a.orderNumber - b.orderNumber);
+            });
           },
           (error: ConcenetError) => {
             this.globalMessageService.showError({

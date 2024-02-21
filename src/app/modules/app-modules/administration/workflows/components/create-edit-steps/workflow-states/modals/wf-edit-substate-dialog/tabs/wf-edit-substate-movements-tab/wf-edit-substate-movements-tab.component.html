@@ -15,7 +15,7 @@
             <div class="line down" *ngIf="movementsFa?.controls.length"></div>
         </div>
     </div>
-    <div class="substate-movements__column target">
+    <div class="substate-movements__column target" cdkDropListGroup>
         <div
             class="substate-movements__column__substate target add-movement mat-elevation-z2"
             [matMenuTriggerFor]="attrSearcherMenu"
@@ -27,16 +27,25 @@
             </div>
             <div class="line dotted"></div>
         </div>
-        <div *ngFor="let group of getGroupNames(); let i = index" class="groups">
-            <div class="state-substate-group-name" *ngIf="group && getMovementsByGroup(group).length">{{ group }}</div>
-            <div class="state-substate-group-name" *ngIf="!group && getMovementsByGroup(group).length">
+        <div
+            *ngFor="let group of getGroupNames(); let i = index"
+            class="groups"
+            [ngClass]="'group_' + i"
+            cdkDropList
+            cdkDropListOrientation="vertical"
+            (cdkDropListDropped)="drop($event, group)"
+        >
+            <div class="state-substate-group-name" *ngIf="group && getMovementsByGroup(group)?.length">{{ group }}</div>
+            <div class="state-substate-group-name" *ngIf="!group && getMovementsByGroup(group)?.length">
                 {{ labels.others | translate }}
             </div>
-            <div class="line up group" [ngClass]="{ first: i === 0 }" *ngIf="getMovementsByGroup(group).length"></div>
+            <div class="line up group" [ngClass]="{ first: i === 0 }" *ngIf="getMovementsByGroup(group)?.length"></div>
 
             <div
                 *ngFor="let targetFg of getMovementsByGroup(group)"
                 class="substate-movements__column__substate target mat-elevation-z2"
+                cdkDrag
+                [cdkDragBoundary]="'.group_' + i"
             >
                 <div class="substate-movements__column__substate__info">
                     <div class="state-substate-name">
