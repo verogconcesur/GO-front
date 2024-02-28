@@ -157,7 +157,7 @@ export class WorkflowCardsPermissionsComponent extends ComponentToExtendForCusto
   }
 
   public isTabSelected(tab: CardColumnTabDTO): boolean {
-    return this.permissionForm.getRawValue().find((permission: WorkflowCardTabDTO) => permission.tabId === tab.id);
+    return this.permissionForm?.getRawValue()?.find((permission: WorkflowCardTabDTO) => permission.tabId === tab.id);
   }
   public addRemoveTabFromPermissions(tab: CardColumnTabDTO) {
     this.permissionForm.markAsTouched();
