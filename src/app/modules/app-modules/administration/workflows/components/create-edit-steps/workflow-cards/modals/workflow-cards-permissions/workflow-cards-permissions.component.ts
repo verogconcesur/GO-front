@@ -284,12 +284,30 @@ export class WorkflowCardsPermissionsComponent extends ComponentToExtendForCusto
   }
   public changeAllPermissions(permission: string): void {
     const tabFormData = this.cardTabForm.getRawValue();
-    tabFormData.workflowCardTabPermissions = tabFormData.workflowCardTabPermissions.map(
-      (cardTabPermission: WorkflowCardTabPermissionsDTO) => {
-        cardTabPermission.permissionType = permission as WorkFlowPermissionsEnum;
-        return cardTabPermission;
-      }
-    );
+    if (!this.selectedLinkItem && !this.selectedTempAttch) {
+      tabFormData.workflowCardTabPermissions = tabFormData.workflowCardTabPermissions.map(
+        (cardTabPermission: WorkflowCardTabPermissionsDTO) => {
+          cardTabPermission.permissionType = permission as WorkFlowPermissionsEnum;
+          return cardTabPermission;
+        }
+      );
+    } else if (this.selectedLinkItem) {
+      tabFormData.workflowCardTabItemPermissions = tabFormData.workflowCardTabItemPermissions.map(
+        (cardTabPermission: WorkflowCardTabItemPermissionDTO) => {
+          if (cardTabPermission.tabItemId === this.selectedLinkItem.id) {
+            cardTabPermission.permissionType = permission as WorkFlowPermissionsEnum;
+          }
+          return cardTabPermission;
+        }
+      );
+    } else if (this.selectedTempAttch) {
+      tabFormData.workflowCardTabTAIPermissions = tabFormData.workflowCardTabTAIPermissions.map(
+        (cardTabPermission: WorkflowCardTabTAIPermissionDTO) => {
+          cardTabPermission.permissionType = permission as WorkFlowPermissionsEnum;
+          return cardTabPermission;
+        }
+      );
+    }
     this.cardTabForm.patchValue(tabFormData);
     this.permissionForm.markAsTouched();
     this.allPermisionForm.get('permission').setValue('');
@@ -400,6 +418,7 @@ export class WorkflowCardsPermissionsComponent extends ComponentToExtendForCusto
     return this.fb.group(data);
   }
   private generateFormPermissionByTab(tab: CardColumnTabDTO): FormGroup {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const formData: any = {
       id: [],
       tabId: [tab.id],
@@ -414,6 +433,7 @@ export class WorkflowCardsPermissionsComponent extends ComponentToExtendForCusto
     });
     //Tab de tipo Attachments
     if (this.attachmentTabIds.includes(tab.id)) {
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       const workflowCardTabTAIPermissions: any[] = [];
       this.templateAttachments.forEach((tempAtt) => {
         this.roles.forEach((role) => {
@@ -422,7 +442,7 @@ export class WorkflowCardsPermissionsComponent extends ComponentToExtendForCusto
             permissionType: WorkFlowPermissionsEnum.hide,
             role,
             templateAttachmentItemId: tempAtt.id,
-            workflowCardTabId: tab.id
+            workflowCardTabId: null
           });
         });
       });
@@ -437,6 +457,7 @@ export class WorkflowCardsPermissionsComponent extends ComponentToExtendForCusto
 
     //Tab de tipo Link
     if (tab.tabItems?.length > 0) {
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       const workflowCardTabItemPermissions: any[] = [];
       this.getLinkTabItems(tab).forEach((linkItem) => {
         this.roles.forEach((role) => {
@@ -445,7 +466,7 @@ export class WorkflowCardsPermissionsComponent extends ComponentToExtendForCusto
             permissionType: WorkFlowPermissionsEnum.hide,
             role,
             tabItemId: linkItem.id,
-            workflowCardTabId: tab.id
+            workflowCardTabId: null
           });
         });
       });
