@@ -58,6 +58,7 @@ export class CreateEditFacilityComponent extends ComponentToExtendForCustomDialo
     address: marker('common.address'),
     integration: marker('organizations.facilities.integration'),
     requireConfigApiExt: marker('organizations.facilities.requireConfigApiExt'),
+    configApiExtDefault: marker('organizations.facilities.configApiExtDefault'),
     requireConfigEmail: marker('organizations.facilities.requireConfigEmail'),
     code: marker('organizations.facilities.code'),
     enterpriseId: marker('organizations.facilities.enterpriseId'),
@@ -204,6 +205,7 @@ export class CreateEditFacilityComponent extends ComponentToExtendForCustomDialo
         postalCode: formValue.postalCode,
         town: formValue.town,
         requireConfigApiExt: formValue.requireConfigApiExt,
+        configApiExtDefault: formValue.configApiExtDefault,
         code: formValue.code,
         enterpriseId: formValue.enterpriseId,
         storeId: formValue.storeId,
@@ -488,6 +490,9 @@ export class CreateEditFacilityComponent extends ComponentToExtendForCustomDialo
         ],
         requireConfigApiExt: [
           this.facilityToEdit && this.facilityToEdit.requireConfigApiExt ? this.facilityToEdit.requireConfigApiExt : false
+        ],
+        configApiExtDefault: [
+          this.facilityToEdit && this.facilityToEdit.configApiExtDefault ? this.facilityToEdit.configApiExtDefault : false
         ],
         code: [this.facilityToEdit && this.facilityToEdit.code ? this.facilityToEdit.code : null],
         enterpriseId: [this.facilityToEdit && this.facilityToEdit.enterpriseId ? this.facilityToEdit.enterpriseId : null],
