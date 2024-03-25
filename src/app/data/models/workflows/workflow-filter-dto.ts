@@ -15,6 +15,7 @@ export default interface WorkflowFilterDTO {
   dateType: any;
   priorities: string[];
   substatesWithCards: 'BOTH' | 'WITH_CARDS' | 'WHITHOUT_CARDS';
+  followedCards: boolean;
 }
 
 export interface WorkflowSearchFilterDTO {

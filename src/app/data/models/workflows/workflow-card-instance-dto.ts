@@ -20,4 +20,5 @@ export default interface WorkflowCardInstanceDTO {
   dateAssignmentSubstate?: number;
   calendarDate?: string;
   dateAppliTimeLimit?: number;
+  following?: boolean;
 }

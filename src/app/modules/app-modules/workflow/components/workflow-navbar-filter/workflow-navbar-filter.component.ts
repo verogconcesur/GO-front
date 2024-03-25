@@ -25,6 +25,4 @@ export class WorkflowNavbarFilterComponent implements OnInit, OnDestroy {
   ngOnDestroy(): void {
     this.workflowFilterService.resetWorkflowFilter();
   }
-
-  public filterSubstatesWithCards(): void {}
 }

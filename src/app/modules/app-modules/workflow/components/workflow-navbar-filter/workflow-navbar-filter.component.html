@@ -8,6 +8,25 @@
     >
         <mat-icon>filter_list</mat-icon>
     </button>
+    <!-- Button to filter cards that the user follows or not -->
+    <!-- <button
+        mat-icon-button
+        class="workflow-navbar-filter__mobile followedCards-button"
+        [ngClass]="{ active: workflowNavbarFilterForm?.filterForm.get('followedCards').value }"
+        aria-label="Filter by followed cards"
+        (click)="workflowNavbarFilterForm?.filterFollowedCards()"
+        [disabled]="!workflowNavbarFilterForm?.filterOptions?.states?.length"
+    >
+        <mat-icon
+            matTooltipPosition="above"
+            [matTooltip]="
+                workflowNavbarFilterForm?.filterForm.get('followedCards').value
+                    ? (workflowNavbarFilterForm?.labels.followedCards | translate)
+                    : (workflowNavbarFilterForm?.labels.allCards | translate)
+            "
+            >remove_red_eye</mat-icon
+        >
+    </button> -->
     <!-- Show with / without / with and without cards button (es una copia del que hay en workflowNavbarFilterForm)-->
     <button
         mat-icon-button
