@@ -757,7 +757,6 @@
 		},
 		"facilities": {
 			"code": "Código",
-			"configApiExtDefault": "Instalación a usar por defecto en la actualización con Autoline",
 			"create": "Crear instalación",
 			"delete": "Eliminar instalación",
 			"deleteConfirmation": "¿Realmente quiere eliminar esta instalación?",

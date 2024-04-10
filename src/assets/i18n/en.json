@@ -757,7 +757,6 @@
         },
         "facilities": {
             "code": "Code",
-            "configApiExtDefault": "Facility to be used by default in the update with Autoline",
             "create": "Create facility",
             "delete": "Delete facility",
             "deleteConfirmation": "Do you really want to delete this facility?",
