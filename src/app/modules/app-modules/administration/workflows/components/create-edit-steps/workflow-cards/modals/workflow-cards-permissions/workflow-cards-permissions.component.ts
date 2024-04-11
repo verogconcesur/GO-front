@@ -207,6 +207,7 @@ export class WorkflowCardsPermissionsComponent extends ComponentToExtendForCusto
     this.selectedTab = tab;
     this.selectedLinkItem = null;
     this.selectedTempAttch = tmpAtch;
+    this.allPermisionForm.get('permission').setValue('');
     const index = this.permissionForm.getRawValue().findIndex((permission: WorkflowCardTabDTO) => permission.tabId === tab.id);
     this.cardTabForm = this.permissionForm.at(index) as FormGroup;
   }
@@ -220,6 +221,7 @@ export class WorkflowCardsPermissionsComponent extends ComponentToExtendForCusto
     this.selectedTab = tab;
     this.selectedTempAttch = null;
     this.selectedLinkItem = linkItem;
+    this.allPermisionForm.get('permission').setValue('');
     const index = this.permissionForm.getRawValue().findIndex((permission: WorkflowCardTabDTO) => permission.tabId === tab.id);
     this.cardTabForm = this.permissionForm.at(index) as FormGroup;
   }
@@ -303,7 +305,9 @@ export class WorkflowCardsPermissionsComponent extends ComponentToExtendForCusto
     } else if (this.selectedTempAttch) {
       tabFormData.workflowCardTabTAIPermissions = tabFormData.workflowCardTabTAIPermissions.map(
         (cardTabPermission: WorkflowCardTabTAIPermissionDTO) => {
-          cardTabPermission.permissionType = permission as WorkFlowPermissionsEnum;
+          if (cardTabPermission.templateAttachmentItemId === this.selectedTempAttch.id) {
+            cardTabPermission.permissionType = permission as WorkFlowPermissionsEnum;
+          }
           return cardTabPermission;
         }
       );
