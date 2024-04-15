@@ -44,7 +44,9 @@ export class WorkflowNavbarFilterFormComponent implements OnInit {
     cleanFilter: marker('common.cleanFilter'),
     substatesWithCards: marker('workflows.substatesWithCards'),
     substatesWithAndWithoutCards: marker('workflows.substatesWithAndWithoutCards'),
-    substatesWithoutCards: marker('workflows.substatesWithoutCards')
+    substatesWithoutCards: marker('workflows.substatesWithoutCards'),
+    followedCards: marker('workflows.followedCards'),
+    allCards: marker('workflows.allCards')
   };
   public statesOptions: Observable<WorkflowStateDTO[] | any[]>;
   public subStatesOptions: Observable<WorkflowSubstateDTO[] | any[]>;
@@ -89,6 +91,9 @@ export class WorkflowNavbarFilterFormComponent implements OnInit {
     if (this.filterForm.get('substatesWithCards').value) {
       this.filterForm.get('substatesWithCards').setValue('BOTH');
     }
+    if (this.filterForm.get('followedCards').value) {
+      this.filterForm.get('followedCards').setValue(false);
+    }
     this.notifyChangesInFilter();
   }
 
@@ -132,6 +137,12 @@ export class WorkflowNavbarFilterFormComponent implements OnInit {
     this.notifyChangesInFilter();
   }
 
+  public filterFollowedCards(): void {
+    const actualValue = this.filterForm.get('followedCards').value;
+    this.filterForm.get('followedCards').setValue(!actualValue);
+    this.notifyChangesInFilter();
+  }
+
   private initForms(): void {
     this.filterForm = this.formBuilder.group({
       states: [this.filterValue?.states ? this.filterValue.states : []],
@@ -140,6 +151,7 @@ export class WorkflowNavbarFilterFormComponent implements OnInit {
       dateType: [this.filterValue?.dateType ? this.filterValue.dateType : null],
       priorities: [this.filterValue?.priorities ? this.filterValue.priorities : []],
       substatesWithCards: [this.filterValue?.substatesWithCards ? this.filterValue?.substatesWithCards : 'BOTH'],
+      followedCards: [this.filterValue?.followedCards ? this.filterValue.followedCards : false],
       statesSearch: [''],
       subStatesSearch: [''],
       usersSearch: ['']
@@ -240,7 +252,8 @@ export class WorkflowNavbarFilterFormComponent implements OnInit {
       users: this.filterForm.get('users').value,
       priorities: this.filterForm.get('priorities').value,
       dateType: this.filterForm.get('dateType').value,
-      substatesWithCards: this.filterForm.get('substatesWithCards').value
+      substatesWithCards: this.filterForm.get('substatesWithCards').value,
+      followedCards: this.filterForm.get('followedCards').value
     };
     this.workflowFilterService.workflowFilterSubject$.next(filterValue);
   }
