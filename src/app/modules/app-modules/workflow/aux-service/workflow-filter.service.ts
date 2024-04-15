@@ -130,15 +130,56 @@ export class WorkflowFilterService {
 
     //Filtro por tarjetas que sigue el usuario logado
     if (filter.followedCards) {
-      wStatesData = wStatesData.map((ws: WorkflowStateDTO) => {
-        ws.workflowSubstates = ws.workflowSubstates
-          .map((wss: WorkflowSubstateDTO) => {
-            wss.cards = wss.cards.filter((card: WorkflowCardDTO) => card.cardInstanceWorkflows[0].following);
-            return wss;
-          })
-          .filter((wss: WorkflowSubstateDTO) => wss.cards.length);
-        return ws;
-      });
+      wStatesData = wStatesData
+        .map((ws: WorkflowStateDTO) => {
+          ws.workflowSubstates = ws.workflowSubstates
+            .map((wss: WorkflowSubstateDTO) => {
+              wss.cards = wss.cards.filter((card: WorkflowCardDTO) => card.cardInstanceWorkflows[0].following);
+              return wss;
+            })
+            .filter((wss: WorkflowSubstateDTO) => wss.cards.length);
+          return ws;
+        })
+        .filter((ws: WorkflowStateDTO) => {
+          if (ws.front) {
+            //Si es portada filtramos por usuario y subestados vacíos
+            const dataByUser: any = {};
+            ws.workflowSubstates = ws.workflowSubstates.map((wss: WorkflowSubstateDTO) => {
+              wss.workflowSubstateUser = wss.workflowSubstateUser.map((wssu: WorkflowSubstateUserDTO) => {
+                const newCardsBySubstateId: any = {};
+                Object.keys(wssu.cardsBySubstateId).forEach((k) => {
+                  if (wssu.cardsBySubstateId[k].length) {
+                    wssu.cardsBySubstateId[k] = wssu.cardsBySubstateId[k].filter(
+                      (c: any) => c.cardInstanceWorkflows[0].following
+                    );
+                    newCardsBySubstateId[k] = wssu.cardsBySubstateId[k];
+                  }
+                });
+                wssu.cardsBySubstateId = newCardsBySubstateId;
+                wssu.cards = wssu.cards.filter((c) => c.cardInstanceWorkflows[0].following);
+                if (dataByUser[wssu.user.id]) {
+                  wssu.cards = this.orderCardsByOrderNumber([...wssu.cards, ...dataByUser[wssu.user.id].cards]);
+                  wssu.cardsBySubstateId = { ...wssu.cardsBySubstateId, ...dataByUser[wssu.user.id].cardsBySubstateId };
+                  dataByUser[wssu.user.id] = wssu;
+                } else {
+                  dataByUser[wssu.user.id] = wssu;
+                }
+                return wssu;
+              });
+              return wss;
+            });
+            ws.workflowUsers = ws.workflowUsers
+              ?.map((wssu: WorkflowSubstateUserDTO) => dataByUser[wssu.user.id])
+              .filter(
+                (wssu: WorkflowSubstateUserDTO) =>
+                  wssu?.cards?.length && wssu.cards.filter((c) => c.cardInstanceWorkflows[0].following).length
+              );
+          }
+          if (ws.workflowSubstates.length) {
+            return true;
+          }
+          return false;
+        });
     }
 
     //Filtro estados
