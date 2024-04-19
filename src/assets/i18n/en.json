@@ -9,6 +9,9 @@
         "organization": "Organization",
         "records": "Records",
         "templates": {
+            "accounting": {
+                "title": "Accounting"
+            },
             "attachments": {
                 "add": "New attachment template",
                 "create": "Create attachment category template",

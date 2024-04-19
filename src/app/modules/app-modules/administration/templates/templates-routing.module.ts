@@ -45,6 +45,11 @@ const routes: Routes = [
         loadChildren: () => import('./submodules/client-timeline/client-timeline.module').then((m) => m.ClientTimelineModule)
       },
       {
+        path: RouteConstants.ACCOUNTING,
+        canActivate: [AuthGuardService],
+        loadChildren: () => import('./submodules/accounting/accountig.module').then((m) => m.AccountingsModule)
+      },
+      {
         path: RouteConstants.OTHER,
         pathMatch: 'full',
         redirectTo: RouteConstants.COMMUNICATIONS

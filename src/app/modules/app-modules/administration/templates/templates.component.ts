@@ -36,6 +36,7 @@ export class TemplatesComponent implements OnInit {
     checklists: marker('administration.templates.checklists.title'),
     attachments: marker('administration.templates.attachments.title'),
     clientTimeline: marker('administration.templates.clientTimeline.title'),
+    accounting: marker('administration.templates.accounting.title'),
     createCommunication: marker('administration.templates.communications.create'),
     createBudgets: marker('administration.templates.budgets.create'),
     createChecklists: marker('administration.templates.checklists.create'),
