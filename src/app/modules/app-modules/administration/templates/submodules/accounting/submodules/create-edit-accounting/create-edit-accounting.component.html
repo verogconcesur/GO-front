@@ -1,1 +1,52 @@
-Accounting create edit
+<div class="accounting-config">
+    <div class="accounting-config__column accounting-config__config">
+        <div fxLayoutAlign="space-between center">
+            <h1 class="accounting-config__column__title">{{ getTitle() }}</h1>
+        </div>
+        <div class="accounting-config__config__accordion">
+            <mat-accordion [multi]="true">
+                <mat-expansion-panel [expanded]="true">
+                    <mat-expansion-panel-header>
+                        <mat-panel-title> {{ labels.cheklistConfig | translate }}</mat-panel-title>
+                    </mat-expansion-panel-header>
+                    <form
+                        [formGroup]="accountingForm"
+                        *ngIf="accountingForm"
+                        class="accounting-config__form smaller-mat-form-fields"
+                    >
+                        <!-- General Data -->
+                        <div class="template-data__section">
+                            <div class="template-data__section__group grid-group" formGroupName="template">
+                                <!-- Name -->
+                                <mat-form-field appearance="outline" floatLabel="always" class="first-item">
+                                    <mat-label>{{ labels.name | translate }}</mat-label>
+                                    <input matInput formControlName="name" />
+                                    <mat-error
+                                        class="template-data__error"
+                                        *ngIf="
+                                            accountingForm.get('template.name').invalid &&
+                                            accountingForm.get('template.name').touched
+                                        "
+                                    >
+                                        {{ labels.nameRequired | translate }}
+                                    </mat-error>
+                                </mat-form-field>
+                                <app-organization-levels-nested-combos
+                                    #OrganizationLevelsNestedCombos
+                                    [form]="accountingForm.get('template')"
+                                ></app-organization-levels-nested-combos>
+                            </div>
+                        </div>
+                    </form>
+                </mat-expansion-panel>
+                <mat-expansion-panel [expanded]="true">
+                    <mat-expansion-panel-header>
+                        <mat-panel-title> {{ labels.itemsInTemplate | translate }} </mat-panel-title>
+                    </mat-expansion-panel-header>
+                    Acordeón de bloques => lineas
+                </mat-expansion-panel>
+            </mat-accordion>
+        </div>
+    </div>
+    <div class="accounting-config__column">Sección para la creación edición de bloques / líneas</div>
+</div>

@@ -8,7 +8,8 @@ import BrandDTO from '@data/models/organization/brand-dto';
 import DepartmentDTO from '@data/models/organization/department-dto';
 import FacilityDTO from '@data/models/organization/facility-dto';
 import SpecialtyDTO from '@data/models/organization/specialty-dto';
-import { TemplateAccountingItemListDTO } from '@data/models/templates/templates-accountings-dto';
+import { TemplateAccountingItemListDTO } from '@data/models/templates/templates-accounting-dto';
+import TemplatesCommonDTO from '@data/models/templates/templates-common-dto';
 import TemplatesFilterDTO from '@data/models/templates/templates-filter-dto';
 import { TemplatesAccountingsService } from '@data/services/templates-accountings.service';
 // eslint-disable-next-line max-len
@@ -24,8 +25,8 @@ import { finalize, map, take } from 'rxjs/operators';
 @UntilDestroy()
 @Component({
   selector: 'app-accountings',
-  templateUrl: './accountings.component.html',
-  styleUrls: ['./accountings.component.scss']
+  templateUrl: './accounting.component.html',
+  styleUrls: ['./accounting.component.scss']
 })
 export class AccountingsComponent extends AdministrationCommonHeaderSectionClassToExtend implements OnInit {
   public labels = {
@@ -71,7 +72,7 @@ export class AccountingsComponent extends AdministrationCommonHeaderSectionClass
     this.textSearchValue = text;
     if (text.length >= 3) {
       return this.accountingService
-        .searchAccountingsTemplates(
+        .searchAccountingTemplates(
           {
             ...this.transformFilterValue(this.filterValue),
             search: this.textSearchValue
@@ -83,7 +84,7 @@ export class AccountingsComponent extends AdministrationCommonHeaderSectionClass
         )
         .pipe(
           take(1),
-          map((response: PaginationResponseI<TemplateAccountingItemListDTO>) => ({
+          map((response: PaginationResponseI<TemplatesCommonDTO>) => ({
             content: response.content,
             optionLabelFn: this.optionLabelFn
           }))
@@ -114,7 +115,7 @@ export class AccountingsComponent extends AdministrationCommonHeaderSectionClass
       this.paginationConfig.page = 0;
     }
     this.accountingService
-      .searchAccountingsTemplates(
+      .searchAccountingTemplates(
         {
           ...this.transformFilterValue(this.filterValue),
           search: this.textSearchValue
@@ -128,26 +129,9 @@ export class AccountingsComponent extends AdministrationCommonHeaderSectionClass
         take(1),
         finalize(() => this.spinnerService.hide(spinner))
       )
-      .subscribe((response: PaginationResponseI<TemplateAccountingItemListDTO>) => {
+      .subscribe((response: PaginationResponseI<TemplatesCommonDTO>) => {
         this.paginationConfig.length = response.totalElements;
-        this.dataSource = response.content;
-      });
-  }
-
-  public duplicateAccounting(id: number) {
-    this.accountingService
-      .duplicateAccountingById(id)
-      .pipe(take(1))
-      .subscribe({
-        next: (response) => {
-          this.getData();
-        },
-        error: (error) => {
-          this.globalMessageService.showError({
-            message: error.message,
-            actionText: this.translateService.instant(marker('common.close'))
-          });
-        }
+        this.dataSource = (response.content as unknown as TemplateAccountingItemListDTO[]) || [];
       });
   }
 
@@ -155,7 +139,7 @@ export class AccountingsComponent extends AdministrationCommonHeaderSectionClass
     this.confirmDialogService
       .open({
         title: this.translateService.instant(marker('common.warning')),
-        message: this.translateService.instant(marker('administration.templates.accountings.deleteConfirmation'))
+        message: this.translateService.instant(marker('administration.templates.accounting.deleteConfirmation'))
       })
       .pipe(take(1))
       .subscribe((ok: boolean) => {
@@ -196,11 +180,11 @@ export class AccountingsComponent extends AdministrationCommonHeaderSectionClass
       this.router.navigate([
         RouteConstants.ADMINISTRATION,
         RouteConstants.TEMPLATES,
-        RouteConstants.CREATE_EDIT_CHECKLIST,
+        RouteConstants.CREATE_EDIT_ACCOUNTING,
         accounting.id
       ]);
     } else {
-      this.router.navigate([RouteConstants.ADMINISTRATION, RouteConstants.TEMPLATES, RouteConstants.CREATE_EDIT_CHECKLIST]);
+      this.router.navigate([RouteConstants.ADMINISTRATION, RouteConstants.TEMPLATES, RouteConstants.CREATE_EDIT_ACCOUNTING]);
     }
   };
 

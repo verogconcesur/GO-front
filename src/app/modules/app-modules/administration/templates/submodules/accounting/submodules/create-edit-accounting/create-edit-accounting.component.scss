@@ -1,2 +1,63 @@
 @import 'utils/core';
 @import 'utils/theme';
+
+.accounting-config {
+  width: calc(100% - 20px);
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  padding: 10px 5px;
+  &__column {
+    margin: 0 5px;
+    &__title {
+      text-overflow: ellipsis;
+      overflow-x: hidden;
+      overflow-y: hidden;
+      white-space: nowrap;
+    }
+  }
+  &__config {
+    width: calc(42% - 110px);
+    &__accordion {
+      max-height: calc(100vh - 210px);
+      overflow-y: auto;
+    }
+  }
+
+  &__form {
+    width: 100%;
+    .template-data__section {
+      &__title {
+        margin: 0 0 5px 0;
+        &.first-child {
+          margin-top: 0px;
+        }
+      }
+      &__info {
+        margin: 0 0 5px 0;
+        line-height: 38px;
+      }
+      &__group {
+        &.grid-group {
+          display: grid;
+          justify-items: center;
+          gap: 1rem;
+          grid-template-columns: repeat(auto-fit, minmax(11rem, 1fr));
+          margin-bottom: 10px;
+          app-organization-levels-nested-combos {
+            display: contents;
+          }
+        }
+        &__title {
+          padding-bottom: 0px;
+          text-transform: uppercase;
+          margin-bottom: 0px;
+          padding-right: 0.5rem;
+          &::after {
+            content: ':';
+          }
+        }
+      }
+    }
+  }
+}
