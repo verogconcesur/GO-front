@@ -18,27 +18,33 @@ export interface AccountingLineTypeDTO {
   description: string;
 }
 
-export interface TemplateAccountingItemLineDTO {
+export interface AccountingTaxTypeDTO {
   id: number;
-  orderNumber: number;
-  accountingLineType: AccountingLineTypeDTO;
-  accumulated: boolean;
-  accumulatedLines: { id: number }[];
   description: string;
-  sign: number;
-  taxApply: boolean;
-  templateAccountingItemId: number;
+  value: number;
+}
+
+export interface TemplateAccountingItemLineDTO {
+  id?: number;
+  orderNumber?: number;
+  accountingLineType?: AccountingLineTypeDTO;
+  accumulated?: boolean;
+  accumulatedLines?: { id: number }[];
+  description?: string;
+  sign?: number;
+  taxApply?: boolean;
+  templateAccountingItemId?: number;
 }
 
 export interface TemplateAccountingItemDTO {
-  id: number;
-  orderNumber: number;
-  accountingBlockType: AccountingBlockTypeDTO;
-  description: string;
-  descriptionTotal: string;
-  descriptionTotalPlusTax: string;
-  descriptionTotalTax: string;
-  templateAccountingItemLines: TemplateAccountingItemLineDTO[];
+  id?: number;
+  orderNumber?: number;
+  accountingBlockType?: AccountingBlockTypeDTO;
+  description?: string;
+  descriptionTotal?: string;
+  descriptionTotalPlusTax?: string;
+  descriptionTotalTax?: string;
+  templateAccountingItemLines?: TemplateAccountingItemLineDTO[];
 }
 
 export interface TemplatesAccountingDTO {

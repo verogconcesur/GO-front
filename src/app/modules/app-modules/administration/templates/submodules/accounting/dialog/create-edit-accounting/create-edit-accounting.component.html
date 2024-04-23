@@ -1,0 +1,87 @@
+<div class="accounting-config">
+    <div class="accounting-config__column accounting-config__config">
+        <div class="accounting-config__config__accordion">
+            <mat-accordion [multi]="true">
+                <mat-expansion-panel [expanded]="true">
+                    <mat-expansion-panel-header>
+                        <mat-panel-title> {{ labels.accountingConfig | translate }}</mat-panel-title>
+                    </mat-expansion-panel-header>
+                    <form
+                        [formGroup]="accountingForm"
+                        *ngIf="accountingForm"
+                        class="accounting-config__form smaller-mat-form-fields"
+                    >
+                        <!-- General Data -->
+                        <div class="template-data__section">
+                            <div class="template-data__section__group grid-group" formGroupName="template">
+                                <!-- Name -->
+                                <mat-form-field appearance="outline" floatLabel="always" class="first-item">
+                                    <mat-label>{{ labels.name | translate }}</mat-label>
+                                    <input matInput formControlName="name" />
+                                    <mat-error
+                                        class="template-data__error"
+                                        *ngIf="
+                                            accountingForm.get('template.name').invalid &&
+                                            accountingForm.get('template.name').touched
+                                        "
+                                    >
+                                        {{ labels.nameRequired | translate }}
+                                    </mat-error>
+                                </mat-form-field>
+                                <app-organization-levels-nested-combos
+                                    #OrganizationLevelsNestedCombos
+                                    [form]="accountingForm.get('template')"
+                                ></app-organization-levels-nested-combos>
+                            </div>
+                        </div>
+                    </form>
+                </mat-expansion-panel>
+                <mat-expansion-panel [expanded]="true">
+                    <mat-expansion-panel-header>
+                        <mat-panel-title> {{ labels.itemsInTemplate | translate }} </mat-panel-title>
+                    </mat-expansion-panel-header>
+                    <mat-expansion-panel [expanded]="false" *ngFor="let block of getAccountingBlocks()">
+                        <mat-expansion-panel-header>
+                            <mat-panel-title>
+                                <mat-icon>drag_indicator</mat-icon>
+                                {{ labels.block | translate }}:
+                                {{ block.description }}
+                            </mat-panel-title>
+                            <mat-panel-description>
+                                <button mat-icon-button (click)="$event.stopPropagation(); $event.preventDefault(); edit(block)">
+                                    <mat-icon>edit</mat-icon>
+                                </button>
+                                <button
+                                    mat-icon-button
+                                    (click)="$event.stopPropagation(); $event.preventDefault(); delete(block)"
+                                >
+                                    <mat-icon>delete</mat-icon>
+                                </button>
+                            </mat-panel-description>
+                        </mat-expansion-panel-header>
+                        <div class="accounting-line-wrapper">
+                            <div class="accounting-line" *ngFor="let line of block.templateAccountingItemLines">
+                                <mat-icon>drag_indicator</mat-icon>
+                                <div class="accounting-line__description">{{ line.description }}</div>
+                                <div class="accounting-line__actions">
+                                    <button mat-icon-button (click)="edit(block, line)">
+                                        <mat-icon>edit</mat-icon>
+                                    </button>
+                                    <button mat-icon-button (click)="delete(block, line)">
+                                        <mat-icon>delete</mat-icon>
+                                    </button>
+                                </div>
+                            </div>
+                            <div class="accounting-line new-item" (click)="newItem(block)">
+                                <mat-icon>add</mat-icon>{{ labels.newLine | translate }}
+                            </div>
+                        </div>
+                    </mat-expansion-panel>
+                    <div class="accounting-block new-item" (click)="newItem()">
+                        <mat-icon>add</mat-icon>{{ labels.newBlock | translate }}
+                    </div>
+                </mat-expansion-panel>
+            </mat-accordion>
+        </div>
+    </div>
+</div>

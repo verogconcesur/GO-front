@@ -12,6 +12,7 @@ import { TemplateAccountingItemListDTO } from '@data/models/templates/templates-
 import TemplatesCommonDTO from '@data/models/templates/templates-common-dto';
 import TemplatesFilterDTO from '@data/models/templates/templates-filter-dto';
 import { TemplatesAccountingsService } from '@data/services/templates-accountings.service';
+import { CustomDialogService } from '@frontend/custom-dialog';
 // eslint-disable-next-line max-len
 import { AdministrationCommonHeaderSectionClassToExtend } from '@modules/feature-modules/administration-common-header-section/administration-common-header-section-class-to-extend';
 import { FilterDrawerService } from '@modules/feature-modules/filter-drawer/services/filter-drawer.service';
@@ -22,6 +23,10 @@ import { GlobalMessageService } from '@shared/services/global-message.service';
 import { ProgressSpinnerDialogService } from '@shared/services/progress-spinner-dialog.service';
 import { Observable, of } from 'rxjs';
 import { finalize, map, take } from 'rxjs/operators';
+import {
+  CreateEditAccountingComponent,
+  CreateEditAccountingComponentModalEnum
+} from './dialog/create-edit-accounting/create-edit-accounting.component';
 @UntilDestroy()
 @Component({
   selector: 'app-accountings',
@@ -50,6 +55,7 @@ export class AccountingsComponent extends AdministrationCommonHeaderSectionClass
     private spinnerService: ProgressSpinnerDialogService,
     private globalMessageService: GlobalMessageService,
     private translateService: TranslateService,
+    private customDialogService: CustomDialogService,
     private confirmDialogService: ConfirmDialogService
   ) {
     super();
@@ -176,16 +182,25 @@ export class AccountingsComponent extends AdministrationCommonHeaderSectionClass
   };
 
   private openCreateEditAccountingDialog = (accounting?: TemplateAccountingItemListDTO): void => {
-    if (accounting?.id) {
-      this.router.navigate([
-        RouteConstants.ADMINISTRATION,
-        RouteConstants.TEMPLATES,
-        RouteConstants.CREATE_EDIT_ACCOUNTING,
-        accounting.id
-      ]);
-    } else {
-      this.router.navigate([RouteConstants.ADMINISTRATION, RouteConstants.TEMPLATES, RouteConstants.CREATE_EDIT_ACCOUNTING]);
-    }
+    this.customDialogService
+      .open({
+        id: CreateEditAccountingComponentModalEnum.ID,
+        panelClass: CreateEditAccountingComponentModalEnum.PANEL_CLASS,
+        component: CreateEditAccountingComponent,
+        extendedComponentData: accounting ? accounting : null,
+        disableClose: true,
+        width: '800px'
+      })
+      .pipe(take(1))
+      .subscribe((response) => {
+        if (response) {
+          this.globalMessageService.showSuccess({
+            message: this.translateService.instant(marker('common.successOperation')),
+            actionText: this.translateService.instant(marker('common.close'))
+          });
+          this.getData();
+        }
+      });
   };
 
   private initializeFilterListener() {

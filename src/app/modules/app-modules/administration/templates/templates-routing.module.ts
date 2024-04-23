@@ -14,14 +14,6 @@ const routes: Routes = [
       )
   },
   {
-    path: RouteConstants.CREATE_EDIT_ACCOUNTING,
-    canActivate: [AuthGuardService],
-    loadChildren: () =>
-      import('./submodules/accounting/submodules/create-edit-accounting/create-edit-accounting.module').then(
-        (m) => m.CreateEditAccountingModule
-      )
-  },
-  {
     path: RouteConstants.EMPTY,
     component: TemplatesComponent,
     canActivate: [AuthGuardService],

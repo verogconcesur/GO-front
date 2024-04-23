@@ -10,11 +10,18 @@
 		"records": "Fichas",
 		"templates": {
 			"accounting": {
-				"blocks": "",
-				"config": "",
+				"block": "Bloque",
+				"blocks": "Bloque contable",
+				"config": "Configuración de la plantilla de contabilidad",
 				"create": "Nueva plantilla de contabilidad",
 				"deleteConfirmation": "¿Está seguro que desea eliminar esta plantilla?",
-				"new": "",
+				"finishEditing": "Debe guardar o cancelar la edición actual antes de poder realizar otra acción.",
+				"itemsInTemplate": "Bloques y líneas contables",
+				"line": "Línea",
+				"name": "Nombre plantilla",
+				"new": "Nueva plantilla de contabilidad",
+				"newBlock": "Nuevo bloque",
+				"newLine": "Nueva línea",
 				"title": "Contabilidad"
 			},
 			"attachments": {

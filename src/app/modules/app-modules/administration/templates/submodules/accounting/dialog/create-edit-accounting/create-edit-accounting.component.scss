@@ -1,6 +1,12 @@
 @import 'utils/core';
 @import 'utils/theme';
 
+#create-edit-accounting-dialog-id {
+  .custom-dialog__content {
+    background-color: mat-color($primary, 50);
+    margin: -15px 0;
+  }
+}
 .accounting-config {
   width: calc(100% - 20px);
   display: flex;
@@ -15,11 +21,17 @@
       overflow-y: hidden;
       white-space: nowrap;
     }
+    &.accounting-form-wrapper {
+      min-width: 100%;
+      display: flex;
+      justify-content: center;
+      align-items: flex-start;
+    }
   }
   &__config {
-    width: calc(42% - 110px);
+    width: 100%;
     &__accordion {
-      max-height: calc(100vh - 210px);
+      // max-height: calc(100vh - 210px);
       overflow-y: auto;
     }
   }
@@ -59,5 +71,31 @@
         }
       }
     }
+  }
+
+  .new-item {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 15px 0;
+    border: 1px dotted mat-color($primary, 600);
+    color: mat-color($primary, 600);
+    border-radius: 5px;
+    cursor: pointer;
+    &.accounting-block {
+      margin-top: 10px;
+    }
+    &:hover {
+      background-color: mat-color($primary, 50);
+    }
+  }
+
+  .mat-expansion-panel-header-description {
+    justify-content: flex-end;
+  }
+  .mat-expansion-panel-header-title {
+    overflow: visible;
+    white-space: nowrap;
   }
 }
