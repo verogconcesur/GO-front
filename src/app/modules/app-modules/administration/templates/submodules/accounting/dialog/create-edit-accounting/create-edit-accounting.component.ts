@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { Component, OnDestroy, OnInit, ViewEncapsulation } from '@angular/core';
-import { AbstractControl, FormArray, UntypedFormArray, UntypedFormBuilder, UntypedFormGroup } from '@angular/forms';
-import { ActivatedRoute, Router } from '@angular/router';
+import { AbstractControl, UntypedFormArray, UntypedFormGroup } from '@angular/forms';
+import { Router } from '@angular/router';
 import { marker } from '@biesbjerg/ngx-translate-extract-marker';
 import {
   AccountingBlockTypeDTO,
@@ -18,7 +18,11 @@ import { ProgressSpinnerDialogService } from '@shared/services/progress-spinner-
 import { Observable, catchError, finalize, forkJoin, map, of, take } from 'rxjs';
 import { CreateEditAccountingAuxService } from './create-edit-accounting-aux.service';
 import { RouteConstants } from '@app/constants/route.constants';
-import { ComponentToExtendForCustomDialog, CustomDialogFooterConfigI } from '@frontend/custom-dialog';
+import { ComponentToExtendForCustomDialog, CustomDialogFooterConfigI, CustomDialogService } from '@frontend/custom-dialog';
+import { CreateEditLineComponent, CreateEditLineComponentModalEnum } from '../create-edit-line/create-edit-line.component';
+import { ConcenetError } from '@app/types/error';
+import { CreateEditBlockComponent, CreateEditBlockComponentModalEnum } from '../create-edit-block/create-edit-block.component';
+import { CdkDragDrop, moveItemInArray } from '@angular/cdk/drag-drop';
 
 export const enum CreateEditAccountingComponentModalEnum {
   ID = 'create-edit-accounting-dialog-id',
@@ -34,12 +38,15 @@ export const enum CreateEditAccountingComponentModalEnum {
 })
 export class CreateEditAccountingComponent extends ComponentToExtendForCustomDialog implements OnInit, OnDestroy {
   public accountingForm: UntypedFormGroup;
-  public expansionPanelOpened: any = {};
+  public expansionPanelOpened: any = {
+    'group-config': true,
+    'group-items': true
+  };
   public accountingToEdit: TemplatesAccountingDTO = null;
   public blockTypes: AccountingBlockTypeDTO[] = [];
   public linesTypes: AccountingLineTypeDTO[] = [];
-  public blockFormToEdit: UntypedFormGroup;
-  public lineFormToEdit: UntypedFormGroup;
+  public blockFormToEdit: UntypedFormGroup | AbstractControl;
+  public lineFormToEdit: UntypedFormGroup | AbstractControl;
   public labels: any = {
     newAccounting: marker('administration.templates.accounting.new'),
     accountingConfig: marker('administration.templates.accounting.config'),
@@ -54,14 +61,13 @@ export class CreateEditAccountingComponent extends ComponentToExtendForCustomDia
 
   constructor(
     private translateService: TranslateService,
-    private fb: UntypedFormBuilder,
     private spinnerService: ProgressSpinnerDialogService,
     private confirmDialogService: ConfirmDialogService,
     private globalMessageService: GlobalMessageService,
     private router: Router,
     private templateAccountingsService: TemplatesAccountingsService,
     private createEditAccountingAuxService: CreateEditAccountingAuxService,
-    private route: ActivatedRoute
+    private customDialogService: CustomDialogService
   ) {
     super(
       CreateEditAccountingComponentModalEnum.ID,
@@ -71,8 +77,20 @@ export class CreateEditAccountingComponent extends ComponentToExtendForCustomDia
   }
 
   ngOnInit(): void {
+    this.getData();
+  }
+
+  ngOnDestroy(): void {}
+
+  public getData(): void {
+    this.accountingForm = null;
+    this.blockFormToEdit = null;
+    this.lineFormToEdit = null;
     const spinner = this.spinnerService.show();
     const id = this.extendedComponentData?.id ? this.extendedComponentData.id : null;
+    if (id) {
+      this.MODAL_TITLE = this.translateService.instant(marker('administration.templates.accounting.editTemplate'));
+    }
     if (id) {
       forkJoin([
         this.templateAccountingsService.getListAccountingBlockTypes(),
@@ -89,7 +107,6 @@ export class CreateEditAccountingComponent extends ComponentToExtendForCustomDia
             this.linesTypes = responses[1];
             this.accountingToEdit = responses[2];
             this.initForm();
-            this.getTitle();
           },
           (errors) => {
             this.globalMessageService.showError({
@@ -114,7 +131,6 @@ export class CreateEditAccountingComponent extends ComponentToExtendForCustomDia
             this.linesTypes = responses[1];
             this.accountingToEdit = null;
             this.initForm();
-            this.getTitle();
           },
           (errors) => {
             this.globalMessageService.showError({
@@ -127,8 +143,6 @@ export class CreateEditAccountingComponent extends ComponentToExtendForCustomDia
       this.initForm();
     }
   }
-
-  ngOnDestroy(): void {}
 
   public confirmCloseCustomDialog(): Observable<boolean> {
     if (this.accountingForm.touched && this.accountingForm.dirty) {
@@ -172,7 +186,13 @@ export class CreateEditAccountingComponent extends ComponentToExtendForCustomDia
   public setAndGetFooterConfig(): CustomDialogFooterConfigI | null {
     return {
       show: true,
-      leftSideButtons: [],
+      leftSideButtons: [
+        {
+          type: 'close',
+          label: marker('common.cancel'),
+          design: 'flat'
+        }
+      ],
       rightSideButtons: [
         {
           type: 'submit',
@@ -186,21 +206,6 @@ export class CreateEditAccountingComponent extends ComponentToExtendForCustomDia
     };
   }
 
-  public getTitle = (): void => {
-    if (this.accountingToEdit) {
-      this.MODAL_TITLE = this.accountingForm?.value?.template?.name
-        ? this.accountingForm?.value?.template?.name
-        : this.accountingToEdit.template.name;
-      return;
-    }
-    if (this.accountingForm?.value?.template?.name) {
-      this.MODAL_TITLE =
-        this.translateService.instant(this.labels.newAccounting) + ': ' + this.accountingForm.value.template.name;
-      return;
-    }
-    this.MODAL_TITLE = this.translateService.instant(this.labels.newAccounting);
-  };
-
   public getAccountingBlocks(): TemplateAccountingItemDTO[] {
     if (this.accountingForm?.get('templateAccountingItems')?.value?.length) {
       return (this.accountingForm.get('templateAccountingItems').value as TemplateAccountingItemDTO[]).sort(
@@ -210,37 +215,135 @@ export class CreateEditAccountingComponent extends ComponentToExtendForCustomDia
     return [];
   }
 
-  public edit(block: TemplateAccountingItemDTO, line?: TemplateAccountingItemLineDTO): void {
-    console.log(block, line);
+  public getLinesForBlock(block: TemplateAccountingItemDTO): TemplateAccountingItemLineDTO[] {
+    if (block?.templateAccountingItemLines?.length) {
+      return block.templateAccountingItemLines.sort((a, b) => a.orderNumber - b.orderNumber);
+    }
+    return [];
   }
 
-  public delete(block: TemplateAccountingItemDTO, line?: TemplateAccountingItemLineDTO): void {
-    console.log(block, line);
+  public editBlock(block: TemplateAccountingItemDTO): void {
+    this.blockFormToEdit = (this.accountingForm.get('templateAccountingItems') as UntypedFormArray).controls.find(
+      (c: AbstractControl) => c.value.id === block.id
+    );
+    this.openBlockDialog();
   }
 
-  public newItem(block?: TemplateAccountingItemDTO): void {
-    if (block) {
-      //Creating new line
-      const orderNumber = block.templateAccountingItemLines.length + 1;
-      const templateAccountingItemId = this.accountingToEdit?.template?.id ? this.accountingToEdit.template.id : null;
-      this.lineFormToEdit = this.createEditAccountingAuxService.createLineForm({ orderNumber }, templateAccountingItemId);
-      (this.accountingForm.get('templateAccountingItems') as UntypedFormArray).controls.forEach((ctrl: AbstractControl) => {
-        if (ctrl.get('id').value === block.id) {
-          (ctrl.get('templateAccountingItemLines') as UntypedFormArray).push(this.lineFormToEdit);
+  public editLine(block: TemplateAccountingItemDTO, line: TemplateAccountingItemLineDTO): void {
+    const blockForm = (this.accountingForm.get('templateAccountingItems') as UntypedFormArray).controls.find(
+      (c: AbstractControl) => c.value.id === block.id
+    );
+    this.lineFormToEdit = (blockForm.get('templateAccountingItemLines') as UntypedFormArray).controls.find(
+      (l: AbstractControl) => l.value.id === line.id
+    );
+    this.openLineDialog();
+  }
+
+  public deleteBlock(block: TemplateAccountingItemDTO): void {
+    this.confirmDialogService
+      .open({
+        title: this.translateService.instant(marker('common.warning')),
+        message: this.translateService.instant(marker('common.deleteConfirmation'))
+      })
+      .pipe(take(1))
+      .subscribe((ok: boolean) => {
+        if (ok) {
+          this.templateAccountingsService.deleteBlock(block.id).subscribe({
+            next: (response) => {
+              this.globalMessageService.showSuccess({
+                message: this.translateService.instant(marker('common.successOperation')),
+                actionText: this.translateService.instant(marker('common.close'))
+              });
+              this.getData();
+            },
+            error: (error: ConcenetError) => {
+              this.globalMessageService.showError({
+                message: error.message,
+                actionText: this.translateService.instant(marker('common.close'))
+              });
+            }
+          });
         }
       });
-    } else {
-      //Creating new block
-      const orderNumber = this.accountingForm.get('templateAccountingItems').value.length + 1;
-      this.blockFormToEdit = this.createEditAccountingAuxService.creatBlockForm({ orderNumber }, []);
-      (this.accountingForm.get('templateAccountingItems') as UntypedFormArray).push(this.blockFormToEdit);
-    }
+  }
+
+  public deleteLine(block: TemplateAccountingItemDTO, line: TemplateAccountingItemLineDTO): void {
+    this.confirmDialogService
+      .open({
+        title: this.translateService.instant(marker('common.warning')),
+        message: this.translateService.instant(marker('common.deleteConfirmation'))
+      })
+      .pipe(take(1))
+      .subscribe((ok: boolean) => {
+        if (ok) {
+          this.templateAccountingsService.deleteLine(line.id).subscribe({
+            next: (response) => {
+              this.globalMessageService.showSuccess({
+                message: this.translateService.instant(marker('common.successOperation')),
+                actionText: this.translateService.instant(marker('common.close'))
+              });
+              this.getData();
+            },
+            error: (error: ConcenetError) => {
+              this.globalMessageService.showError({
+                message: error.message,
+                actionText: this.translateService.instant(marker('common.close'))
+              });
+            }
+          });
+        }
+      });
+  }
+
+  public newBlock(): void {
+    //Creating new block
+    const orderNumber = this.accountingForm.get('templateAccountingItems').value.length + 1;
+    this.blockFormToEdit = this.createEditAccountingAuxService.creatBlockForm({ orderNumber }, []);
+    this.openBlockDialog();
+  }
+
+  public newLine(block: TemplateAccountingItemDTO): void {
+    //Creating new line
+    const orderNumber = block.templateAccountingItemLines.length + 1;
+    const templateAccountingItemId = block.id;
+    this.lineFormToEdit = this.createEditAccountingAuxService.createLineForm({ orderNumber }, templateAccountingItemId);
+    this.openLineDialog();
   }
 
   public updateValueAndValidityForm(): void {
     this.accountingForm.get('templateAccountingItems').updateValueAndValidity();
     this.accountingForm.updateValueAndValidity();
-    this.getTitle();
+  }
+
+  public dropBlockItem(event: CdkDragDrop<TemplateAccountingItemDTO[]>) {
+    const list = this.getAccountingBlocks();
+    moveItemInArray(list, event.previousIndex, event.currentIndex);
+    list.map((item: TemplateAccountingItemDTO, index: number) => {
+      item.orderNumber = index + 1;
+      (this.accountingForm.get('templateAccountingItems') as UntypedFormArray).controls
+        .find((c: AbstractControl) => c.value.id === item.id)
+        .get('orderNumber')
+        .setValue(index + 1);
+      return item;
+    });
+    this.saveAll();
+  }
+
+  public dropLineItem(event: CdkDragDrop<TemplateAccountingItemDTO[]>, block: TemplateAccountingItemDTO) {
+    const blockForm = (this.accountingForm.get('templateAccountingItems') as UntypedFormArray).controls.find(
+      (c: AbstractControl) => c.value.id === block.id
+    );
+    const list = this.getLinesForBlock(block);
+    moveItemInArray(list, event.previousIndex, event.currentIndex);
+    list.map((item: TemplateAccountingItemLineDTO, index: number) => {
+      item.orderNumber = index + 1;
+      (blockForm.get('templateAccountingItemLines') as UntypedFormArray).controls
+        .find((c: AbstractControl) => c.value.id === item.id)
+        .get('orderNumber')
+        .setValue(index + 1);
+      return item;
+    });
+    this.saveAll();
   }
 
   private initForm(): void {
@@ -249,7 +352,92 @@ export class CreateEditAccountingComponent extends ComponentToExtendForCustomDia
       this.blockTypes,
       this.linesTypes
     );
-    // console.log(this.accountingForm);
-    // console.log(this.accountingForm.value);
+  }
+
+  private openBlockDialog(): void {
+    if (!this.accountingForm?.get('id').value) {
+      this.askToSaveFirst();
+    } else {
+      this.customDialogService
+        .open({
+          id: CreateEditBlockComponentModalEnum.ID,
+          panelClass: CreateEditBlockComponentModalEnum.PANEL_CLASS,
+          component: CreateEditBlockComponent,
+          extendedComponentData: {
+            form: this.blockFormToEdit,
+            types: this.blockTypes,
+            templateId: this.accountingForm.get('id').value
+          },
+          disableClose: true,
+          width: '720px'
+        })
+        .pipe(take(1))
+        .subscribe((response) => {
+          if (response) {
+            if (!this.blockFormToEdit.get('id').value) {
+              (this.accountingForm.get('templateAccountingItems') as UntypedFormArray).push(this.blockFormToEdit);
+            }
+            this.saveAll();
+          }
+        });
+    }
+  }
+
+  private openLineDialog(): void {
+    if (!this.accountingForm?.get('id').value) {
+      this.askToSaveFirst();
+    } else {
+      this.customDialogService
+        .open({
+          id: CreateEditLineComponentModalEnum.ID,
+          panelClass: CreateEditLineComponentModalEnum.PANEL_CLASS,
+          component: CreateEditLineComponent,
+          extendedComponentData: {
+            form: this.lineFormToEdit,
+            types: this.linesTypes,
+            templateId: this.accountingForm.get('id').value
+          },
+          disableClose: true,
+          width: '720px'
+        })
+        .pipe(take(1))
+        .subscribe((response) => {
+          if (response) {
+            this.getData();
+          }
+        });
+    }
+  }
+
+  private saveAll(): void {
+    const spinner = this.spinnerService.show();
+    this.templateAccountingsService
+      .addOrEditAccounting(this.accountingForm.value)
+      .pipe(
+        take(1),
+        finalize(() => this.spinnerService.hide(spinner))
+      )
+      .subscribe({
+        next: (res) => {
+          this.globalMessageService.showSuccess({
+            message: this.translateService.instant(marker('common.successOperation')),
+            actionText: this.translateService.instant(marker('common.close'))
+          });
+          this.getData();
+        },
+        error: (error: ConcenetError) => {
+          this.globalMessageService.showError({
+            message: error.message,
+            actionText: this.translateService.instant(marker('common.close'))
+          });
+        }
+      });
+  }
+
+  private askToSaveFirst(): void {
+    this.globalMessageService.showError({
+      message: this.translateService.instant(marker('administration.templates.accounting.finishEditing')),
+      actionText: this.translateService.instant(marker('common.close'))
+    });
   }
 }

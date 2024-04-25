@@ -1,8 +1,12 @@
 <div class="accounting-config">
     <div class="accounting-config__column accounting-config__config">
-        <div class="accounting-config__config__accordion">
+        <div class="accounting-config__config__accordion" cdkDropListGroup>
             <mat-accordion [multi]="true">
-                <mat-expansion-panel [expanded]="true">
+                <mat-expansion-panel
+                    (opened)="expansionPanelOpened['group-config'] = true"
+                    (closed)="expansionPanelOpened['group-config'] = false"
+                    [expanded]="expansionPanelOpened['group-config']"
+                >
                     <mat-expansion-panel-header>
                         <mat-panel-title> {{ labels.accountingConfig | translate }}</mat-panel-title>
                     </mat-expansion-panel-header>
@@ -36,48 +40,81 @@
                         </div>
                     </form>
                 </mat-expansion-panel>
-                <mat-expansion-panel [expanded]="true">
+                <mat-expansion-panel
+                    (opened)="expansionPanelOpened['group-items'] = true"
+                    (closed)="expansionPanelOpened['group-items'] = false"
+                    [expanded]="expansionPanelOpened['group-items']"
+                    class="accounting-blocks-wrapper"
+                    cdkDropList
+                    (cdkDropListDropped)="dropBlockItem($event)"
+                >
                     <mat-expansion-panel-header>
                         <mat-panel-title> {{ labels.itemsInTemplate | translate }} </mat-panel-title>
                     </mat-expansion-panel-header>
-                    <mat-expansion-panel [expanded]="false" *ngFor="let block of getAccountingBlocks()">
+                    <mat-expansion-panel
+                        (opened)="expansionPanelOpened['group-block-' + block.id] = true"
+                        (closed)="expansionPanelOpened['group-block-' + block.id] = false"
+                        [expanded]="expansionPanelOpened['group-block-' + block.id]"
+                        *ngFor="let block of getAccountingBlocks(); let ib = index"
+                        cdkDrag
+                        cdkDragBoundary=".accounting-blocks-wrapper"
+                    >
                         <mat-expansion-panel-header>
                             <mat-panel-title>
-                                <mat-icon>drag_indicator</mat-icon>
+                                <mat-icon
+                                    cdkDragHandle
+                                    class="drag-icon"
+                                    (click)="$event.stopPropagation(); $event.preventDefault()"
+                                    >drag_indicator</mat-icon
+                                >
                                 {{ labels.block | translate }}:
                                 {{ block.description }}
                             </mat-panel-title>
                             <mat-panel-description>
-                                <button mat-icon-button (click)="$event.stopPropagation(); $event.preventDefault(); edit(block)">
+                                <button
+                                    mat-icon-button
+                                    (click)="$event.stopPropagation(); $event.preventDefault(); editBlock(block)"
+                                >
                                     <mat-icon>edit</mat-icon>
                                 </button>
                                 <button
                                     mat-icon-button
-                                    (click)="$event.stopPropagation(); $event.preventDefault(); delete(block)"
+                                    (click)="$event.stopPropagation(); $event.preventDefault(); deleteBlock(block)"
                                 >
                                     <mat-icon>delete</mat-icon>
                                 </button>
                             </mat-panel-description>
                         </mat-expansion-panel-header>
-                        <div class="accounting-line-wrapper">
-                            <div class="accounting-line" *ngFor="let line of block.templateAccountingItemLines">
-                                <mat-icon>drag_indicator</mat-icon>
-                                <div class="accounting-line__description">{{ line.description }}</div>
+                        <div
+                            class="droplist-with-handle accounting-line-wrapper"
+                            cdkDropList
+                            (cdkDropListDropped)="dropLineItem($event, block)"
+                        >
+                            <div
+                                class="accounting-line"
+                                *ngFor="let line of getLinesForBlock(block); let il = index"
+                                cdkDrag
+                                cdkDragBoundary=".accounting-line-wrapper"
+                            >
+                                <div class="accounting-line__description">
+                                    <mat-icon cdkDragHandle class="drag-icon">drag_indicator</mat-icon>
+                                    <b>{{ labels.line | translate }}: {{ line.description }}</b>
+                                </div>
                                 <div class="accounting-line__actions">
-                                    <button mat-icon-button (click)="edit(block, line)">
+                                    <button mat-icon-button (click)="editLine(block, line)">
                                         <mat-icon>edit</mat-icon>
                                     </button>
-                                    <button mat-icon-button (click)="delete(block, line)">
+                                    <button mat-icon-button (click)="deleteLine(block, line)">
                                         <mat-icon>delete</mat-icon>
                                     </button>
                                 </div>
                             </div>
-                            <div class="accounting-line new-item" (click)="newItem(block)">
+                            <div class="accounting-line new-item" (click)="newLine(block)">
                                 <mat-icon>add</mat-icon>{{ labels.newLine | translate }}
                             </div>
                         </div>
                     </mat-expansion-panel>
-                    <div class="accounting-block new-item" (click)="newItem()">
+                    <div class="accounting-block new-item" (click)="newBlock()">
                         <mat-icon>add</mat-icon>{{ labels.newBlock | translate }}
                     </div>
                 </mat-expansion-panel>

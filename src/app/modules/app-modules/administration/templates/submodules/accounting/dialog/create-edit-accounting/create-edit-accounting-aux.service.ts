@@ -55,13 +55,11 @@ export class CreateEditAccountingAuxService {
   public creatBlockForm(block: TemplateAccountingItemDTO, accountingLines: UntypedFormGroup[]): UntypedFormGroup {
     return this.fb.group({
       id: [block?.id ? block.id : null],
-      accountingBlockType: this.fb.group({
-        id: [block?.accountingBlockType?.id ? block?.accountingBlockType?.id : null, Validators.required]
-      }),
+      accountingBlockType: [block?.accountingBlockType ? block.accountingBlockType : null, Validators.required],
       description: [block?.description ? block.description : null, Validators.required],
-      descriptionTotal: [block?.descriptionTotal ? block.descriptionTotal : null],
-      descriptionTotalPlusTax: [block?.descriptionTotalPlusTax ? block.descriptionTotalPlusTax : null],
-      descriptionTotalTax: [block?.descriptionTotalTax ? block.descriptionTotalTax : null],
+      descriptionTotal: [block?.descriptionTotal ? block.descriptionTotal : null, Validators.required],
+      descriptionTotalPlusTax: [block?.descriptionTotalPlusTax ? block.descriptionTotalPlusTax : null, Validators.required],
+      descriptionTotalTax: [block?.descriptionTotalTax ? block.descriptionTotalTax : null, Validators.required],
       orderNumber: [block?.orderNumber ? block.orderNumber : null],
       templateAccountingItemLines: this.fb.array(accountingLines)
     });
@@ -71,13 +69,11 @@ export class CreateEditAccountingAuxService {
     return this.fb.group({
       id: [line?.id ? line.id : null],
       orderNumber: [line?.orderNumber ? line.orderNumber : null],
-      accountingLineType: this.fb.group({
-        id: [line?.accountingLineType?.id ? line.accountingLineType.id : null, Validators.required]
-      }),
+      accountingLineType: [line.accountingLineType ? line.accountingLineType : null, Validators.required],
       accumulated: [line?.accumulated ? line.accumulated : false],
       accumulatedLines: [line?.accumulatedLines ? line.accumulatedLines : []],
       description: [line?.description ? line.description : null, Validators.required],
-      sign: [line?.sign ? line.sign : null],
+      sign: [line?.sign ? line.sign : null, Validators.required],
       taxApply: [line?.taxApply ? line.taxApply : false],
       templateAccountingItemId: [line?.templateAccountingItemId ? line.templateAccountingItemId : templateId]
     });

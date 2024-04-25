@@ -3,12 +3,21 @@ import DepartmentDTO from '../organization/department-dto';
 import FacilityDTO from '../organization/facility-dto';
 import SpecialtyDTO from '../organization/specialty-dto';
 
+export interface AccountingLineSign {
+  value: number;
+  description: string;
+}
+
+export const AccountingLineSignsConst: AccountingLineSign[] = [
+  { value: 1, description: '+ Suma' },
+  { value: -1, description: '- Resta' }
+];
+
 export interface TemplateAccountingItemListDTO {
   name: string;
   id: number;
   orderNumber: number;
 }
-
 export interface AccountingBlockTypeDTO {
   id: number;
   description: string;

@@ -1,0 +1,94 @@
+<div class="create-edit-block-content" fxLayout="column" fxLayoutAlign="center center">
+    <div class="create-edit-block-content__form">
+        <form [formGroup]="blockForm" *ngIf="blockForm" class="smaller-mat-form-fields">
+            <!-- General Data -->
+            <div class="block-data__section">
+                <div class="block-data__section__group flex-group space-between">
+                    <!-- Description -->
+                    <mat-form-field appearance="outline" floatLabel="always">
+                        <mat-label>{{ labels.description | translate }}</mat-label>
+                        <input matInput formControlName="description" />
+                        <mat-error
+                            class="block-data__error"
+                            *ngIf="blockForm.controls.description.invalid && blockForm.controls.description.touched"
+                        >
+                            {{ labels.required | translate }}
+                        </mat-error>
+                    </mat-form-field>
+                    <!-- descriptionTotal -->
+                    <mat-form-field appearance="outline" floatLabel="always">
+                        <mat-label>{{ labels.descriptionTotal | translate }}</mat-label>
+                        <input matInput formControlName="descriptionTotal" />
+                        <mat-error
+                            class="block-data__error"
+                            *ngIf="blockForm.controls.descriptionTotal.invalid && blockForm.controls.descriptionTotal.touched"
+                        >
+                            {{ labels.required | translate }}
+                        </mat-error>
+                    </mat-form-field>
+                </div>
+                <div class="block-data__section__group flex-group space-between">
+                    <!-- descriptionTotalPlusTax -->
+                    <mat-form-field appearance="outline" floatLabel="always">
+                        <mat-label>{{ labels.descriptionTotalPlusTax | translate }}</mat-label>
+                        <input matInput formControlName="descriptionTotalPlusTax" />
+                        <mat-error
+                            class="block-data__error"
+                            *ngIf="
+                                blockForm.controls.descriptionTotalPlusTax.invalid &&
+                                blockForm.controls.descriptionTotalPlusTax.touched
+                            "
+                        >
+                            {{ labels.required | translate }}
+                        </mat-error>
+                    </mat-form-field>
+                    <!-- descriptionTotalTax -->
+                    <mat-form-field appearance="outline" floatLabel="always">
+                        <mat-label>{{ labels.descriptionTotalTax | translate }}</mat-label>
+                        <input matInput formControlName="descriptionTotalTax" />
+                        <mat-error
+                            class="block-data__error"
+                            *ngIf="
+                                blockForm.controls.descriptionTotalTax.invalid && blockForm.controls.descriptionTotalTax.touched
+                            "
+                        >
+                            {{ labels.required | translate }}
+                        </mat-error>
+                    </mat-form-field>
+                </div>
+                <div class="block-data__section__group flex-group">
+                    <section>
+                        <!-- accountingLineType - single combo options -->
+                        <mat-form-field appearance="outline" floatLabel="always" class="multiple-mat-select">
+                            <mat-label>{{ labels.accountingBlockType | translate }}</mat-label>
+                            <input
+                                type="text"
+                                matInput
+                                [placeholder]="labels.accountingBlockType | translate"
+                                [formControl]="blockTypesControl"
+                                [matAutocomplete]="auto"
+                            />
+                            <mat-autocomplete
+                                autoActiveFirstOption="false"
+                                #auto="matAutocomplete"
+                                [displayWith]="displayFn"
+                                (optionSelected)="selectBlockType($event.option.value)"
+                            >
+                                <mat-option *ngFor="let type of blockTypesFilteredOptions | async" [value]="type">
+                                    {{ type.description }}
+                                </mat-option>
+                            </mat-autocomplete>
+                            <mat-error
+                                *ngIf="
+                                    blockForm.controls.accountingBlockType.invalid &&
+                                    blockForm.controls.accountingBlockType.touched
+                                "
+                                >{{ labels.required | translate }}
+                            </mat-error>
+                        </mat-form-field>
+                    </section>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>

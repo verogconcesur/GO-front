@@ -91,11 +91,48 @@
     }
   }
 
+  .drag-icon {
+    cursor: pointer;
+  }
+
   .mat-expansion-panel-header-description {
     justify-content: flex-end;
   }
   .mat-expansion-panel-header-title {
     overflow: visible;
     white-space: nowrap;
+  }
+}
+
+.accounting-line {
+  width: calc(100% - 20px);
+  background-color: white;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 6px 10px;
+  margin-top: 2px;
+  border: 1px solid mat-color($primary, 600);
+  color: mat-color($primary, 600);
+  border-radius: 5px;
+
+  &__description {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+
+  &__actions {
+    color: black;
+  }
+  &.new-item {
+    margin-top: 5px;
+    padding: 15px 0;
+    justify-content: center;
+    border: 1px dotted mat-color($primary, 600);
+    cursor: pointer;
+    &:hover {
+      background-color: mat-color($primary, 50);
+    }
   }
 }

@@ -88,9 +88,9 @@ export class TemplatesAccountingsService {
       .pipe(catchError((error) => throwError(error as ConcenetError)));
   }
 
-  public getListSimpleLinesByTemplate(templateId: number): Observable<TemplateAccountingItemLineDTO> {
+  public getListSimpleLinesByTemplate(templateId: number): Observable<TemplateAccountingItemLineDTO[]> {
     return this.http
-      .get<TemplateAccountingItemLineDTO>(
+      .get<TemplateAccountingItemLineDTO[]>(
         `${this.env.apiBaseUrl}${this.POST_ACCOUNTING_PATH}${this.LIST_SIMPLE_LINES_BY_TEMPLATE}/${templateId}`
       )
       .pipe(catchError((error) => throwError(error as ConcenetError)));
