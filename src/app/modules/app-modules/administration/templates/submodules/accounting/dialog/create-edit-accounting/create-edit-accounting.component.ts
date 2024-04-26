@@ -354,9 +354,12 @@ export class CreateEditAccountingComponent extends ComponentToExtendForCustomDia
     );
   }
 
-  private openBlockDialog(): void {
-    if (!this.accountingForm?.get('id').value) {
-      this.askToSaveFirst();
+  private openBlockDialog = (): void => {
+    if (!(this.accountingForm && this.accountingForm.touched && this.accountingForm.dirty && this.accountingForm.valid)) {
+      this.globalMessageService.showError({
+        message: this.translateService.instant(marker('common.firstCompleteAllRequiredFields')),
+        actionText: this.translateService.instant(marker('common.close'))
+      });
     } else {
       this.customDialogService
         .open({
@@ -381,9 +384,9 @@ export class CreateEditAccountingComponent extends ComponentToExtendForCustomDia
           }
         });
     }
-  }
+  };
 
-  private openLineDialog(): void {
+  private openLineDialog = (): void => {
     if (!this.accountingForm?.get('id').value) {
       this.askToSaveFirst();
     } else {
@@ -407,9 +410,9 @@ export class CreateEditAccountingComponent extends ComponentToExtendForCustomDia
           }
         });
     }
-  }
+  };
 
-  private saveAll(): void {
+  private saveAll = (): void => {
     const spinner = this.spinnerService.show();
     this.templateAccountingsService
       .addOrEditAccounting(this.accountingForm.value)
@@ -423,6 +426,7 @@ export class CreateEditAccountingComponent extends ComponentToExtendForCustomDia
             message: this.translateService.instant(marker('common.successOperation')),
             actionText: this.translateService.instant(marker('common.close'))
           });
+          this.extendedComponentData = { id: res?.template?.id };
           this.getData();
         },
         error: (error: ConcenetError) => {
@@ -432,7 +436,7 @@ export class CreateEditAccountingComponent extends ComponentToExtendForCustomDia
           });
         }
       });
-  }
+  };
 
   private askToSaveFirst(): void {
     this.globalMessageService.showError({

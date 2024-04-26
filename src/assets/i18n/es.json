@@ -453,6 +453,7 @@
         "filter": "Filtro",
         "filterAction": "Filtrar",
         "filterByType": "Filtrar por tipo",
+        "firstCompleteAllRequiredFields": "Primero debe rellenar todos los campos obligatorios.",
         "follow": "Seguir",
         "following": "Siguiendo",
         "footer": "Pie",

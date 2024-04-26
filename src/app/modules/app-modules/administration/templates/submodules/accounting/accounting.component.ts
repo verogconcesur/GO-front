@@ -193,13 +193,7 @@ export class AccountingsComponent extends AdministrationCommonHeaderSectionClass
       })
       .pipe(take(1))
       .subscribe((response) => {
-        if (response) {
-          this.globalMessageService.showSuccess({
-            message: this.translateService.instant(marker('common.successOperation')),
-            actionText: this.translateService.instant(marker('common.close'))
-          });
-          this.getData();
-        }
+        this.getData();
       });
   };
 
