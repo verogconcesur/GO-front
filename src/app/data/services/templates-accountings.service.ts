@@ -32,6 +32,7 @@ export class TemplatesAccountingsService {
   private readonly DELETE_LINE = '/deleteLine';
   private readonly DELETE_BLOCK = '/deleteBlock';
   private readonly SAVE_LINE = '/saveLine';
+  private readonly ORDER_LINES = '/orderLines';
   constructor(@Inject(ENV) private env: Env, private http: HttpClient) {}
 
   public searchAccountingTemplates(
@@ -111,6 +112,12 @@ export class TemplatesAccountingsService {
   public saveLine(data: TemplateAccountingItemLineDTO): Observable<TemplateAccountingItemLineDTO> {
     return this.http
       .post<TemplateAccountingItemLineDTO>(`${this.env.apiBaseUrl}${this.POST_ACCOUNTING_PATH}${this.SAVE_LINE}`, data)
+      .pipe(catchError((error) => throwError(error.error as ConcenetError)));
+  }
+
+  public orderLines(orderedIdLines: number[]): Observable<void> {
+    return this.http
+      .post<void>(`${this.env.apiBaseUrl}${this.POST_ACCOUNTING_PATH}${this.ORDER_LINES}`, orderedIdLines)
       .pipe(catchError((error) => throwError(error.error as ConcenetError)));
   }
 }

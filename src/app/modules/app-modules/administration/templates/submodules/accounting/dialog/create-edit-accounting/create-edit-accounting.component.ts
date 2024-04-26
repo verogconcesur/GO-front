@@ -333,7 +333,7 @@ export class CreateEditAccountingComponent extends ComponentToExtendForCustomDia
     const blockForm = (this.accountingForm.get('templateAccountingItems') as UntypedFormArray).controls.find(
       (c: AbstractControl) => c.value.id === block.id
     );
-    const list = this.getLinesForBlock(block);
+    let list = this.getLinesForBlock(block);
     moveItemInArray(list, event.previousIndex, event.currentIndex);
     list.map((item: TemplateAccountingItemLineDTO, index: number) => {
       item.orderNumber = index + 1;
@@ -343,7 +343,29 @@ export class CreateEditAccountingComponent extends ComponentToExtendForCustomDia
         .setValue(index + 1);
       return item;
     });
-    this.saveAll();
+    list = this.getLinesForBlock(block);
+    const spinner = this.spinnerService.show();
+    this.templateAccountingsService
+      .orderLines(list.map((l) => l.id))
+      .pipe(
+        take(1),
+        finalize(() => this.spinnerService.hide(spinner))
+      )
+      .subscribe({
+        next: (response) => {
+          this.globalMessageService.showSuccess({
+            message: this.translateService.instant(marker('common.successOperation')),
+            actionText: this.translateService.instant(marker('common.close'))
+          });
+          this.getData();
+        },
+        error: (error: ConcenetError) => {
+          this.globalMessageService.showError({
+            message: error.message,
+            actionText: this.translateService.instant(marker('common.close'))
+          });
+        }
+      });
   }
 
   private initForm(): void {
