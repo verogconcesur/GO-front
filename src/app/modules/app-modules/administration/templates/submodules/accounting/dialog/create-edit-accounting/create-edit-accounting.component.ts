@@ -5,6 +5,7 @@ import { Router } from '@angular/router';
 import { marker } from '@biesbjerg/ngx-translate-extract-marker';
 import {
   AccountingBlockTypeDTO,
+  AccountingLineSignsConst,
   AccountingLineTypeDTO,
   TemplateAccountingItemDTO,
   TemplateAccountingItemLineDTO,
@@ -56,8 +57,10 @@ export class CreateEditAccountingComponent extends ComponentToExtendForCustomDia
     block: marker('administration.templates.accounting.block'),
     line: marker('administration.templates.accounting.line'),
     newLine: marker('administration.templates.accounting.newLine'),
-    newBlock: marker('administration.templates.accounting.newBlock')
+    newBlock: marker('administration.templates.accounting.newBlock'),
+    showAccumulatedLineInfo: marker('administration.templates.accounting.showAccumulatedLineInfo')
   };
+  private acumulatedLineSelected: TemplateAccountingItemLineDTO = null;
 
   constructor(
     private translateService: TranslateService,
@@ -366,6 +369,22 @@ export class CreateEditAccountingComponent extends ComponentToExtendForCustomDia
           });
         }
       });
+  }
+
+  public hasBlockLinesFromAccumulatedSelection(block: TemplateAccountingItemDTO): boolean {
+    return block.templateAccountingItemLines?.find((l) => this.isLinePartOfAccumulated(l)) ? true : false;
+  }
+
+  public isLinePartOfAccumulated(line: TemplateAccountingItemLineDTO): boolean {
+    return this.acumulatedLineSelected?.accumulatedLines.find((l) => l.id === line.id) ? true : false;
+  }
+
+  public selectAccumulatedLine(line: TemplateAccountingItemLineDTO): void {
+    if (line.accumulated && this.acumulatedLineSelected !== line) {
+      this.acumulatedLineSelected = line;
+    } else {
+      this.acumulatedLineSelected = null;
+    }
   }
 
   private initForm(): void {

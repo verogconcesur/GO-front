@@ -37,6 +37,7 @@
                 "new": "Nueva plantilla de contabilidad",
                 "newBlock": "Nuevo bloque",
                 "newLine": "Nueva línea",
+                "showAccumulatedLineInfo": "Destacar líneas acumuladas asociadas a esta línea",
                 "title": "Contabilidad"
             },
             "attachments": {

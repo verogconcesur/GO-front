@@ -69,6 +69,10 @@
                                 >
                                 {{ labels.block | translate }}:
                                 {{ block.description }}
+
+                                <span class="accumulated-line-symbol" *ngIf="hasBlockLinesFromAccumulatedSelection(block)"
+                                    >&#177;</span
+                                >
                             </mat-panel-title>
                             <mat-panel-description>
                                 <button
@@ -99,6 +103,26 @@
                                 <div class="accounting-line__description">
                                     <mat-icon cdkDragHandle class="drag-icon">drag_indicator</mat-icon>
                                     <b>{{ labels.line | translate }}: {{ line.description }}</b>
+
+                                    <span
+                                        *ngIf="isLinePartOfAccumulated(line) && line.sign === -1"
+                                        class="accumulated-line-symbol"
+                                        >-</span
+                                    >
+                                    <span *ngIf="isLinePartOfAccumulated(line) && line.sign === 1" class="accumulated-line-symbol"
+                                        >+</span
+                                    >
+
+                                    <button
+                                        mat-icon-button
+                                        *ngIf="line?.accumulated"
+                                        (click)="selectAccumulatedLine(line)"
+                                        class="accumulated-line-symbol"
+                                        matTooltipPosition="above"
+                                        [matTooltip]="labels.showAccumulatedLineInfo | translate"
+                                    >
+                                        &#931;
+                                    </button>
                                 </div>
                                 <div class="accounting-line__actions">
                                     <button mat-icon-button (click)="editLine(block, line)">

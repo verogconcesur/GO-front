@@ -102,6 +102,11 @@
     overflow: visible;
     white-space: nowrap;
   }
+
+  .accumulated-line-symbol {
+    color: green;
+    padding: 0 5px;
+  }
 }
 
 .accounting-line {
