@@ -34,7 +34,7 @@ export interface CardBudgetAttachmentsDTO {
   };
   id?: number;
 }
-export interface CardPaymentAttachmentsDTO {
+export interface CardInstanceAttachmentDTO {
   tab: CardColumnTabDTO;
   cardInstance: CardInstanceDTO;
   file: AttachmentDTO;

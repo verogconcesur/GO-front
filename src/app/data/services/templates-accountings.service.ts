@@ -83,9 +83,9 @@ export class TemplatesAccountingsService {
       .pipe(catchError((error) => throwError(error as ConcenetError)));
   }
 
-  public getListTaxTypes(): Observable<AccountingTaxTypeDTO> {
+  public getListTaxTypes(): Observable<AccountingTaxTypeDTO[]> {
     return this.http
-      .get<AccountingTaxTypeDTO>(`${this.env.apiBaseUrl}${this.POST_ACCOUNTING_PATH}${this.LIST_TAX_TYPES}`)
+      .get<AccountingTaxTypeDTO[]>(`${this.env.apiBaseUrl}${this.POST_ACCOUNTING_PATH}${this.LIST_TAX_TYPES}`)
       .pipe(catchError((error) => throwError(error as ConcenetError)));
   }
 

@@ -1,0 +1,9 @@
+<app-card-instance-accounting
+    [cardInstanceAccountingConfig]="cardInstanceAccountingConfig"
+    [data]="accountingData"
+    [tabId]="tab.id"
+    [cardInstanceWorkflowId]="idCard"
+    [cardInstance]="cardInstance.cardInstanceWorkflow.cardInstance"
+    (reload)="fetchData()"
+    *ngIf="dataLoaded"
+></app-card-instance-accounting>

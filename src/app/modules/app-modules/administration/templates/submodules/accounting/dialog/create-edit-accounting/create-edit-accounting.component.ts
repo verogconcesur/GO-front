@@ -396,7 +396,8 @@ export class CreateEditAccountingComponent extends ComponentToExtendForCustomDia
   }
 
   private openBlockDialog = (): void => {
-    if (!(this.accountingForm && this.accountingForm.touched && this.accountingForm.dirty && this.accountingForm.valid)) {
+    if (!(this.accountingForm && this.accountingForm.valid)) {
+      console.log(this.accountingForm, this.accountingForm.valid);
       this.globalMessageService.showError({
         message: this.translateService.instant(marker('common.firstCompleteAllRequiredFields')),
         actionText: this.translateService.instant(marker('common.close'))

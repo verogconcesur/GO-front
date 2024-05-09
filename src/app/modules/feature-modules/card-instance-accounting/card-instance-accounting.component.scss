@@ -1,0 +1,114 @@
+@import 'utils/core';
+@import 'utils/theme';
+.accountings {
+  &__main {
+    padding: 10px;
+    height: 95%;
+    overflow-y: auto;
+    &__total {
+      flex-wrap: wrap;
+      .value {
+        font-weight: bold;
+      }
+      mat-form-field {
+        margin-right: 15px;
+        mat-icon {
+          font-size: 20px;
+        }
+      }
+      &.item {
+        height: 55px;
+        background-color: rgba(mat-color($primary, 100), 20%);
+        border-bottom: 1px solid mat-color($primary, 100);
+
+        .description {
+          overflow: hidden;
+          text-overflow: ellipsis;
+          display: -webkit-box;
+          -webkit-line-clamp: 1;
+          -webkit-box-orient: vertical;
+        }
+        .actions {
+          mat-icon {
+            font-size: 1.3em;
+          }
+          .mat-badge-content {
+            width: 15px !important;
+            height: 15px !important;
+            line-height: 15px !important;
+          }
+          .mat-badge-medium.mat-badge-overlap.mat-badge-before .mat-badge-content {
+            left: 0 !important;
+          }
+        }
+      }
+    }
+    &__header {
+      &__item {
+        font-weight: 600;
+        height: 40px;
+      }
+      &.mt-20 {
+        margin-top: 20px;
+      }
+    }
+    &__container {
+      &__item {
+        height: 75px;
+        background-color: rgba(mat-color($primary, 100), 20%);
+        border-bottom: 1px solid mat-color($primary, 100);
+        mat-form-field {
+          padding-top: 20px;
+          max-width: 90%;
+        }
+        .description {
+          overflow: hidden;
+          text-overflow: ellipsis;
+          display: -webkit-box;
+          -webkit-line-clamp: 1;
+          -webkit-box-orient: vertical;
+        }
+        .observation {
+          color: mat-contrast($primary, 50);
+          font-size: 0.95em;
+          overflow: hidden;
+          text-overflow: ellipsis;
+          display: -webkit-box;
+          -webkit-line-clamp: 2;
+          -webkit-box-orient: vertical;
+        }
+        .actions {
+          mat-icon {
+            font-size: 1.3em;
+          }
+          .mat-badge-content {
+            width: 15px !important;
+            height: 15px !important;
+            line-height: 15px !important;
+          }
+          .mat-badge-medium.mat-badge-overlap.mat-badge-before .mat-badge-content {
+            left: 0 !important;
+          }
+        }
+      }
+    }
+    &__create {
+      padding: 15px 0;
+      &__item {
+        font-weight: 600;
+        color: mat-color($primary, A700);
+        cursor: pointer;
+      }
+    }
+    .bold {
+      font-weight: 600;
+    }
+    .summatory-line {
+      height: 55px !important;
+    }
+  }
+  &__button {
+    padding: 20px;
+    height: 80px;
+  }
+}
