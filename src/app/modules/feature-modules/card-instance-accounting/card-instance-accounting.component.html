@@ -84,19 +84,16 @@
                     {{ item.templateAccountingItemLine.accountingLineType.description }}
                 </div>
                 <div fxFlex="25" fxLayoutAlign="center center">
-                    {{ item.amount }}<span *ngIf="item.ammount || item.amount === 0" matSuffix> €</span>
+                    {{ item.amount | number : "1.2-2" }}<span *ngIf="item.amount || item.amount === 0" matSuffix> €</span>
                 </div>
                 <div fxFlex="15" fxLayoutAlign="end center" class="actions">
-                    <mat-icon
-                        [color]="'primary'"
-                        style="cursor: pointer; color: green"
-                        [matBadge]="item.attachments?.length"
-                        matBadgePosition="before"
-                        (click)="editLine(item)"
-                        *ngIf="item.attachments?.length"
+                    <!-- <mat-icon
+                        [style.color]="getFontColorAccumulatedLine(item)"
+                        (click)="showAccumulated(item)"
+                        *ngIf="item.templateAccountingItemLine.accumulated"
                     >
-                        attach_file
-                    </mat-icon>
+                        &#177; &#931;
+                    </mat-icon> -->
                     <mat-icon
                         [color]="'primary'"
                         style="cursor: pointer"
@@ -114,6 +111,54 @@
                         edit
                     </mat-icon>
                 </div>
+            </div>
+            <div class="accountings__main__line item smaller-mat-form-fields bold" fxLayout="row">
+                <div fxFlex="60" fxLayoutAlign="start center">
+                    {{
+                        block.templateAccountingItem.descriptionTotal
+                            ? block.templateAccountingItem.descriptionTotal
+                            : (labels.total | translate)
+                    }}
+                </div>
+                <div fxFlex="25" fxLayoutAlign="center center" *ngIf="block.totalAmount">
+                    {{ block.totalAmount | number : "1.2-2" }}<span matSuffix> €</span>
+                </div>
+                <div fxFlex="25" fxLayoutAlign="center center" *ngIf="!block.totalAmount">
+                    {{ 0 | number : "1.2-2" }}<span matSuffix> €</span>
+                </div>
+                <div fxFlex="15" fxLayoutAlign="end center" class="actions"></div>
+            </div>
+            <div class="accountings__main__line item smaller-mat-form-fields bold" fxLayout="row">
+                <div fxFlex="60" fxLayoutAlign="start center">
+                    {{
+                        block.templateAccountingItem.descriptionTotalTax
+                            ? block.templateAccountingItem.descriptionTotalTax
+                            : (labels.totalTax | translate)
+                    }}
+                </div>
+                <div fxFlex="25" fxLayoutAlign="center center" *ngIf="block.amountTotalTax">
+                    {{ block.amountTotalTax | number : "1.2-2" }}<span matSuffix> €</span>
+                </div>
+                <div fxFlex="25" fxLayoutAlign="center center" *ngIf="!block.amountTotalTax">
+                    {{ 0 | number : "1.2-2" }}<span matSuffix> €</span>
+                </div>
+                <div fxFlex="15" fxLayoutAlign="end center" class="actions"></div>
+            </div>
+            <div class="accountings__main__line item smaller-mat-form-fields bold" fxLayout="row">
+                <div fxFlex="60" fxLayoutAlign="start center">
+                    {{
+                        block.templateAccountingItem.descriptionTotalPlusTax
+                            ? block.templateAccountingItem.descriptionTotalPlusTax
+                            : (labels.totalAmountPlusTax | translate)
+                    }}
+                </div>
+                <div fxFlex="25" fxLayoutAlign="center center" *ngIf="block.amountTotalPlusTax">
+                    {{ block.amountTotalPlusTax | number : "1.2-2" }}<span matSuffix> €</span>
+                </div>
+                <div fxFlex="25" fxLayoutAlign="center center" *ngIf="!block.amountTotalPlusTax">
+                    {{ 0 | number : "1.2-2" }}<span matSuffix> €</span>
+                </div>
+                <div fxFlex="15" fxLayoutAlign="end center" class="actions"></div>
             </div>
         </div>
     </div>

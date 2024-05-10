@@ -247,6 +247,7 @@
             "totalTax": "Tax value"
         },
         "accountings": {
+            "accumulatedLineEditionBlocked": "Amount edition locked (accumulated line)",
             "editBlock": "Edit block",
             "editLine": "Edit line"
         },

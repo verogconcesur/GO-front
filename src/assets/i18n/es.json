@@ -247,6 +247,7 @@
             "totalTax": "IVA"
         },
         "accountings": {
+            "accumulatedLineEditionBlocked": "Edición de cantidad bloqueada (cantidad calculada automáticamente).",
             "editBlock": "Editar bloque",
             "editLine": "Editar línea"
         },

@@ -61,6 +61,7 @@ export class CardInstanceAccountingComponent implements OnInit {
   public taxTypeToApply: AccountingTaxTypeDTO = this.taxTypes[0];
   public editingTaxType = false;
   public attachmentsList: CardInstanceAttachmentDTO[] = [];
+  public accumulatedLineSelected: CardAccountingLineDTO = null;
 
   constructor(
     private accountingService: CardAccountingService,
@@ -75,6 +76,9 @@ export class CardInstanceAccountingComponent implements OnInit {
 
   ngOnInit(): void {
     const spinner = this.spinnerService.show();
+    if (this.data.taxType) {
+      this.taxTypeToApply = this.taxTypes.find((type) => this.data.taxType.id === type.id);
+    }
     this.attachmentService
       .getCardAttachmentsByInstance(this.cardInstanceWorkflowId)
       .pipe(take(1))
@@ -127,13 +131,14 @@ export class CardInstanceAccountingComponent implements OnInit {
       )
       .subscribe({
         next: (data: any) => {
-          this.reload.emit(true);
+          // this.reload.emit(true);
         },
         error: (error: ConcenetError) => {
           this.globalMessageService.showError({
             message: error.message,
             actionText: this.translateService.instant(marker('common.close'))
           });
+          this.reload.emit(true);
         }
       });
   }
@@ -150,7 +155,8 @@ export class CardInstanceAccountingComponent implements OnInit {
         component: CardAccountingDialogFormComponent,
         extendedComponentData: {
           line: null,
-          block,
+          taxType: this.taxTypeToApply,
+          block: JSON.parse(JSON.stringify(block)),
           attachmentsList: this.attachmentsList,
           cardInstanceWorkflowId: this.cardInstanceWorkflowId,
           tabId: this.tabId,
@@ -165,6 +171,10 @@ export class CardInstanceAccountingComponent implements OnInit {
       .pipe(take(1))
       .subscribe((response) => {
         if (response) {
+          this.globalMessageService.showSuccess({
+            message: this.translateService.instant(marker('common.success')),
+            actionText: this.translateService.instant(marker('common.close'))
+          });
           this.reload.emit(true);
         }
       });
@@ -175,7 +185,8 @@ export class CardInstanceAccountingComponent implements OnInit {
       .open({
         component: CardAccountingDialogFormComponent,
         extendedComponentData: {
-          line,
+          line: JSON.parse(JSON.stringify(line)),
+          taxType: this.taxTypeToApply,
           block: null,
           attachmentsList: this.attachmentsList,
           cardInstanceWorkflowId: this.cardInstanceWorkflowId,
@@ -191,6 +202,10 @@ export class CardInstanceAccountingComponent implements OnInit {
       .pipe(take(1))
       .subscribe((response) => {
         if (response) {
+          this.globalMessageService.showSuccess({
+            message: this.translateService.instant(marker('common.success')),
+            actionText: this.translateService.instant(marker('common.close'))
+          });
           this.reload.emit(true);
         }
       });
@@ -199,4 +214,16 @@ export class CardInstanceAccountingComponent implements OnInit {
   public compareTax(object1: AccountingTaxTypeDTO, object2: AccountingTaxTypeDTO) {
     return object1 && object2 && object1.id === object2.id;
   }
+
+  // public showAccumulated(line: CardAccountingLineDTO): void {
+  //   if (this.accumulatedLineSelected === line) {
+  //     this.accumulatedLineSelected = null;
+  //     return;
+  //   }
+  //   this.accumulatedLineSelected = line;
+  // }
+
+  // public getFontColorAccumulatedLine(line: CardAccountingLineDTO): string {
+  //   return line === this.accumulatedLineSelected ? 'green' : '#4746a3';
+  // }
 }

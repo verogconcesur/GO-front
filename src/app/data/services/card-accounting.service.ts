@@ -52,9 +52,9 @@ export class CardAccountingService {
       .pipe(catchError((error) => throwError(error.error as ConcenetError)));
   }
 
-  public editLine(cardInstanceWorkflowId: number, tabId: number, line: CardAccountingLineDTO): Observable<CardAccountingDTO> {
+  public editLine(cardInstanceWorkflowId: number, tabId: number, line: CardAccountingLineDTO): Observable<boolean> {
     return this.http
-      .post<CardAccountingDTO>(
+      .post<boolean>(
         // eslint-disable-next-line max-len
         `${this.env.apiBaseUrl}${this.GET_CARD_INSTANCE_PATH}${this.DETAIL_PATH}/${cardInstanceWorkflowId}${this.ACCOUNTING_LINE_PATH}/${tabId}`,
         line
@@ -62,9 +62,9 @@ export class CardAccountingService {
       .pipe(catchError((error) => throwError(error.error as ConcenetError)));
   }
 
-  public editBlock(cardInstanceWorkflowId: number, tabId: number, block: CardAccountingBlockDTO): Observable<CardAccountingDTO> {
+  public editBlock(cardInstanceWorkflowId: number, tabId: number, block: CardAccountingBlockDTO): Observable<boolean> {
     return this.http
-      .post<CardAccountingDTO>(
+      .post<boolean>(
         // eslint-disable-next-line max-len
         `${this.env.apiBaseUrl}${this.GET_CARD_INSTANCE_PATH}${this.DETAIL_PATH}/${cardInstanceWorkflowId}${this.ACCOUNTING_BLOCK_PATH}/${tabId}`,
         block

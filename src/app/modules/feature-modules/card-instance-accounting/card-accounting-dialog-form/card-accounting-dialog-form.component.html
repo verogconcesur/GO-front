@@ -10,10 +10,14 @@
                         [(ngModel)]="amount"
                         [readonly]="editionDisabled || line.templateAccountingItemLine.accumulated"
                     />
-                    <span matSuffix>€ <span *ngIf="line.templateAccountingItemLine.accumulated">( &#177; )</span></span>
+                    <span matSuffix>€</span>
                 </mat-form-field>
                 <mat-error *ngIf="amount < 0 || amount > maxAmount">
                     <span>{{ labels.valueBetween | translate : { min: 0, max: maxAmount.toString().length } }}</span>
+                </mat-error>
+                <mat-error *ngIf="line.templateAccountingItemLine.accumulated" style="color: black">
+                    <span>&#931;</span>
+                    {{ labels.accumulatedLine | translate }}
                 </mat-error>
             </div>
             <div class="accounting-line-data__section__group">

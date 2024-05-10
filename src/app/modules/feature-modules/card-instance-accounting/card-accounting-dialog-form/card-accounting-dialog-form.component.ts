@@ -1,8 +1,10 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { FormBuilder, UntypedFormGroup, Validators } from '@angular/forms';
+import { ConcenetError } from '@app/types/error';
 import { marker } from '@biesbjerg/ngx-translate-extract-marker';
 import { CardAccountingBlockDTO, CardAccountingLineDTO } from '@data/models/cards/card-accounting-dto';
 import { AttachmentDTO, CardInstanceAttachmentDTO } from '@data/models/cards/card-attachments-dto';
+import { AccountingTaxTypeDTO } from '@data/models/templates/templates-accounting-dto';
 import { CardAccountingService } from '@data/services/card-accounting.service';
 import { CardAttachmentsService } from '@data/services/card-attachments.service';
 import { ComponentToExtendForCustomDialog, CustomDialogFooterConfigI } from '@frontend/custom-dialog';
@@ -11,7 +13,7 @@ import { TranslateService } from '@ngx-translate/core';
 import { ConfirmDialogService } from '@shared/services/confirm-dialog.service';
 import { GlobalMessageService } from '@shared/services/global-message.service';
 import { ProgressSpinnerDialogService } from '@shared/services/progress-spinner-dialog.service';
-import { Observable, finalize, of, take } from 'rxjs';
+import { Observable, catchError, finalize, of, take } from 'rxjs';
 
 export const enum CardAccoutingDialogEnum {
   ID = 'card-accounting-dialog-id',
@@ -29,6 +31,7 @@ export class CardAccountingDialogFormComponent extends ComponentToExtendForCusto
   public block: CardAccountingBlockDTO;
   public attachmentsList: CardInstanceAttachmentDTO[] = [];
   public attachmentsSelected: CardInstanceAttachmentDTO[] = [];
+  public taxType: AccountingTaxTypeDTO = null;
   public cardInstanceWorkflowId: number;
   public tabId: number;
   public mode: 'BLOCK' | 'LINE' = 'BLOCK';
@@ -43,6 +46,7 @@ export class CardAccountingDialogFormComponent extends ComponentToExtendForCusto
     valueBetween: marker('errors.valueBetween'),
     required: marker('errors.required'),
     editLine: marker('cardDetail.accountings.editLine'),
+    accumulatedLine: marker('cardDetail.accountings.accumulatedLineEditionBlocked'),
     editBlock: marker('cardDetail.accountings.editBlock')
   };
   public maxAmount = 99999999;
@@ -64,6 +68,7 @@ export class CardAccountingDialogFormComponent extends ComponentToExtendForCusto
     this.block = this.extendedComponentData.block;
     this.cardInstanceWorkflowId = this.extendedComponentData.cardInstanceWorkflowId;
     this.tabId = this.extendedComponentData.tabId;
+    this.taxType = this.extendedComponentData.taxType;
     this.attachmentsList = this.extendedComponentData.attachmentsList;
     this.editionDisabled = this.extendedComponentData.editionDisabled;
     this.mode = this.extendedComponentData.mode ? this.extendedComponentData.mode : 'BLOCK';
@@ -147,54 +152,33 @@ export class CardAccountingDialogFormComponent extends ComponentToExtendForCusto
     if (this.areThereChanges()) {
       const spinner = this.spinnerService.show();
       if (this.mode === 'LINE') {
-        this.line.amount = this.amount;
+        this.line.amount = Number(this.amount);
         this.line.attachments = this.attachmentsSelected;
-        this.accountingService
-          .editLine(this.cardInstanceWorkflowId, this.tabId, this.line)
-          .pipe(
-            take(1),
-            finalize(() => this.spinnerService.hide(spinner))
-          )
-          .subscribe({
-            next: (data) => {
-              this.globalMessageService.showSuccess({
-                message: this.translateService.instant(marker('common.success')),
-                actionText: this.translateService.instant(marker('common.close'))
-              });
-              return of(true);
-            },
-            error: (error) => {
-              this.globalMessageService.showError({
-                message: error.message,
-                actionText: this.translateService.instant(marker('common.close'))
-              });
-              return of(true);
-            }
-          });
+        this.line.taxType = this.taxType;
+        return this.accountingService.editLine(this.cardInstanceWorkflowId, this.tabId, this.line).pipe(
+          take(1),
+          catchError((error: ConcenetError) => {
+            this.globalMessageService.showError({
+              message: error.message,
+              actionText: this.translateService.instant(marker('common.close'))
+            });
+            return of(false);
+          }),
+          finalize(() => this.spinnerService.hide(spinner))
+        );
       } else {
         this.block.attachments = this.attachmentsSelected;
-        this.accountingService
-          .editBlock(this.cardInstanceWorkflowId, this.tabId, this.block)
-          .pipe(
-            take(1),
-            finalize(() => this.spinnerService.hide(spinner))
-          )
-          .subscribe({
-            next: (data) => {
-              this.globalMessageService.showSuccess({
-                message: this.translateService.instant(marker('common.success')),
-                actionText: this.translateService.instant(marker('common.close'))
-              });
-              return of(true);
-            },
-            error: (error) => {
-              this.globalMessageService.showError({
-                message: error.message,
-                actionText: this.translateService.instant(marker('common.close'))
-              });
-              return of(true);
-            }
-          });
+        return this.accountingService.editBlock(this.cardInstanceWorkflowId, this.tabId, this.block).pipe(
+          take(1),
+          catchError((error: ConcenetError) => {
+            this.globalMessageService.showError({
+              message: error.message,
+              actionText: this.translateService.instant(marker('common.close'))
+            });
+            return of(false);
+          }),
+          finalize(() => this.spinnerService.hide(spinner))
+        );
       }
     } else {
       return of(false);

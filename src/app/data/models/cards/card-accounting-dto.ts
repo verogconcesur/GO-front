@@ -6,6 +6,7 @@ import {
 import { CardAttachmentsDTO, CardInstanceAttachmentDTO } from './card-attachments-dto';
 
 export interface CardAccountingDTO {
+  taxType: AccountingTaxTypeDTO;
   accountingBlocks: CardAccountingBlockDTO[];
 }
 
