@@ -96,6 +96,16 @@
                     </mat-icon> -->
                     <mat-icon
                         [color]="'primary'"
+                        style="cursor: pointer; color: green"
+                        [matBadge]="item.attachments?.length"
+                        matBadgePosition="before"
+                        (click)="editLine(item)"
+                        *ngIf="item.attachments?.length"
+                    >
+                        attach_file
+                    </mat-icon>
+                    <mat-icon
+                        [color]="'primary'"
                         style="cursor: pointer"
                         (click)="editLine(item)"
                         *ngIf="!item.attachments?.length"
@@ -120,10 +130,10 @@
                             : (labels.total | translate)
                     }}
                 </div>
-                <div fxFlex="25" fxLayoutAlign="center center" *ngIf="block.totalAmount">
-                    {{ block.totalAmount | number : "1.2-2" }}<span matSuffix> €</span>
+                <div fxFlex="25" fxLayoutAlign="center center" *ngIf="block.amountTotal">
+                    {{ block.amountTotal | number : "1.2-2" }}<span matSuffix> €</span>
                 </div>
-                <div fxFlex="25" fxLayoutAlign="center center" *ngIf="!block.totalAmount">
+                <div fxFlex="25" fxLayoutAlign="center center" *ngIf="!block.amountTotal">
                     {{ 0 | number : "1.2-2" }}<span matSuffix> €</span>
                 </div>
                 <div fxFlex="15" fxLayoutAlign="end center" class="actions"></div>

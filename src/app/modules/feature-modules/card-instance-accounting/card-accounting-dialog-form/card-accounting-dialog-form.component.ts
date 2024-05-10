@@ -154,7 +154,7 @@ export class CardAccountingDialogFormComponent extends ComponentToExtendForCusto
       if (this.mode === 'LINE') {
         this.line.amount = Number(this.amount);
         this.line.attachments = this.attachmentsSelected;
-        this.line.taxType = this.taxType;
+        this.line.taxType = this.taxType?.id ? this.taxType : null;
         return this.accountingService.editLine(this.cardInstanceWorkflowId, this.tabId, this.line).pipe(
           take(1),
           catchError((error: ConcenetError) => {

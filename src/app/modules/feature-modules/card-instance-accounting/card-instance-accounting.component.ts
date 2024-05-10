@@ -76,9 +76,6 @@ export class CardInstanceAccountingComponent implements OnInit {
 
   ngOnInit(): void {
     const spinner = this.spinnerService.show();
-    if (this.data.taxType) {
-      this.taxTypeToApply = this.taxTypes.find((type) => this.data.taxType.id === type.id);
-    }
     this.attachmentService
       .getCardAttachmentsByInstance(this.cardInstanceWorkflowId)
       .pipe(take(1))
@@ -111,6 +108,9 @@ export class CardInstanceAccountingComponent implements OnInit {
       .subscribe({
         next: (data: AccountingTaxTypeDTO[]) => {
           this.taxTypes = [...this.taxTypes, ...data];
+          if (this.data.taxType) {
+            this.taxTypeToApply = this.taxTypes.find((type) => this.data.taxType.id === type.id);
+          }
         },
         error: (error: ConcenetError) => {
           this.globalMessageService.showError({
