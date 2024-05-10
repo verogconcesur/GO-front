@@ -1,8 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { Component, EventEmitter, Input, OnInit, Output, ViewEncapsulation } from '@angular/core';
-import { FormBuilder, FormGroup, UntypedFormGroup } from '@angular/forms';
 import { marker } from '@biesbjerg/ngx-translate-extract-marker';
-import { CardInstanceAttachmentDTO } from '@data/models/cards/card-attachments-dto';
+import { AttachmentDTO, CardAttachmentsDTO, CardInstanceAttachmentDTO } from '@data/models/cards/card-attachments-dto';
 // eslint-disable-next-line max-len
 import CardInstanceDTO from '@data/models/cards/card-instance-dto';
 import { CardAttachmentsService } from '@data/services/card-attachments.service';
@@ -12,18 +11,17 @@ import { CustomDialogService } from '@frontend/custom-dialog';
 import { TranslateService } from '@ngx-translate/core';
 import { ConfirmDialogService } from '@shared/services/confirm-dialog.service';
 import { GlobalMessageService } from '@shared/services/global-message.service';
-import { NGXLogger } from 'ngx-logger';
 import { finalize, take } from 'rxjs/operators';
 import CardInstanceAccountingConfig from './card-instance-accounting-config-interface';
-import {
-  CardAccountingLineDialogFormComponent,
-  CardAccountingLineFormComponentModalEnum
-} from './card-accounting-line-dialog-form/card-accounting-line-dialog-form.component';
-import { CardAccountingDTO } from '@data/models/cards/card-accounting-dto';
+import { CardAccountingBlockDTO, CardAccountingDTO, CardAccountingLineDTO } from '@data/models/cards/card-accounting-dto';
 import { TemplatesAccountingsService } from '@data/services/templates-accountings.service';
 import { ConcenetError } from '@app/types/error';
 import { AccountingTaxTypeDTO } from '@data/models/templates/templates-accounting-dto';
 import { ProgressSpinnerDialogService } from '@shared/services/progress-spinner-dialog.service';
+import {
+  CardAccountingDialogFormComponent,
+  CardAccoutingDialogEnum
+} from './card-accounting-dialog-form/card-accounting-dialog-form.component';
 
 @Component({
   selector: 'app-card-instance-accounting',
@@ -39,68 +37,67 @@ export class CardInstanceAccountingComponent implements OnInit {
   @Input() cardInstance: CardInstanceDTO;
   @Output() reload: EventEmitter<boolean> = new EventEmitter<boolean>();
   public labels = {
-    okClient: marker('common.okClient'),
-    description: marker('common.description'),
-    observations: marker('common.observations'),
-    paymentType: marker('common.paymentType'),
+    taxType: marker('cardDetail.accounting.taxType'),
+    line: marker('common.line'),
     amount: marker('common.amount'),
     total: marker('common.total'),
-    pending: marker('common.pending'),
-    pendingDescription: marker('cardDetail.accounting.pendingAmount'),
-    customerAccount: marker('cardDetail.accounting.customerAccount'),
-    state: marker('common.state'),
-    actions: marker('common.actions'),
-    paymentLine: marker('cardDetail.accounting.paymentLine'),
-    paymentTotalDetail: marker('cardDetail.accounting.paymentTotalDetail'),
+    okClient: marker('common.okClient'),
     newLine: marker('cardDetail.accounting.newLine'),
-    newTotalLine: marker('cardDetail.accounting.newTotalLine'),
-    newTotalDetail: marker('cardDetail.accounting.newTotalDetail'),
-    send: marker('common.send'),
-    sendPayment: marker('cardDetail.accounting.send'),
-    resendPayment: marker('cardDetail.accounting.resend'),
-    attachments: marker('common.attachments'),
-    deleteConfirmation: marker('common.deleteConfirmation'),
-    maxLengthError: marker('errors.maxLengthError'),
+    type: marker('common.type'),
+    generalInfo: marker('cardDetail.payments.generalInfo'),
     value: marker('common.value'),
-    generalInfo: marker('cardDetail.accounting.generalInfo'),
-    totals: marker('cardDetail.accounting.totals'),
-    summation: marker('cardDetail.accounting.summation'),
-    summationPayed: marker('cardDetail.accounting.summationPayed'),
-    summationPending: marker('cardDetail.accounting.summationPending')
+    totalTax: marker('cardDetail.accounting.totalTax'),
+    totalAmountPlusTax: marker('cardDetail.accounting.totalAmountPlusTax'),
+    actions: marker('common.actions')
   };
 
-  public taxTypes: AccountingTaxTypeDTO[] = [];
+  public taxTypes: AccountingTaxTypeDTO[] = [
+    {
+      id: null,
+      description: marker('cardDetail.accounting.taxTypeNoApply'),
+      value: null
+    }
+  ];
+  public taxTypeToApply: AccountingTaxTypeDTO = this.taxTypes[0];
+  public editingTaxType = false;
+  public attachmentsList: CardInstanceAttachmentDTO[] = [];
 
-  public formTotal: FormGroup;
-  public paymentLines: any[];
-  public totalLines: any[];
-  public totalDetailLines: any[];
-  public paymentStatus: any[];
-  public paymentDescriptions: any;
-  public attachmentsList: CardInstanceAttachmentDTO[];
-  public paymentTypes: any[];
-  public prevTotal: number;
-  public prevCustomerAccount: string;
-  public editing = false;
-  public editingTotal = false;
-  public editingAccount = false;
-  public maxAmount = 99999999;
   constructor(
-    private fb: FormBuilder,
     private accountingService: CardAccountingService,
-    private logger: NGXLogger,
     private translateService: TranslateService,
     private confirmationDialog: ConfirmDialogService,
     private globalMessageService: GlobalMessageService,
     private customDialogService: CustomDialogService,
     private attachmentService: CardAttachmentsService,
-    private cardMessageService: CardMessagesService,
     private templateAccountingsService: TemplatesAccountingsService,
     private spinnerService: ProgressSpinnerDialogService
   ) {}
 
   ngOnInit(): void {
     const spinner = this.spinnerService.show();
+    this.attachmentService
+      .getCardAttachmentsByInstance(this.cardInstanceWorkflowId)
+      .pipe(take(1))
+      .subscribe({
+        next: (data: CardAttachmentsDTO[]) => {
+          data.forEach((attachment: CardAttachmentsDTO) => {
+            attachment.attachments.forEach((att: AttachmentDTO) => {
+              this.attachmentsList.push({
+                cardInstance: this.cardInstance,
+                tab: { id: attachment.tabId },
+                file: att,
+                templateAttachmentItem: attachment.templateAttachmentItem
+              } as CardInstanceAttachmentDTO);
+            });
+          });
+        },
+        error: (error: ConcenetError) => {
+          this.globalMessageService.showError({
+            message: error.message,
+            actionText: this.translateService.instant(marker('common.close'))
+          });
+        }
+      });
     this.templateAccountingsService
       .getListTaxTypes()
       .pipe(
@@ -109,8 +106,7 @@ export class CardInstanceAccountingComponent implements OnInit {
       )
       .subscribe({
         next: (data: AccountingTaxTypeDTO[]) => {
-          this.taxTypes = data;
-          console.log(this.data, this.taxTypes);
+          this.taxTypes = [...this.taxTypes, ...data];
         },
         error: (error: ConcenetError) => {
           this.globalMessageService.showError({
@@ -121,469 +117,86 @@ export class CardInstanceAccountingComponent implements OnInit {
       });
   }
 
-  public compareAttachments(object1: CardInstanceAttachmentDTO, object2: CardInstanceAttachmentDTO) {
-    return object1 && object2 && object1.id === object2.file.id;
-  }
-
-  public saveTotalDetail(totalDetail: UntypedFormGroup): void {
-    this.confirmationDialog
-      .open({
-        title: this.translateService.instant(marker('common.warning')),
-        message: this.translateService.instant(marker('cardDetail.accounting.saveTotalDetailConfirmation'))
-      })
-      .pipe(take(1))
-      .subscribe((ok: boolean) => {
-        if (ok) {
-          const totalDetailData = totalDetail.getRawValue();
-          if (totalDetailData.attachments?.length) {
-            totalDetailData.attachments = totalDetailData.attachments.map((att1: CardInstanceAttachmentDTO) => {
-              let attachment = att1;
-              if (
-                totalDetailData.attachmentsOriginal?.length &&
-                totalDetailData.attachmentsOriginal.find((att2: CardInstanceAttachmentDTO) => att1.file.id === att2.file.id)
-              ) {
-                attachment = totalDetailData.attachmentsOriginal.find(
-                  (att2: CardInstanceAttachmentDTO) => att1.file.id === att2.file.id
-                );
-              }
-              return attachment;
-            });
-          } else {
-            totalDetailData.attachments = [];
-          }
-          // this.accountingService
-          //   .addEditTotalDetail(this.cardInstanceWorkflowId, this.tabId, totalDetailData)
-          //   .pipe(take(1))
-          //   .subscribe(
-          //     (data) => {
-          //       this.reload.emit(true);
-          //     },
-          //     (error: ConcenetError) => {
-          //       this.logger.error(error);
-
-          //       this.globalMessageService.showError({
-          //         message: error.message,
-          //         actionText: this.translateService.instant(marker('common.close'))
-          //       });
-          //     }
-          //   );
-        }
-      });
-  }
-  public savePayment(payment: UntypedFormGroup): void {
-    this.confirmationDialog
-      .open({
-        title: this.translateService.instant(marker('common.warning')),
-        message: this.translateService.instant(marker('cardDetail.accounting.saveConfirmation'))
-      })
-      .pipe(take(1))
-      .subscribe((ok: boolean) => {
-        if (ok) {
-          const paymentData = payment.getRawValue();
-          if (paymentData.attachments?.length) {
-            paymentData.attachments = paymentData.attachments.map((att1: CardInstanceAttachmentDTO) => {
-              let attachment = att1;
-              if (
-                paymentData.attachmentsOriginal?.length &&
-                paymentData.attachmentsOriginal.find((att2: CardInstanceAttachmentDTO) => att1.file.id === att2.file.id)
-              ) {
-                attachment = paymentData.attachmentsOriginal.find(
-                  (att2: CardInstanceAttachmentDTO) => att1.file.id === att2.file.id
-                );
-              }
-              return attachment;
-            });
-          } else {
-            paymentData.attachments = [];
-          }
-          // this.accountingService
-          //   .addEditLine(this.cardInstanceWorkflowId, this.tabId, paymentData)
-          //   .pipe(take(1))
-          //   .subscribe(
-          //     (data) => {
-          //       this.reload.emit(true);
-          //     },
-          //     (error: ConcenetError) => {
-          //       this.logger.error(error);
-
-          //       this.globalMessageService.showError({
-          //         message: error.message,
-          //         actionText: this.translateService.instant(marker('common.close'))
-          //       });
-          //     }
-          //   );
-        }
-      });
-  }
-  public deletePayment(payment: any, index: number): void {
-    this.confirmationDialog
-      .open({
-        title: this.translateService.instant(marker('common.warning')),
-        message: this.translateService.instant(marker('cardDetail.accounting.deleteConfirmation'))
-      })
-      .pipe(take(1))
-      .subscribe((ok: boolean) => {
-        if (ok) {
-          // this.accountingService
-          //   .deleteLine(this.cardInstanceWorkflowId, this.tabId, payment.id)
-          //   .pipe(take(1))
-          //   .subscribe(
-          //     (data) => {
-          //       this.reload.emit(true);
-          //     },
-          //     (error: ConcenetError) => {
-          //       this.logger.error(error);
-          //       this.globalMessageService.showError({
-          //         message: error.message,
-          //         actionText: this.translateService.instant(marker('common.close'))
-          //       });
-          //     }
-          //   );
-        }
-      });
-  }
-  public saveTotal(): void {
-    if (this.formTotal.get('total').dirty && this.formTotal.get('total').touched) {
-      this.confirmationDialog
-        .open({
-          title: this.translateService.instant(marker('common.warning')),
-          message: this.translateService.instant(marker('cardDetail.accounting.saveTotalConfirmation'))
-        })
-        .pipe(take(1))
-        .subscribe((ok: boolean) => {
-          if (ok) {
-            // this.accountingService
-            //   .saveTotal(this.cardInstanceWorkflowId, this.tabId, this.formTotal.getRawValue())
-            //   .pipe(take(1))
-            //   .subscribe(
-            //     () => {
-            //       this.reload.emit(true);
-            //     },
-            //     (error: ConcenetError) => {
-            //       this.logger.error(error);
-            //       this.globalMessageService.showError({
-            //         message: error.message,
-            //         actionText: this.translateService.instant(marker('common.close'))
-            //       });
-            //     }
-            //   );
-          } else {
-            this.formTotal.get('total').setValue(this.prevTotal);
-            this.editingTotal = false;
-          }
-        });
-    } else {
-      this.editingTotal = false;
-    }
-  }
-
-  public saveTotalLine(totalLine: UntypedFormGroup): void {
-    this.confirmationDialog
-      .open({
-        title: this.translateService.instant(marker('common.warning')),
-        message: this.translateService.instant(marker('cardDetail.accounting.saveTotalLineConfirmation'))
-      })
-      .pipe(take(1))
-      .subscribe((ok: boolean) => {
-        if (ok) {
-          const totalLineData = totalLine.getRawValue();
-          if (totalLineData.attachments?.length) {
-            totalLineData.attachments = totalLineData.attachments.map((att1: CardInstanceAttachmentDTO) => {
-              let attachment = att1;
-              if (
-                totalLineData.attachmentsOriginal?.length &&
-                totalLineData.attachmentsOriginal.find((att2: CardInstanceAttachmentDTO) => att1.file.id === att2.file.id)
-              ) {
-                attachment = totalLineData.attachmentsOriginal.find(
-                  (att2: CardInstanceAttachmentDTO) => att1.file.id === att2.file.id
-                );
-              }
-              return attachment;
-            });
-          } else {
-            totalLineData.attachments = [];
-          }
-          // this.accountingService
-          //   .addEditTotalLine(this.cardInstanceWorkflowId, this.tabId, totalLineData)
-          //   .pipe(take(1))
-          //   .subscribe(
-          //     (data) => {
-          //       this.reload.emit(true);
-          //     },
-          //     (error: ConcenetError) => {
-          //       this.logger.error(error);
-
-          //       this.globalMessageService.showError({
-          //         message: error.message,
-          //         actionText: this.translateService.instant(marker('common.close'))
-          //       });
-          //     }
-          //   );
-        }
-      });
-  }
-
-  public saveCustomerAccount(): void {
-    if (this.formTotal.get('customerAccount').dirty && this.formTotal.get('customerAccount').touched) {
-      this.confirmationDialog
-        .open({
-          title: this.translateService.instant(marker('common.warning')),
-          message: this.translateService.instant(marker('cardDetail.accounting.saveCustomerAccountConfirmation'))
-        })
-        .pipe(take(1))
-        .subscribe((ok: boolean) => {
-          if (ok) {
-            // this.accountingService
-            //   .saveCustomerAccount(this.cardInstanceWorkflowId, this.tabId, this.formTotal.getRawValue())
-            //   .pipe(take(1))
-            //   .subscribe(
-            //     () => {
-            //       this.reload.emit(true);
-            //     },
-            //     (error: ConcenetError) => {
-            //       this.logger.error(error);
-            //       this.globalMessageService.showError({
-            //         message: error.message,
-            //         actionText: this.translateService.instant(marker('common.close'))
-            //       });
-            //     }
-            //   );
-          } else {
-            this.formTotal.get('customerAccount').setValue(this.prevCustomerAccount);
-            this.editingAccount = false;
-          }
-        });
-    } else {
-      this.editingAccount = false;
-    }
-  }
-  public editPayment(payment: any, index: number): void {
-    this.customDialogService
-      .open({
-        component: CardAccountingLineDialogFormComponent,
-        extendedComponentData: {
-          payment,
-          paymentTypes: this.paymentTypes,
-          paymentStatus: this.paymentStatus,
-          paymentDescriptions: this.paymentDescriptions,
-          attachmentsList: this.attachmentsList,
-          editionDisabled: this.cardInstanceAccountingConfig.disableAccountingAdditionAction,
-          cardInstanceWorkflowId: this.cardInstanceWorkflowId,
-          mode: 'PAYMENT'
+  public setTaxType(): void {
+    const spinner = this.spinnerService.show();
+    this.accountingService
+      .setTaxType(this.cardInstanceWorkflowId, this.tabId, this.taxTypeToApply)
+      .pipe(
+        take(1),
+        finalize(() => this.spinnerService.hide(spinner))
+      )
+      .subscribe({
+        next: (data: any) => {
+          this.reload.emit(true);
         },
-        id: CardAccountingLineFormComponentModalEnum.ID,
-        panelClass: CardAccountingLineFormComponentModalEnum.PANEL_CLASS,
-        disableClose: true,
-        width: '900px'
-      })
-      .pipe(take(1))
-      .subscribe((response) => {
-        if (response) {
-          console.log(response);
-          this.savePayment(response);
+        error: (error: ConcenetError) => {
+          this.globalMessageService.showError({
+            message: error.message,
+            actionText: this.translateService.instant(marker('common.close'))
+          });
         }
       });
   }
-  public editTotalLine(line: any, index: number): void {
+
+  public editTaxType(): void {
+    if (!this.editingTaxType) {
+      this.editingTaxType = true;
+    }
+  }
+
+  public editBlock(block: CardAccountingBlockDTO): void {
     this.customDialogService
       .open({
-        component: CardAccountingLineDialogFormComponent,
+        component: CardAccountingDialogFormComponent,
         extendedComponentData: {
-          total: line,
-          paymentTypes: [],
-          paymentStatus: [],
-          paymentDescriptions: this.paymentDescriptions,
+          line: null,
+          block,
           attachmentsList: this.attachmentsList,
           cardInstanceWorkflowId: this.cardInstanceWorkflowId,
-          editionDisabled: this.cardInstanceAccountingConfig.disableAccountingAdditionAction,
-          mode: 'TOTAL'
+          tabId: this.tabId,
+          editionDisabled: this.cardInstanceAccountingConfig.disableAccountingEdition,
+          mode: 'BLOCK'
         },
-        id: CardAccountingLineFormComponentModalEnum.ID,
-        panelClass: CardAccountingLineFormComponentModalEnum.PANEL_CLASS,
+        id: CardAccoutingDialogEnum.ID,
+        panelClass: CardAccoutingDialogEnum.PANEL_CLASS,
         disableClose: true,
-        width: '900px'
+        width: '500px'
       })
       .pipe(take(1))
       .subscribe((response) => {
         if (response) {
-          this.saveTotalLine(response);
+          this.reload.emit(true);
         }
       });
   }
-  public editTotalDetailLine(line: any, index: number): void {
+
+  public editLine(line: CardAccountingLineDTO): void {
     this.customDialogService
       .open({
-        component: CardAccountingLineDialogFormComponent,
+        component: CardAccountingDialogFormComponent,
         extendedComponentData: {
-          totalDetail: line,
-          paymentTypes: [],
-          paymentStatus: [],
-          paymentDescriptions: this.paymentDescriptions,
+          line,
+          block: null,
           attachmentsList: this.attachmentsList,
           cardInstanceWorkflowId: this.cardInstanceWorkflowId,
-          editionDisabled: this.cardInstanceAccountingConfig.disableAccountingAdditionAction,
-          mode: 'TOTAL_DETAIL'
+          tabId: this.tabId,
+          editionDisabled: this.cardInstanceAccountingConfig.disableAccountingEdition,
+          mode: 'LINE'
         },
-        id: CardAccountingLineFormComponentModalEnum.ID,
-        panelClass: CardAccountingLineFormComponentModalEnum.PANEL_CLASS,
+        id: CardAccoutingDialogEnum.ID,
+        panelClass: CardAccoutingDialogEnum.PANEL_CLASS,
         disableClose: true,
-        width: '900px'
+        width: '500px'
       })
       .pipe(take(1))
       .subscribe((response) => {
         if (response) {
-          this.saveTotalDetail(response);
+          this.reload.emit(true);
         }
       });
-  }
-  public editTotal(): void {
-    if (!this.editingTotal) {
-      this.prevTotal = this.formTotal.get('total').value;
-      this.editingTotal = true;
-    }
-  }
-  public editAccount(): void {
-    if (!this.editingAccount) {
-      this.prevTotal = this.formTotal.get('customerAccount').value;
-      this.editingAccount = true;
-    }
-  }
-  public paymentDisabled(payment: FormGroup): boolean {
-    return !payment.value.editMode;
-  }
-  public newTotalLine() {
-    this.customDialogService
-      .open({
-        component: CardAccountingLineDialogFormComponent,
-        extendedComponentData: {
-          payment: null,
-          total: null,
-          totalDetail: null,
-          paymentTypes: [],
-          paymentStatus: [],
-          paymentDescriptions: this.paymentDescriptions,
-          attachmentsList: this.attachmentsList,
-          editionDisabled: this.cardInstanceAccountingConfig.disableAccountingAdditionAction,
-          mode: 'TOTAL'
-        },
-        id: CardAccountingLineFormComponentModalEnum.ID,
-        panelClass: CardAccountingLineFormComponentModalEnum.PANEL_CLASS,
-        disableClose: true,
-        width: '900px'
-      })
-      .pipe(take(1))
-      .subscribe((response) => {
-        if (response) {
-          console.log(response);
-          this.saveTotalLine(response);
-        }
-      });
-  }
-  public newTotalDetail() {
-    this.customDialogService
-      .open({
-        component: CardAccountingLineDialogFormComponent,
-        extendedComponentData: {
-          payment: null,
-          total: null,
-          totalDetail: null,
-          paymentTypes: [],
-          paymentStatus: [],
-          paymentDescriptions: this.paymentDescriptions,
-          attachmentsList: this.attachmentsList,
-          editionDisabled: this.cardInstanceAccountingConfig.disableAccountingAdditionAction,
-          mode: 'TOTAL_DETAIL'
-        },
-        id: CardAccountingLineFormComponentModalEnum.ID,
-        panelClass: CardAccountingLineFormComponentModalEnum.PANEL_CLASS,
-        disableClose: true,
-        width: '900px'
-      })
-      .pipe(take(1))
-      .subscribe((response) => {
-        if (response) {
-          console.log(response);
-          this.saveTotalDetail(response);
-        }
-      });
-  }
-  public getTotalsSummation(): number {
-    let total = 0;
-    this.totalLines.forEach((line: any) => {
-      total += line.amount * 100;
-    });
-    if (total) {
-      return total / 100;
-    }
-    return total;
-  }
-  public getTotalDeatilsSummation(): number {
-    let total = 0;
-    this.totalDetailLines.forEach((line: any) => {
-      total += line.amount * 100;
-    });
-    if (total) {
-      return total / 100;
-    }
-    return total;
   }
 
-  public getPaymentLinesSummation(type?: 'pending' | 'payed'): number {
-    let total = 0;
-    this.paymentLines.forEach((line: any) => {
-      if (type === 'pending' && (line.paymentStatus.id === 1 || line.paymentStatus.id === 2)) {
-        total += line.amount * 100;
-      } else if (type === 'payed' && line.paymentStatus.id === 3) {
-        total += line.amount * 100;
-      } else if (!type && (line.paymentStatus.id === 1 || line.paymentStatus.id === 2 || line.paymentStatus.id === 3)) {
-        total += line.amount * 100;
-      }
-    });
-    if (total) {
-      return total / 100;
-    }
-    return total;
-  }
-  public newLine() {
-    this.customDialogService
-      .open({
-        component: CardAccountingLineDialogFormComponent,
-        extendedComponentData: {
-          payment: null,
-          total: null,
-          totalDetail: null,
-          paymentTypes: this.paymentTypes,
-          paymentStatus: this.paymentStatus,
-          paymentDescriptions: this.paymentDescriptions,
-          attachmentsList: this.attachmentsList,
-
-          editionDisabled: this.cardInstanceAccountingConfig.disableAccountingAdditionAction,
-          mode: 'PAYMENT'
-        },
-        id: CardAccountingLineFormComponentModalEnum.ID,
-        panelClass: CardAccountingLineFormComponentModalEnum.PANEL_CLASS,
-        disableClose: true,
-        width: '900px'
-      })
-      .pipe(take(1))
-      .subscribe((response) => {
-        if (response) {
-          console.log(response);
-          this.savePayment(response);
-        }
-      });
-  }
-  public initializeForms() {
-    // this.formTotal = this.fb.group({
-    //   id: [this.data?.id ? this.data?.id : null],
-    //   cardInstance: [
-    //     this.data?.cardInstance ? this.data?.cardInstance : { id: this.cardInstanceWorkflowId },
-    //     [Validators.required]
-    //   ],
-    //   tab: [this.data?.tab ? this.data?.tab : { id: this.tabId }, [Validators.required]],
-    //   total: [this.data?.total ? this.data?.total : null, [Validators.max(this.maxAmount), Validators.required]],
-    //   customerAccount: [this.data?.customerAccount ? this.data?.customerAccount : null],
-    //   pending: [this.data?.pending ? this.data?.pending : null]
-    // });
+  public compareTax(object1: AccountingTaxTypeDTO, object2: AccountingTaxTypeDTO) {
+    return object1 && object2 && object1.id === object2.id;
   }
 }

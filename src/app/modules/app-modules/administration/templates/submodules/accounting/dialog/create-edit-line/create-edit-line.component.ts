@@ -77,7 +77,7 @@ export class CreateEditLineComponent extends ComponentToExtendForCustomDialog im
       this.MODAL_TITLE = this.translateService.instant(this.labels.editLine);
     }
     if (this.lineToEdit?.accountingLineType) {
-      this.selectLineType(this.lineToEdit.accountingLineType);
+      this.selectLineType(this.linesTypes.find((line) => line.id === this.lineToEdit.accountingLineType.id));
     }
     this.linesTypesFilteredOptions = this.linesTypesControl.valueChanges.pipe(
       startWith(''),

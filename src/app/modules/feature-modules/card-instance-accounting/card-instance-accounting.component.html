@@ -1,5 +1,5 @@
-<div class="accountings" fxFill *ngIf="formTotal">
-    <div class="accountings__main" [formGroup]="formTotal">
+<div class="accountings" fxFill>
+    <div class="accountings__main">
         <!-- Información general -->
         <div class="accountings__main__header" *ngIf="data">
             <div class="accountings__main__header__item" fxLayout="row">
@@ -8,346 +8,113 @@
                 <div fxFlex="15" fxLayoutAlign="end center" fxFill>{{ labels.actions | translate }}</div>
             </div>
         </div>
-        <div class="accountings__main__total item smaller-mat-form-fields" fxLayout="row">
-            <div fxFlex="40" fxLayoutAlign="start center">{{ labels.customerAccount | translate }}</div>
+        <div class="accountings__main__line item smaller-mat-form-fields" fxLayout="row">
+            <div fxFlex="40" fxLayoutAlign="start center">{{ labels.taxType | translate }}</div>
             <div fxFlex="45" fxLayoutAlign="center center">
-                <mat-form-field appearance="outline" floatLabel="always" *ngIf="editingAccount">
-                    <mat-label>{{ labels.customerAccount | translate }}</mat-label>
-                    <input matInput formControlName="customerAccount" [readonly]="!editingAccount" />
-
-                    <mat-icon
-                        style="cursor: pointer"
-                        color="primary"
-                        matPrefix
-                        (click)="saveCustomerAccount(); $event.stopPropagation()"
-                        *ngIf="editingAccount"
-                        >check</mat-icon
-                    >
+                <mat-form-field appearance="outline" floatLabel="always" *ngIf="editingTaxType">
+                    <mat-label>{{ labels.taxType | translate }}</mat-label>
+                    <mat-select [(ngModel)]="taxTypeToApply" (selectionChange)="setTaxType()" [compareWith]="compareTax">
+                        <mat-option *ngFor="let tax of taxTypes" [value]="tax"
+                            >{{ tax.description | translate }} <span *ngIf="tax.value">({{ tax.value }}%)</span></mat-option
+                        >
+                    </mat-select>
                 </mat-form-field>
-                <div *ngIf="!editingAccount">
-                    {{ formTotal?.get("customerAccount")?.value ? formTotal?.get("customerAccount")?.value : "" }}
+                <div *ngIf="!editingTaxType && taxTypeToApply">
+                    {{ taxTypeToApply.description | translate }}
+                    <span *ngIf="taxTypeToApply.value">({{ taxTypeToApply.value }}%)</span>
                 </div>
             </div>
             <div fxFlex="15" fxLayoutAlign="end center" class="actions">
                 <mat-icon
-                    [color]="editingAccount ? '' : 'primary'"
+                    [color]="editingTaxType ? '' : 'primary'"
                     style="cursor: pointer"
-                    (click)="editAccount(); $event.stopPropagation()"
-                    *ngIf="!cardInstanceAccountingConfig.disableAccountingAdditionAction"
+                    (click)="editTaxType(); $event.stopPropagation()"
+                    *ngIf="!cardInstanceAccountingConfig.disableAccountingEdition"
                 >
                     edit
                 </mat-icon>
             </div>
         </div>
-        <div class="accountings__main__total item smaller-mat-form-fields" fxLayout="row">
-            <div fxFlex="40" fxLayoutAlign="start center">{{ labels.total | translate }}</div>
-            <div fxFlex="45" fxLayoutAlign="center center">
-                <mat-form-field appearance="outline" floatLabel="always" *ngIf="editingTotal">
-                    <mat-label>{{ labels.total | translate }}</mat-label>
-                    <input matInput formControlName="total" [readonly]="!editingTotal" />
-                    <span matSuffix>€</span>
-                    <mat-icon
-                        style="cursor: pointer"
-                        color="primary"
-                        matPrefix
-                        (click)="saveTotal(); $event.stopPropagation()"
-                        *ngIf="editingTotal"
-                        >check</mat-icon
-                    >
-                </mat-form-field>
-                <div *ngIf="!editingTotal">
-                    {{ formTotal?.get("total")?.value ? formTotal?.get("total")?.value : "" }}<span matSuffix> €</span>
-                </div>
-            </div>
-            <div fxFlex="15" fxLayoutAlign="end center" class="actions">
-                <mat-icon
-                    [color]="editingTotal ? '' : 'primary'"
-                    style="cursor: pointer"
-                    (click)="editTotal(); $event.stopPropagation()"
-                    *ngIf="!cardInstanceAccountingConfig.disableAccountingAdditionAction"
-                >
-                    edit
-                </mat-icon>
-            </div>
-        </div>
-        <div class="accountings__main__total item smaller-mat-form-fields" fxLayout="row">
-            <div fxFlex="40" fxLayoutAlign="start center">{{ labels.pendingDescription | translate }}</div>
-            <div fxFlex="45" fxLayoutAlign="center center">
-                {{ formTotal?.get("pending")?.value ? formTotal?.get("pending")?.value : 0 }}<span matSuffix>€</span>
-            </div>
-            <div fxFlex="15" fxLayoutAlign="end center" class="actions"></div>
-        </div>
-        <!-- Totales -->
-        <div class="accountings__main__header mt-20" *ngIf="data">
-            <div class="accountings__main__header__item" fxLayout="row">
-                <div fxFlex="40" fxLayoutAlign="start center" fxFill>{{ labels.totals | translate }}</div>
-                <div fxFlex="45" fxLayoutAlign="center center" fxFill>{{ labels.amount | translate }}</div>
-                <div fxFlex="15" fxLayoutAlign="end center" fxFill>{{ labels.actions | translate }}</div>
-            </div>
-        </div>
-        <div
-            class="accountings__main__total item smaller-mat-form-fields"
-            fxLayout="row"
-            *ngFor="let item of totalLines; let i = index"
-        >
-            <div fxFlex="40" fxLayoutAlign="start center">{{ item.description.description }}</div>
-            <div fxFlex="45" fxLayoutAlign="center center">{{ item.amount }}<span matSuffix> €</span></div>
-            <div fxFlex="15" fxLayoutAlign="end center" class="actions">
-                <mat-icon
-                    [color]="'primary'"
-                    style="cursor: pointer; color: green"
-                    [matBadge]="item.attachments?.length"
-                    matBadgePosition="before"
-                    (click)="editTotalLine(item, i)"
-                    *ngIf="item.attachments?.length"
-                >
-                    attach_file
-                </mat-icon>
-                <mat-icon
-                    [color]="'primary'"
-                    style="cursor: pointer"
-                    (click)="editTotalLine(item, i)"
-                    *ngIf="!item.attachments?.length"
-                >
-                    attach_file
-                </mat-icon>
-                <mat-icon
-                    [color]="'primary'"
-                    style="cursor: pointer"
-                    (click)="editTotalLine(item, i)"
-                    *ngIf="!cardInstanceAccountingConfig.disableIndividualDeleteAction"
-                >
-                    edit
-                </mat-icon>
-                <mat-icon
-                    [color]="'primary'"
-                    style="cursor: pointer"
-                    *ngIf="!cardInstanceAccountingConfig.disableIndividualDeleteAction"
-                >
-                    delete
-                </mat-icon>
-            </div>
-        </div>
-        <div
-            *ngIf="data && totalLines?.length"
-            class="accountings__main__total item summatory-line smaller-mat-form-fields"
-            fxLayout="row"
-        >
-            <div fxFlex="40" fxLayoutAlign="start center" class="bold">{{ labels.summation | translate }}</div>
-            <div fxFlex="45" fxLayoutAlign="center center" class="bold">{{ getTotalsSummation() }}<span matSuffix> €</span></div>
-            <div fxFlex="15" fxLayoutAlign="end center" class="actions"></div>
-        </div>
-        <div
-            class="accountings__main__create"
-            fxLayout="row"
-            fxLayoutAlign="end none"
-            *ngIf="!cardInstanceAccountingConfig.disableAccountingAdditionAction"
-        >
-            <span class="accountings__main__create__item" (click)="newTotalLine()">+ {{ labels.newTotalLine | translate }}</span>
-        </div>
-
-        <!-- Líneas de pago -->
-        <!-- <div class="accountings__main__header" *ngIf="data">
-            <div class="accountings__main__header__item" fxLayout="row">
-                <div fxFlex="25" fxLayoutAlign="start center" fxFill>{{ labels.accountingLine | translate }}</div>
-                <div fxFlex="20" fxLayoutAlign="start center" fxFill>{{ labels.accountingType | translate }}</div>
-                <div fxFlex="20" fxLayoutAlign="start center" fxFill>{{ labels.state | translate }}</div>
-                <div fxFlex="15" fxLayoutAlign="center center" fxFill>{{ labels.amount | translate }}</div>
-                <div fxFlex="20" fxLayoutAlign="end center" fxFill>{{ labels.actions | translate }}</div>
-            </div>
-        </div>
-        <div class="accountings__main__container" fxLayout="column" *ngIf="data">
-            <div
-                class="accountings__main__container__item smaller-mat-form-fields"
-                *ngFor="let accounting of accountingLines; let i = index"
-                fxLayout="row"
-            >
-                <div fxFlex="25" fxLayoutAlign="start center">
-                    <div fxLayout="column">
-                        <div class="description" matTooltip="{{ accounting.description.description }}" matTooltipPosition="above">
-                            {{ accounting.description.description }}
-                        </div>
-                        <div class="observation" matTooltip="{{ accounting.observations }}" matTooltipPosition="above">
-                            {{ accounting.observations }}
-                        </div>
+        <!-- Bloques -->
+        <div *ngFor="let block of data.accountingBlocks">
+            <div class="accountings__main__header mt-20">
+                <div class="accountings__main__header__item" fxLayout="row">
+                    <div fxFlex="85" fxLayoutAlign="start center" fxFill class="color-primary">
+                        {{ block.templateAccountingItem?.description }} ({{
+                            block.templateAccountingItem?.accountingBlockType?.description
+                        }})
+                    </div>
+                    <div fxFlex="15" fxLayoutAlign="end center" fxFill>
+                        <mat-icon
+                            [color]="'primary'"
+                            style="cursor: pointer; color: green"
+                            [matBadge]="block.attachments?.length"
+                            matBadgePosition="before"
+                            (click)="editBlock(block)"
+                            *ngIf="block.attachments?.length"
+                        >
+                            attach_file
+                        </mat-icon>
+                        <mat-icon
+                            [color]="'primary'"
+                            style="cursor: pointer"
+                            (click)="editBlock(block)"
+                            *ngIf="!block.attachments?.length"
+                        >
+                            attach_file
+                        </mat-icon>
                     </div>
                 </div>
-                <div fxFlex="20" fxLayoutAlign="start center">
-                    {{ accounting.accountingType?.name }}
+            </div>
+            <div class="accountings__main__header subheader">
+                <div class="accountings__main__header__item" fxLayout="row">
+                    <div fxFlex="30" fxLayoutAlign="start center" fxFill>{{ labels.line | translate }}</div>
+                    <div fxFlex="30" fxLayoutAlign="start center" fxFill>{{ labels.type | translate }}</div>
+                    <div fxFlex="25" fxLayoutAlign="center center" fxFill>{{ labels.amount | translate }}</div>
+                    <div fxFlex="15" fxLayoutAlign="end center" fxFill>{{ labels.actions | translate }}</div>
                 </div>
-                <div fxFlex="20" fxLayoutAlign="start center">{{ accounting.accountingStatus?.name }}</div>
-                <div fxFlex="15" fxLayoutAlign="center center">{{ accounting.amount }}<span matSuffix>€</span></div>
-                <div fxFlex="20" fxLayoutAlign="end center" class="actions">
+            </div>
+            <div
+                class="accountings__main__line item smaller-mat-form-fields"
+                fxLayout="row"
+                *ngFor="let item of block.accountingLines; let i = index"
+            >
+                <div fxFlex="30" fxLayoutAlign="start center">{{ item.templateAccountingItemLine.description }}</div>
+                <div fxFlex="30" fxLayoutAlign="start center">
+                    {{ item.templateAccountingItemLine.accountingLineType.description }}
+                </div>
+                <div fxFlex="25" fxLayoutAlign="center center">
+                    {{ item.amount }}<span *ngIf="item.ammount || item.amount === 0" matSuffix> €</span>
+                </div>
+                <div fxFlex="15" fxLayoutAlign="end center" class="actions">
                     <mat-icon
-                        [color]="editingTotal ? '' : 'primary'"
-                        style="cursor: pointer"
-                        (click)="(!editingTotal)"
-                        *ngIf="accounting.accountingType?.id === 5 && accounting.accountingStatus?.id === 1"
-                    >
-                        send
-                    </mat-icon>
-                    <mat-icon
+                        [color]="'primary'"
                         style="cursor: pointer; color: green"
-                        [matBadge]="accounting.attachments?.length"
+                        [matBadge]="item.attachments?.length"
                         matBadgePosition="before"
-                        (click)="!editingTotal && editPayment(accounting, i)"
-                        *ngIf="accounting.attachments?.length"
+                        (click)="editLine(item)"
+                        *ngIf="item.attachments?.length"
                     >
                         attach_file
                     </mat-icon>
                     <mat-icon
-                        [color]="editingTotal ? '' : 'primary'"
+                        [color]="'primary'"
                         style="cursor: pointer"
-                        (click)="!editingTotal && editPayment(accounting, i)"
-                        *ngIf="!accounting.attachments?.length"
+                        (click)="editLine(item)"
+                        *ngIf="!item.attachments?.length"
                     >
                         attach_file
                     </mat-icon>
                     <mat-icon
-                        [color]="editingTotal ? '' : 'primary'"
+                        [color]="'primary'"
                         style="cursor: pointer"
-                        (click)="!editingTotal && editPayment(accounting, i)"
-                        *ngIf="!cardInstanceAccountingConfig.disableIndividualDeleteAction"
+                        (click)="editLine(item)"
+                        *ngIf="!cardInstanceAccountingConfig.disableAccountingEdition"
                     >
                         edit
                     </mat-icon>
-                    <mat-icon
-                        [color]="editingTotal ? '' : 'primary'"
-                        style="cursor: pointer"
-                        (click)="!editingTotal && deletePayment(accounting, i)"
-                        *ngIf="!cardInstanceAccountingConfig.disableIndividualDeleteAction"
-                    >
-                        delete
-                    </mat-icon>
                 </div>
             </div>
-        </div>
-        <div
-            *ngIf="data && accountingLines?.length"
-            class="accountings__main__container__item item summatory-line smaller-mat-form-fields"
-            fxLayout="row"
-        >
-            <div fxFlex="45" fxLayoutAlign="start center" class="bold">{{ labels.summationPending | translate }}</div>
-            <div fxFlex="20" fxLayoutAlign="start center"></div>
-            <div fxFlex="15" fxLayoutAlign="center center" class="bold">
-                {{ getPaymentLinesSummation("pending") }}<span matSuffix> €</span>
-            </div>
-            <div fxFlex="20" fxLayoutAlign="end center" class="actions"></div>
-        </div>
-        <div
-            *ngIf="data && accountingLines?.length"
-            class="accountings__main__container__item item summatory-line smaller-mat-form-fields"
-            fxLayout="row"
-        >
-            <div fxFlex="45" fxLayoutAlign="start center" class="bold">{{ labels.summationPayed | translate }}</div>
-            <div fxFlex="20" fxLayoutAlign="start center"></div>
-            <div fxFlex="15" fxLayoutAlign="center center" class="bold">
-                {{ getPaymentLinesSummation("payed") }}<span matSuffix> €</span>
-            </div>
-            <div fxFlex="20" fxLayoutAlign="end center" class="actions"></div>
-        </div>
-        <div
-            *ngIf="data && accountingLines?.length"
-            class="accountings__main__container__item item summatory-line smaller-mat-form-fields"
-            fxLayout="row"
-        >
-            <div fxFlex="45" fxLayoutAlign="start center" class="bold">{{ labels.summation | translate }}</div>
-            <div fxFlex="20" fxLayoutAlign="start center"></div>
-            <div fxFlex="15" fxLayoutAlign="center center" class="bold">
-                {{ getPaymentLinesSummation() }}<span matSuffix> €</span>
-            </div>
-            <div fxFlex="20" fxLayoutAlign="end center" class="actions"></div>
-        </div>
-        <div
-            class="accountings__main__create"
-            fxLayout="row"
-            fxLayoutAlign="end none"
-            *ngIf="!cardInstanceAccountingConfig.disableAccountingAdditionAction"
-        >
-            <span class="accountings__main__create__item" (click)="newLine()">+ {{ labels.newLine | translate }}</span>
-        </div> -->
-        <!-- Descipción de totales -->
-        <!-- <div class="accountings__main__header" *ngIf="data">
-            <div class="accountings__main__header__item" fxLayout="row">
-                <div fxFlex="65" fxLayoutAlign="start center" fxFill>{{ labels.accountingTotalDetail | translate }}</div>
-                <div fxFlex="15" fxLayoutAlign="center center" fxFill>{{ labels.amount | translate }}</div>
-                <div fxFlex="20" fxLayoutAlign="end center" fxFill>{{ labels.actions | translate }}</div>
-            </div>
-        </div> -->
-        <div class="accountings__main__container" fxLayout="column" *ngIf="data">
-            <div
-                class="accountings__main__container__item smaller-mat-form-fields"
-                *ngFor="let line of totalDetailLines; let i = index"
-                fxLayout="row"
-            >
-                <div fxFlex="65" fxLayoutAlign="start center">
-                    <div fxLayout="column">
-                        <div class="description" matTooltip="{{ line.description.description }}" matTooltipPosition="above">
-                            {{ line.description.description }}
-                        </div>
-                        <div class="observation" matTooltip="{{ line.observations }}" matTooltipPosition="above">
-                            {{ line.observations }}
-                        </div>
-                    </div>
-                </div>
-                <div fxFlex="15" fxLayoutAlign="center center">{{ line.amount }}<span matSuffix>€</span></div>
-                <div fxFlex="20" fxLayoutAlign="end center" class="actions">
-                    <mat-icon
-                        style="cursor: pointer; color: green"
-                        [matBadge]="line.attachments?.length"
-                        matBadgePosition="before"
-                        (click)="!editingTotal && editTotalDetailLine(line, i)"
-                        *ngIf="line.attachments?.length"
-                    >
-                        attach_file
-                    </mat-icon>
-                    <mat-icon
-                        [color]="editingTotal ? '' : 'primary'"
-                        style="cursor: pointer"
-                        (click)="!editingTotal && editTotalDetailLine(line, i)"
-                        *ngIf="!line.attachments?.length"
-                    >
-                        attach_file
-                    </mat-icon>
-                    <mat-icon
-                        [color]="editingTotal ? '' : 'primary'"
-                        style="cursor: pointer"
-                        (click)="!editingTotal && editTotalDetailLine(line, i)"
-                        *ngIf="!cardInstanceAccountingConfig.disableIndividualDeleteAction"
-                    >
-                        edit
-                    </mat-icon>
-                    <mat-icon
-                        [color]="editingTotal ? '' : 'primary'"
-                        style="cursor: pointer"
-                        (click)="(!editingTotal)"
-                        *ngIf="!cardInstanceAccountingConfig.disableIndividualDeleteAction"
-                    >
-                        delete
-                    </mat-icon>
-                </div>
-            </div>
-        </div>
-        <div
-            *ngIf="data && totalDetailLines?.length"
-            class="accountings__main__container__item item summatory-line smaller-mat-form-fields"
-            fxLayout="row"
-        >
-            <div fxFlex="65" fxLayoutAlign="start center" class="bold">{{ labels.summation | translate }}</div>
-            <div fxFlex="15" fxLayoutAlign="center center" class="bold">
-                {{ getTotalDeatilsSummation() }}<span matSuffix> €</span>
-            </div>
-            <div fxFlex="20" fxLayoutAlign="end center"></div>
-        </div>
-        <div
-            class="accountings__main__create"
-            fxLayout="row"
-            fxLayoutAlign="end none"
-            *ngIf="!cardInstanceAccountingConfig.disableAccountingAdditionAction"
-        >
-            <span class="accountings__main__create__item" (click)="newTotalDetail()"
-                >+ {{ labels.newTotalDetail | translate }}</span
-            >
         </div>
     </div>
 </div>

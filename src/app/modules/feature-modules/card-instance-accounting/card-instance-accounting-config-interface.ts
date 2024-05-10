@@ -3,6 +3,5 @@ export default interface CardInstanceAccountingConfig {
   wcId: number;
   workflowId: number;
   permission?: string;
-  disableAccountingAdditionAction?: boolean;
-  disableIndividualDeleteAction?: boolean;
+  disableAccountingEdition?: boolean;
 }

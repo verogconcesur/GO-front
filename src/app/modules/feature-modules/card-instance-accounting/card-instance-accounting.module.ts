@@ -2,12 +2,12 @@ import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { SharedModule } from '@shared/shared.module';
 import { CardInstanceAccountingComponent } from './card-instance-accounting.component';
-// eslint-disable-next-line max-len
-import { CardAccountingLineDialogFormComponent } from './card-accounting-line-dialog-form/card-accounting-line-dialog-form.component';
+import { CardAccountingDialogFormComponent } from './card-accounting-dialog-form/card-accounting-dialog-form.component';
+import { MediaViewerDialogModule } from '../media-viewer-dialog/media-viewer-dialog.module';
 
 @NgModule({
-  declarations: [CardInstanceAccountingComponent, CardAccountingLineDialogFormComponent],
-  imports: [CommonModule, SharedModule],
+  declarations: [CardInstanceAccountingComponent, CardAccountingDialogFormComponent],
+  imports: [CommonModule, SharedModule, MediaViewerDialogModule],
   exports: [CardInstanceAccountingComponent],
   entryComponents: []
 })

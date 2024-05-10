@@ -43,7 +43,8 @@ export class CreateEditBlockComponent extends ComponentToExtendForCustomDialog i
     descriptionTotal: marker('administration.templates.accounting.descriptionTotal'),
     descriptionTotalPlusTax: marker('administration.templates.accounting.descriptionTotalPlusTax'),
     descriptionTotalTax: marker('administration.templates.accounting.descriptionTotalTax'),
-    accountingBlockType: marker('administration.templates.accounting.blockType')
+    accountingBlockType: marker('administration.templates.accounting.blockType'),
+    editBlock: marker('administration.templates.accounting.editBlock')
   };
 
   constructor(
@@ -67,10 +68,10 @@ export class CreateEditBlockComponent extends ComponentToExtendForCustomDialog i
     const formValue = this.blockForm.value;
     this.blockToEdit = formValue.id ? formValue : null;
     if (this.blockToEdit) {
-      this.MODAL_TITLE = this.translateService.instant(this.labels.editLine);
+      this.MODAL_TITLE = this.translateService.instant(this.labels.editBlock);
     }
     if (this.blockToEdit?.accountingBlockType) {
-      this.selectBlockType(this.blockToEdit.accountingBlockType);
+      this.selectBlockType(this.blockTypes.find((type) => type.id === this.blockToEdit.accountingBlockType.id));
     }
     this.blockTypesFilteredOptions = this.blockTypesControl.valueChanges.pipe(
       startWith(''),

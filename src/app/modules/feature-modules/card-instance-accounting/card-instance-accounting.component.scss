@@ -1,20 +1,21 @@
 @import 'utils/core';
 @import 'utils/theme';
 .accountings {
+  .color-primary {
+    color: mat-color($primary, 500);
+  }
   &__main {
     padding: 10px;
     height: 95%;
     overflow-y: auto;
-    &__total {
+    &__line {
       flex-wrap: wrap;
       .value {
         font-weight: bold;
       }
       mat-form-field {
-        margin-right: 15px;
-        mat-icon {
-          font-size: 20px;
-        }
+        margin-right: -20px;
+        margin-bottom: -23px;
       }
       &.item {
         height: 55px;
@@ -44,6 +45,10 @@
       }
     }
     &__header {
+      &.subheader {
+        background-color: rgba(mat-color($primary, 100), 9%);
+        border-bottom: 1px solid mat-color($primary, 100);
+      }
       &__item {
         font-weight: 600;
         height: 40px;

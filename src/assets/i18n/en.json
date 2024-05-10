@@ -239,6 +239,17 @@
         "title": "Go"
     },
     "cardDetail": {
+        "accounting": {
+            "newLine": "New line",
+            "taxType": "New type",
+            "taxTypeNoApply": "Select a tax type",
+            "totalAmountPlusTax": "Total amount plus tax",
+            "totalTax": "Tax value"
+        },
+        "accountings": {
+            "editBlock": "Edit block",
+            "editLine": "Edit line"
+        },
         "budgets": {
             "addLines": "Add budget lines",
             "deleteConfirmation": "Are you sure you want to delete this budget line?",
@@ -528,6 +539,7 @@
         "showPage": "Show page",
         "state": "State",
         "substate": "Substate",
+        "success": "Succes operation",
         "successOperation": "Success operation.",
         "tabTypes": {
             "customizable": "Customizable content",
@@ -539,6 +551,7 @@
         "to": "To",
         "total": "Total",
         "town": "Town",
+        "type": "Type",
         "type3CharsToSearch": "Write at least three characters...",
         "typeBudget": "Add a budget template",
         "typeCard": "Type card",
@@ -746,7 +759,7 @@
             "title": "Workflow and status"
         }
     },
-    "no": "",
+    "no": "No",
     "notifications": {
         "dateFrom": "Date from",
         "dateTo": "Date to",

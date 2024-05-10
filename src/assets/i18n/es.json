@@ -239,6 +239,17 @@
         "title": "Go"
     },
     "cardDetail": {
+        "accounting": {
+            "newLine": "Nueva línea",
+            "taxType": "Tipo de impuesto",
+            "taxTypeNoApply": "Impuesto no seleccionado",
+            "totalAmountPlusTax": "Cantidad total con IVA",
+            "totalTax": "IVA"
+        },
+        "accountings": {
+            "editBlock": "Editar bloque",
+            "editLine": "Editar línea"
+        },
         "budgets": {
             "addLines": "Añadir lineas de presupuesto",
             "deleteConfirmation": "¿Está seguro que desea eliminar esta linea de presupuesto?",
@@ -528,6 +539,7 @@
         "showPage": "Pág",
         "state": "Estado",
         "substate": "Subestado",
+        "success": "Operación realizada con éxito.",
         "successOperation": "Operación realizada con éxito.",
         "tabTypes": {
             "customizable": "Contenido personalizable",
@@ -539,6 +551,7 @@
         "to": "Hasta",
         "total": "Total",
         "town": "Ciudad",
+        "type": "Tipo",
         "type3CharsToSearch": "Escribe al menos tres caracteres...",
         "typeBudget": "Añade una plantilla de presupuestos",
         "typeCard": "Tipos de ficha",
@@ -746,7 +759,7 @@
             "title": "Workflow y estados"
         }
     },
-    "no": "",
+    "no": "no",
     "notifications": {
         "dateFrom": "Fecha desde",
         "dateTo": "Fecha hasta",

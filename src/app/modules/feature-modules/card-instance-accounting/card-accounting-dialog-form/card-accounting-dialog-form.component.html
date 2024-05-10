@@ -1,0 +1,54 @@
+<div class="create-edit-card-accounting-line" fxLayout="column" fxLayoutAlign="center center">
+    <div class="create-edit-card-accounting-line__form smaller-mat-form-fields">
+        <div class="accounting-line-data__section">
+            <div class="accounting-line-data__section__group" *ngIf="mode === 'LINE'">
+                <mat-form-field appearance="outline" floatLabel="always" class="w-100">
+                    <mat-label>{{ labels.amount | translate }}</mat-label>
+                    <input
+                        appTwoDigitDecimal
+                        matInput
+                        [(ngModel)]="amount"
+                        [readonly]="editionDisabled || line.templateAccountingItemLine.accumulated"
+                    />
+                    <span matSuffix>€ <span *ngIf="line.templateAccountingItemLine.accumulated">( &#177; )</span></span>
+                </mat-form-field>
+                <mat-error *ngIf="amount < 0 || amount > maxAmount">
+                    <span>{{ labels.valueBetween | translate : { min: 0, max: maxAmount.toString().length } }}</span>
+                </mat-error>
+            </div>
+            <div class="accounting-line-data__section__group">
+                <mat-form-field appearance="outline" floatLabel="always" class="w-100">
+                    <mat-label>{{ labels.attachments | translate }}</mat-label>
+                    <mat-select
+                        #matSelect
+                        multiple
+                        [(ngModel)]="attachmentsSelected"
+                        [compareWith]="compareAttachments"
+                        [disabled]="editionDisabled"
+                    >
+                        <mat-option *ngFor="let attachment of attachmentsList" [value]="attachment">
+                            {{ attachment.file.name }}
+                            <mat-icon
+                                *ngIf="matSelect.panelOpen"
+                                style="margin-left: 16px"
+                                (click)="openMedia(attachment); $event.stopPropagation()"
+                                >remove_red_eye</mat-icon
+                            >
+                        </mat-option>
+                    </mat-select>
+                </mat-form-field>
+            </div>
+
+            <div class="accounting-line-data__section__group" *ngIf="attachmentsSelected.length">
+                <label>{{ labels.attachmentsAssociated | translate }}</label>
+                <div
+                    *ngFor="let attach of attachmentsSelected ? attachmentsSelected : []"
+                    (click)="openMedia(attach)"
+                    class="link"
+                >
+                    {{ attach.file.name }}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

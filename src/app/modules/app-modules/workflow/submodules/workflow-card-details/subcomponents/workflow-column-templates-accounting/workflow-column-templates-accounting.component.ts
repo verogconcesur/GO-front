@@ -79,8 +79,7 @@ export class WorkflowColumnTemplatesAccountingComponent implements OnInit, OnCha
       workflowId: this.cardInstance.workflowId,
       wcId: this.idCard,
       permission: this.tab.permissionType,
-      disableAccountingAdditionAction: this.tab.permissionType !== 'EDIT' ? true : false,
-      disableIndividualDeleteAction: this.tab.permissionType !== 'EDIT' ? true : false
+      disableAccountingEdition: this.tab.permissionType !== 'EDIT' ? true : false
     };
     this.fetchData();
   }

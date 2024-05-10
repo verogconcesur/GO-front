@@ -55,7 +55,7 @@ export class CreateEditAccountingAuxService {
       id: [block?.id ? block.id : null],
       accountingBlockType: [block?.accountingBlockType ? block.accountingBlockType : null, Validators.required],
       description: [block?.description ? block.description : null, Validators.required],
-      descriptionTotal: [block?.descriptionTotal ? block.descriptionTotal : null],
+      descriptionTotal: [block?.descriptionTotal ? block.descriptionTotal : null, Validators.required],
       descriptionTotalPlusTax: [block?.descriptionTotalPlusTax ? block.descriptionTotalPlusTax : null],
       descriptionTotalTax: [block?.descriptionTotalTax ? block.descriptionTotalTax : null],
       orderNumber: [block?.orderNumber ? block.orderNumber : null],
