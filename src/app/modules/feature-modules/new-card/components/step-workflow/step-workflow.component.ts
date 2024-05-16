@@ -2,6 +2,7 @@ import { DatePipe } from '@angular/common';
 import { Component, Input, OnInit, ViewEncapsulation } from '@angular/core';
 import { FormGroup, Validators } from '@angular/forms';
 import { MatCalendarCellClassFunction } from '@angular/material/datepicker';
+import { AuthenticationService } from '@app/security/authentication.service';
 import { ConcenetError } from '@app/types/error';
 import { marker } from '@biesbjerg/ngx-translate-extract-marker';
 import { CardLimitSlotByDayDTO, CardLimitSlotDTO } from '@data/models/workflow-admin/workflow-card-limit-dto';
@@ -46,7 +47,11 @@ export class StepWorkflowComponent implements OnInit {
   public cardsLimits: CardLimitSlotByDayDTO[] = [];
   public maxCardsByHour = 0;
   private datePipe = new DatePipe('en-EN');
-  constructor(private workflowsService: WorkflowsService, private spinnerService: ProgressSpinnerDialogService) {}
+  constructor(
+    private workflowsService: WorkflowsService,
+    private spinnerService: ProgressSpinnerDialogService,
+    private authService: AuthenticationService
+  ) {}
   public initialiceList(): void {
     if ((this.formWorkflow.get('workflow').value as WorkflowCreateCardDTO)?.workflowCardsLimit?.cardsLimit) {
       this.formWorkflow.get('cardsLimit').setValue(true);
@@ -241,10 +246,15 @@ export class StepWorkflowComponent implements OnInit {
       const wf: WorkflowCreateCardDTO = this.formWorkflow.get('workflow').value;
       if (
         d.getFullYear() < new Date().getFullYear() ||
-        d.getMonth() < new Date().getMonth() ||
-        d.getDate() < new Date().getDate() ||
+        (d.getFullYear() === new Date().getFullYear() && d.getMonth() < new Date().getMonth()) ||
+        (d.getFullYear() === new Date().getFullYear() &&
+          d.getMonth() === new Date().getMonth() &&
+          d.getDate() < new Date().getDate()) ||
         d.getDay() === 0
       ) {
+        return '';
+      }
+      if (!this.minDaysAdvanceNotice(d)) {
         return '';
       }
       if (wf.workflowCardsLimit?.cardsLimit) {
@@ -254,14 +264,51 @@ export class StepWorkflowComponent implements OnInit {
     }
     return '';
   };
+  minDaysAdvanceNotice = (d: Date | null): boolean => {
+    const wf: WorkflowCreateCardDTO = this.formWorkflow.get('workflow').value;
+    if (
+      !this.allowOverLimit() &&
+      (wf.workflowCardsLimit?.minDaysAdvanceNotice || wf.workflowCardsLimit?.minDaysAdvanceNotice === 0)
+    ) {
+      const days = wf.workflowCardsLimit?.minDaysAdvanceNotice;
+      let diferenciaDias = Math.floor((+d - +new Date()) / (1000 * 60 * 60 * 24));
+      const diffDias = diferenciaDias;
+      // Iterar sobre cada día entre las dos fechas
+      for (let i = 0; i <= diffDias; i++) {
+        const fecha = new Date();
+        fecha.setDate(fecha.getDate() + i + 1);
+        if (fecha.getDay() === 0 || fecha.getDay() === 6) {
+          diferenciaDias--;
+        }
+      }
+      if (diferenciaDias < days) {
+        return false;
+      }
+    }
+    return true;
+  };
+
+  allowOverLimit(): boolean {
+    const userRol = this.authService.getUserRole();
+    const wf: WorkflowCreateCardDTO = this.formWorkflow.get('workflow').value;
+    if (
+      wf.workflowCardsLimit?.allowOverLimit &&
+      (!wf.workflowCardsLimit.allowOverLimitRoles ||
+        wf.workflowCardsLimit.allowOverLimitRoles.length === 0 ||
+        wf.workflowCardsLimit.allowOverLimitRoles.find((r) => r.id === userRol.id))
+    ) {
+      return true;
+    }
+    return false;
+  }
   datesLimitFilter = (d: Date | null): boolean => {
     d = d ? d : new Date();
     const wf: WorkflowCreateCardDTO = this.formWorkflow.get('workflow').value;
     // Prevent Sunday from being selected.
-    if (d.getDay() === 0) {
+    if (d.getDay() === 0 || !this.minDaysAdvanceNotice(d)) {
       return false;
     }
-    if (wf.workflowCardsLimit?.cardsLimit && !wf.workflowCardsLimit?.allowOverLimit) {
+    if (wf.workflowCardsLimit?.cardsLimit && !this.allowOverLimit()) {
       return this.checkDateDisponibility(d, wf);
     }
     return true;
