@@ -12,7 +12,7 @@
                     />
                     <span matSuffix>€</span>
                 </mat-form-field>
-                <mat-error *ngIf="amount < 0 || amount > maxAmount">
+                <mat-error *ngIf="(amount < 0 || amount > maxAmount) && !line.templateAccountingItemLine.accumulated">
                     <span>{{ labels.valueBetween | translate : { min: 0, max: maxAmount.toString().length } }}</span>
                 </mat-error>
                 <mat-error *ngIf="line.templateAccountingItemLine.accumulated" style="color: black">
