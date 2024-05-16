@@ -10,6 +10,7 @@ export enum RouteConstants {
   EDIT = 'edit',
   DISPLAY = 'display',
   BACK = 'back',
+  FROM = 'from',
   OTHER = '**',
 
   // Route Params
@@ -34,6 +35,7 @@ export enum RouteConstants {
   WORKFLOWS_ID_USER = 'wuId',
   WORKFLOWS_CARD_SIGN = 'cardSign',
   ID_USER = ':idUser',
+  ID_FROM = ':idFrom',
 
   //Administration
   ADMINISTRATION = 'administration',

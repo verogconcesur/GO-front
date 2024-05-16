@@ -12,6 +12,13 @@ const routes: Routes = [
     children: [
       {
         // eslint-disable-next-line max-len
+        path: `${RouteConstants.WORKFLOWS_ID_CARD}/${RouteConstants.ID_CARD}/${RouteConstants.WORKFLOWS_ID_USER}/${RouteConstants.ID_USER}/${RouteConstants.FROM}/${RouteConstants.ID_FROM}`,
+        outlet: RouteConstants.WORKFLOWS_CARD,
+        loadChildren: () =>
+          import('../workflow-card-details/workflow-card-details.module').then((m) => m.WorkflowCardDetailsModule)
+      },
+      {
+        // eslint-disable-next-line max-len
         path: `${RouteConstants.WORKFLOWS_ID_CARD}/${RouteConstants.ID_CARD}/${RouteConstants.WORKFLOWS_ID_USER}/${RouteConstants.ID_USER}`,
         outlet: RouteConstants.WORKFLOWS_CARD,
         loadChildren: () =>
