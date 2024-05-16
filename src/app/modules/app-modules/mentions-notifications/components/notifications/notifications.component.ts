@@ -98,7 +98,13 @@ export class NotificationsComponent implements OnInit {
   public goDetail(item: NotificationDataListDTO): void {
     const view = RouteConstants.WORKFLOWS_BOARD_VIEW;
     this.router.navigateByUrl(
-      '/dashboard/workflow/' + view + '/(card:wcId/' + item.cardInstance.cardInstanceWorkflows[0].id + '/wuId/' + 'null' + ')'
+      '/dashboard/workflow/' +
+        view +
+        '/(card:wcId/' +
+        item.cardInstance.cardInstanceWorkflows[0].id +
+        '/wuId/' +
+        'null' +
+        '/from/notifications)'
     );
   }
   public getNotificationInfo(item: NotificationDataListDTO): string {
