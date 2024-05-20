@@ -1,0 +1,175 @@
+<div class="accountings" fxFill>
+    <div class="accountings__main">
+        <!-- Información general -->
+        <div class="accountings__main__header" *ngIf="data">
+            <div class="accountings__main__header__item" fxLayout="row">
+                <div fxFlex="40" fxLayoutAlign="start center" fxFill>{{ labels.generalInfo | translate }}</div>
+                <div fxFlex="45" fxLayoutAlign="center center" fxFill>{{ labels.value | translate }}</div>
+                <div fxFlex="15" fxLayoutAlign="end center" fxFill>{{ labels.actions | translate }}</div>
+            </div>
+        </div>
+        <div class="accountings__main__line item smaller-mat-form-fields" fxLayout="row">
+            <div fxFlex="40" fxLayoutAlign="start center">{{ labels.taxType | translate }}</div>
+            <div fxFlex="45" fxLayoutAlign="center center">
+                <mat-form-field appearance="outline" floatLabel="always" *ngIf="editingTaxType">
+                    <mat-label>{{ labels.taxType | translate }}</mat-label>
+                    <mat-select [(ngModel)]="taxTypeToApply" (selectionChange)="setTaxType()" [compareWith]="compareTax">
+                        <mat-option *ngFor="let tax of taxTypes" [value]="tax"
+                            >{{ tax.description | translate }} <span *ngIf="tax.value">({{ tax.value }}%)</span></mat-option
+                        >
+                    </mat-select>
+                </mat-form-field>
+                <div *ngIf="!editingTaxType && taxTypeToApply">
+                    {{ taxTypeToApply.description | translate }}
+                    <span *ngIf="taxTypeToApply.value">({{ taxTypeToApply.value }}%)</span>
+                </div>
+            </div>
+            <div fxFlex="15" fxLayoutAlign="end center" class="actions">
+                <mat-icon
+                    [color]="editingTaxType ? '' : 'primary'"
+                    style="cursor: pointer"
+                    (click)="editTaxType(); $event.stopPropagation()"
+                    *ngIf="!cardInstanceAccountingConfig.disableAccountingEdition"
+                >
+                    edit
+                </mat-icon>
+            </div>
+        </div>
+        <!-- Bloques -->
+        <div *ngFor="let block of data.accountingBlocks">
+            <div class="accountings__main__header mt-20">
+                <div class="accountings__main__header__item" fxLayout="row">
+                    <div fxFlex="85" fxLayoutAlign="start center" fxFill class="color-primary">
+                        {{ block.templateAccountingItem?.description }} ({{
+                            block.templateAccountingItem?.accountingBlockType?.description
+                        }})
+                    </div>
+                    <div fxFlex="15" fxLayoutAlign="end center" fxFill>
+                        <mat-icon
+                            [color]="'primary'"
+                            style="cursor: pointer; color: green"
+                            [matBadge]="block.attachments?.length"
+                            matBadgePosition="before"
+                            (click)="editBlock(block)"
+                            *ngIf="block.attachments?.length"
+                        >
+                            attach_file
+                        </mat-icon>
+                        <mat-icon
+                            [color]="'primary'"
+                            style="cursor: pointer"
+                            (click)="editBlock(block)"
+                            *ngIf="!block.attachments?.length"
+                        >
+                            attach_file
+                        </mat-icon>
+                    </div>
+                </div>
+            </div>
+            <div class="accountings__main__header subheader">
+                <div class="accountings__main__header__item" fxLayout="row">
+                    <div fxFlex="30" fxLayoutAlign="start center" fxFill>{{ labels.line | translate }}</div>
+                    <div fxFlex="30" fxLayoutAlign="start center" fxFill>{{ labels.type | translate }}</div>
+                    <div fxFlex="25" fxLayoutAlign="center center" fxFill>{{ labels.amount | translate }}</div>
+                    <div fxFlex="15" fxLayoutAlign="end center" fxFill>{{ labels.actions | translate }}</div>
+                </div>
+            </div>
+            <div
+                class="accountings__main__line item smaller-mat-form-fields"
+                fxLayout="row"
+                *ngFor="let item of block.accountingLines; let i = index"
+            >
+                <div fxFlex="30" fxLayoutAlign="start center">{{ item.templateAccountingItemLine.description }}</div>
+                <div fxFlex="30" fxLayoutAlign="start center">
+                    {{ item.templateAccountingItemLine.accountingLineType.description }}
+                </div>
+                <div fxFlex="25" fxLayoutAlign="center center">
+                    {{ item.amount | number : "1.2-2" }}<span *ngIf="item.amount || item.amount === 0" matSuffix> €</span>
+                </div>
+                <div fxFlex="15" fxLayoutAlign="end center" class="actions">
+                    <!-- <mat-icon
+                        [style.color]="getFontColorAccumulatedLine(item)"
+                        (click)="showAccumulated(item)"
+                        *ngIf="item.templateAccountingItemLine.accumulated"
+                    >
+                        &#177; &#931;
+                    </mat-icon> -->
+                    <mat-icon
+                        [color]="'primary'"
+                        style="cursor: pointer; color: green"
+                        [matBadge]="item.attachments?.length"
+                        matBadgePosition="before"
+                        (click)="editLine(item)"
+                        *ngIf="item.attachments?.length"
+                    >
+                        attach_file
+                    </mat-icon>
+                    <mat-icon
+                        [color]="'primary'"
+                        style="cursor: pointer"
+                        (click)="editLine(item)"
+                        *ngIf="!item.attachments?.length"
+                    >
+                        attach_file
+                    </mat-icon>
+                    <mat-icon
+                        [color]="'primary'"
+                        style="cursor: pointer"
+                        (click)="editLine(item)"
+                        *ngIf="!cardInstanceAccountingConfig.disableAccountingEdition"
+                    >
+                        edit
+                    </mat-icon>
+                </div>
+            </div>
+            <div class="accountings__main__line item smaller-mat-form-fields bold" fxLayout="row">
+                <div fxFlex="60" fxLayoutAlign="start center">
+                    {{
+                        block.templateAccountingItem.descriptionTotal
+                            ? block.templateAccountingItem.descriptionTotal
+                            : (labels.total | translate)
+                    }}
+                </div>
+                <div fxFlex="25" fxLayoutAlign="center center" *ngIf="block.amountTotal">
+                    {{ block.amountTotal | number : "1.2-2" }}<span matSuffix> €</span>
+                </div>
+                <div fxFlex="25" fxLayoutAlign="center center" *ngIf="!block.amountTotal">
+                    {{ 0 | number : "1.2-2" }}<span matSuffix> €</span>
+                </div>
+                <div fxFlex="15" fxLayoutAlign="end center" class="actions"></div>
+            </div>
+            <div class="accountings__main__line item smaller-mat-form-fields bold" fxLayout="row">
+                <div fxFlex="60" fxLayoutAlign="start center">
+                    {{
+                        block.templateAccountingItem.descriptionTotalTax
+                            ? block.templateAccountingItem.descriptionTotalTax
+                            : (labels.totalTax | translate)
+                    }}
+                </div>
+                <div fxFlex="25" fxLayoutAlign="center center" *ngIf="block.amountTotalTax">
+                    {{ block.amountTotalTax | number : "1.2-2" }}<span matSuffix> €</span>
+                </div>
+                <div fxFlex="25" fxLayoutAlign="center center" *ngIf="!block.amountTotalTax">
+                    {{ 0 | number : "1.2-2" }}<span matSuffix> €</span>
+                </div>
+                <div fxFlex="15" fxLayoutAlign="end center" class="actions"></div>
+            </div>
+            <div class="accountings__main__line item smaller-mat-form-fields bold" fxLayout="row">
+                <div fxFlex="60" fxLayoutAlign="start center">
+                    {{
+                        block.templateAccountingItem.descriptionTotalPlusTax
+                            ? block.templateAccountingItem.descriptionTotalPlusTax
+                            : (labels.totalAmountPlusTax | translate)
+                    }}
+                </div>
+                <div fxFlex="25" fxLayoutAlign="center center" *ngIf="block.amountTotalPlusTax">
+                    {{ block.amountTotalPlusTax | number : "1.2-2" }}<span matSuffix> €</span>
+                </div>
+                <div fxFlex="25" fxLayoutAlign="center center" *ngIf="!block.amountTotalPlusTax">
+                    {{ 0 | number : "1.2-2" }}<span matSuffix> €</span>
+                </div>
+                <div fxFlex="15" fxLayoutAlign="end center" class="actions"></div>
+            </div>
+        </div>
+    </div>
+</div>

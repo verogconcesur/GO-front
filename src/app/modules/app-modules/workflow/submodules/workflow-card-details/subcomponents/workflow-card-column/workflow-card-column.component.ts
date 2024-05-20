@@ -117,6 +117,7 @@ export class WorkflowCardColumnComponent implements OnInit {
   // PREFIXED	      7	            Historial
   // PREFIXED	      8	            Tareas
   // TEMPLATE	      9	            Tab de pagos
+  // TEMPLATE	      10	          Tab de contabilidad
   public showColumn(
     column:
       | 'CUSTOMIZABLE_ENTITY'
@@ -127,6 +128,7 @@ export class WorkflowCardColumnComponent implements OnInit {
       | 'PREFIXED_HISTORY'
       | 'PREFIXED_TASKS'
       | 'TEMPLATE_PAYMENTS'
+      | 'TEMPLATE_ACCOUNTING'
       | 'COMMENTS'
       | 'CLIENT_MESSAGES'
   ): boolean {
@@ -153,6 +155,8 @@ export class WorkflowCardColumnComponent implements OnInit {
     } else if (column === 'PREFIXED_TASKS' && this.tabToShow.type === 'PREFIXED' && this.tabToShow.contentTypeId === 8) {
       show = true;
     } else if (column === 'TEMPLATE_PAYMENTS' && this.tabToShow.type === 'TEMPLATE' && this.tabToShow.contentTypeId === 9) {
+      show = true;
+    } else if (column === 'TEMPLATE_ACCOUNTING' && this.tabToShow.type === 'TEMPLATE' && this.tabToShow.contentTypeId === 10) {
       show = true;
     } else if (column === 'COMMENTS' && this.tabToShow.type === 'COMMENTS') {
       show = true;

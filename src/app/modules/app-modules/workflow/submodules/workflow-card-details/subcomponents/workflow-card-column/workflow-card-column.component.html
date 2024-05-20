@@ -43,6 +43,12 @@
                 [tab]="tabToShow"
                 (setShowLoading)="setShowLoading($event)"
             ></app-workflow-column-prefixed-tasks>
+            <app-workflow-column-templates-accounting
+                *ngIf="showColumn('TEMPLATE_ACCOUNTING')"
+                [tab]="tabToShow"
+                [cardInstance]="cardInstance"
+                (setShowLoading)="setShowLoading($event)"
+            ></app-workflow-column-templates-accounting>
             <app-workflow-column-templates-payments
                 *ngIf="showColumn('TEMPLATE_PAYMENTS')"
                 [tab]="tabToShow"

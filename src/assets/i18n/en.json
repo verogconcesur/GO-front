@@ -9,6 +9,37 @@
         "organization": "Organization",
         "records": "Records",
         "templates": {
+            "accounting": {
+                "accumulatedLines": "Accumulated lines",
+                "addAsNewLineType": "+ Add new type",
+                "block": "Block",
+                "blockType": "Block type",
+                "blocks": "Accounting block",
+                "config": "Accounting configuration",
+                "create": "New accounting template",
+                "deleteConfirmation": "Are you sure you want to delete this template?",
+                "description": "Description",
+                "descriptionTotal": "Description total",
+                "descriptionTotalPlusTax": "Description total plus tax",
+                "descriptionTotalTax": "Description total tax",
+                "editBlock": "Block edition",
+                "editLine": "Line edition",
+                "editTemplate": "Template edition",
+                "finishEditing": "You must save or cancel the current edit before you can take further action.",
+                "groupLines": "Lines group",
+                "itemsInTemplate": "Accounting blocks and lines",
+                "line": "Line",
+                "lineAccumulated": "Accumulated line",
+                "lineSign": "Line sign",
+                "lineTaxApply": "Apply taxes",
+                "lineType": "Line type",
+                "name": "Template name",
+                "new": "New accounting template",
+                "newBlock": "New block",
+                "newLine": "New line",
+                "showAccumulatedLineInfo": "Show accumulated line information associated to this line",
+                "title": "Accounting"
+            },
             "attachments": {
                 "add": "New attachment template",
                 "create": "Create attachment category template",
@@ -208,6 +239,18 @@
         "title": "Go"
     },
     "cardDetail": {
+        "accounting": {
+            "newLine": "New line",
+            "taxType": "New type",
+            "taxTypeNoApply": "Select a tax type",
+            "totalAmountPlusTax": "Total amount plus tax",
+            "totalTax": "Tax value"
+        },
+        "accountings": {
+            "accumulatedLineEditionBlocked": "Amount edition locked (accumulated line)",
+            "editBlock": "Edit block",
+            "editLine": "Edit line"
+        },
         "budgets": {
             "addLines": "Add budget lines",
             "deleteConfirmation": "Are you sure you want to delete this budget line?",
@@ -423,6 +466,7 @@
         "filter": "Filter",
         "filterAction": "Filter",
         "filterByType": "Filter by type",
+        "firstCompleteAllRequiredFields": "Firstable complete all required fields",
         "follow": "Follow",
         "following": "Following",
         "footer": "Footer",
@@ -496,6 +540,7 @@
         "showPage": "Show page",
         "state": "State",
         "substate": "Substate",
+        "success": "Succes operation",
         "successOperation": "Success operation.",
         "tabTypes": {
             "customizable": "Customizable content",
@@ -507,6 +552,7 @@
         "to": "To",
         "total": "Total",
         "town": "Town",
+        "type": "Type",
         "type3CharsToSearch": "Write at least three characters...",
         "typeBudget": "Add a budget template",
         "typeCard": "Type card",
@@ -714,7 +760,7 @@
             "title": "Workflow and status"
         }
     },
-    "no": "",
+    "no": "No",
     "notifications": {
         "dateFrom": "Date from",
         "dateTo": "Date to",
