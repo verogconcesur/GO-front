@@ -617,6 +617,7 @@ export class SignDocumentChecklistNewComponent implements OnInit, AfterViewInit,
       }
     }
     this.currentStep = event.selectedIndex;
+    console.log(this.steps, this.currentStep);
     if (
       (this.currentStep || this.currentStep === 0) &&
       this.steps &&
@@ -640,13 +641,13 @@ export class SignDocumentChecklistNewComponent implements OnInit, AfterViewInit,
     $('.checklistItemToDrag__check').addClass('hidden');
     const item = this.steps[this.stepper.selectedIndex]?.item;
     if (item && this.steps[this.stepper.selectedIndex]?.type === 'paintZone') {
-      $(`#item_${item.orderNumber} .checklistItemToDrag__edit`).off('click');
-      $(`#item_${item.orderNumber} .checklistItemToDrag__check`).off('click');
+      $(`#item_${item.auxOrderNumber} .checklistItemToDrag__edit`).off('click');
+      $(`#item_${item.auxOrderNumber} .checklistItemToDrag__check`).off('click');
       if (this.drawingModeEnabledForItem) {
         this.drawingModeEnabledForItem = null;
         setTimeout(() => {
-          $(`#item_${item.orderNumber} .checklistItemToDrag__edit`).removeClass('hidden');
-          $(`#item_${item.orderNumber} .checklistItemToDrag__edit`).on('click', (event) => {
+          $(`#item_${item.auxOrderNumber} .checklistItemToDrag__edit`).removeClass('hidden');
+          $(`#item_${item.auxOrderNumber} .checklistItemToDrag__edit`).on('click', (event) => {
             event.stopPropagation();
             this.showOrHideDrawingButtons();
           });
@@ -654,8 +655,8 @@ export class SignDocumentChecklistNewComponent implements OnInit, AfterViewInit,
       } else {
         this.drawingModeEnabledForItem = this.steps[this.stepper.selectedIndex].item;
         setTimeout(() => {
-          $(`#item_${item.orderNumber} .checklistItemToDrag__check`).removeClass('hidden');
-          $(`#item_${item.orderNumber} .checklistItemToDrag__check`).on('click', (event) => {
+          $(`#item_${item.auxOrderNumber} .checklistItemToDrag__check`).removeClass('hidden');
+          $(`#item_${item.auxOrderNumber} .checklistItemToDrag__check`).on('click', (event) => {
             event.stopPropagation();
             this.showOrHideDrawingButtons();
           });
@@ -743,10 +744,12 @@ export class SignDocumentChecklistNewComponent implements OnInit, AfterViewInit,
             return acc;
           }
         }, []);
+      console.log(drawingItems);
       drawingItems.forEach((item) => {
         this.steps.push({ type: 'paintZone', label: item.label, page: item.numPage, item });
       });
       this.steps.push({ type: 'pdfViewer', label: this.labels.remoteSignatureConfirmation, page: 1, item: null });
+      console.log(this.steps);
     }
   }
 
@@ -869,7 +872,7 @@ export class SignDocumentChecklistNewComponent implements OnInit, AfterViewInit,
             !this.showSectionInStep('paintZone') ||
             event?.touches?.length > 1 ||
             event?.targetTouches?.length > 1 ||
-            event.target.offsetParent.id !== `item_resizable_${this.drawingModeEnabledForItem?.orderNumber}`
+            event.target.offsetParent.id !== `item_resizable_${this.drawingModeEnabledForItem?.auxOrderNumber}`
           ) {
             return;
           }
