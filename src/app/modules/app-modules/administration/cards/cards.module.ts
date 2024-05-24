@@ -20,6 +20,8 @@ import { TabItemConfigOptionComponent } from './components/tab-items/tab-item-co
 import { TabItemConfigTextComponent } from './components/tab-items/tab-item-config-text/tab-item-config-text.component';
 import { TabItemConfigTitleComponent } from './components/tab-items/tab-item-config-title/tab-item-config-title.component';
 import { TextEditorWrapperModule } from '@modules/feature-modules/text-editor-wrapper/text-editor-wrapper.module';
+// eslint-disable-next-line max-len
+import { LinksCreationEditionDialogComponent } from './components/custom-actions/dialogs/links-creation-edition-dialog/links-creation-edition-dialog.component';
 
 @NgModule({
   declarations: [
@@ -35,7 +37,8 @@ import { TextEditorWrapperModule } from '@modules/feature-modules/text-editor-wr
     TabItemConfigListComponent,
     TabItemConfigOptionComponent,
     TabItemConfigTextComponent,
-    TabItemConfigTitleComponent
+    TabItemConfigTitleComponent,
+    LinksCreationEditionDialogComponent
   ],
   imports: [
     CommonModule,

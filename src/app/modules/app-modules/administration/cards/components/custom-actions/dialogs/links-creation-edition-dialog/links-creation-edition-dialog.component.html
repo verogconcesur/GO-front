@@ -1,0 +1,17 @@
+<form [formGroup]="form" class="link-form-wrapper smaller-mat-form-fields" *ngIf="form">
+    <mat-form-field appearance="outline" class="smaller-mat-form-fields__no-margin" floatLabel="always">
+        <mat-label>{{ labels.name | translate }}</mat-label>
+        <input type="text" matInput formControlName="name" />
+    </mat-form-field>
+    <app-text-editor-wrapper
+        id="textEditorLink"
+        textEditorId="textEditorLink"
+        [initialValue]="form.get('tabItemConfigLink').get('link').value"
+        [textEditorConfig]="textEditorToolbarOnlyMacroOptions"
+        [placeholder]="'Link'"
+        (contentChanged)="textEditorContentChanged($event, 'link', true)"
+    ></app-text-editor-wrapper>
+    <section formGroupName="tabItemConfigLink">
+        <input type="color" class="custom-links-item-inputColor" matInput formControlName="color" />
+    </section>
+</form>

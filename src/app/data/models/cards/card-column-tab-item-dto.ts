@@ -68,6 +68,14 @@ export interface TabItemConfigLinkDTO extends TabItemConfigCommonDTO {
   link: string;
   color: string;
   variables?: VariablesDTO[];
+  linkMethod: 'GET' | 'POST';
+  body?: string;
+  redirect?: boolean;
+  requireAuth?: boolean;
+  authUrl?: string;
+  authUser?: string;
+  authPass?: string;
+  authAttributeToken?: string;
 }
 export interface TabItemConfigListDTO extends TabItemConfigCommonDTO {
   cardTabItemInstance?: WorkflowCardTabitemInstanceDTO;
