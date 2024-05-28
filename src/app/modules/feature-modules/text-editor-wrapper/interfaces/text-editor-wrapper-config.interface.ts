@@ -10,4 +10,5 @@ export interface TextEditorWrapperConfigI {
   airMode?: boolean;
   width?: number;
   height?: number;
+  onlyCodeView?: boolean;
 }

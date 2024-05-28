@@ -94,8 +94,7 @@ export class CustomActionsComponent implements OnInit {
     visible.setValue(!visible.value);
   }
   public editTab(tab: UntypedFormGroup) {
-    console.log(tab);
-
+    // console.log(tab);
     this.customDialogService
       .open({
         component: LinksCreationEditionDialogComponent,
@@ -103,11 +102,27 @@ export class CustomActionsComponent implements OnInit {
         id: LinksCreationEditionDialogComponentModalEnum.ID,
         panelClass: LinksCreationEditionDialogComponentModalEnum.PANEL_CLASS,
         disableClose: true,
-        width: '900px'
+        width: '750px'
       })
       .subscribe((result) => {
-        console.log(result);
-        console.log('tab value', tab.value);
+        if (result?.tabItemConfigLink) {
+          if (result.tabItemConfigLink.linkMethod === 'GET') {
+            tab.get('tabItemConfigLink').get('body').setValue(null);
+            if (result.tabItemConfigLink.redirect) {
+              tab.get('tabItemConfigLink').get('requireAuth').setValue(false);
+              result.tabItemConfigLink.requireAuth = false;
+            }
+          }
+          if (result.tabItemConfigLink.linkMethod === 'POST') {
+            tab.get('tabItemConfigLink').get('redirect').setValue(false);
+          }
+          if (!result.tabItemConfigLink.requireAuth) {
+            tab.get('tabItemConfigLink').get('authPass').setValue(null);
+            tab.get('tabItemConfigLink').get('authUrl').setValue(null);
+            tab.get('tabItemConfigLink').get('authUser').setValue(null);
+            tab.get('tabItemConfigLink').get('authAttributeToken').setValue(null);
+          }
+        }
       });
   }
   public newTab(tab?: CardColumnTabDTO): UntypedFormGroup {
@@ -158,7 +173,11 @@ export class CustomActionsComponent implements OnInit {
                   color: [tabItem.tabItemConfigLink.color, [Validators.required]],
                   variables: [tabItem.tabItemConfigLink.variables],
                   linkMethod: [tabItem.tabItemConfigLink.linkMethod, [Validators.required]],
-                  body: [tabItem.tabItemConfigLink.body],
+                  body: [
+                    tabItem.tabItemConfigLink.body
+                      ? tabItem.tabItemConfigLink.body
+                      : '{ "attribute": "example", "attribute2": "example2" }'
+                  ],
                   redirect: [tabItem.tabItemConfigLink.redirect],
                   requireAuth: [tabItem.tabItemConfigLink.requireAuth],
                   authUrl: [tabItem.tabItemConfigLink.authUrl],
@@ -253,7 +272,7 @@ export class CustomActionsComponent implements OnInit {
             color: ['#FFFFFF'],
             variables: [null],
             linkMethod: ['GET', [Validators.required]],
-            body: [null],
+            body: ['{ "attribute": "example", "attribute2": "example2" }'],
             redirect: [null],
             requireAuth: [null],
             authUrl: [null],

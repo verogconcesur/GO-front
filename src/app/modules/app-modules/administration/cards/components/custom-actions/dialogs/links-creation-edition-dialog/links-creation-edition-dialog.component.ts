@@ -31,10 +31,25 @@ export class LinksCreationEditionDialogComponent extends ComponentToExtendForCus
     onlyMacroOption: true,
     addMacroListOption: true,
     macroListOptions: [],
-    width: 450
+    width: 670
   };
+  public showBodyEditor = true;
+  public bodyValidation: { valid: boolean; suggestion: string } = null;
   public labels = {
     title: marker('cards.column.links-dialog.title'),
+    color: marker('cards.column.links-dialog.color'),
+    linkType: marker('cards.column.links-dialog.linkType'),
+    linkPostBody: marker('cards.column.links-dialog.linkPostBody'),
+    authLink: marker('cards.column.links-dialog.authLink'),
+    requireAuth: marker('cards.column.links-dialog.requireAuth'),
+    jsonError: marker('cards.column.links-dialog.jsonFormatError'),
+    jsonSuggestionApply: marker('cards.column.links-dialog.jsonSuggestionApply'),
+    authUrl: marker('cards.column.links-dialog.authUrl'),
+    authUser: marker('cards.column.links-dialog.authUser'),
+    authPass: marker('cards.column.links-dialog.authPass'),
+    authAttributeToken: marker('cards.column.links-dialog.authAttributeToken'),
+    redirect: marker('cards.column.links-dialog.redirect'),
+    link: marker('cards.column.links-dialog.link'),
     name: marker('common.name'),
     nameColumn: marker('cards.column.columnName'),
     nameRequired: marker('userProfile.nameRequired'),
@@ -55,7 +70,7 @@ export class LinksCreationEditionDialogComponent extends ComponentToExtendForCus
     this.form = this.extendedComponentData.form;
     this.originalFormValue = this.form.value;
     this.listVariables = this.extendedComponentData.listVariables;
-    console.log(this.form.value);
+    // console.log(this.form.value);
     this.textEditorToolbarOnlyMacroOptions.macroListOptions = this.listVariables.map((item: VariablesDTO) => item.name);
   }
 
@@ -100,7 +115,8 @@ export class LinksCreationEditionDialogComponent extends ComponentToExtendForCus
           label: marker('common.confirm'),
           design: 'raised',
           color: 'primary',
-          disabledFn: () => !(this.form.touched && this.form.dirty && this.form.valid)
+          disabledFn: () =>
+            !(this.form.touched && this.form.dirty && this.form.valid && (!this.bodyValidation || this.bodyValidation.valid))
         }
       ]
     };
@@ -114,7 +130,15 @@ export class LinksCreationEditionDialogComponent extends ComponentToExtendForCus
       if ((html === '' || this.convertToPlain(html) === '') && html.length < 20) {
         html = null;
       }
-      this.form.get('tabItemConfigLink').get(field).setValue(html, { emitEvent: true });
+      if (field === 'body') {
+        this.bodyValidation = this.validateAndSuggestJSON(html);
+        if (!this.bodyValidation.valid && this.bodyValidation.suggestion) {
+          html = this.bodyValidation.suggestion;
+        }
+      }
+      if (this.form) {
+        this.form.get('tabItemConfigLink').get(field).setValue(html, { emitEvent: true });
+      }
       this.setVariablesFromTexts();
     }
   }
@@ -125,9 +149,69 @@ export class LinksCreationEditionDialogComponent extends ComponentToExtendForCus
     return tempDivElement.textContent || tempDivElement.innerText || '';
   }
 
+  public applyBodySuggestion(): void {
+    this.showBodyEditor = false;
+    this.form.get('tabItemConfigLink').get('body').setValue(this.bodyValidation.suggestion);
+    this.bodyValidation = null;
+    setTimeout(() => {
+      this.showBodyEditor = true;
+    }, 100);
+  }
+
+  public validateAndSuggestJSON(inputString: string): { valid: boolean; suggestion: string } {
+    const result: { valid: boolean; suggestion: string } = {
+      valid: false,
+      suggestion: ''
+    };
+    try {
+      JSON.parse(inputString);
+      result.valid = true;
+      return result;
+    } catch (error) {
+      // Identificar posibles errores comunes
+      let suggestion = inputString;
+
+      // Corregir comillas simples por comillas dobles
+      suggestion = suggestion.replace(/'/g, '"');
+
+      // Corregir comas finales
+      suggestion = suggestion.replace(/,\s*([}\]])/g, '$1');
+
+      // Asegurarse de que hay comas entre los pares de clave-valor
+      suggestion = suggestion.replace(/}\s*{/g, '},{');
+      suggestion = suggestion.replace(/}\s*"([^"]+)":/g, '},{"$1":');
+
+      // Reemplazar punto y coma por comas
+      suggestion = suggestion.replace(/([}\]"\d\w\s]);(\s*[{["\d\w])/g, '$1,$2');
+
+      // Eliminar espacios innecesarios
+      suggestion = suggestion.replace(/\s*([{}[\],:])\s*/g, '$1');
+      suggestion = suggestion.replace(/"\s*:\s*"/g, '":"');
+      suggestion = suggestion.replace(/"\s*:\s*(\d+)/g, '":$1');
+      suggestion = suggestion.replace(/(\d+)\s*,\s*"/g, '$1,"');
+      suggestion = suggestion.replace(/(\d+)\s*,\s*(\d+)/g, '$1,$2');
+
+      // Eliminar espacios en blanco dentro de las keys
+      suggestion = suggestion.replace(/"([^"]*?)\s+([^"]*?)"\s*:/g, '"$1$2":');
+
+      // Intentar nuevamente parsear
+      try {
+        JSON.parse(suggestion);
+        result.suggestion = suggestion;
+      } catch (innerError) {
+        result.suggestion = null;
+      }
+      return result;
+    }
+  }
+
   private setVariablesFromTexts(): void {
     //TODO: añadir resto de campos que pueden contener variables
-    const htmls = [this.form.get('tabItemConfigLink').get('link').value];
+    const htmls = [
+      this.form.get('tabItemConfigLink').get('link').value,
+      this.form.get('tabItemConfigLink').get('body').value,
+      this.form.get('tabItemConfigLink').get('authUrl').value
+    ];
     let arrVariables: VariablesDTO[] = [];
     htmls.forEach((html) => {
       const variablesOnText = this.listVariables.filter((variable) => {
@@ -142,6 +226,6 @@ export class LinksCreationEditionDialogComponent extends ComponentToExtendForCus
       arrVariables = [...arrVariables, ...variablesOnText];
     });
 
-    this.form.get('variables').setValue(arrVariables);
+    this.form.get('tabItemConfigLink').get('variables').setValue(arrVariables);
   }
 }

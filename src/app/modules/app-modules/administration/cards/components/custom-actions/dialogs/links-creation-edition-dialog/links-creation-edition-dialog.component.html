@@ -1,17 +1,122 @@
 <form [formGroup]="form" class="link-form-wrapper smaller-mat-form-fields" *ngIf="form">
-    <mat-form-field appearance="outline" class="smaller-mat-form-fields__no-margin" floatLabel="always">
-        <mat-label>{{ labels.name | translate }}</mat-label>
-        <input type="text" matInput formControlName="name" />
-    </mat-form-field>
-    <app-text-editor-wrapper
-        id="textEditorLink"
-        textEditorId="textEditorLink"
-        [initialValue]="form.get('tabItemConfigLink').get('link').value"
-        [textEditorConfig]="textEditorToolbarOnlyMacroOptions"
-        [placeholder]="'Link'"
-        (contentChanged)="textEditorContentChanged($event, 'link', true)"
-    ></app-text-editor-wrapper>
-    <section formGroupName="tabItemConfigLink">
-        <input type="color" class="custom-links-item-inputColor" matInput formControlName="color" />
-    </section>
+    <div class="link-form-wrapper__section">
+        <!-- <div class="link-form-wrapper__section__title first-child">{{ labels.name | translate }} *</div> -->
+        <div class="link-form-wrapper__section__group flex-start center">
+            <mat-form-field appearance="outline" floatLabel="always">
+                <mat-label>{{ labels.name | translate }}</mat-label>
+                <input type="text" matInput formControlName="name" />
+            </mat-form-field>
+            <mat-form-field appearance="outline" floatLabel="always" formGroupName="tabItemConfigLink" style="margin-left: 10px">
+                <mat-label>{{ labels.color | translate }}</mat-label>
+                <input
+                    type="color"
+                    class="custom-links-item-inputColor"
+                    matInput
+                    formControlName="color"
+                    style="margin: -7px 0"
+                />
+            </mat-form-field>
+        </div>
+    </div>
+
+    <div class="link-form-wrapper__section" formGroupName="tabItemConfigLink">
+        <div class="link-form-wrapper__section__title first-child">{{ labels.linkType | translate }} *</div>
+        <div class="link-form-wrapper__section__group flex-group">
+            <mat-radio-group formControlName="linkMethod">
+                <mat-radio-button value="POST">POST</mat-radio-button>
+                <mat-radio-button value="GET" style="margin-left: 10px">GET</mat-radio-button>
+            </mat-radio-group>
+
+            <mat-checkbox
+                style="margin-left: 20px; margin-top: -2px"
+                *ngIf="form.get('tabItemConfigLink').get('linkMethod').value === 'GET'"
+                formControlName="redirect"
+                >{{ labels.redirect | translate }}</mat-checkbox
+            >
+        </div>
+    </div>
+
+    <div class="link-form-wrapper__section">
+        <div class="link-form-wrapper__section__title first-child">{{ labels.link | translate }} *</div>
+        <app-text-editor-wrapper
+            id="textEditorLink"
+            textEditorId="textEditorLink"
+            [initialValue]="form.get('tabItemConfigLink').get('link').value"
+            [textEditorConfig]="textEditorToolbarOnlyMacroOptions"
+            [placeholder]="'Link'"
+            (contentChanged)="textEditorContentChanged($event, 'link', true)"
+        ></app-text-editor-wrapper>
+    </div>
+    <div class="link-form-wrapper__section" *ngIf="form.get('tabItemConfigLink').get('linkMethod').value === 'POST'">
+        <div class="link-form-wrapper__section__title first-child">{{ labels.linkPostBody | translate }} *</div>
+        <app-text-editor-wrapper
+            *ngIf="showBodyEditor"
+            id="textEditorLinkBody"
+            textEditorId="textEditorLinkBody"
+            [initialValue]="form.get('tabItemConfigLink').get('body').value"
+            [textEditorConfig]="textEditorToolbarOnlyMacroOptions"
+            [placeholder]="labels.linkPostBody | translate"
+            (contentChanged)="textEditorContentChanged($event, 'body', true)"
+        ></app-text-editor-wrapper>
+        <mat-error style="margin-top: 5px" *ngIf="bodyValidation && !bodyValidation.valid">
+            <button
+                *ngIf="bodyValidation.suggestion"
+                mat-stroked-button
+                (click)="applyBodySuggestion()"
+                matTooltip="{{ bodyValidation.suggestion }}"
+                matTooltipPosition="above"
+            >
+                {{ labels.jsonSuggestionApply | translate }}
+            </button>
+            {{ labels.jsonError | translate }}
+        </mat-error>
+    </div>
+    <div
+        class="link-form-wrapper__section"
+        formGroupName="tabItemConfigLink"
+        *ngIf="
+            !form.get('tabItemConfigLink').get('redirect').value ||
+            form.get('tabItemConfigLink').get('linkMethod').value === 'POST'
+        "
+    >
+        <div class="link-form-wrapper__section__title first-child">{{ labels.authLink | translate }}</div>
+        <mat-checkbox style="margin-left: 20px; margin-top: -2px" formControlName="requireAuth">{{
+            labels.requireAuth | translate
+        }}</mat-checkbox>
+    </div>
+    <div
+        class="link-form-wrapper__section"
+        formGroupName="tabItemConfigLink"
+        *ngIf="
+            form.get('tabItemConfigLink').get('requireAuth').value &&
+            (!form.get('tabItemConfigLink').get('redirect').value ||
+                form.get('tabItemConfigLink').get('linkMethod').value === 'POST')
+        "
+    >
+        <div class="link-form-wrapper__section__group flex-group">
+            <mat-form-field appearance="outline" floatLabel="always">
+                <mat-label>{{ labels.authUser | translate }}</mat-label>
+                <input type="text" matInput formControlName="authUser" />
+            </mat-form-field>
+            <mat-form-field appearance="outline" floatLabel="always">
+                <mat-label>{{ labels.authPass | translate }}</mat-label>
+                <input type="password" matInput formControlName="authPass" />
+            </mat-form-field>
+            <mat-form-field appearance="outline" floatLabel="always">
+                <mat-label>{{ labels.authAttributeToken | translate }}</mat-label>
+                <input type="text" matInput formControlName="authAttributeToken" />
+            </mat-form-field>
+        </div>
+    </div>
+    <div class="link-form-wrapper__section" *ngIf="form.get('tabItemConfigLink').get('requireAuth').value">
+        <div class="link-form-wrapper__section__title first-child">{{ labels.authUrl | translate }} *</div>
+        <app-text-editor-wrapper
+            id="textEditorLinkAuthUrl"
+            textEditorId="textEditorLinkAuthUrl"
+            [initialValue]="form.get('tabItemConfigLink').get('authUrl').value"
+            [textEditorConfig]="textEditorToolbarOnlyMacroOptions"
+            [placeholder]="labels.authUrl | translate"
+            (contentChanged)="textEditorContentChanged($event, 'authUrl', true)"
+        ></app-text-editor-wrapper>
+    </div>
 </form>

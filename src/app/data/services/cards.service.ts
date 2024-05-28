@@ -54,6 +54,7 @@ export class CardService {
   private readonly INFO_PATH = '/info';
   private readonly EDIT_DATE_LIMIT_PATH = '/editDateLimit';
   private readonly USER_PERMISSIONS_PATH = '/userPermissions';
+  private readonly CALL_API_EXT = '/callApiExt';
 
   constructor(@Inject(ENV) private env: Env, private http: HttpClient) {}
 
@@ -150,6 +151,18 @@ export class CardService {
     const followPath = follow ? this.START_FOLLOW : this.STOP_FOLLOW;
     return this.http
       .get<boolean>(`${this.env.apiBaseUrl}${this.GET_CARD_INSTANCE_PATH}${followPath}/${cardInstanceWorkflowId}`)
+      .pipe(catchError((error) => throwError(error.error as ConcenetError)));
+  }
+
+  /**
+   * Call external API
+   */
+  public callExternalApi(idCard: number, idTab: number, idItem: number): Observable<boolean> {
+    return this.http
+      .get<boolean>(
+        // eslint-disable-next-line max-len
+        `${this.env.apiBaseUrl}${this.GET_CARD_INSTANCE_PATH}${this.GET_DETAIL_PATH}/${idCard}${this.GET_TAB_PATH}/${idTab}${this.CALL_API_EXT}/${idItem}`
+      )
       .pipe(catchError((error) => throwError(error.error as ConcenetError)));
   }
 

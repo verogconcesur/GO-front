@@ -24,9 +24,9 @@ export class TextEditorWrapperComponent implements OnInit, AfterViewInit {
   public summernoteHtmlContent: string;
   //Styles used to mantain the styles used by summernote on export
   private summernoteStyles = '';
-// eslint-disable-next-line max-len
+  // eslint-disable-next-line max-len
 
-    //'<style><!--SummernoteStyles-->table{border-collapse:collapse;width:100%}table td, table th{border:1px solid #ececec;padding:5px 3px}table.table-no-bordered td, table.table-no-bordered th{border:0px;}a{background-color:inherit;color:#337ab7;font-family:inherit;font-weight:inherit;text-decoration:inherit}a:focus, a:hover{color:#23527c;outline:0;text-decoration:underline}figure{margin:0}</style>';
+  //'<style><!--SummernoteStyles-->table{border-collapse:collapse;width:100%}table td, table th{border:1px solid #ececec;padding:5px 3px}table.table-no-bordered td, table.table-no-bordered th{border:0px;}a{background-color:inherit;color:#337ab7;font-family:inherit;font-weight:inherit;text-decoration:inherit}a:focus, a:hover{color:#23527c;outline:0;text-decoration:underline}figure{margin:0}</style>';
   private summernoteNode: any;
   private lang: string;
 
@@ -44,7 +44,11 @@ export class TextEditorWrapperComponent implements OnInit, AfterViewInit {
     } else {
       const misc: any[] = ['fullscreen'];
       let extra: any = {};
-      if (this.textEditorConfig && this.textEditorConfig.addHtmlModificationOption && !this.textEditorConfig.onlyMacroOption) {
+      if (
+        this.textEditorConfig &&
+        this.textEditorConfig.addHtmlModificationOption &&
+        (!this.textEditorConfig.onlyMacroOption || this.textEditorConfig.onlyCodeView)
+      ) {
         misc.push('codeview');
       }
       if (this.textEditorConfig && this.textEditorConfig.addMacroListOption) {
@@ -99,7 +103,7 @@ export class TextEditorWrapperComponent implements OnInit, AfterViewInit {
           ['style', ['style', 'bold', 'italic', 'underline', 'clear']],
           ['font', ['fontname', 'color']], //'fontsize'
           ['para', ['ul', 'ol', 'paragraph']],
-          ['insert', ['table', 'link', 'picture', 'video']],
+          ['insert', ['table', 'link', 'picture', 'video']]
         ];
       }
       if (misc && misc.length) {
@@ -128,7 +132,7 @@ export class TextEditorWrapperComponent implements OnInit, AfterViewInit {
         placeholder: this.placeholder,
         disableResizeEditor: this.textEditorConfig.disableResizeEditor ? true : false,
         disableDragAndDrop: this.textEditorConfig.disableDragAndDrop ? true : false,
-        airMode:  this.textEditorConfig.airMode ? true : false,
+        airMode: this.textEditorConfig.airMode ? true : false,
         popover: {
           table: [
             ['add', ['addRowDown', 'addRowUp', 'addColLeft', 'addColRight']],
@@ -138,6 +142,14 @@ export class TextEditorWrapperComponent implements OnInit, AfterViewInit {
         },
         ...extra,
         callbacks: {
+          onInit: (e: any) => {
+            setTimeout(() => {
+              if (this.textEditorConfig.onlyCodeView) {
+                $(`#${this.textEditorId} .btn-codeview`).click();
+                $(`#${this.textEditorId} .btn-codeview`).addClass('hidden');
+              }
+            }, 150);
+          },
           onChange: (contents: any) => {
             this.summernoteHtmlContent = contents;
             // let html = this.summernoteHtmlContent;
@@ -149,8 +161,6 @@ export class TextEditorWrapperComponent implements OnInit, AfterViewInit {
             // }
 
             this.contentChanged.emit(this.summernoteHtmlContent);
-
-
           },
           onChangeCodeview: (contents: any) => {
             this.summernoteHtmlContent = contents;
@@ -162,8 +172,8 @@ export class TextEditorWrapperComponent implements OnInit, AfterViewInit {
             //   this.summernoteHtmlContent = `<!--SummernoteStyles--> ${this.summernoteHtmlContent}`;
             // }
 
-          this.summernoteNode.innerHTML = contents;
-          this.contentChanged.emit(contents);
+            this.summernoteNode.innerHTML = contents;
+            this.contentChanged.emit(contents);
           }
         }
       };
