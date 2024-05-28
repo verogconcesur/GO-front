@@ -160,6 +160,15 @@
                         </mat-error>
                     </mat-form-field>
                 </div>
+
+                <div>
+                    <mat-checkbox color="primary" formControlName="webservice"
+                        >{{ labels.webservice | translate }}
+                        <button mat-icon-button *ngIf="form.get('webservice')?.value" (click)="editWebService()">
+                            <mat-icon>edit</mat-icon>
+                        </button>
+                    </mat-checkbox>
+                </div>
             </div>
         </section>
         <section class="event__config__section" *ngIf="eventType === 'MOV' && move">

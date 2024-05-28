@@ -8,6 +8,7 @@ import { ComponentToExtendForCustomDialog, CustomDialogFooterConfigI } from '@fr
 import { TextEditorWrapperConfigI } from '@modules/feature-modules/text-editor-wrapper/interfaces/text-editor-wrapper-config.interface';
 import { TranslateService } from '@ngx-translate/core';
 import { ConfirmDialogService } from '@shared/services/confirm-dialog.service';
+import { format } from 'path';
 import { title } from 'process';
 import { Observable, map, of, take, tap } from 'rxjs';
 
@@ -24,6 +25,7 @@ export const enum LinksCreationEditionDialogComponentModalEnum {
 })
 export class LinksCreationEditionDialogComponent extends ComponentToExtendForCustomDialog implements OnInit {
   public listVariables: VariablesDTO[];
+  public type: 'LINK' | 'EVENT' = 'LINK';
   public form: UntypedFormGroup;
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   public originalFormValue: any;
@@ -37,6 +39,10 @@ export class LinksCreationEditionDialogComponent extends ComponentToExtendForCus
   public bodyValidation: { valid: boolean; suggestion: string } = null;
   public labels = {
     title: marker('cards.column.links-dialog.title'),
+    blockerTitle: marker('cards.column.links-dialog.blockerTitle'),
+    evetnTitle: marker('cards.column.links-dialog.eventTitle'),
+    webService: marker('cards.column.links-dialog.webService'),
+    blocker: marker('cards.column.links-dialog.blocker'),
     color: marker('cards.column.links-dialog.color'),
     linkType: marker('cards.column.links-dialog.linkType'),
     linkPostBody: marker('cards.column.links-dialog.linkPostBody'),
@@ -67,6 +73,10 @@ export class LinksCreationEditionDialogComponent extends ComponentToExtendForCus
   }
 
   ngOnInit(): void {
+    this.type = this.extendedComponentData.type ? this.extendedComponentData.type : 'LINK';
+    if (this.type === 'EVENT') {
+      this.MODAL_TITLE = this.labels.evetnTitle;
+    }
     this.form = this.extendedComponentData.form;
     this.originalFormValue = this.form.value;
     this.listVariables = this.extendedComponentData.listVariables;
@@ -123,7 +133,8 @@ export class LinksCreationEditionDialogComponent extends ComponentToExtendForCus
   }
 
   public textEditorContentChanged(html: string, field: string, plain?: boolean) {
-    if (html !== this.form.get('tabItemConfigLink').get(field).value) {
+    const form = this.type === 'LINK' ? this.form.get('tabItemConfigLink') : this.form;
+    if (html !== form.get(field).value) {
       if (plain) {
         html = this.convertToPlain(html);
       }
@@ -137,7 +148,7 @@ export class LinksCreationEditionDialogComponent extends ComponentToExtendForCus
         }
       }
       if (this.form) {
-        this.form.get('tabItemConfigLink').get(field).setValue(html, { emitEvent: true });
+        form.get(field).setValue(html, { emitEvent: true });
       }
       this.setVariablesFromTexts();
     }
@@ -151,7 +162,8 @@ export class LinksCreationEditionDialogComponent extends ComponentToExtendForCus
 
   public applyBodySuggestion(): void {
     this.showBodyEditor = false;
-    this.form.get('tabItemConfigLink').get('body').setValue(this.bodyValidation.suggestion);
+    const form = this.type === 'LINK' ? this.form.get('tabItemConfigLink') : this.form;
+    form.get('body').setValue(this.bodyValidation.suggestion);
     this.bodyValidation = null;
     setTimeout(() => {
       this.showBodyEditor = true;
@@ -206,12 +218,9 @@ export class LinksCreationEditionDialogComponent extends ComponentToExtendForCus
   }
 
   private setVariablesFromTexts(): void {
-    //TODO: añadir resto de campos que pueden contener variables
-    const htmls = [
-      this.form.get('tabItemConfigLink').get('link').value,
-      this.form.get('tabItemConfigLink').get('body').value,
-      this.form.get('tabItemConfigLink').get('authUrl').value
-    ];
+    const form = this.type === 'LINK' ? this.form.get('tabItemConfigLink') : this.form;
+    const link = this.type === 'LINK' ? 'link' : 'webserviceUrl';
+    const htmls = [form.get(link).value, form.get('body').value, form.get('authUrl').value];
     let arrVariables: VariablesDTO[] = [];
     htmls.forEach((html) => {
       const variablesOnText = this.listVariables.filter((variable) => {
@@ -226,6 +235,6 @@ export class LinksCreationEditionDialogComponent extends ComponentToExtendForCus
       arrVariables = [...arrVariables, ...variablesOnText];
     });
 
-    this.form.get('tabItemConfigLink').get('variables').setValue(arrVariables);
+    form.get('variables').setValue(arrVariables);
   }
 }

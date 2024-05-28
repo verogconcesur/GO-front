@@ -16,13 +16,12 @@ import { ConfirmDialogService } from '@shared/services/confirm-dialog.service';
 import { moveItemInFormArray } from '@shared/utils/moveItemInFormArray';
 import { removeItemInFormArray } from '@shared/utils/removeItemInFormArray';
 import { finalize, take } from 'rxjs/operators';
-// eslint-disable-next-line max-len
+import { ProgressSpinnerDialogService } from '@shared/services/progress-spinner-dialog.service';
+import CombinedRequiredFieldsValidator from '@shared/validators/combined-required-fields.validator';
 import {
   LinksCreationEditionDialogComponent,
   LinksCreationEditionDialogComponentModalEnum
-} from './dialogs/links-creation-edition-dialog/links-creation-edition-dialog.component';
-import { ProgressSpinnerDialogService } from '@shared/services/progress-spinner-dialog.service';
-import CombinedRequiredFieldsValidator from '@shared/validators/combined-required-fields.validator';
+} from '@modules/feature-modules/modal-links-creation-edition/links-creation-edition-dialog.component';
 
 @Component({
   selector: 'app-custom-actions',

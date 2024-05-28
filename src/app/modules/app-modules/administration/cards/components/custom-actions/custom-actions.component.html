@@ -52,28 +52,6 @@
                         <mat-icon cdkDragHandle>drag_indicator</mat-icon>
                         <div class="custom-links-item-formContainer" fxLayout="row" fxLayoutAlign="space-between center">
                             {{ tabItem.get("name").value }}
-                            <!-- <mat-form-field appearance="outline" class="smaller-mat-form-fields__no-margin" floatLabel="always">
-                                <mat-label>{{ labels.name | translate }}</mat-label>
-                                <input type="text" matInput [formControl]="tabItem.get('name')" />
-                            </mat-form-field> -->
-                            <!-- <mat-form-field appearance="outline" class="smaller-mat-form-fields__no-margin" floatLabel="always">
-                                <mat-label>{{ labels.shortcut | translate }}</mat-label>
-                                <input type="text" matInput [formControl]="tabItem.get('tabItemConfigLink').get('link')" />
-                            </mat-form-field> -->
-                            <!-- <app-text-editor-wrapper
-                                id="{{ 'textEditorSubject' + tabItem.get('tabItemConfigLink').get('id').value }}"
-                                textEditorId="{{ 'textEditorSubject' + tabItem.get('tabItemConfigLink').get('id').value }}"
-                                [initialValue]="tabItem.get('tabItemConfigLink').get('link').value"
-                                [textEditorConfig]="textEditorToolbarOnlyMacroOptions"
-                                [placeholder]="'Link'"
-                                (contentChanged)="textEditorContentChanged($event, tabItem.get('tabItemConfigLink'), true)"
-                            ></app-text-editor-wrapper>
-                            <input
-                                type="color"
-                                class="custom-links-item-inputColor"
-                                matInput
-                                [formControl]="tabItem.get('tabItemConfigLink').get('color')"
-                            /> -->
                         </div>
                         <mat-icon (click)="editTab(tabItem); $event.stopPropagation()">edit</mat-icon>
                         <mat-icon (click)="deleteTab(tabItem); $event.stopPropagation()">delete</mat-icon>

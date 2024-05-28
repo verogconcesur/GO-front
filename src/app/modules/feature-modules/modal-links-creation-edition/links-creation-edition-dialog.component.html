@@ -1,4 +1,5 @@
-<form [formGroup]="form" class="link-form-wrapper smaller-mat-form-fields" *ngIf="form">
+<!-- Form for links -->
+<form [formGroup]="form" class="link-form-wrapper smaller-mat-form-fields" *ngIf="form && type === 'LINK'">
     <div class="link-form-wrapper__section">
         <!-- <div class="link-form-wrapper__section__title first-child">{{ labels.name | translate }} *</div> -->
         <div class="link-form-wrapper__section__group flex-start center">
@@ -114,6 +115,94 @@
             id="textEditorLinkAuthUrl"
             textEditorId="textEditorLinkAuthUrl"
             [initialValue]="form.get('tabItemConfigLink').get('authUrl').value"
+            [textEditorConfig]="textEditorToolbarOnlyMacroOptions"
+            [placeholder]="labels.authUrl | translate"
+            (contentChanged)="textEditorContentChanged($event, 'authUrl', true)"
+        ></app-text-editor-wrapper>
+    </div>
+</form>
+
+<!-- Form for events -->
+<form [formGroup]="form" class="link-form-wrapper smaller-mat-form-fields" *ngIf="form && type === 'EVENT'">
+    <div class="link-form-wrapper__section">
+        <div class="link-form-wrapper__section__title first-child">{{ labels.blockerTitle | translate }} *</div>
+        <mat-checkbox style="margin-left: 20px; margin-top: -2px" formControlName="blocker">{{
+            labels.blocker | translate
+        }}</mat-checkbox>
+    </div>
+    <div class="link-form-wrapper__section">
+        <div class="link-form-wrapper__section__title first-child">{{ labels.linkType | translate }} *</div>
+        <div class="link-form-wrapper__section__group flex-group">
+            <mat-radio-group formControlName="method">
+                <mat-radio-button value="POST">POST</mat-radio-button>
+                <mat-radio-button value="GET" style="margin-left: 10px">GET</mat-radio-button>
+            </mat-radio-group>
+        </div>
+    </div>
+
+    <div class="link-form-wrapper__section">
+        <div class="link-form-wrapper__section__title first-child">{{ labels.webService | translate }}</div>
+        <app-text-editor-wrapper
+            id="textEditorLink"
+            textEditorId="textEditorLink"
+            [initialValue]="form.get('webserviceUrl').value"
+            [textEditorConfig]="textEditorToolbarOnlyMacroOptions"
+            [placeholder]="'Url'"
+            (contentChanged)="textEditorContentChanged($event, 'webserviceUrl', true)"
+        ></app-text-editor-wrapper>
+    </div>
+    <div class="link-form-wrapper__section" *ngIf="form.get('method').value === 'POST'">
+        <div class="link-form-wrapper__section__title first-child">{{ labels.linkPostBody | translate }} *</div>
+        <app-text-editor-wrapper
+            *ngIf="showBodyEditor"
+            id="textEditorLinkBody"
+            textEditorId="textEditorLinkBody"
+            [initialValue]="form.get('body').value"
+            [textEditorConfig]="textEditorToolbarOnlyMacroOptions"
+            [placeholder]="labels.linkPostBody | translate"
+            (contentChanged)="textEditorContentChanged($event, 'body', true)"
+        ></app-text-editor-wrapper>
+        <mat-error style="margin-top: 5px" *ngIf="bodyValidation && !bodyValidation.valid">
+            <button
+                *ngIf="bodyValidation.suggestion"
+                mat-stroked-button
+                (click)="applyBodySuggestion()"
+                matTooltip="{{ bodyValidation.suggestion }}"
+                matTooltipPosition="above"
+            >
+                {{ labels.jsonSuggestionApply | translate }}
+            </button>
+            {{ labels.jsonError | translate }}
+        </mat-error>
+    </div>
+    <div class="link-form-wrapper__section">
+        <div class="link-form-wrapper__section__title first-child">{{ labels.authLink | translate }}</div>
+        <mat-checkbox style="margin-left: 20px; margin-top: -2px" formControlName="requireAuth">{{
+            labels.requireAuth | translate
+        }}</mat-checkbox>
+    </div>
+    <div class="link-form-wrapper__section" *ngIf="form.get('requireAuth').value">
+        <div class="link-form-wrapper__section__group flex-group">
+            <mat-form-field appearance="outline" floatLabel="always">
+                <mat-label>{{ labels.authUser | translate }}</mat-label>
+                <input type="text" matInput formControlName="authUser" />
+            </mat-form-field>
+            <mat-form-field appearance="outline" floatLabel="always">
+                <mat-label>{{ labels.authPass | translate }}</mat-label>
+                <input type="password" matInput formControlName="authPass" />
+            </mat-form-field>
+            <mat-form-field appearance="outline" floatLabel="always">
+                <mat-label>{{ labels.authAttributeToken | translate }}</mat-label>
+                <input type="text" matInput formControlName="authAttributeToken" />
+            </mat-form-field>
+        </div>
+    </div>
+    <div class="link-form-wrapper__section" *ngIf="form.get('requireAuth').value">
+        <div class="link-form-wrapper__section__title first-child">{{ labels.authUrl | translate }} *</div>
+        <app-text-editor-wrapper
+            id="textEditorLinkAuthUrl"
+            textEditorId="textEditorLinkAuthUrl"
+            [initialValue]="form.get('authUrl').value"
             [textEditorConfig]="textEditorToolbarOnlyMacroOptions"
             [placeholder]="labels.authUrl | translate"
             (contentChanged)="textEditorContentChanged($event, 'authUrl', true)"

@@ -22,6 +22,7 @@ import { WfEditSubstateAbstractTabClass } from '../wf-edit-substate-abstract-tab
 import { SortService } from '@shared/services/sort.service';
 import { CdkDragDrop } from '@angular/cdk/drag-drop';
 import { ConfirmDialogService } from '@shared/services/confirm-dialog.service';
+import CombinedRequiredFieldsValidator from '@shared/validators/combined-required-fields.validator';
 
 @Component({
   selector: 'app-wf-edit-substate-movements-tab',
@@ -254,6 +255,8 @@ export class WfEditSubstateMovementsTabComponent extends WfEditSubstateAbstractT
       requiredMyself: false,
       requiredSize: false,
       requiredUser: false,
+      webservice: false,
+      workflowEventWebserviceConfig: null,
       roles: this.editSubstateAuxService.workflowRoles,
       sendMail: false,
       workflowEventMails: [],
@@ -304,6 +307,51 @@ export class WfEditSubstateMovementsTabComponent extends WfEditSubstateAbstractT
       requiredMyself: [move?.requiredMyself ? move.requiredMyself : false],
       requiredSize: [move?.requiredSize ? move.requiredSize : false],
       requiredUser: [move?.requiredUser ? move.requiredUser : false],
+      webservice: [move?.webservice ? move.webservice : false],
+      workflowEventWebserviceConfig: this.fb.group(
+        {
+          uthAttributeToken: [
+            move?.workflowEventWebserviceConfig?.authAttributeToken ? move.workflowEventWebserviceConfig.authAttributeToken : null
+          ],
+          authPass: [move?.workflowEventWebserviceConfig?.authPass ? move.workflowEventWebserviceConfig.authPass : null],
+          authUrl: [move?.workflowEventWebserviceConfig?.authUrl ? move.workflowEventWebserviceConfig.authUrl : null],
+          authUser: [move?.workflowEventWebserviceConfig?.authUser ? move.workflowEventWebserviceConfig.authUser : null],
+          blocker: [move?.workflowEventWebserviceConfig?.blocker ? move.workflowEventWebserviceConfig.blocker : false],
+          body: [move?.workflowEventWebserviceConfig?.body ? move.workflowEventWebserviceConfig.body : null],
+          id: [move?.workflowEventWebserviceConfig?.id ? move.workflowEventWebserviceConfig.id : null],
+          method: [
+            move?.workflowEventWebserviceConfig?.method ? move.workflowEventWebserviceConfig.method : 'GET',
+            [Validators.required]
+          ],
+          requireAuth: [
+            move?.workflowEventWebserviceConfig?.requireAuth ? move.workflowEventWebserviceConfig.requireAuth : false
+          ],
+          variables: [move?.workflowEventWebserviceConfig?.variables ? move.workflowEventWebserviceConfig.variables : []],
+          webserviceUrl: [
+            move?.workflowEventWebserviceConfig?.webserviceUrl ? move.workflowEventWebserviceConfig.webserviceUrl : null,
+            [Validators.required]
+          ]
+        },
+        {
+          validators: [
+            CombinedRequiredFieldsValidator.field1RequiredIfFieldsConditions('body', [
+              { control: 'method', operation: 'equal', value: 'POST' }
+            ]),
+            CombinedRequiredFieldsValidator.field1RequiredIfFieldsConditions('authUrl', [
+              { control: 'requireAuth', operation: 'equal', value: true }
+            ]),
+            CombinedRequiredFieldsValidator.field1RequiredIfFieldsConditions('authUser', [
+              { control: 'requireAuth', operation: 'equal', value: true }
+            ]),
+            CombinedRequiredFieldsValidator.field1RequiredIfFieldsConditions('authPass', [
+              { control: 'requireAuth', operation: 'equal', value: true }
+            ]),
+            CombinedRequiredFieldsValidator.field1RequiredIfFieldsConditions('authAttributeToken', [
+              { control: 'requireAuth', operation: 'equal', value: true }
+            ])
+          ]
+        }
+      ),
       roles: [move?.roles ? move.roles : []],
       sendMail: [move?.sendMail ? move.sendMail : false],
       workflowEventMails: move?.workflowEventMails?.length
