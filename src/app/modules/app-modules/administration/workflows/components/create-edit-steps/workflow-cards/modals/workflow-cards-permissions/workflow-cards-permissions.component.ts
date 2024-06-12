@@ -345,12 +345,11 @@ export class WorkflowCardsPermissionsComponent extends ComponentToExtendForCusto
     cardPermission.workflowCardTabItemPermissions = cardPermission.workflowCardTabItemPermissions || [];
     const tab = this.tabs.find((item: CardColumnTabDTO) => item.id === cardPermission.tabId);
     this.getLinkTabItems(tab).forEach((linkItem) => {
-      if (
-        !cardPermission.workflowCardTabItemPermissions.find(
-          (tabPer: WorkflowCardTabItemPermissionDTO) => tabPer?.tabItemId === linkItem?.id
-        )
-      ) {
-        this.roles.forEach((role) => {
+      const rolesSettedForLinkItem = cardPermission.workflowCardTabItemPermissions
+        .filter((tabPer: WorkflowCardTabItemPermissionDTO) => tabPer?.tabItemId === linkItem?.id)
+        .map((tabPer: WorkflowCardTabItemPermissionDTO) => tabPer?.role?.id);
+      this.roles.forEach((role) => {
+        if (!rolesSettedForLinkItem.includes(role.id)) {
           cardPermission.workflowCardTabItemPermissions.push({
             id: null,
             permissionType: WorkFlowPermissionsEnum.hide,
@@ -358,8 +357,8 @@ export class WorkflowCardsPermissionsComponent extends ComponentToExtendForCusto
             tabItemId: linkItem.id,
             workflowCardTabId: cardPermission.id
           });
-        });
-      }
+        }
+      });
     });
     if (cardPermission.workflowCardTabItemPermissions.length > 0) {
       cardPermission.workflowCardTabItemPermissions.forEach((permission: WorkflowCardTabItemPermissionDTO) => {
@@ -372,12 +371,11 @@ export class WorkflowCardsPermissionsComponent extends ComponentToExtendForCusto
     cardPermission.workflowCardTabTAIPermissions = cardPermission.workflowCardTabTAIPermissions || [];
     if (this.attachmentTabIds.includes(cardPermission.tabId)) {
       this.templateAttachments.forEach((tempAtt) => {
-        if (
-          !cardPermission.workflowCardTabTAIPermissions.find(
-            (item: WorkflowCardTabTAIPermissionDTO) => item?.templateAttachmentItemId === tempAtt?.id
-          )
-        ) {
-          this.roles.forEach((role) => {
+        const rolesSettedForTAI = cardPermission.workflowCardTabTAIPermissions
+          .filter((tabPer: WorkflowCardTabTAIPermissionDTO) => tabPer?.templateAttachmentItemId === tempAtt?.id)
+          .map((tabPer: WorkflowCardTabTAIPermissionDTO) => tabPer?.role?.id);
+        this.roles.forEach((role) => {
+          if (!rolesSettedForTAI.includes(role.id)) {
             cardPermission.workflowCardTabTAIPermissions.push({
               id: null,
               permissionType: WorkFlowPermissionsEnum.hide,
@@ -385,8 +383,8 @@ export class WorkflowCardsPermissionsComponent extends ComponentToExtendForCusto
               templateAttachmentItemId: tempAtt.id,
               workflowCardTabId: cardPermission.id
             });
-          });
-        }
+          }
+        });
       });
       if (cardPermission.workflowCardTabTAIPermissions.length > 0) {
         cardPermission.workflowCardTabTAIPermissions.forEach((permission: WorkflowCardTabTAIPermissionDTO) => {
