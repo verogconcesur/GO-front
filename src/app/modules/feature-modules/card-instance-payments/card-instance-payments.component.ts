@@ -450,7 +450,6 @@ export class CardInstancePaymentsComponent implements OnInit {
       .pipe(take(1))
       .subscribe((response) => {
         if (response) {
-          console.log(response);
           this.savePayment(response);
         }
       });
@@ -670,30 +669,42 @@ export class CardInstancePaymentsComponent implements OnInit {
       paymentStatus: line?.paymentStatus ? line.paymentStatus : { id: 1, name: 'Creada' }
     }));
     const resquests = [
-      this.attachmentService.getCardAttachmentsByInstance(this.cardInstanceWorkflowId).pipe(take(1)),
       this.paymentsService.getCardPaymentTypes().pipe(take(1)),
       this.paymentsService.getCardPaymentStatus().pipe(take(1)),
       this.paymentsService.getCardDesciptionsTypes().pipe(take(1))
     ];
-    forkJoin(resquests).subscribe(
-      (responses: [CardAttachmentsDTO[], PaymentTypeDTO[], PaymentTypeDTO[], PaymentPosibleDescriptionDTO]) => {
-        this.paymentTypes = responses[1];
-        this.paymentStatus = responses[2];
-        this.paymentDescriptions = responses[3];
-        this.attachmentsList = [];
-        responses[0].forEach((attachment: CardAttachmentsDTO) => {
-          attachment.attachments.forEach((att: AttachmentDTO) => {
-            this.attachmentsList.push({
-              cardInstance: this.cardInstance,
-              tab: { id: attachment.tabId },
-              file: att,
-              templateAttachmentItem: attachment.templateAttachmentItem
-            } as CardPaymentAttachmentsDTO);
+
+    this.attachmentService
+      .getCardAttachmentsByInstance(this.cardInstanceWorkflowId)
+      .pipe(take(1))
+      .subscribe({
+        next: (data: CardAttachmentsDTO[]) => {
+          this.attachmentsList = [];
+          data.forEach((attachment: CardAttachmentsDTO) => {
+            attachment.attachments.forEach((att: AttachmentDTO) => {
+              this.attachmentsList.push({
+                cardInstance: this.cardInstance,
+                tab: { id: attachment.tabId },
+                file: att,
+                templateAttachmentItem: attachment.templateAttachmentItem
+              } as CardInstanceAttachmentDTO);
+            });
           });
-        });
+        },
+        error: (error: ConcenetError) => {
+          this.attachmentsList = [];
+          console.error(error);
+        }
+      });
+    forkJoin(resquests).subscribe(
+      (responses: [PaymentTypeDTO[], PaymentTypeDTO[], PaymentPosibleDescriptionDTO]) => {
+        this.paymentTypes = responses[0];
+        this.paymentStatus = responses[1];
+        this.paymentDescriptions = responses[2];
         this.initializeForms();
       },
       (errors) => {
+        console.log(errors);
         this.logger.error(errors);
       }
     );
