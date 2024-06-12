@@ -2,7 +2,12 @@
     <!-- facilities -->
     <mat-form-field appearance="outline" floatLabel="always">
         <mat-label>{{ labels.facility | translate }}</mat-label>
-        <mat-select formControlName="facilities" multiple (selectionChange)="getDepartmentsOptions(); getBrandsOptions()">
+        <mat-select
+            formControlName="facilities"
+            multiple
+            (selectionChange)="getDepartmentsOptions(); getBrandsOptions()"
+            [compareWith]="compareObjectIds"
+        >
             <button
                 mat-button
                 class="mat-button-w-100-left"
@@ -28,7 +33,12 @@
     <!-- brands -->
     <mat-form-field *ngIf="levelsToShow.brands" appearance="outline" floatLabel="always">
         <mat-label>{{ labels.brand | translate }}</mat-label>
-        <mat-select formControlName="brands" multiple [disabled]="!brandsList || !brandsList.length">
+        <mat-select
+            formControlName="brands"
+            multiple
+            [disabled]="!brandsList || !brandsList.length"
+            [compareWith]="compareObjectIds"
+        >
             <button
                 mat-button
                 class="mat-button-w-100-left"
@@ -59,6 +69,7 @@
             multiple
             (selectionChange)="getSpecialtiesOptions()"
             [disabled]="!departmentsList || !departmentsList.length"
+            [compareWith]="compareObjectIds"
         >
             <button
                 mat-button
@@ -96,7 +107,12 @@
     <!-- specialties -->
     <mat-form-field *ngIf="levelsToShow.specialties" appearance="outline" floatLabel="always">
         <mat-label>{{ labels.specialty | translate }}</mat-label>
-        <mat-select formControlName="specialties" multiple [disabled]="!specialtiesList || !specialtiesList.length">
+        <mat-select
+            formControlName="specialties"
+            multiple
+            [disabled]="!specialtiesList || !specialtiesList.length"
+            [compareWith]="compareObjectIds"
+        >
             <button
                 mat-button
                 class="mat-button-w-100-left"

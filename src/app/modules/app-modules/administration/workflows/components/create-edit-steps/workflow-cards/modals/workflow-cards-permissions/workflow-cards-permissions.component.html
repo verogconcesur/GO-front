@@ -40,11 +40,11 @@
                                 ></mat-checkbox>
                                 <span>{{ tab.name }}</span>
                             </div>
-                            <div *ngIf="tab?.contentTypeId === 5 && templateAttachments?.length">
+                            <div *ngIf="tab?.contentTypeId === 5 && templateAttachments[tab.id]?.length">
                                 <div
                                     class="workflow-cards-permissions-content__form__main__tabList__item__subitem"
                                     [ngClass]="{ selected: tmpAtch?.id === selectedTempAttch?.id }"
-                                    *ngFor="let tmpAtch of templateAttachments"
+                                    *ngFor="let tmpAtch of templateAttachments[tab.id]"
                                     (click)="selectTmpAtchToShow(tab, tmpAtch); $event.stopPropagation()"
                                 >
                                     <mat-icon>subdirectory_arrow_right</mat-icon>

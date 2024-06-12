@@ -59,7 +59,7 @@ export class WorkflowCardsPermissionsComponent extends ComponentToExtendForCusto
   public selectedTempAttch: TemplateAtachmentItemsDTO;
   public selectedLinkItem: CardColumnTabItemDTO;
   public allPermisionForm: FormGroup;
-  public templateAttachments: TemplateAtachmentItemsDTO[];
+  public templateAttachments: { [key: number]: TemplateAtachmentItemsDTO[] } = {};
   public attachmentTabIds: number[] = [];
   constructor(
     private fb: UntypedFormBuilder,
@@ -113,14 +113,16 @@ export class WorkflowCardsPermissionsComponent extends ComponentToExtendForCusto
         });
       });
       if (this.attachmentTabIds.length > 0) {
-        this.workflowService
-          .getWorkflowTemplateAttachments(this.attachmentTabIds[0])
-          .pipe(take(1))
-          .subscribe((data) => {
-            this.templateAttachments = data;
-            this.initializeForm();
-            this.spinnerService.hide(spinner);
+        const requests = this.attachmentTabIds.map((tabId) =>
+          this.workflowService.getWorkflowTemplateAttachments(tabId).pipe(take(1))
+        );
+        forkJoin(requests).subscribe((responses: TemplateAtachmentItemsDTO[][]) => {
+          responses.forEach((response, index) => {
+            this.templateAttachments[this.attachmentTabIds[index]] = response;
           });
+          this.initializeForm();
+          this.spinnerService.hide(spinner);
+        });
       } else {
         this.initializeForm();
         this.spinnerService.hide(spinner);
@@ -370,7 +372,7 @@ export class WorkflowCardsPermissionsComponent extends ComponentToExtendForCusto
     // Tabs adjuntos
     cardPermission.workflowCardTabTAIPermissions = cardPermission.workflowCardTabTAIPermissions || [];
     if (this.attachmentTabIds.includes(cardPermission.tabId)) {
-      this.templateAttachments.forEach((tempAtt) => {
+      this.templateAttachments[cardPermission.tabId].forEach((tempAtt) => {
         const rolesSettedForTAI = cardPermission.workflowCardTabTAIPermissions
           .filter((tabPer: WorkflowCardTabTAIPermissionDTO) => tabPer?.templateAttachmentItemId === tempAtt?.id)
           .map((tabPer: WorkflowCardTabTAIPermissionDTO) => tabPer?.role?.id);
@@ -437,7 +439,8 @@ export class WorkflowCardsPermissionsComponent extends ComponentToExtendForCusto
     if (this.attachmentTabIds.includes(tab.id)) {
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       const workflowCardTabTAIPermissions: any[] = [];
-      this.templateAttachments.forEach((tempAtt) => {
+      console.log(tab.id, this.templateAttachments);
+      this.templateAttachments[tab.id].forEach((tempAtt) => {
         this.roles.forEach((role) => {
           workflowCardTabTAIPermissions.push({
             id: null,
