@@ -30,7 +30,7 @@ export class AdvSearchCardTableComponent implements OnInit {
   };
   public paginationConfig = {
     length: 1,
-    pageSize: 5,
+    pageSize: 100,
     pageSizeOptions: [5, 10, 25, 100],
     page: 0,
     ariaLabel: 'Select page'
@@ -91,7 +91,7 @@ export class AdvSearchCardTableComponent implements OnInit {
     this.displayedColumns = [];
     this.dataSource = [];
     if (filter) {
-      console.log('executeSearch', filter);
+      // console.log('executeSearch', filter);
       this.advSearchFilter = filter;
       this.advSearchFilter.advancedSearchCols.forEach((element) => {
         if (element.variable && element.variable.name) {
