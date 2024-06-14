@@ -687,7 +687,7 @@ export class CardInstancePaymentsComponent implements OnInit {
                 tab: { id: attachment.tabId },
                 file: att,
                 templateAttachmentItem: attachment.templateAttachmentItem
-              } as CardInstanceAttachmentDTO);
+              } as CardPaymentAttachmentsDTO);
             });
           });
         },
