@@ -42,6 +42,7 @@ import {
   AdvSearchSaveFavDialogComponentModalEnum
 } from './components/adv-search-save-fav-dialog/adv-search-save-fav-dialog.component';
 import { PermissionConstants } from '@app/constants/permission.constants';
+import { WorkflowPrepareAndMoveService } from '../workflow/aux-service/workflow-prepare-and-move-aux.service';
 
 @UntilDestroy()
 @Component({
@@ -101,7 +102,8 @@ export class AdvancedSearchComponent implements OnInit {
     private translateService: TranslateService,
     private admService: AuthenticationService,
     private customDialogService: CustomDialogService,
-    private authService: AuthenticationService
+    private authService: AuthenticationService,
+    private prepareAndMoveService: WorkflowPrepareAndMoveService
   ) {}
   get context() {
     return (this.advSearchForm.get('advancedSearchContext') as FormGroup).controls;
@@ -127,9 +129,9 @@ export class AdvancedSearchComponent implements OnInit {
       }
       return error;
     }, false);
-    if (!error && this.criteria.length === 0) {
-      error = true;
-    }
+    // if (!error && this.criteria.length === 0) {
+    //   error = true;
+    // }
     return error;
   }
 
@@ -382,17 +384,20 @@ export class AdvancedSearchComponent implements OnInit {
       .pipe(take(1))
       .subscribe((data: AdvancedSearchItem[]) => {
         const criteriaItems = this.criteria.getRawValue();
-        data = data ? data : [];
-        data = data.filter((elem: AdvancedSearchItem) => {
-          if (elem.tabItem) {
-            return !criteriaItems.find((item: AdvancedSearchItem) => item.tabItem && item.tabItem.id === elem.tabItem.id);
-          } else {
-            return !criteriaItems.find((item: AdvancedSearchItem) => item.variable && item.variable.id === elem.variable.id);
+        const currentCriteriaIds = criteriaItems.map((col: AdvancedSearchItem) => this.getColCustomId(col));
+        data.forEach((col: AdvancedSearchItem) => {
+          const index = currentCriteriaIds.indexOf(this.getColCustomId(col));
+          if (index >= 0) {
+            //Ya lo tengo dentro del formulario
+            currentCriteriaIds.splice(index, 1);
+          } else if (index === -1) {
+            //No lo tengo en el formulario
+            this.addCriteria(col);
           }
         });
-        _.forEach(data, (value) => {
-          this.addCriteria(value);
-        });
+        if (currentCriteriaIds.length) {
+          this.removeCriteriaOrColFromFormArray(this.criteria, currentCriteriaIds);
+        }
       });
   }
   addColumns(): void {
@@ -412,17 +417,21 @@ export class AdvancedSearchComponent implements OnInit {
       .pipe(take(1))
       .subscribe((data: AdvancedSearchItem[]) => {
         const currentCols = this.columns.getRawValue();
-        data = data ? data : [];
-        data = data.filter((elem: AdvancedSearchItem) => {
-          if (elem.tabItem) {
-            return !currentCols.find((col: AdvancedSearchItem) => col.tabItem && col.tabItem.id === elem.tabItem.id);
-          } else {
-            return !currentCols.find((col: AdvancedSearchItem) => col.variable && col.variable.id === elem.variable.id);
+        const currentColdIds = currentCols.map((col: AdvancedSearchItem) => this.getColCustomId(col));
+        data.forEach((col: AdvancedSearchItem) => {
+          const index = currentColdIds.indexOf(this.getColCustomId(col));
+          if (index >= 0) {
+            //Ya lo tengo dentro del formulario
+            currentColdIds.splice(index, 1);
+          } else if (index === -1) {
+            //No lo tengo en el formulario
+            this.addColumn(col);
           }
         });
-        _.forEach(data, (value) => {
-          this.addColumn(value);
-        });
+        //Dentro de currentColIds debería tener las que quité y por tanto tengo que quitar del formulario
+        if (currentColdIds.length) {
+          this.removeCriteriaOrColFromFormArray(this.columns, currentColdIds);
+        }
       });
   }
   addColumn(value: AdvancedSearchItem): void {
@@ -455,6 +464,25 @@ export class AdvancedSearchComponent implements OnInit {
           value: [value.value ? value.value : null]
         })
       );
+    }
+  }
+  removeCriteriaOrColFromFormArray = (formArray: FormArray, ids: string[]): void => {
+    const nextId = ids.shift();
+    const control = formArray.controls.find((col: FormGroup) => this.getColCustomId(col.value) === nextId);
+    removeItemInFormArray(formArray, control.value.orderNumber - 1);
+    //Verificar y corregir los ordeNumbers de los elementos restantes
+    formArray.controls.forEach((col: FormGroup, index: number) => {
+      col.get('orderNumber').setValue(index + 1);
+    });
+    if (ids.length) {
+      this.removeCriteriaOrColFromFormArray(formArray, ids);
+    }
+  };
+  getColCustomId(col: AdvancedSearchItem): string {
+    if (col.tabItem) {
+      return `tabItem-${col.tabItem.id}`;
+    } else {
+      return `variable-${col.variable.id}`;
     }
   }
   getColName(col: FormGroup): string {
@@ -740,6 +768,13 @@ export class AdvancedSearchComponent implements OnInit {
         startWith(''),
         map((value) => this.filter('subStates', value || ''))
       );
+    this.prepareAndMoveService.reloadData$
+      .pipe(untilDestroyed(this))
+      .subscribe((data: 'MOVES_IN_THIS_WORKFLOW' | 'MOVES_IN_OTHER_WORKFLOWS' | 'UPDATE_INFORMATION') => {
+        if (data === 'MOVES_IN_THIS_WORKFLOW' || data === 'MOVES_IN_OTHER_WORKFLOWS' || data === 'UPDATE_INFORMATION') {
+          this.prepareAndMoveService.reloadData$.next(null);
+        }
+      });
   }
   private filter = (from: 'states' | 'subStates', value: string): any[] => {
     const filterValue = `${value}`.toLowerCase().trim();
