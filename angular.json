@@ -107,7 +107,7 @@
                             "namedChunks": true
                         }
                     },
-                    "defaultConfiguration": "dev"
+                    "defaultConfiguration": ""
                 },
                 "serve": {
                     "builder": "@angular-devkit/build-angular:dev-server",

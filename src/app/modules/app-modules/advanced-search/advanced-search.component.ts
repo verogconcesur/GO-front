@@ -557,11 +557,13 @@ export class AdvancedSearchComponent implements OnInit {
       })
       .pipe(take(1))
       .subscribe((data: any) => {
-        criteria.get('advancedSearchOperator').setValue(data.operator);
-        const value = Array.isArray(data.value)
-          ? data.value.map((i: any) => (i?.id ? i.id : i)).join(this.escapedValue)
-          : data.value;
-        criteria.get('value').setValue(value);
+        if (data) {
+          criteria.get('advancedSearchOperator').setValue(data.operator);
+          const value = Array.isArray(data.value)
+            ? data.value.map((i: any) => (i?.id ? i.id : i)).join(this.escapedValue)
+            : data.value;
+          criteria.get('value').setValue(value);
+        }
       });
   }
   hasErrors(): boolean {
