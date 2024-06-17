@@ -155,9 +155,26 @@ export class AdvSearchCriteriaEditionDialogComponent extends ComponentToExtendFo
         settingValueOptions = true;
       }
     }
-    this.operators = this.extendedComponentData.operators.filter(
-      (op: AdvSearchOperatorDTO) => op.dataTypes.indexOf(this.dataType) >= 0
-    );
+    this.operators = this.extendedComponentData.operators.filter((op: AdvSearchOperatorDTO) => {
+      if (
+        op.dataTypes.indexOf(this.dataType) >= 0 &&
+        this.criteria &&
+        this.criteria.tabItem?.typeItem === 'LIST' &&
+        this.criteria.tabItem?.tabItemConfigList?.selectionType === 'MULTIPLE'
+      ) {
+        //Evitar EQ y NEQ puesto que no son múltiples
+        return ['EQ', 'NEQ'].indexOf(op.code) === -1;
+      } else if (
+        op.dataTypes.indexOf(this.dataType) >= 0 &&
+        this.criteria &&
+        this.criteria.tabItem?.typeItem === 'LIST' &&
+        this.criteria.tabItem?.tabItemConfigList?.selectionType === 'SIMPLE'
+      ) {
+        //Evitar IN y NIN puesto que no son simples
+        return ['IN', 'NIN'].indexOf(op.code) === -1;
+      }
+      return op.dataTypes.indexOf(this.dataType) >= 0;
+    });
     //Ya tengo valueOptions y operatos, inicializo los form.
     if (this.criteria?.advancedSearchOperator) {
       this.operatorFormControl.setValue(this.operators.find((op) => op.id === this.criteria.advancedSearchOperator.id));
