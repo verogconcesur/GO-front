@@ -19,7 +19,8 @@ export class WorkflowFilterService {
     users: [],
     priorities: [],
     dateType: null,
-    substatesWithCards: 'BOTH'
+    substatesWithCards: 'BOTH',
+    followedCards: false
   });
   //Stores the filter options to show
   public workflowFilterOptionsSubject$: BehaviorSubject<WorkflowFilterDTO> = new BehaviorSubject({
@@ -28,7 +29,8 @@ export class WorkflowFilterService {
     users: [],
     priorities: [],
     dateType: null,
-    substatesWithCards: 'BOTH'
+    substatesWithCards: 'BOTH',
+    followedCards: false
   });
 
   constructor() {}
@@ -40,7 +42,8 @@ export class WorkflowFilterService {
       users: [],
       priorities: [],
       dateType: null,
-      substatesWithCards: 'BOTH'
+      substatesWithCards: 'BOTH',
+      followedCards: false
     };
     this.workflowFilterSubject$.next(filterR);
     this.workflowFilterOptionsSubject$.next(filterR);
@@ -54,7 +57,8 @@ export class WorkflowFilterService {
         filterValue.subStates.length ||
         filterValue.users.length ||
         filterValue.priorities.length ||
-        filterValue.substatesWithCards !== 'BOTH')
+        filterValue.substatesWithCards !== 'BOTH' ||
+        filterValue.followedCards)
     ) {
       return true;
     }
@@ -104,7 +108,8 @@ export class WorkflowFilterService {
       users: [...users],
       priorities: [...priorities],
       dateType: null,
-      substatesWithCards
+      substatesWithCards,
+      followedCards: false
     };
     this.workflowFilterOptionsSubject$.next(filterOptions);
   }
@@ -122,6 +127,60 @@ export class WorkflowFilterService {
   public filterData(workflowInstances: WorkflowStateDTO[], filter: WorkflowFilterDTO): WorkflowStateDTO[] {
     let wStatesData: WorkflowStateDTO[] = lodash.cloneDeep(workflowInstances);
     const filters = JSON.parse(JSON.stringify(filter));
+
+    //Filtro por tarjetas que sigue el usuario logado
+    if (filter.followedCards) {
+      wStatesData = wStatesData
+        .map((ws: WorkflowStateDTO) => {
+          ws.workflowSubstates = ws.workflowSubstates
+            .map((wss: WorkflowSubstateDTO) => {
+              wss.cards = wss.cards.filter((card: WorkflowCardDTO) => card.cardInstanceWorkflows[0].following);
+              return wss;
+            })
+            .filter((wss: WorkflowSubstateDTO) => wss.cards.length);
+          return ws;
+        })
+        .filter((ws: WorkflowStateDTO) => {
+          if (ws.front) {
+            //Si es portada filtramos por usuario y subestados vacíos
+            const dataByUser: any = {};
+            ws.workflowSubstates = ws.workflowSubstates.map((wss: WorkflowSubstateDTO) => {
+              wss.workflowSubstateUser = wss.workflowSubstateUser.map((wssu: WorkflowSubstateUserDTO) => {
+                const newCardsBySubstateId: any = {};
+                Object.keys(wssu.cardsBySubstateId).forEach((k) => {
+                  if (wssu.cardsBySubstateId[k].length) {
+                    wssu.cardsBySubstateId[k] = wssu.cardsBySubstateId[k].filter(
+                      (c: any) => c.cardInstanceWorkflows[0].following
+                    );
+                    newCardsBySubstateId[k] = wssu.cardsBySubstateId[k];
+                  }
+                });
+                wssu.cardsBySubstateId = newCardsBySubstateId;
+                wssu.cards = wssu.cards.filter((c) => c.cardInstanceWorkflows[0].following);
+                if (dataByUser[wssu.user.id]) {
+                  wssu.cards = this.orderCardsByOrderNumber([...wssu.cards, ...dataByUser[wssu.user.id].cards]);
+                  wssu.cardsBySubstateId = { ...wssu.cardsBySubstateId, ...dataByUser[wssu.user.id].cardsBySubstateId };
+                  dataByUser[wssu.user.id] = wssu;
+                } else {
+                  dataByUser[wssu.user.id] = wssu;
+                }
+                return wssu;
+              });
+              return wss;
+            });
+            ws.workflowUsers = ws.workflowUsers
+              ?.map((wssu: WorkflowSubstateUserDTO) => dataByUser[wssu.user.id])
+              .filter(
+                (wssu: WorkflowSubstateUserDTO) =>
+                  wssu?.cards?.length && wssu.cards.filter((c) => c.cardInstanceWorkflows[0].following).length
+              );
+          }
+          if (ws.workflowSubstates.length) {
+            return true;
+          }
+          return false;
+        });
+    }
 
     //Filtro estados
     if (filters.states?.length) {
@@ -329,6 +388,19 @@ export class WorkflowFilterService {
     let wStatesData: WorkflowStateDTO[] = lodash.cloneDeep(workflowInstances);
     const filters = JSON.parse(JSON.stringify(filter));
 
+    //Filtro por tarjetas que sigue el usuario logado
+    if (filter.followedCards) {
+      wStatesData = wStatesData.map((ws: WorkflowStateDTO) => {
+        ws.workflowSubstates = ws.workflowSubstates
+          .map((wss: WorkflowSubstateDTO) => {
+            wss.cards = wss.cards.filter((card: WorkflowCardDTO) => card.cardInstanceWorkflows[0].following);
+            return wss;
+          })
+          .filter((wss: WorkflowSubstateDTO) => wss.cards.length);
+        return ws;
+      });
+    }
+
     //Filtro Usuarios
     if (filter.users?.length > 0) {
       const usersToFilterIds = filter.users.map((wssu: WorkflowSubstateUserDTO) => wssu.user.id);
@@ -424,6 +496,9 @@ export class WorkflowFilterService {
   public filterDataCalendar(cards: WorkflowCardDTO[], filter: WorkflowFilterDTO): WorkflowCardDTO[] {
     return cards.filter((card: WorkflowCardDTO) => {
       let isReturnable = true;
+      if (filter.followedCards) {
+        isReturnable = card.cardInstanceWorkflows[0].following;
+      }
       if (filter.states && filter.states.length) {
         isReturnable = !!filter.states.find((state: WorkflowStateDTO) => state.id === card.workflowSubstate.workflowState.id);
       }

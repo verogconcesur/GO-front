@@ -25,6 +25,7 @@
         }
         &__item {
           padding: 5px 10px;
+          cursor: pointer;
           span {
             padding-left: 10px;
           }
@@ -34,6 +35,19 @@
               rgba(mat-color($primary, 600), 15%) 0%,
               mat-contrast($primary, statusSuccess) 100%
             );
+          }
+          &__subitem {
+            cursor: pointer;
+            display: flex;
+            justify-content: start;
+            align-items: end;
+            &.selected {
+              background-image: linear-gradient(
+                120deg,
+                rgba(mat-color($primary, 600), 25%) 0%,
+                mat-contrast($primary, statusSuccess) 100%
+              );
+            }
           }
         }
       }

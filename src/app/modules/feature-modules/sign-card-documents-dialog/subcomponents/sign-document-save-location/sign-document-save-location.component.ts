@@ -12,7 +12,7 @@ import { ProgressSpinnerDialogService } from '@shared/services/progress-spinner-
 import FilenameValidator from '@shared/validators/filename.validator';
 import { NGXLogger } from 'ngx-logger';
 import { finalize, take } from 'rxjs/operators';
-import { SignDocumentAuxService } from '../sign-document-checklist/sign-document-aux.service';
+import { SignDocumentAuxService } from '../sign-document-checklist-new/sign-document-aux.service';
 
 @Component({
   selector: 'app-sign-document-save-location',

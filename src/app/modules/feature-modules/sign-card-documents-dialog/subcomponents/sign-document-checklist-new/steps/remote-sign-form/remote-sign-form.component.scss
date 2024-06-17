@@ -1,0 +1,104 @@
+@import 'utils/core';
+@import 'utils/theme';
+.sign-form {
+  overflow-y: auto;
+  height: 100%;
+  form {
+    height: 100%;
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+    flex-direction: column;
+    section {
+      width: 80vw;
+      max-width: 700px;
+    }
+  }
+  .mat-form-field-wrapper {
+    padding-bottom: 0 !important;
+  }
+  .text-area {
+    width: 80vw;
+    max-width: 700px;
+  }
+
+  &__text {
+    margin-top: 15px;
+    &__title {
+      margin-top: 15px;
+      margin-bottom: 5px;
+      font-weight: 600;
+      text-transform: uppercase;
+      font-size: 0.9em;
+      color: lighten(mat-color($primary, 500), 20%);
+    }
+  }
+
+  &__image {
+    margin-bottom: 15px;
+    &__title {
+      margin-top: 15px;
+      margin-bottom: 5px;
+      font-weight: 600;
+      text-transform: uppercase;
+      font-size: 0.9em;
+      color: lighten(mat-color($primary, 500), 20%);
+    }
+    button {
+      margin-left: 20px;
+    }
+  }
+  &__sign {
+    &__title {
+      margin-top: 15px;
+      margin-bottom: 5px;
+      font-weight: 600;
+      text-transform: uppercase;
+      font-size: 0.9em;
+      color: lighten(mat-color($primary, 500), 20%);
+    }
+    .sign-wrapper {
+      border: 1px #c2bfbf solid;
+      width: 250px;
+      height: 125px;
+      padding: 5px;
+      display: flex;
+      flex-direction: column;
+      align-items: flex-end;
+      border-radius: 8px;
+      position: relative;
+      button {
+        position: absolute;
+        bottom: 8px;
+      }
+      img {
+        max-width: 240px;
+        max-height: 140px;
+      }
+    }
+  }
+  &__check {
+    margin-top: 15px;
+    &__title {
+      margin-top: 15px;
+      margin-bottom: 5px;
+      font-weight: 600;
+      text-transform: uppercase;
+      font-size: 0.9em;
+      color: lighten(mat-color($primary, 500), 20%);
+    }
+  }
+
+  .image-input-preview {
+    width: 150px;
+    height: 100px;
+    border: 1px solid mat-color($primary, 700);
+    overflow: hidden;
+    border-radius: 5px;
+    img {
+      width: 100%;
+      height: 100%;
+      inline-size: auto;
+    }
+  }
+}

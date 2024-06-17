@@ -30,22 +30,49 @@
                             *ngFor="let tab of col.tabs"
                             class="workflow-cards-permissions-content__form__main__tabList__item"
                             [ngClass]="{ selected: tab?.id === selectedTab?.id }"
-                            fxLayout="row"
                             (click)="selectTabToShow(tab); $event.stopPropagation()"
                         >
-                            <mat-checkbox
-                                [checked]="isTabSelected(tab)"
-                                (change)="addRemoveTabFromPermissions(tab)"
-                                (click)="$event.stopPropagation()"
-                            ></mat-checkbox>
-                            <span>{{ tab.name }}</span>
+                            <div>
+                                <mat-checkbox
+                                    [checked]="isTabSelected(tab)"
+                                    (change)="addRemoveTabFromPermissions(tab)"
+                                    (click)="$event.stopPropagation()"
+                                ></mat-checkbox>
+                                <span>{{ tab.name }}</span>
+                            </div>
+                            <div *ngIf="tab?.contentTypeId === 5 && templateAttachments[tab.id]?.length">
+                                <div
+                                    class="workflow-cards-permissions-content__form__main__tabList__item__subitem"
+                                    [ngClass]="{ selected: tmpAtch?.id === selectedTempAttch?.id }"
+                                    *ngFor="let tmpAtch of templateAttachments[tab.id]"
+                                    (click)="selectTmpAtchToShow(tab, tmpAtch); $event.stopPropagation()"
+                                >
+                                    <mat-icon>subdirectory_arrow_right</mat-icon>
+                                    Categoría: {{ tmpAtch.name }}
+                                </div>
+                            </div>
+                            <div *ngIf="tab?.contentTypeId === 3 && getLinkTabItems(tab).length">
+                                <div
+                                    class="workflow-cards-permissions-content__form__main__tabList__item__subitem"
+                                    [ngClass]="{ selected: linkItem?.id === selectedLinkItem?.id }"
+                                    *ngFor="let linkItem of getLinkTabItems(tab)"
+                                    (click)="selectLinkItemToShow(tab, linkItem); $event.stopPropagation()"
+                                >
+                                    <mat-icon>subdirectory_arrow_right</mat-icon>
+                                    Link: {{ linkItem.name }}
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
             </div>
             <div fxFlex="56" fxFlexOffset="4" *ngIf="selectedTab && allPermisionForm">
                 <div>
-                    <h2>{{ selectedTab.name }}</h2>
+                    <h2>
+                        {{ selectedTab.name }}
+                        <span *ngIf="selectedTempAttch?.name"> - {{ selectedTempAttch?.name }}</span>
+                        <span *ngIf="selectedLinkItem?.name"> - {{ selectedLinkItem?.name }}</span>
+                    </h2>
                 </div>
                 <div class="workflow-cards-permissions-content__form__main__permissions" *ngIf="cardTabForm" fxLayout="column">
                     <div fxLayout="row" class="workflow-cards-permissions-content__form__main__permissions__header">
@@ -120,7 +147,7 @@
                     <div fxLayout="row">
                         <mat-divider></mat-divider>
                     </div>
-                    <div fxLayout="row" *ngFor="let permission of workflowCardPermissions.controls" [formGroup]="permission">
+                    <div fxLayout="row" *ngFor="let permission of workflowCardPermissions" [formGroup]="permission">
                         <div
                             fxFlex="40"
                             class="workflow-cards-permissions-content__form__main__permissions__item"

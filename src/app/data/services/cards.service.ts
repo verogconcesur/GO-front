@@ -19,6 +19,7 @@ import WorkflowCardSlotDTO from '@data/models/workflows/workflow-card-slot-dto';
 import WorkflowCardTabItemDTO from '@data/models/workflows/workflow-card-tab-item-dto';
 import WorkflowCardTabitemInstanceDTO from '@data/models/workflows/workflow-card-tabitem-instance-dto';
 import WorkflowMoveDTO from '@data/models/workflows/workflow-move-dto';
+import WorkflowSubstateUserDTO from '@data/models/workflows/workflow-substate-user-dto';
 import { getPaginationUrlGetParams } from '@data/utils/pagination-aux';
 import { Observable, throwError } from 'rxjs';
 import { catchError } from 'rxjs/operators';
@@ -52,6 +53,7 @@ export class CardService {
   private readonly INFORMATION = '/informations';
   private readonly INFO_PATH = '/info';
   private readonly EDIT_DATE_LIMIT_PATH = '/editDateLimit';
+  private readonly USER_PERMISSIONS_PATH = '/userPermissions';
 
   constructor(@Inject(ENV) private env: Env, private http: HttpClient) {}
 
@@ -343,6 +345,15 @@ export class CardService {
           id: idCard,
           dateAppliTimeLimit: date
         }
+      )
+      .pipe(catchError((error) => throwError(error.error as ConcenetError)));
+  }
+
+  public getUserPermissions(cardInstanceWorkflowId: number): Observable<WorkflowSubstateUserDTO> {
+    return this.http
+      .get<WorkflowSubstateUserDTO>(
+        // eslint-disable-next-line max-len
+        `${this.env.apiBaseUrl}${this.GET_CARD_INSTANCE_PATH}${this.GET_DETAIL_PATH}/${cardInstanceWorkflowId}${this.USER_PERMISSIONS_PATH}`
       )
       .pipe(catchError((error) => throwError(error.error as ConcenetError)));
   }

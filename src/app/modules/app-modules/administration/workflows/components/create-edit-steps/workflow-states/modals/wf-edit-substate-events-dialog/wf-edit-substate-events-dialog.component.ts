@@ -25,14 +25,16 @@ import { GlobalMessageService } from '@shared/services/global-message.service';
 import { ProgressSpinnerDialogService } from '@shared/services/progress-spinner-dialog.service';
 import CombinedRequiredFieldsValidator from '@shared/validators/combined-required-fields.validator';
 import { forkJoin, Observable, of } from 'rxjs';
-import { catchError, finalize, map, take } from 'rxjs/operators';
+import { catchError, finalize, map, take, takeUntil } from 'rxjs/operators';
 import { WEditSubstateFormAuxService } from '../wf-edit-substate-dialog/aux-service/wf-edit-substate-aux.service';
+import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
 export const enum WfEditSubstateEventsComponentModalEnum {
   ID = 'edit-state-dialog-id',
   PANEL_CLASS = 'edit-state-dialog',
   TITLE = 'workflows.editState'
 }
 
+@UntilDestroy()
 @Component({
   selector: 'app-wf-edit-substate-events-dialog',
   templateUrl: './wf-edit-substate-events-dialog.component.html',
@@ -47,6 +49,7 @@ export class WfEditSubstateEventsDialogComponent extends ComponentToExtendForCus
     eventType: 'IN' | 'OUT' | 'MOV';
     workflowId: number;
     allStatesAndSubstates: TreeNode[];
+    groupNames?: string[];
     roles?: WorkflowRoleDTO[];
   };
   @Output() formIntialized: EventEmitter<boolean> = new EventEmitter();
@@ -87,7 +90,9 @@ export class WfEditSubstateEventsDialogComponent extends ComponentToExtendForCus
     FOLLOWERS: marker('workflows.receiver.followers'),
     ROLE: marker('workflows.receiver.role'),
     OTHER: marker('workflows.receiver.other'),
-    errorPatternMessage: marker('errors.emailPattern')
+    errorPatternMessage: marker('errors.emailPattern'),
+    movementGroup: marker('workflows.movementGroup'),
+    groupName: marker('workflows.groupName')
   };
   public receiverTypes = ['CLIENT', 'ADVISER', 'ASIGNED', 'FOLLOWERS', 'ROLE', 'OTHER'];
   public form: UntypedFormGroup;
@@ -101,6 +106,8 @@ export class WfEditSubstateEventsDialogComponent extends ComponentToExtendForCus
   public fieldsList: CardColumnTabItemDTO[];
   public allStatesAndSubstates: TreeNode[];
   public emailPattern = '^[a-z0-9._%+-]+@[a-z0-9.-]+\\.[a-z]{2,4}$';
+  public groupNames: string[] = [];
+  public filteredGroupNames: Observable<string[]>;
 
   constructor(
     private fb: FormBuilder,
@@ -127,6 +134,21 @@ export class WfEditSubstateEventsDialogComponent extends ComponentToExtendForCus
     if (this.move) {
       this.initForm(this.move);
     }
+    if (this.eventType === 'MOV') {
+      this.filteredGroupNames = this.form.get('groupName').valueChanges.pipe(
+        untilDestroyed(this),
+        map((value: string) => {
+          if (value) {
+            const filterValue = value.toLowerCase();
+            return this.groupNames?.length
+              ? this.groupNames.filter((option: string) => option.toLowerCase().includes(filterValue))
+              : [];
+          } else {
+            return this.groupNames?.length ? this.groupNames : [];
+          }
+        })
+      );
+    }
     this.spinnerService.hide(spinner);
   }
 
@@ -149,6 +171,7 @@ export class WfEditSubstateEventsDialogComponent extends ComponentToExtendForCus
     this.eventType = this.extendedComponentData?.eventType;
     this.allStatesAndSubstates = this.editSubstateAuxService.allStatesAndSubstates[0].children;
     this.roles = this.editSubstateAuxService.workflowRoles;
+    this.groupNames = this.extendedComponentData?.groupNames ? this.extendedComponentData?.groupNames : [];
     if (!avoidInitFrom) {
       this.initForm(this.move);
     }
@@ -213,6 +236,7 @@ export class WfEditSubstateEventsDialogComponent extends ComponentToExtendForCus
         shortcut: [data?.shortcut ? true : false],
         shortcutColor: [data?.shortcutColor ? data.shortcutColor : '#FFFFFF'],
         shortcutName: [data?.shortcutName ? data.shortcutName : null],
+        groupName: [data?.groupName ? data.groupName : null],
         ...extraMovement
       };
       validatorsExtra = [

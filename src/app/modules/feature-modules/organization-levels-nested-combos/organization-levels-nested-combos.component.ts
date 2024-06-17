@@ -73,6 +73,10 @@ export class OrganizationLevelsNestedCombosComponent implements OnInit, OnDestro
     this.specialtyService.resetSpecialtiesData();
   }
 
+  public compareObjectIds(o1: any, o2: any): boolean {
+    return o1 && o2 && o1?.id === o2?.id;
+  }
+
   public selectAll(type: 'specialties' | 'departments' | 'facilities' | 'brands', control: AbstractControl, list: any[]) {
     if (type === 'facilities' || type === 'brands') {
       control.setValue(list);
@@ -243,14 +247,6 @@ export class OrganizationLevelsNestedCombosComponent implements OnInit, OnDestro
       tap((facilities: FacilityDTO[]) => {
         this.facilitiesList = facilities;
         if (this.form.get('facilities').value?.length) {
-          //Se había inicializado el formulario con datos
-          this.form
-            .get('facilities')
-            .setValue(
-              this.form
-                .get('facilities')
-                .value.map((facilityDefault: BrandDTO) => facilities.find((facility) => facility.id === facilityDefault.id))
-            );
           if (this.levelsToShow.departments) {
             this.getDepartmentsOptions(true);
           }

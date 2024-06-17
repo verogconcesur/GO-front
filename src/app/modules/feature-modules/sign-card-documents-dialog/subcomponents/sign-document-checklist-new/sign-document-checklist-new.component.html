@@ -1,0 +1,122 @@
+<div class="checklist-steps" [ngClass]="{ hide: mode === 'REMOTE' }">
+    <mat-stepper
+        linear
+        #stepper
+        color="primary"
+        [selectedIndex]="currentStep"
+        (selectionChange)="stepChanged($event)"
+        labelPosition="bottom"
+    >
+        <mat-step *ngFor="let step of steps">
+            <ng-template matStepLabel>
+                <span>{{ step.label | translate }} </span>
+            </ng-template>
+        </mat-step>
+        <ng-template matStepperIcon="edit" let-index="index" let-active="active">
+            <mat-icon *ngIf="index < stepper.selectedIndex; else default">done</mat-icon>
+            <ng-template #default>{{ index + 1 }}</ng-template>
+        </ng-template>
+    </mat-stepper>
+</div>
+
+<div class="checklist-sign">
+    <!-- <div class="checklist-sign__no-data" [ngClass]="{ opacity0: pdfLoaded }">
+        <h2>{{ labels.loadingPdfWait | translate }}.</h2>
+        <div fxLayoutAlign="center center" style="width: 100%">
+            <mat-spinner matSuffix class="spinner" diameter="50"></mat-spinner>
+        </div>
+    </div> -->
+    <!-- Preview pdf -->
+    <div
+        class="checklist-sign__pdf"
+        [ngClass]="{
+            opacity0: !pdfLoaded || (!showSectionInStep('pdfViewer') && !showSectionInStep('paintZone')),
+            'mt-30': !showSectionInStep('paintZone') && mode !== 'REMOTE',
+            'remote-mode': mode === 'REMOTE'
+        }"
+    >
+        <div *ngIf="renderingDrawingItems" class="checklist-sign__pdf__spinner">
+            <mat-spinner matSuffix class="spinner" diameter="50"></mat-spinner>
+        </div>
+        <div class="paint-zone-controls" *ngIf="mode !== 'REMOTE' && showSectionInStep('paintZone')">
+            <div class="type">
+                <input type="radio" name="pen-type" id="sign-document-pen-pencil" class="pen-pencil" checked />
+                <label for="pen-pencil">
+                    <mat-icon>edit</mat-icon>
+                </label>
+                <input type="radio" name="pen-type" id="sign-document-pen-eraser" class="pen-eraser" />
+                <label for="pen-eraser">
+                    <mat-icon>edit_off</mat-icon>
+                </label>
+            </div>
+            <div class="size">
+                <input type="range" id="sign-document-pen-size" class="pen-size" min="1" max="30" value="3" />
+            </div>
+            <div class="color">
+                <input type="color" id="sign-document-pen-color" class="pen-color" value="#000" />
+            </div>
+        </div>
+        <ng-container class="checklist-sign__pdf__viewer" *ngIf="fileTemplateBase64 | async as base64">
+            <ngx-extended-pdf-viewer
+                id="checklistPDF"
+                class="disable-pdf-form"
+                [base64Src]="base64"
+                [height]="getPdfHeight()"
+                [handTool]="drawingModeEnabledForItem ? false : true"
+                [useBrowserLocale]="true"
+                [zoom]="'page-fit'"
+                [zoomLevels]="['auto', 'page-actual', 'page-fit', 'page-width']"
+                [showZoomButtons]="true"
+                [mobileFriendlyZoom]="true"
+                [showHandToolButton]="drawingModeEnabledForItem ? false : true"
+                [showPresentationModeButton]="false"
+                [showUnverifiedSignatures]="true"
+                [showRotateButton]="false"
+                [showFindButton]="false"
+                [showPrintButton]="false"
+                [showSpreadButton]="false"
+                [showDownloadButton]="false"
+                [showOpenFileButton]="false"
+                [(page)]="page"
+                (pageRendered)="pageRendered($event)"
+                (pdfLoaded)="pdfLoadedFn($event)"
+                (zoomChange)="pdfZoomChange($event)"
+                [textLayer]="false"
+                [(formData)]="formData"
+            >
+            </ngx-extended-pdf-viewer>
+        </ng-container>
+    </div>
+
+    <div class="checklist-sign__form" [ngClass]="{ opacity0: !pdfLoaded || !showSectionInStep('formViewer') }">
+        <app-remote-sign-form
+            #signForm
+            *ngIf="templateChecklistItems && showSectionInStep('formViewer')"
+            [templateChecklistItems]="templateChecklistItems"
+            [wCardId]="wCardId"
+            (printItemImageInPdf)="printItemImageInPdf($event.jQItem, $event.fg)"
+        ></app-remote-sign-form>
+    </div>
+</div>
+
+<div class="checklist-footer">
+    <button mat-flat-button (click)="currentStep = currentStep - 1" *ngIf="stepper.selectedIndex > 0">
+        {{ labels.back | translate }}
+    </button>
+    <div class="checklist-footer__info" (click)="showStepInfo()"><mat-icon>info</mat-icon>{{ getStepInfo() }}</div>
+    <button mat-flat-button color="primary" (click)="currentStep = currentStep + 1" *ngIf="mode !== 'REMOTE' && !isLastStep()">
+        {{ labels.next | translate }}
+    </button>
+    <button mat-flat-button color="primary" (click)="save()" *ngIf="mode !== 'REMOTE' && isLastStep()">
+        {{ labels.save | translate }}
+    </button>
+    <button mat-flat-button color="primary" (click)="save()" *ngIf="mode === 'REMOTE'">
+        {{ labels.send | translate }}
+    </button>
+</div>
+
+<div class="checklistItemToDrag undropped" id="checklistItemToDrag">
+    <div class="resizable" style="height: 50px; width: 124px">
+        <div class="checklistItemToDrag__box checklistItemToDrag__label"></div>
+    </div>
+</div>

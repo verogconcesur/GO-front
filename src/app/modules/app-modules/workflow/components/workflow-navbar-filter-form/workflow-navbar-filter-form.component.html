@@ -151,6 +151,24 @@
             </mat-option>
         </mat-select>
     </mat-form-field> -->
+    <!-- Button to filter cards that the user follows or not -->
+    <button
+        mat-icon-button
+        class="followedCards-button"
+        [ngClass]="{ active: filterForm.get('followedCards').value }"
+        [color]="filterForm.get('followedCards').value ? 'warn' : 'primary'"
+        aria-label="Filter by followed cards"
+        (click)="filterFollowedCards()"
+        [disabled]="!filterOptions?.states?.length"
+    >
+        <mat-icon
+            matTooltipPosition="above"
+            [matTooltip]="
+                filterForm.get('followedCards').value ? (labels.followedCards | translate) : (labels.allCards | translate)
+            "
+            >remove_red_eye</mat-icon
+        >
+    </button>
     <button
         mat-icon-button
         *ngIf="!hideSubstatesWithCardsButton"

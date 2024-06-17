@@ -12,6 +12,7 @@ import WorkflowSubstateDTO from './workflow-substate-dto';
 export default interface WorkflowMoveDTO {
   id: number;
   orderNumber: number;
+  groupName?: string;
   requiredFields: boolean;
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   requiredFieldsList: CardColumnTabItemDTO[];

@@ -10,7 +10,7 @@ import BrandDTO from '@data/models/organization/brand-dto';
 import DepartmentDTO from '@data/models/organization/department-dto';
 import FacilityDTO from '@data/models/organization/facility-dto';
 import SpecialtyDTO from '@data/models/organization/specialty-dto';
-import TemplatesAttachmentDTO, { TemplateAtachmentItemsDTO } from '@data/models/templates/templates-attachment-dto';
+import { TemplatesAttachmentDTO, TemplateAtachmentItemsDTO } from '@data/models/templates/templates-attachment-dto';
 import { BrandService } from '@data/services/brand.service';
 import { DepartmentService } from '@data/services/deparment.service';
 import { FacilityService } from '@data/services/facility.sevice';
@@ -59,7 +59,6 @@ export class CreateEditAttachmentComponent extends ComponentToExtendForCustomDia
     endDate: marker('common.dateEnd')
   };
   public attachmentForm: UntypedFormGroup;
-  public brandsAsyncList: Observable<BrandDTO[]>;
   public brandsList: BrandDTO[] = [];
   public facilitiesList: FacilitiesGroupedByBrand[] = [];
   public departmentsList: DepartmentsGroupedByFacility[] = [];
@@ -67,6 +66,7 @@ export class CreateEditAttachmentComponent extends ComponentToExtendForCustomDia
   public attachmentToEdit: TemplatesAttachmentDTO = null;
   public startDate: Date;
   public endDate: Date;
+  public optionsLoaded = false;
   constructor(
     private fb: UntypedFormBuilder,
     private spinnerService: ProgressSpinnerDialogService,
@@ -128,6 +128,16 @@ export class CreateEditAttachmentComponent extends ComponentToExtendForCustomDia
       formValue.id = this.attachmentToEdit.id;
       formValue.template.id = this.attachmentToEdit.template.id;
     }
+    formValue.template.brands = formValue.template.brands?.length ? formValue.template.brands.filter((b: BrandDTO) => b) : [];
+    formValue.template.departments = formValue.template.departments?.length
+      ? formValue.template.departments.filter((b: DepartmentDTO) => b)
+      : [];
+    formValue.template.facilities = formValue.template.facilities?.length
+      ? formValue.template.facilities.filter((b: FacilityDTO) => b)
+      : [];
+    formValue.template.specialties = formValue.template.specialties?.length
+      ? formValue.template.specialties.filter((b: SpecialtyDTO) => b)
+      : [];
     const spinner = this.spinnerService.show();
     return this.attachmentService.addOrEditAttachment(formValue).pipe(
       map((response) => {
@@ -261,14 +271,17 @@ export class CreateEditAttachmentComponent extends ComponentToExtendForCustomDia
           this.facilitiesList = response;
           if (this.attachmentToEdit && initialLoad) {
             this.attachmentForm.get('template.facilities').setValue(
-              this.attachmentForm.get('template.facilities').value.map((f: FacilityDTO) => {
-                let facToReturn = f;
-                response.forEach((group: FacilitiesGroupedByBrand) => {
-                  const found = group.facilities.find((fac: FacilityDTO) => fac.id === f.id);
-                  facToReturn = found ? found : facToReturn;
-                });
-                return facToReturn;
-              })
+              this.attachmentForm
+                .get('template.facilities')
+                .value.map((f: FacilityDTO) => {
+                  let facToReturn = f;
+                  response.forEach((group: FacilitiesGroupedByBrand) => {
+                    const found = group.facilities.find((fac: FacilityDTO) => fac.id === f.id);
+                    facToReturn = found ? found : facToReturn;
+                  });
+                  return facToReturn;
+                })
+                .filter((c: FacilityDTO) => c)
             );
           }
           let selected = this.attachmentForm.get('template.facilities').value
@@ -301,14 +314,17 @@ export class CreateEditAttachmentComponent extends ComponentToExtendForCustomDia
           this.departmentsList = response;
           if (this.attachmentToEdit && initialLoad) {
             this.attachmentForm.get('template.departments').setValue(
-              this.attachmentForm.get('template.departments').value.map((item: DepartmentDTO) => {
-                let itemToReturn = item;
-                response.forEach((group: DepartmentsGroupedByFacility) => {
-                  const found = group.departments.find((i: DepartmentDTO) => i.id === item.id);
-                  itemToReturn = found ? found : itemToReturn;
-                });
-                return itemToReturn;
-              })
+              this.attachmentForm
+                .get('template.departments')
+                .value.map((item: DepartmentDTO) => {
+                  let itemToReturn = item;
+                  response.forEach((group: DepartmentsGroupedByFacility) => {
+                    const found = group.departments.find((i: DepartmentDTO) => i.id === item.id);
+                    itemToReturn = found ? found : itemToReturn;
+                  });
+                  return itemToReturn;
+                })
+                .filter((c: DepartmentDTO) => c)
             );
           }
           let selected = this.attachmentForm.get('template.departments').value
@@ -342,14 +358,17 @@ export class CreateEditAttachmentComponent extends ComponentToExtendForCustomDia
           this.specialtiesList = response;
           if (this.attachmentToEdit && initialLoad) {
             this.attachmentForm.get('template.specialties').setValue(
-              this.attachmentForm.get('template.specialties').value.map((item: SpecialtyDTO) => {
-                let itemToReturn = item;
-                response.forEach((group: SpecialtiesGroupedByDepartment) => {
-                  const found = group.specialties.find((i: SpecialtyDTO) => i.id === item.id);
-                  itemToReturn = found ? found : itemToReturn;
-                });
-                return itemToReturn;
-              })
+              this.attachmentForm
+                .get('template.specialties')
+                .value.map((item: SpecialtyDTO) => {
+                  let itemToReturn = item;
+                  response.forEach((group: SpecialtiesGroupedByDepartment) => {
+                    const found = group.specialties.find((i: SpecialtyDTO) => i.id === item.id);
+                    itemToReturn = found ? found : itemToReturn;
+                  });
+                  return itemToReturn;
+                })
+                .filter((c: SpecialtyDTO) => c)
             );
           }
           let selected = this.attachmentForm.get('template.specialties').value
@@ -377,23 +396,21 @@ export class CreateEditAttachmentComponent extends ComponentToExtendForCustomDia
     this.facilitiesList = [];
     this.departmentsList = [];
     this.specialtiesList = [];
-    this.brandsAsyncList = this.brandService.getAllBrands().pipe(
-      tap({
-        next: (brands: BrandDTO[]) => {
-          this.brandsList = brands;
-          if (this.attachmentToEdit) {
+    this.brandService
+      .getAllBrands()
+      .pipe(take(1))
+      .subscribe((brands: BrandDTO[]) => {
+        this.brandsList = brands;
+        if (this.attachmentToEdit) {
+          this.attachmentForm.get('template.brands').setValue(
             this.attachmentForm
               .get('template.brands')
-              .setValue(
-                this.attachmentForm
-                  .get('template.brands')
-                  .value.map((b: BrandDTO) => brands.find((brand: BrandDTO) => brand.id === b.id))
-              );
-            this.getFacilitiesOptions(true);
-          }
+              .value.map((b: BrandDTO) => brands.find((brand: BrandDTO) => brand.id === b.id))
+              .filter((c: BrandDTO) => c)
+          );
+          this.getFacilitiesOptions(true);
         }
-      })
-    );
+      });
   }
 
   private deleteAttachment = () => {

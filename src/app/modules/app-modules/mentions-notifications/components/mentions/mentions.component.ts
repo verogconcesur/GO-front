@@ -98,7 +98,13 @@ export class MentionsComponent implements OnInit {
   public goDetail(item: MentionDataListDTO): void {
     const view = RouteConstants.WORKFLOWS_BOARD_VIEW;
     this.router.navigateByUrl(
-      '/dashboard/workflow/' + view + '/(card:wcId/' + item.cardInstance.cardInstanceWorkflows[0].id + '/wuId/' + 'null' + ')'
+      '/dashboard/workflow/' +
+        view +
+        '/(card:wcId/' +
+        item.cardInstance.cardInstanceWorkflows[0].id +
+        '/wuId/' +
+        'null' +
+        '/from/mentions)'
     );
   }
   public getMentionInfo(item: MentionDataListDTO): string {

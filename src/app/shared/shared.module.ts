@@ -21,6 +21,7 @@ import { CardTabItemTypePipePipe } from './utils/card-tab-item-type-pipe.pipe';
 import { SafeHtmlPipe } from './utils/safe-inner-html.pipe';
 import { ZoomDirective } from './directives/zoomImage.directive';
 import { MatAutocompleteOptionsScrollDirective } from './directives/matAutocompleteInfiniteScroll.directive';
+import { SortService } from './services/sort.service';
 
 @NgModule({
   declarations: [
@@ -47,7 +48,7 @@ import { MatAutocompleteOptionsScrollDirective } from './directives/matAutocompl
     FormsModule,
     CustomDialogModule
   ],
-  providers: [GlobalMessageService, ConfirmDialogService, ProgressSpinnerDialogService, CustomDialogService],
+  providers: [GlobalMessageService, ConfirmDialogService, ProgressSpinnerDialogService, CustomDialogService, SortService],
   exports: [
     TranslateModule,
     MaterialModule,

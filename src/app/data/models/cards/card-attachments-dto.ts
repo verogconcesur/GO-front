@@ -1,3 +1,4 @@
+import { PermissionConstants } from '@app/constants/permission.constants';
 import CardColumnTabDTO from './card-column-tab-dto';
 import CardInstanceDTO from './card-instance-dto';
 
@@ -18,6 +19,7 @@ export interface CardAttachmentsDTO {
     name: string;
     orderNumber: number;
   };
+  permissionType?: PermissionConstants;
   tabId?: number;
   tabName?: string;
 }

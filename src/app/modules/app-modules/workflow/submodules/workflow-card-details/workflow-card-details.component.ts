@@ -22,6 +22,7 @@ import { AuthenticationService } from '@app/security/authentication.service';
 import { Env } from '@app/types/env';
 import { ENV } from '@app/constants/global.constants';
 import { WorkflowRequiredFieldsAuxService } from '../../aux-service/workflow-required-fields-aux.service';
+import { RouteConstants } from '@app/constants/route.constants';
 
 @UntilDestroy()
 @Component({
@@ -46,6 +47,7 @@ export class WorkflowCardDetailsComponent implements OnInit, OnDestroy {
   public columnsConfig: CardColumnDTO[] = null;
   public cardInstance: CardInstanceDTO = null;
   public changesPendingToShow = false;
+  public openedViewFrom: null | 'notifications' | 'mentions' = null;
   public newDataInCommentsOrMessages = {
     COMMENTS: false,
     CLIENT_MESSAGES: false
@@ -86,6 +88,9 @@ export class WorkflowCardDetailsComponent implements OnInit, OnDestroy {
     if (this.route?.snapshot?.params?.idUser && this.route?.snapshot?.params?.idUser !== 'null') {
       this.idUser = parseInt(this.route?.snapshot?.params?.idUser, 10);
     }
+    if (this.route?.snapshot?.params?.idFrom) {
+      this.openedViewFrom = this.route?.snapshot?.params?.idFrom;
+    }
     this.setShowMode(window.innerWidth);
     this.initListeners();
     this.getCardInfo();
@@ -123,7 +128,11 @@ export class WorkflowCardDetailsComponent implements OnInit, OnDestroy {
   }
 
   public close(): void {
-    if (this.relativeTo) {
+    if (this.openedViewFrom === 'mentions') {
+      this.router.navigate([`${RouteConstants.DASHBOARD}/${RouteConstants.MENTIONS}`]);
+    } else if (this.openedViewFrom === 'notifications') {
+      this.router.navigate([`${RouteConstants.DASHBOARD}/${RouteConstants.NOTIFICATIONS}`]);
+    } else if (this.relativeTo) {
       this.router.navigate([{ outlets: { card: null } }], {
         relativeTo: this.relativeTo
       });

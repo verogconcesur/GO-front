@@ -19,6 +19,7 @@ import TemplatesCommonDTO from '@data/models/templates/templates-common-dto';
 import { WorkflowTimelineDTO } from '@data/models/workflow-admin/workflow-timeline-dto';
 import { WorkflowAttachmentTimelineDTO } from '@data/models/workflow-admin/workflow-attachment-timeline-dto';
 import WorkflowCardsLimitDTO from '@data/models/workflow-admin/workflow-card-limit-dto';
+import { TemplateAtachmentItemsDTO } from '@data/models/templates/templates-attachment-dto';
 
 @Injectable({
   providedIn: 'root'
@@ -40,6 +41,7 @@ export class WorkflowAdministrationService {
   private readonly VALIDATE_PATH = '/validatePublish';
   private readonly CHANGE_STATUS_PATH = '/changeStatus';
   private readonly DATETIME_PATH = '/datetimes';
+  private readonly TEMPLATE_ATTACHMENTS_PATH = '/templateAttachmentItems';
 
   constructor(@Inject(ENV) private env: Env, private http: HttpClient, private workflowFilterService: WorkflowFilterService) {}
 
@@ -296,6 +298,18 @@ export class WorkflowAdministrationService {
         `${this.env.apiBaseUrl}${this.WORKFLOW_PATH}/${workflowId}${this.TIMELINE_PATH}`,
         workflowTimeline
       )
+      .pipe(catchError((error) => throwError(error.error as ConcenetError)));
+  }
+
+  /**
+   * Retrieves the attachments for a workflow template.
+   *
+   * @param id The ID of the workflow template.
+   * @returns An Observable that emits an array of TemplateAtachmentItemsDTO.
+   */
+  public getWorkflowTemplateAttachments(id: number): Observable<TemplateAtachmentItemsDTO[]> {
+    return this.http
+      .get<TemplateAtachmentItemsDTO[]>(`${this.env.apiBaseUrl}${this.WORKFLOW_PATH}${this.TEMPLATE_ATTACHMENTS_PATH}/${id}`)
       .pipe(catchError((error) => throwError(error.error as ConcenetError)));
   }
 

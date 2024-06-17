@@ -1,11 +1,15 @@
 import { CdkDragDrop } from '@angular/cdk/drag-drop';
 import { Component, Input, OnInit } from '@angular/core';
-import { UntypedFormArray, UntypedFormBuilder, UntypedFormGroup, Validators } from '@angular/forms';
+import { FormControl, UntypedFormArray, UntypedFormBuilder, UntypedFormGroup, Validators } from '@angular/forms';
 import { actionsTabItems } from '@app/constants/actionsTabItems.constants';
 import { marker } from '@biesbjerg/ngx-translate-extract-marker';
 import CardColumnDTO from '@data/models/cards/card-column-dto';
 import CardColumnTabDTO from '@data/models/cards/card-column-tab-dto';
+import VariablesDTO from '@data/models/variables-dto';
 import { CardService } from '@data/services/cards.service';
+import { VariablesService } from '@data/services/variables.service';
+// eslint-disable-next-line max-len
+import { TextEditorWrapperConfigI } from '@modules/feature-modules/text-editor-wrapper/interfaces/text-editor-wrapper-config.interface';
 import { TranslateService } from '@ngx-translate/core';
 import { ConfirmDialogService } from '@shared/services/confirm-dialog.service';
 import { moveItemInFormArray } from '@shared/utils/moveItemInFormArray';
@@ -20,6 +24,7 @@ import { take } from 'rxjs/operators';
 export class CustomActionsComponent implements OnInit {
   @Input() formCol: UntypedFormGroup;
   @Input() colEdit: CardColumnDTO;
+  public listVariables: VariablesDTO[];
   public labels = {
     name: marker('common.name'),
     nameColumn: marker('cards.column.columnName'),
@@ -36,10 +41,17 @@ export class CustomActionsComponent implements OnInit {
     actions: marker('common.actions')
   };
   public actionsTabItems = actionsTabItems;
+  public textEditorToolbarOnlyMacroOptions: TextEditorWrapperConfigI = {
+    onlyMacroOption: true,
+    addMacroListOption: true,
+    macroListOptions: [],
+    width: 450
+  };
   constructor(
     private fb: UntypedFormBuilder,
     private translateService: TranslateService,
-    private confirmationDialog: ConfirmDialogService
+    private confirmationDialog: ConfirmDialogService,
+    private variablesService: VariablesService
   ) {}
   get form() {
     return this.formCol.controls;
@@ -125,7 +137,8 @@ export class CustomActionsComponent implements OnInit {
                 id: [tabItem.tabItemConfigLink.id],
                 tabItemId: [tabItem.tabItemConfigLink.tabItemId],
                 link: [tabItem.tabItemConfigLink.link, [Validators.required]],
-                color: [tabItem.tabItemConfigLink.color, [Validators.required]]
+                color: [tabItem.tabItemConfigLink.color, [Validators.required]],
+                variables: [tabItem.tabItemConfigLink.variables]
               })
             })
           );
@@ -190,12 +203,38 @@ export class CustomActionsComponent implements OnInit {
           id: [null],
           tabItemId: [null],
           link: ['', [Validators.required]],
-          color: ['#FFFFFF']
+          color: ['#FFFFFF'],
+          variables: [null]
         })
       })
     );
   }
+
+  public textEditorContentChanged(html: string, form: FormControl, plain?: boolean) {
+    if (html !== form.value) {
+      if (plain) {
+        html = this.convertToPlain(html);
+      }
+      if ((html === '' || this.convertToPlain(html) === '') && html.length < 20) {
+        html = null;
+      }
+      form.get('link').setValue(html, { emitEvent: true });
+      const variablesOnText = this.listVariables.filter((variable) => {
+        let variableUsed = false;
+        this.listVariables.forEach((item: VariablesDTO) => {
+          if (html && html.indexOf(`[${variable.name}]`) !== -1) {
+            variableUsed = true;
+          }
+        });
+        return variableUsed;
+      });
+      form.get('variables').setValue(variablesOnText);
+      this.formCol.markAsDirty();
+      this.formCol.markAsTouched();
+    }
+  }
   ngOnInit(): void {
+    this.getVariable();
     if (this.colEdit) {
       this.colEdit.tabs.forEach((tab) => {
         this.tabs.push(this.newTab(tab));
@@ -203,5 +242,20 @@ export class CustomActionsComponent implements OnInit {
     } else {
       this.tabs.push(this.newTab());
     }
+  }
+  public convertToPlain(html: string) {
+    const tempDivElement = document.createElement('div');
+    tempDivElement.innerHTML = html;
+    return tempDivElement.textContent || tempDivElement.innerText || '';
+  }
+
+  private getVariable(): void {
+    this.variablesService
+      .searchVariables()
+      .pipe(take(1))
+      .subscribe((res) => {
+        this.textEditorToolbarOnlyMacroOptions.macroListOptions = res.map((item: VariablesDTO) => item.name);
+        this.listVariables = res;
+      });
   }
 }

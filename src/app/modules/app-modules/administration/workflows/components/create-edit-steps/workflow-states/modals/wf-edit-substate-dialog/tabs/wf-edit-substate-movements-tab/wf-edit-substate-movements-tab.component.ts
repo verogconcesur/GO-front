@@ -1,5 +1,5 @@
 import { Component, OnInit, ViewChild, ViewEncapsulation } from '@angular/core';
-import { FormBuilder, UntypedFormArray, UntypedFormGroup, Validators } from '@angular/forms';
+import { FormBuilder, UntypedFormArray, UntypedFormControl, UntypedFormGroup, Validators } from '@angular/forms';
 import { MatMenuTrigger } from '@angular/material/menu';
 import { marker } from '@biesbjerg/ngx-translate-extract-marker';
 import WorkflowEventMailDTO from '@data/models/workflows/workflow-event-mail-dto';
@@ -11,7 +11,7 @@ import { TranslateService } from '@ngx-translate/core';
 import { GlobalMessageService } from '@shared/services/global-message.service';
 import { ProgressSpinnerDialogService } from '@shared/services/progress-spinner-dialog.service';
 import { NGXLogger } from 'ngx-logger';
-import { Observable } from 'rxjs';
+import { Observable, forkJoin } from 'rxjs';
 import { finalize, take } from 'rxjs/operators';
 import {
   WfEditSubstateEventsComponentModalEnum,
@@ -19,6 +19,9 @@ import {
 } from '../../../wf-edit-substate-events-dialog/wf-edit-substate-events-dialog.component';
 import { WEditSubstateFormAuxService } from '../../aux-service/wf-edit-substate-aux.service';
 import { WfEditSubstateAbstractTabClass } from '../wf-edit-substate-abstract-tab-class';
+import { SortService } from '@shared/services/sort.service';
+import { CdkDragDrop } from '@angular/cdk/drag-drop';
+import { ConfirmDialogService } from '@shared/services/confirm-dialog.service';
 
 @Component({
   selector: 'app-wf-edit-substate-movements-tab',
@@ -34,9 +37,11 @@ export class WfEditSubstateMovementsTabComponent extends WfEditSubstateAbstractT
     addMovement: marker('workflows.addMovement'),
     newTaskTooltip: marker('workflows.movementCreateNewTask'),
     configMovements: marker('workflows.configMovementEvents'),
-    requiredMovementExtraDescription: marker('workflows.requiredMovementExtraDescription')
+    requiredMovementExtraDescription: marker('workflows.requiredMovementExtraDescription'),
+    others: marker('workflows.withoutGroup')
   };
   public substateMovements: WorkflowMoveDTO[];
+  public groupNames: string[] = [];
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   public chipsStatus: any = {};
 
@@ -48,7 +53,9 @@ export class WfEditSubstateMovementsTabComponent extends WfEditSubstateAbstractT
     private logger: NGXLogger,
     private translateService: TranslateService,
     private globalMessageService: GlobalMessageService,
-    private customDialogService: CustomDialogService
+    private customDialogService: CustomDialogService,
+    private sortService: SortService,
+    private confirmationDialog: ConfirmDialogService
   ) {
     super(editSubstateAuxService, spinnerService);
   }
@@ -63,7 +70,14 @@ export class WfEditSubstateMovementsTabComponent extends WfEditSubstateAbstractT
 
   public initForm(movements: WorkflowMoveDTO[]): void {
     const fa: UntypedFormArray = this.fb.array([]);
-    movements?.forEach((move: WorkflowMoveDTO) => fa.push(this.createMovementFormGroup(move)));
+    this.groupNames = [];
+    movements?.forEach((move: WorkflowMoveDTO) => {
+      if (move?.groupName && this.groupNames.indexOf(move.groupName) === -1) {
+        this.groupNames.push(move.groupName);
+      }
+      fa.push(this.createMovementFormGroup(move));
+    });
+    this.groupNames = this.groupNames.sort(this.sortService.alphaNumericSort);
     const form = this.fb.group({
       movements: fa
     });
@@ -72,24 +86,89 @@ export class WfEditSubstateMovementsTabComponent extends WfEditSubstateAbstractT
     // console.log(this.form, this.form.value);
   }
 
-  public deleteMovement = (movefg: UntypedFormGroup) => {
-    const spinner = this.spinnerService.show();
-    this.substatesService
-      .deleteWorkflowSubstateMovement(this.workflowId, this.substate.id, movefg.get('id').value)
-      .pipe(take(1))
-      .subscribe(
-        (res) => {
-          this.getDataAndInitForm(spinner);
-        },
-        (error) => {
-          this.spinnerService.hide(spinner);
-          this.logger.error(error);
-          this.globalMessageService.showError({
-            message: error.message,
-            actionText: this.translateService.instant(marker('common.close'))
-          });
+  public getGroupNames() {
+    return [...this.groupNames, null];
+  }
+
+  public getMovementsByGroup(groupName: string): UntypedFormControl[] {
+    if (groupName) {
+      return this.movementsFa?.controls
+        .filter((control: UntypedFormControl) => control.get('groupName').value === groupName)
+        .sort((a, b) => a.get('orderNumber').value - b.get('orderNumber').value) as UntypedFormControl[];
+    } else {
+      return this.movementsFa?.controls
+        .filter((control: UntypedFormControl) => !control.get('groupName').value)
+        .sort((a, b) => a.get('orderNumber').value - b.get('orderNumber').value) as UntypedFormControl[];
+    }
+  }
+
+  public drop(event: CdkDragDrop<string[]>, group: string) {
+    const movementsFc = this.getMovementsByGroup(group);
+    const startIndex = event.previousIndex;
+    const endIndex = event.currentIndex;
+    const movedItem = movementsFc[startIndex];
+    const movementsToSave: WorkflowMoveDTO[] = [];
+    const requests: Observable<WorkflowMoveDTO>[] = [];
+    if (startIndex !== endIndex) {
+      if (startIndex > endIndex) {
+        for (let i = endIndex; i <= startIndex; i++) {
+          if (movementsFc[i].get('orderNumber').value !== i + 1) {
+            movementsFc[i].get('orderNumber').setValue(i + 1);
+            movementsToSave.push(movementsFc[i].value);
+          }
         }
-      );
+      } else {
+        for (let i = startIndex; i <= endIndex; i++) {
+          if (movementsFc[i].get('orderNumber').value !== i) {
+            movementsFc[i].get('orderNumber').setValue(i);
+            movementsToSave.push(movementsFc[i].value);
+          }
+        }
+      }
+      movedItem.get('orderNumber').setValue(endIndex);
+      movementsToSave.push(movedItem.value);
+      movementsToSave.forEach((move: WorkflowMoveDTO) => {
+        requests.push(this.substatesService.postWorkflowSubstateMovements(this.workflowId, this.substate.id, move));
+      });
+      if (requests.length > 0) {
+        const spinner = this.spinnerService.show();
+        forkJoin(requests)
+          .pipe(take(1))
+          .subscribe((res) => {
+            this.getDataAndInitForm(spinner);
+          });
+      }
+    }
+  }
+
+  public deleteMovement = (movefg: UntypedFormGroup) => {
+    this.confirmationDialog
+      .open({
+        title: this.translateService.instant(marker('common.warning')),
+        message: this.translateService.instant(marker('common.deleteConfirmation'))
+      })
+      .pipe(take(1))
+      .subscribe((ok: boolean) => {
+        if (ok) {
+          const spinner = this.spinnerService.show();
+          this.substatesService
+            .deleteWorkflowSubstateMovement(this.workflowId, this.substate.id, movefg.get('id').value)
+            .pipe(take(1))
+            .subscribe(
+              (res) => {
+                this.getDataAndInitForm(spinner);
+              },
+              (error) => {
+                this.spinnerService.hide(spinner);
+                this.logger.error(error);
+                this.globalMessageService.showError({
+                  message: error.message,
+                  actionText: this.translateService.instant(marker('common.close'))
+                });
+              }
+            );
+        }
+      });
   };
 
   public editMoveEvent = (movefg: UntypedFormGroup) => {
@@ -101,6 +180,7 @@ export class WfEditSubstateMovementsTabComponent extends WfEditSubstateAbstractT
           state: this.state,
           substate: this.substate,
           move: movefg.value,
+          groupNames: this.groupNames,
           eventType: 'MOV'
         },
         id: WfEditSubstateEventsComponentModalEnum.ID,
@@ -180,6 +260,7 @@ export class WfEditSubstateMovementsTabComponent extends WfEditSubstateAbstractT
       shortcut: false,
       shortcutColor: null,
       shortcutName: null,
+      groupName: null,
       signDocument: false,
       workflowSubstateSource: {
         ...this.substate
@@ -240,6 +321,7 @@ export class WfEditSubstateMovementsTabComponent extends WfEditSubstateAbstractT
       shortcut: [move?.shortcut ? move.shortcut : false],
       shortcutColor: [move?.shortcutColor ? move.shortcutColor : null],
       shortcutName: [move?.shortcutName ? move.shortcutName : null],
+      groupName: [move?.groupName ? move.groupName : null],
       signDocument: [move?.signDocument ? move.signDocument : false],
       workflowSubstateSource: [move?.workflowSubstateSource ? move.workflowSubstateSource : null, [Validators.required]],
       workflowSubstateTarget: [move?.workflowSubstateTarget ? move.workflowSubstateTarget : null, [Validators.required]],

@@ -59,6 +59,7 @@ export class WorkflowBoardViewComponent implements OnInit {
   private filters: WorkflowFilterDTO = null;
   private cardList: WorkflowCardDTO[] = [];
   private subjectSubscription: Subscription;
+  private HIDE_BOARD_IF_CARDS_GREATER_THAN = 600;
   // private askForDataTimeStamp: number;
   // private getDataTimeStamp: number;
   // private renderedDataTimeStamp: number;
@@ -93,7 +94,7 @@ export class WorkflowBoardViewComponent implements OnInit {
 
   public initListeners(): void {
     this.workflowService.workflowHideCardsSubject$.pipe(untilDestroyed(this)).subscribe((hide: boolean) => {
-      if (hide) {
+      if (hide && this.cardList?.length > this.HIDE_BOARD_IF_CARDS_GREATER_THAN) {
         this.showBoardView = false;
       }
     });
@@ -143,11 +144,15 @@ export class WorkflowBoardViewComponent implements OnInit {
 
     this.router.events.pipe(untilDestroyed(this)).subscribe((event: any) => {
       if (event instanceof NavigationEnd || event instanceof ChildActivationEnd) {
-        if (this.router.url.indexOf('(card:wcId') > 0 && this.showBoardView) {
-          console.log('Hide board view');
+        if (
+          this.router.url.indexOf('(card:wcId') > 0 &&
+          this.showBoardView &&
+          this.cardList?.length > this.HIDE_BOARD_IF_CARDS_GREATER_THAN
+        ) {
+          // console.log('Hide board view');
           this.showBoardView = false;
         } else if (this.router.url.indexOf('(card:wcId') === -1 && !this.showBoardView) {
-          console.log('Show board view');
+          // console.log('Show board view');
           this.performanceService.refreshIfNecesary();
           this.showBoardView = true;
         }

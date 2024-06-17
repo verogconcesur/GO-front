@@ -5,6 +5,7 @@
                 <div class="mat-item-card__title">{{ item.name }}</div>
                 <div class="mat-item-card__icons">
                     <mat-icon fontSet="concenet" (click)="editAction(item)">edit</mat-icon>
+                    <mat-icon (click)="duplicateChecklist(item.id)">filter_none</mat-icon>
                     <mat-icon fontSet="concenet" (click)="deleteChecklist(item.id)">delete</mat-icon>
                 </div>
             </div>
