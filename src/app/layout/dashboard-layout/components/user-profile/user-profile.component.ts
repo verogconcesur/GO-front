@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, Inject, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { RouteConstants } from '@app/constants/route.constants';
 import { AuthenticationService } from '@app/security/authentication.service';
@@ -11,6 +11,8 @@ import { CustomDialogService } from '@frontend/custom-dialog';
 import { MyProfileComponent, MyProfileComponentModalEnum } from '@modules/feature-modules/my-profile-dialog/my-profile.component';
 import { take } from 'rxjs/operators';
 import { TranslateService } from '@ngx-translate/core';
+import { ENV } from '@app/constants/global.constants';
+import { Env } from '@app/types/env';
 
 @Component({
   selector: 'app-user-profile',
@@ -43,6 +45,7 @@ export class UserProfileComponent implements OnInit {
   public error: ConcenetError;
 
   constructor(
+    @Inject(ENV) private env: Env,
     private router: Router,
     private userService: UserService,
     private globalMessageService: GlobalMessageService,
@@ -53,6 +56,13 @@ export class UserProfileComponent implements OnInit {
 
   public get showSpinner(): boolean {
     return !this.userDetails && !this.error;
+  }
+
+  public get appVersion(): string {
+    if (this.env.appVersion.includes('-')) {
+      return `v${this.env.appVersion.split('-')[0]}`;
+    }
+    return `v${this.env.appVersion}`;
   }
 
   ngOnInit(): void {
