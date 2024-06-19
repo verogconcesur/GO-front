@@ -15,10 +15,20 @@
         padding: 24px;
         position: relative;
 
-        .user-profile-menu__title {
-          color: mat-contrast($primary, 100);
-          letter-spacing: normal;
-          text-transform: uppercase;
+        .user-profile-menu__header {
+          display: flex;
+          justify-content: space-between;
+          align-items: center;
+          &__title {
+            color: mat-contrast($primary, 100);
+            letter-spacing: normal;
+            text-transform: uppercase;
+          }
+          &__version {
+            color: mat-contrast($primary, 100);
+            font-size: 0.7em;
+            margin: 0 0 16px;
+          }
         }
 
         .user-data-group {
