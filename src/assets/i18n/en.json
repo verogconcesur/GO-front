@@ -656,6 +656,7 @@
         "noDataToShow": "No data to show in table",
         "noFieldsDefined": "No fields have been defined to display in the table view.",
         "required": "This field is required.",
+        "requiredIVA": "You must select a tax type",
         "saveTabBeforeChange": "You must save the tab's changes before access to another tab.",
         "unknown": "Unknown error",
         "uploadOnlyOneFile": "You must load only one file",

@@ -656,6 +656,7 @@
         "noDataToShow": "No hay información disponible",
         "noFieldsDefined": "No se han definido campos a mostrar en la vista tablero.",
         "required": "Este campo es obligatorio.",
+        "requiredIVA": "Debe seleccionar un tipo de impuesto",
         "saveTabBeforeChange": "Debe guardar la información de la pestaña actual antes de poder abrir otra.",
         "unknown": "Error desconocido",
         "uploadOnlyOneFile": "Solo está permitido cargar un único archivo",

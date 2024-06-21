@@ -3,6 +3,10 @@
         <div class="accounting-line-data__section">
             <div class="accounting-line-data__section__group" *ngIf="mode === 'LINE'">
                 <mat-form-field appearance="outline" floatLabel="always" class="w-100">
+                    <mat-label>{{ labels.description | translate }}</mat-label>
+                    <input matInput [(ngModel)]="description" />
+                </mat-form-field>
+                <mat-form-field appearance="outline" floatLabel="always" class="w-100">
                     <mat-label>{{ labels.amount | translate }}</mat-label>
                     <input
                         appTwoDigitDecimal

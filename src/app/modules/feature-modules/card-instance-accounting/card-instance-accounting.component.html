@@ -79,7 +79,7 @@
                 fxLayout="row"
                 *ngFor="let item of block.accountingLines; let i = index"
             >
-                <div fxFlex="30" fxLayoutAlign="start center">{{ item.templateAccountingItemLine.description }}</div>
+                <div fxFlex="30" fxLayoutAlign="start center" class="description">{{ item.description }}</div>
                 <div fxFlex="30" fxLayoutAlign="start center">
                     {{ item.templateAccountingItemLine.accountingLineType.description }}
                 </div>

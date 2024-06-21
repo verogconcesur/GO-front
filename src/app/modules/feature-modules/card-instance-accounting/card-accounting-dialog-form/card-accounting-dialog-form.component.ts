@@ -1,5 +1,5 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
-import { FormBuilder, UntypedFormGroup, Validators } from '@angular/forms';
+import { FormBuilder, UntypedFormGroup } from '@angular/forms';
 import { ConcenetError } from '@app/types/error';
 import { marker } from '@biesbjerg/ngx-translate-extract-marker';
 import { CardAccountingBlockDTO, CardAccountingLineDTO } from '@data/models/cards/card-accounting-dto';
@@ -37,6 +37,7 @@ export class CardAccountingDialogFormComponent extends ComponentToExtendForCusto
   public mode: 'BLOCK' | 'LINE' = 'BLOCK';
   public editionDisabled = false;
   public amount = 0;
+  public description = '';
   public labels = {
     okClient: marker('common.okClient'),
     description: marker('common.description'),
@@ -65,6 +66,7 @@ export class CardAccountingDialogFormComponent extends ComponentToExtendForCusto
 
   ngOnInit(): void {
     this.line = this.extendedComponentData.line;
+    console.log(this.line);
     this.block = this.extendedComponentData.block;
     this.cardInstanceWorkflowId = this.extendedComponentData.cardInstanceWorkflowId;
     this.tabId = this.extendedComponentData.tabId;
@@ -76,6 +78,7 @@ export class CardAccountingDialogFormComponent extends ComponentToExtendForCusto
       this.MODAL_TITLE = this.labels.editLine;
       this.line.attachments = this.line.attachments ? this.line.attachments : [];
       this.amount = this.line.amount;
+      this.description = this.line.description;
       this.attachmentsSelected = this.line.attachments ? [...(this.line.attachments as CardInstanceAttachmentDTO[])] : [];
     } else if (this.block) {
       this.MODAL_TITLE = this.labels.editBlock;
@@ -92,13 +95,25 @@ export class CardAccountingDialogFormComponent extends ComponentToExtendForCusto
       .sort()
       .join(',');
     if (this.mode === 'LINE') {
+      const isAmountValid = (amount: number | string): boolean => {
+        if (typeof amount === 'string') {
+          return amount.trim() !== '' && !isNaN(Number(amount));
+        } else if (typeof amount === 'number') {
+          return !isNaN(amount);
+        }
+        return false;
+      };
       const originalAttch = this.line.attachments
         .map((att) => (att as CardInstanceAttachmentDTO).file.id)
         .sort()
         .join(',');
       return (
-        (this.line.amount !== this.amount && this.amount > 0 && this.amount <= this.maxAmount) ||
-        (newAttch !== originalAttch && this.amount > 0 && this.amount <= this.maxAmount)
+        (this.line.amount !== this.amount && isAmountValid(this.amount) && this.amount >= 0 && this.amount <= this.maxAmount) ||
+        (newAttch !== originalAttch && this.amount >= 0 && isAmountValid(this.amount) && this.amount <= this.maxAmount) ||
+        (this.description !== this.line.description &&
+          this.description !== '' &&
+          isAmountValid(this.amount) &&
+          this.amount <= this.maxAmount)
       );
     } else {
       const originalAttch = this.block.attachments
@@ -153,6 +168,7 @@ export class CardAccountingDialogFormComponent extends ComponentToExtendForCusto
       const spinner = this.spinnerService.show();
       if (this.mode === 'LINE') {
         this.line.amount = Number(this.amount);
+        this.line.description = this.description;
         this.line.attachments = this.attachmentsSelected;
         this.line.taxType = this.taxType?.id ? this.taxType : null;
         return this.accountingService.editLine(this.cardInstanceWorkflowId, this.tabId, this.line).pipe(
