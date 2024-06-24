@@ -79,7 +79,7 @@
                 fxLayout="row"
                 *ngFor="let item of block.accountingLines; let i = index"
             >
-                <div fxFlex="30" fxLayoutAlign="start center">{{ item.templateAccountingItemLine.description }}</div>
+                <div fxFlex="30" fxLayoutAlign="start center" class="description">{{ item.description }}</div>
                 <div fxFlex="30" fxLayoutAlign="start center">
                     {{ item.templateAccountingItemLine.accountingLineType.description }}
                 </div>
@@ -138,7 +138,11 @@
                 </div>
                 <div fxFlex="15" fxLayoutAlign="end center" class="actions"></div>
             </div>
-            <div class="accountings__main__line item smaller-mat-form-fields bold" fxLayout="row">
+            <div
+                class="accountings__main__line item smaller-mat-form-fields bold"
+                fxLayout="row"
+                *ngIf="hasTaxApplyOrExempt(block)"
+            >
                 <div fxFlex="60" fxLayoutAlign="start center">
                     {{
                         block.templateAccountingItem.descriptionTotalTax
@@ -154,7 +158,11 @@
                 </div>
                 <div fxFlex="15" fxLayoutAlign="end center" class="actions"></div>
             </div>
-            <div class="accountings__main__line item smaller-mat-form-fields bold" fxLayout="row">
+            <div
+                class="accountings__main__line item smaller-mat-form-fields bold"
+                fxLayout="row"
+                *ngIf="hasTaxApplyOrExempt(block)"
+            >
                 <div fxFlex="60" fxLayoutAlign="start center">
                     {{
                         block.templateAccountingItem.descriptionTotalPlusTax

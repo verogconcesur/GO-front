@@ -3,25 +3,24 @@ import { Component, EventEmitter, Input, OnInit, Output, ViewEncapsulation } fro
 import { marker } from '@biesbjerg/ngx-translate-extract-marker';
 import { AttachmentDTO, CardAttachmentsDTO, CardInstanceAttachmentDTO } from '@data/models/cards/card-attachments-dto';
 // eslint-disable-next-line max-len
+import { ConcenetError } from '@app/types/error';
+import { CardAccountingBlockDTO, CardAccountingDTO, CardAccountingLineDTO } from '@data/models/cards/card-accounting-dto';
 import CardInstanceDTO from '@data/models/cards/card-instance-dto';
-import { CardAttachmentsService } from '@data/services/card-attachments.service';
+import { AccountingTaxTypeDTO } from '@data/models/templates/templates-accounting-dto';
 import { CardAccountingService } from '@data/services/card-accounting.service';
-import { CardMessagesService } from '@data/services/card-messages.service';
+import { CardAttachmentsService } from '@data/services/card-attachments.service';
+import { TemplatesAccountingsService } from '@data/services/templates-accountings.service';
 import { CustomDialogService } from '@frontend/custom-dialog';
 import { TranslateService } from '@ngx-translate/core';
 import { ConfirmDialogService } from '@shared/services/confirm-dialog.service';
 import { GlobalMessageService } from '@shared/services/global-message.service';
-import { finalize, take } from 'rxjs/operators';
-import CardInstanceAccountingConfig from './card-instance-accounting-config-interface';
-import { CardAccountingBlockDTO, CardAccountingDTO, CardAccountingLineDTO } from '@data/models/cards/card-accounting-dto';
-import { TemplatesAccountingsService } from '@data/services/templates-accountings.service';
-import { ConcenetError } from '@app/types/error';
-import { AccountingTaxTypeDTO } from '@data/models/templates/templates-accounting-dto';
 import { ProgressSpinnerDialogService } from '@shared/services/progress-spinner-dialog.service';
+import { finalize, take } from 'rxjs/operators';
 import {
   CardAccountingDialogFormComponent,
   CardAccoutingDialogEnum
 } from './card-accounting-dialog-form/card-accounting-dialog-form.component';
+import CardInstanceAccountingConfig from './card-instance-accounting-config-interface';
 
 @Component({
   selector: 'app-card-instance-accounting',
@@ -181,34 +180,48 @@ export class CardInstanceAccountingComponent implements OnInit {
   }
 
   public editLine(line: CardAccountingLineDTO): void {
-    this.customDialogService
-      .open({
-        component: CardAccountingDialogFormComponent,
-        extendedComponentData: {
-          line: JSON.parse(JSON.stringify(line)),
-          taxType: this.taxTypeToApply,
-          block: null,
-          attachmentsList: this.attachmentsList,
-          cardInstanceWorkflowId: this.cardInstanceWorkflowId,
-          tabId: this.tabId,
-          editionDisabled: this.cardInstanceAccountingConfig.disableAccountingEdition,
-          mode: 'LINE'
-        },
-        id: CardAccoutingDialogEnum.ID,
-        panelClass: CardAccoutingDialogEnum.PANEL_CLASS,
-        disableClose: true,
-        width: '500px'
-      })
-      .pipe(take(1))
-      .subscribe((response) => {
-        if (response) {
-          this.globalMessageService.showSuccess({
-            message: this.translateService.instant(marker('common.success')),
-            actionText: this.translateService.instant(marker('common.close'))
-          });
-          this.reload.emit(true);
-        }
+    if ((line.templateAccountingItemLine.taxApply && this.taxTypeToApply.id) || !line.templateAccountingItemLine.taxApply) {
+      this.customDialogService
+        .open({
+          component: CardAccountingDialogFormComponent,
+          extendedComponentData: {
+            line: JSON.parse(JSON.stringify(line)),
+            taxType: this.taxTypeToApply,
+            block: null,
+            attachmentsList: this.attachmentsList,
+            cardInstanceWorkflowId: this.cardInstanceWorkflowId,
+            tabId: this.tabId,
+            editionDisabled: this.cardInstanceAccountingConfig.disableAccountingEdition,
+            mode: 'LINE'
+          },
+          id: CardAccoutingDialogEnum.ID,
+          panelClass: CardAccoutingDialogEnum.PANEL_CLASS,
+          disableClose: true,
+          width: '500px'
+        })
+        .pipe(take(1))
+        .subscribe((response) => {
+          if (response) {
+            this.globalMessageService.showSuccess({
+              message: this.translateService.instant(marker('common.success')),
+              actionText: this.translateService.instant(marker('common.close'))
+            });
+            this.reload.emit(true);
+          }
+        });
+    } else {
+      this.globalMessageService.showError({
+        message: this.translateService.instant(marker('errors.requiredIVA')),
+        actionText: ''
       });
+    }
+  }
+
+  public hasTaxApplyOrExempt(block?: CardAccountingBlockDTO): boolean {
+    if (this.taxTypeToApply?.id === 40) {
+      return false;
+    }
+    return block.accountingLines?.some((line) => line.templateAccountingItemLine?.taxApply);
   }
 
   public compareTax(object1: AccountingTaxTypeDTO, object2: AccountingTaxTypeDTO) {

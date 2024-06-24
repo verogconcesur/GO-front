@@ -24,6 +24,7 @@ export interface CardAccountingBlockDTO {
 
 export interface CardAccountingLineDTO {
   amount: number;
+  description: string;
   attachments: CardAttachmentsDTO[] | CardInstanceAttachmentDTO[];
   cardInstanceId: number;
   id: number;
