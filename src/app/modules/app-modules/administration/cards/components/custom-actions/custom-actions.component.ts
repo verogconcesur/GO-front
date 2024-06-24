@@ -1,27 +1,25 @@
 import { CdkDragDrop } from '@angular/cdk/drag-drop';
 import { Component, Input, OnInit } from '@angular/core';
-import { FormControl, UntypedFormArray, UntypedFormBuilder, UntypedFormGroup, Validators } from '@angular/forms';
+import { UntypedFormArray, UntypedFormBuilder, UntypedFormGroup, Validators } from '@angular/forms';
 import { actionsTabItems } from '@app/constants/actionsTabItems.constants';
 import { marker } from '@biesbjerg/ngx-translate-extract-marker';
 import CardColumnDTO from '@data/models/cards/card-column-dto';
 import CardColumnTabDTO from '@data/models/cards/card-column-tab-dto';
 import VariablesDTO from '@data/models/variables-dto';
-import { CardService } from '@data/services/cards.service';
 import { VariablesService } from '@data/services/variables.service';
 import { CustomDialogService } from '@frontend/custom-dialog';
 // eslint-disable-next-line max-len
-import { TextEditorWrapperConfigI } from '@modules/feature-modules/text-editor-wrapper/interfaces/text-editor-wrapper-config.interface';
-import { TranslateService } from '@ngx-translate/core';
-import { ConfirmDialogService } from '@shared/services/confirm-dialog.service';
-import { moveItemInFormArray } from '@shared/utils/moveItemInFormArray';
-import { removeItemInFormArray } from '@shared/utils/removeItemInFormArray';
-import { finalize, take } from 'rxjs/operators';
-import { ProgressSpinnerDialogService } from '@shared/services/progress-spinner-dialog.service';
-import CombinedRequiredFieldsValidator from '@shared/validators/combined-required-fields.validator';
 import {
   LinksCreationEditionDialogComponent,
   LinksCreationEditionDialogComponentModalEnum
 } from '@modules/feature-modules/modal-links-creation-edition/links-creation-edition-dialog.component';
+import { TranslateService } from '@ngx-translate/core';
+import { ConfirmDialogService } from '@shared/services/confirm-dialog.service';
+import { ProgressSpinnerDialogService } from '@shared/services/progress-spinner-dialog.service';
+import { moveItemInFormArray } from '@shared/utils/moveItemInFormArray';
+import { removeItemInFormArray } from '@shared/utils/removeItemInFormArray';
+import CombinedRequiredFieldsValidator from '@shared/validators/combined-required-fields.validator';
+import { finalize, take } from 'rxjs/operators';
 
 @Component({
   selector: 'app-custom-actions',
@@ -272,8 +270,8 @@ export class CustomActionsComponent implements OnInit {
             variables: [null],
             linkMethod: ['GET', [Validators.required]],
             body: ['{ "attribute": "example", "attribute2": "example2" }'],
-            redirect: [null],
-            requireAuth: [null],
+            redirect: [false],
+            requireAuth: [false],
             authUrl: [null],
             authUser: [null],
             authPass: [null],
