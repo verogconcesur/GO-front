@@ -217,6 +217,13 @@ export class CardInstanceAccountingComponent implements OnInit {
     }
   }
 
+  public hasTaxApplyOrExempt(block?: CardAccountingBlockDTO): boolean {
+    if (this.taxTypeToApply?.id === 40) {
+      return false;
+    }
+    return block.accountingLines?.some((line) => line.templateAccountingItemLine?.taxApply);
+  }
+
   public compareTax(object1: AccountingTaxTypeDTO, object2: AccountingTaxTypeDTO) {
     return object1 && object2 && object1.id === object2.id;
   }
