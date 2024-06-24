@@ -171,9 +171,9 @@ export class CustomActionsComponent implements OnInit {
                   variables: [tabItem.tabItemConfigLink.variables],
                   linkMethod: [tabItem.tabItemConfigLink.linkMethod, [Validators.required]],
                   body: [
-                    tabItem.tabItemConfigLink.body
-                      ? tabItem.tabItemConfigLink.body
-                      : '{ "attribute": "example", "attribute2": "example2" }'
+                    tabItem.tabItemConfigLink.linkMethod === 'GET'
+                      ? null
+                      : tabItem.tabItemConfigLink.body ?? '{ "attribute": "example", "attribute2": "example2" }'
                   ],
                   redirect: [tabItem.tabItemConfigLink.redirect],
                   requireAuth: [tabItem.tabItemConfigLink.requireAuth],
