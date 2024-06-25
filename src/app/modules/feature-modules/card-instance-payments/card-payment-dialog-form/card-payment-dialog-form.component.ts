@@ -1,5 +1,5 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
-import { FormBuilder, UntypedFormControl, UntypedFormGroup, Validators } from '@angular/forms';
+import { FormBuilder, UntypedFormGroup, Validators } from '@angular/forms';
 import { marker } from '@biesbjerg/ngx-translate-extract-marker';
 import { AttachmentDTO, CardInstanceAttachmentDTO } from '@data/models/cards/card-attachments-dto';
 import {
@@ -119,7 +119,11 @@ export class CardPaymentDialogFormComponent extends ComponentToExtendForCustomDi
       return false;
     }
     // Si ya está pagada o denegada se deshabilita
-    if (this.form?.paymentStatus?.value?.id === 3 || this.form?.paymentStatus?.value?.id === 6) {
+    if (
+      this.form?.paymentStatus?.value?.id === 3 ||
+      this.form?.paymentStatus?.value?.id === 6 ||
+      this.form?.paymentStatus?.value?.id === 7
+    ) {
       this.form?.amount.disable();
       return true;
     }
@@ -127,15 +131,34 @@ export class CardPaymentDialogFormComponent extends ComponentToExtendForCustomDi
     return false;
   }
   public paymentStatusDisabled(): boolean {
-    //Si el tipo de pago es área cliente se deshabilita o está denegada
-    if (this.form?.paymentType?.value?.id === 5 || this.form?.paymentStatus?.value?.id === 6) {
+    //Si el tipo de pago es área cliente,email o sms y está pagada se habilita
+    if (
+      (this.form?.paymentType?.value?.id === 5 && this.form?.paymentStatus?.value?.id === 3) ||
+      (this.form?.paymentType?.value?.id === 9 && this.form?.paymentStatus?.value?.id === 3) ||
+      (this.form?.paymentType?.value?.id === 10 && this.form?.paymentStatus?.value?.id === 3)
+    ) {
+      const desiredIds = [3, 7];
+      this.paymentStatus = this.paymentStatus.filter((item) => desiredIds.includes(item.id));
+      return false;
+    }
+    //Si el tipo de pago es área cliente,sms o email se deshabilita o está denegada
+    if (
+      this.form?.paymentType?.value?.id === 5 ||
+      this.form?.paymentType?.value?.id === 9 ||
+      this.form?.paymentType?.value?.id === 10 ||
+      this.form?.paymentStatus?.value?.id === 6
+    ) {
       return true;
     }
     return false;
   }
   public paymentTypeDisabled(): boolean {
     // Si ya está pagada o denegada se deshabilita
-    if (this.form?.paymentStatus?.value?.id === 3 || this.form?.paymentStatus?.value?.id === 6) {
+    if (
+      this.form?.paymentStatus?.value?.id === 3 ||
+      this.form?.paymentStatus?.value?.id === 6 ||
+      this.form?.paymentStatus?.value?.id === 7
+    ) {
       return true;
     }
     return false;
@@ -152,7 +175,7 @@ export class CardPaymentDialogFormComponent extends ComponentToExtendForCustomDi
       this.paymentLineForm
         .get('paymentStatus')
         .setValue(this.paymentStatus.find((p) => p.id === this.paymentLine.paymentStatus.id));
-    } else if (type.id === 5) {
+    } else if (type.id === 5 || type.id === 9 || type.id === 10) {
       this.paymentLineForm.get('paymentStatus').setValue(this.paymentStatus.find((p) => p.id === 1));
     } else {
       this.paymentLineForm.get('paymentStatus').setValue(null);
