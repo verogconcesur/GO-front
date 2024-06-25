@@ -119,7 +119,11 @@ export class CardPaymentDialogFormComponent extends ComponentToExtendForCustomDi
       return false;
     }
     // Si ya está pagada o denegada se deshabilita
-    if (this.form?.paymentStatus?.value?.id === 3 || this.form?.paymentStatus?.value?.id === 6) {
+    if (
+      this.form?.paymentStatus?.value?.id === 3 ||
+      this.form?.paymentStatus?.value?.id === 6 ||
+      this.form?.paymentStatus?.value?.id === 7
+    ) {
       this.form?.amount.disable();
       return true;
     }
@@ -127,7 +131,17 @@ export class CardPaymentDialogFormComponent extends ComponentToExtendForCustomDi
     return false;
   }
   public paymentStatusDisabled(): boolean {
-    //Si el tipo de pago es área cliente se deshabilita o está denegada
+    //Si el tipo de pago es área cliente,email o sms y está pagada se habilita
+    if (
+      (this.form?.paymentType?.value?.id === 5 && this.form?.paymentStatus?.value?.id === 3) ||
+      (this.form?.paymentType?.value?.id === 9 && this.form?.paymentStatus?.value?.id === 3) ||
+      (this.form?.paymentType?.value?.id === 10 && this.form?.paymentStatus?.value?.id === 3)
+    ) {
+      const desiredIds = [3, 7];
+      this.paymentStatus = this.paymentStatus.filter((item) => desiredIds.includes(item.id));
+      return false;
+    }
+    //Si el tipo de pago es área cliente,sms o email se deshabilita o está denegada
     if (
       this.form?.paymentType?.value?.id === 5 ||
       this.form?.paymentType?.value?.id === 9 ||
@@ -140,7 +154,11 @@ export class CardPaymentDialogFormComponent extends ComponentToExtendForCustomDi
   }
   public paymentTypeDisabled(): boolean {
     // Si ya está pagada o denegada se deshabilita
-    if (this.form?.paymentStatus?.value?.id === 3 || this.form?.paymentStatus?.value?.id === 6) {
+    if (
+      this.form?.paymentStatus?.value?.id === 3 ||
+      this.form?.paymentStatus?.value?.id === 6 ||
+      this.form?.paymentStatus?.value?.id === 7
+    ) {
       return true;
     }
     return false;
