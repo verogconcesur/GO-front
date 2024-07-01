@@ -190,6 +190,18 @@
                         send
                     </mat-icon>
                     <mat-icon
+                        [color]="editingTotal ? '' : 'primary'"
+                        style="cursor: pointer"
+                        (click)="!editingTotal && sendPaymentByEmailOrSms(payment)"
+                        matTooltip="{{ getSendLabelBySmsOrEmail(payment) | translate }}"
+                        matTooltipPosition="above"
+                        *ngIf="
+                            (payment.paymentType?.id === 9 || payment.paymentType?.id === 10) && payment.paymentStatus?.id === 1
+                        "
+                    >
+                        send
+                    </mat-icon>
+                    <mat-icon
                         style="cursor: pointer; color: green"
                         [matBadge]="payment.attachments?.length"
                         matBadgePosition="before"

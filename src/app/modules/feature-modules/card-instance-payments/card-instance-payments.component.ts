@@ -1,31 +1,30 @@
 import { Component, EventEmitter, Input, OnInit, Output, ViewEncapsulation } from '@angular/core';
-import { FormArray, FormBuilder, FormGroup, UntypedFormGroup, Validators } from '@angular/forms';
+import { FormBuilder, FormGroup, UntypedFormGroup, Validators } from '@angular/forms';
 import { ConcenetError } from '@app/types/error';
 import { marker } from '@biesbjerg/ngx-translate-extract-marker';
 import { AttachmentDTO, CardAttachmentsDTO, CardInstanceAttachmentDTO } from '@data/models/cards/card-attachments-dto';
 // eslint-disable-next-line max-len
+import CardInstanceDTO from '@data/models/cards/card-instance-dto';
 import {
   CardPaymentLineDTO,
   CardPaymentsDTO,
   CardTotalDetailDTO,
   CardTotalLineDTO,
-  PaymentDescriptionDTO,
   PaymentPosibleDescriptionDTO,
   PaymentStatusDTO,
   PaymentTypeDTO
 } from '@data/models/cards/card-payments-dto';
-import CardInstanceDTO from '@data/models/cards/card-instance-dto';
 import { CardAttachmentsService } from '@data/services/card-attachments.service';
-import { CardPaymentsService } from '@data/services/card-payments.service';
 import { CardMessagesService } from '@data/services/card-messages.service';
+import { CardPaymentsService } from '@data/services/card-payments.service';
 import { CustomDialogService } from '@frontend/custom-dialog';
 import { TranslateService } from '@ngx-translate/core';
 import { ConfirmDialogService } from '@shared/services/confirm-dialog.service';
 import { GlobalMessageService } from '@shared/services/global-message.service';
 import { NGXLogger } from 'ngx-logger';
+import { forkJoin } from 'rxjs';
 import { take } from 'rxjs/operators';
 import CardInstancePaymentsConfig from './card-instance-payments-config-interface';
-import { forkJoin } from 'rxjs';
 import {
   CardPaymentDialogEnum,
   CardPaymentDialogFormComponent
@@ -63,6 +62,8 @@ export class CardInstancePaymentsComponent implements OnInit {
     newTotalDetail: marker('cardDetail.payments.newTotalDetail'),
     send: marker('common.send'),
     sendPayment: marker('cardDetail.payments.send'),
+    sendPaymentBySms: marker('cardDetail.payments.sendSms'),
+    sendPaymentByEmail: marker('cardDetail.payments.sendEmail'),
     resendPayment: marker('cardDetail.payments.resend'),
     attachments: marker('common.attachments'),
     deleteConfirmation: marker('common.deleteConfirmation'),
@@ -109,6 +110,14 @@ export class CardInstancePaymentsComponent implements OnInit {
       return this.labels.resendPayment;
     }
   }
+
+  public getSendLabelBySmsOrEmail(payment: CardPaymentLineDTO): string {
+    if (payment.paymentStatus.id === 1 && payment.paymentType.id === 9) {
+      return this.labels.sendPaymentBySms;
+    } else if (payment.paymentStatus.id === 1 && payment.paymentType.id === 10) {
+      return this.labels.sendPaymentByEmail;
+    }
+  }
   public sendPayment(payment: CardPaymentLineDTO): void {
     this.confirmationDialog
       .open({
@@ -120,6 +129,40 @@ export class CardInstancePaymentsComponent implements OnInit {
         if (ok) {
           this.cardMessageService
             .sendPaymentMessageClient(this.cardInstanceWorkflowId, payment.id)
+            .pipe(take(1))
+            .subscribe(
+              (data) => {
+                this.reload.emit(true);
+              },
+              (error: ConcenetError) => {
+                this.logger.error(error);
+
+                this.globalMessageService.showError({
+                  message: error.message,
+                  actionText: this.translateService.instant(marker('common.close'))
+                });
+              }
+            );
+        }
+      });
+  }
+
+  public sendPaymentByEmailOrSms(payment: CardPaymentLineDTO): void {
+    this.confirmationDialog
+      .open({
+        title: this.translateService.instant(marker('common.warning')),
+        message:
+          payment.paymentType.id === 9
+            ? this.translateService.instant(marker('cardDetail.payments.sendConfirmationBySms'))
+            : payment.paymentType.id === 10
+            ? this.translateService.instant(marker('cardDetail.payments.sendConfirmationByEmail'))
+            : ''
+      })
+      .pipe(take(1))
+      .subscribe((ok: boolean) => {
+        if (ok) {
+          this.cardMessageService
+            .sendPaymentMessageBySmsOrEmail(this.cardInstanceWorkflowId, this.tabId, payment.id)
             .pipe(take(1))
             .subscribe(
               (data) => {
