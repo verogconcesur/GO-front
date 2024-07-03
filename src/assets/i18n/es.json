@@ -823,10 +823,13 @@
             "numFacilities": "{numItems} {numItems, plural, =0{instalaciones} one{instalación} other{instalaciones}}",
             "requireConfigApiExt": "Requiere configuración de API externa",
             "requireConfigEmail": "La configuración de correo requiere rellenar todos los campos para continuar",
+            "requireConfigStockApiExt": "Requiere configuración para stock",
             "retryLastMigration": "Reparar última migración",
             "retryLastMigrationInfo": "Si selecciona la opción de reparar última migración recuerde subir el mismo fichero que subió en la anterior ejecución (con el mismo número de registros y en el mismo orden).",
             "storeId": "Identificador de tienda",
             "substateConfig": "Subestado para carga automática",
+            "substateConfigNew": "Nuevos",
+            "substateConfigUsed": "Usados",
             "title": "Instalaciones",
             "workflow": "Workflow"
         },
