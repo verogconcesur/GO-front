@@ -48,7 +48,19 @@
           }
         }
       }
+      &.substateList-flex {
+        display: flex;
+        align-items: center;
 
+        mat-form-field {
+          margin-right: 16px;
+          max-width: 450px;
+
+          &:last-child {
+            margin-right: 0;
+          }
+        }
+      }
       .error-message {
         margin-top: 10px; /* Espacio superior */
         margin-bottom: 10px; /* Espacio inferior */

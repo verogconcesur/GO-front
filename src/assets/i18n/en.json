@@ -842,10 +842,13 @@
             "numFacilities": "{numItems} {numItems, plural, =0{facilities} one{facility} other{facilities}}",
             "requireConfigApiExt": "requires external API configuration",
             "requireConfigEmail": "Requires all fields of email configuration be completed",
+            "requireConfigStockApiExt": "Requires configuration for stock",
             "retryLastMigration": "Repair last migration",
             "retryLastMigrationInfo": "If repair last migration is selected remember to upload the same file used last time.",
             "storeId": "Store Identifier",
             "substateConfig": "Substate for automatic charging",
+            "substateConfigNew": "New",
+            "substateConfigUsed": "Used",
             "title": "Facilities",
             "workflow": "Workflow"
         },
