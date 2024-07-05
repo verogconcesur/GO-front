@@ -2,6 +2,21 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [1.1.1](https://gitlab.alten.es/Delivery-Projects/concesur/concenet_front/-/compare/v1.1.0...v1.1.1) (2024-07-05)
+
+
+### Features
+
+* deshabilitar estado si tipo de pago es email/sms ([bdc4e5d](https://gitlab.alten.es/Delivery-Projects/concesur/concenet_front/-/commit/bdc4e5d160dbc4d0269e2c7b3c5c35130a84a149))
+* habilitar estado si usuario/sms/email ([62b3bc2](https://gitlab.alten.es/Delivery-Projects/concesur/concenet_front/-/commit/62b3bc2d59b0fd9a3e581b66e12920532e07d4bb))
+* nuevo botón enviar pagos por sms-email ([12fa11d](https://gitlab.alten.es/Delivery-Projects/concesur/concenet_front/-/commit/12fa11d0c40f9f65595ef12b12b1375dd4d6640b))
+* version de la app en el menu del perfil ([174cbdf](https://gitlab.alten.es/Delivery-Projects/concesur/concenet_front/-/commit/174cbdfbd574f73ea16200080b33b0eecbee050d))
+
+
+### Bug Fixes
+
+* **busq av:** criterio de busqueda al editar si no toco nada y se cierro se pierden los datos ([5492fca](https://gitlab.alten.es/Delivery-Projects/concesur/concenet_front/-/commit/5492fcab6c5217674f0646ab58d2a62259ad186e))
+
 ## [1.1.0](https://gitlab.alten.es/Delivery-Projects/concesur/concenet_front/-/compare/v1.0.6...v1.1.0) (2024-06-17)
 
 
