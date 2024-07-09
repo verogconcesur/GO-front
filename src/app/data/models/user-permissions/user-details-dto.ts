@@ -14,6 +14,7 @@ export default interface UserDetailsDTO {
   role: RoleDTO;
   email: string;
   code: string;
+  userId: string;
   userName: string;
   password: string;
   permissions: PermissionsDTO[];

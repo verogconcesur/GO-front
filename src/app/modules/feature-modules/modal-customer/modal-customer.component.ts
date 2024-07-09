@@ -1,16 +1,20 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { FormGroup, UntypedFormBuilder, Validators } from '@angular/forms';
 import { marker } from '@biesbjerg/ngx-translate-extract-marker';
-import CustomerEntityDTO from '@data/models/entities/customer-entity-dto';
-import BrandDTO from '@data/models/organization/brand-dto';
+import CustomerEntityDTO, { BusinessTypes } from '@data/models/entities/customer-entity-dto';
+import FacilityDTO from '@data/models/organization/facility-dto';
+import { CustomersService } from '@data/services/customers.service';
 import { EntitiesService } from '@data/services/entities.service';
-import { ComponentToExtendForCustomDialog, CustomDialogFooterConfigI } from '@frontend/custom-dialog';
+import { FacilityService } from '@data/services/facility.sevice';
+import { ComponentToExtendForCustomDialog, CustomDialogFooterConfigI, CustomDialogService } from '@frontend/custom-dialog';
+import { untilDestroyed } from '@ngneat/until-destroy';
 import { TranslateService } from '@ngx-translate/core';
 import { ConfirmDialogService } from '@shared/services/confirm-dialog.service';
 import { GlobalMessageService } from '@shared/services/global-message.service';
 import { ProgressSpinnerDialogService } from '@shared/services/progress-spinner-dialog.service';
+import { AtLeastOneRequiredValidator } from '@shared/validators/atLeastOne.validator';
 import { Observable, of } from 'rxjs';
-import { catchError, finalize, map } from 'rxjs/operators';
+import { catchError, finalize, take, tap } from 'rxjs/operators';
 
 export const enum CreateEditCustomerComponentModalEnum {
   ID = 'create-edit-customer-dialog-id',
@@ -28,6 +32,16 @@ export class ModalCustomerComponent extends ComponentToExtendForCustomDialog imp
     title: marker('entities.customers.create'),
     createCustomer: marker('entities.customers.create'),
     editCustomer: marker('entities.customers.edit'),
+    contactInfo: marker('entities.customers.contactInfo'),
+    gender: marker('entities.customers.gender'),
+    communicationPreferredPhone: marker('entities.customers.communicationPreferredPhone'),
+    communicationLandline: marker('entities.customers.communicationLandline'),
+    communicationWorkMobile: marker('entities.customers.communicationWorkMobile'),
+    communicationWorkLandline: marker('entities.customers.communicationWorkLandline'),
+    businessInfo: marker('entities.customers.businessInfo'),
+    facility: marker('entities.customers.facility'),
+    businessTypeCode: marker('entities.customers.businessTypeCode'),
+    addressPostalCode: marker('entities.customers.addressPostalCode'),
     name: marker('entities.customers.name'),
     reference: marker('entities.customers.reference'),
     firstName: marker('entities.customers.firstName'),
@@ -39,6 +53,11 @@ export class ModalCustomerComponent extends ComponentToExtendForCustomDialog imp
     required: marker('errors.required'),
     data: marker('userProfile.data')
   };
+  public facilityAsyncList: Observable<FacilityDTO[]>;
+  //@ts-ignore
+  public allBusiness: BusinessTypes[];
+  public phoneList: { value: string; name: string }[];
+  public genderList: { value: string; name: string }[];
   public minLength = 3;
   public customerForm: FormGroup;
   public customerToEdit: CustomerEntityDTO;
@@ -49,7 +68,11 @@ export class ModalCustomerComponent extends ComponentToExtendForCustomDialog imp
     private confirmDialogService: ConfirmDialogService,
     private translateService: TranslateService,
     private globalMessageService: GlobalMessageService,
-    private entitiesService: EntitiesService
+    private confirmationDialog: ConfirmDialogService,
+    private customDialogService: CustomDialogService,
+    private entitiesService: EntitiesService,
+    private facilityService: FacilityService,
+    private customerService: CustomersService
   ) {
     super(
       CreateEditCustomerComponentModalEnum.ID,
@@ -69,6 +92,7 @@ export class ModalCustomerComponent extends ComponentToExtendForCustomDialog imp
       this.MODAL_TITLE = this.labels.editCustomer;
     }
     this.initializeForm();
+    this.getOptionList();
   }
 
   ngOnDestroy(): void {}
@@ -85,54 +109,162 @@ export class ModalCustomerComponent extends ComponentToExtendForCustomDialog imp
   }
 
   public onSubmitCustomDialog(): Observable<boolean | CustomerEntityDTO> {
-    const formValue = this.customerForm.value;
-    const spinner = this.spinnerService.show();
-    return this.entitiesService.createCustomer(formValue).pipe(
-      map((response) => {
-        this.globalMessageService.showSuccess({
-          message: this.translateService.instant(marker('common.successOperation')),
-          actionText: this.translateService.instant(marker('common.close'))
-        });
-        return response;
-      }),
-      catchError((error) => {
-        this.globalMessageService.showError({
-          message: error.message,
-          actionText: this.translateService.instant(marker('common.close'))
-        });
-        return of(false);
-      }),
-      finalize(() => {
-        this.spinnerService.hide(spinner);
-      })
-    );
+    return of(true);
   }
 
+  public confirmCreateCustomer = () => {
+    const formValue = this.customerForm.value;
+    this.confirmationDialog
+      .open({
+        title: this.translateService.instant(marker('common.warning')),
+        message: this.customerToEdit
+          ? this.translateService.instant(marker('entities.customers.editTitle'))
+          : this.translateService.instant(marker('entities.customers.createTitle'))
+      })
+      .pipe(take(1))
+      .subscribe((ok: boolean) => {
+        if (ok) {
+          const spinner = this.spinnerService.show();
+          this.entitiesService
+            .createCustomer({
+              id: formValue.id,
+              customerId: formValue.customerId,
+              reference: formValue.reference,
+              name: formValue.name,
+              firstName: formValue.firstName,
+              secondName: formValue.secondName,
+              facility: formValue.facility,
+              email: formValue.email,
+              socialSecurityId: formValue.socialSecurityId,
+              phone: formValue.phone,
+              businessTypeCode: formValue.businessTypeCode.code,
+              businessTypeDescription: formValue.businessTypeCode.description,
+              addressPostalCode: formValue.addressPostalCode,
+              communicationPreferredPhone: formValue.communicationPreferredPhone,
+              communicationLandline: formValue.communicationLandline,
+              communicationWorkMobile: formValue.communicationWorkMobile,
+              communicationWorkLandline: formValue.communicationWorkLandline,
+              gender: formValue.gender
+            })
+            .pipe(
+              take(1),
+              finalize(() => this.spinnerService.hide(spinner))
+            )
+            .subscribe({
+              next: (response) => {
+                this.customDialogService.close(this.MODAL_ID, true);
+                this.globalMessageService.showSuccess({
+                  message: this.translateService.instant(marker('common.successOperation')),
+                  actionText: this.translateService.instant(marker('common.close'))
+                });
+                return response;
+              },
+              error: (error) => {
+                this.globalMessageService.showError({
+                  message: error.message,
+                  actionText: this.translateService.instant(marker('common.close'))
+                });
+              }
+            });
+        }
+      });
+  };
+  public getOptionList() {
+    this.facilityAsyncList = this.facilityService.getFacilitiesByBrandsIds().pipe(
+      tap({
+        next: (facilities: FacilityDTO[]) => {
+          const selectedFacility = this.customerForm.get('facility').value;
+          if (selectedFacility) {
+            this.customerForm.get('facility').setValue(
+              facilities.find((facility: FacilityDTO) => facility.id === selectedFacility.id),
+              { emitEvent: false }
+            );
+          }
+        }
+      })
+    );
+    this.getBusinessTypes();
+    this.phoneList = this.customerService.typePhoneComunications;
+    this.genderList = this.customerService.genderTypes;
+  }
+
+  public getBusinessTypes() {
+    if (this.form.facility.value) {
+      this.customerService
+        .getAllBusinessTypes(this.form.facility.value.id)
+        .pipe(
+          take(1),
+          catchError((error) => {
+            this.globalMessageService.showError({
+              message: error.error.message,
+              actionText: this.translateService.instant(marker('common.close'))
+            });
+            return of([]);
+          })
+        )
+        .subscribe((allBusiness: BusinessTypes[]) => {
+          this.allBusiness = allBusiness;
+          const selectedBusiness = this.customerForm.get('businessTypeCode').value;
+          if (selectedBusiness) {
+            this.customerForm.get('businessTypeCode').setValue(
+              allBusiness.find((business: BusinessTypes) => business.code === selectedBusiness),
+              { emitEvent: false }
+            );
+          }
+        });
+    }
+  }
   public setAndGetFooterConfig(): CustomDialogFooterConfigI | null {
     return {
       show: true,
       leftSideButtons: [],
       rightSideButtons: [
         {
-          type: 'submit',
+          type: 'custom',
           label: marker('common.save'),
           design: 'raised',
           color: 'primary',
+          clickFn: this.confirmCreateCustomer,
           disabledFn: () => !(this.customerForm.touched && this.customerForm.dirty && this.customerForm.valid)
         }
       ]
     };
   }
   private initializeForm = (): void => {
-    this.customerForm = this.fb.group({
-      id: [this.customerToEdit ? this.customerToEdit.id : null],
-      reference: [this.customerToEdit ? this.customerToEdit.reference : null],
-      name: [this.customerToEdit ? this.customerToEdit.name : null],
-      firstName: [this.customerToEdit ? this.customerToEdit.firstName : null],
-      secondName: [this.customerToEdit ? this.customerToEdit.secondName : null],
-      email: [this.customerToEdit ? this.customerToEdit.email : null, [Validators.email]],
-      socialSecurityId: [this.customerToEdit ? this.customerToEdit.socialSecurityId : null, [Validators.required]],
-      phone: [this.customerToEdit ? this.customerToEdit.phone : null]
+    this.customerForm = this.fb.group(
+      {
+        id: [this.customerToEdit ? this.customerToEdit.id : null],
+        customerId: [this.customerToEdit ? this.customerToEdit.customerId : null],
+        reference: [{ value: this.customerToEdit ? this.customerToEdit.reference : null, disabled: true }],
+        name: [this.customerToEdit ? this.customerToEdit.name : null],
+        firstName: [this.customerToEdit ? this.customerToEdit.firstName : null],
+        secondName: [this.customerToEdit ? this.customerToEdit.secondName : null],
+        facility: [this.customerToEdit ? this.customerToEdit.facility : null, [Validators.required]],
+        email: [this.customerToEdit ? this.customerToEdit.email : null, [Validators.email]],
+        socialSecurityId: [this.customerToEdit ? this.customerToEdit.socialSecurityId : null, [Validators.required]],
+        phone: [this.customerToEdit ? this.customerToEdit.phone : null],
+        businessTypeCode: [this.customerToEdit ? this.customerToEdit.businessTypeCode : null, [Validators.required]],
+        addressPostalCode: [this.customerToEdit ? this.customerToEdit.addressPostalCode : null, [Validators.required]],
+        communicationPreferredPhone: [
+          this.customerToEdit ? this.customerToEdit.communicationPreferredPhone : null,
+          [Validators.required]
+        ],
+        communicationLandline: [this.customerToEdit ? this.customerToEdit.communicationLandline : null],
+        communicationWorkMobile: [this.customerToEdit ? this.customerToEdit.communicationWorkMobile : null],
+        communicationWorkLandline: [this.customerToEdit ? this.customerToEdit.communicationWorkLandline : null],
+        gender: [this.customerToEdit ? this.customerToEdit.gender : null, [Validators.required]]
+      },
+      {
+        validators: AtLeastOneRequiredValidator.validate([
+          'communicationLandline',
+          'communicationWorkMobile',
+          'communicationWorkLandline'
+        ])
+      }
+    );
+    this.customerForm.controls.facility.valueChanges.pipe(untilDestroyed(this)).subscribe((x) => {
+      this.form.businessTypeCode.setValue(null);
+      this.getBusinessTypes();
     });
   };
 }

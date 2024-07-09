@@ -548,11 +548,23 @@
     },
     "entities": {
         "customers": {
+            "addressPostalCode": "Postal code",
+            "businessInfo": "Business information",
+            "businessTypeCode": "Business type",
+            "communicationLandline": "Communication landline",
+            "communicationPreferredPhone": "Preferred phone for communication",
+            "communicationWorkLandline": "Work landline",
+            "communicationWorkMobile": "Work mobile",
+            "contactInfo": "Contact information",
             "create": "Create customer",
+            "createTitle": "The customer will be created in Autoline",
             "customer": "Customer",
             "edit": "Edit customer",
+            "editTitle": "The customer will be updated in Autoline",
             "email": "Email",
+            "facility": "Facility",
             "firstName": "First name",
+            "gender": "Gender",
             "import": "Import customer",
             "lastName": "Second name",
             "name": "Name",
@@ -919,6 +931,7 @@
         "sign": "Sign",
         "specialty": "Specialty",
         "title": "Your profile",
+        "userId": "User id",
         "userName": "User's name"
     },
     "users": {
