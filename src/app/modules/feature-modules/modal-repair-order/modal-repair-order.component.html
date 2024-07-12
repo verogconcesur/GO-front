@@ -21,6 +21,53 @@
                     <mat-form-field appearance="outline" floatLabel="always">
                         <mat-label>{{ labels.jobsDescription | translate }}</mat-label>
                         <input matInput formControlName="jobsDescription" />
+                        <mat-error *ngIf="repairOrderForm.controls?.jobsDescription.invalid">
+                            <span *ngIf="repairOrderForm.controls.jobsDescription.errors.required">{{
+                                labels.required | translate
+                            }}</span>
+                        </mat-error>
+                    </mat-form-field>
+                    <mat-form-field
+                        appearance="outline"
+                        class="smaller-mat-form-fields__no-margin date-picker"
+                        floatLabel="always"
+                    >
+                        <mat-label>Fecha de la cita</mat-label>
+                        <input
+                            matInput
+                            readonly
+                            #pickerIniInput
+                            [matDatepicker]="pickerIni"
+                            placeholder="DD/MM/YYYY"
+                            formControlName="dueInDatetime"
+                            [max]="endDate"
+                            (dateChange)="startDate = $event.value"
+                        />
+                        <mat-datepicker-toggle matSuffix [for]="pickerIni"></mat-datepicker-toggle>
+                        <mat-datepicker #pickerIni></mat-datepicker>
+                        <!-- <mat-error *ngIf="budgetForm.get('startDate').invalid && budgetForm.get('startDate').touched ">
+                        <span *ngIf="budgetForm.get('startDate').errors.required">{{ labels.required | translate }}</span>
+                    </mat-error> -->
+                        <!-- TODO: DGDC relacionar el input con el datePicker -->
+                        <mat-error *ngIf="repairOrderForm.get('dueInDatetime').invalid">{{
+                            getDateErrorMessage(pickerIniInput.value)
+                        }}</mat-error>
+                    </mat-form-field>
+                    <mat-form-field appearance="outline" floatLabel="always">
+                        <mat-label>Instalacion</mat-label>
+                        <mat-select formControlName="facility">
+                            <mat-option *ngFor="let facility of facilityAsyncList | async" [value]="facility">{{
+                                facility.name
+                            }}</mat-option>
+                        </mat-select>
+                        <mat-error
+                            class="facility-data__error"
+                            *ngIf="repairOrderForm.controls.facility.invalid && repairOrderForm.controls.facility.touched"
+                        >
+                            <span *ngIf="repairOrderForm.controls.facility.errors.required">{{
+                                labels.required | translate
+                            }}</span>
+                        </mat-error>
                     </mat-form-field>
                 </div>
             </div>

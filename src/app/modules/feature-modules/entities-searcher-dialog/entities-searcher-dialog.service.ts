@@ -4,7 +4,7 @@ import CustomerEntityDTO from '@data/models/entities/customer-entity-dto';
 import RepairOrderEntityDTO from '@data/models/entities/repair-order-entity-dto';
 import VehicleEntityDTO from '@data/models/entities/vehicle-entity-dto';
 import UserDTO from '@data/models/user-permissions/user-dto';
-import { Observable, take } from 'rxjs';
+import { take } from 'rxjs';
 import { EntitiesSearcherDialogComponent } from './entities-searcher-dialog.component';
 
 @Injectable({
@@ -18,7 +18,9 @@ export class EntitiesSearcherDialogService implements OnDestroy {
   public openEntitySearcher(
     workflowId: number,
     facilityId: number,
-    mode: 'USER' | 'CUSTOMER' | 'VEHICLE' | 'REPAIRORDER'
+    mode: 'USER' | 'CUSTOMER' | 'VEHICLE' | 'REPAIRORDER',
+    vehicleId?: number,
+    customerId?: number
   ): Promise<{ entity: UserDTO | VehicleEntityDTO | CustomerEntityDTO | RepairOrderEntityDTO; vehicleInventoryId: number }> {
     return new Promise((resolve, reject) => {
       this.dialog
@@ -26,7 +28,7 @@ export class EntitiesSearcherDialogService implements OnDestroy {
           width: '600px',
           panelClass: 'entities-searcher',
           disableClose: true,
-          data: { workflowId, facilityId, mode }
+          data: { workflowId, facilityId, mode, vehicleId, customerId }
         })
         .afterClosed()
         .pipe(take(1))

@@ -1,6 +1,6 @@
 import { Component, Inject, OnInit } from '@angular/core';
 import { FormGroup, UntypedFormBuilder, Validators } from '@angular/forms';
-import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
+import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { marker } from '@biesbjerg/ngx-translate-extract-marker';
 import CustomerEntityDTO from '@data/models/entities/customer-entity-dto';
 import RepairOrderEntityDTO from '@data/models/entities/repair-order-entity-dto';
@@ -8,6 +8,7 @@ import UserEntityDTO from '@data/models/entities/user-entity-dto';
 import VehicleEntityDTO, { InventoryVehicle } from '@data/models/entities/vehicle-entity-dto';
 import { EntitiesService } from '@data/services/entities.service';
 import { CustomDialogService } from '@frontend/custom-dialog';
+import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
 import { TranslateService } from '@ngx-translate/core';
 import { GlobalMessageService } from '@shared/services/global-message.service';
 import { take } from 'rxjs/operators';
@@ -29,7 +30,6 @@ import {
   ModalVehicleExternalApiComponent
 } from '../modal-vehicle-external-api/modal-vehicle-external-api.component';
 import { CreateEditVehicleComponentModalEnum, ModalVehicleComponent } from '../modal-vehicle/modal-vehicle.component';
-import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
 
 @UntilDestroy()
 @Component({
@@ -40,6 +40,8 @@ import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
 export class EntitiesSearcherDialogComponent implements OnInit {
   public workflowId: number;
   public facilityId: number;
+  public vehicleId: number;
+  public customerId: number;
   public mode: 'USER' | 'CUSTOMER' | 'VEHICLE' | 'REPAIRORDER';
   public labels = {
     userSearcher: marker('user.searchDialog'),
@@ -80,13 +82,21 @@ export class EntitiesSearcherDialogComponent implements OnInit {
     private globalMessageService: GlobalMessageService,
     private customDialogService: CustomDialogService,
     @Inject(MAT_DIALOG_DATA)
-    public dialogData: { workflowId: number; facilityId: number; mode: 'USER' | 'CUSTOMER' | 'VEHICLE' | 'REPAIRORDER' }
+    public dialogData: {
+      workflowId: number;
+      facilityId: number;
+      mode: 'USER' | 'CUSTOMER' | 'VEHICLE' | 'REPAIRORDER';
+      vehicleId: number;
+      customerId: number;
+    }
   ) {}
 
   ngOnInit(): void {
     if (this.dialogData) {
       this.workflowId = this.dialogData.workflowId ? this.dialogData.workflowId : null;
       this.facilityId = this.dialogData.facilityId ? this.dialogData.facilityId : null;
+      this.vehicleId = this.dialogData.vehicleId ? this.dialogData.vehicleId : null;
+      this.customerId = this.dialogData.customerId ? this.dialogData.customerId : null;
       this.mode = this.dialogData.mode;
     }
     this.initializeForm();
@@ -265,25 +275,37 @@ export class EntitiesSearcherDialogComponent implements OnInit {
               }
             });
         } else {
-          this.customDialogService
-            .open({
-              id: CreateEditRepairOrderComponentModalEnum.ID,
-              panelClass: CreateEditRepairOrderComponentModalEnum.PANEL_CLASS,
-              component: ModalRepairOrderComponent,
-              disableClose: true,
-              width: '900px'
-            })
-            .pipe(take(1))
-            .subscribe((response) => {
-              if (response) {
-                this.globalMessageService.showSuccess({
-                  message: this.translateService.instant(marker('common.successOperation')),
-                  actionText: this.translateService.instant(marker('common.close'))
-                });
-                this.searchForm.get('search').setValue(response);
-                this.selectEntity();
-              }
+          if (this.vehicleId && this.customerId) {
+            this.customDialogService
+              .open({
+                id: CreateEditRepairOrderComponentModalEnum.ID,
+                panelClass: CreateEditRepairOrderComponentModalEnum.PANEL_CLASS,
+                component: ModalRepairOrderComponent,
+                extendedComponentData: {
+                  facility: this.facilityId,
+                  vehicle: { id: this.vehicleId },
+                  customer: { id: this.customerId }
+                },
+                disableClose: true,
+                width: '900px'
+              })
+              .pipe(take(1))
+              .subscribe((response) => {
+                if (response) {
+                  this.globalMessageService.showSuccess({
+                    message: this.translateService.instant(marker('common.successOperation')),
+                    actionText: this.translateService.instant(marker('common.close'))
+                  });
+                  this.searchForm.get('search').setValue(response);
+                  this.selectEntity();
+                }
+              });
+          } else {
+            this.globalMessageService.showError({
+              message: this.translateService.instant(marker('entities.repairOrders.withAouCliAndVeh')),
+              actionText: this.translateService.instant(marker('common.close'))
             });
+          }
         }
         break;
     }

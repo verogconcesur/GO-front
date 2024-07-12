@@ -575,11 +575,15 @@
         },
         "repairOrders": {
             "create": "Crear orden de reparación",
+            "createTitle": "La orden de reparación se va a registrar en Autoline",
+            "date": "Fecha de la cita",
             "edit": "Editar orden de reparación",
+            "facility": "Instalación",
             "import": "Importar orden de reparación",
             "jobsDescription": "Descripción del trabajo",
             "reference": "Referencia",
-            "repairOrder": "Orden de reparación"
+            "repairOrder": "Orden de reparación",
+            "withAouCliAndVeh": "Debe seleccionar un cliente y un vehículo"
         },
         "user": {
             "user": "Usuario"

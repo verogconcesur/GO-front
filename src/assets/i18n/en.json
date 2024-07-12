@@ -575,11 +575,15 @@
         },
         "repairOrders": {
             "create": "Create repair order",
+            "createTitle": "The repair order will be recorded in Autoline",
+            "date": "Appointment date",
             "edit": "Edit repair order",
+            "facility": "Facility",
             "import": "Import repair order",
             "jobsDescription": "Job description",
             "reference": "Reference",
-            "repairOrder": "Repair order"
+            "repairOrder": "Repair order",
+            "withAouCliAndVeh": "You must select a customer and a vehicle"
         },
         "user": {
             "user": "User"

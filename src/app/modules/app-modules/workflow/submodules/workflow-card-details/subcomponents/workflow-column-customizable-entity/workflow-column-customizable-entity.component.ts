@@ -8,15 +8,17 @@ import WorkflowCardTabItemDTO from '@data/models/workflows/workflow-card-tab-ite
 import { CardService } from '@data/services/cards.service';
 import { TranslateService } from '@ngx-translate/core';
 import { GlobalMessageService } from '@shared/services/global-message.service';
-import { finalize, take } from 'rxjs/operators';
+import { take } from 'rxjs/operators';
 // eslint-disable-next-line max-len
-import { EntitiesSearcherDialogService } from '@modules/feature-modules/entities-searcher-dialog/entities-searcher-dialog.service';
-import { WorkflowPrepareAndMoveService } from '@modules/app-modules/workflow/aux-service/workflow-prepare-and-move-aux.service';
 import CardInstanceDTO from '@data/models/cards/card-instance-dto';
-import { EntitiesService } from '@data/services/entities.service';
 import CustomerEntityDTO from '@data/models/entities/customer-entity-dto';
 import VehicleEntityDTO from '@data/models/entities/vehicle-entity-dto';
+import { EntitiesService } from '@data/services/entities.service';
 import { CustomDialogService } from '@frontend/custom-dialog';
+import { WorkflowPrepareAndMoveService } from '@modules/app-modules/workflow/aux-service/workflow-prepare-and-move-aux.service';
+import { WorkflowRequiredFieldsAuxService } from '@modules/app-modules/workflow/aux-service/workflow-required-fields-aux.service';
+// eslint-disable-next-line max-len
+import { EntitiesSearcherDialogService } from '@modules/feature-modules/entities-searcher-dialog/entities-searcher-dialog.service';
 import {
   CreateEditCustomerComponentModalEnum,
   ModalCustomerComponent
@@ -25,12 +27,6 @@ import {
   CreateEditVehicleComponentModalEnum,
   ModalVehicleComponent
 } from '@modules/feature-modules/modal-vehicle/modal-vehicle.component';
-import RepairOrderEntityDTO from '@data/models/entities/repair-order-entity-dto';
-import {
-  CreateEditRepairOrderComponentModalEnum,
-  ModalRepairOrderComponent
-} from '@modules/feature-modules/modal-repair-order/modal-repair-order.component';
-import { WorkflowRequiredFieldsAuxService } from '@modules/app-modules/workflow/aux-service/workflow-required-fields-aux.service';
 
 @Component({
   selector: 'app-workflow-column-customizable-entity',
@@ -89,7 +85,7 @@ export class WorkflowColumnCustomizableEntityComponent implements OnInit, OnChan
   }
 
   public showEditEntity(): boolean {
-    if (this.tab.permissionType === 'EDIT' && [1, 2, 6].indexOf(this.tab.contentSourceId) >= 0 && this.entityData?.length) {
+    if (this.tab.permissionType === 'EDIT' && [1, 2].indexOf(this.tab.contentSourceId) >= 0 && this.entityData?.length) {
       return true;
     }
     return false;
@@ -101,8 +97,6 @@ export class WorkflowColumnCustomizableEntityComponent implements OnInit, OnChan
         return this.labels.editCustomer;
       case 2:
         return this.labels.editVehicle;
-      case 6:
-        return this.labels.editRepairOrder;
       default:
         return '';
     }
@@ -187,7 +181,13 @@ export class WorkflowColumnCustomizableEntityComponent implements OnInit, OnChan
     }
     this.setShowLoading.emit(true);
     this.entitySearcher
-      .openEntitySearcher(this.workflowId, this.cardInstance.cardInstanceWorkflow.facilityId, mode)
+      .openEntitySearcher(
+        this.workflowId,
+        this.cardInstance.cardInstanceWorkflow.facilityId,
+        mode,
+        this.cardInstance.cardInstanceWorkflow.cardInstance.customerId,
+        this.cardInstance.cardInstanceWorkflow.cardInstance.vehicleId
+      )
       .then((data) => {
         this.cardService
           .setEntityToTab(this.idCard, this.tab.id, data.entity.id, data.vehicleInventoryId)
@@ -251,34 +251,6 @@ export class WorkflowColumnCustomizableEntityComponent implements OnInit, OnChan
                 id: CreateEditVehicleComponentModalEnum.ID,
                 panelClass: CreateEditVehicleComponentModalEnum.PANEL_CLASS,
                 component: ModalVehicleComponent,
-                extendedComponentData: data ? data : null,
-                disableClose: true,
-                width: '900px'
-              })
-              .pipe(take(1))
-              .subscribe((response) => {
-                if (response) {
-                  this.globalMessageService.showSuccess({
-                    message: this.translateService.instant(marker('common.successOperation')),
-                    actionText: this.translateService.instant(marker('common.close'))
-                  });
-                  this.prepareAndMoveService.reloadData$.next('UPDATE_INFORMATION');
-                }
-              });
-          });
-        break;
-      case 6:
-        //'Repair Order';
-        this.entitiesService
-          .getRepairOrder(this.cardInstance.cardInstanceWorkflow.cardInstance.repairOrderId)
-          .pipe(take(1))
-          .subscribe((data: RepairOrderEntityDTO) => {
-            this.setShowLoading.emit(false);
-            this.customDialogService
-              .open({
-                id: CreateEditRepairOrderComponentModalEnum.ID,
-                panelClass: CreateEditRepairOrderComponentModalEnum.PANEL_CLASS,
-                component: ModalRepairOrderComponent,
                 extendedComponentData: data ? data : null,
                 disableClose: true,
                 width: '900px'
