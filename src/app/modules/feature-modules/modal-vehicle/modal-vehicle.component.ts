@@ -2,8 +2,7 @@ import { Component, OnDestroy, OnInit } from '@angular/core';
 import { FormGroup, UntypedFormBuilder, Validators } from '@angular/forms';
 import { ConcenetError } from '@app/types/error';
 import { marker } from '@biesbjerg/ngx-translate-extract-marker';
-import VehicleEntityDTO from '@data/models/entities/vehicle-entity-dto';
-import BrandDTO from '@data/models/organization/brand-dto';
+import VehicleEntityDTO, { TakeAllVehicle, Variants } from '@data/models/entities/vehicle-entity-dto';
 import FacilityDTO from '@data/models/organization/facility-dto';
 import { EntitiesService } from '@data/services/entities.service';
 import { FacilityService } from '@data/services/facility.sevice';
@@ -13,7 +12,7 @@ import { ConfirmDialogService } from '@shared/services/confirm-dialog.service';
 import { GlobalMessageService } from '@shared/services/global-message.service';
 import { ProgressSpinnerDialogService } from '@shared/services/progress-spinner-dialog.service';
 import { Observable, of } from 'rxjs';
-import { catchError, finalize, map, take } from 'rxjs/operators';
+import { catchError, finalize, map, take, tap } from 'rxjs/operators';
 
 export const enum CreateEditVehicleComponentModalEnum {
   ID = 'create-edit-vehicle-dialog-id',
@@ -41,6 +40,8 @@ export class ModalVehicleComponent extends ComponentToExtendForCustomDialog impl
     data: marker('userProfile.data'),
     orderData: marker('entities.vehicles.orderData'),
     facility: marker('entities.vehicles.facility'),
+    facilityStock: marker('entities.vehicles.facilityStock'),
+    variants: marker('entities.vehicles.variants'),
     commissionNumber: marker('entities.vehicles.commissionBonus'),
     required: marker('errors.required'),
     minLength: marker('errors.minLength')
@@ -49,6 +50,9 @@ export class ModalVehicleComponent extends ComponentToExtendForCustomDialog impl
   public vehicleForm: FormGroup;
   public vehicleToEdit: VehicleEntityDTO;
   public facilityList: FacilityDTO[] = [];
+  public facilityAsyncList: Observable<FacilityDTO[]>;
+  public variants: Variants;
+  public isStockVehicle = false;
 
   constructor(
     private fb: UntypedFormBuilder,
@@ -96,28 +100,58 @@ export class ModalVehicleComponent extends ComponentToExtendForCustomDialog impl
             actionText: this.translateService.instant(marker('common.close'))
           })
       });
+    this.getfacilityList();
   }
 
   ngOnDestroy(): void {}
   public removeFacility(): void {
-    this.form.facility.setValue(null);
+    this.form.facilityStock.setValue(null);
     this.vehicleForm.markAsTouched();
     this.vehicleForm.markAsDirty();
   }
   public changeCommissionNumber(): void {
-    if (this.form.commissionNumber.value && !this.form.facility.hasValidator(Validators.required)) {
-      this.form.facility.setValidators([Validators.required, Validators.minLength(this.minLength)]);
-      this.form.facility.updateValueAndValidity();
+    if (this.isStockVehicle) {
+      this.globalMessageService.showWarning({
+        message: this.translateService.instant(marker('entities.vehicles.isStockVehicle')),
+        actionText: this.translateService.instant(marker('common.close'))
+      });
+      this.isStockVehicle = false;
+    }
+    if (this.form.commissionNumber.value && !this.form.facilityStock.hasValidator(Validators.required)) {
+      this.form.facilityStock.setValidators([Validators.required, Validators.minLength(this.minLength)]);
+      this.form.facilityStock.updateValueAndValidity();
       this.vehicleForm.markAsTouched();
       this.vehicleForm.markAsDirty();
-    } else if (!this.form.commissionNumber.value && this.form.facility.hasValidator(Validators.required)) {
-      this.form.facility.setValidators([]);
-      this.form.facility.setValue(null);
-      this.form.facility.updateValueAndValidity();
+    } else if (!this.form.commissionNumber.value && this.form.facilityStock.hasValidator(Validators.required)) {
+      this.form.facilityStock.setValidators([]);
+      this.form.facilityStock.setValue(null);
+      this.form.facilityStock.updateValueAndValidity();
       this.vehicleForm.markAsTouched();
       this.vehicleForm.markAsDirty();
     }
+    this.form.make.enable();
+    this.form.make.setValue(null);
+    this.form.variantCode.setValue(null);
+    this.form.variantCode.disable();
+    this.form.model.enable();
+    this.form.model.setValue(null);
   }
+  public getfacilityList() {
+    this.facilityAsyncList = this.facilityService.getFacilitiesByBrandsIds().pipe(
+      tap({
+        next: (facilities: FacilityDTO[]) => {
+          const selectedFacility = this.vehicleForm.get('facility').value;
+          if (selectedFacility) {
+            this.vehicleForm.get('facility').setValue(
+              facilities.find((facility: FacilityDTO) => facility.id === selectedFacility.id),
+              { emitEvent: false }
+            );
+          }
+        }
+      })
+    );
+  }
+
   public confirmCloseCustomDialog(): Observable<boolean> {
     if (this.vehicleForm.touched && this.vehicleForm.dirty) {
       return this.confirmDialogService.open({
@@ -129,8 +163,26 @@ export class ModalVehicleComponent extends ComponentToExtendForCustomDialog impl
     }
   }
 
+  searchMakes(event: Event): void {
+    if (this.vehicleForm.controls.vin.value && !this.vehicleForm.controls.commissionNumber.value) {
+      const input = event.target as HTMLInputElement;
+      const value = input.value;
+      this.vehicleForm.controls.model.disable();
+      this.vehicleForm.controls.make.disable();
+      this.entitiesService
+        .getMake(value, this.vehicleForm.controls.facility.value.id)
+        .pipe(take(1))
+        .subscribe((resp: TakeAllVehicle) => {
+          this.variants = resp.variants;
+          this.vehicleForm.controls.variantCode.enable();
+          this.vehicleForm.controls.model.setValue(resp.model);
+          this.vehicleForm.controls.make.setValue(resp.make);
+        });
+    }
+  }
+
   public onSubmitCustomDialog(): Observable<boolean | VehicleEntityDTO> {
-    const formValue = this.vehicleForm.value;
+    const formValue = this.vehicleForm.getRawValue();
     const body: VehicleEntityDTO = {
       id: formValue.id ? formValue.id : null,
       licensePlate: formValue.licensePlate ? formValue.licensePlate : null,
@@ -139,21 +191,20 @@ export class ModalVehicleComponent extends ComponentToExtendForCustomDialog impl
       model: formValue.model ? formValue.model : null,
       description: formValue.description ? formValue.description : null,
       vehicleId: formValue.vehicleId ? formValue.vehicleId : null,
-      chassis: formValue.chassis ? formValue.chassis : null,
       inventories: []
     };
     if (this.vehicleToEdit && this.vehicleToEdit.inventories && this.vehicleToEdit.inventories.length) {
       body.inventories.push({
         id: this.vehicleToEdit.inventories[this.vehicleToEdit.inventories.length - 1].id,
         commissionNumber: formValue.commissionNumber ? formValue.commissionNumber : null,
-        enterpriseId: formValue.facility ? formValue.facility.enterpriseId : null,
-        storeId: formValue.facility ? formValue.facility.storeId : null
+        enterpriseId: formValue.facilityStock ? formValue.facilityStock.enterpriseId : null,
+        storeId: formValue.facilityStock ? formValue.facilityStock.storeId : null
       });
     } else if (formValue.commissionNumber) {
       body.inventories.push({
         commissionNumber: formValue.commissionNumber ? formValue.commissionNumber : null,
-        enterpriseId: formValue.facility ? formValue.facility.enterpriseId : null,
-        storeId: formValue.facility ? formValue.facility.storeId : null
+        enterpriseId: formValue.facilityStock ? formValue.facilityStock.enterpriseId : null,
+        storeId: formValue.facilityStock ? formValue.facilityStock.storeId : null
       });
     }
     const spinner = this.spinnerService.show();
@@ -203,10 +254,11 @@ export class ModalVehicleComponent extends ComponentToExtendForCustomDialog impl
       make: [this.vehicleToEdit ? this.vehicleToEdit.make : null],
       model: [this.vehicleToEdit ? this.vehicleToEdit.model : null],
       description: [this.vehicleToEdit ? this.vehicleToEdit.description : null],
-      vehicleId: [this.vehicleToEdit ? this.vehicleToEdit.vehicleId : null],
-      chassis: [this.vehicleToEdit ? this.vehicleToEdit.chassis : null],
+      vehicleId: [{ value: this.vehicleToEdit ? this.vehicleToEdit.vehicleId : null, disabled: true }],
+      facility: [this.vehicleToEdit ? this.vehicleToEdit.facility : null],
+      variantCode: [this.vehicleToEdit ? this.vehicleToEdit?.variantCode : null],
       commissionNumber: [null],
-      facility: [null]
+      facilityStock: [null]
     });
     if (this.vehicleToEdit && this.vehicleToEdit.inventories && this.vehicleToEdit.inventories.length) {
       this.form.commissionNumber.setValue(
@@ -216,7 +268,8 @@ export class ModalVehicleComponent extends ComponentToExtendForCustomDialog impl
       const facility = this.facilityList.find(
         (fac: FacilityDTO) => fac.id === this.vehicleToEdit.inventories[this.vehicleToEdit.inventories.length - 1].facilityId
       );
-      this.form.facility.setValue(facility);
+      this.form.facilityStock.setValue(facility);
     }
+    this.isStockVehicle = true;
   };
 }

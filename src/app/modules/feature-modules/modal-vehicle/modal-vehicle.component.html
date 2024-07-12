@@ -18,7 +18,7 @@
                     <!-- vin -->
                     <mat-form-field appearance="outline" floatLabel="always">
                         <mat-label>{{ labels.vin | translate }}</mat-label>
-                        <input matInput formControlName="vin" />
+                        <input matInput formControlName="vin" (input)="searchMakes($event)" />
                     </mat-form-field>
                     <!-- make -->
                     <mat-form-field appearance="outline" floatLabel="always">
@@ -40,10 +40,27 @@
                         <mat-label>{{ labels.vehicleId | translate }}</mat-label>
                         <input matInput formControlName="vehicleId" />
                     </mat-form-field>
-                    <!-- chassis -->
                     <mat-form-field appearance="outline" floatLabel="always">
-                        <mat-label>{{ labels.chassis | translate }}</mat-label>
-                        <input matInput formControlName="chassis" />
+                        <mat-label>{{ labels.facility | translate }}</mat-label>
+                        <mat-select formControlName="facility">
+                            <mat-option *ngFor="let facility of facilityAsyncList | async" [value]="facility">{{
+                                facility.name
+                            }}</mat-option>
+                        </mat-select>
+                        <mat-error class="facility-data__error" *ngIf="form.facility.invalid && form.facility.touched">
+                            <span *ngIf="form.facility.errors.required">{{ labels.required | translate }}</span>
+                        </mat-error>
+                    </mat-form-field>
+                    <mat-form-field appearance="outline" floatLabel="always">
+                        <mat-label>{{ labels.variants | translate }}</mat-label>
+                        <mat-select formControlName="variantCode" [disabled]="form.commissionNumber.value">
+                            <mat-option *ngFor="let variant of variants | keyvalue" [value]="variant.key">{{
+                                variant.value
+                            }}</mat-option>
+                        </mat-select>
+                        <mat-error class="facility-data__error" *ngIf="form.facility.invalid && form.facility.touched">
+                            <span *ngIf="form.facility.errors.required">{{ labels.required | translate }}</span>
+                        </mat-error>
                     </mat-form-field>
                 </div>
                 <div class="vehicle-data__section__title first-child">
@@ -57,15 +74,15 @@
                     </mat-form-field>
                     <!-- Facility -->
                     <mat-form-field appearance="outline" floatLabel="always">
-                        <mat-label>{{ labels.facility | translate }}</mat-label>
-                        <mat-select formControlName="facility" [disabled]="!form.commissionNumber.value">
+                        <mat-label>{{ labels.facilityStock | translate }}</mat-label>
+                        <mat-select formControlName="facilityStock" [disabled]="!form.commissionNumber.value">
                             <mat-option *ngFor="let facility of facilityList" [value]="facility">{{ facility.name }}</mat-option>
                         </mat-select>
                         <button matSuffix mat-icon-button aria-label="Clear" (click)="removeFacility(); $event.stopPropagation()">
                             <mat-icon>close</mat-icon>
                         </button>
-                        <mat-error *ngIf="form?.facility.invalid">
-                            <span *ngIf="form.facility.errors.required"> {{ labels.required | translate }} </span>
+                        <mat-error *ngIf="form?.facilityStock.invalid">
+                            <span *ngIf="form.facilityStock.errors.required"> {{ labels.required | translate }} </span>
                         </mat-error>
                     </mat-form-field>
                 </div>

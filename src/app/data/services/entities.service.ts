@@ -14,7 +14,7 @@ import RepairOrderEntityDTO from '@data/models/entities/repair-order-entity-dto'
 import RepairOrderFilterDTO from '@data/models/entities/repair-order-filter-dto';
 import UserEntityDTO from '@data/models/entities/user-entity-dto';
 import VehicleBodyApiDTO from '@data/models/entities/vehicle-body-api-dto';
-import VehicleEntityDTO from '@data/models/entities/vehicle-entity-dto';
+import VehicleEntityDTO, { TakeAllVehicle } from '@data/models/entities/vehicle-entity-dto';
 import VehicleFilterDTO from '@data/models/entities/vehicle-filter-dto';
 import { getPaginationUrlGetParams } from '@data/utils/pagination-aux';
 import { Observable, throwError } from 'rxjs';
@@ -29,6 +29,7 @@ export class EntitiesService {
   private readonly GET_REPAIR_ORDER_PATH = '/api/repairOrders/';
   private readonly GET_USERS_PATH = '/api/users/listByFilter';
   private readonly SEARCH_PATH = 'search';
+  private readonly MAKE_PATH = 'getMake';
   private readonly SEARCH__EXTERNAL_API_PATH = 'searchExternalApi';
   private readonly SAVE__EXTERNAL_API_PATH = 'saveExternalApi/';
   private readonly SEARCH_PATH_PAG = 'searchPaged';
@@ -110,6 +111,16 @@ export class EntitiesService {
   public searchVehiclesApi(search: VehicleFilterDTO): Observable<VehicleEntityDTO[]> {
     return this.http
       .post<VehicleEntityDTO[]>(`${this.env.apiBaseUrl}${this.GET_VEHICLES_PATH}${this.SEARCH__EXTERNAL_API_PATH}`, search)
+      .pipe(catchError((error) => throwError(error.error as ConcenetError)));
+  }
+  /**
+   * Search make
+   *
+   * @returns TakeAllVehicle
+   */
+  public getMake(vin: string, facilityId: number): Observable<TakeAllVehicle> {
+    return this.http
+      .get<TakeAllVehicle>(`${this.env.apiBaseUrl}${this.GET_VEHICLES_PATH}${this.MAKE_PATH}/${vin}/${facilityId}`)
       .pipe(catchError((error) => throwError(error.error as ConcenetError)));
   }
   /**
