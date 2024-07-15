@@ -11,6 +11,7 @@
         "build_pre": "npm run build -- --configuration=pre",
         "build_stg": "npm run build -- --configuration=stg",
         "build_production": "npm run build -- --configuration=production",
+        "build_production_la_baronia": "npm run build -- --configuration=production_la_baronia",
         "test": "ng test --code-coverage",
         "test:ci": "ng test --watch=false --code-coverage",
         "lint": "ng lint",

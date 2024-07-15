@@ -83,6 +83,15 @@
                                 }
                             ]
                         },
+                        "production_la_baronia": {
+                            "optimization": true,
+                            "fileReplacements": [
+                                {
+                                    "replace": "src/environments/environment.ts",
+                                    "with": "src/environments/laBaronia/environment.production.ts"
+                                }
+                            ]
+                        },
                         "pre": {
                             "optimization": true,
                             "fileReplacements": [
