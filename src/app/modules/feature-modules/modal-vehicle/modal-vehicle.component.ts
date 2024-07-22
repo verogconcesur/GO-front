@@ -3,7 +3,6 @@ import { FormGroup, UntypedFormBuilder, Validators } from '@angular/forms';
 import { ConcenetError } from '@app/types/error';
 import { marker } from '@biesbjerg/ngx-translate-extract-marker';
 import VehicleEntityDTO from '@data/models/entities/vehicle-entity-dto';
-import BrandDTO from '@data/models/organization/brand-dto';
 import FacilityDTO from '@data/models/organization/facility-dto';
 import { EntitiesService } from '@data/services/entities.service';
 import { FacilityService } from '@data/services/facility.sevice';
@@ -146,14 +145,14 @@ export class ModalVehicleComponent extends ComponentToExtendForCustomDialog impl
       body.inventories.push({
         id: this.vehicleToEdit.inventories[this.vehicleToEdit.inventories.length - 1].id,
         commissionNumber: formValue.commissionNumber ? formValue.commissionNumber : null,
-        enterpriseId: formValue.facility ? formValue.facility.enterpriseId : null,
-        storeId: formValue.facility ? formValue.facility.storeId : null
+        enterpriseId: formValue.facility ? formValue.facility.configStockEnterpriseId : null,
+        storeId: formValue.facility ? formValue.facility.configStockStoreId : null
       });
     } else if (formValue.commissionNumber) {
       body.inventories.push({
         commissionNumber: formValue.commissionNumber ? formValue.commissionNumber : null,
-        enterpriseId: formValue.facility ? formValue.facility.enterpriseId : null,
-        storeId: formValue.facility ? formValue.facility.storeId : null
+        enterpriseId: formValue.facility ? formValue.facility.configStockEnterpriseId : null,
+        storeId: formValue.facility ? formValue.facility.configStockStoreId : null
       });
     }
     const spinner = this.spinnerService.show();
