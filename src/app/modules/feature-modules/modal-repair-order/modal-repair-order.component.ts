@@ -137,7 +137,7 @@ export class ModalRepairOrderComponent extends ComponentToExtendForCustomDialog 
             )
             .subscribe({
               next: (response) => {
-                this.customDialogService.close(this.MODAL_ID, true);
+                this.customDialogService.close(this.MODAL_ID, response);
                 this.globalMessageService.showSuccess({
                   message: this.translateService.instant(marker('common.successOperation')),
                   actionText: this.translateService.instant(marker('common.close'))

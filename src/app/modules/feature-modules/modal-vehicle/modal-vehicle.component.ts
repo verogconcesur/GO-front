@@ -257,7 +257,7 @@ export class ModalVehicleComponent extends ComponentToExtendForCustomDialog impl
         .pipe(
           take(1),
           map((response) => {
-            this.customDialogService.close(this.MODAL_ID, true);
+            this.customDialogService.close(this.MODAL_ID, response);
             this.globalMessageService.showSuccess({
               message: this.translateService.instant(marker('common.successOperation')),
               actionText: this.translateService.instant(marker('common.close'))
@@ -299,7 +299,7 @@ export class ModalVehicleComponent extends ComponentToExtendForCustomDialog impl
               )
               .subscribe({
                 next: (response) => {
-                  this.customDialogService.close(this.MODAL_ID, true);
+                  this.customDialogService.close(this.MODAL_ID, response);
                   this.globalMessageService.showSuccess({
                     message: this.translateService.instant(marker('common.successOperation')),
                     actionText: this.translateService.instant(marker('common.close'))
