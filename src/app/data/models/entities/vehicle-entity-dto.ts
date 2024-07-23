@@ -11,6 +11,8 @@ export default interface VehicleEntityDTO {
   facility?: FacilityDTO;
   model?: string;
   make?: string;
+  modelCode?: string;
+  makeCode?: string;
   description?: string;
   id?: number;
   licensePlate?: string;

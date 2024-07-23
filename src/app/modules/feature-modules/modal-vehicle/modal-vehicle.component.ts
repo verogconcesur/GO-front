@@ -6,12 +6,13 @@ import VehicleEntityDTO, { TakeAllVehicle, Variants } from '@data/models/entitie
 import FacilityDTO from '@data/models/organization/facility-dto';
 import { EntitiesService } from '@data/services/entities.service';
 import { FacilityService } from '@data/services/facility.sevice';
-import { ComponentToExtendForCustomDialog, CustomDialogFooterConfigI } from '@frontend/custom-dialog';
+import { ComponentToExtendForCustomDialog, CustomDialogFooterConfigI, CustomDialogService } from '@frontend/custom-dialog';
+import { untilDestroyed } from '@ngneat/until-destroy';
 import { TranslateService } from '@ngx-translate/core';
 import { ConfirmDialogService } from '@shared/services/confirm-dialog.service';
 import { GlobalMessageService } from '@shared/services/global-message.service';
 import { ProgressSpinnerDialogService } from '@shared/services/progress-spinner-dialog.service';
-import { Observable, of } from 'rxjs';
+import { combineLatest, Observable, of } from 'rxjs';
 import { catchError, finalize, map, take, tap } from 'rxjs/operators';
 
 export const enum CreateEditVehicleComponentModalEnum {
@@ -61,7 +62,8 @@ export class ModalVehicleComponent extends ComponentToExtendForCustomDialog impl
     private translateService: TranslateService,
     private globalMessageService: GlobalMessageService,
     private entitiesService: EntitiesService,
-    private facilityService: FacilityService
+    private facilityService: FacilityService,
+    private customDialogService: CustomDialogService
   ) {
     super(
       CreateEditVehicleComponentModalEnum.ID,
@@ -109,6 +111,21 @@ export class ModalVehicleComponent extends ComponentToExtendForCustomDialog impl
     this.vehicleForm.markAsTouched();
     this.vehicleForm.markAsDirty();
   }
+
+  public listenVinFacilityChanges(): void {
+    const vinChanges = this.vehicleForm.get('vin')?.valueChanges;
+    const facilityChanges = this.vehicleForm.get('facility')?.valueChanges;
+
+    if (vinChanges && facilityChanges) {
+      combineLatest([vinChanges, facilityChanges])
+        .pipe(untilDestroyed(this))
+        .subscribe(([vinValue, facilityValue]) => {
+          if (vinValue && facilityValue) {
+            this.searchMakes(vinValue, facilityValue.id);
+          }
+        });
+    }
+  }
   public changeCommissionNumber(): void {
     if (this.isStockVehicle) {
       this.globalMessageService.showWarning({
@@ -129,15 +146,35 @@ export class ModalVehicleComponent extends ComponentToExtendForCustomDialog impl
       this.vehicleForm.markAsTouched();
       this.vehicleForm.markAsDirty();
     }
-    this.form.make.enable();
     this.form.make.setValue(null);
     this.form.variantCode.setValue(null);
     this.form.variantCode.disable();
-    this.form.model.enable();
     this.form.model.setValue(null);
+    this.form.make.enable();
+    this.form.model.enable();
+  }
+
+  public changeVin() {
+    if (this.form.vin.value && !this.form.facility.hasValidator(Validators.required)) {
+      this.form.facility.setValidators([Validators.required, Validators.minLength(this.minLength)]);
+      this.form.facility.updateValueAndValidity();
+      this.vehicleForm.markAsTouched();
+      this.vehicleForm.markAsDirty();
+      this.form.make.disable();
+      this.form.model.disable();
+    } else if (!this.form.vin.value && this.form.facility.hasValidator(Validators.required)) {
+      this.form.facility.setValidators([]);
+      this.form.facility.setValue(null);
+      this.form.facility.updateValueAndValidity();
+      this.vehicleForm.markAsTouched();
+      this.vehicleForm.markAsDirty();
+      this.form.make.enable();
+      this.form.model.enable();
+    }
   }
   public getfacilityList() {
     this.facilityAsyncList = this.facilityService.getFacilitiesByBrandsIds().pipe(
+      take(1),
       tap({
         next: (facilities: FacilityDTO[]) => {
           const selectedFacility = this.vehicleForm.get('facility').value;
@@ -146,6 +183,7 @@ export class ModalVehicleComponent extends ComponentToExtendForCustomDialog impl
               facilities.find((facility: FacilityDTO) => facility.id === selectedFacility.id),
               { emitEvent: false }
             );
+            this.searchMakes(this.vehicleForm.get('vin').value, selectedFacility.id);
           }
         }
       })
@@ -163,35 +201,40 @@ export class ModalVehicleComponent extends ComponentToExtendForCustomDialog impl
     }
   }
 
-  searchMakes(event: Event): void {
+  searchMakes(vinValue: string, facilityValue: string): void {
     if (this.vehicleForm.controls.vin.value && !this.vehicleForm.controls.commissionNumber.value) {
-      const input = event.target as HTMLInputElement;
-      const value = input.value;
-      this.vehicleForm.controls.model.disable();
-      this.vehicleForm.controls.make.disable();
+      this.form.make.disable();
+      this.form.model.disable();
       this.entitiesService
-        .getMake(value, this.vehicleForm.controls.facility.value.id)
+        .getMake(vinValue, Number(facilityValue))
         .pipe(take(1))
         .subscribe((resp: TakeAllVehicle) => {
           this.variants = resp.variants;
           this.vehicleForm.controls.variantCode.enable();
           this.vehicleForm.controls.model.setValue(resp.model);
           this.vehicleForm.controls.make.setValue(resp.make);
+          this.vehicleForm.controls.makeCode.setValue(resp.makeCode);
+          this.vehicleForm.controls.modelCode.setValue(resp.modelCode);
         });
     }
   }
 
-  public onSubmitCustomDialog(): Observable<boolean | VehicleEntityDTO> {
+  public createVehicle = () => {
     const formValue = this.vehicleForm.getRawValue();
+    const hasComissionNumber = !!formValue.commissionNumber;
     const body: VehicleEntityDTO = {
       id: formValue.id ? formValue.id : null,
       licensePlate: formValue.licensePlate ? formValue.licensePlate : null,
       vin: formValue.vin ? formValue.vin : null,
-      make: formValue.make ? formValue.make : null,
-      model: formValue.model ? formValue.model : null,
       description: formValue.description ? formValue.description : null,
       vehicleId: formValue.vehicleId ? formValue.vehicleId : null,
-      inventories: []
+      inventories: [],
+      ...(hasComissionNumber && formValue.model ? { model: formValue.model } : {}),
+      ...(hasComissionNumber && formValue.make ? { make: formValue.make } : {}),
+      ...(!hasComissionNumber && formValue.facility ? { facility: formValue.facility } : {}),
+      ...(!hasComissionNumber && formValue.modelCode ? { modelCode: formValue.modelCode } : {}),
+      ...(!hasComissionNumber && formValue.makeCode ? { makeCode: formValue.modelCode } : {}),
+      ...(!hasComissionNumber && formValue.variantCode ? { variantCode: formValue.variantCode } : {})
     };
     if (this.vehicleToEdit && this.vehicleToEdit.inventories && this.vehicleToEdit.inventories.length) {
       body.inventories.push({
@@ -207,28 +250,76 @@ export class ModalVehicleComponent extends ComponentToExtendForCustomDialog impl
         storeId: formValue.facilityStock ? formValue.facilityStock.storeId : null
       });
     }
-    const spinner = this.spinnerService.show();
-    return this.entitiesService
-      .createVehicle(body, this.vehicleToEdit && this.vehicleToEdit.cardInstanceId ? this.vehicleToEdit.cardInstanceId : null)
-      .pipe(
-        map((response) => {
-          this.globalMessageService.showSuccess({
-            message: this.translateService.instant(marker('common.successOperation')),
-            actionText: this.translateService.instant(marker('common.close'))
-          });
-          return response;
-        }),
-        catchError((error) => {
-          this.globalMessageService.showError({
-            message: error.message,
-            actionText: this.translateService.instant(marker('common.close'))
-          });
-          return of(false);
-        }),
-        finalize(() => {
-          this.spinnerService.hide(spinner);
+    if (formValue.commissionNumber) {
+      const spinner = this.spinnerService.show();
+      return this.entitiesService
+        .createVehicle(body, this.vehicleToEdit && this.vehicleToEdit.cardInstanceId ? this.vehicleToEdit.cardInstanceId : null)
+        .pipe(
+          take(1),
+          map((response) => {
+            this.customDialogService.close(this.MODAL_ID, true);
+            this.globalMessageService.showSuccess({
+              message: this.translateService.instant(marker('common.successOperation')),
+              actionText: this.translateService.instant(marker('common.close'))
+            });
+            return response;
+          }),
+          catchError((error) => {
+            this.globalMessageService.showError({
+              message: error.message,
+              actionText: this.translateService.instant(marker('common.close'))
+            });
+            return of(false);
+          }),
+          finalize(() => {
+            this.spinnerService.hide(spinner);
+          })
+        )
+        .subscribe();
+    } else {
+      this.confirmDialogService
+        .open({
+          title: this.translateService.instant(marker('common.warning')),
+          message: this.vehicleToEdit
+            ? this.translateService.instant(marker('entities.vehicles.editVehicle'))
+            : this.translateService.instant(marker('entities.vehicles.createVehicle'))
         })
-      );
+        .pipe(take(1))
+        .subscribe((ok: boolean) => {
+          if (ok) {
+            const spinner = this.spinnerService.show();
+            this.entitiesService
+              .createVehicle(
+                body,
+                this.vehicleToEdit && this.vehicleToEdit.cardInstanceId ? this.vehicleToEdit.cardInstanceId : null
+              )
+              .pipe(
+                take(1),
+                finalize(() => this.spinnerService.hide(spinner))
+              )
+              .subscribe({
+                next: (response) => {
+                  this.customDialogService.close(this.MODAL_ID, true);
+                  this.globalMessageService.showSuccess({
+                    message: this.translateService.instant(marker('common.successOperation')),
+                    actionText: this.translateService.instant(marker('common.close'))
+                  });
+                  return response;
+                },
+                error: (error) => {
+                  this.globalMessageService.showError({
+                    message: error.message,
+                    actionText: this.translateService.instant(marker('common.close'))
+                  });
+                }
+              });
+          }
+        });
+    }
+  };
+
+  public onSubmitCustomDialog(): Observable<boolean | VehicleEntityDTO> {
+    return of(true);
   }
 
   public setAndGetFooterConfig(): CustomDialogFooterConfigI | null {
@@ -237,10 +328,11 @@ export class ModalVehicleComponent extends ComponentToExtendForCustomDialog impl
       leftSideButtons: [],
       rightSideButtons: [
         {
-          type: 'submit',
+          type: 'custom',
           label: marker('common.save'),
           design: 'raised',
           color: 'primary',
+          clickFn: this.createVehicle,
           disabledFn: () => !this.vehicleForm || !(this.vehicleForm.touched && this.vehicleForm.dirty && this.vehicleForm.valid)
         }
       ]
@@ -258,7 +350,9 @@ export class ModalVehicleComponent extends ComponentToExtendForCustomDialog impl
       facility: [this.vehicleToEdit ? this.vehicleToEdit.facility : null],
       variantCode: [this.vehicleToEdit ? this.vehicleToEdit?.variantCode : null],
       commissionNumber: [null],
-      facilityStock: [null]
+      facilityStock: [null],
+      makeCode: [null],
+      modelCode: [null]
     });
     if (this.vehicleToEdit && this.vehicleToEdit.inventories && this.vehicleToEdit.inventories.length) {
       this.form.commissionNumber.setValue(
@@ -270,6 +364,7 @@ export class ModalVehicleComponent extends ComponentToExtendForCustomDialog impl
       );
       this.form.facilityStock.setValue(facility);
     }
+    this.listenVinFacilityChanges();
     this.isStockVehicle = true;
   };
 }

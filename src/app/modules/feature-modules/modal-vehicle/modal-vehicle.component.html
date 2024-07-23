@@ -18,7 +18,7 @@
                     <!-- vin -->
                     <mat-form-field appearance="outline" floatLabel="always">
                         <mat-label>{{ labels.vin | translate }}</mat-label>
-                        <input matInput formControlName="vin" (input)="searchMakes($event)" />
+                        <input matInput formControlName="vin" (change)="changeVin()" />
                     </mat-form-field>
                     <!-- make -->
                     <mat-form-field appearance="outline" floatLabel="always">
@@ -58,9 +58,6 @@
                                 variant.value
                             }}</mat-option>
                         </mat-select>
-                        <mat-error class="facility-data__error" *ngIf="form.facility.invalid && form.facility.touched">
-                            <span *ngIf="form.facility.errors.required">{{ labels.required | translate }}</span>
-                        </mat-error>
                     </mat-form-field>
                 </div>
                 <div class="vehicle-data__section__title first-child">
