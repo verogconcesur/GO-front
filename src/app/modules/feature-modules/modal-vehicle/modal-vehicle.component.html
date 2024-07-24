@@ -10,6 +10,17 @@
                     {{ labels.data | translate }}
                 </div>
                 <div class="vehicle-data__section__group">
+                    <mat-form-field appearance="outline" floatLabel="always">
+                        <mat-label>{{ labels.facility | translate }}</mat-label>
+                        <mat-select formControlName="facility">
+                            <mat-option *ngFor="let facility of facilityAsyncList | async" [value]="facility">{{
+                                facility.name
+                            }}</mat-option>
+                        </mat-select>
+                        <mat-error class="facility-data__error" *ngIf="form.facility.invalid && form.facility.touched">
+                            <span *ngIf="form.facility.errors.required">{{ labels.required | translate }}</span>
+                        </mat-error>
+                    </mat-form-field>
                     <!-- licensePlate -->
                     <mat-form-field appearance="outline" floatLabel="always">
                         <mat-label>{{ labels.licensePlate | translate }}</mat-label>
@@ -38,18 +49,7 @@
                     <!-- vehicleId -->
                     <mat-form-field appearance="outline" floatLabel="always">
                         <mat-label>{{ labels.vehicleId | translate }}</mat-label>
-                        <input matInput formControlName="vehicleId" />
-                    </mat-form-field>
-                    <mat-form-field appearance="outline" floatLabel="always">
-                        <mat-label>{{ labels.facility | translate }}</mat-label>
-                        <mat-select formControlName="facility">
-                            <mat-option *ngFor="let facility of facilityAsyncList | async" [value]="facility">{{
-                                facility.name
-                            }}</mat-option>
-                        </mat-select>
-                        <mat-error class="facility-data__error" *ngIf="form.facility.invalid && form.facility.touched">
-                            <span *ngIf="form.facility.errors.required">{{ labels.required | translate }}</span>
-                        </mat-error>
+                        <input matInput formControlName="vehicleId" readonly />
                     </mat-form-field>
                     <mat-form-field appearance="outline" floatLabel="always">
                         <mat-label>{{ labels.variants | translate }}</mat-label>

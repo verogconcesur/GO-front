@@ -1,4 +1,4 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { ChangeDetectorRef, Component, OnDestroy, OnInit } from '@angular/core';
 import { FormGroup, UntypedFormBuilder, Validators } from '@angular/forms';
 import { ConcenetError } from '@app/types/error';
 import { marker } from '@biesbjerg/ngx-translate-extract-marker';
@@ -63,7 +63,8 @@ export class ModalVehicleComponent extends ComponentToExtendForCustomDialog impl
     private globalMessageService: GlobalMessageService,
     private entitiesService: EntitiesService,
     private facilityService: FacilityService,
-    private customDialogService: CustomDialogService
+    private customDialogService: CustomDialogService,
+    private cdr: ChangeDetectorRef
   ) {
     super(
       CreateEditVehicleComponentModalEnum.ID,
@@ -152,6 +153,7 @@ export class ModalVehicleComponent extends ComponentToExtendForCustomDialog impl
     this.form.model.setValue(null);
     this.form.make.enable();
     this.form.model.enable();
+    this.cdr.detectChanges();
   }
 
   public changeVin() {
@@ -240,14 +242,14 @@ export class ModalVehicleComponent extends ComponentToExtendForCustomDialog impl
       body.inventories.push({
         id: this.vehicleToEdit.inventories[this.vehicleToEdit.inventories.length - 1].id,
         commissionNumber: formValue.commissionNumber ? formValue.commissionNumber : null,
-        enterpriseId: formValue.facilityStock ? formValue.facilityStock.enterpriseId : null,
-        storeId: formValue.facilityStock ? formValue.facilityStock.storeId : null
+        enterpriseId: formValue.facilityStock ? formValue.facilityStock.configStockEnterpriseId : null,
+        storeId: formValue.facilityStock ? formValue.facilityStock.configStockStoreId : null
       });
     } else if (formValue.commissionNumber) {
       body.inventories.push({
         commissionNumber: formValue.commissionNumber ? formValue.commissionNumber : null,
-        enterpriseId: formValue.facilityStock ? formValue.facilityStock.enterpriseId : null,
-        storeId: formValue.facilityStock ? formValue.facilityStock.storeId : null
+        enterpriseId: formValue.facilityStock ? formValue.facilityStock.configStockEnterpriseId : null,
+        storeId: formValue.facilityStock ? formValue.facilityStock.configStockStoreId : null
       });
     }
     if (formValue.commissionNumber) {
@@ -346,7 +348,7 @@ export class ModalVehicleComponent extends ComponentToExtendForCustomDialog impl
       make: [this.vehicleToEdit ? this.vehicleToEdit.make : null],
       model: [this.vehicleToEdit ? this.vehicleToEdit.model : null],
       description: [this.vehicleToEdit ? this.vehicleToEdit.description : null],
-      vehicleId: [{ value: this.vehicleToEdit ? this.vehicleToEdit.vehicleId : null, disabled: true }],
+      vehicleId: [this.vehicleToEdit ? this.vehicleToEdit.vehicleId : null],
       facility: [this.vehicleToEdit ? this.vehicleToEdit.facility : null],
       variantCode: [this.vehicleToEdit ? this.vehicleToEdit?.variantCode : null],
       commissionNumber: [null],

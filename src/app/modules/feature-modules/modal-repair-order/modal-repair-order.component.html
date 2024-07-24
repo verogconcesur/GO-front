@@ -10,10 +10,17 @@
                 </div>
                 <div class="repair-order-data__section__group">
                     <mat-form-field appearance="outline" floatLabel="always">
-                        <mat-label>{{ labels.reference | translate }}</mat-label>
-                        <input matInput formControlName="reference" />
-                        <mat-error *ngIf="repairOrderForm.controls?.reference.invalid">
-                            <span *ngIf="repairOrderForm.controls.reference.errors.required">{{
+                        <mat-label>Instalacion</mat-label>
+                        <mat-select formControlName="facility">
+                            <mat-option *ngFor="let facility of facilityAsyncList | async" [value]="facility">{{
+                                facility.name
+                            }}</mat-option>
+                        </mat-select>
+                        <mat-error
+                            class="facility-data__error"
+                            *ngIf="repairOrderForm.controls.facility.invalid && repairOrderForm.controls.facility.touched"
+                        >
+                            <span *ngIf="repairOrderForm.controls.facility.errors.required">{{
                                 labels.required | translate
                             }}</span>
                         </mat-error>
@@ -32,39 +39,32 @@
                         class="smaller-mat-form-fields__no-margin date-picker"
                         floatLabel="always"
                     >
-                        <mat-label>Fecha de la cita</mat-label>
+                        <mat-label>{{ labels.date | translate }}</mat-label>
                         <input
                             matInput
                             readonly
                             #pickerIniInput
-                            [matDatepicker]="pickerIni"
-                            placeholder="DD/MM/YYYY"
+                            [ngxMatDatetimePicker]="pickerIni"
+                            placeholder="DD/MM/YYYY HH:mm"
                             formControlName="dueInDatetime"
                             [max]="endDate"
                             (dateChange)="startDate = $event.value"
                         />
                         <mat-datepicker-toggle matSuffix [for]="pickerIni"></mat-datepicker-toggle>
-                        <mat-datepicker #pickerIni></mat-datepicker>
-                        <!-- <mat-error *ngIf="budgetForm.get('startDate').invalid && budgetForm.get('startDate').touched ">
-                        <span *ngIf="budgetForm.get('startDate').errors.required">{{ labels.required | translate }}</span>
-                    </mat-error> -->
-                        <!-- TODO: DGDC relacionar el input con el datePicker -->
+                        <ngx-mat-datetime-picker
+                            #pickerIni
+                            [showSeconds]="false"
+                            [enableMeridian]="false"
+                        ></ngx-mat-datetime-picker>
                         <mat-error *ngIf="repairOrderForm.get('dueInDatetime').invalid">{{
                             getDateErrorMessage(pickerIniInput.value)
                         }}</mat-error>
                     </mat-form-field>
                     <mat-form-field appearance="outline" floatLabel="always">
-                        <mat-label>Instalacion</mat-label>
-                        <mat-select formControlName="facility">
-                            <mat-option *ngFor="let facility of facilityAsyncList | async" [value]="facility">{{
-                                facility.name
-                            }}</mat-option>
-                        </mat-select>
-                        <mat-error
-                            class="facility-data__error"
-                            *ngIf="repairOrderForm.controls.facility.invalid && repairOrderForm.controls.facility.touched"
-                        >
-                            <span *ngIf="repairOrderForm.controls.facility.errors.required">{{
+                        <mat-label>{{ labels.reference | translate }}</mat-label>
+                        <input matInput formControlName="reference" readonly />
+                        <mat-error *ngIf="repairOrderForm.controls?.reference.invalid">
+                            <span *ngIf="repairOrderForm.controls.reference.errors.required">{{
                                 labels.required | translate
                             }}</span>
                         </mat-error>

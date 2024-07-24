@@ -19,6 +19,17 @@ export const enum CreateEditRepairOrderComponentModalEnum {
   PANEL_CLASS = 'create-edit-repair-order-dialog',
   TITLE = 'entities.repairOrders.create'
 }
+interface CustomDateObject {
+  _isAMomentObject: boolean;
+  _d: Date;
+  _i: {
+    date: number;
+    month: number;
+    year: number;
+  };
+  _isUTC: boolean;
+  _isValid: boolean;
+}
 
 @Component({
   selector: 'app-modal-repair-order',
@@ -128,7 +139,7 @@ export class ModalRepairOrderComponent extends ComponentToExtendForCustomDialog 
               jobsDescription: formValue.jobsDescription,
               vehicle: formValue.vehicle,
               customer: formValue.customer,
-              dueInDatetime: formValue.dueInDatetime.getTime(),
+              dueInDatetime: this.convertToMilliseconds(formValue.dueInDatetime).toString(),
               facility: formValue.facility
             })
             .pipe(
@@ -154,6 +165,16 @@ export class ModalRepairOrderComponent extends ComponentToExtendForCustomDialog 
         }
       });
   };
+  public convertToMilliseconds(value: CustomDateObject): number | null {
+    if (!value) {
+      return null;
+    }
+    const { _d: date } = value;
+    if (date instanceof Date) {
+      return date.getTime();
+    }
+    return null;
+  }
   public getDateErrorMessage(value: string): string {
     if (!value || value === '') {
       return this.translateService.instant(this.labels.required);
@@ -179,7 +200,7 @@ export class ModalRepairOrderComponent extends ComponentToExtendForCustomDialog 
   private initializeForm = (): void => {
     this.repairOrderForm = this.fb.group({
       id: [this.repairOrderToEdit ? this.repairOrderToEdit?.id : null],
-      reference: [{ value: this.repairOrderToEdit ? this.repairOrderToEdit?.reference : null, disabled: true }],
+      reference: [this.repairOrderToEdit ? this.repairOrderToEdit?.reference : null],
       jobsDescription: [this.repairOrderToEdit ? this.repairOrderToEdit?.jobsDescription : null, [Validators.required]],
       vehicle: [this.repairOrderToEdit ? this.repairOrderToEdit?.vehicle : null],
       customer: [this.repairOrderToEdit ? this.repairOrderToEdit?.customer : null],

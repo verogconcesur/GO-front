@@ -35,23 +35,6 @@
                         </mat-error>
                     </mat-form-field>
                     <mat-form-field appearance="outline" floatLabel="always">
-                        <mat-label>{{ labels.phone | translate }}</mat-label>
-                        <input matInput formControlName="phone" />
-                    </mat-form-field>
-                    <mat-form-field appearance="outline" floatLabel="always">
-                        <mat-label>{{ labels.email | translate }}</mat-label>
-                        <input matInput formControlName="email" />
-                        <mat-error
-                            *ngIf="
-                                customerForm.controls.email.invalid &&
-                                customerForm.controls.email.touched &&
-                                customerForm.controls.email.hasError('email')
-                            "
-                        >
-                            {{ labels.emailError | translate }}
-                        </mat-error>
-                    </mat-form-field>
-                    <mat-form-field appearance="outline" floatLabel="always">
                         <mat-label>{{ labels.addressPostalCode | translate }}</mat-label>
                         <input matInput formControlName="addressPostalCode" />
                         <mat-error
@@ -76,7 +59,7 @@
                     </mat-form-field>
                     <mat-form-field appearance="outline" floatLabel="always">
                         <mat-label>{{ labels.reference | translate }}</mat-label>
-                        <input matInput formControlName="reference" />
+                        <input matInput formControlName="reference" readonly />
                     </mat-form-field>
                 </div>
 
@@ -103,6 +86,10 @@
                         </mat-error>
                     </mat-form-field>
                     <mat-form-field appearance="outline" floatLabel="always">
+                        <mat-label>{{ labels.phone | translate }}</mat-label>
+                        <input matInput formControlName="phone" />
+                    </mat-form-field>
+                    <mat-form-field appearance="outline" floatLabel="always">
                         <mat-label>{{ labels.communicationLandline | translate }}</mat-label>
                         <input matInput formControlName="communicationLandline" />
                         <mat-error *ngIf="customerForm.hasError('atLeastOneRequired')">
@@ -121,6 +108,19 @@
                         <input matInput formControlName="communicationWorkLandline" />
                         <mat-error *ngIf="customerForm.hasError('atLeastOneRequired')">
                             {{ labels.required | translate }}
+                        </mat-error>
+                    </mat-form-field>
+                    <mat-form-field appearance="outline" floatLabel="always">
+                        <mat-label>{{ labels.email | translate }}</mat-label>
+                        <input matInput formControlName="email" />
+                        <mat-error
+                            *ngIf="
+                                customerForm.controls.email.invalid &&
+                                customerForm.controls.email.touched &&
+                                customerForm.controls.email.hasError('email')
+                            "
+                        >
+                            {{ labels.emailError | translate }}
                         </mat-error>
                     </mat-form-field>
                 </div>
