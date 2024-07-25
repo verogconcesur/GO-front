@@ -2,7 +2,7 @@ import { Component, EventEmitter, Input, OnInit, Output, ViewEncapsulation } fro
 import { FormBuilder, FormGroup, UntypedFormGroup, Validators } from '@angular/forms';
 import { ConcenetError } from '@app/types/error';
 import { marker } from '@biesbjerg/ngx-translate-extract-marker';
-import { AttachmentDTO, CardAttachmentsDTO, CardPaymentAttachmentsDTO } from '@data/models/cards/card-attachments-dto';
+import { AttachmentDTO, CardAttachmentsDTO, CardInstanceAttachmentDTO } from '@data/models/cards/card-attachments-dto';
 // eslint-disable-next-line max-len
 import CardInstanceDTO from '@data/models/cards/card-instance-dto';
 import {
@@ -81,7 +81,7 @@ export class CardInstancePaymentsComponent implements OnInit {
   public totalDetailLines: CardTotalDetailDTO[];
   public paymentStatus: PaymentStatusDTO[];
   public paymentDescriptions: PaymentPosibleDescriptionDTO;
-  public attachmentsList: CardPaymentAttachmentsDTO[];
+  public attachmentsList: CardInstanceAttachmentDTO[];
   public paymentTypes: PaymentTypeDTO[];
   public prevTotal: number;
   public prevCustomerAccount: string;
@@ -100,7 +100,7 @@ export class CardInstancePaymentsComponent implements OnInit {
     private attachmentService: CardAttachmentsService,
     private cardMessageService: CardMessagesService
   ) {}
-  public compareAttachments(object1: CardPaymentAttachmentsDTO, object2: CardPaymentAttachmentsDTO) {
+  public compareAttachments(object1: CardInstanceAttachmentDTO, object2: CardInstanceAttachmentDTO) {
     return object1 && object2 && object1.file.id === object2.file.id;
   }
   public getSendLabel(payment: CardPaymentLineDTO): string {
@@ -191,14 +191,14 @@ export class CardInstancePaymentsComponent implements OnInit {
         if (ok) {
           const totalDetailData = totalDetail.getRawValue();
           if (totalDetailData.attachments?.length) {
-            totalDetailData.attachments = totalDetailData.attachments.map((att1: CardPaymentAttachmentsDTO) => {
+            totalDetailData.attachments = totalDetailData.attachments.map((att1: CardInstanceAttachmentDTO) => {
               let attachment = att1;
               if (
                 totalDetailData.attachmentsOriginal?.length &&
-                totalDetailData.attachmentsOriginal.find((att2: CardPaymentAttachmentsDTO) => att1.file.id === att2.file.id)
+                totalDetailData.attachmentsOriginal.find((att2: CardInstanceAttachmentDTO) => att1.file.id === att2.file.id)
               ) {
                 attachment = totalDetailData.attachmentsOriginal.find(
-                  (att2: CardPaymentAttachmentsDTO) => att1.file.id === att2.file.id
+                  (att2: CardInstanceAttachmentDTO) => att1.file.id === att2.file.id
                 );
               }
               return attachment;
@@ -236,14 +236,14 @@ export class CardInstancePaymentsComponent implements OnInit {
         if (ok) {
           const paymentData = payment.getRawValue();
           if (paymentData.attachments?.length) {
-            paymentData.attachments = paymentData.attachments.map((att1: CardPaymentAttachmentsDTO) => {
+            paymentData.attachments = paymentData.attachments.map((att1: CardInstanceAttachmentDTO) => {
               let attachment = att1;
               if (
                 paymentData.attachmentsOriginal?.length &&
-                paymentData.attachmentsOriginal.find((att2: CardPaymentAttachmentsDTO) => att1.file.id === att2.file.id)
+                paymentData.attachmentsOriginal.find((att2: CardInstanceAttachmentDTO) => att1.file.id === att2.file.id)
               ) {
                 attachment = paymentData.attachmentsOriginal.find(
-                  (att2: CardPaymentAttachmentsDTO) => att1.file.id === att2.file.id
+                  (att2: CardInstanceAttachmentDTO) => att1.file.id === att2.file.id
                 );
               }
               return attachment;
@@ -344,14 +344,14 @@ export class CardInstancePaymentsComponent implements OnInit {
         if (ok) {
           const totalLineData = totalLine.getRawValue();
           if (totalLineData.attachments?.length) {
-            totalLineData.attachments = totalLineData.attachments.map((att1: CardPaymentAttachmentsDTO) => {
+            totalLineData.attachments = totalLineData.attachments.map((att1: CardInstanceAttachmentDTO) => {
               let attachment = att1;
               if (
                 totalLineData.attachmentsOriginal?.length &&
-                totalLineData.attachmentsOriginal.find((att2: CardPaymentAttachmentsDTO) => att1.file.id === att2.file.id)
+                totalLineData.attachmentsOriginal.find((att2: CardInstanceAttachmentDTO) => att1.file.id === att2.file.id)
               ) {
                 attachment = totalLineData.attachmentsOriginal.find(
-                  (att2: CardPaymentAttachmentsDTO) => att1.file.id === att2.file.id
+                  (att2: CardInstanceAttachmentDTO) => att1.file.id === att2.file.id
                 );
               }
               return attachment;
@@ -730,7 +730,7 @@ export class CardInstancePaymentsComponent implements OnInit {
                 tab: { id: attachment.tabId },
                 file: att,
                 templateAttachmentItem: attachment.templateAttachmentItem
-              } as CardPaymentAttachmentsDTO);
+              } as CardInstanceAttachmentDTO);
             });
           });
         },

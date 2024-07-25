@@ -322,7 +322,8 @@ export class CardInstanceBudgetsComponent implements OnInit {
       .subscribe(
         (data) => {
           this.attachmentsList = [];
-          data.forEach((attachment: CardAttachmentsDTO) => {
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
+          data.forEach((attachment: any) => {
             attachment.attachments.forEach((att: AttachmentDTO) => {
               this.attachmentsList.push({
                 cardInstance: this.cardInstance,

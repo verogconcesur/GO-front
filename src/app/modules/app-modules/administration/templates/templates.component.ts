@@ -27,7 +27,8 @@ export class TemplatesComponent implements OnInit {
     | RouteConstants.BUDGETS
     | RouteConstants.CHECKLISTS
     | RouteConstants.ATTACHMENTS
-    | RouteConstants.CLIENT_TIMELINE = RouteConstants.COMMUNICATIONS;
+    | RouteConstants.CLIENT_TIMELINE
+    | RouteConstants.ACCOUNTING = RouteConstants.COMMUNICATIONS;
 
   public labels = {
     title: marker('administration.templates.title'),
@@ -36,11 +37,13 @@ export class TemplatesComponent implements OnInit {
     checklists: marker('administration.templates.checklists.title'),
     attachments: marker('administration.templates.attachments.title'),
     clientTimeline: marker('administration.templates.clientTimeline.title'),
+    accounting: marker('administration.templates.accounting.title'),
     createCommunication: marker('administration.templates.communications.create'),
     createBudgets: marker('administration.templates.budgets.create'),
     createChecklists: marker('administration.templates.checklists.create'),
     createAttachments: marker('administration.templates.attachments.create'),
     createClientTimeline: marker('administration.templates.clientTimeline.create'),
+    createAccounting: marker('administration.templates.accounting.create'),
     create: marker('common.create')
   };
 
@@ -71,6 +74,8 @@ export class TemplatesComponent implements OnInit {
         return 3;
       case RouteConstants.CLIENT_TIMELINE:
         return 4;
+      case RouteConstants.ACCOUNTING:
+        return 5;
     }
   }
 
@@ -86,6 +91,8 @@ export class TemplatesComponent implements OnInit {
         return type && type === 'small' ? this.labels.create : this.labels.createAttachments;
       case RouteConstants.CLIENT_TIMELINE:
         return type && type === 'small' ? this.labels.create : this.labels.createClientTimeline;
+      case RouteConstants.ACCOUNTING:
+        return type && type === 'small' ? this.labels.create : this.labels.createAccounting;
     }
   }
 
@@ -135,6 +142,10 @@ export class TemplatesComponent implements OnInit {
         this.selectedTab = RouteConstants.CLIENT_TIMELINE;
         this.router.navigate([RouteConstants.ADMINISTRATION, RouteConstants.TEMPLATES, RouteConstants.CLIENT_TIMELINE]);
         break;
+      case 5:
+        this.selectedTab = RouteConstants.ACCOUNTING;
+        this.router.navigate([RouteConstants.ADMINISTRATION, RouteConstants.TEMPLATES, RouteConstants.ACCOUNTING]);
+        break;
       default:
         this.selectedTab = RouteConstants.COMMUNICATIONS;
         this.router.navigate([RouteConstants.ADMINISTRATION, RouteConstants.TEMPLATES, RouteConstants.COMMUNICATIONS]);
@@ -164,6 +175,8 @@ export class TemplatesComponent implements OnInit {
       this.selectedTab = RouteConstants.ATTACHMENTS;
     } else if (url.indexOf(RouteConstants.CLIENT_TIMELINE) > 0) {
       this.selectedTab = RouteConstants.CLIENT_TIMELINE;
+    } else if (url.indexOf(RouteConstants.ACCOUNTING) > 0) {
+      this.selectedTab = RouteConstants.ACCOUNTING;
     }
   }
 

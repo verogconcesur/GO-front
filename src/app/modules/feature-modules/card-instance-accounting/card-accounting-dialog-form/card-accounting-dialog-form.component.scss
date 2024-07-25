@@ -1,0 +1,43 @@
+@import 'utils/core';
+@import 'utils/theme';
+
+.create-edit-card-accounting-line {
+  width: 100%;
+  padding-right: 15px;
+  &__form {
+    width: 100%;
+    .mat-error {
+      font-size: 0.8rem;
+      margin-top: -26px;
+      margin-bottom: 15px;
+    }
+    .accounting-line-data__section {
+      &__title {
+        padding: 0 0 10px 0;
+        color: mat-color($primary, 500);
+        font-size: 1rem;
+        font-weight: 600;
+        &.first-child {
+          padding-top: 0px;
+        }
+      }
+      &__group {
+        mat-form-field {
+          margin-right: 20px;
+          &.w-100 {
+            width: 100%;
+            max-width: calc(100% - 20px);
+          }
+          &.w-33 {
+            width: calc(33% - 20px);
+          }
+        }
+        .link {
+          color: mat-color($primary, A700);
+          padding-top: 5px;
+          cursor: pointer;
+        }
+      }
+    }
+  }
+}

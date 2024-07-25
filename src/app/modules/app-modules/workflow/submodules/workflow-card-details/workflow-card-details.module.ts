@@ -36,6 +36,8 @@ import { WorkflowColumnTemplatesPaymentsComponent } from './subcomponents/workfl
 import { CardInstancePaymentsModule } from '@modules/feature-modules/card-instance-payments/card-instance-payments.module';
 import { ModalStartConversationModule } from '@modules/feature-modules/modal-start-conversation/modal-start-conversation.module';
 import { ModalChatWhatsappModule } from '@modules/feature-modules/modal-chat-whatsapp/modal-chat-whatsapp.module';
+import { WorkflowColumnTemplatesAccountingComponent } from './subcomponents/workflow-column-templates-accounting/workflow-column-templates-accounting.component';
+import { CardInstanceAccountingModule } from '@modules/feature-modules/card-instance-accounting/card-instance-accounting.module';
 @NgModule({
   declarations: [
     WorkflowCardDetailsComponent,
@@ -44,6 +46,7 @@ import { ModalChatWhatsappModule } from '@modules/feature-modules/modal-chat-wha
     WorkflowColumnCustomizableCustomComponent,
     WorkflowColumnTemplatesBudgetsComponent,
     WorkflowColumnTemplatesPaymentsComponent,
+    WorkflowColumnTemplatesAccountingComponent,
     WorkflowColumnTemplatesAttachmentsComponent,
     WorkflowColumnPrefixedInformationComponent,
     WorkflowColumnPrefixedTasksComponent,
@@ -66,6 +69,7 @@ import { ModalChatWhatsappModule } from '@modules/feature-modules/modal-chat-wha
     CardInstanceAttachmentsModule,
     CardInstanceBudgetsModule,
     CardInstancePaymentsModule,
+    CardInstanceAccountingModule,
     WorkflowCardDetailsRoutingModule,
     TextEditorWrapperModule,
     WorkflowCardTasksModule,

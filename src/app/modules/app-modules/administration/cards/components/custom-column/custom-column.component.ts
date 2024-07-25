@@ -408,6 +408,12 @@ export class CustomColumnComponent implements OnInit {
           let tabItemsForm5 = this.formTab.get('tabItems') as FormArray;
           tabItemsForm5 = this.fb.array([]);
           break;
+        case 10:
+          this.getTemplates('ACCOUNTING');
+          this.formTab.get('templateId').setValidators([Validators.required]);
+          let tabItemsForm10 = this.formTab.get('tabItems') as FormArray;
+          tabItemsForm10 = this.fb.array([]);
+          break;
       }
     }
   }

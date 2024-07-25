@@ -1,11 +1,11 @@
-import { CardBudgetAttachmentsDTO, CardPaymentAttachmentsDTO } from './card-attachments-dto';
+import { CardBudgetAttachmentsDTO, CardInstanceAttachmentDTO } from './card-attachments-dto';
 import CardColumnTabDTO from './card-column-tab-dto';
 import CardInstanceDTO from './card-instance-dto';
 
 export interface CardPaymentLineDTO {
   id?: number;
   amount?: number;
-  attachments?: CardPaymentAttachmentsDTO[];
+  attachments?: CardInstanceAttachmentDTO[];
   cardInstancePaymentDTO?: CardPaymentsDTO;
   description?: PaymentDescriptionDTO;
   observations?: string;
@@ -16,7 +16,7 @@ export interface CardPaymentLineDTO {
 export interface CardTotalLineDTO {
   id?: number;
   amount?: number;
-  attachments?: CardPaymentAttachmentsDTO[];
+  attachments?: CardInstanceAttachmentDTO[];
   cardInstancePaymentDTO?: CardPaymentsDTO;
   description?: PaymentDescriptionDTO;
   observations?: string;
@@ -25,7 +25,7 @@ export interface CardTotalLineDTO {
 export interface CardTotalDetailDTO {
   id: number;
   amount: number;
-  attachments: CardPaymentAttachmentsDTO[];
+  attachments: CardInstanceAttachmentDTO[];
   cardInstancePaymentDTO?: CardPaymentsDTO;
   description: PaymentDescriptionDTO;
   observations: string;
