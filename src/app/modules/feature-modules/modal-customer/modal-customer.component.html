@@ -122,6 +122,15 @@
                         >
                             {{ labels.emailError | translate }}
                         </mat-error>
+                        <mat-error
+                            *ngIf="
+                                customerForm.controls.email.invalid &&
+                                customerForm.controls.email.touched &&
+                                customerForm.controls.email.hasError('required')
+                            "
+                        >
+                            {{ labels.required | translate }}
+                        </mat-error>
                     </mat-form-field>
                 </div>
                 <div class="customer-data__section__group">

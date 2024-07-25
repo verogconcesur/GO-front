@@ -240,7 +240,7 @@ export class ModalCustomerComponent extends ComponentToExtendForCustomDialog imp
         firstName: [this.customerToEdit ? this.customerToEdit.firstName : null],
         secondName: [this.customerToEdit ? this.customerToEdit.secondName : null],
         facility: [this.customerToEdit ? this.customerToEdit.facility : null, [Validators.required]],
-        email: [this.customerToEdit ? this.customerToEdit.email : null, [Validators.email]],
+        email: [this.customerToEdit ? this.customerToEdit.email : null, [Validators.email, Validators.required]],
         socialSecurityId: [this.customerToEdit ? this.customerToEdit.socialSecurityId : null, [Validators.required]],
         phone: [this.customerToEdit ? this.customerToEdit.phone : null],
         businessTypeCode: [this.customerToEdit ? this.customerToEdit.businessTypeCode : null, [Validators.required]],
