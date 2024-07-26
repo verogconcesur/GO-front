@@ -1,15 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { Component, EventEmitter, Input, OnChanges, OnInit, Output, SimpleChanges, ViewChild } from '@angular/core';
-import {
-  FormBuilder,
-  FormControl,
-  UntypedFormArray,
-  UntypedFormControl,
-  UntypedFormGroup,
-  ValidatorFn,
-  Validators
-} from '@angular/forms';
-import { MatChipInputEvent } from '@angular/material/chips';
+import { FormBuilder, UntypedFormArray, UntypedFormControl, UntypedFormGroup, ValidatorFn, Validators } from '@angular/forms';
 import { MatMenuTrigger } from '@angular/material/menu';
 import { marker } from '@biesbjerg/ngx-translate-extract-marker';
 import TreeNode from '@data/interfaces/tree-node';
@@ -18,30 +9,31 @@ import CardColumnTabDTO from '@data/models/cards/card-column-tab-dto';
 import CardColumnTabItemDTO from '@data/models/cards/card-column-tab-item-dto';
 import TemplatesCommonDTO from '@data/models/templates/templates-common-dto';
 import RoleDTO from '@data/models/user-permissions/role-dto';
+import VariablesDTO from '@data/models/variables-dto';
 import WorkflowRoleDTO from '@data/models/workflow-admin/workflow-role-dto';
 import WorkflowEventMailDTO, { WorkflowEventMailReceiverDTO } from '@data/models/workflows/workflow-event-mail-dto';
 import WorkflowMoveDTO from '@data/models/workflows/workflow-move-dto';
 import WorkflowStateDTO from '@data/models/workflows/workflow-state-dto';
 import WorkflowSubstateDTO from '@data/models/workflows/workflow-substate-dto';
 import { CardService } from '@data/services/cards.service';
+import { VariablesService } from '@data/services/variables.service';
 import { WorkflowAdministrationStatesSubstatesService } from '@data/services/workflow-administration-states-substates.service';
 import { WorkflowAdministrationService } from '@data/services/workflow-administration.service';
 import { ComponentToExtendForCustomDialog, CustomDialogFooterConfigI, CustomDialogService } from '@frontend/custom-dialog';
+import {
+  LinksCreationEditionDialogComponent,
+  LinksCreationEditionDialogComponentModalEnum
+} from '@modules/feature-modules/modal-links-creation-edition/links-creation-edition-dialog.component';
+import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
 import { TranslateService } from '@ngx-translate/core';
 import { ConfirmDialogService } from '@shared/services/confirm-dialog.service';
 import { GlobalMessageService } from '@shared/services/global-message.service';
 import { ProgressSpinnerDialogService } from '@shared/services/progress-spinner-dialog.service';
 import CombinedRequiredFieldsValidator from '@shared/validators/combined-required-fields.validator';
+import { WebserviceUrlValidator } from '@shared/validators/web-service.validator';
 import { forkJoin, Observable, of } from 'rxjs';
-import { catchError, finalize, map, take, takeUntil } from 'rxjs/operators';
+import { catchError, finalize, map, take } from 'rxjs/operators';
 import { WEditSubstateFormAuxService } from '../wf-edit-substate-dialog/aux-service/wf-edit-substate-aux.service';
-import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
-import {
-  LinksCreationEditionDialogComponent,
-  LinksCreationEditionDialogComponentModalEnum
-} from '@modules/feature-modules/modal-links-creation-edition/links-creation-edition-dialog.component';
-import VariablesDTO from '@data/models/variables-dto';
-import { VariablesService } from '@data/services/variables.service';
 export const enum WfEditSubstateEventsComponentModalEnum {
   ID = 'edit-state-dialog-id',
   PANEL_CLASS = 'edit-state-dialog',
@@ -350,8 +342,7 @@ export class WfEditSubstateEventsDialogComponent extends ComponentToExtendForCus
             ],
             variables: [data?.workflowEventWebserviceConfig?.variables ? data.workflowEventWebserviceConfig.variables : []],
             webserviceUrl: [
-              data?.workflowEventWebserviceConfig?.webserviceUrl ? data.workflowEventWebserviceConfig.webserviceUrl : null,
-              [Validators.required]
+              data?.workflowEventWebserviceConfig?.webserviceUrl ? data.workflowEventWebserviceConfig.webserviceUrl : null
             ]
           },
           {
@@ -401,7 +392,8 @@ export class WfEditSubstateEventsDialogComponent extends ComponentToExtendForCus
             operation: 'equal',
             value: true
           }),
-          ...validatorsExtra
+          ...validatorsExtra,
+          WebserviceUrlValidator.validate
         ]
       }
     );
