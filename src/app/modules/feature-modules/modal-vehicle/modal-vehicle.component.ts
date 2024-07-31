@@ -146,14 +146,14 @@ export class ModalVehicleComponent extends ComponentToExtendForCustomDialog impl
       body.inventories.push({
         id: this.vehicleToEdit.inventories[this.vehicleToEdit.inventories.length - 1].id,
         commissionNumber: formValue.commissionNumber ? formValue.commissionNumber : null,
-        enterpriseId: formValue.facility ? formValue.facility.enterpriseId : null,
-        storeId: formValue.facility ? formValue.facility.storeId : null
+        enterpriseId: formValue.facility ? formValue.facility.configStockEnterpriseId : null,
+        storeId: formValue.facility ? formValue.facility.configStockStoreId : null
       });
     } else if (formValue.commissionNumber) {
       body.inventories.push({
         commissionNumber: formValue.commissionNumber ? formValue.commissionNumber : null,
-        enterpriseId: formValue.facility ? formValue.facility.enterpriseId : null,
-        storeId: formValue.facility ? formValue.facility.storeId : null
+        enterpriseId: formValue.facility ? formValue.facility.configStockEnterpriseId : null,
+        storeId: formValue.facility ? formValue.facility.configStockStoreId : null
       });
     }
     const spinner = this.spinnerService.show();
