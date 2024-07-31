@@ -212,7 +212,7 @@ export class CardInstanceAccountingComponent implements OnInit {
     } else {
       this.globalMessageService.showError({
         message: this.translateService.instant(marker('errors.requiredIVA')),
-        actionText: ''
+        actionText: this.translateService.instant(marker('common.close'))
       });
     }
   }

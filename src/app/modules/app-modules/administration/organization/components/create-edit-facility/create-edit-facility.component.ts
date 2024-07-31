@@ -4,34 +4,33 @@ import { Component, OnDestroy, OnInit, ViewChild, ViewEncapsulation } from '@ang
 import { AbstractControl, UntypedFormBuilder, UntypedFormGroup, Validators } from '@angular/forms';
 import { ConcenetError } from '@app/types/error';
 import { marker } from '@biesbjerg/ngx-translate-extract-marker';
-import FacilityDTO from '@data/models/organization/facility-dto';
+import FacilityDTO, { ConfigStockSubstate } from '@data/models/organization/facility-dto';
 import { FacilityService } from '@data/services/facility.sevice';
 import { ComponentToExtendForCustomDialog, CustomDialogFooterConfigI, CustomDialogService } from '@frontend/custom-dialog';
 // eslint-disable-next-line max-len
+import { MatMenuTrigger } from '@angular/material/menu';
+import TreeNode from '@data/interfaces/tree-node';
+import CountryDTO from '@data/models/location/country-dto';
+import ProvinceDTO from '@data/models/location/province-dto';
+import TownDTO from '@data/models/location/town-dto';
+import BrandDTO from '@data/models/organization/brand-dto';
+import WorkflowStateDTO from '@data/models/workflows/workflow-state-dto';
+import WorkflowSubstateDTO from '@data/models/workflows/workflow-substate-dto';
+import { BrandService } from '@data/services/brand.service';
+import { LocalityService } from '@data/services/locality.service';
+import { WorkflowAdministrationStatesSubstatesService } from '@data/services/workflow-administration-states-substates.service';
 import { TextEditorWrapperConfigI } from '@modules/feature-modules/text-editor-wrapper/interfaces/text-editor-wrapper-config.interface';
+import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
 import { TranslateService } from '@ngx-translate/core';
 import { ConfirmDialogService } from '@shared/services/confirm-dialog.service';
 import { GlobalMessageService } from '@shared/services/global-message.service';
 import { ProgressSpinnerDialogService } from '@shared/services/progress-spinner-dialog.service';
+import { haveArraysSameValues } from '@shared/utils/array-comparation-function';
+import CombinedRequiredFieldsValidator from '@shared/validators/combined-required-fields.validator';
+import { validateConfigMailers } from '@shared/validators/configEmail-required-fields.validator';
 import { NGXLogger } from 'ngx-logger';
 import { Observable, of } from 'rxjs';
 import { catchError, finalize, map, take, tap } from 'rxjs/operators';
-import CountryDTO from '@data/models/location/country-dto';
-import { LocalityService } from '@data/services/locality.service';
-import ProvinceDTO from '@data/models/location/province-dto';
-import TownDTO from '@data/models/location/town-dto';
-import BrandDTO from '@data/models/organization/brand-dto';
-import { BrandService } from '@data/services/brand.service';
-import { haveArraysSameValues } from '@shared/utils/array-comparation-function';
-import { CommonModule } from '@angular/common';
-import { MatMenuTrigger } from '@angular/material/menu';
-import TreeNode from '@data/interfaces/tree-node';
-import WorkflowSubstateDTO from '@data/models/workflows/workflow-substate-dto';
-import { WorkflowAdministrationStatesSubstatesService } from '@data/services/workflow-administration-states-substates.service';
-import WorkflowStateDTO from '@data/models/workflows/workflow-state-dto';
-import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
-import { validateConfigMailers } from '@shared/validators/configEmail-required-fields.validator';
-import CombinedRequiredFieldsValidator from '@shared/validators/combined-required-fields.validator';
 
 export const enum CreateEditFacilityComponentModalEnum {
   ID = 'create-edit-facility-dialog-id',
@@ -48,6 +47,8 @@ export const enum CreateEditFacilityComponentModalEnum {
 })
 export class CreateEditFacilityComponent extends ComponentToExtendForCustomDialog implements OnInit, OnDestroy {
   @ViewChild('menuTrigger') trigger: MatMenuTrigger;
+  @ViewChild('menuTriggerNew') triggerNew: MatMenuTrigger;
+  @ViewChild('menuTriggerUsed') triggerUsed: MatMenuTrigger;
   public labels = {
     title: marker('organizations.facilities.create'),
     name: marker('userProfile.name'),
@@ -58,11 +59,14 @@ export class CreateEditFacilityComponent extends ComponentToExtendForCustomDialo
     address: marker('common.address'),
     integration: marker('organizations.facilities.integration'),
     requireConfigApiExt: marker('organizations.facilities.requireConfigApiExt'),
+    requireConfigStockApiExt: marker('organizations.facilities.requireConfigStockApiExt'),
     requireConfigEmail: marker('organizations.facilities.requireConfigEmail'),
     code: marker('organizations.facilities.code'),
     enterpriseId: marker('organizations.facilities.enterpriseId'),
     storeId: marker('organizations.facilities.storeId'),
     workflowSubstate: marker('organizations.facilities.substateConfig'),
+    workflowSubstateNew: marker('organizations.facilities.substateConfigNew'),
+    workflowSubstateUsed: marker('organizations.facilities.substateConfigUsed'),
     postalCode: marker('common.postalCode'),
     brands: marker('common.brands'),
     cif: marker('common.cif'),
@@ -164,9 +168,44 @@ export class CreateEditFacilityComponent extends ComponentToExtendForCustomDialo
       this.facilityForm.get('workflowSubstate').setValue(null);
     }
   }
+
+  public requiredConfigChangeStock(checked: boolean): void {
+    if (checked) {
+      this.facilityForm.get('configStockCode').setValidators([Validators.required]);
+      this.facilityForm.get('configStockEnterpriseId').setValidators([Validators.required]);
+      this.facilityForm.get('configStockStoreId').setValidators([Validators.required]);
+    } else {
+      this.facilityForm.get('configStockCode').setValidators([]);
+      this.facilityForm.get('configStockEnterpriseId').setValidators([]);
+      this.facilityForm.get('configStockStoreId').setValidators([]);
+      this.facilityForm.get('configStockCode').setValue(null);
+      this.facilityForm.get('configStockEnterpriseId').setValue(null);
+      this.facilityForm.get('configStockStoreId').setValue(null);
+      this.facilityForm.get('workflowSubstateNew').setValue(null);
+      this.facilityForm.get('workflowSubstateUsed').setValue(null);
+      const configStockSubstates = this.facilityForm.get('configStockSubstates').value;
+      if (configStockSubstates) {
+        //@ts-ignore
+        configStockSubstates.forEach((state) => {
+          state.workflowSubstate = null;
+        });
+        this.facilityForm.get('configStockSubstates').setValue(configStockSubstates);
+      }
+    }
+  }
   public removeSubstate(): void {
     this.facilityForm.get('workflowSubstate').setValue(null);
   }
+
+  public removeStockSubstate(inventoryType: 'NEW' | 'USED'): void {
+    if (inventoryType === 'NEW') {
+      this.facilityForm.get('workflowSubstateNew').setValue(null);
+    } else if (inventoryType === 'USED') {
+      this.facilityForm.get('workflowSubstateUsed').setValue(null);
+    }
+    this.updateConfigStockSubstates(inventoryType, null);
+  }
+
   public confirmCloseCustomDialog(): Observable<boolean> {
     if (this.facilityForm?.touched && this.facilityForm?.dirty) {
       return this.confirmDialogService.open({
@@ -185,6 +224,24 @@ export class CreateEditFacilityComponent extends ComponentToExtendForCustomDialo
     this.facilityForm.get('workflowSubstate').markAsDirty();
     this.facilityForm.get('workflowSubstate').markAsTouched();
     this.trigger.closeMenu();
+  }
+
+  selectAttributeNew(node: WorkflowSubstateDTO): void {
+    const selectedSubstate = this.substateList.find((substate: WorkflowSubstateDTO) => substate.id === node.id);
+    this.facilityForm.get('workflowSubstateNew').setValue(selectedSubstate, { emitEvent: false });
+    this.facilityForm.get('workflowSubstateNew').markAsDirty();
+    this.facilityForm.get('workflowSubstateNew').markAsTouched();
+    this.updateConfigStockSubstates('NEW', selectedSubstate);
+    this.triggerNew.closeMenu();
+  }
+
+  selectAttributeUsed(node: WorkflowSubstateDTO): void {
+    const selectedSubstate = this.substateList.find((substate: WorkflowSubstateDTO) => substate.id === node.id);
+    this.facilityForm.get('workflowSubstateUsed').setValue(selectedSubstate, { emitEvent: false });
+    this.facilityForm.get('workflowSubstateUsed').markAsDirty();
+    this.facilityForm.get('workflowSubstateUsed').markAsTouched();
+    this.updateConfigStockSubstates('USED', selectedSubstate);
+    this.triggerUsed.closeMenu();
   }
 
   public onSubmitCustomDialog(): Observable<boolean | FacilityDTO> {
@@ -208,6 +265,13 @@ export class CreateEditFacilityComponent extends ComponentToExtendForCustomDialo
         enterpriseId: formValue.enterpriseId,
         storeId: formValue.storeId,
         workflowSubstate: formValue.workflowSubstate,
+        requireConfigStockApiExt: formValue.requireConfigStockApiExt,
+        configStockCode: formValue.configStockCode,
+        configStockEnterpriseId: formValue.configStockEnterpriseId,
+        configStockStoreId: formValue.configStockStoreId,
+        configStockSubstates: formValue.requireConfigStockApiExt
+          ? this.checkAndFilterConfigStockSubstates(formValue.configStockSubstates)
+          : null,
         configMailerHost: formValue.configMailerHost,
         configMailerPort: formValue.configMailerPort,
         configMailerUserName: formValue.configMailerUserName,
@@ -381,15 +445,41 @@ export class CreateEditFacilityComponent extends ComponentToExtendForCustomDialo
         });
         this.substateList = substateList;
         const selectedSubstate = this.facilityForm.get('workflowSubstate').value;
+        const selectedSubstateNew = this.facilityForm.get('workflowSubstateNew').value;
+        const selectedSubstateUsed = this.facilityForm.get('workflowSubstateUsed').value;
         if (selectedSubstate) {
           this.facilityForm.get('workflowSubstate').setValue(
             substateList.find((substate: WorkflowSubstateDTO) => substate.id === selectedSubstate.id),
             { emitEvent: false }
           );
         }
+        if (selectedSubstateNew) {
+          this.facilityForm.get('workflowSubstateNew').setValue(
+            substateList.find((substate: WorkflowSubstateDTO) => substate.id === selectedSubstateNew.id),
+            { emitEvent: false }
+          );
+        }
+        if (selectedSubstateUsed) {
+          this.facilityForm.get('workflowSubstateUsed').setValue(
+            substateList.find((substate: WorkflowSubstateDTO) => substate.id === selectedSubstateUsed.id),
+            { emitEvent: false }
+          );
+        }
         this.createTreeWorkflows(res);
       });
   }
+
+  private checkAndFilterConfigStockSubstates(configStockSubstates: ConfigStockSubstate[] | null): ConfigStockSubstate[] | null {
+    //Eliminamos los objetos cuya propiedad workflowSubstate sea nula
+    const filteredSubstates = configStockSubstates.filter((substate) => substate.workflowSubstate !== null);
+    //Si no quedan objetos devolvemos null
+    if (filteredSubstates.length === 0) {
+      return null;
+    }
+
+    return filteredSubstates;
+  }
+
   private createTreeWorkflows(states: WorkflowStateDTO[]): void {
     const treeNode: TreeNode[] = [];
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -465,7 +555,46 @@ export class CreateEditFacilityComponent extends ComponentToExtendForCustomDialo
         });
     }
   }
+
+  private initializeConfigStockSubstates(
+    configStockSubstates: ConfigStockSubstate[] | null,
+    facilityId: number | null
+  ): ConfigStockSubstate[] {
+    const newSubstate: ConfigStockSubstate = { id: null, facilityId, inventoryType: 'NEW', workflowSubstate: null };
+    const usedSubstate: ConfigStockSubstate = { id: null, facilityId, inventoryType: 'USED', workflowSubstate: null };
+
+    if (!configStockSubstates) {
+      return [newSubstate, usedSubstate];
+    }
+
+    const hasNew = configStockSubstates.some((substate) => substate.inventoryType === 'NEW');
+    const hasUsed = configStockSubstates.some((substate) => substate.inventoryType === 'USED');
+
+    const result = [...configStockSubstates];
+    if (!hasNew) {
+      result.push(newSubstate);
+    }
+    if (!hasUsed) {
+      result.push(usedSubstate);
+    }
+    return result;
+  }
+
+  private updateConfigStockSubstates(inventoryType: 'NEW' | 'USED', workflowSubstate: WorkflowSubstateDTO): void {
+    const configStockSubstates = this.facilityForm.get('configStockSubstates').value;
+    //@ts-ignore
+    const configWorkflow = configStockSubstates?.find((state) => state.inventoryType === inventoryType);
+    if (configWorkflow) {
+      configWorkflow.workflowSubstate = workflowSubstate;
+      this.facilityForm.get('configStockSubstates').setValue(configStockSubstates);
+    }
+  }
+
   private initializeForm = (): void => {
+    const initialConfigStockSubstates = this.initializeConfigStockSubstates(
+      this.facilityToEdit?.configStockSubstates || null,
+      this.facilityToEdit?.id || null
+    );
     this.facilityForm = this.fb.group(
       {
         address: [this.facilityToEdit ? this.facilityToEdit.address : null],
@@ -494,6 +623,33 @@ export class CreateEditFacilityComponent extends ComponentToExtendForCustomDialo
         storeId: [this.facilityToEdit && this.facilityToEdit.storeId ? this.facilityToEdit.storeId : null],
         workflowSubstate: [
           this.facilityToEdit && this.facilityToEdit.workflowSubstate ? this.facilityToEdit.workflowSubstate : null
+        ],
+        requireConfigStockApiExt: [
+          this.facilityToEdit && this.facilityToEdit.requireConfigStockApiExt
+            ? this.facilityToEdit.requireConfigStockApiExt
+            : false
+        ],
+        configStockCode: [
+          this.facilityToEdit && this.facilityToEdit.configStockCode ? this.facilityToEdit.configStockCode : null
+        ],
+        configStockEnterpriseId: [
+          this.facilityToEdit && this.facilityToEdit.configStockEnterpriseId ? this.facilityToEdit.configStockEnterpriseId : null
+        ],
+        configStockStoreId: [
+          this.facilityToEdit && this.facilityToEdit.configStockStoreId ? this.facilityToEdit.configStockStoreId : null
+        ],
+        configStockSubstates: [initialConfigStockSubstates],
+        workflowSubstateNew: [
+          (this.facilityToEdit &&
+            this.facilityToEdit.configStockSubstates &&
+            this.facilityToEdit.configStockSubstates.find((state) => state.inventoryType === 'NEW')?.workflowSubstate) ||
+            null
+        ],
+        workflowSubstateUsed: [
+          (this.facilityToEdit &&
+            this.facilityToEdit.configStockSubstates &&
+            this.facilityToEdit.configStockSubstates.find((state) => state.inventoryType === 'USED')?.workflowSubstate) ||
+            null
         ],
         configMailerHost: [
           this.facilityToEdit && this.facilityToEdit.configMailerHost ? this.facilityToEdit.configMailerHost : null

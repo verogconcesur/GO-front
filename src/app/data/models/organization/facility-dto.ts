@@ -1,6 +1,6 @@
-import BrandDTO from './brand-dto';
 import TownDTO from '../location/town-dto';
 import WorkflowSubstateDTO from '../workflows/workflow-substate-dto';
+import BrandDTO from './brand-dto';
 
 export default interface FacilityDTO {
   id: number;
@@ -15,10 +15,15 @@ export default interface FacilityDTO {
   postalCode?: string;
   town?: TownDTO;
   requireConfigApiExt?: boolean;
+  requireConfigStockApiExt?: boolean;
   code?: string;
+  configStockCode?: string;
   enterpriseId?: string;
+  configStockEnterpriseId?: string;
   storeId?: string;
+  configStockStoreId?: string;
   workflowSubstate?: WorkflowSubstateDTO;
+  configStockSubstates?: ConfigStockSubstate[];
   showInLanding?: boolean;
   configMailerHost?: string;
   configMailerPort?: string;
@@ -31,4 +36,11 @@ export default interface FacilityDTO {
   keyCommerce?: string;
   tpvCode?: string;
   tpvTerminal?: string;
+}
+
+export interface ConfigStockSubstate {
+  id?: number;
+  facilityId?: number;
+  inventoryType: 'USED' | 'NEW';
+  workflowSubstate?: WorkflowSubstateDTO;
 }

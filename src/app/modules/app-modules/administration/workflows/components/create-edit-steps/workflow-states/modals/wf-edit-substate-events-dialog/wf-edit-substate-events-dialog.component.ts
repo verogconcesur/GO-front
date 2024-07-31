@@ -1,7 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { Component, EventEmitter, Input, OnChanges, OnInit, Output, SimpleChanges, ViewChild } from '@angular/core';
-import { FormBuilder, FormControl, UntypedFormArray, UntypedFormControl, UntypedFormGroup, ValidatorFn } from '@angular/forms';
-import { MatChipInputEvent } from '@angular/material/chips';
+import { FormBuilder, UntypedFormArray, UntypedFormControl, UntypedFormGroup, ValidatorFn, Validators } from '@angular/forms';
 import { MatMenuTrigger } from '@angular/material/menu';
 import { marker } from '@biesbjerg/ngx-translate-extract-marker';
 import TreeNode from '@data/interfaces/tree-node';
@@ -10,24 +9,31 @@ import CardColumnTabDTO from '@data/models/cards/card-column-tab-dto';
 import CardColumnTabItemDTO from '@data/models/cards/card-column-tab-item-dto';
 import TemplatesCommonDTO from '@data/models/templates/templates-common-dto';
 import RoleDTO from '@data/models/user-permissions/role-dto';
+import VariablesDTO from '@data/models/variables-dto';
 import WorkflowRoleDTO from '@data/models/workflow-admin/workflow-role-dto';
 import WorkflowEventMailDTO, { WorkflowEventMailReceiverDTO } from '@data/models/workflows/workflow-event-mail-dto';
 import WorkflowMoveDTO from '@data/models/workflows/workflow-move-dto';
 import WorkflowStateDTO from '@data/models/workflows/workflow-state-dto';
 import WorkflowSubstateDTO from '@data/models/workflows/workflow-substate-dto';
 import { CardService } from '@data/services/cards.service';
+import { VariablesService } from '@data/services/variables.service';
 import { WorkflowAdministrationStatesSubstatesService } from '@data/services/workflow-administration-states-substates.service';
 import { WorkflowAdministrationService } from '@data/services/workflow-administration.service';
-import { ComponentToExtendForCustomDialog, CustomDialogFooterConfigI } from '@frontend/custom-dialog';
+import { ComponentToExtendForCustomDialog, CustomDialogFooterConfigI, CustomDialogService } from '@frontend/custom-dialog';
+import {
+  LinksCreationEditionDialogComponent,
+  LinksCreationEditionDialogComponentModalEnum
+} from '@modules/feature-modules/modal-links-creation-edition/links-creation-edition-dialog.component';
+import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
 import { TranslateService } from '@ngx-translate/core';
 import { ConfirmDialogService } from '@shared/services/confirm-dialog.service';
 import { GlobalMessageService } from '@shared/services/global-message.service';
 import { ProgressSpinnerDialogService } from '@shared/services/progress-spinner-dialog.service';
 import CombinedRequiredFieldsValidator from '@shared/validators/combined-required-fields.validator';
+import { WebserviceUrlValidator } from '@shared/validators/web-service.validator';
 import { forkJoin, Observable, of } from 'rxjs';
-import { catchError, finalize, map, take, takeUntil } from 'rxjs/operators';
+import { catchError, finalize, map, take } from 'rxjs/operators';
 import { WEditSubstateFormAuxService } from '../wf-edit-substate-dialog/aux-service/wf-edit-substate-aux.service';
-import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
 export const enum WfEditSubstateEventsComponentModalEnum {
   ID = 'edit-state-dialog-id',
   PANEL_CLASS = 'edit-state-dialog',
@@ -92,7 +98,8 @@ export class WfEditSubstateEventsDialogComponent extends ComponentToExtendForCus
     OTHER: marker('workflows.receiver.other'),
     errorPatternMessage: marker('errors.emailPattern'),
     movementGroup: marker('workflows.movementGroup'),
-    groupName: marker('workflows.groupName')
+    groupName: marker('workflows.groupName'),
+    webservice: marker('workflows.webservice')
   };
   public receiverTypes = ['CLIENT', 'ADVISER', 'ASIGNED', 'FOLLOWERS', 'ROLE', 'OTHER'];
   public form: UntypedFormGroup;
@@ -104,10 +111,12 @@ export class WfEditSubstateEventsDialogComponent extends ComponentToExtendForCus
   public roles: WorkflowRoleDTO[];
   public templatesList: TemplatesCommonDTO[];
   public fieldsList: CardColumnTabItemDTO[];
+  public linksList: CardColumnTabItemDTO[];
   public allStatesAndSubstates: TreeNode[];
   public emailPattern = '^[a-z0-9._%+-]+@[a-z0-9.-]+\\.[a-z]{2,4}$';
   public groupNames: string[] = [];
   public filteredGroupNames: Observable<string[]>;
+  public listVariables: VariablesDTO[];
 
   constructor(
     private fb: FormBuilder,
@@ -118,7 +127,9 @@ export class WfEditSubstateEventsDialogComponent extends ComponentToExtendForCus
     private wStatesService: WorkflowAdministrationStatesSubstatesService,
     private globalMessageService: GlobalMessageService,
     private cardService: CardService,
-    private workflowService: WorkflowAdministrationService
+    private workflowService: WorkflowAdministrationService,
+    private customDialogService: CustomDialogService,
+    private variablesService: VariablesService
   ) {
     super(
       WfEditSubstateEventsComponentModalEnum.ID,
@@ -129,6 +140,7 @@ export class WfEditSubstateEventsDialogComponent extends ComponentToExtendForCus
 
   async ngOnInit(): Promise<void> {
     const spinner = this.spinnerService.show();
+    this.getVariable();
     this.getInfoFromExtendedComponentData(true);
     await this.getTemplatesAndFields();
     if (this.move) {
@@ -306,6 +318,53 @@ export class WfEditSubstateEventsDialogComponent extends ComponentToExtendForCus
             ? this.fieldsList.filter((field) => data.requiredFieldsList.find((f) => f.id === field.id))
             : []
         ],
+        //webservice
+        webservice: [data?.webservice ? true : false],
+        workflowEventWebserviceConfig: this.fb.group(
+          {
+            uthAttributeToken: [
+              data?.workflowEventWebserviceConfig?.authAttributeToken
+                ? data.workflowEventWebserviceConfig.authAttributeToken
+                : null
+            ],
+            authPass: [data?.workflowEventWebserviceConfig?.authPass ? data.workflowEventWebserviceConfig.authPass : null],
+            authUrl: [data?.workflowEventWebserviceConfig?.authUrl ? data.workflowEventWebserviceConfig.authUrl : null],
+            authUser: [data?.workflowEventWebserviceConfig?.authUser ? data.workflowEventWebserviceConfig.authUser : null],
+            blocker: [data?.workflowEventWebserviceConfig?.blocker ? data.workflowEventWebserviceConfig.blocker : false],
+            body: [data?.workflowEventWebserviceConfig?.body ? data.workflowEventWebserviceConfig.body : null],
+            id: [data?.workflowEventWebserviceConfig?.id ? data.workflowEventWebserviceConfig.id : null],
+            method: [
+              data?.workflowEventWebserviceConfig?.method ? data.workflowEventWebserviceConfig.method : 'GET',
+              [Validators.required]
+            ],
+            requireAuth: [
+              data?.workflowEventWebserviceConfig?.requireAuth ? data.workflowEventWebserviceConfig.requireAuth : false
+            ],
+            variables: [data?.workflowEventWebserviceConfig?.variables ? data.workflowEventWebserviceConfig.variables : []],
+            webserviceUrl: [
+              data?.workflowEventWebserviceConfig?.webserviceUrl ? data.workflowEventWebserviceConfig.webserviceUrl : null
+            ]
+          },
+          {
+            validators: [
+              CombinedRequiredFieldsValidator.field1RequiredIfFieldsConditions('body', [
+                { control: 'method', operation: 'equal', value: 'POST' }
+              ]),
+              CombinedRequiredFieldsValidator.field1RequiredIfFieldsConditions('authUrl', [
+                { control: 'requireAuth', operation: 'equal', value: true }
+              ]),
+              CombinedRequiredFieldsValidator.field1RequiredIfFieldsConditions('authUser', [
+                { control: 'requireAuth', operation: 'equal', value: true }
+              ]),
+              CombinedRequiredFieldsValidator.field1RequiredIfFieldsConditions('authPass', [
+                { control: 'requireAuth', operation: 'equal', value: true }
+              ]),
+              CombinedRequiredFieldsValidator.field1RequiredIfFieldsConditions('authAttributeToken', [
+                { control: 'requireAuth', operation: 'equal', value: true }
+              ])
+            ]
+          }
+        ),
         //Comentario para el historial
         requiredHistoryComment: [data?.requiredHistoryComment ? true : false],
         ...typeMoveExtra
@@ -333,7 +392,8 @@ export class WfEditSubstateEventsDialogComponent extends ComponentToExtendForCus
             operation: 'equal',
             value: true
           }),
-          ...validatorsExtra
+          ...validatorsExtra,
+          WebserviceUrlValidator.validate
         ]
       }
     );
@@ -485,11 +545,48 @@ export class WfEditSubstateEventsDialogComponent extends ComponentToExtendForCus
     return workflowEventMail;
   }
 
+  public editWebService(): void {
+    this.customDialogService
+      .open({
+        component: LinksCreationEditionDialogComponent,
+        extendedComponentData: {
+          form: this.form.get('workflowEventWebserviceConfig'),
+          listVariables: this.listVariables,
+          type: 'EVENT'
+        },
+        id: LinksCreationEditionDialogComponentModalEnum.ID,
+        panelClass: LinksCreationEditionDialogComponentModalEnum.PANEL_CLASS,
+        disableClose: true,
+        width: '750px'
+      })
+      .subscribe((result) => {
+        console.log(result);
+        // if (result?.tabItemConfigLink) {
+        //   if (result.tabItemConfigLink.linkMethod === 'GET') {
+        //     tab.get('tabItemConfigLink').get('body').setValue(null);
+        //     if (result.tabItemConfigLink.redirect) {
+        //       tab.get('tabItemConfigLink').get('requireAuth').setValue(false);
+        //       result.tabItemConfigLink.requireAuth = false;
+        //     }
+        //   }
+        //   if (result.tabItemConfigLink.linkMethod === 'POST') {
+        //     tab.get('tabItemConfigLink').get('redirect').setValue(false);
+        //   }
+        //   if (!result.tabItemConfigLink.requireAuth) {
+        //     tab.get('tabItemConfigLink').get('authPass').setValue(null);
+        //     tab.get('tabItemConfigLink').get('authUrl').setValue(null);
+        //     tab.get('tabItemConfigLink').get('authUser').setValue(null);
+        //     tab.get('tabItemConfigLink').get('authAttributeToken').setValue(null);
+        //   }
+        // }
+      });
+  }
+
   public getFormValue(): any {
     const value = this.form.value;
     const formValue = {
       ...value,
-      requiredFieldsList: this.form.value.requiredFields
+      requiredFieldsList: this.form.value.requiredFieldsrequiredFieldsList
         ? this.form.value.requiredFieldsList.map((field: any) => ({ id: field.id }))
         : [],
       roles: this.form.get('roles')?.value.filter((role: RoleDTO) => role.selected),
@@ -608,5 +705,18 @@ export class WfEditSubstateEventsDialogComponent extends ComponentToExtendForCus
         resolve(true);
       });
     });
+  }
+
+  private getVariable(): void {
+    const spinner = this.spinnerService.show();
+    this.variablesService
+      .searchVariables()
+      .pipe(
+        take(1),
+        finalize(() => this.spinnerService.hide(spinner))
+      )
+      .subscribe((res) => {
+        this.listVariables = res;
+      });
   }
 }
