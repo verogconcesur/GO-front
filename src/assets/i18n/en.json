@@ -1112,6 +1112,8 @@
             "role": "Role"
         },
         "reloadConfirmation": "¿Do you really want to reload the card?",
+        "requiredAttachment": "Required attachments",
+        "requiredAttachmentsList": "Required attachments list",
         "requiredFields": "Required fields",
         "requiredFieldsList": "List of required fields",
         "requiredHistoryComment": "Historical comment added on move action",

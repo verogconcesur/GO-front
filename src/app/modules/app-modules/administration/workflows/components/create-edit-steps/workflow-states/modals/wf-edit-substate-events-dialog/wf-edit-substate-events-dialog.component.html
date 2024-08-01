@@ -169,6 +169,50 @@
                         </button>
                     </mat-checkbox>
                 </div>
+
+                <div [ngClass]="{ bordered: form.get('requiredAttachments')?.value }">
+                    <mat-checkbox color="primary" formControlName="requiredAttachments">
+                        <mat-label>{{ labels.requiredAttachment | translate }}</mat-label></mat-checkbox
+                    >
+
+                    <mat-form-field
+                        class="select-wrapper"
+                        appearance="outline"
+                        floatLabel="always"
+                        *ngIf="form.get('requiredAttachments').value"
+                    >
+                        <mat-label>{{ labels.requiredAttachmentsList | translate }}</mat-label>
+                        <mat-select
+                            formControlName="workflowSubstateEventRequiredAttachments"
+                            multiple
+                            [compareWith]="compareAttachments"
+                        >
+                            <mat-option *ngFor="let field of attachmentList" [value]="field">
+                                <div
+                                    class="option-with-input"
+                                    style="display: flex; align-items: center; justify-content: space-between"
+                                >
+                                    {{ generateDisplayName(field) | translate }}
+                                    <mat-form-field appearance="standard" style="margin-left: 16px; width: auto">
+                                        <input
+                                            matInput
+                                            type="number"
+                                            [value]="field.numberInput"
+                                            (input)="updateNumberInput($event, field)"
+                                            (click)="$event.stopPropagation()"
+                                            style="padding: 0; width: 100%"
+                                        />
+                                    </mat-form-field>
+                                </div>
+                            </mat-option>
+                        </mat-select>
+                        <mat-error *ngIf="form.controls?.workflowSubstateEventRequiredAttachments.invalid">
+                            <span *ngIf="form.controls.workflowSubstateEventRequiredAttachments.errors.required">{{
+                                labels.required | translate
+                            }}</span>
+                        </mat-error>
+                    </mat-form-field>
+                </div>
             </div>
         </section>
         <section class="event__config__section" *ngIf="eventType === 'MOV' && move">

@@ -10,6 +10,7 @@ import CardColumnTabItemDTO from '@data/models/cards/card-column-tab-item-dto';
 import TemplatesCommonDTO from '@data/models/templates/templates-common-dto';
 import RoleDTO from '@data/models/user-permissions/role-dto';
 import VariablesDTO from '@data/models/variables-dto';
+import { WorkflowAttachmentTimelineDTO } from '@data/models/workflow-admin/workflow-attachment-timeline-dto';
 import WorkflowRoleDTO from '@data/models/workflow-admin/workflow-role-dto';
 import WorkflowEventMailDTO, { WorkflowEventMailReceiverDTO } from '@data/models/workflows/workflow-event-mail-dto';
 import WorkflowMoveDTO from '@data/models/workflows/workflow-move-dto';
@@ -79,7 +80,9 @@ export class WfEditSubstateEventsDialogComponent extends ComponentToExtendForCus
     requiredUser: marker('workflows.requiredUser'),
     requiredMyself: marker('workflows.requiredMyself'),
     requiredFields: marker('workflows.requiredFields'),
+    requiredAttachment: marker('workflows.requiredAttachment'),
     requiredFieldsList: marker('workflows.requiredFieldsList'),
+    requiredAttachmentsList: marker('workflows.requiredAttachmentsList'),
     historical: marker('workflows.historical'),
     requiredHistoryComment: marker('workflows.requiredHistoryComment'),
     shortcut: marker('common.directLinks'),
@@ -111,6 +114,7 @@ export class WfEditSubstateEventsDialogComponent extends ComponentToExtendForCus
   public roles: WorkflowRoleDTO[];
   public templatesList: TemplatesCommonDTO[];
   public fieldsList: CardColumnTabItemDTO[];
+  public attachmentList: WorkflowAttachmentTimelineDTO[];
   public linksList: CardColumnTabItemDTO[];
   public allStatesAndSubstates: TreeNode[];
   public emailPattern = '^[a-z0-9._%+-]+@[a-z0-9.-]+\\.[a-z]{2,4}$';
@@ -166,13 +170,21 @@ export class WfEditSubstateEventsDialogComponent extends ComponentToExtendForCus
 
   async ngOnChanges(changes: SimpleChanges): Promise<void> {
     if (changes.extendedComponentData) {
-      if (!this.fieldsList || !this.templatesList) {
+      if (!this.attachmentList || !this.fieldsList || !this.templatesList) {
         const spinner = this.spinnerService.show();
         await this.getTemplatesAndFields();
         this.spinnerService.hide(spinner);
       }
       this.getInfoFromExtendedComponentData();
     }
+  }
+
+  public compareAttachments(o1: any, o2: any): boolean {
+    if (o1 === null || o2 === null) {
+      return false;
+    }
+    const result = o1.id === o2.id && o1.templateAttachmentItemId === o2.templateAttachmentItemId;
+    return result;
   }
 
   public getInfoFromExtendedComponentData(avoidInitFrom?: boolean): void {
@@ -261,6 +273,15 @@ export class WfEditSubstateEventsDialogComponent extends ComponentToExtendForCus
         ])
       ];
     }
+    this.attachmentList = this.attachmentList?.map((attachment) => {
+      const matchingBackendAttachment = data.workflowSubstateEventRequiredAttachments?.find(
+        (f) => f.tab.id === attachment.id && f.templateAttachmentItem.id === attachment.templateAttachmentItemId
+      );
+      if (matchingBackendAttachment) {
+        return { ...attachment, numberInput: matchingBackendAttachment.numMinAttachRequired };
+      }
+      return attachment;
+    });
     this.form = this.fb.group(
       {
         //Mandar email
@@ -316,6 +337,24 @@ export class WfEditSubstateEventsDialogComponent extends ComponentToExtendForCus
         requiredFieldsList: [
           data?.requiredFieldsList && this.fieldsList
             ? this.fieldsList.filter((field) => data.requiredFieldsList.find((f) => f.id === field.id))
+            : []
+        ],
+        //Attachments required for events
+        requiredAttachments: [data?.requiredAttachments ? true : false],
+        workflowSubstateEventRequiredAttachments: [
+          data?.workflowSubstateEventRequiredAttachments && this.attachmentList
+            ? this.attachmentList
+                .filter((attachment) =>
+                  data.workflowSubstateEventRequiredAttachments.find(
+                    (f) => f.tab.id === attachment.id && f.templateAttachmentItem.id === attachment.templateAttachmentItemId
+                  )
+                )
+                .map((attachment) => ({
+                  ...attachment,
+                  numberInput: data.workflowSubstateEventRequiredAttachments.find(
+                    (f) => f.tab.id === attachment.id && f.templateAttachmentItem.id === attachment.templateAttachmentItemId
+                  ).numMinAttachRequired
+                }))
             : []
         ],
         //webservice
@@ -560,7 +599,6 @@ export class WfEditSubstateEventsDialogComponent extends ComponentToExtendForCus
         width: '750px'
       })
       .subscribe((result) => {
-        console.log(result);
         // if (result?.tabItemConfigLink) {
         //   if (result.tabItemConfigLink.linkMethod === 'GET') {
         //     tab.get('tabItemConfigLink').get('body').setValue(null);
@@ -584,6 +622,25 @@ export class WfEditSubstateEventsDialogComponent extends ComponentToExtendForCus
 
   public getFormValue(): any {
     const value = this.form.value;
+    const formArray = this.form.value.workflowSubstateEventRequiredAttachments;
+    if (formArray && this.attachmentList) {
+      //@ts-ignore
+      formArray.forEach((field, index) => {
+        const matchingAttachment = this.attachmentList.find(
+          (attachment) => attachment.id === field.id && attachment.templateAttachmentItemId === field.templateAttachmentItemId
+        );
+        if (matchingAttachment) {
+          field.numberInput = matchingAttachment.numberInput;
+        }
+      });
+    }
+    const workflowSubstateEventRequiredAttachments = this.form.value.workflowSubstateEventRequiredAttachments?.map(
+      (field: any, index: number) => ({
+        tab: { id: field.id },
+        templateAttachmentItem: { id: field.templateAttachmentItemId },
+        numMinAttachRequired: field.numberInput || 0
+      })
+    );
     const formValue = {
       ...value,
       requiredFieldsList: this.form.value.requiredFieldsrequiredFieldsList
@@ -596,7 +653,8 @@ export class WfEditSubstateEventsDialogComponent extends ComponentToExtendForCus
             .filter(
               (data: any) => data && data.sendMailTemplate && data.workflowEventMailReceivers?.filter((d: any) => d)?.length
             )
-        : []
+        : [],
+      workflowSubstateEventRequiredAttachments
     };
     return formValue;
   }
@@ -653,6 +711,16 @@ export class WfEditSubstateEventsDialogComponent extends ComponentToExtendForCus
     };
   }
 
+  public updateNumberInput(event: Event, field: any): void {
+    const inputElement = event.target as HTMLInputElement;
+    const value = inputElement.valueAsNumber;
+    field.numberInput = value;
+  }
+
+  public generateDisplayName(field: any): string {
+    return `${field.templateName} - ${field.itemName} - ${field.numberInput}`;
+  }
+
   public getMailEventTitle(mailEvent: UntypedFormControl): string {
     const value = mailEvent.getRawValue();
     let title = `${this.translateService.instant('userProfile.email')} ( `;
@@ -689,21 +757,41 @@ export class WfEditSubstateEventsDialogComponent extends ComponentToExtendForCus
       }
       const requests = [
         this.workflowService.getWorkflowViewAttributes(this.workflowId).pipe(take(1)),
-        this.cardService.listTemplates('COMUNICATION').pipe(take(1))
+        this.cardService.listTemplates('COMUNICATION').pipe(take(1)),
+        this.workflowService.getWorkflowTimelineAttachments(this.workflowId).pipe(take(1))
       ];
-      forkJoin(requests).subscribe((responses: [cards: CardColumnDTO[], templates: TemplatesCommonDTO[]]) => {
-        const fieldList: CardColumnTabItemDTO[] = [];
-        responses[0].forEach((cardCol: CardColumnDTO) => {
-          cardCol.tabs.forEach((tab: CardColumnTabDTO) => {
-            tab.tabItems.forEach((tabItem: CardColumnTabItemDTO) => {
-              fieldList.push({ ...tabItem, name: `${cardCol.name} - ${tab.name} - ${tabItem.name}` });
+      forkJoin(requests).subscribe(
+        (responses: [cards: CardColumnDTO[], templates: TemplatesCommonDTO[], attachments: WorkflowAttachmentTimelineDTO[]]) => {
+          const fieldList: CardColumnTabItemDTO[] = [];
+          //@ts-ignore
+          const attachList = [];
+          responses[0].forEach((cardCol: CardColumnDTO) => {
+            cardCol.tabs.forEach((tab: CardColumnTabDTO) => {
+              tab.tabItems.forEach((tabItem: CardColumnTabItemDTO) => {
+                fieldList.push({ ...tabItem, name: `${cardCol.name} - ${tab.name} - ${tabItem.name}` });
+              });
             });
           });
-        });
-        this.fieldsList = fieldList;
-        this.templatesList = responses[1];
-        resolve(true);
-      });
+          responses[2].forEach((attachment) => {
+            attachment.template.templateAttachmentItems.forEach((item) => {
+              attachList.push({
+                id: attachment.id,
+                templateId: attachment.template.id,
+                templateAttachmentItemId: item.id,
+                templateName: attachment.template.template.name,
+                itemName: item.name,
+                numberInput: 0
+              });
+            });
+          });
+          //@ts-ignore
+          this.fieldsList = fieldList;
+          //@ts-ignore
+          this.attachmentList = attachList;
+          this.templatesList = responses[1];
+          resolve(true);
+        }
+      );
     });
   }
 

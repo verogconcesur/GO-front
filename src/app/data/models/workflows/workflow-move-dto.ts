@@ -1,8 +1,4 @@
 import CardColumnTabItemDTO from '../cards/card-column-tab-item-dto';
-import BrandDTO from '../organization/brand-dto';
-import DepartmentDTO from '../organization/department-dto';
-import FacilityDTO from '../organization/facility-dto';
-import SpecialtyDTO from '../organization/specialty-dto';
 import TemplatesCommunicationDTO from '../templates/templates-communication-dto';
 import RoleDTO from '../user-permissions/role-dto';
 import VariablesDTO from '../variables-dto';
@@ -51,4 +47,11 @@ export default interface WorkflowMoveDTO {
   movementExtraAuto?: boolean;
   movementExtraConfirm?: boolean;
   requiredMovementExtra?: boolean;
+  requiredAttachments?: boolean;
+  workflowSubstateEventRequiredAttachments?: WorkflowSubstateEventRequiredAttachment[];
+}
+export interface WorkflowSubstateEventRequiredAttachment {
+  tab: { id: number };
+  templateAttachmentItem: { id: number };
+  numMinAttachRequired: number;
 }

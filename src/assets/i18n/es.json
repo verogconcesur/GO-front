@@ -1110,6 +1110,8 @@
             "role": "Rol"
         },
         "reloadConfirmation": "¿Está seguro que desea refrescar la ficha?",
+        "requiredAttachment": "Adjuntos requeridos",
+        "requiredAttachmentsList": "Listado de adjuntos reuqeridos",
         "requiredFields": "Rellenar campos",
         "requiredFieldsList": "Listado de campos requeridos",
         "requiredHistoryComment": "Requerir la inserción por parte del usuario de un comentario visible desde el historial al realizar el movimiento",
