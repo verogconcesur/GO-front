@@ -19,11 +19,8 @@ import { NGXLogger } from 'ngx-logger';
 import { BehaviorSubject, Observable, forkJoin } from 'rxjs';
 import { take } from 'rxjs/operators';
 // eslint-disable-next-line max-len
+import WorkflowCardsLimitDTO, { CardLimitSlotDTO } from '@data/models/workflow-admin/workflow-card-limit-dto';
 import { WorkflowCardMovementPreparationComponent } from '../components/workflow-card-movement-preparation/workflow-card-movement-preparation.component';
-import WorkflowCardsLimitDTO, {
-  CardLimitSlotByDayDTO,
-  CardLimitSlotDTO
-} from '@data/models/workflow-admin/workflow-card-limit-dto';
 import { WorkflowRequiredFieldsAuxService } from './workflow-required-fields-aux.service';
 
 @Injectable({
@@ -410,6 +407,9 @@ export class WorkflowPrepareAndMoveService {
       (error: ConcenetError) => {
         if (error.requiredFields?.length) {
           this.requiredFieldsAuxService.setRequiredFields(error.requiredFields);
+        }
+        if (error.requiredAttachments?.length) {
+          this.requiredFieldsAuxService.setRequiredAttachments(error.requiredAttachments);
         }
         this.reloadData$.next('UPDATE_INFORMATION');
         this.spinnerService.hide(this.spinner);

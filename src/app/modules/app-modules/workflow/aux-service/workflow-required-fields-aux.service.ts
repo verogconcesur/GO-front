@@ -9,6 +9,7 @@ import { BehaviorSubject } from 'rxjs';
 })
 export class WorkflowRequiredFieldsAuxService {
   private requiredFields$: BehaviorSubject<CardColumnTabItemDTO[]> = new BehaviorSubject(null);
+  private requiredAttachments$: BehaviorSubject<CardColumnTabItemDTO[]> = new BehaviorSubject(null);
   constructor(private translateService: TranslateService) {}
 
   public resetRequiredFields(): void {
@@ -19,42 +20,87 @@ export class WorkflowRequiredFieldsAuxService {
     this.requiredFields$.next(requiredFields);
   }
 
-  public isColRequired(id: number): boolean {
-    const requiredFields = this.requiredFields$.getValue();
-    if (requiredFields?.length) {
-      return requiredFields.find((item) => item.colId === id) ? true : false;
-    }
-    return false;
+  public resetRequiredAttachments(): void {
+    this.requiredAttachments$.next(null);
   }
 
+  public setRequiredAttachments(requiredAttachments: CardColumnTabItemDTO[]): void {
+    this.requiredAttachments$.next(requiredAttachments);
+  }
+  // Verifica si una columna es requerida ya sea por campos o adjuntos
+  public isColRequired(id: number): boolean {
+    const requiredFields = this.requiredFields$.getValue();
+    const requiredAttachments = this.requiredAttachments$.getValue();
+    return requiredFields?.find((item) => item.colId === id) || requiredAttachments?.find((item) => item.colId === id)
+      ? true
+      : false;
+  }
+
+  // Obtiene el tooltip para una columna, combinando información de campos y adjuntos
   public getColTooltip(id: number): string {
     const requiredFields = this.requiredFields$.getValue();
+    const requiredAttachments = this.requiredAttachments$.getValue();
+
+    let tooltip = '';
+
     if (requiredFields?.length) {
       const fields = requiredFields
         .filter((item) => item.colId === id)
         .map((f) => f.name)
         .join(', ');
-      return this.translateService.instant(marker('common.fieldRequired')) + ': ' + fields;
+      tooltip += this.translateService.instant(marker('common.fieldRequired')) + ': ' + fields;
     }
-    return '';
+
+    if (requiredAttachments?.length) {
+      const attachments = requiredAttachments
+        .filter((item) => item.colId === id)
+        .map((f) => f.name)
+        .join(', ');
+      if (tooltip) {
+        tooltip += '\n';
+      }
+      tooltip += this.translateService.instant(marker('common.attachmentRequired')) + ': ' + attachments;
+    }
+
+    return tooltip;
   }
 
+  // Verifica si una pestaña es requerida ya sea por campos o adjuntos
   public isTabRequired(colId: number, id: number): boolean {
     const requiredFields = this.requiredFields$.getValue();
-    if (requiredFields?.length) {
-      return requiredFields.find((item) => item.colId === colId && item.tabId === id) ? true : false;
-    }
-    return false;
+    const requiredAttachments = this.requiredAttachments$.getValue();
+    return requiredFields?.find((item) => item.colId === colId && item.tabId === id) ||
+      requiredAttachments?.find((item) => item.colId === colId && item.tabId === id)
+      ? true
+      : false;
   }
 
+  // Obtiene el tooltip para una pestaña, combinando información de campos y adjuntos
   public getTabTooltip(colId: number, id: number): string {
     const requiredFields = this.requiredFields$.getValue();
+    const requiredAttachments = this.requiredAttachments$.getValue();
+
+    let tooltip = '';
+
     if (requiredFields?.length) {
-      return this.translateService.instant(marker('common.fieldRequired')) + ': ' + this.getTabRequiredFieldsString(colId, id);
+      tooltip +=
+        this.translateService.instant(marker('common.fieldRequired')) + ': ' + this.getTabRequiredFieldsString(colId, id);
     }
-    return '';
+
+    if (requiredAttachments?.length) {
+      if (tooltip) {
+        tooltip += '\n';
+      }
+      tooltip +=
+        this.translateService.instant(marker('common.attachmentRequired')) +
+        ': ' +
+        this.getTabRequiredAttachmentsString(colId, id);
+    }
+
+    return tooltip;
   }
 
+  // Obtiene la cadena de campos requeridos para una pestaña
   public getTabRequiredFieldsString(colId: number, id: number): string {
     const requiredFields = this.requiredFields$.getValue();
     if (requiredFields?.length) {
@@ -67,11 +113,26 @@ export class WorkflowRequiredFieldsAuxService {
     return '';
   }
 
+  // Obtiene la cadena de adjuntos requeridos para una pestaña
+  public getTabRequiredAttachmentsString(colId: number, id: number): string {
+    const requiredAttachments = this.requiredAttachments$.getValue();
+    if (requiredAttachments?.length) {
+      const attachments = requiredAttachments
+        .filter((item) => item.colId === colId && item.tabId === id)
+        .map((f) => f.name)
+        .join(', ');
+      return attachments;
+    }
+    return '';
+  }
+
+  // Verifica si un campo específico es requerido ya sea por campos o adjuntos
   public isFieldRequired(tabId: number, id: number): boolean {
     const requiredFields = this.requiredFields$.getValue();
-    if (requiredFields?.length) {
-      return requiredFields.find((item) => item.tabId === tabId && item.id === id) ? true : false;
-    }
-    return false;
+    const requiredAttachments = this.requiredAttachments$.getValue();
+    return requiredFields?.find((item) => item.tabId === tabId && item.id === id) ||
+      requiredAttachments?.find((item) => item.tabId === tabId && item.id === id)
+      ? true
+      : false;
   }
 }

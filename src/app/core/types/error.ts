@@ -8,4 +8,5 @@ export type ConcenetError = {
   path: string;
   code?: string;
   requiredFields?: CardColumnTabItemDTO[];
+  requiredAttachments: CardColumnTabItemDTO[];
 };
