@@ -1,0 +1,10 @@
+.modal-customer-attachments {
+  width: 100%;
+  box-sizing: border-box;
+
+  .tab-content {
+    min-height: 400px;
+    max-height: 600px;
+    overflow: auto;
+  }
+}

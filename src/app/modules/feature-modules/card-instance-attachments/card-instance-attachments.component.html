@@ -62,9 +62,10 @@
                         <mat-icon
                             class="top-left"
                             *ngIf="
-                                (!cardInstanceAttachmentsConfig.disableIndividualDeleteAction ||
+                                isClientMode ||
+                                ((!cardInstanceAttachmentsConfig.disableIndividualDeleteAction ||
                                     hasUerPermissionToDeleteFiles()) &&
-                                template.permissionType === 'EDIT'
+                                    template.permissionType === 'EDIT')
                             "
                             (click)="deleteAttachment(item)"
                             >delete</mat-icon

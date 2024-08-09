@@ -8,29 +8,35 @@ import WorkflowCardTabItemDTO from '@data/models/workflows/workflow-card-tab-ite
 import { CardService } from '@data/services/cards.service';
 import { TranslateService } from '@ngx-translate/core';
 import { GlobalMessageService } from '@shared/services/global-message.service';
-import { finalize, take } from 'rxjs/operators';
+import { take } from 'rxjs/operators';
+// eslint-disable-next-line max-len
+import CardInstanceDTO from '@data/models/cards/card-instance-dto';
+import CustomerEntityDTO from '@data/models/entities/customer-entity-dto';
+import RepairOrderEntityDTO from '@data/models/entities/repair-order-entity-dto';
+import VehicleEntityDTO from '@data/models/entities/vehicle-entity-dto';
+import { EntitiesService } from '@data/services/entities.service';
+import { CustomDialogService } from '@frontend/custom-dialog';
+import { WorkflowPrepareAndMoveService } from '@modules/app-modules/workflow/aux-service/workflow-prepare-and-move-aux.service';
+import { WorkflowRequiredFieldsAuxService } from '@modules/app-modules/workflow/aux-service/workflow-required-fields-aux.service';
 // eslint-disable-next-line max-len
 import { EntitiesSearcherDialogService } from '@modules/feature-modules/entities-searcher-dialog/entities-searcher-dialog.service';
-import { WorkflowPrepareAndMoveService } from '@modules/app-modules/workflow/aux-service/workflow-prepare-and-move-aux.service';
-import CardInstanceDTO from '@data/models/cards/card-instance-dto';
-import { EntitiesService } from '@data/services/entities.service';
-import CustomerEntityDTO from '@data/models/entities/customer-entity-dto';
-import VehicleEntityDTO from '@data/models/entities/vehicle-entity-dto';
-import { CustomDialogService } from '@frontend/custom-dialog';
 import {
   CreateEditCustomerComponentModalEnum,
   ModalCustomerComponent
 } from '@modules/feature-modules/modal-customer/modal-customer.component';
 import {
-  CreateEditVehicleComponentModalEnum,
-  ModalVehicleComponent
-} from '@modules/feature-modules/modal-vehicle/modal-vehicle.component';
-import RepairOrderEntityDTO from '@data/models/entities/repair-order-entity-dto';
-import {
   CreateEditRepairOrderComponentModalEnum,
   ModalRepairOrderComponent
 } from '@modules/feature-modules/modal-repair-order/modal-repair-order.component';
-import { WorkflowRequiredFieldsAuxService } from '@modules/app-modules/workflow/aux-service/workflow-required-fields-aux.service';
+import {
+  CreateEditVehicleComponentModalEnum,
+  ModalVehicleComponent
+} from '@modules/feature-modules/modal-vehicle/modal-vehicle.component';
+// eslint-disable-next-line max-len
+import {
+  ModalCardCustomerAttachmentsComponent,
+  modalCardCustomerAttachmentsComponentModalEnum
+} from '@modules/feature-modules/modal-card-customer-attachments/modal-card-customer-attachment.component';
 
 @Component({
   selector: 'app-workflow-column-customizable-entity',
@@ -205,6 +211,26 @@ export class WorkflowColumnCustomizableEntityComponent implements OnInit, OnChan
           );
       })
       .finally(() => this.setShowLoading.emit(false));
+  }
+
+  public customerAttachments() {
+    this.customDialogService
+      .open({
+        id: modalCardCustomerAttachmentsComponentModalEnum.ID,
+        panelClass: modalCardCustomerAttachmentsComponentModalEnum.PANEL_CLASS,
+        component: ModalCardCustomerAttachmentsComponent,
+        disableClose: true,
+        width: '900px'
+      })
+      .pipe(take(1))
+      .subscribe((response) => {
+        if (response) {
+          this.globalMessageService.showSuccess({
+            message: this.translateService.instant(marker('common.successOperation')),
+            actionText: this.translateService.instant(marker('common.close'))
+          });
+        }
+      });
   }
 
   public editEntity(): void {

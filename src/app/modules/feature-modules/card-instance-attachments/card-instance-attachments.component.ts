@@ -1,6 +1,8 @@
 import { CdkDragDrop } from '@angular/cdk/drag-drop';
 import { Component, EventEmitter, Inject, Input, OnChanges, OnInit, Optional, Output, SimpleChanges } from '@angular/core';
 import { MAT_DIALOG_DATA, MatDialog, MatDialogRef } from '@angular/material/dialog';
+import { PermissionConstants } from '@app/constants/permission.constants';
+import { AuthenticationService } from '@app/security/authentication.service';
 import { ConcenetError } from '@app/types/error';
 import { marker } from '@biesbjerg/ngx-translate-extract-marker';
 import { AttachmentDTO, CardAttachmentsDTO } from '@data/models/cards/card-attachments-dto';
@@ -17,8 +19,6 @@ import CardInstanceAttachmentsConfig, {
   CardInstanceAttachmentsModalVersionConfig
 } from './card-instance-attachments-config-interface';
 import { RenameAttachmentComponent } from './subcomponets/rename-attachment/rename-attachment.component';
-import { PermissionConstants } from '@app/constants/permission.constants';
-import { AuthenticationService } from '@app/security/authentication.service';
 
 export const enum CardInstanceAttachmentsComponentEnum {
   ID = 'card-instances-attachments-id',
@@ -36,6 +36,7 @@ export class CardInstanceAttachmentsComponent implements OnInit, OnChanges {
   @Input() selected: AttachmentDTO[] = [];
   @Input() cardInstanceWorkflowId: number = null;
   @Input() tabId: number = null;
+  @Input() isClientMode = false;
   @Output() reload: EventEmitter<boolean> = new EventEmitter<boolean>();
   @Output() selectionChange: EventEmitter<AttachmentDTO[]> = new EventEmitter<AttachmentDTO[]>();
   public selectedAttachments: AttachmentDTO[] = [];
@@ -68,7 +69,7 @@ export class CardInstanceAttachmentsComponent implements OnInit, OnChanges {
   ) {}
 
   ngOnInit(): void {
-    if (this.dialogData) {
+    if (this.dialogData && !this.isClientMode) {
       this.modalMode = true;
       this.cardInstanceAttachmentsConfig = this.dialogData.cardInstanceAttachmentsConfig;
       this.data = this.dialogData.data;
@@ -181,30 +182,34 @@ export class CardInstanceAttachmentsComponent implements OnInit, OnChanges {
   public downloadAttachment(item: AttachmentDTO, list: AttachmentDTO[]): void {
     const spinner = this.spinnerService.show();
     //window.open(this.attachmentService.getDownloadAttachmentUrl(this.cardInstanceWorkflowId, this.tabId, item.id), '_blank');
-    this.attachmentService
-      .downloadAttachment(this.cardInstanceWorkflowId, this.tabId, item.id)
-      .pipe(
-        take(1),
-        finalize(() => this.spinnerService.hide(spinner))
-      )
-      .subscribe(
-        (data: AttachmentDTO) => {
-          if (this.hasPreview(item)) {
-            const listFiltered = list.filter((att: AttachmentDTO) => this.hasPreview(att));
-            this.mediaViewerService.openMediaViewerMúltiple(data, listFiltered, this.cardInstanceWorkflowId, this.tabId);
-          } else {
-            saveAs(`data:${data.type};base64,${data.content}`, data.name);
-          }
-        },
-        (error: ConcenetError) => {
-          this.logger.error(error);
+    if (!this.isClientMode) {
+      this.attachmentService
+        .downloadAttachment(this.cardInstanceWorkflowId, this.tabId, item.id)
+        .pipe(
+          take(1),
+          finalize(() => this.spinnerService.hide(spinner))
+        )
+        .subscribe(
+          (data: AttachmentDTO) => {
+            if (this.hasPreview(item)) {
+              const listFiltered = list.filter((att: AttachmentDTO) => this.hasPreview(att));
+              this.mediaViewerService.openMediaViewerMúltiple(data, listFiltered, this.cardInstanceWorkflowId, this.tabId);
+            } else {
+              saveAs(`data:${data.type};base64,${data.content}`, data.name);
+            }
+          },
+          (error: ConcenetError) => {
+            this.logger.error(error);
 
-          this.globalMessageService.showError({
-            message: error.message,
-            actionText: this.translateService.instant(marker('common.close'))
-          });
-        }
-      );
+            this.globalMessageService.showError({
+              message: error.message,
+              actionText: this.translateService.instant(marker('common.close'))
+            });
+          }
+        );
+    } else {
+      //Todo Llamar endpoint para visualizar documentos en cliente
+    }
   }
 
   public deleteAttachment(item: AttachmentDTO): void {
@@ -217,24 +222,28 @@ export class CardInstanceAttachmentsComponent implements OnInit, OnChanges {
       .subscribe((ok: boolean) => {
         if (ok) {
           const spinner = this.spinnerService.show();
-          this.attachmentService
-            .deleteAttachment(this.cardInstanceWorkflowId, this.tabId, item.id)
-            .pipe(take(1))
-            .subscribe(
-              (data) => {
-                this.reload.emit(true);
-                this.spinnerService.hide(spinner);
-              },
-              (error: ConcenetError) => {
-                this.spinnerService.hide(spinner);
-                this.logger.error(error);
+          if (!this.isClientMode) {
+            this.attachmentService
+              .deleteAttachment(this.cardInstanceWorkflowId, this.tabId, item.id)
+              .pipe(take(1))
+              .subscribe(
+                (data) => {
+                  this.reload.emit(true);
+                  this.spinnerService.hide(spinner);
+                },
+                (error: ConcenetError) => {
+                  this.spinnerService.hide(spinner);
+                  this.logger.error(error);
 
-                this.globalMessageService.showError({
-                  message: error.message,
-                  actionText: this.translateService.instant(marker('common.close'))
-                });
-              }
-            );
+                  this.globalMessageService.showError({
+                    message: error.message,
+                    actionText: this.translateService.instant(marker('common.close'))
+                  });
+                }
+              );
+          } else {
+            //TODO Llamar al servicio para eliminar adjuntos en cliente
+          }
         }
       });
   }
@@ -364,23 +373,27 @@ export class CardInstanceAttachmentsComponent implements OnInit, OnChanges {
       filesToSend.push(fileInfo);
     });
     const spinner = this.spinnerService.show();
-    this.attachmentService
-      .addAttachments(this.cardInstanceWorkflowId, this.tabId, template.templateAttachmentItem.id, filesToSend)
-      .pipe(take(1))
-      .subscribe(
-        (data) => {
-          this.reload.emit(true);
-          this.spinnerService.hide(spinner);
-        },
-        (error: ConcenetError) => {
-          this.spinnerService.hide(spinner);
-          this.logger.error(error);
+    if (!this.isClientMode) {
+      this.attachmentService
+        .addAttachments(this.cardInstanceWorkflowId, this.tabId, template.templateAttachmentItem.id, filesToSend)
+        .pipe(take(1))
+        .subscribe(
+          (data) => {
+            this.reload.emit(true);
+            this.spinnerService.hide(spinner);
+          },
+          (error: ConcenetError) => {
+            this.spinnerService.hide(spinner);
+            this.logger.error(error);
 
-          this.globalMessageService.showError({
-            message: error.message,
-            actionText: this.translateService.instant(marker('common.close'))
-          });
-        }
-      );
+            this.globalMessageService.showError({
+              message: error.message,
+              actionText: this.translateService.instant(marker('common.close'))
+            });
+          }
+        );
+    } else {
+      //Todo Llamar al endpoint para aniadir adjuntos en cliente
+    }
   }
 }

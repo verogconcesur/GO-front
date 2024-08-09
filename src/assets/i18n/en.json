@@ -614,14 +614,17 @@
     },
     "entities": {
         "customers": {
+            "activeAttachments": "Active",
             "create": "Create customer",
             "customer": "Customer",
+            "customerAttachments": "Client attachments",
             "edit": "Edit customer",
             "email": "Email",
             "firstName": "First name",
             "import": "Import customer",
             "lastName": "Second name",
             "name": "Name",
+            "oldAttachments": "Archived",
             "phone": "Phone",
             "reference": "Reference",
             "socialSecurityId": "Identity document",
