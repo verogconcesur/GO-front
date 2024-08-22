@@ -13,6 +13,7 @@ import { ProgressSpinnerDialogService } from '@shared/services/progress-spinner-
 import { saveAs } from 'file-saver';
 import { Observable, of } from 'rxjs';
 import { finalize, take } from 'rxjs/operators';
+import { WorkflowAdministrationService } from '../../../data/services/workflow-administration.service';
 import { MediaViewerService } from '../media-viewer-dialog/media-viewer.service';
 
 export const enum modalCardCustomerAttachmentsComponentModalEnum {
@@ -28,13 +29,18 @@ export const enum modalCardCustomerAttachmentsComponentModalEnum {
 })
 export class ModalCardCustomerAttachmentsComponent extends ComponentToExtendForCustomDialog implements OnInit, OnDestroy {
   public labels = {};
-  public options1: string[] = ['Option 1A', 'Option 1B', 'Option 1C'];
-  public options2: string[] = ['Option 2A', 'Option 2B', 'Option 2C'];
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  public attachmentTemplates: any[] = [];
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  attachmentItemsMap: { [key: number]: any[] } = {};
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  public filteredAttachmentItems: any[] = [];
   public data: CardAttachmentsDTO[] = [];
   public selectedAttachments: AttachmentDTO[] = [];
   public cardInstanceWorkflowId: number;
   public tabId: number;
   public form: UntypedFormGroup;
+  public workflowId: number;
   private apiUrl = 'https://concenet-dev.sdos.es/concenet-rest/api/cardInstanceWorkflow/detail/1846/attachments/11';
 
   constructor(
@@ -45,7 +51,8 @@ export class ModalCardCustomerAttachmentsComponent extends ComponentToExtendForC
     private globalMessageService: GlobalMessageService,
     private httpClient: HttpClient,
     private attachmentService: CardAttachmentsService,
-    private mediaViewerService: MediaViewerService
+    private mediaViewerService: MediaViewerService,
+    private workflowadministrationService: WorkflowAdministrationService
   ) {
     super(
       modalCardCustomerAttachmentsComponentModalEnum.ID,
@@ -55,11 +62,13 @@ export class ModalCardCustomerAttachmentsComponent extends ComponentToExtendForC
   }
 
   ngOnInit(): void {
+    this.workflowId = this.extendedComponentData;
     this.form = this.fb.group({
       option1: [''],
       option2: ['']
     });
     this.fetchAttachments();
+    this.getAttachmentsData();
   }
 
   ngOnDestroy(): void {}
@@ -70,6 +79,34 @@ export class ModalCardCustomerAttachmentsComponent extends ComponentToExtendForC
 
   confirmCloseCustomDialog(): Observable<boolean> {
     return of(true);
+  }
+
+  getAttachmentsData() {
+    this.workflowadministrationService
+      .getWorkflowTimelineAttachments(this.workflowId)
+      .pipe(take(1))
+      .subscribe((resp) => {
+        this.attachmentTemplates = resp;
+        this.attachmentTemplates.forEach((template) => {
+          this.attachmentItemsMap[template.id] = template.template.templateAttachmentItems;
+        });
+      });
+  }
+
+  public getAttachmentItems(templateId: number) {
+    return this.attachmentItemsMap[templateId] || [];
+  }
+
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  public onTemplateChange(event: any) {
+    const selectedTemplateId = event.value;
+    this.form.get('option2')?.setValue(null);
+    this.updateAttachmentItems(selectedTemplateId);
+  }
+
+  public updateAttachmentItems(templateId: number) {
+    const items = this.attachmentItemsMap[templateId] || [];
+    this.filteredAttachmentItems = items;
   }
 
   fetchAttachments(): void {
@@ -129,6 +166,14 @@ export class ModalCardCustomerAttachmentsComponent extends ComponentToExtendForC
     return ['pdf', 'audio', 'video', 'image'].some((type) => item?.type?.toLowerCase().includes(type));
   }
 
+  public fileBrowseHandler(items: FileList): void {
+    this.addFiles(items);
+  }
+
+  public fileDropped(items: FileList): void {
+    this.addFiles(items);
+  }
+
   public downloadAttachment(item: AttachmentDTO, list: AttachmentDTO[]): void {
     const spinner = this.spinnerService.show();
 
@@ -154,5 +199,68 @@ export class ModalCardCustomerAttachmentsComponent extends ComponentToExtendForC
           });
         }
       );
+  }
+
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  private getBase64(file: File): Promise<any> {
+    const reader = new FileReader();
+    return new Promise((resolve) => {
+      reader.onload = (ev) => {
+        resolve(ev.target.result);
+      };
+      reader.readAsDataURL(file);
+    });
+  }
+
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  private async fileListToBase64(fileList: FileList): Promise<any[]> {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const promises: Promise<any>[] = [];
+    Array.from(fileList).forEach((file: File) => {
+      promises.push(this.getBase64(file));
+    });
+    return Promise.all(promises);
+  }
+
+  private async addFiles(files: FileList): Promise<void> {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const filesToSend: any[] = [];
+    const filesName: string[] = [];
+
+    this.data.forEach((cardAttachment: CardAttachmentsDTO) => {
+      cardAttachment.attachments.forEach((attachment: AttachmentDTO) => {
+        filesName.push(attachment.name);
+      });
+    });
+
+    const arrayOfBase64 = await this.fileListToBase64(files);
+    Array.from(files).forEach((file: File, i: number) => {
+      const fileInfo = {
+        name: filesName.indexOf(file.name) === -1 ? file.name : `${+new Date()}_${file.name}`,
+        type: file.type,
+        size: file.size,
+        content: arrayOfBase64[i].split(';base64,')[1]
+      };
+      filesToSend.push(fileInfo);
+    });
+
+    const spinner = this.spinnerService.show();
+    //TODO Nuevo servicio para adjuntar archivos
+    // this.attachmentService
+    //   .addAttachments(this.cardInstanceWorkflowId, this.tabId, filesToSend)
+    //   .pipe(take(1))
+    //   .subscribe(
+    //     (data) => {
+    //       this.fetchAttachments(); // Llama a fetchAttachments para recargar la lista
+    //       this.spinnerService.hide(spinner);
+    //     },
+    //     (error: ConcenetError) => {
+    //       this.spinnerService.hide(spinner);
+    //       this.globalMessageService.showError({
+    //         message: error.message,
+    //         actionText: this.translateService.instant(marker('common.close'))
+    //       });
+    //     }
+    //   );
   }
 }

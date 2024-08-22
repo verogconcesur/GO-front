@@ -1,47 +1,67 @@
 <div class="modal-card-customer-attachments">
-    <div *ngFor="let template of data">
-        <div
-            class="attachments__content__templates__content__item"
-            *ngFor="let item of template.attachments"
-            [ngClass]="{
-                selected: isItemSelected(item),
-                'shared-in-landing': item.showInLanding
-            }"
-            [ngStyle]="{ 'background-image': getItemBgImage(item) }"
-            matTooltip=""
-            matTooltipPosition="above"
-            [matTooltipDisabled]="!item.showInLanding"
-        >
-            <div class="file-info">
-                <div class="file-name">
-                    {{ item.name }}
-                </div>
-                <div class="actions-wrapper">
-                    <mat-icon
-                        class="bottom-right"
-                        *ngIf="hasPreview(item)"
-                        (click)="downloadAttachment(item, template.attachments)"
-                    >
-                        search
-                    </mat-icon>
+    <div class="attachments__content__templates__header">
+        <label>Examinar</label>
+        <button mat-icon-button color="primary" class="v-align-bottom no-padding" (click)="fileInputRef.click()">
+            <mat-icon>add</mat-icon>
+        </button>
+    </div>
+    <input type="file" style="display: none" #fileInputRef multiple (change)="fileBrowseHandler($event.target.files)" />
+    <div class="attachments-and-selects-container">
+        <div *ngFor="let template of data">
+            <div
+                class="attachments__content__templates__content__item"
+                *ngFor="let item of template.attachments"
+                [ngClass]="{
+                    selected: isItemSelected(item),
+                    'shared-in-landing': item.showInLanding
+                }"
+                [ngStyle]="{ 'background-image': getItemBgImage(item) }"
+                matTooltip=""
+                matTooltipPosition="above"
+                [matTooltipDisabled]="!item.showInLanding"
+            >
+                <div class="file-info">
+                    <div class="file-name">
+                        {{ item.name }}
+                    </div>
+                    <div class="actions-wrapper">
+                        <mat-icon
+                            class="bottom-right"
+                            *ngIf="hasPreview(item)"
+                            (click)="downloadAttachment(item, template.attachments)"
+                        >
+                            search
+                        </mat-icon>
+                    </div>
                 </div>
             </div>
+        </div>
 
-            <div class="selects-container">
-                <mat-form-field appearance="outline" floatLabel="always">
-                    <mat-label>Select 1</mat-label>
-                    <mat-select formControlName="option1">
-                        <mat-option *ngFor="let option of options1" [value]="option">{{ option }}</mat-option>
-                    </mat-select>
-                </mat-form-field>
-
-                <mat-form-field appearance="outline" floatLabel="always">
-                    <mat-label>Select 2</mat-label>
-                    <mat-select formControlName="option2">
-                        <mat-option *ngFor="let option of options2" [value]="option">{{ option }}</mat-option>
-                    </mat-select>
-                </mat-form-field>
-            </div>
+        <div class="selects-container">
+            <mat-form-field appearance="outline" floatLabel="always">
+                <mat-label>Tab Adjunto</mat-label>
+                <mat-select formControlName="option1" (selectionChange)="onTemplateChange($event)">
+                    <mat-option *ngFor="let template of attachmentTemplates" [value]="template.id">
+                        {{ template.name }}
+                    </mat-option>
+                </mat-select>
+                <button
+                    matSuffix
+                    mat-icon-button
+                    aria-label="Clear"
+                    (click)="form.get('option1')?.setValue(null); form.get('option2')?.setValue(null); $event.stopPropagation()"
+                >
+                    <mat-icon>close</mat-icon>
+                </button>
+            </mat-form-field>
+            <mat-form-field appearance="outline" floatLabel="always">
+                <mat-label>Categoria</mat-label>
+                <mat-select formControlName="option2">
+                    <mat-option *ngFor="let item of filteredAttachmentItems" [value]="item.id">
+                        {{ item.name }}
+                    </mat-option>
+                </mat-select>
+            </mat-form-field>
         </div>
     </div>
 </div>

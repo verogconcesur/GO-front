@@ -220,6 +220,7 @@ export class WorkflowColumnCustomizableEntityComponent implements OnInit, OnChan
         panelClass: modalCardCustomerAttachmentsComponentModalEnum.PANEL_CLASS,
         component: ModalCardCustomerAttachmentsComponent,
         disableClose: true,
+        extendedComponentData: this.workflowId ? this.workflowId : null,
         width: '900px'
       })
       .pipe(take(1))
