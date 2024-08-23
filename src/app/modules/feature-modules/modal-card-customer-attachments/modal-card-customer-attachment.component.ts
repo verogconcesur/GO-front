@@ -1,9 +1,10 @@
 import { HttpClient } from '@angular/common/http';
 import { Component, OnDestroy, OnInit } from '@angular/core';
-import { UntypedFormBuilder, UntypedFormGroup } from '@angular/forms';
+import { FormGroup, UntypedFormBuilder, UntypedFormGroup } from '@angular/forms';
 import { ConcenetError } from '@app/types/error';
 import { marker } from '@biesbjerg/ngx-translate-extract-marker';
 import { AttachmentDTO, CardAttachmentsDTO } from '@data/models/cards/card-attachments-dto';
+import { WorkflowAttachmentTimelineDTO } from '@data/models/workflow-admin/workflow-attachment-timeline-dto';
 import { CardAttachmentsService } from '@data/services/card-attachments.service';
 import { ComponentToExtendForCustomDialog, CustomDialogFooterConfigI } from '@frontend/custom-dialog';
 import { TranslateService } from '@ngx-translate/core';
@@ -29,8 +30,7 @@ export const enum modalCardCustomerAttachmentsComponentModalEnum {
 })
 export class ModalCardCustomerAttachmentsComponent extends ComponentToExtendForCustomDialog implements OnInit, OnDestroy {
   public labels = {};
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  public attachmentTemplates: any[] = [];
+  public attachmentTemplates: WorkflowAttachmentTimelineDTO[];
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   attachmentItemsMap: { [key: number]: any[] } = {};
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -39,6 +39,7 @@ export class ModalCardCustomerAttachmentsComponent extends ComponentToExtendForC
   public selectedAttachments: AttachmentDTO[] = [];
   public cardInstanceWorkflowId: number;
   public tabId: number;
+  public attachmentsForm: FormGroup;
   public form: UntypedFormGroup;
   public workflowId: number;
   private apiUrl = 'https://concenet-dev.sdos.es/concenet-rest/api/cardInstanceWorkflow/detail/1846/attachments/11';
@@ -61,14 +62,20 @@ export class ModalCardCustomerAttachmentsComponent extends ComponentToExtendForC
     );
   }
 
+  // Convenience getter for easy access to form fields
+  get formAttachments() {
+    return this.attachmentsForm.controls;
+  }
+
   ngOnInit(): void {
-    this.workflowId = this.extendedComponentData;
+    this.attachmentTemplates = this.extendedComponentData;
     this.form = this.fb.group({
       option1: [''],
       option2: ['']
     });
     this.fetchAttachments();
     this.getAttachmentsData();
+    this.initializeForm();
   }
 
   ngOnDestroy(): void {}
@@ -82,15 +89,9 @@ export class ModalCardCustomerAttachmentsComponent extends ComponentToExtendForC
   }
 
   getAttachmentsData() {
-    this.workflowadministrationService
-      .getWorkflowTimelineAttachments(this.workflowId)
-      .pipe(take(1))
-      .subscribe((resp) => {
-        this.attachmentTemplates = resp;
-        this.attachmentTemplates.forEach((template) => {
-          this.attachmentItemsMap[template.id] = template.template.templateAttachmentItems;
-        });
-      });
+    this.attachmentTemplates.forEach((template) => {
+      this.attachmentItemsMap[template.id] = template.template.templateAttachmentItems;
+    });
   }
 
   public getAttachmentItems(templateId: number) {
@@ -263,4 +264,12 @@ export class ModalCardCustomerAttachmentsComponent extends ComponentToExtendForC
     //     }
     //   );
   }
+
+  private initializeForm = (): void => {
+    this.attachmentsForm = this.fb.group({
+      attachments: [[]],
+      tabAttachment: [''],
+      categoryAttachment: ['']
+    });
+  };
 }
