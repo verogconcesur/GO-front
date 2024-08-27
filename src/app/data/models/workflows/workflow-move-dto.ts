@@ -49,6 +49,7 @@ export default interface WorkflowMoveDTO {
   requiredMovementExtra?: boolean;
   requiredAttachments?: boolean;
   workflowSubstateEventRequiredAttachments?: WorkflowSubstateEventRequiredAttachment[];
+  workflowMovementRequiredAttachments?: WorkflowSubstateEventRequiredAttachment[];
 }
 export interface WorkflowSubstateEventRequiredAttachment {
   tab: { id: number };

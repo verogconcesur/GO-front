@@ -273,15 +273,28 @@ export class WfEditSubstateEventsDialogComponent extends ComponentToExtendForCus
         ])
       ];
     }
-    this.attachmentList = this.attachmentList?.map((attachment) => {
-      const matchingBackendAttachment = data.workflowSubstateEventRequiredAttachments?.find(
-        (f) => f.tab.id === attachment.id && f.templateAttachmentItem.id === attachment.templateAttachmentItemId
-      );
-      if (matchingBackendAttachment) {
-        return { ...attachment, numberInput: matchingBackendAttachment.numMinAttachRequired };
-      }
-      return attachment;
-    });
+    if (this.eventType === 'MOV') {
+      this.attachmentList = this.attachmentList?.map((attachment) => {
+        const matchingBackendAttachment = this.move.workflowSubstateEventRequiredAttachments?.find(
+          (f) => f.tab.id === attachment.id && f.templateAttachmentItem.id === attachment.templateAttachmentItemId
+        );
+        if (matchingBackendAttachment) {
+          return { ...attachment, numberInput: matchingBackendAttachment.numMinAttachRequired };
+        }
+        return attachment;
+      });
+    } else {
+      this.attachmentList = this.attachmentList?.map((attachment) => {
+        const matchingBackendAttachment = data.workflowSubstateEventRequiredAttachments?.find(
+          (f) => f.tab.id === attachment.id && f.templateAttachmentItem.id === attachment.templateAttachmentItemId
+        );
+        if (matchingBackendAttachment) {
+          return { ...attachment, numberInput: matchingBackendAttachment.numMinAttachRequired };
+        }
+        return attachment;
+      });
+    }
+
     this.form = this.fb.group(
       {
         //Mandar email
@@ -344,17 +357,26 @@ export class WfEditSubstateEventsDialogComponent extends ComponentToExtendForCus
         workflowSubstateEventRequiredAttachments: [
           data?.workflowSubstateEventRequiredAttachments && this.attachmentList
             ? this.attachmentList
-                .filter((attachment) =>
-                  data.workflowSubstateEventRequiredAttachments.find(
+                .filter((attachment) => {
+                  const attachments = Array.isArray(data.workflowSubstateEventRequiredAttachments)
+                    ? data.workflowSubstateEventRequiredAttachments
+                    : [data.workflowSubstateEventRequiredAttachments];
+                  return attachments.find(
                     (f) => f.tab.id === attachment.id && f.templateAttachmentItem.id === attachment.templateAttachmentItemId
-                  )
-                )
-                .map((attachment) => ({
-                  ...attachment,
-                  numberInput: data.workflowSubstateEventRequiredAttachments.find(
-                    (f) => f.tab.id === attachment.id && f.templateAttachmentItem.id === attachment.templateAttachmentItemId
-                  ).numMinAttachRequired
-                }))
+                  );
+                })
+                .map((attachment) => {
+                  const attachments = Array.isArray(data.workflowSubstateEventRequiredAttachments)
+                    ? data.workflowSubstateEventRequiredAttachments
+                    : [data.workflowSubstateEventRequiredAttachments];
+
+                  return {
+                    ...attachment,
+                    numberInput: attachments.find(
+                      (f) => f.tab.id === attachment.id && f.templateAttachmentItem.id === attachment.templateAttachmentItemId
+                    )?.numMinAttachRequired
+                  };
+                })
             : []
         ],
         //webservice
@@ -437,7 +459,6 @@ export class WfEditSubstateEventsDialogComponent extends ComponentToExtendForCus
       }
     );
     this.formIntialized.emit(true);
-    // console.log(this.form, this.form.value);
   }
 
   public addWorkflowEventMails(): void {
@@ -634,13 +655,23 @@ export class WfEditSubstateEventsDialogComponent extends ComponentToExtendForCus
         }
       });
     }
+
+    // Construir los campos condicionales
     const workflowSubstateEventRequiredAttachments = this.form.value.workflowSubstateEventRequiredAttachments?.map(
-      (field: any, index: number) => ({
+      (field: any) => ({
         tab: { id: field.id },
         templateAttachmentItem: { id: field.templateAttachmentItemId },
         numMinAttachRequired: field.numberInput || 0
       })
     );
+
+    const workflowMovementRequiredAttachments = this.form.value.workflowSubstateEventRequiredAttachments?.map((field: any) => ({
+      tab: { id: field.id },
+      templateAttachmentItem: { id: field.templateAttachmentItemId },
+      numMinAttachRequired: field.numberInput || 0
+    }));
+
+    // Crear formValue base
     const formValue = {
       ...value,
       requiredFieldsList: this.form.value.requiredFieldsrequiredFieldsList
@@ -653,15 +684,23 @@ export class WfEditSubstateEventsDialogComponent extends ComponentToExtendForCus
             .filter(
               (data: any) => data && data.sendMailTemplate && data.workflowEventMailReceivers?.filter((d: any) => d)?.length
             )
-        : [],
-      workflowSubstateEventRequiredAttachments
+        : []
     };
+
+    // Añadir el campo correspondiente en función del eventType
+    if (this.eventType === 'MOV') {
+      formValue.workflowMovementRequiredAttachments = workflowMovementRequiredAttachments;
+    } else {
+      formValue.workflowSubstateEventRequiredAttachments = workflowSubstateEventRequiredAttachments;
+    }
+
     return formValue;
   }
 
   public onSubmitCustomDialog(): Observable<boolean> {
     const formValue = this.getFormValue();
     const spinner = this.spinnerService.show();
+
     if (this.eventType === 'MOV') {
       return this.wStatesService
         .postWorkflowSubstateMovements(this.workflowId, this.substate.id, { ...this.move, ...formValue })
@@ -686,6 +725,7 @@ export class WfEditSubstateEventsDialogComponent extends ComponentToExtendForCus
           })
         );
     }
+
     return of(false);
   }
 
