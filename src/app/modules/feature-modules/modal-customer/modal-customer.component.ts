@@ -127,6 +127,8 @@ export class ModalCustomerComponent extends ComponentToExtendForCustomDialog imp
     this.customerForm = this.fb.group({
       id: [this.customerToEdit ? this.customerToEdit.id : null],
       reference: [this.customerToEdit ? this.customerToEdit.reference : null],
+      //Deshabilitar referencia cliente
+      // reference: [{ value: this.customerToEdit ? this.customerToEdit.reference : null, disabled: true }],
       name: [this.customerToEdit ? this.customerToEdit.name : null],
       firstName: [this.customerToEdit ? this.customerToEdit.firstName : null],
       secondName: [this.customerToEdit ? this.customerToEdit.secondName : null],

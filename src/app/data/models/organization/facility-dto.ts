@@ -15,6 +15,7 @@ export default interface FacilityDTO {
   postalCode?: string;
   town?: TownDTO;
   requireConfigApiExt?: boolean;
+  configApiExtDefault?: boolean;
   requireConfigStockApiExt?: boolean;
   code?: string;
   configStockCode?: string;
