@@ -198,9 +198,10 @@
                                             matInput
                                             type="number"
                                             [value]="field.numberInput"
-                                            (input)="updateNumberInput($event, field)"
+                                            (input)="validateInput($event, field)"
                                             (click)="$event.stopPropagation()"
                                             style="padding: 0; width: 100%"
+                                            min="0"
                                         />
                                     </mat-form-field>
                                 </div>

@@ -757,6 +757,14 @@ export class WfEditSubstateEventsDialogComponent extends ComponentToExtendForCus
     field.numberInput = value;
   }
 
+  public validateInput(event: any, field: any): void {
+    const inputValue = event.target.value;
+    if (inputValue < 0) {
+      event.target.value = Math.abs(inputValue);
+    }
+    this.updateNumberInput(event, field);
+  }
+
   public generateDisplayName(field: any): string {
     return `${field.templateName} - ${field.itemName} - ${field.numberInput}`;
   }
@@ -818,7 +826,7 @@ export class WfEditSubstateEventsDialogComponent extends ComponentToExtendForCus
                 id: attachment.id,
                 templateId: attachment.template.id,
                 templateAttachmentItemId: item.id,
-                templateName: attachment.template.template.name,
+                templateName: attachment.name,
                 itemName: item.name,
                 numberInput: 0
               });
