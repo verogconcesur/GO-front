@@ -674,7 +674,7 @@ export class WfEditSubstateEventsDialogComponent extends ComponentToExtendForCus
     // Crear formValue base
     const formValue = {
       ...value,
-      requiredFieldsList: this.form.value.requiredFieldsrequiredFieldsList
+      requiredFieldsList: this.form.value.requiredFieldsList
         ? this.form.value.requiredFieldsList.map((field: any) => ({ id: field.id }))
         : [],
       roles: this.form.get('roles')?.value.filter((role: RoleDTO) => role.selected),
