@@ -56,6 +56,7 @@ export class WorkflowPrepareAndMoveService {
   ): void {
     this.spinner = this.spinnerService.show();
     this.requiredFieldsAuxService.resetRequiredFields();
+    this.requiredFieldsAuxService.resetRequiredAttachments();
     view = view ? view : 'MOVES_IN_THIS_WORKFLOW';
     const workflowCardsLimit: WorkflowCardsLimitDTO = move?.workflowCardsLimit;
     if (workflowCardsLimit && !workflowCardsLimit?.allowOverLimit) {
@@ -482,6 +483,9 @@ export class WorkflowPrepareAndMoveService {
           this.reloadData$.next('UPDATE_INFORMATION');
         },
         (error: ConcenetError) => {
+          if (error.requiredAttachments?.length) {
+            this.requiredFieldsAuxService.setRequiredAttachments(error.requiredAttachments);
+          }
           this.spinnerService.hide(this.spinner);
           this.logger.error(error);
           this.globalMessageService.showError({

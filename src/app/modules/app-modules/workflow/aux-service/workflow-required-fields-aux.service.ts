@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
 import { marker } from '@biesbjerg/ngx-translate-extract-marker';
+import { errorAttachmentDTO } from '@data/models/cards/card-attachments-dto';
 import CardColumnTabItemDTO from '@data/models/cards/card-column-tab-item-dto';
 import { TranslateService } from '@ngx-translate/core';
 import { BehaviorSubject } from 'rxjs';
@@ -9,7 +10,7 @@ import { BehaviorSubject } from 'rxjs';
 })
 export class WorkflowRequiredFieldsAuxService {
   private requiredFields$: BehaviorSubject<CardColumnTabItemDTO[]> = new BehaviorSubject(null);
-  private requiredAttachments$: BehaviorSubject<CardColumnTabItemDTO[]> = new BehaviorSubject(null);
+  private requiredAttachments$: BehaviorSubject<errorAttachmentDTO[]> = new BehaviorSubject(null);
   constructor(private translateService: TranslateService) {}
 
   public resetRequiredFields(): void {
@@ -24,16 +25,16 @@ export class WorkflowRequiredFieldsAuxService {
     this.requiredAttachments$.next(null);
   }
 
-  public setRequiredAttachments(requiredAttachments: CardColumnTabItemDTO[]): void {
+  public setRequiredAttachments(requiredAttachments: errorAttachmentDTO[]): void {
     this.requiredAttachments$.next(requiredAttachments);
   }
   // Verifica si una columna es requerida ya sea por campos o adjuntos
   public isColRequired(id: number): boolean {
     const requiredFields = this.requiredFields$.getValue();
     const requiredAttachments = this.requiredAttachments$.getValue();
-    return requiredFields?.find((item) => item.colId === id) || requiredAttachments?.find((item) => item.colId === id)
-      ? true
-      : false;
+    const fieldFound = requiredFields?.some((item) => item.colId === id);
+    const attachmentFound = requiredAttachments?.some((item) => item.tab.colId === id);
+    return fieldFound || attachmentFound;
   }
 
   // Obtiene el tooltip para una columna, combinando información de campos y adjuntos
@@ -53,8 +54,8 @@ export class WorkflowRequiredFieldsAuxService {
 
     if (requiredAttachments?.length) {
       const attachments = requiredAttachments
-        .filter((item) => item.colId === id)
-        .map((f) => f.name)
+        .filter((item) => item.tab.colId === id)
+        .map((f) => f.tab.name)
         .join(', ');
       if (tooltip) {
         tooltip += '\n';
@@ -69,10 +70,9 @@ export class WorkflowRequiredFieldsAuxService {
   public isTabRequired(colId: number, id: number): boolean {
     const requiredFields = this.requiredFields$.getValue();
     const requiredAttachments = this.requiredAttachments$.getValue();
-    return requiredFields?.find((item) => item.colId === colId && item.tabId === id) ||
-      requiredAttachments?.find((item) => item.colId === colId && item.tabId === id)
-      ? true
-      : false;
+    const fieldFound = requiredFields?.some((item) => item.colId === colId && item.tabId === id);
+    const attachmentFound = requiredAttachments?.some((item) => item.tab.colId === colId && item.tab.id === id);
+    return fieldFound || attachmentFound;
   }
 
   // Obtiene el tooltip para una pestaña, combinando información de campos y adjuntos
@@ -118,8 +118,8 @@ export class WorkflowRequiredFieldsAuxService {
     const requiredAttachments = this.requiredAttachments$.getValue();
     if (requiredAttachments?.length) {
       const attachments = requiredAttachments
-        .filter((item) => item.colId === colId && item.tabId === id)
-        .map((f) => f.name)
+        .filter((item) => item.tab.colId === colId && item.tab.id === id)
+        .map((f) => f.tab.name)
         .join(', ');
       return attachments;
     }
@@ -130,9 +130,8 @@ export class WorkflowRequiredFieldsAuxService {
   public isFieldRequired(tabId: number, id: number): boolean {
     const requiredFields = this.requiredFields$.getValue();
     const requiredAttachments = this.requiredAttachments$.getValue();
-    return requiredFields?.find((item) => item.tabId === tabId && item.id === id) ||
-      requiredAttachments?.find((item) => item.tabId === tabId && item.id === id)
-      ? true
-      : false;
+    const fieldFound = requiredFields?.some((item) => item.tabId === tabId && item.id === id);
+    const attachmentFound = requiredAttachments?.some((item) => item.tab.id === tabId && item.templateAttachmentItem.id === id);
+    return fieldFound || attachmentFound;
   }
 }

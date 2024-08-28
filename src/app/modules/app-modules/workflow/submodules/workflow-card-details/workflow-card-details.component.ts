@@ -1,28 +1,28 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { Component, HostListener, Inject, OnDestroy, OnInit } from '@angular/core';
 import { Location } from '@angular/common';
+import { Component, HostListener, Inject, OnDestroy, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import WorkflowCardDTO from '@data/models/workflows/workflow-card-dto';
-import { marker } from '@biesbjerg/ngx-translate-extract-marker';
-import { CardService } from '@data/services/cards.service';
-import { skip, take } from 'rxjs/operators';
-import CardColumnDTO from '@data/models/cards/card-column-dto';
-import { ProgressSpinnerDialogService } from '@shared/services/progress-spinner-dialog.service';
-import { GlobalMessageService } from '@shared/services/global-message.service';
-import { ConcenetError } from '@app/types/error';
-import { TranslateService } from '@ngx-translate/core';
-import CardInstanceDTO from '@data/models/cards/card-instance-dto';
-import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
-import { WorkflowPrepareAndMoveService } from '../../aux-service/workflow-prepare-and-move-aux.service';
-import { RxStompService } from '@app/services/rx-stomp.service';
-import { IMessage } from '@stomp/stompjs';
-import WorkflowSocketCardDetailDTO from '@data/models/workflows/workflow-sockect-card-detail-dto';
-import { ConfirmDialogService } from '@shared/services/confirm-dialog.service';
-import { AuthenticationService } from '@app/security/authentication.service';
-import { Env } from '@app/types/env';
 import { ENV } from '@app/constants/global.constants';
-import { WorkflowRequiredFieldsAuxService } from '../../aux-service/workflow-required-fields-aux.service';
 import { RouteConstants } from '@app/constants/route.constants';
+import { AuthenticationService } from '@app/security/authentication.service';
+import { RxStompService } from '@app/services/rx-stomp.service';
+import { Env } from '@app/types/env';
+import { ConcenetError } from '@app/types/error';
+import { marker } from '@biesbjerg/ngx-translate-extract-marker';
+import CardColumnDTO from '@data/models/cards/card-column-dto';
+import CardInstanceDTO from '@data/models/cards/card-instance-dto';
+import WorkflowCardDTO from '@data/models/workflows/workflow-card-dto';
+import WorkflowSocketCardDetailDTO from '@data/models/workflows/workflow-sockect-card-detail-dto';
+import { CardService } from '@data/services/cards.service';
+import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
+import { TranslateService } from '@ngx-translate/core';
+import { ConfirmDialogService } from '@shared/services/confirm-dialog.service';
+import { GlobalMessageService } from '@shared/services/global-message.service';
+import { ProgressSpinnerDialogService } from '@shared/services/progress-spinner-dialog.service';
+import { IMessage } from '@stomp/stompjs';
+import { skip, take } from 'rxjs/operators';
+import { WorkflowPrepareAndMoveService } from '../../aux-service/workflow-prepare-and-move-aux.service';
+import { WorkflowRequiredFieldsAuxService } from '../../aux-service/workflow-required-fields-aux.service';
 
 @UntilDestroy()
 @Component({
@@ -99,6 +99,7 @@ export class WorkflowCardDetailsComponent implements OnInit, OnDestroy {
 
   ngOnDestroy(): void {
     this.requiredFieldsAuxService.resetRequiredFields();
+    this.requiredFieldsAuxService.resetRequiredAttachments();
   }
 
   public setShowMode(width: number) {
