@@ -130,7 +130,7 @@ export class CardInstanceAccountingComponent implements OnInit {
       )
       .subscribe({
         next: (data: any) => {
-          this.reload.emit(true);
+          this.data = data;
         },
         error: (error: ConcenetError) => {
           this.globalMessageService.showError({
