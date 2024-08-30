@@ -15,6 +15,41 @@
         <div class="save-fav__form__row" *ngIf="form.editable.value && form.id.value">
             <mat-checkbox [formControl]="saveAsNewFormControl">{{ labels.saveAsNew | translate }}</mat-checkbox>
         </div>
+        <div class="save-fav__form__row">
+            <mat-checkbox formControlName="queryMark">Marca de consulta programada</mat-checkbox>
+        </div>
+        <mat-form-field appearance="outline" floatLabel="always" style="width: 100%">
+            <mat-label>Filtros prefijados</mat-label>
+            <mat-select (selectionChange)="onFilterChange($event.value)" formControlName="scheduledQueries">
+                <mat-option *ngFor="let option of filterOptions" [value]="option.id">{{ option.name }}</mat-option>
+            </mat-select>
+        </mat-form-field>
+        <mat-form-field *ngIf="showDate" appearance="outline" floatLabel="always" style="width: 100%">
+            <mat-label>Fecha</mat-label>
+            <input matInput [matDatepicker]="picker" formControlName="typeDate" />
+            <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+            <mat-datepicker #picker></mat-datepicker>
+        </mat-form-field>
+        <mat-form-field *ngIf="showWeekday" appearance="outline" floatLabel="always" style="width: 100%">
+            <mat-label>Selecciona el día de la semana</mat-label>
+            <mat-select formControlName="typeDate">
+                <mat-option *ngFor="let day of weekDays" [value]="day.value">{{ day.label }}</mat-option>
+            </mat-select>
+        </mat-form-field>
+        <mat-form-field *ngIf="showDayOfMonth" appearance="outline" floatLabel="always" style="width: 100%">
+            <mat-label>Dia del mes</mat-label>
+            <mat-select formControlName="typeDate">
+                <mat-option *ngFor="let day of daysOfMonth" [value]="day">{{ day }}</mat-option>
+            </mat-select>
+        </mat-form-field>
+        <mat-form-field *ngIf="showTime" appearance="outline" floatLabel="always" style="width: 100%">
+            <mat-label>Hora</mat-label>
+            <input matInput type="time" (change)="onFilterChange($event.target.value)" formControlName="typeDate" />
+        </mat-form-field>
+        <mat-form-field appearance="outline" floatLabel="always" style="width: 100%">
+            <mat-label>Receptores</mat-label>
+            <input matInput formControlName="listEmails" placeholder="Receptores" />
+        </mat-form-field>
         <mat-error *ngIf="getSubmitError()">
             {{ getSubmitError() }}
         </mat-error>

@@ -8,6 +8,10 @@ export default interface AdvSearchDTO {
   name: string;
   userId: number;
   allUsers: boolean;
+  scheduledQueries?: string;
+  typeDate?: string;
+  listEmails?: string[];
+  queryMark?: boolean;
   editable: boolean;
   unionType: 'TYPE_AND' | 'TYPE_OR';
   advancedSearchItems: AdvancedSearchItem[];

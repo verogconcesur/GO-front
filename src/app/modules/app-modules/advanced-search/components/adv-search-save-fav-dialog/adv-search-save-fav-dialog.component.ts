@@ -2,14 +2,14 @@ import { Component, OnInit } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
 import { marker } from '@biesbjerg/ngx-translate-extract-marker';
 import AdvSearchDTO from '@data/models/adv-search/adv-search-dto';
+import { AdvSearchService } from '@data/services/adv-search.service';
 import { ComponentToExtendForCustomDialog, CustomDialogFooterConfigI } from '@frontend/custom-dialog';
 import { TranslateService } from '@ngx-translate/core';
-import { Observable, catchError, finalize, map, of } from 'rxjs';
-import _ from 'lodash';
 import { GlobalMessageService } from '@shared/services/global-message.service';
-import { AdvSearchService } from '@data/services/adv-search.service';
 import { ProgressSpinnerDialogService } from '@shared/services/progress-spinner-dialog.service';
+import lodash from 'lodash';
 import moment from 'moment';
+import { Observable, catchError, finalize, map, of } from 'rxjs';
 
 export const enum AdvSearchSaveFavDialogComponentModalEnum {
   ID = 'adv-search-save-fav-dialog-id',
@@ -32,6 +32,26 @@ export class AdvSearchSaveFavDialogComponent extends ComponentToExtendForCustomD
   public advSearchForm: FormGroup;
   public isAdmin = false;
   public saveAsNewFormControl = new FormControl(false);
+  public showDate = false;
+  public showWeekday = false;
+  public showDayOfMonth = false;
+  public showTime = false;
+  public daysOfMonth: number[] = [];
+  public filterOptions = [
+    { id: 1, name: 'Unica' },
+    { id: 2, name: 'Diaria' },
+    { id: 3, name: 'Mensual' },
+    { id: 4, name: 'Hora' }
+  ];
+  public weekDays = [
+    { value: 'monday', label: 'Lunes' },
+    { value: 'tuesday', label: 'Martes' },
+    { value: 'wednesday', label: 'Miércoles' },
+    { value: 'thursday', label: 'Jueves' },
+    { value: 'friday', label: 'Viernes' },
+    { value: 'saturday', label: 'Sábado' },
+    { value: 'sunday', label: 'Domingo' }
+  ];
   private previousName: string = null;
   constructor(
     private translateService: TranslateService,
@@ -50,9 +70,24 @@ export class AdvSearchSaveFavDialogComponent extends ComponentToExtendForCustomD
     return this.advSearchForm.controls;
   }
 
+  public onFilterChange(selectedValue: number): void {
+    this.resetVisibility();
+
+    if (selectedValue === 1) {
+      this.showDate = true;
+    } else if (selectedValue === 2) {
+      this.showWeekday = true;
+    } else if (selectedValue === 3) {
+      this.showDayOfMonth = true;
+    } else if (selectedValue === 4) {
+      this.showTime = true;
+    }
+  }
+
   ngOnInit(): void {
+    this.generateDaysOfMonth();
     this.previousName = this.extendedComponentData.advSearchForm.get('name').value;
-    this.advSearchForm = _.cloneDeep(this.extendedComponentData.advSearchForm);
+    this.advSearchForm = lodash.cloneDeep(this.extendedComponentData.advSearchForm);
     this.isAdmin = this.extendedComponentData.isAdmin;
     if (this.advSearch.editable && this.advSearch.id) {
       super.MODAL_TITLE = this.translateService.instant(marker('advSearch.saveFavOperation.editModeTitle'));
@@ -140,5 +175,14 @@ export class AdvSearchSaveFavDialogComponent extends ComponentToExtendForCustomD
         }
       ]
     };
+  }
+  private resetVisibility(): void {
+    this.showDate = false;
+    this.showWeekday = false;
+    this.showDayOfMonth = false;
+    this.showTime = false;
+  }
+  private generateDaysOfMonth(): void {
+    this.daysOfMonth = Array.from({ length: 31 }, (_, i) => i + 1);
   }
 }

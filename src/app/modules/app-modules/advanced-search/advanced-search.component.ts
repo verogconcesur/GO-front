@@ -694,6 +694,10 @@ export class AdvancedSearchComponent implements OnInit {
       unionType: [advSearch?.unionType ? advSearch.unionType : 'TYPE_AND'],
       userId: [advSearch?.userId ? advSearch.userId : this.admService.getUserId()],
       allUsers: [advSearch?.allUsers ? advSearch.allUsers : false],
+      scheduledQueries: [advSearch?.scheduledQueries ? advSearch.scheduledQueries : null],
+      typeDate: [advSearch?.typeDate ? advSearch.typeDate : null],
+      listEmails: [advSearch?.listEmails ? advSearch.listEmails : null],
+      queryMark: [advSearch?.queryMark ? advSearch.queryMark : false],
       editable: [advSearch?.editable === false ? advSearch.editable : true],
       advancedSearchContext: this.fb.group({
         facilities: [[]],
