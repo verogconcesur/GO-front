@@ -119,6 +119,10 @@ export class CreateEditFacilityComponent extends ComponentToExtendForCustomDialo
     // macroListOptions: ['una', 'dos']
   };
   public treeData: TreeNode[] = [];
+  public configType = [
+    { name: 'DMS', value: 'DMS' },
+    { name: 'CSV', value: 'CSV' }
+  ];
 
   constructor(
     private fb: UntypedFormBuilder,
@@ -156,34 +160,143 @@ export class CreateEditFacilityComponent extends ComponentToExtendForCustomDialo
   ngOnDestroy(): void {}
   public requiredConfigChange(checked: boolean): void {
     if (checked) {
-      this.facilityForm.get('code').setValidators([Validators.required]);
-      this.facilityForm.get('enterpriseId').setValidators([Validators.required]);
-      this.facilityForm.get('storeId').setValidators([Validators.required]);
+      this.facilityForm.get('configApiExtType').setValidators([Validators.required]);
+      const configTypeControl = this.facilityForm.get('configApiExtType');
+
+      configTypeControl.valueChanges.pipe(untilDestroyed(this)).subscribe((value) => {
+        if (value === 'CSV') {
+          this.facilityForm.get('configApiExtCsvHost').setValidators([Validators.required]);
+          this.facilityForm.get('configApiExtCsvPort').setValidators([Validators.required]);
+          this.facilityForm.get('configApiExtCsvDirectory').setValidators([Validators.required]);
+          this.facilityForm.get('configApiExtCsvPrefixFile').setValidators([Validators.required]);
+          this.facilityForm.get('configApiExtCsvUser').setValidators([Validators.required]);
+          this.facilityForm.get('configApiExtCsvPass').setValidators([Validators.required]);
+
+          this.facilityForm.get('code').clearValidators();
+          this.facilityForm.get('enterpriseId').clearValidators();
+          this.facilityForm.get('storeId').clearValidators();
+        } else if (value === 'DMS') {
+          this.facilityForm.get('code').setValidators([Validators.required]);
+          this.facilityForm.get('enterpriseId').setValidators([Validators.required]);
+          this.facilityForm.get('storeId').setValidators([Validators.required]);
+
+          this.facilityForm.get('configApiExtCsvHost').clearValidators();
+          this.facilityForm.get('configApiExtCsvPort').clearValidators();
+          this.facilityForm.get('configApiExtCsvDirectory').clearValidators();
+          this.facilityForm.get('configApiExtCsvPrefixFile').clearValidators();
+          this.facilityForm.get('configApiExtCsvUser').clearValidators();
+          this.facilityForm.get('configApiExtCsvPass').clearValidators();
+        }
+
+        this.facilityForm.get('configApiExtCsvHost').updateValueAndValidity();
+        this.facilityForm.get('configApiExtCsvPort').updateValueAndValidity();
+        this.facilityForm.get('configApiExtCsvDirectory').updateValueAndValidity();
+        this.facilityForm.get('configApiExtCsvPrefixFile').updateValueAndValidity();
+        this.facilityForm.get('configApiExtCsvUser').updateValueAndValidity();
+        this.facilityForm.get('configApiExtCsvPass').updateValueAndValidity();
+        this.facilityForm.get('code').updateValueAndValidity();
+        this.facilityForm.get('enterpriseId').updateValueAndValidity();
+        this.facilityForm.get('storeId').updateValueAndValidity();
+      });
     } else {
-      this.facilityForm.get('code').setValidators([]);
-      this.facilityForm.get('enterpriseId').setValidators([]);
-      this.facilityForm.get('storeId').setValidators([]);
+      this.facilityForm.get('configApiExtType').clearValidators();
+      this.facilityForm.get('configApiExtType').setValue(null);
+
+      this.facilityForm.get('code').clearValidators();
+      this.facilityForm.get('enterpriseId').clearValidators();
+      this.facilityForm.get('storeId').clearValidators();
+      this.facilityForm.get('configApiExtCsvHost').clearValidators();
+      this.facilityForm.get('configApiExtCsvPort').clearValidators();
+      this.facilityForm.get('configApiExtCsvDirectory').clearValidators();
+      this.facilityForm.get('configApiExtCsvPrefixFile').clearValidators();
+      this.facilityForm.get('configApiExtCsvUser').clearValidators();
+      this.facilityForm.get('configApiExtCsvPass').clearValidators();
+
+      this.facilityForm.get('configApiExtType').setValue(null);
+      this.facilityForm.get('configApiExtCsvHost').setValue(null);
+      this.facilityForm.get('configApiExtCsvPort').setValue(null);
+      this.facilityForm.get('configApiExtCsvDirectory').setValue(null);
+      this.facilityForm.get('configApiExtCsvPrefixFile').setValue(null);
+      this.facilityForm.get('configApiExtCsvUser').setValue(null);
+      this.facilityForm.get('configApiExtCsvPass').setValue(null);
       this.facilityForm.get('code').setValue(null);
       this.facilityForm.get('enterpriseId').setValue(null);
       this.facilityForm.get('storeId').setValue(null);
       this.facilityForm.get('workflowSubstate').setValue(null);
     }
+
+    this.facilityForm.get('configApiExtType').updateValueAndValidity();
   }
 
   public requiredConfigChangeStock(checked: boolean): void {
     if (checked) {
-      this.facilityForm.get('configStockCode').setValidators([Validators.required]);
-      this.facilityForm.get('configStockEnterpriseId').setValidators([Validators.required]);
-      this.facilityForm.get('configStockStoreId').setValidators([Validators.required]);
+      this.facilityForm.get('configStockType').setValidators([Validators.required]);
+
+      const stockTypeControl = this.facilityForm.get('configStockType');
+
+      stockTypeControl.valueChanges.pipe(untilDestroyed(this)).subscribe((value) => {
+        if (value === 'CSV') {
+          this.facilityForm.get('configStockCsvHost').setValidators([Validators.required]);
+          this.facilityForm.get('configStockCsvPort').setValidators([Validators.required]);
+          this.facilityForm.get('configStockCsvDirectory').setValidators([Validators.required]);
+          this.facilityForm.get('configStockCsvPrefixFile').setValidators([Validators.required]);
+          this.facilityForm.get('configStockCsvUser').setValidators([Validators.required]);
+          this.facilityForm.get('configStockCsvPass').setValidators([Validators.required]);
+
+          this.facilityForm.get('configStockCode').clearValidators();
+          this.facilityForm.get('configStockEnterpriseId').clearValidators();
+          this.facilityForm.get('configStockStoreId').clearValidators();
+        } else if (value === 'DMS') {
+          this.facilityForm.get('configStockCode').setValidators([Validators.required]);
+          this.facilityForm.get('configStockEnterpriseId').setValidators([Validators.required]);
+          this.facilityForm.get('configStockStoreId').setValidators([Validators.required]);
+
+          this.facilityForm.get('configStockCsvHost').clearValidators();
+          this.facilityForm.get('configStockCsvPort').clearValidators();
+          this.facilityForm.get('configStockCsvDirectory').clearValidators();
+          this.facilityForm.get('configStockCsvPrefixFile').clearValidators();
+          this.facilityForm.get('configStockCsvUser').clearValidators();
+          this.facilityForm.get('configStockCsvPass').clearValidators();
+        }
+
+        this.facilityForm.get('configStockCsvHost').updateValueAndValidity();
+        this.facilityForm.get('configStockCsvPort').updateValueAndValidity();
+        this.facilityForm.get('configStockCsvDirectory').updateValueAndValidity();
+        this.facilityForm.get('configStockCsvPrefixFile').updateValueAndValidity();
+        this.facilityForm.get('configStockCsvUser').updateValueAndValidity();
+        this.facilityForm.get('configStockCsvPass').updateValueAndValidity();
+        this.facilityForm.get('configStockCode').updateValueAndValidity();
+        this.facilityForm.get('configStockEnterpriseId').updateValueAndValidity();
+        this.facilityForm.get('configStockStoreId').updateValueAndValidity();
+      });
     } else {
-      this.facilityForm.get('configStockCode').setValidators([]);
-      this.facilityForm.get('configStockEnterpriseId').setValidators([]);
-      this.facilityForm.get('configStockStoreId').setValidators([]);
+      this.facilityForm.get('configStockType').clearValidators();
+      this.facilityForm.get('configStockType').setValue(null);
+
+      this.facilityForm.get('configStockCode').clearValidators();
+      this.facilityForm.get('configStockEnterpriseId').clearValidators();
+      this.facilityForm.get('configStockStoreId').clearValidators();
+      this.facilityForm.get('configStockCsvHost').clearValidators();
+      this.facilityForm.get('configStockCsvPort').clearValidators();
+      this.facilityForm.get('configStockCsvDirectory').clearValidators();
+      this.facilityForm.get('configStockCsvPrefixFile').clearValidators();
+      this.facilityForm.get('configStockCsvUser').clearValidators();
+      this.facilityForm.get('configStockCsvPass').clearValidators();
+
       this.facilityForm.get('configStockCode').setValue(null);
       this.facilityForm.get('configStockEnterpriseId').setValue(null);
       this.facilityForm.get('configStockStoreId').setValue(null);
+      this.facilityForm.get('configStockType').setValue(null);
+      this.facilityForm.get('configStockCsvHost').setValue(null);
+      this.facilityForm.get('configStockCsvPort').setValue(null);
+      this.facilityForm.get('configStockCsvDirectory').setValue(null);
+      this.facilityForm.get('configStockCsvPrefixFile').setValue(null);
+      this.facilityForm.get('configStockCsvUser').setValue(null);
+      this.facilityForm.get('configStockCsvPass').setValue(null);
+
       this.facilityForm.get('workflowSubstateNew').setValue(null);
       this.facilityForm.get('workflowSubstateUsed').setValue(null);
+
       const configStockSubstates = this.facilityForm.get('configStockSubstates').value;
       if (configStockSubstates) {
         //@ts-ignore
@@ -193,7 +306,9 @@ export class CreateEditFacilityComponent extends ComponentToExtendForCustomDialo
         this.facilityForm.get('configStockSubstates').setValue(configStockSubstates);
       }
     }
+    this.facilityForm.get('configStockType').updateValueAndValidity();
   }
+
   public removeSubstate(): void {
     this.facilityForm.get('workflowSubstate').setValue(null);
   }
@@ -267,6 +382,20 @@ export class CreateEditFacilityComponent extends ComponentToExtendForCustomDialo
         code: formValue.code,
         enterpriseId: formValue.enterpriseId,
         storeId: formValue.storeId,
+        configApiExtType: formValue.configApiExtType,
+        configApiExtCsvHost: formValue.configApiExtCsvHost,
+        configApiExtCsvPort: formValue.configApiExtCsvPort,
+        configApiExtCsvDirectory: formValue.configApiExtCsvDirectory,
+        configApiExtCsvPrefixFile: formValue.configApiExtCsvPrefixFile,
+        configApiExtCsvUser: formValue.configApiExtCsvUser,
+        configApiExtCsvPass: formValue.configApiExtCsvPass,
+        configStockType: formValue.configStockType,
+        configStockCsvHost: formValue.configStockCsvHost,
+        configStockCsvPort: formValue.configStockCsvPort,
+        configStockCsvDirectory: formValue.configStockCsvDirectory,
+        configStockCsvPrefixFile: formValue.configStockCsvPrefixFile,
+        configStockCsvUser: formValue.configStockCsvUser,
+        configStockCsvPass: formValue.configStockCsvPass,
         workflowSubstate: formValue.workflowSubstate,
         requireConfigStockApiExt: formValue.requireConfigStockApiExt,
         configStockCode: formValue.configStockCode,
@@ -635,6 +764,54 @@ export class CreateEditFacilityComponent extends ComponentToExtendForCustomDialo
           this.facilityToEdit && this.facilityToEdit.requireConfigStockApiExt
             ? this.facilityToEdit.requireConfigStockApiExt
             : false
+        ],
+        configApiExtType: [
+          this.facilityToEdit && this.facilityToEdit.configApiExtType ? this.facilityToEdit.configApiExtType : null
+        ],
+        configApiExtCsvHost: [
+          this.facilityToEdit && this.facilityToEdit.configApiExtCsvHost ? this.facilityToEdit.configApiExtCsvHost : null
+        ],
+        configApiExtCsvPort: [
+          this.facilityToEdit && this.facilityToEdit.configApiExtCsvPort ? this.facilityToEdit.configApiExtCsvPort : null
+        ],
+        configApiExtCsvDirectory: [
+          this.facilityToEdit && this.facilityToEdit.configApiExtCsvDirectory
+            ? this.facilityToEdit.configApiExtCsvDirectory
+            : null
+        ],
+        configApiExtCsvPrefixFile: [
+          this.facilityToEdit && this.facilityToEdit.configApiExtCsvPrefixFile
+            ? this.facilityToEdit.configApiExtCsvPrefixFile
+            : null
+        ],
+        configApiExtCsvUser: [
+          this.facilityToEdit && this.facilityToEdit.configApiExtCsvUser ? this.facilityToEdit.configApiExtCsvUser : null
+        ],
+        configApiExtCsvPass: [
+          this.facilityToEdit && this.facilityToEdit.configApiExtCsvPass ? this.facilityToEdit.configApiExtCsvPass : null
+        ],
+        configStockType: [
+          this.facilityToEdit && this.facilityToEdit.configStockType ? this.facilityToEdit.configStockType : null
+        ],
+        configStockCsvHost: [
+          this.facilityToEdit && this.facilityToEdit.configStockCsvHost ? this.facilityToEdit.configStockCsvHost : null
+        ],
+        configStockCsvPort: [
+          this.facilityToEdit && this.facilityToEdit.configStockCsvPort ? this.facilityToEdit.configStockCsvPort : null
+        ],
+        configStockCsvDirectory: [
+          this.facilityToEdit && this.facilityToEdit.configStockCsvDirectory ? this.facilityToEdit.configStockCsvDirectory : null
+        ],
+        configStockCsvPrefixFile: [
+          this.facilityToEdit && this.facilityToEdit.configStockCsvPrefixFile
+            ? this.facilityToEdit.configStockCsvPrefixFile
+            : null
+        ],
+        configStockCsvUser: [
+          this.facilityToEdit && this.facilityToEdit.configStockCsvUser ? this.facilityToEdit.configStockCsvUser : null
+        ],
+        configStockCsvPass: [
+          this.facilityToEdit && this.facilityToEdit.configStockCsvPass ? this.facilityToEdit.configStockCsvPass : null
         ],
         configStockCode: [
           this.facilityToEdit && this.facilityToEdit.configStockCode ? this.facilityToEdit.configStockCode : null
