@@ -135,7 +135,7 @@
                         floatLabel="always"
                         *ngIf="facilityForm.controls.requireConfigApiExt.value"
                     >
-                        <mat-label>Tipo</mat-label>
+                        <mat-label> {{ labels.configApiExtType | translate }}</mat-label>
                         <mat-select formControlName="configApiExtType">
                             <mat-option *ngFor="let type of configType" [value]="type.value"> {{ type.name }}</mat-option>
                         </mat-select>
@@ -156,7 +156,7 @@
                             facilityForm.controls.configApiExtType.value === 'CSV'
                         "
                     >
-                        <mat-label>Host</mat-label>
+                        <mat-label>{{ labels.configApiExtCsvHost | translate }}</mat-label>
                         <input matInput formControlName="configApiExtCsvHost" />
                         <mat-error
                             class="facility-data__error"
@@ -176,7 +176,7 @@
                             facilityForm.controls.configApiExtType.value === 'CSV'
                         "
                     >
-                        <mat-label>Puerto</mat-label>
+                        <mat-label>{{ labels.configApiExtCsvPort | translate }}</mat-label>
                         <input matInput formControlName="configApiExtCsvPort" />
                         <mat-error
                             class="facility-data__error"
@@ -196,7 +196,7 @@
                             facilityForm.controls.configApiExtType.value === 'CSV'
                         "
                     >
-                        <mat-label>Directorio</mat-label>
+                        <mat-label>{{ labels.configApiExtCsvDirectory | translate }}</mat-label>
                         <input matInput formControlName="configApiExtCsvDirectory" />
                         <mat-error
                             class="facility-data__error"
@@ -216,7 +216,7 @@
                             facilityForm.controls.configApiExtType.value === 'CSV'
                         "
                     >
-                        <mat-label>Fichero</mat-label>
+                        <mat-label>{{ labels.configApiExtCsvPrefixFile | translate }}</mat-label>
                         <input matInput formControlName="configApiExtCsvPrefixFile" />
                         <mat-error
                             class="facility-data__error"
@@ -236,7 +236,7 @@
                             facilityForm.controls.configApiExtType.value === 'CSV'
                         "
                     >
-                        <mat-label>Usuario</mat-label>
+                        <mat-label>{{ labels.configApiExtCsvUser | translate }}</mat-label>
                         <input matInput formControlName="configApiExtCsvUser" />
                         <mat-error
                             class="facility-data__error"
@@ -256,7 +256,7 @@
                             facilityForm.controls.configApiExtType.value === 'CSV'
                         "
                     >
-                        <mat-label>Contraseña</mat-label>
+                        <mat-label>{{ labels.configApiExtCsvPass | translate }}</mat-label>
                         <input matInput formControlName="configApiExtCsvPass" type="password" />
                         <mat-error
                             class="facility-data__error"
@@ -355,7 +355,7 @@
                         floatLabel="always"
                         *ngIf="facilityForm.controls.requireConfigStockApiExt.value"
                     >
-                        <mat-label>Tipo</mat-label>
+                        <mat-label> {{ labels.configStockType | translate }}</mat-label>
                         <mat-select formControlName="configStockType">
                             <mat-option *ngFor="let type of configType" [value]="type.value"> {{ type.name }}</mat-option>
                         </mat-select>
@@ -374,7 +374,7 @@
                             facilityForm.controls.configStockType.value === 'CSV'
                         "
                     >
-                        <mat-label>Host</mat-label>
+                        <mat-label>{{ labels.configStockCsvHost | translate }}</mat-label>
                         <input matInput formControlName="configStockCsvHost" />
                         <mat-error
                             class="facility-data__error"
@@ -394,7 +394,7 @@
                             facilityForm.controls.configStockType.value === 'CSV'
                         "
                     >
-                        <mat-label>Puerto</mat-label>
+                        <mat-label>{{ labels.configStockCsvPort | translate }}</mat-label>
                         <input matInput formControlName="configStockCsvPort" />
                         <mat-error
                             class="facility-data__error"
@@ -414,7 +414,7 @@
                             facilityForm.controls.configStockType.value === 'CSV'
                         "
                     >
-                        <mat-label>Directorio</mat-label>
+                        <mat-label>{{ labels.configStockCsvDirectory | translate }}</mat-label>
                         <input matInput formControlName="configStockCsvDirectory" />
                         <mat-error
                             class="facility-data__error"
@@ -434,7 +434,7 @@
                             facilityForm.controls.configStockType.value === 'CSV'
                         "
                     >
-                        <mat-label>Fichero</mat-label>
+                        <mat-label>{{ labels.configStockCsvPrefixFile | translate }}</mat-label>
                         <input matInput formControlName="configStockCsvPrefixFile" />
                         <mat-error
                             class="facility-data__error"
@@ -454,7 +454,7 @@
                             facilityForm.controls.configStockType.value === 'CSV'
                         "
                     >
-                        <mat-label>Usuario</mat-label>
+                        <mat-label>{{ labels.configStockCsvUser | translate }}</mat-label>
                         <input matInput formControlName="configStockCsvUser" />
                         <mat-error
                             class="facility-data__error"
@@ -474,7 +474,7 @@
                             facilityForm.controls.configStockType.value === 'CSV'
                         "
                     >
-                        <mat-label>Contraseña</mat-label>
+                        <mat-label>{{ labels.configStockCsvPass | translate }}</mat-label>
                         <input matInput formControlName="configStockCsvPass" type="password" />
                         <mat-error
                             class="facility-data__error"
