@@ -1,0 +1,38 @@
+{
+  "name": "@frontend/bread-crumbs",
+  "version": "1.4.1",
+  "peerDependencies": {
+    "@angular/common": "^14.2.3",
+    "@angular/core": "^14.2.3",
+    "@angular/material": "^14.2.2",
+    "@ngneat/until-destroy": "^9.2.1",
+    "@ngx-translate/core": "^14.0.0"
+  },
+  "dependencies": {
+    "tslib": "^2.0.0"
+  },
+  "publishConfig": {
+    "@frontend:registry": "https://gitlab.alten.es/api/v4/projects/364/packages/npm/"
+  },
+  "repository": "https://gitlab.alten.es/web/stack/frontend/jengalibrary.git",
+  "module": "fesm2015/frontend-bread-crumbs.mjs",
+  "es2020": "fesm2020/frontend-bread-crumbs.mjs",
+  "esm2020": "esm2020/frontend-bread-crumbs.mjs",
+  "fesm2020": "fesm2020/frontend-bread-crumbs.mjs",
+  "fesm2015": "fesm2015/frontend-bread-crumbs.mjs",
+  "typings": "index.d.ts",
+  "exports": {
+    "./package.json": {
+      "default": "./package.json"
+    },
+    ".": {
+      "types": "./index.d.ts",
+      "esm2020": "./esm2020/frontend-bread-crumbs.mjs",
+      "es2020": "./fesm2020/frontend-bread-crumbs.mjs",
+      "es2015": "./fesm2015/frontend-bread-crumbs.mjs",
+      "node": "./fesm2015/frontend-bread-crumbs.mjs",
+      "default": "./fesm2020/frontend-bread-crumbs.mjs"
+    }
+  },
+  "sideEffects": false
+}
