@@ -843,7 +843,7 @@
             "configStockCsvPort": "Puerto",
             "configStockCsvPrefixFile": "Prefijo de archivo",
             "configStockCsvUser": "Usuario",
-            "configStockType": "Contraseña",
+            "configStockType": "Tipo",
             "create": "Crear instalación",
             "delete": "Eliminar instalación",
             "deleteConfirmation": "¿Realmente quiere eliminar esta instalación?",
