@@ -2,6 +2,14 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [1.1.3](https://gitlab.alten.es/Delivery-Projects/concesur/concenet_front/-/compare/v1.1.2...v1.1.3) (2024-08-30)
+
+
+### Bug Fixes
+
+* obtener los datos de la pagina de la respuesta de taxTypes ([72ea3ce](https://gitlab.alten.es/Delivery-Projects/concesur/concenet_front/-/commit/72ea3cef8489804535891a2d898f73f9f80268c3))
+* requiredFieldList se envia vacio ([1a8af74](https://gitlab.alten.es/Delivery-Projects/concesur/concenet_front/-/commit/1a8af74ea19050f758f18f1f5edec4b13a2499e7))
+
 ### [1.1.2](https://gitlab.alten.es/Delivery-Projects/concesur/concenet_front/-/compare/v1.1.1...v1.1.2) (2024-07-31)
 
 
