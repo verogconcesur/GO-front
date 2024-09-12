@@ -1,0 +1,61 @@
+.breadcrumbs {
+  & {
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+  }
+  &__back-button {
+    margin-right: 15px;
+  }
+  ul {
+    & {
+      list-style: none;
+      margin: 0;
+      padding: 0;
+    }
+
+    li {
+      & {
+        display: inline;
+        cursor: pointer;
+      }
+    }
+  }
+  button {
+    &.mat-square-icon {
+      border-radius: 5px;
+      padding: 0 0;
+      min-width: 36px;
+      line-height: 36px;
+      &.square-28 {
+        min-width: 28px;
+        line-height: 28px;
+      }
+    }
+  }
+}
+
+.breadcrumbs.breadcrumbs-default-style {
+  ul {
+    padding: 20px 0;
+    li {
+      &:before {
+        content: '/';
+        margin: 0 3px;
+        cursor: auto;
+      }
+
+      &:first-child:before {
+        content: '';
+        margin: 0;
+      }
+
+      &:last-child {
+        font-weight: bold;
+        &:before {
+          font-weight: 200;
+        }
+      }
+    }
+  }
+}

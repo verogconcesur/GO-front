@@ -1,10 +1,9 @@
 import { AfterViewInit, Component, OnDestroy, OnInit, ViewChild, ViewEncapsulation } from '@angular/core';
-import { MatTab, MatTabChangeEvent, MatTabGroup, MatTabHeader } from '@angular/material/tabs';
+import { MatTab, MatTabGroup, MatTabHeader } from '@angular/material/tabs';
 import { ActivatedRoute } from '@angular/router';
 import { marker } from '@biesbjerg/ngx-translate-extract-marker';
 import WorkflowDTO from '@data/models/workflows/workflow-dto';
 import { WorkflowAdministrationService } from '@data/services/workflow-administration.service';
-import { CustomDialogService } from '@frontend/custom-dialog';
 import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
 import { TranslateService } from '@ngx-translate/core';
 import { ConfirmDialogService } from '@shared/services/confirm-dialog.service';
@@ -13,6 +12,7 @@ import { ProgressSpinnerDialogService } from '@shared/services/progress-spinner-
 import { take } from 'rxjs/operators';
 import { WorkflowsCreateEditAuxService } from '../../aux-service/workflows-create-edit-aux.service';
 // eslint-disable-next-line max-len
+import { CustomDialogService } from '@shared/modules/custom-dialog/services/custom-dialog.service';
 import {
   CreateEditWorkflowComponent,
   CreateEditWorkflowComponentModalEnum

@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { FormArray, FormControl, FormGroup, UntypedFormBuilder, UntypedFormControl } from '@angular/forms';
+import { FormArray, FormGroup, UntypedFormBuilder, UntypedFormControl } from '@angular/forms';
 import { marker } from '@biesbjerg/ngx-translate-extract-marker';
 import CardColumnTabDTO from '@data/models/cards/card-column-tab-dto';
 import CardColumnTabItemDTO from '@data/models/cards/card-column-tab-item-dto';
@@ -14,9 +14,10 @@ import WorkflowCardTabPermissionsDTO, {
 import WorkflowCardTabTAIPermissionDTO from '@data/models/workflow-admin/workflow-card-tab-tai-permissions-dto';
 import { CardService } from '@data/services/cards.service';
 import { WorkflowAdministrationService } from '@data/services/workflow-administration.service';
-import { ComponentToExtendForCustomDialog, CustomDialogService, CustomDialogFooterConfigI } from '@frontend/custom-dialog';
 import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
 import { TranslateService } from '@ngx-translate/core';
+import { CustomDialogFooterConfigI } from '@shared/modules/custom-dialog/interfaces/custom-dialog-footer-config';
+import { ComponentToExtendForCustomDialog } from '@shared/modules/custom-dialog/models/component-for-custom-dialog';
 import { ConfirmDialogService } from '@shared/services/confirm-dialog.service';
 import { GlobalMessageService } from '@shared/services/global-message.service';
 import { ProgressSpinnerDialogService } from '@shared/services/progress-spinner-dialog.service';

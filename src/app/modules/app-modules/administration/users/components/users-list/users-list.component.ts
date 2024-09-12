@@ -4,28 +4,26 @@ import { marker } from '@biesbjerg/ngx-translate-extract-marker';
 import PaginationResponseI from '@data/interfaces/pagination-response';
 import BrandDTO from '@data/models/organization/brand-dto';
 import DepartmentDTO from '@data/models/organization/department-dto';
+import FacilityDTO from '@data/models/organization/facility-dto';
+import SpecialtyDTO from '@data/models/organization/specialty-dto';
 import UserDetailsDTO from '@data/models/user-permissions/user-details-dto';
 import UserFilterDTO from '@data/models/user-permissions/user-filter-dto';
+import { RoleService } from '@data/services/role.service';
 import { UserService } from '@data/services/user.service';
-import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
 import {
   CreateEditUserComponent,
   CreateEditUserComponentModalEnum
 } from '@modules/app-modules/administration/users/components/create-edit-user/create-edit-user.component';
-import { CustomDialogService } from '@frontend/custom-dialog';
 import { FilterDrawerService } from '@modules/feature-modules/filter-drawer/services/filter-drawer.service';
+import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
+import { TranslateService } from '@ngx-translate/core';
+import { CustomDialogService } from '@shared/modules/custom-dialog/services/custom-dialog.service';
+import { ConfirmDialogService } from '@shared/services/confirm-dialog.service';
+import { GlobalMessageService } from '@shared/services/global-message.service';
+import { ProgressSpinnerDialogService } from '@shared/services/progress-spinner-dialog.service';
 import { Observable, of } from 'rxjs';
 import { finalize, map, take } from 'rxjs/operators';
 import { UsersFilterComponent } from '../users-filter/users-filter.component';
-import { ConfirmDialogService } from '@shared/services/confirm-dialog.service';
-import { TranslateService } from '@ngx-translate/core';
-import { GlobalMessageService } from '@shared/services/global-message.service';
-import { RoleService } from '@data/services/role.service';
-import FacilityDTO from '@data/models/organization/facility-dto';
-import SpecialtyDTO from '@data/models/organization/specialty-dto';
-import { ProgressSpinnerDialogService } from '@shared/services/progress-spinner-dialog.service';
-import WorkflowSubstateUserDTO from '@data/models/workflows/workflow-substate-user-dto';
-import UserDTO from '@data/models/user-permissions/user-dto';
 
 @UntilDestroy()
 @Component({
