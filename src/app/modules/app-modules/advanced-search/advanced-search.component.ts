@@ -25,6 +25,7 @@ import { ProgressSpinnerDialogService } from '@shared/services/progress-spinner-
 import { haveArraysSameValues } from '@shared/utils/array-comparation-function';
 import { moveItemInFormArray } from '@shared/utils/moveItemInFormArray';
 import { removeItemInFormArray } from '@shared/utils/removeItemInFormArray';
+import { EmailValidator } from '@shared/validators/fav-email.validator';
 import _ from 'lodash';
 import moment from 'moment';
 import { NGXLogger } from 'ngx-logger';
@@ -125,10 +126,17 @@ export class AdvancedSearchComponent implements OnInit {
   }
 
   public contextErrors(): boolean {
-    return (
-      !this.advSearchForm.get('advancedSearchContext')?.get('dateCardFrom')?.value ||
-      !this.advSearchForm.get('advancedSearchContext')?.get('dateCardTo')?.value
-    );
+    const scheduledReportsValue = this.advSearchForm.get('advancedSearchContext').get('scheduledReports')?.value;
+    if (!scheduledReportsValue) {
+      return true;
+    }
+    if (scheduledReportsValue === 6) {
+      return (
+        !this.advSearchForm.get('advancedSearchContext')?.get('dateCardFrom')?.value ||
+        !this.advSearchForm.get('advancedSearchContext')?.get('dateCardTo')?.value
+      );
+    }
+    return false;
   }
   public criteriaErrors(): boolean {
     let error = false;
@@ -696,7 +704,7 @@ export class AdvancedSearchComponent implements OnInit {
       allUsers: [advSearch?.allUsers ? advSearch.allUsers : false],
       scheduledQueries: [advSearch?.scheduledQueries ? advSearch.scheduledQueries : null],
       typeDate: [advSearch?.typeDate ? advSearch.typeDate : null],
-      listEmails: [advSearch?.listEmails ? advSearch.listEmails : null],
+      listEmails: [advSearch?.listEmails ? advSearch.listEmails : null, EmailValidator.validate],
       queryMark: [advSearch?.queryMark ? advSearch.queryMark : false],
       editable: [advSearch?.editable === false ? advSearch.editable : true],
       advancedSearchContext: this.fb.group({

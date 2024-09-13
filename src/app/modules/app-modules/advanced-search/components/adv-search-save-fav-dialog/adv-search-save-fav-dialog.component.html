@@ -42,13 +42,18 @@
                 <mat-option *ngFor="let day of daysOfMonth" [value]="day">{{ day }}</mat-option>
             </mat-select>
         </mat-form-field>
-        <mat-form-field *ngIf="showTime" appearance="outline" floatLabel="always" style="width: 100%">
-            <mat-label>Hora</mat-label>
-            <input matInput type="time" (change)="onFilterChange($event.target.value)" formControlName="typeDate" />
-        </mat-form-field>
+        <div *ngIf="showTime" style="width: 47%" class="save-fav__form__row">
+            <h3 class="title-msg">Hora</h3>
+            <ngx-mat-timepicker formControlName="typeDate" [defaultTime]="[0, 0, 0]"></ngx-mat-timepicker>
+        </div>
         <mat-form-field appearance="outline" floatLabel="always" style="width: 100%">
             <mat-label>Receptores</mat-label>
             <input matInput formControlName="listEmails" placeholder="Receptores" />
+            <mat-error *ngIf="advSearchForm.get('listEmails')?.hasError('invalidEmail')">
+                {{
+                    "El formato de los correos electrónicos no es válido. Asegúrese de que los correos estén separados por comas y sean válidos."
+                }}
+            </mat-error>
         </mat-form-field>
         <mat-error *ngIf="getSubmitError()">
             {{ getSubmitError() }}
