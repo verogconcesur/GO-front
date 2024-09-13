@@ -5,15 +5,16 @@ import { UntypedFormArray, UntypedFormBuilder, UntypedFormGroup, Validators } fr
 import { marker } from '@biesbjerg/ngx-translate-extract-marker';
 import TemplatesBudgetDetailsDTO, { TemplateBudgetLinesDTO } from '@data/models/templates/templates-budget-details-dto';
 import { TemplatesBudgetsService } from '@data/services/templates-budgets.service';
-import { ComponentToExtendForCustomDialog, CustomDialogFooterConfigI, CustomDialogService } from '@frontend/custom-dialog';
 import { TranslateService } from '@ngx-translate/core';
+import { CustomDialogFooterConfigI } from '@shared/modules/custom-dialog/interfaces/custom-dialog-footer-config';
+import { ComponentToExtendForCustomDialog } from '@shared/modules/custom-dialog/models/component-for-custom-dialog';
+import { CustomDialogService } from '@shared/modules/custom-dialog/services/custom-dialog.service';
 import { ConfirmDialogService } from '@shared/services/confirm-dialog.service';
 import { GlobalMessageService } from '@shared/services/global-message.service';
 import { ProgressSpinnerDialogService } from '@shared/services/progress-spinner-dialog.service';
 import { validateDateFormat } from '@shared/utils/validate-date-format-function';
-import { NGXLogger } from 'ngx-logger';
 import { Observable, of } from 'rxjs';
-import { catchError, finalize, map, take, tap } from 'rxjs/operators';
+import { catchError, finalize, map, take } from 'rxjs/operators';
 
 export const enum CreateEditBudgetComponentModalEnum {
   ID = 'create-edit-budget-dialog-id',

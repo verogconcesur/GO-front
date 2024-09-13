@@ -1,18 +1,18 @@
 import { Component, Inject, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
+import { ENV } from '@app/constants/global.constants';
 import { RouteConstants } from '@app/constants/route.constants';
 import { AuthenticationService } from '@app/security/authentication.service';
+import { Env } from '@app/types/env';
 import { ConcenetError } from '@app/types/error';
 import { marker } from '@biesbjerg/ngx-translate-extract-marker';
 import UserDetailsDTO from '@data/models/user-permissions/user-details-dto';
 import { UserService } from '@data/services/user.service';
-import { GlobalMessageService } from '@shared/services/global-message.service';
-import { CustomDialogService } from '@frontend/custom-dialog';
 import { MyProfileComponent, MyProfileComponentModalEnum } from '@modules/feature-modules/my-profile-dialog/my-profile.component';
-import { take } from 'rxjs/operators';
 import { TranslateService } from '@ngx-translate/core';
-import { ENV } from '@app/constants/global.constants';
-import { Env } from '@app/types/env';
+import { CustomDialogService } from '@shared/modules/custom-dialog/services/custom-dialog.service';
+import { GlobalMessageService } from '@shared/services/global-message.service';
+import { take } from 'rxjs/operators';
 
 @Component({
   selector: 'app-user-profile',

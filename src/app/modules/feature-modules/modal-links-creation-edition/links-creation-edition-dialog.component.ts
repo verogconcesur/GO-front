@@ -1,16 +1,14 @@
 import { Component, OnInit } from '@angular/core';
-import { FormControl, UntypedFormGroup } from '@angular/forms';
+import { UntypedFormGroup } from '@angular/forms';
 import { marker } from '@biesbjerg/ngx-translate-extract-marker';
 import VariablesDTO from '@data/models/variables-dto';
-import { VariablesService } from '@data/services/variables.service';
-import { ComponentToExtendForCustomDialog, CustomDialogFooterConfigI } from '@frontend/custom-dialog';
 // eslint-disable-next-line max-len
 import { TextEditorWrapperConfigI } from '@modules/feature-modules/text-editor-wrapper/interfaces/text-editor-wrapper-config.interface';
 import { TranslateService } from '@ngx-translate/core';
+import { CustomDialogFooterConfigI } from '@shared/modules/custom-dialog/interfaces/custom-dialog-footer-config';
+import { ComponentToExtendForCustomDialog } from '@shared/modules/custom-dialog/models/component-for-custom-dialog';
 import { ConfirmDialogService } from '@shared/services/confirm-dialog.service';
-import { format } from 'path';
-import { title } from 'process';
-import { Observable, map, of, take, tap } from 'rxjs';
+import { Observable, of, tap } from 'rxjs';
 
 export const enum LinksCreationEditionDialogComponentModalEnum {
   ID = 'links-creation-edition-dialog-id',

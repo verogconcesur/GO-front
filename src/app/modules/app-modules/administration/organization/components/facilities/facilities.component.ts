@@ -1,23 +1,23 @@
 /* eslint-disable max-len */
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { CustomDialogService } from '@frontend/custom-dialog';
 import { RouteConstants } from '@app/constants/route.constants';
+import { ConcenetError } from '@app/types/error';
 import { marker } from '@biesbjerg/ngx-translate-extract-marker';
 import FacilityDTO from '@data/models/organization/facility-dto';
 import { FacilityService } from '@data/services/facility.sevice';
-import { Observable } from 'rxjs';
-import { finalize, tap, take } from 'rxjs/operators';
-import { ProgressSpinnerDialogService } from '@shared/services/progress-spinner-dialog.service';
-import { GlobalMessageService } from '@shared/services/global-message.service';
 import { TranslateService } from '@ngx-translate/core';
+import { CustomDialogService } from '@shared/modules/custom-dialog/services/custom-dialog.service';
+import { ConfirmDialogService } from '@shared/services/confirm-dialog.service';
+import { GlobalMessageService } from '@shared/services/global-message.service';
+import { ProgressSpinnerDialogService } from '@shared/services/progress-spinner-dialog.service';
+import { NGXLogger } from 'ngx-logger';
+import { Observable } from 'rxjs';
+import { finalize, take, tap } from 'rxjs/operators';
 import {
   CreateEditFacilityComponent,
   CreateEditFacilityComponentModalEnum
 } from '../create-edit-facility/create-edit-facility.component';
-import { ConfirmDialogService } from '@shared/services/confirm-dialog.service';
-import { ConcenetError } from '@app/types/error';
-import { NGXLogger } from 'ngx-logger';
 import {
   CsvFileImportationComponent,
   CsvFileImportationComponentModalEnum

@@ -4,7 +4,7 @@ import { marker } from '@biesbjerg/ngx-translate-extract-marker';
 import RoleDTO from '@data/models/user-permissions/role-dto';
 import { RoleService } from '@data/services/role.service';
 import { TranslateService } from '@ngx-translate/core';
-import { CustomDialogService } from '@frontend/custom-dialog';
+import { CustomDialogService } from '@shared/modules/custom-dialog/services/custom-dialog.service';
 import { ConfirmDialogService } from '@shared/services/confirm-dialog.service';
 import { GlobalMessageService } from '@shared/services/global-message.service';
 import { ProgressSpinnerDialogService } from '@shared/services/progress-spinner-dialog.service';

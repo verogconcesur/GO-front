@@ -2,14 +2,19 @@ import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { FormArray, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ConcenetError } from '@app/types/error';
 import { marker } from '@biesbjerg/ngx-translate-extract-marker';
-import { AttachmentDTO, CardAttachmentsDTO, CardBudgetAttachmentsDTO } from '@data/models/cards/card-attachments-dto';
+import { AttachmentDTO, CardBudgetAttachmentsDTO } from '@data/models/cards/card-attachments-dto';
 import { CardBudgetsDTO } from '@data/models/cards/card-budgets-dto';
 import CardInstanceDTO from '@data/models/cards/card-instance-dto';
 import { CardAttachmentsService } from '@data/services/card-attachments.service';
 import { CardBudgetsService } from '@data/services/card-budgets.service';
 import { CardMessagesService } from '@data/services/card-messages.service';
-import { CustomDialogService } from '@frontend/custom-dialog';
+import {
+  MessageClientDialogComponent,
+  MessageClientDialogComponentModalEnum
+  // eslint-disable-next-line max-len
+} from '@modules/app-modules/workflow/submodules/workflow-card-details/subcomponents/message-client-dialog/message-client-dialog.component';
 import { TranslateService } from '@ngx-translate/core';
+import { CustomDialogService } from '@shared/modules/custom-dialog/services/custom-dialog.service';
 import { ConfirmDialogService } from '@shared/services/confirm-dialog.service';
 import { GlobalMessageService } from '@shared/services/global-message.service';
 import { NGXLogger } from 'ngx-logger';
@@ -19,11 +24,6 @@ import {
   SelectTemplateLinesComponent,
   SelectTemplateLinesComponentModalEnum
 } from './modals/select-template-lines/select-template-lines.component';
-import {
-  MessageClientDialogComponent,
-  MessageClientDialogComponentModalEnum
-  // eslint-disable-next-line max-len
-} from '@modules/app-modules/workflow/submodules/workflow-card-details/subcomponents/message-client-dialog/message-client-dialog.component';
 
 @Component({
   selector: 'app-card-instance-budgets',

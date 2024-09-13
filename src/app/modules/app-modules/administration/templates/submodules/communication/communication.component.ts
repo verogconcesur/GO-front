@@ -7,10 +7,9 @@ import DepartmentDTO from '@data/models/organization/department-dto';
 import FacilityDTO from '@data/models/organization/facility-dto';
 import SpecialtyDTO from '@data/models/organization/specialty-dto';
 import TemplatesCommonDTO from '@data/models/templates/templates-common-dto';
-import TemplatesFilterDTO from '@data/models/templates/templates-filter-dto';
 import TemplatesCommunicationDTO from '@data/models/templates/templates-communication-dto';
+import TemplatesFilterDTO from '@data/models/templates/templates-filter-dto';
 import { TemplatesCommunicationService } from '@data/services/templates-communication.service';
-import { CustomDialogService } from '@frontend/custom-dialog';
 import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
 import { TranslateService } from '@ngx-translate/core';
 // eslint-disable-next-line max-len
@@ -19,13 +18,14 @@ import { FilterDrawerService } from '@modules/feature-modules/filter-drawer/serv
 import { GlobalMessageService } from '@shared/services/global-message.service';
 import { ProgressSpinnerDialogService } from '@shared/services/progress-spinner-dialog.service';
 import { Observable, of } from 'rxjs';
-import { map, take, finalize } from 'rxjs/operators';
+import { finalize, map, take } from 'rxjs/operators';
 // eslint-disable-next-line max-len
+import { CustomDialogService } from '@shared/modules/custom-dialog/services/custom-dialog.service';
+import { ConfirmDialogService } from '@shared/services/confirm-dialog.service';
 import {
   CreateEditCommunicationComponent,
   CreateEditCommunicationComponentModalEnum
 } from './dialog/create-edit-communication/create-edit-communication.component';
-import { ConfirmDialogService } from '@shared/services/confirm-dialog.service';
 
 @UntilDestroy()
 @Component({

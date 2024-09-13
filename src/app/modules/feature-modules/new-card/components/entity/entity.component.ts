@@ -8,7 +8,6 @@ import UserEntityDTO from '@data/models/entities/user-entity-dto';
 import VehicleEntityDTO, { InventoryVehicle } from '@data/models/entities/vehicle-entity-dto';
 import { CardService } from '@data/services/cards.service';
 import { EntitiesService } from '@data/services/entities.service';
-import { CustomDialogService } from '@frontend/custom-dialog';
 import {
   CreateEditCustomerExternalApiComponentModalEnum,
   ModalCustomerExternalApiComponent
@@ -35,6 +34,7 @@ import {
 } from '@modules/feature-modules/modal-vehicle/modal-vehicle.component';
 import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
 import { TranslateService } from '@ngx-translate/core';
+import { CustomDialogService } from '@shared/modules/custom-dialog/services/custom-dialog.service';
 import { GlobalMessageService } from '@shared/services/global-message.service';
 import { ProgressSpinnerDialogService } from '@shared/services/progress-spinner-dialog.service';
 import { take } from 'rxjs/operators';
