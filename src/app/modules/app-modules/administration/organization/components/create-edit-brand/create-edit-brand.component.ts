@@ -5,10 +5,12 @@ import { ConcenetError } from '@app/types/error';
 import { marker } from '@biesbjerg/ngx-translate-extract-marker';
 import BrandDTO from '@data/models/organization/brand-dto';
 import { BrandService } from '@data/services/brand.service';
-import { ComponentToExtendForCustomDialog, CustomDialogFooterConfigI, CustomDialogService } from '@frontend/custom-dialog';
 import { TextEditorWrapperConfigI } from '@modules/feature-modules/text-editor-wrapper/interfaces/text-editor-wrapper-config.interface';
 // eslint-disable-next-line max-len
 import { TranslateService } from '@ngx-translate/core';
+import { CustomDialogFooterConfigI } from '@shared/modules/custom-dialog/interfaces/custom-dialog-footer-config';
+import { ComponentToExtendForCustomDialog } from '@shared/modules/custom-dialog/models/component-for-custom-dialog';
+import { CustomDialogService } from '@shared/modules/custom-dialog/services/custom-dialog.service';
 import { ConfirmDialogService } from '@shared/services/confirm-dialog.service';
 import { GlobalMessageService } from '@shared/services/global-message.service';
 import { ProgressSpinnerDialogService } from '@shared/services/progress-spinner-dialog.service';

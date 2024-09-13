@@ -1,32 +1,32 @@
 {
-  "compileOnSave": false,
-  "compilerOptions": {
-    "baseUrl": "src",
-    "paths": {
-      "@env": ["environments/environment"],
-      "@app/*": ["app/core/*"],
-      "@layout/*": ["app/layout/*"],
-      "@shared/*": ["app/shared/*"],
-      "@modules/*": ["app/modules/*"],
-      "@data/*": ["app/data/*"]
+    "compileOnSave": false,
+    "compilerOptions": {
+        "baseUrl": "src",
+        "paths": {
+            "@env": ["environments/environment"],
+            "@app/*": ["app/core/*"],
+            "@layout/*": ["app/layout/*"],
+            "@shared/*": ["app/shared/*"],
+            "@modules/*": ["app/modules/*"],
+            "@data/*": ["app/data/*"]
+        },
+        "outDir": "./dist/out-tsc",
+        "sourceMap": true,
+        "declaration": false,
+        "downlevelIteration": true,
+        "experimentalDecorators": true,
+        "module": "es2020",
+        "moduleResolution": "node",
+        "importHelpers": true,
+        "target": "es2020",
+        "lib": ["es2018", "dom"],
+        "resolveJsonModule": true,
+        "esModuleInterop": true,
+        "noImplicitAny": true
     },
-    "outDir": "./dist/out-tsc",
-    "sourceMap": true,
-    "declaration": false,
-    "downlevelIteration": true,
-    "experimentalDecorators": true,
-    "module": "es2020",
-    "moduleResolution": "node",
-    "importHelpers": true,
-    "target": "es2020",
-    "lib": ["es2018", "dom"],
-    "resolveJsonModule": true,
-    "esModuleInterop": true,
-    "noImplicitAny": true
-  },
-  "angularCompilerOptions": {
-    "preserveSymlinks": true,
-    "fullTemplateTypeCheck": true,
-    "strictInjectionParameters": true
-  }
+    "angularCompilerOptions": {
+        "preserveSymlinks": true,
+        "fullTemplateTypeCheck": true,
+        "strictInjectionParameters": true
+    }
 }

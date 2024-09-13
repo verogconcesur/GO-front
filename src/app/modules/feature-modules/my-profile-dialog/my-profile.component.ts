@@ -1,16 +1,17 @@
 import { Component, OnInit } from '@angular/core';
+import { UntypedFormBuilder, UntypedFormGroup, Validators } from '@angular/forms';
 import { marker } from '@biesbjerg/ngx-translate-extract-marker';
-import { ComponentToExtendForCustomDialog, CustomDialogFooterConfigI, CustomDialogService } from '@frontend/custom-dialog';
-import { Observable, of, throwError } from 'rxjs';
-import { UntypedFormGroup, UntypedFormBuilder, Validators } from '@angular/forms';
-import { ProgressSpinnerDialogService } from '@shared/services/progress-spinner-dialog.service';
 import UserDetailsDTO from '@data/models/user-permissions/user-details-dto';
-import { ConfirmDialogService } from '@shared/services/confirm-dialog.service';
-import { TranslateService } from '@ngx-translate/core';
-import ConfirmPasswordValidator from '@shared/validators/confirm-password.validator';
-import { passwordPattern } from '@app/constants/patterns.constants';
 import { UserService } from '@data/services/user.service';
+import { TranslateService } from '@ngx-translate/core';
+import { CustomDialogFooterConfigI } from '@shared/modules/custom-dialog/interfaces/custom-dialog-footer-config';
+import { ComponentToExtendForCustomDialog } from '@shared/modules/custom-dialog/models/component-for-custom-dialog';
+import { CustomDialogService } from '@shared/modules/custom-dialog/services/custom-dialog.service';
+import { ConfirmDialogService } from '@shared/services/confirm-dialog.service';
 import { GlobalMessageService } from '@shared/services/global-message.service';
+import { ProgressSpinnerDialogService } from '@shared/services/progress-spinner-dialog.service';
+import ConfirmPasswordValidator from '@shared/validators/confirm-password.validator';
+import { Observable, of } from 'rxjs';
 import { catchError, finalize, map, take } from 'rxjs/operators';
 import { InsertSignComponentModalEnum, ModalInsertSignComponent } from '../modal-insert-sign/modal-insert-sign.component';
 

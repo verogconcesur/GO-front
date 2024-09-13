@@ -1,0 +1,40 @@
+<div
+  class="breadcrumbs breadcrumbs-default-style"
+  [ngClass]="customClasses"
+  *ngIf="(breadcrumbs$ | async)?.length"
+>
+  <button
+    mat-flat-button
+    *ngIf="showBackButton()"
+    [color]="getBackButtonColor()"
+    [class]="
+      'breadcrumbs__back-button mat-square-icon square-28 ' +
+      getBackButtonClass()
+    "
+    (click)="goBack()"
+  >
+    <mat-icon [fontSet]="getBackButtonIconFontset()">{{
+      getBackButtonIconName()
+    }}</mat-icon>
+  </button>
+  <ul>
+    <li
+      *ngFor="let breadcrumb of breadcrumbs$ | async"
+      [routerLink]="breadcrumb.url"
+    >
+      <mat-icon
+        *ngIf="breadcrumb.iconName && breadcrumb.iconPosition === 'start'"
+        [fontSet]="getBreadcrumbFontSet(breadcrumb)"
+        >{{ breadcrumb.iconName }}</mat-icon
+      >
+      <span *ngIf="breadcrumb.label">
+        {{ breadcrumb.label }}
+      </span>
+      <mat-icon
+        *ngIf="breadcrumb.iconName && breadcrumb.iconPosition === 'end'"
+        [fontSet]="getBreadcrumbFontSet(breadcrumb)"
+        >{{ breadcrumb.iconName }}</mat-icon
+      >
+    </li>
+  </ul>
+</div>

@@ -1,26 +1,27 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { Component, OnDestroy, OnInit, ViewChild, ViewEncapsulation } from '@angular/core';
-import { marker } from '@biesbjerg/ngx-translate-extract-marker';
-import { ComponentToExtendForCustomDialog, CustomDialogFooterConfigI, CustomDialogService } from '@frontend/custom-dialog';
-import { Observable, of } from 'rxjs';
-import { UntypedFormGroup, UntypedFormBuilder, Validators } from '@angular/forms';
-import { ProgressSpinnerDialogService } from '@shared/services/progress-spinner-dialog.service';
-import { ConfirmDialogService } from '@shared/services/confirm-dialog.service';
-import { TranslateService } from '@ngx-translate/core';
-import ConfirmPasswordValidator from '@shared/validators/confirm-password.validator';
-import { passwordPattern } from '@app/constants/patterns.constants';
-import { UserService } from '@data/services/user.service';
-import { GlobalMessageService } from '@shared/services/global-message.service';
-import { catchError, finalize, map, take, tap } from 'rxjs/operators';
+import { UntypedFormBuilder, UntypedFormGroup, Validators } from '@angular/forms';
+import { MatCheckboxChange } from '@angular/material/checkbox';
 import { ConcenetError } from '@app/types/error';
+import { marker } from '@biesbjerg/ngx-translate-extract-marker';
+import PermissionsDTO from '@data/models/user-permissions/permissions-dto';
 import RoleDTO from '@data/models/user-permissions/role-dto';
-import { RoleService } from '@data/services/role.service';
-import { UsersPermissionsComponent } from '../users-permissions/users-permissions.component';
 import UserDetailsDTO from '@data/models/user-permissions/user-details-dto';
 import { PermissionsService } from '@data/services/permissions.service';
-import PermissionsDTO from '@data/models/user-permissions/permissions-dto';
-import { MatCheckboxChange } from '@angular/material/checkbox';
+import { RoleService } from '@data/services/role.service';
+import { UserService } from '@data/services/user.service';
+import { TranslateService } from '@ngx-translate/core';
+import { CustomDialogFooterConfigI } from '@shared/modules/custom-dialog/interfaces/custom-dialog-footer-config';
+import { ComponentToExtendForCustomDialog } from '@shared/modules/custom-dialog/models/component-for-custom-dialog';
+import { CustomDialogService } from '@shared/modules/custom-dialog/services/custom-dialog.service';
+import { ConfirmDialogService } from '@shared/services/confirm-dialog.service';
+import { GlobalMessageService } from '@shared/services/global-message.service';
+import { ProgressSpinnerDialogService } from '@shared/services/progress-spinner-dialog.service';
 import { haveArraysSameValues } from '@shared/utils/array-comparation-function';
+import ConfirmPasswordValidator from '@shared/validators/confirm-password.validator';
+import { Observable, of } from 'rxjs';
+import { catchError, finalize, map, take, tap } from 'rxjs/operators';
+import { UsersPermissionsComponent } from '../users-permissions/users-permissions.component';
 
 export const enum CreateEditUserComponentModalEnum {
   ID = 'create-edit-user-dialog-id',
