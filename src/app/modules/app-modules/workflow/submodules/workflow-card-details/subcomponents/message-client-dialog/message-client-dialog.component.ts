@@ -1,13 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import {
-  UntypedFormGroup,
-  UntypedFormBuilder,
-  FormArray,
-  FormGroup,
-  AbstractControl,
-  Validators,
-  FormControl
-} from '@angular/forms';
+import { FormArray, FormControl, FormGroup, UntypedFormBuilder, UntypedFormGroup, Validators } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
 import { marker } from '@biesbjerg/ngx-translate-extract-marker';
 import { AttachmentDTO, CardAttachmentsDTO } from '@data/models/cards/card-attachments-dto';
@@ -19,7 +11,6 @@ import TemplatesCommonDTO from '@data/models/templates/templates-common-dto';
 import { CardAttachmentsService } from '@data/services/card-attachments.service';
 import { CardMessagesService } from '@data/services/card-messages.service';
 import { TemplatesCommunicationService } from '@data/services/templates-communication.service';
-import { ComponentToExtendForCustomDialog, CustomDialogFooterConfigI } from '@frontend/custom-dialog';
 // eslint-disable-next-line max-len
 import CardInstanceAttachmentsConfig, {
   CardInstanceAttachmentsModalVersionConfig
@@ -31,6 +22,8 @@ import {
 // eslint-disable-next-line max-len
 import { TextEditorWrapperConfigI } from '@modules/feature-modules/text-editor-wrapper/interfaces/text-editor-wrapper-config.interface';
 import { TranslateService } from '@ngx-translate/core';
+import { CustomDialogFooterConfigI } from '@shared/modules/custom-dialog/interfaces/custom-dialog-footer-config';
+import { ComponentToExtendForCustomDialog } from '@shared/modules/custom-dialog/models/component-for-custom-dialog';
 import { ConfirmDialogService } from '@shared/services/confirm-dialog.service';
 import { GlobalMessageService } from '@shared/services/global-message.service';
 import { ProgressSpinnerDialogService } from '@shared/services/progress-spinner-dialog.service';

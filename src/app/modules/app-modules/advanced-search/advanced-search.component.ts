@@ -1,38 +1,40 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
+import { CdkDragDrop } from '@angular/cdk/drag-drop';
 import { Component, OnInit, ViewChild, ViewEncapsulation } from '@angular/core';
+import { AbstractControl, FormArray, FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { MatDrawer } from '@angular/material/sidenav';
+import { PermissionConstants } from '@app/constants/permission.constants';
+import { AuthenticationService } from '@app/security/authentication.service';
 import { ConcenetError } from '@app/types/error';
 import { marker } from '@biesbjerg/ngx-translate-extract-marker';
 import AdvSearchDTO, { AdvancedSearchContext, AdvancedSearchItem } from '@data/models/adv-search/adv-search-dto';
-import { AdvSearchService } from '@data/services/adv-search.service';
-import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
-import { ProgressSpinnerDialogService } from '@shared/services/progress-spinner-dialog.service';
-import { Observable, forkJoin, map, startWith, take } from 'rxjs';
-import { AdvSearchCardTableComponent } from './components/adv-search-card-table/adv-search-card-table.component';
-import { NGXLogger } from 'ngx-logger';
-import { GlobalMessageService } from '@shared/services/global-message.service';
-import { TranslateService } from '@ngx-translate/core';
-import { MatDrawer } from '@angular/material/sidenav';
-import { ConfirmDialogService } from '@shared/services/confirm-dialog.service';
+import AdvSearchOperatorDTO from '@data/models/adv-search/adv-search-operator-dto';
+import AdvancedSearchOptionsDTO from '@data/models/adv-search/adv-search-options-dto';
 import FacilityDTO from '@data/models/organization/facility-dto';
-import { FacilityService } from '@data/services/facility.sevice';
 import WorkflowCreateCardDTO from '@data/models/workflows/workflow-create-card-dto';
-import { AbstractControl, FormArray, FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
-import { AuthenticationService } from '@app/security/authentication.service';
-import { haveArraysSameValues } from '@shared/utils/array-comparation-function';
 import WorkflowStateDTO from '@data/models/workflows/workflow-state-dto';
 import WorkflowSubstateDTO from '@data/models/workflows/workflow-substate-dto';
+import { AdvSearchService } from '@data/services/adv-search.service';
+import { FacilityService } from '@data/services/facility.sevice';
+import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
+import { TranslateService } from '@ngx-translate/core';
+import { CustomDialogService } from '@shared/modules/custom-dialog/services/custom-dialog.service';
+import { ConfirmDialogService } from '@shared/services/confirm-dialog.service';
+import { GlobalMessageService } from '@shared/services/global-message.service';
+import { ProgressSpinnerDialogService } from '@shared/services/progress-spinner-dialog.service';
+import { haveArraysSameValues } from '@shared/utils/array-comparation-function';
+import { moveItemInFormArray } from '@shared/utils/moveItemInFormArray';
+import { removeItemInFormArray } from '@shared/utils/removeItemInFormArray';
 import _ from 'lodash';
 import moment from 'moment';
-import AdvancedSearchOptionsDTO from '@data/models/adv-search/adv-search-options-dto';
-import { CustomDialogService } from '@frontend/custom-dialog';
+import { NGXLogger } from 'ngx-logger';
+import { Observable, forkJoin, map, startWith, take } from 'rxjs';
+import { WorkflowPrepareAndMoveService } from '../workflow/aux-service/workflow-prepare-and-move-aux.service';
+import { AdvSearchCardTableComponent } from './components/adv-search-card-table/adv-search-card-table.component';
 import {
   AdvSearchCriteriaDialogComponent,
   AdvSearchCriteriaDialogComponentModalEnum
 } from './components/adv-search-criteria-dialog/adv-search-criteria-dialog.component';
-import { CdkDragDrop } from '@angular/cdk/drag-drop';
-import { moveItemInFormArray } from '@shared/utils/moveItemInFormArray';
-import { removeItemInFormArray } from '@shared/utils/removeItemInFormArray';
-import AdvSearchOperatorDTO from '@data/models/adv-search/adv-search-operator-dto';
 import {
   AdvSearchCriteriaEditionDialogComponent,
   AdvSearchCriteriaEditionDialogComponentModalEnum
@@ -41,8 +43,6 @@ import {
   AdvSearchSaveFavDialogComponent,
   AdvSearchSaveFavDialogComponentModalEnum
 } from './components/adv-search-save-fav-dialog/adv-search-save-fav-dialog.component';
-import { PermissionConstants } from '@app/constants/permission.constants';
-import { WorkflowPrepareAndMoveService } from '../workflow/aux-service/workflow-prepare-and-move-aux.service';
 
 @UntilDestroy()
 @Component({

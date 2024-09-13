@@ -1,77 +1,77 @@
 {
-  "root": true,
-  "ignorePatterns": ["projects/**/*", "src/app/app.mock.ts", "src/app/data/api/**"],
-  "overrides": [
-    {
-      "files": ["*.ts"],
-      "parserOptions": {
-        "project": ["tsconfig.json", "e2e/tsconfig.json"],
-        "createDefaultProgram": true
-      },
-      "extends": [
-        "plugin:@angular-eslint/ng-cli-compat",
-        "plugin:@angular-eslint/ng-cli-compat--formatting-add-on",
-        "plugin:@angular-eslint/template/process-inline-templates"
-      ],
-      "rules": {
-        "@typescript-eslint/naming-convention": [
-          "warn",
-          {
-            "selector": "enumMember",
-            "format": ["camelCase", "UPPER_CASE"]
-          }
-        ],
-        "@angular-eslint/component-selector": [
-          "error",
-          {
-            "type": "element",
-            "prefix": "",
-            "style": "kebab-case"
-          }
-        ],
-        "@angular-eslint/directive-selector": [
-          "error",
-          {
-            "type": "element",
-            "prefix": "dir",
-            "style": "camelCase"
-          }
-        ],
-        "@typescript-eslint/no-explicit-any": "error",
-        "@typescript-eslint/no-this-alias": "error",
-        "import/no-extraneous-dependencies": [
-          "off",
-          {
-            "devDependencies": false
-          }
-        ],
-        "import/no-internal-modules": "off",
-        "max-classes-per-file": ["error", 1],
-        "max-len": [
-          "error",
-          {
-            "code": 130
-          }
-        ],
-        "no-duplicate-case": "error",
-        "no-duplicate-imports": "error",
-        "no-extra-bind": "error",
-        "no-magic-numbers": "off",
-        "no-new-func": "error",
-        "no-redeclare": "error",
-        "no-return-await": "error",
-        "no-sequences": "error",
-        "no-sparse-arrays": "error",
-        "no-template-curly-in-string": "error",
-        "no-shadow": 0,
-        "prefer-object-spread": "error",
-        "space-in-parens": ["error", "never"]
-      }
-    },
-    {
-      "files": ["*.html"],
-      "extends": ["plugin:@angular-eslint/template/recommended"],
-      "rules": {}
-    }
-  ]
+    "root": true,
+    "ignorePatterns": ["projects/**/*", "src/app/app.mock.ts", "src/app/data/api/**", "src/app/shared/modules/**/*"],
+    "overrides": [
+        {
+            "files": ["*.ts"],
+            "parserOptions": {
+                "project": ["tsconfig.json", "e2e/tsconfig.json"],
+                "createDefaultProgram": true
+            },
+            "extends": [
+                "plugin:@angular-eslint/ng-cli-compat",
+                "plugin:@angular-eslint/ng-cli-compat--formatting-add-on",
+                "plugin:@angular-eslint/template/process-inline-templates"
+            ],
+            "rules": {
+                "@typescript-eslint/naming-convention": [
+                    "warn",
+                    {
+                        "selector": "enumMember",
+                        "format": ["camelCase", "UPPER_CASE"]
+                    }
+                ],
+                "@angular-eslint/component-selector": [
+                    "error",
+                    {
+                        "type": "element",
+                        "prefix": "",
+                        "style": "kebab-case"
+                    }
+                ],
+                "@angular-eslint/directive-selector": [
+                    "error",
+                    {
+                        "type": "element",
+                        "prefix": "dir",
+                        "style": "camelCase"
+                    }
+                ],
+                "@typescript-eslint/no-explicit-any": "error",
+                "@typescript-eslint/no-this-alias": "error",
+                "import/no-extraneous-dependencies": [
+                    "off",
+                    {
+                        "devDependencies": false
+                    }
+                ],
+                "import/no-internal-modules": "off",
+                "max-classes-per-file": ["error", 1],
+                "max-len": [
+                    "error",
+                    {
+                        "code": 130
+                    }
+                ],
+                "no-duplicate-case": "error",
+                "no-duplicate-imports": "error",
+                "no-extra-bind": "error",
+                "no-magic-numbers": "off",
+                "no-new-func": "error",
+                "no-redeclare": "error",
+                "no-return-await": "error",
+                "no-sequences": "error",
+                "no-sparse-arrays": "error",
+                "no-template-curly-in-string": "error",
+                "no-shadow": 0,
+                "prefer-object-spread": "error",
+                "space-in-parens": ["error", "never"]
+            }
+        },
+        {
+            "files": ["*.html"],
+            "extends": ["plugin:@angular-eslint/template/recommended"],
+            "rules": {}
+        }
+    ]
 }

@@ -5,14 +5,14 @@ import { ConcenetError } from '@app/types/error';
 import { marker } from '@biesbjerg/ngx-translate-extract-marker';
 import DepartmentDTO from '@data/models/organization/department-dto';
 import { DepartmentService } from '@data/services/deparment.service';
-import { CustomDialogService } from '@frontend/custom-dialog';
 import { TranslateService } from '@ngx-translate/core';
+import { CustomDialogService } from '@shared/modules/custom-dialog/services/custom-dialog.service';
 import { ConfirmDialogService } from '@shared/services/confirm-dialog.service';
 import { GlobalMessageService } from '@shared/services/global-message.service';
 import { ProgressSpinnerDialogService } from '@shared/services/progress-spinner-dialog.service';
 import { NGXLogger } from 'ngx-logger';
 import { Observable } from 'rxjs';
-import { tap, take, finalize } from 'rxjs/operators';
+import { finalize, take, tap } from 'rxjs/operators';
 import {
   CreateEditDepartmentComponent,
   CreateEditDepartmentComponentModalEnum

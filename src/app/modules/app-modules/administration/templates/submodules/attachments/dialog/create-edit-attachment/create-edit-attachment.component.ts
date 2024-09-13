@@ -10,21 +10,23 @@ import BrandDTO from '@data/models/organization/brand-dto';
 import DepartmentDTO from '@data/models/organization/department-dto';
 import FacilityDTO from '@data/models/organization/facility-dto';
 import SpecialtyDTO from '@data/models/organization/specialty-dto';
-import { TemplatesAttachmentDTO, TemplateAtachmentItemsDTO } from '@data/models/templates/templates-attachment-dto';
+import { TemplateAtachmentItemsDTO, TemplatesAttachmentDTO } from '@data/models/templates/templates-attachment-dto';
 import { BrandService } from '@data/services/brand.service';
 import { DepartmentService } from '@data/services/deparment.service';
 import { FacilityService } from '@data/services/facility.sevice';
 import { SpecialtyService } from '@data/services/specialty.service';
 import { TemplatesAttachmentService } from '@data/services/templates-attachment.service';
-import { ComponentToExtendForCustomDialog, CustomDialogFooterConfigI, CustomDialogService } from '@frontend/custom-dialog';
 import { TranslateService } from '@ngx-translate/core';
+import { CustomDialogFooterConfigI } from '@shared/modules/custom-dialog/interfaces/custom-dialog-footer-config';
+import { ComponentToExtendForCustomDialog } from '@shared/modules/custom-dialog/models/component-for-custom-dialog';
+import { CustomDialogService } from '@shared/modules/custom-dialog/services/custom-dialog.service';
 import { ConfirmDialogService } from '@shared/services/confirm-dialog.service';
 import { GlobalMessageService } from '@shared/services/global-message.service';
 import { ProgressSpinnerDialogService } from '@shared/services/progress-spinner-dialog.service';
 import { haveArraysSameValues } from '@shared/utils/array-comparation-function';
 import { NGXLogger } from 'ngx-logger';
 import { Observable, of } from 'rxjs';
-import { catchError, finalize, map, take, tap } from 'rxjs/operators';
+import { catchError, finalize, map, take } from 'rxjs/operators';
 
 export const enum CreateEditAttachmentComponentModalEnum {
   ID = 'create-edit-attachment-dialog-id',

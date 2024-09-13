@@ -1,11 +1,13 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
+import { CdkDragDrop, moveItemInArray } from '@angular/cdk/drag-drop';
 import { Component, OnDestroy, OnInit, ViewEncapsulation } from '@angular/core';
 import { AbstractControl, UntypedFormArray, UntypedFormGroup } from '@angular/forms';
 import { Router } from '@angular/router';
+import { RouteConstants } from '@app/constants/route.constants';
+import { ConcenetError } from '@app/types/error';
 import { marker } from '@biesbjerg/ngx-translate-extract-marker';
 import {
   AccountingBlockTypeDTO,
-  AccountingLineSignsConst,
   AccountingLineTypeDTO,
   TemplateAccountingItemDTO,
   TemplateAccountingItemLineDTO,
@@ -13,17 +15,16 @@ import {
 } from '@data/models/templates/templates-accounting-dto';
 import { TemplatesAccountingsService } from '@data/services/templates-accountings.service';
 import { TranslateService } from '@ngx-translate/core';
+import { CustomDialogFooterConfigI } from '@shared/modules/custom-dialog/interfaces/custom-dialog-footer-config';
+import { ComponentToExtendForCustomDialog } from '@shared/modules/custom-dialog/models/component-for-custom-dialog';
+import { CustomDialogService } from '@shared/modules/custom-dialog/services/custom-dialog.service';
 import { ConfirmDialogService } from '@shared/services/confirm-dialog.service';
 import { GlobalMessageService } from '@shared/services/global-message.service';
 import { ProgressSpinnerDialogService } from '@shared/services/progress-spinner-dialog.service';
 import { Observable, catchError, finalize, forkJoin, map, of, take } from 'rxjs';
-import { CreateEditAccountingAuxService } from './create-edit-accounting-aux.service';
-import { RouteConstants } from '@app/constants/route.constants';
-import { ComponentToExtendForCustomDialog, CustomDialogFooterConfigI, CustomDialogService } from '@frontend/custom-dialog';
-import { CreateEditLineComponent, CreateEditLineComponentModalEnum } from '../create-edit-line/create-edit-line.component';
-import { ConcenetError } from '@app/types/error';
 import { CreateEditBlockComponent, CreateEditBlockComponentModalEnum } from '../create-edit-block/create-edit-block.component';
-import { CdkDragDrop, moveItemInArray } from '@angular/cdk/drag-drop';
+import { CreateEditLineComponent, CreateEditLineComponentModalEnum } from '../create-edit-line/create-edit-line.component';
+import { CreateEditAccountingAuxService } from './create-edit-accounting-aux.service';
 
 export const enum CreateEditAccountingComponentModalEnum {
   ID = 'create-edit-accounting-dialog-id',

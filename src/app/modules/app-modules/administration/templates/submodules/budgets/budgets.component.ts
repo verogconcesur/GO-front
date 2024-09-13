@@ -10,17 +10,17 @@ import TemplatesBudgetDetailsDTO from '@data/models/templates/templates-budget-d
 import TemplatesBudgetDTO from '@data/models/templates/templates-budget-dto';
 import TemplatesFilterDTO from '@data/models/templates/templates-filter-dto';
 import { TemplatesBudgetsService } from '@data/services/templates-budgets.service';
-import { CustomDialogService } from '@frontend/custom-dialog';
 import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
 import { TranslateService } from '@ngx-translate/core';
 // eslint-disable-next-line max-len
 import { AdministrationCommonHeaderSectionClassToExtend } from '@modules/feature-modules/administration-common-header-section/administration-common-header-section-class-to-extend';
 import { FilterDrawerService } from '@modules/feature-modules/filter-drawer/services/filter-drawer.service';
+import { CustomDialogService } from '@shared/modules/custom-dialog/services/custom-dialog.service';
 import { ConfirmDialogService } from '@shared/services/confirm-dialog.service';
 import { GlobalMessageService } from '@shared/services/global-message.service';
 import { ProgressSpinnerDialogService } from '@shared/services/progress-spinner-dialog.service';
 import { Observable, of } from 'rxjs';
-import { map, take, finalize } from 'rxjs/operators';
+import { finalize, map, take } from 'rxjs/operators';
 import {
   CreateEditBudgetComponent,
   CreateEditBudgetComponentModalEnum

@@ -2,14 +2,15 @@ import { Component, OnInit } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
 import { marker } from '@biesbjerg/ngx-translate-extract-marker';
 import AdvSearchDTO from '@data/models/adv-search/adv-search-dto';
-import { ComponentToExtendForCustomDialog, CustomDialogFooterConfigI } from '@frontend/custom-dialog';
-import { TranslateService } from '@ngx-translate/core';
-import { Observable, catchError, finalize, map, of } from 'rxjs';
-import _ from 'lodash';
-import { GlobalMessageService } from '@shared/services/global-message.service';
 import { AdvSearchService } from '@data/services/adv-search.service';
+import { TranslateService } from '@ngx-translate/core';
+import { CustomDialogFooterConfigI } from '@shared/modules/custom-dialog/interfaces/custom-dialog-footer-config';
+import { ComponentToExtendForCustomDialog } from '@shared/modules/custom-dialog/models/component-for-custom-dialog';
+import { GlobalMessageService } from '@shared/services/global-message.service';
 import { ProgressSpinnerDialogService } from '@shared/services/progress-spinner-dialog.service';
+import _ from 'lodash';
 import moment from 'moment';
+import { Observable, catchError, finalize, map, of } from 'rxjs';
 
 export const enum AdvSearchSaveFavDialogComponentModalEnum {
   ID = 'adv-search-save-fav-dialog-id',
