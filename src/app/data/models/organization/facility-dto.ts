@@ -17,6 +17,7 @@ export default interface FacilityDTO {
   requireConfigApiExt?: boolean;
   configApiExtDefault?: boolean;
   requireConfigStockApiExt?: boolean;
+  configExtDmsType?: string;
   code?: string;
   configStockCode?: string;
   enterpriseId?: string;

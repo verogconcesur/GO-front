@@ -139,6 +139,10 @@ export class CreateEditFacilityComponent extends ComponentToExtendForCustomDialo
     { name: 'DMS', value: 'DMS' },
     { name: 'CSV', value: 'CSV' }
   ];
+  public configDmsType = [
+    { name: 'AUTOLINE', value: 'AUTOLINE' },
+    { name: 'SPIGA', value: 'SPIGA' }
+  ];
 
   constructor(
     private fb: UntypedFormBuilder,
@@ -191,10 +195,12 @@ export class CreateEditFacilityComponent extends ComponentToExtendForCustomDialo
           this.facilityForm.get('code').clearValidators();
           this.facilityForm.get('enterpriseId').clearValidators();
           this.facilityForm.get('storeId').clearValidators();
+          this.facilityForm.get('configExtDmsType').clearValidators();
         } else if (value === 'DMS') {
           this.facilityForm.get('code').setValidators([Validators.required]);
           this.facilityForm.get('enterpriseId').setValidators([Validators.required]);
           this.facilityForm.get('storeId').setValidators([Validators.required]);
+          this.facilityForm.get('configExtDmsType').setValidators([Validators.required]);
 
           this.facilityForm.get('configApiExtCsvHost').clearValidators();
           this.facilityForm.get('configApiExtCsvPort').clearValidators();
@@ -213,6 +219,7 @@ export class CreateEditFacilityComponent extends ComponentToExtendForCustomDialo
         this.facilityForm.get('code').updateValueAndValidity();
         this.facilityForm.get('enterpriseId').updateValueAndValidity();
         this.facilityForm.get('storeId').updateValueAndValidity();
+        this.facilityForm.get('configExtDmsType').updateValueAndValidity();
       });
     } else {
       this.facilityForm.get('configApiExtType').clearValidators();
@@ -221,6 +228,7 @@ export class CreateEditFacilityComponent extends ComponentToExtendForCustomDialo
       this.facilityForm.get('code').clearValidators();
       this.facilityForm.get('enterpriseId').clearValidators();
       this.facilityForm.get('storeId').clearValidators();
+      this.facilityForm.get('configExtDmsType').clearValidators();
       this.facilityForm.get('configApiExtCsvHost').clearValidators();
       this.facilityForm.get('configApiExtCsvPort').clearValidators();
       this.facilityForm.get('configApiExtCsvDirectory').clearValidators();
@@ -238,6 +246,7 @@ export class CreateEditFacilityComponent extends ComponentToExtendForCustomDialo
       this.facilityForm.get('code').setValue(null);
       this.facilityForm.get('enterpriseId').setValue(null);
       this.facilityForm.get('storeId').setValue(null);
+      this.facilityForm.get('configExtDmsType').setValue(null);
       this.facilityForm.get('workflowSubstate').setValue(null);
     }
 
@@ -783,6 +792,9 @@ export class CreateEditFacilityComponent extends ComponentToExtendForCustomDialo
         ],
         configApiExtType: [
           this.facilityToEdit && this.facilityToEdit.configApiExtType ? this.facilityToEdit.configApiExtType : null
+        ],
+        configExtDmsType: [
+          this.facilityToEdit && this.facilityToEdit.configExtDmsType ? this.facilityToEdit.configExtDmsType : null
         ],
         configApiExtCsvHost: [
           this.facilityToEdit && this.facilityToEdit.configApiExtCsvHost ? this.facilityToEdit.configApiExtCsvHost : null
