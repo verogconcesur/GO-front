@@ -153,14 +153,15 @@
                         floatLabel="always"
                         *ngIf="facilityForm.controls.configApiExtType.value === 'DMS'"
                     >
-                        <mat-label> Tipo DMS</mat-label>
-                        <mat-select formControlName="configExtDmsType">
+                        <mat-label> {{ labels.configApiExtDmsType | translate }}</mat-label>
+                        <mat-select formControlName="configApiExtDmsType">
                             <mat-option *ngFor="let type of configDmsType" [value]="type.value"> {{ type.name }}</mat-option>
                         </mat-select>
                         <mat-error
                             class="facility-data__error"
                             *ngIf="
-                                facilityForm.controls.configExtDmsType.invalid && facilityForm.controls.configExtDmsType.touched
+                                facilityForm.controls.configApiExtDmsType.invalid &&
+                                facilityForm.controls.configApiExtDmsType.touched
                             "
                         >
                             {{ labels.required | translate }}
@@ -290,7 +291,7 @@
                     <mat-form-field
                         appearance="outline"
                         floatLabel="always"
-                        *ngIf="facilityForm.controls.requireConfigApiExt.value && facilityForm.controls.configExtDmsType.value"
+                        *ngIf="facilityForm.controls.requireConfigApiExt.value && facilityForm.controls.configApiExtDmsType.value"
                     >
                         <mat-label>{{ labels.code | translate }}</mat-label>
                         <input matInput formControlName="code" />
@@ -305,7 +306,7 @@
                     <mat-form-field
                         appearance="outline"
                         floatLabel="always"
-                        *ngIf="facilityForm.controls.requireConfigApiExt.value && facilityForm.controls.configExtDmsType.value"
+                        *ngIf="facilityForm.controls.requireConfigApiExt.value && facilityForm.controls.configApiExtDmsType.value"
                     >
                         <mat-label>{{ labels.enterpriseId | translate }}</mat-label>
                         <input matInput formControlName="enterpriseId" />
@@ -320,7 +321,7 @@
                     <mat-form-field
                         appearance="outline"
                         floatLabel="always"
-                        *ngIf="facilityForm.controls.requireConfigApiExt.value && facilityForm.controls.configExtDmsType.value"
+                        *ngIf="facilityForm.controls.requireConfigApiExt.value && facilityForm.controls.configApiExtDmsType.value"
                     >
                         <mat-label>{{ labels.storeId | translate }}</mat-label>
                         <input matInput formControlName="storeId" />

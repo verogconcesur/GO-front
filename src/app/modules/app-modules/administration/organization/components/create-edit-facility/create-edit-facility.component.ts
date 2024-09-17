@@ -65,6 +65,7 @@ export class CreateEditFacilityComponent extends ComponentToExtendForCustomDialo
     requireConfigStockApiExt: marker('organizations.facilities.requireConfigStockApiExt'),
     requireConfigEmail: marker('organizations.facilities.requireConfigEmail'),
     configApiExtType: marker('organizations.facilities.configApiExtType'),
+    configApiExtDmsType: marker('organizations.facilities.configApiExtDmsType'),
     configApiExtCsvHost: marker('organizations.facilities.configApiExtCsvHost'),
     configApiExtCsvPort: marker('organizations.facilities.configApiExtCsvPort'),
     configApiExtCsvDirectory: marker('organizations.facilities.configApiExtCsvDirectory'),
@@ -195,12 +196,12 @@ export class CreateEditFacilityComponent extends ComponentToExtendForCustomDialo
           this.facilityForm.get('code').clearValidators();
           this.facilityForm.get('enterpriseId').clearValidators();
           this.facilityForm.get('storeId').clearValidators();
-          this.facilityForm.get('configExtDmsType').clearValidators();
+          this.facilityForm.get('configApiExtDmsType').clearValidators();
         } else if (value === 'DMS') {
           this.facilityForm.get('code').setValidators([Validators.required]);
           this.facilityForm.get('enterpriseId').setValidators([Validators.required]);
           this.facilityForm.get('storeId').setValidators([Validators.required]);
-          this.facilityForm.get('configExtDmsType').setValidators([Validators.required]);
+          this.facilityForm.get('configApiExtDmsType').setValidators([Validators.required]);
 
           this.facilityForm.get('configApiExtCsvHost').clearValidators();
           this.facilityForm.get('configApiExtCsvPort').clearValidators();
@@ -219,7 +220,7 @@ export class CreateEditFacilityComponent extends ComponentToExtendForCustomDialo
         this.facilityForm.get('code').updateValueAndValidity();
         this.facilityForm.get('enterpriseId').updateValueAndValidity();
         this.facilityForm.get('storeId').updateValueAndValidity();
-        this.facilityForm.get('configExtDmsType').updateValueAndValidity();
+        this.facilityForm.get('configApiExtDmsType').updateValueAndValidity();
       });
     } else {
       this.facilityForm.get('configApiExtType').clearValidators();
@@ -228,7 +229,7 @@ export class CreateEditFacilityComponent extends ComponentToExtendForCustomDialo
       this.facilityForm.get('code').clearValidators();
       this.facilityForm.get('enterpriseId').clearValidators();
       this.facilityForm.get('storeId').clearValidators();
-      this.facilityForm.get('configExtDmsType').clearValidators();
+      this.facilityForm.get('configApiExtDmsType').clearValidators();
       this.facilityForm.get('configApiExtCsvHost').clearValidators();
       this.facilityForm.get('configApiExtCsvPort').clearValidators();
       this.facilityForm.get('configApiExtCsvDirectory').clearValidators();
@@ -246,7 +247,7 @@ export class CreateEditFacilityComponent extends ComponentToExtendForCustomDialo
       this.facilityForm.get('code').setValue(null);
       this.facilityForm.get('enterpriseId').setValue(null);
       this.facilityForm.get('storeId').setValue(null);
-      this.facilityForm.get('configExtDmsType').setValue(null);
+      this.facilityForm.get('configApiExtDmsType').setValue(null);
       this.facilityForm.get('workflowSubstate').setValue(null);
     }
 
@@ -402,6 +403,7 @@ export class CreateEditFacilityComponent extends ComponentToExtendForCustomDialo
         postalCode: formValue.postalCode,
         town: formValue.town,
         requireConfigApiExt: formValue.requireConfigApiExt,
+        configApiExtDmsType: formValue.configApiExtDmsType,
         // configApiExtDefault: Instalación por defecto autoline
         // configApiExtDefault: formValue.configApiExtDefault,
         code: formValue.code,
@@ -793,8 +795,8 @@ export class CreateEditFacilityComponent extends ComponentToExtendForCustomDialo
         configApiExtType: [
           this.facilityToEdit && this.facilityToEdit.configApiExtType ? this.facilityToEdit.configApiExtType : null
         ],
-        configExtDmsType: [
-          this.facilityToEdit && this.facilityToEdit.configExtDmsType ? this.facilityToEdit.configExtDmsType : null
+        configApiExtDmsType: [
+          this.facilityToEdit && this.facilityToEdit.configApiExtDmsType ? this.facilityToEdit.configApiExtDmsType : null
         ],
         configApiExtCsvHost: [
           this.facilityToEdit && this.facilityToEdit.configApiExtCsvHost ? this.facilityToEdit.configApiExtCsvHost : null

@@ -836,6 +836,7 @@
             "configApiExtCsvPrefixFile": "Prefix file",
             "configApiExtCsvUser": "User",
             "configApiExtDefault": "Facility to be used by default in the update with Autoline",
+            "configApiExtDmsType": "Type DMS",
             "configApiExtType": "Type",
             "configStockCsvDirectory": "Directory",
             "configStockCsvHost": "Host",
