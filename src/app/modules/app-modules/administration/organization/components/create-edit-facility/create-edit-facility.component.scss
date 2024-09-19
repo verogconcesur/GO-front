@@ -44,23 +44,30 @@
 
         &.substateList {
           mat-form-field {
-            max-width: 450px;
+            max-width: 600px;
+          }
+        }
+        &.substateList-grid {
+          display: grid;
+          gap: 1rem;
+          grid-template-columns: 185.27px minmax(300px, 3fr);
+          grid-auto-flow: row;
+
+          .grid-item-1 {
+            grid-column: span 1;
+          }
+
+          .grid-item-3 {
+            grid-column: span 1;
+          }
+
+          mat-form-field {
+            width: 100%;
+            max-width: none;
           }
         }
       }
-      &.substateList-flex {
-        display: flex;
-        align-items: center;
 
-        mat-form-field {
-          margin-right: 16px;
-          max-width: 450px;
-
-          &:last-child {
-            margin-right: 0;
-          }
-        }
-      }
       .error-message {
         margin-top: 10px; /* Espacio superior */
         margin-bottom: 10px; /* Espacio inferior */
