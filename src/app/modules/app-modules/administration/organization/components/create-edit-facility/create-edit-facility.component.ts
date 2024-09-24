@@ -529,6 +529,82 @@ export class CreateEditFacilityComponent extends ComponentToExtendForCustomDialo
     }
   }
 
+  public saveAndLoadFileCSV() {
+    // const formValue = this.facilityForm.value;
+    // const spinner = this.spinnerService.show();
+    // this.facilityService
+    //   .addFacility({
+    //     address: formValue.address,
+    //     brands: formValue.brands,
+    //     cif: formValue.cif,
+    //     email: formValue.email,
+    //     footer: formValue.footer ? formValue.footer : null,
+    //     header: formValue.header ? formValue.header : null,
+    //     id: formValue.id,
+    //     name: formValue.name,
+    //     numDepartments: formValue.numDepartments,
+    //     postalCode: formValue.postalCode,
+    //     town: formValue.town,
+    //     requireConfigApiExt: formValue.requireConfigApiExt,
+    //     // configApiExtDefault: Instalación por defecto autoline
+    //     // configApiExtDefault: formValue.configApiExtDefault,
+    //     code: formValue.code,
+    //     enterpriseId: formValue.enterpriseId,
+    //     storeId: formValue.storeId,
+    //     configApiExtType: formValue.configApiExtType,
+    //     configApiExtCsvHost: formValue.configApiExtCsvHost,
+    //     configApiExtCsvPort: formValue.configApiExtCsvPort,
+    //     configApiExtCsvDirectory: formValue.configApiExtCsvDirectory,
+    //     configApiExtCsvPrefixFile: formValue.configApiExtCsvPrefixFile,
+    //     configApiExtCsvUser: formValue.configApiExtCsvUser,
+    //     configApiExtCsvPass: formValue.configApiExtCsvPass,
+    //     configStockType: formValue.configStockType,
+    //     configStockCsvHost: formValue.configStockCsvHost,
+    //     configStockCsvPort: formValue.configStockCsvPort,
+    //     configStockCsvDirectory: formValue.configStockCsvDirectory,
+    //     configStockCsvPrefixFile: formValue.configStockCsvPrefixFile,
+    //     configStockCsvUser: formValue.configStockCsvUser,
+    //     configStockCsvPass: formValue.configStockCsvPass,
+    //     workflowSubstate: formValue.workflowSubstate,
+    //     requireConfigStockApiExt: formValue.requireConfigStockApiExt,
+    //     configStockCode: formValue.configStockCode,
+    //     configStockEnterpriseId: formValue.configStockEnterpriseId,
+    //     configStockStoreId: formValue.configStockStoreId,
+    //     configStockSubstates: formValue.requireConfigStockApiExt
+    //       ? this.checkAndFilterConfigStockSubstates(formValue.configStockSubstates)
+    //       : null,
+    //     configMailerHost: formValue.configMailerHost,
+    //     configMailerPort: formValue.configMailerPort,
+    //     configMailerUserName: formValue.configMailerUserName,
+    //     configMailerPass: formValue.configMailerPass,
+    //     senderSms: formValue.senderSms,
+    //     whatsappPhoneNumber: formValue.whatsappPhoneNumber,
+    //     whatsappSender: formValue.whatsappSender,
+    //     keyCommerce: formValue.keyCommerce,
+    //     tpvCode: formValue.tpvCode,
+    //     tpvTerminal: formValue.tpvTerminal
+    //   })
+    //   .pipe(
+    //     map((response) => {
+    //       this.globalMessageService.showSuccess({
+    //         message: this.translateService.instant(marker('common.successOperation')),
+    //         actionText: this.translateService.instant(marker('common.close'))
+    //       });
+    //       return response;
+    //     }),
+    //     catchError((error) => {
+    //       this.globalMessageService.showError({
+    //         message: error.message,
+    //         actionText: this.translateService.instant(marker('common.close'))
+    //       });
+    //       return of(false);
+    //     }),
+    //     finalize(() => {
+    //       this.spinnerService.hide(spinner);
+    //     })
+    //   );
+  }
+
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   public selectAll(control: AbstractControl, list: any[]) {
     control.setValue(list);

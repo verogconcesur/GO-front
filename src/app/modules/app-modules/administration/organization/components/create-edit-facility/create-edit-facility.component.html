@@ -268,6 +268,20 @@
                             {{ labels.required | translate }}
                         </mat-error>
                     </mat-form-field>
+
+                    <button
+                        class="button-csv"
+                        *ngIf="
+                            facilityForm.controls.requireConfigApiExt.value &&
+                            facilityForm.controls.configApiExtType.value === 'CSV'
+                        "
+                        mat-button
+                        matSuffix
+                        (click)="saveAndLoadFileCSV()"
+                    >
+                        Guardar y cargar fichero CSV
+                    </button>
+
                     <!-- Code -->
                     <mat-form-field
                         appearance="outline"
@@ -486,6 +500,18 @@
                             {{ labels.required | translate }}
                         </mat-error>
                     </mat-form-field>
+                    <button
+                        class="button-csv"
+                        *ngIf="
+                            facilityForm.controls.requireConfigStockApiExt.value &&
+                            facilityForm.controls.configStockType.value === 'CSV'
+                        "
+                        mat-button
+                        matSuffix
+                        (click)="saveAndLoadFileCSV()"
+                    >
+                        Guardar y cargar fichero CSV
+                    </button>
                     <!-- Code -->
                     <mat-form-field
                         appearance="outline"
