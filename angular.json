@@ -92,6 +92,15 @@
                                 }
                             ]
                         },
+                        "go_des": {
+                            "optimization": true,
+                            "fileReplacements": [
+                                {
+                                    "replace": "src/environments/environment.ts",
+                                    "with": "src/environments/goDes/environment.goDes.ts"
+                                }
+                            ]
+                        },
                         "pre": {
                             "optimization": true,
                             "fileReplacements": [
