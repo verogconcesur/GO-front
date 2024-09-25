@@ -1144,7 +1144,7 @@
         "shortcutDescription": "Shortcut description",
         "shortcutName": "Shortcut name",
         "state-anchor": "Lock status to board view",
-        "state-anchorDescription": "Select this option if you want this status to be displayed in as many columns as there are people assigned to it. This option is ideal for states in which tasks are distributed among different workers.",
+        "state-anchorDescription": "Display this status always pinned to the left column of the board view.",
         "state-color": "State's color",
         "state-entryPoint": "Workflow entry point",
         "state-entryPointDescription": "Select this option if you want the tokens that enter the workflow to be placed here, when they come from a movement that does not specify a specific status or assigned person.",
