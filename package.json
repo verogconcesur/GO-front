@@ -10,6 +10,7 @@
         "build_qa": "npm run build -- --configuration=qa",
         "build_pre": "npm run build -- --configuration=pre",
         "build_stg": "npm run build -- --configuration=stg",
+        "build_go_des": "npm run build -- --configuration=go_des",
         "build_production": "npm run build -- --configuration=production",
         "build_production_la_baronia": "npm run build -- --configuration=production_la_baronia",
         "test": "ng test --code-coverage",
