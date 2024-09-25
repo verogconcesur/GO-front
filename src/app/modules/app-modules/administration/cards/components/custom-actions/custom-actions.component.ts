@@ -7,13 +7,13 @@ import CardColumnDTO from '@data/models/cards/card-column-dto';
 import CardColumnTabDTO from '@data/models/cards/card-column-tab-dto';
 import VariablesDTO from '@data/models/variables-dto';
 import { VariablesService } from '@data/services/variables.service';
-import { CustomDialogService } from '@frontend/custom-dialog';
 // eslint-disable-next-line max-len
 import {
   LinksCreationEditionDialogComponent,
   LinksCreationEditionDialogComponentModalEnum
 } from '@modules/feature-modules/modal-links-creation-edition/links-creation-edition-dialog.component';
 import { TranslateService } from '@ngx-translate/core';
+import { CustomDialogService } from '@shared/modules/custom-dialog/services/custom-dialog.service';
 import { ConfirmDialogService } from '@shared/services/confirm-dialog.service';
 import { ProgressSpinnerDialogService } from '@shared/services/progress-spinner-dialog.service';
 import { moveItemInFormArray } from '@shared/utils/moveItemInFormArray';

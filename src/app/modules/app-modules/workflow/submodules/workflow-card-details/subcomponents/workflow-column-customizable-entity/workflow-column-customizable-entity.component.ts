@@ -15,7 +15,6 @@ import CustomerEntityDTO from '@data/models/entities/customer-entity-dto';
 import RepairOrderEntityDTO from '@data/models/entities/repair-order-entity-dto';
 import VehicleEntityDTO from '@data/models/entities/vehicle-entity-dto';
 import { EntitiesService } from '@data/services/entities.service';
-import { CustomDialogService } from '@frontend/custom-dialog';
 import { WorkflowPrepareAndMoveService } from '@modules/app-modules/workflow/aux-service/workflow-prepare-and-move-aux.service';
 import { WorkflowRequiredFieldsAuxService } from '@modules/app-modules/workflow/aux-service/workflow-required-fields-aux.service';
 // eslint-disable-next-line max-len
@@ -39,6 +38,7 @@ import {
   ModalCardCustomerAttachmentsComponent,
   modalCardCustomerAttachmentsComponentModalEnum
 } from '@modules/feature-modules/modal-card-customer-attachments/modal-card-customer-attachment.component';
+import { CustomDialogService } from '@shared/modules/custom-dialog/services/custom-dialog.service';
 
 @Component({
   selector: 'app-workflow-column-customizable-entity',

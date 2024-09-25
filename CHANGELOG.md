@@ -2,6 +2,58 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [1.1.3](https://gitlab.alten.es/Delivery-Projects/concesur/concenet_front/-/compare/v1.1.2...v1.1.3) (2024-08-30)
+
+
+### Bug Fixes
+
+* obtener los datos de la pagina de la respuesta de taxTypes ([72ea3ce](https://gitlab.alten.es/Delivery-Projects/concesur/concenet_front/-/commit/72ea3cef8489804535891a2d898f73f9f80268c3))
+* requiredFieldList se envia vacio ([1a8af74](https://gitlab.alten.es/Delivery-Projects/concesur/concenet_front/-/commit/1a8af74ea19050f758f18f1f5edec4b13a2499e7))
+
+### [1.1.2](https://gitlab.alten.es/Delivery-Projects/concesur/concenet_front/-/compare/v1.1.1...v1.1.2) (2024-07-31)
+
+
+### Features
+
+* accounitng template order lines ([a63fc15](https://gitlab.alten.es/Delivery-Projects/concesur/concenet_front/-/commit/a63fc153dabc5d2363ddf49771c0aaa169cf6d0c))
+* accounting template cambio a formato en diálogo para evitar problemas de validaciones ([c78cc88](https://gitlab.alten.es/Delivery-Projects/concesur/concenet_front/-/commit/c78cc88770b53c69ed46205e41b67e1aaf1595a5))
+* avance plantilla contabilidad ([f87127d](https://gitlab.alten.es/Delivery-Projects/concesur/concenet_front/-/commit/f87127dc563a2809356823b2e90ddd3cf6d3f16b))
+* avances pantalla contabilidad en detalle tarjeta ([3676b80](https://gitlab.alten.es/Delivery-Projects/concesur/concenet_front/-/commit/3676b8089072156ec73d39e316ef2f47a8a522d6))
+* boolean instalación por defecto autoline / deshabilitar referencia cliente ([275e872](https://gitlab.alten.es/Delivery-Projects/concesur/concenet_front/-/commit/275e872ca5c870944bdb9a1700d2cf8123ce673b))
+* configStockStoreId and configStockEnterpriseId ([f6c77c2](https://gitlab.alten.es/Delivery-Projects/concesur/concenet_front/-/commit/f6c77c2485532b1ec2634d2a04d8c62a7b1088c4))
+* configuración de links e invocar método si no es de tipo redirección ([ba39299](https://gitlab.alten.es/Delivery-Projects/concesur/concenet_front/-/commit/ba3929964766e2625a59af713a408c6d2690e760))
+* contabilidad detalle tarjeta ([0a6cdc2](https://gitlab.alten.es/Delivery-Projects/concesur/concenet_front/-/commit/0a6cdc2066b1927554a4450cb317d418d345b6e7))
+* contabilidad detalle tarjeta ([dfbcc5d](https://gitlab.alten.es/Delivery-Projects/concesur/concenet_front/-/commit/dfbcc5d111441e616e10b9a50ec00311d93a9e03))
+* crear plantilla contable inicial con bloque ([d64e18c](https://gitlab.alten.es/Delivery-Projects/concesur/concenet_front/-/commit/d64e18ca2c7769dc5c666320b03c95e69b33afa2))
+* deshabilitar estado si tipo de pago es email/sms ([94f3558](https://gitlab.alten.es/Delivery-Projects/concesur/concenet_front/-/commit/94f3558ef3fbfddd157987cc08ab9b718dc9e245))
+* destacar líneas relacionadas con línea acumulada ([0c118cb](https://gitlab.alten.es/Delivery-Projects/concesur/concenet_front/-/commit/0c118cb27b53f95a65f67acd97d2fb14ed46918d))
+* formulario stock en instalaciones ([4830e7d](https://gitlab.alten.es/Delivery-Projects/concesur/concenet_front/-/commit/4830e7d8a3f7deba4222be6cee10701361b24f34))
+* habilitar estado si usuario/sms/email ([68ef640](https://gitlab.alten.es/Delivery-Projects/concesur/concenet_front/-/commit/68ef640e4805592318b878840045263e07d7b7bc))
+* links and events modal ([e429ad5](https://gitlab.alten.es/Delivery-Projects/concesur/concenet_front/-/commit/e429ad5e38916db2b19746c9cdee38a4908239be))
+* mejoras busqueda avanzada y fixes ([c1b903e](https://gitlab.alten.es/Delivery-Projects/concesur/concenet_front/-/commit/c1b903eb9455c4f8f87e7eb6b2fbf003fb5638d8))
+* new accounting template ([61624ca](https://gitlab.alten.es/Delivery-Projects/concesur/concenet_front/-/commit/61624ca210b34a15b4c8e44bebef76fac5960cd7))
+* nueva contabilidad panel administración ([689a4af](https://gitlab.alten.es/Delivery-Projects/concesur/concenet_front/-/commit/689a4afdc7e9b49317032a834df41a6bcb528e3c))
+* nuevo botón enviar pagos por sms-email ([ec26828](https://gitlab.alten.es/Delivery-Projects/concesur/concenet_front/-/commit/ec26828e9c47fc62f5c8498bdf605a01e4a578da))
+* set card column accounting with templates ([c78ad66](https://gitlab.alten.es/Delivery-Projects/concesur/concenet_front/-/commit/c78ad66e6d3e84e2cda242103e6f46c94f4f7b65))
+* ticket 512701 ([66715e3](https://gitlab.alten.es/Delivery-Projects/concesur/concenet_front/-/commit/66715e3cef1ff70c4c43945d7113a791dce773d8))
+* ticket 832567 ([90a5221](https://gitlab.alten.es/Delivery-Projects/concesur/concenet_front/-/commit/90a52211302da976ec0355b59fbf40ee7ccea4f5))
+* ticket soporte 520426 ([0d1755e](https://gitlab.alten.es/Delivery-Projects/concesur/concenet_front/-/commit/0d1755e6f0ffa12e81f1b955ef34f482250d2c77))
+* ticket soporte 520426 ([abeb0bc](https://gitlab.alten.es/Delivery-Projects/concesur/concenet_front/-/commit/abeb0bc34c939b741b65d7cc0e0af79b426951f3))
+* web service event configuration ([cd0fb2d](https://gitlab.alten.es/Delivery-Projects/concesur/concenet_front/-/commit/cd0fb2d0c9db948869ea558f56f04639588a34b3))
+
+
+### Bug Fixes
+
+* al cambiar impuesto no se actualizan los valores en contabilidad ([3dcb611](https://gitlab.alten.es/Delivery-Projects/concesur/concenet_front/-/commit/3dcb611a8a054946acae5264f14bb57d37772180))
+* checklist drawing in PC ([c2ca875](https://gitlab.alten.es/Delivery-Projects/concesur/concenet_front/-/commit/c2ca8759a7f41999deaa6d4ce779c32cfeb4280e))
+* contabilidad ([4e92539](https://gitlab.alten.es/Delivery-Projects/concesur/concenet_front/-/commit/4e92539a25ddde0e147c6a0913746d54ff5aa80b))
+* evitar que salgan los dos mensajes de error para la edición de líneas acumuladas ([999795a](https://gitlab.alten.es/Delivery-Projects/concesur/concenet_front/-/commit/999795a1806558620c90d32e7e5fb6d20218a2b0))
+* **hotfix:** cherrypick lost commit ([67fb973](https://gitlab.alten.es/Delivery-Projects/concesur/concenet_front/-/commit/67fb973966af3d723a994becafc4a1a2dcf7167c))
+* se envia el body relleno en los gets al modificar un link ([e6633c6](https://gitlab.alten.es/Delivery-Projects/concesur/concenet_front/-/commit/e6633c655fa2fc404198e41152368158857d6f31))
+* se envia requiredAuth y redirect a null al crear link ([44b2da4](https://gitlab.alten.es/Delivery-Projects/concesur/concenet_front/-/commit/44b2da4afe3d3cc891e82cb6864d9fdd06f053ca))
+* ticket soporte-164474 ([586a0ba](https://gitlab.alten.es/Delivery-Projects/concesur/concenet_front/-/commit/586a0bab89ab11d1e3547e6218f73d1169296d02))
+* ticket soporte-326099 contabilidad y roles adjuntos y links ([249b0be](https://gitlab.alten.es/Delivery-Projects/concesur/concenet_front/-/commit/249b0be915025f530872eb9b2be5df398a239132))
+
 ### [1.1.1](https://gitlab.alten.es/Delivery-Projects/concesur/concenet_front/-/compare/v1.1.0...v1.1.1) (2024-07-05)
 
 

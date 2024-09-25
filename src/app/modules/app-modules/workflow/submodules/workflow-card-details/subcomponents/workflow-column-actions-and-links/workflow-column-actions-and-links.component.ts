@@ -2,18 +2,33 @@ import { Component, Input, OnInit } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { ActivatedRoute, Router } from '@angular/router';
 import { RouteConstants } from '@app/constants/route.constants';
+import { AuthenticationService } from '@app/security/authentication.service';
 import { ConcenetError } from '@app/types/error';
 import { marker } from '@biesbjerg/ngx-translate-extract-marker';
 import CardColumnTabDTO from '@data/models/cards/card-column-tab-dto';
 import CardDTO from '@data/models/cards/card-dto';
 import CardInstanceDTO from '@data/models/cards/card-instance-dto';
+import CardInstanceRemoteSignatureDTO from '@data/models/cards/card-instance-remote-signature-dto';
+import CardInstanceWhatsappDTO from '@data/models/cards/card-instance-whatsapp-dto';
+import RoleDTO from '@data/models/user-permissions/role-dto';
 import WorkflowCardTabItemDTO from '@data/models/workflows/workflow-card-tab-item-dto';
 import WorkflowMoveDTO from '@data/models/workflows/workflow-move-dto';
+import WorkflowSubstateUserDTO from '@data/models/workflows/workflow-substate-user-dto';
+import { CardAttachmentsService } from '@data/services/card-attachments.service';
+import { CardMessagesService } from '@data/services/card-messages.service';
 import { CardService } from '@data/services/cards.service';
-import { CustomDialogService } from '@frontend/custom-dialog';
 import { WorkflowPrepareAndMoveService } from '@modules/app-modules/workflow/aux-service/workflow-prepare-and-move-aux.service';
+import { ModalChatWhatsappComponent } from '@modules/feature-modules/modal-chat-whatsapp/modal-chat-whatsapp.component';
+import {
+  ModalStartConversationComponent,
+  StartConversationComponentModalEnum
+} from '@modules/feature-modules/modal-start-conversation/modal-start-conversation.component';
+import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
 import { TranslateService } from '@ngx-translate/core';
+import { CustomDialogService } from '@shared/modules/custom-dialog/services/custom-dialog.service';
 import { GlobalMessageService } from '@shared/services/global-message.service';
+import { ProgressSpinnerDialogService } from '@shared/services/progress-spinner-dialog.service';
+import { SortService } from '@shared/services/sort.service';
 import { replacerFunc } from '@shared/utils/replacer-function';
 import { finalize, take } from 'rxjs/operators';
 import {
@@ -21,23 +36,6 @@ import {
   MessageClientDialogComponentModalEnum
 } from '../message-client-dialog/message-client-dialog.component';
 import { MoveCardDialogComponent } from '../move-card-dialog/move-card-dialog.component';
-import CardInstanceRemoteSignatureDTO from '@data/models/cards/card-instance-remote-signature-dto';
-import { CardAttachmentsService } from '@data/services/card-attachments.service';
-import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
-import {
-  ModalStartConversationComponent,
-  StartConversationComponentModalEnum
-} from '@modules/feature-modules/modal-start-conversation/modal-start-conversation.component';
-import { CardMessagesService } from '@data/services/card-messages.service';
-import { ModalChatWhatsappComponent } from '@modules/feature-modules/modal-chat-whatsapp/modal-chat-whatsapp.component';
-import CardInstanceWhatsappDTO from '@data/models/cards/card-instance-whatsapp-dto';
-import WorkflowDTO from '@data/models/workflows/workflow-dto';
-import RoleDTO from '@data/models/user-permissions/role-dto';
-import { AuthenticationService } from '@app/security/authentication.service';
-import { PermissionConstants } from '@app/constants/permission.constants';
-import { SortService } from '@shared/services/sort.service';
-import WorkflowSubstateUserDTO from '@data/models/workflows/workflow-substate-user-dto';
-import { ProgressSpinnerDialogService } from '@shared/services/progress-spinner-dialog.service';
 
 @UntilDestroy()
 @Component({

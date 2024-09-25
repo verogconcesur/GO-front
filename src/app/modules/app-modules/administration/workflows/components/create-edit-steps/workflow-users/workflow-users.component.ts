@@ -15,7 +15,6 @@ import WorkflowRoleDTO from '@data/models/workflow-admin/workflow-role-dto';
 import WorkflowSubstateUserDTO from '@data/models/workflows/workflow-substate-user-dto';
 import { UserService } from '@data/services/user.service';
 import { WorkflowAdministrationService } from '@data/services/workflow-administration.service';
-import { CustomDialogService } from '@frontend/custom-dialog';
 import {
   CreateEditUserComponent,
   CreateEditUserComponentModalEnum
@@ -25,10 +24,10 @@ import {
   UserSearcherDialogComponentModalEnum
 } from '@modules/feature-modules/user-searcher-dialog/user-searcher-dialog.component';
 import { TranslateService } from '@ngx-translate/core';
+import { CustomDialogService } from '@shared/modules/custom-dialog/services/custom-dialog.service';
 import { ConfirmDialogService } from '@shared/services/confirm-dialog.service';
 import { GlobalMessageService } from '@shared/services/global-message.service';
 import { ProgressSpinnerDialogService } from '@shared/services/progress-spinner-dialog.service';
-import { NGXLogger } from 'ngx-logger';
 import { forkJoin } from 'rxjs';
 import { finalize, take } from 'rxjs/operators';
 import { WorkflowsCreateEditAuxService } from '../../../aux-service/workflows-create-edit-aux.service';

@@ -10,21 +10,21 @@ import { TemplatesAttachmentDTO } from '@data/models/templates/templates-attachm
 import TemplatesCommonDTO from '@data/models/templates/templates-common-dto';
 import TemplatesFilterDTO from '@data/models/templates/templates-filter-dto';
 import { TemplatesAttachmentService } from '@data/services/templates-attachment.service';
-import { CustomDialogService } from '@frontend/custom-dialog';
 import { untilDestroyed } from '@ngneat/until-destroy';
 import { TranslateService } from '@ngx-translate/core';
 // eslint-disable-next-line max-len
 import { AdministrationCommonHeaderSectionClassToExtend } from '@modules/feature-modules/administration-common-header-section/administration-common-header-section-class-to-extend';
 import { FilterDrawerService } from '@modules/feature-modules/filter-drawer/services/filter-drawer.service';
+import { CustomDialogService } from '@shared/modules/custom-dialog/services/custom-dialog.service';
+import { ConfirmDialogService } from '@shared/services/confirm-dialog.service';
 import { GlobalMessageService } from '@shared/services/global-message.service';
 import { ProgressSpinnerDialogService } from '@shared/services/progress-spinner-dialog.service';
 import { Observable, of } from 'rxjs';
-import { map, take, finalize } from 'rxjs/operators';
+import { finalize, map, take } from 'rxjs/operators';
 import {
   CreateEditAttachmentComponent,
   CreateEditAttachmentComponentModalEnum
 } from './dialog/create-edit-attachment/create-edit-attachment.component';
-import { ConfirmDialogService } from '@shared/services/confirm-dialog.service';
 @Component({
   selector: 'app-attachments',
   templateUrl: './attachments.component.html',

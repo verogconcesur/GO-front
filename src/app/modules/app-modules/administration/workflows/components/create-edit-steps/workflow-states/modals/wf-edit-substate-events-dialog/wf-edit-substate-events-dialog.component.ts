@@ -19,13 +19,15 @@ import { CardService } from '@data/services/cards.service';
 import { VariablesService } from '@data/services/variables.service';
 import { WorkflowAdministrationStatesSubstatesService } from '@data/services/workflow-administration-states-substates.service';
 import { WorkflowAdministrationService } from '@data/services/workflow-administration.service';
-import { ComponentToExtendForCustomDialog, CustomDialogFooterConfigI, CustomDialogService } from '@frontend/custom-dialog';
 import {
   LinksCreationEditionDialogComponent,
   LinksCreationEditionDialogComponentModalEnum
 } from '@modules/feature-modules/modal-links-creation-edition/links-creation-edition-dialog.component';
 import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
 import { TranslateService } from '@ngx-translate/core';
+import { CustomDialogFooterConfigI } from '@shared/modules/custom-dialog/interfaces/custom-dialog-footer-config';
+import { ComponentToExtendForCustomDialog } from '@shared/modules/custom-dialog/models/component-for-custom-dialog';
+import { CustomDialogService } from '@shared/modules/custom-dialog/services/custom-dialog.service';
 import { ConfirmDialogService } from '@shared/services/confirm-dialog.service';
 import { GlobalMessageService } from '@shared/services/global-message.service';
 import { ProgressSpinnerDialogService } from '@shared/services/progress-spinner-dialog.service';
@@ -586,7 +588,7 @@ export class WfEditSubstateEventsDialogComponent extends ComponentToExtendForCus
     const value = this.form.value;
     const formValue = {
       ...value,
-      requiredFieldsList: this.form.value.requiredFieldsrequiredFieldsList
+      requiredFieldsList: this.form.value.requiredFieldsList
         ? this.form.value.requiredFieldsList.map((field: any) => ({ id: field.id }))
         : [],
       roles: this.form.get('roles')?.value.filter((role: RoleDTO) => role.selected),
