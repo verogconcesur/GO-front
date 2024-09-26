@@ -822,7 +822,7 @@ export class WfEditSubstateEventsDialogComponent extends ComponentToExtendForCus
               });
             });
           });
-          responses[2].forEach((attachment) => {
+          responses[2]?.forEach((attachment) => {
             attachment.template.templateAttachmentItems.forEach((item) => {
               attachList.push({
                 id: attachment.id,
