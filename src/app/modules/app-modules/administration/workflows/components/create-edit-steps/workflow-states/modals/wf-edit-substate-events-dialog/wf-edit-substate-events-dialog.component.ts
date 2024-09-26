@@ -663,14 +663,14 @@ export class WfEditSubstateEventsDialogComponent extends ComponentToExtendForCus
       (field: any) => ({
         tab: { id: field.id },
         templateAttachmentItem: { id: field.templateAttachmentItemId },
-        numMinAttachRequired: field.numberInput || 0
+        numMinAttachRequired: field.numberInput || 1
       })
     );
 
     const workflowMovementRequiredAttachments = this.form.value.workflowSubstateEventRequiredAttachments?.map((field: any) => ({
       tab: { id: field.id },
       templateAttachmentItem: { id: field.templateAttachmentItemId },
-      numMinAttachRequired: field.numberInput || 0
+      numMinAttachRequired: field.numberInput || 1
     }));
 
     // Crear formValue base
@@ -830,7 +830,7 @@ export class WfEditSubstateEventsDialogComponent extends ComponentToExtendForCus
                 templateAttachmentItemId: item.id,
                 templateName: attachment.name,
                 itemName: item.name,
-                numberInput: 0
+                numberInput: 1
               });
             });
           });
