@@ -30,6 +30,7 @@ export const enum modalCardCustomerAttachmentsComponentModalEnum {
   styleUrls: ['./modal-card-customer-attachments.component.scss']
 })
 export class ModalCardCustomerAttachmentsComponent extends ComponentToExtendForCustomDialog implements OnInit, OnDestroy {
+  public showAddAttchment: boolean;
   public labels = {};
   public attachmentTemplates: WorkflowAttachmentTimelineDTO[];
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -69,7 +70,8 @@ export class ModalCardCustomerAttachmentsComponent extends ComponentToExtendForC
   }
 
   ngOnInit(): void {
-    this.attachmentTemplates = this.extendedComponentData;
+    this.attachmentTemplates = this.extendedComponentData.attachmentTemplates;
+    this.showAddAttchment = this.extendedComponentData.showAddAttchment;
     this.form = this.fb.group({
       option1: [''],
       option2: ['']

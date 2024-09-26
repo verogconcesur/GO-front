@@ -1,5 +1,5 @@
 <div class="modal-card-customer-attachments">
-    <div class="attachments__content__templates__header">
+    <div *ngIf="showAddAttchment" class="attachments__content__templates__header">
         <label>Examinar</label>
         <button mat-icon-button color="primary" class="v-align-bottom no-padding" (click)="fileInputRef.click()">
             <mat-icon>add</mat-icon>
