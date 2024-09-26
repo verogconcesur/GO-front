@@ -287,6 +287,20 @@
                             {{ labels.required | translate }}
                         </mat-error>
                     </mat-form-field>
+
+                    <button
+                        class="button-csv"
+                        *ngIf="
+                            facilityForm.controls.requireConfigApiExt.value &&
+                            facilityForm.controls.configApiExtType.value === 'CSV'
+                        "
+                        mat-button
+                        matSuffix
+                        (click)="saveAndLoadFileCSV()"
+                    >
+                        Guardar y cargar fichero CSV
+                    </button>
+
                     <!-- Code -->
                     <mat-form-field
                         appearance="outline"
@@ -505,6 +519,18 @@
                             {{ labels.required | translate }}
                         </mat-error>
                     </mat-form-field>
+                    <button
+                        class="button-csv"
+                        *ngIf="
+                            facilityForm.controls.requireConfigStockApiExt.value &&
+                            facilityForm.controls.configStockType.value === 'CSV'
+                        "
+                        mat-button
+                        matSuffix
+                        (click)="saveAndLoadFileCSV()"
+                    >
+                        Guardar y cargar fichero CSV
+                    </button>
                     <!-- Code -->
                     <mat-form-field
                         appearance="outline"
@@ -566,12 +592,13 @@
                         </mat-error>
                     </mat-form-field>
                 </div>
-                <div class="facility-data__section__group substateList-flex">
+                <div class="facility-data__section__group substateList-grid">
                     <!-- workflowSubstate NEW -->
                     <mat-form-field
                         appearance="outline"
                         floatLabel="always"
                         *ngIf="facilityForm.controls.requireConfigStockApiExt.value"
+                        class="grid-item-1"
                     >
                         <input matInput value="{{ labels.workflowSubstateNew | translate }}" readonly />
                     </mat-form-field>
@@ -580,6 +607,7 @@
                         floatLabel="always"
                         [matMenuTriggerFor]="attrSearcherMenuNew"
                         *ngIf="facilityForm.controls.requireConfigStockApiExt.value"
+                        class="grid-item-3"
                     >
                         <mat-label>{{ labels.workflowSubstate | translate }}</mat-label>
                         <mat-select formControlName="workflowSubstateNew" [placeholder]="labels.select | translate">
@@ -598,12 +626,13 @@
                     </mat-form-field>
                 </div>
 
-                <div class="facility-data__section__group substateList-flex">
+                <div class="facility-data__section__group substateList-grid">
                     <!-- workflowSubstate USED -->
                     <mat-form-field
                         appearance="outline"
                         floatLabel="always"
                         *ngIf="facilityForm.controls.requireConfigStockApiExt.value"
+                        class="grid-item-1"
                     >
                         <input matInput value="{{ labels.workflowSubstateUsed | translate }}" readonly />
                     </mat-form-field>
@@ -612,6 +641,7 @@
                         floatLabel="always"
                         [matMenuTriggerFor]="attrSearcherMenuUsed"
                         *ngIf="facilityForm.controls.requireConfigStockApiExt.value"
+                        class="grid-item-3"
                     >
                         <mat-label>{{ labels.workflowSubstate | translate }}</mat-label>
                         <mat-select formControlName="workflowSubstateUsed" [placeholder]="labels.select | translate">

@@ -1,5 +1,5 @@
 @import 'utils/core';
-
+@import 'utils/theme';
 .create-edit-facility-content {
   width: 100%;
   padding-right: 15px;
@@ -29,6 +29,13 @@
           justify-items: left;
           gap: 1rem;
           grid-template-columns: repeat(auto-fit, minmax(10rem, 1fr));
+
+          .button-csv {
+            border: 1px solid rgb(71, 70, 163);
+            height: 37px;
+            margin: 4px 7px;
+            font-size: 11.3px;
+          }
         }
 
         &__title {
@@ -44,23 +51,30 @@
 
         &.substateList {
           mat-form-field {
-            max-width: 450px;
+            max-width: 600px;
+          }
+        }
+        &.substateList-grid {
+          display: grid;
+          gap: 1rem;
+          grid-template-columns: 185.27px minmax(300px, 3fr);
+          grid-auto-flow: row;
+
+          .grid-item-1 {
+            grid-column: span 1;
+          }
+
+          .grid-item-3 {
+            grid-column: span 1;
+          }
+
+          mat-form-field {
+            width: 100%;
+            max-width: none;
           }
         }
       }
-      &.substateList-flex {
-        display: flex;
-        align-items: center;
 
-        mat-form-field {
-          margin-right: 16px;
-          max-width: 450px;
-
-          &:last-child {
-            margin-right: 0;
-          }
-        }
-      }
       .error-message {
         margin-top: 10px; /* Espacio superior */
         margin-bottom: 10px; /* Espacio inferior */
