@@ -92,7 +92,7 @@ export class ModalCardCustomerAttachmentsComponent extends ComponentToExtendForC
   }
 
   getAttachmentsData() {
-    this.attachmentTemplates.forEach((template) => {
+    this.attachmentTemplates?.forEach((template) => {
       this.attachmentItemsMap[template.id] = template.template.templateAttachmentItems;
     });
   }

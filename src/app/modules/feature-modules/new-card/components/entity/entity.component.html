@@ -32,6 +32,9 @@
                 <button mat-stroked-button *ngIf="showCreateEntity()" (click)="createEntity(true)">
                     {{ getImportEntityButtonLabel() | translate }}
                 </button>
+                <button mat-stroked-button *ngIf="formTab.get('contentSourceId').value === 1" (click)="openClientAttachments()">
+                    Adjuntos cliente
+                </button>
             </div>
         </form>
         <div class="entity__head__error" fxLayout="row" fxLayoutAlign="center center" *ngIf="showError()">
