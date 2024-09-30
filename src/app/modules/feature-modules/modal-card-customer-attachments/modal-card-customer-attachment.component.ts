@@ -83,7 +83,28 @@ export class ModalCardCustomerAttachmentsComponent extends ComponentToExtendForC
 
   ngOnDestroy(): void {}
 
-  onSubmitCustomDialog(): Observable<boolean> {
+  public onSubmitCustomDialog(): Observable<boolean | AttachmentDTO[]> {
+    // const formValue = this.customerForm.value;
+    const spinner = this.spinnerService.show();
+    // return this.entitiesService.createCustomer(formValue).pipe(
+    //   map((response) => {
+    //     this.globalMessageService.showSuccess({
+    //       message: this.translateService.instant(marker('common.successOperation')),
+    //       actionText: this.translateService.instant(marker('common.close'))
+    //     });
+    //     return response;
+    //   }),
+    //   catchError((error) => {
+    //     this.globalMessageService.showError({
+    //       message: error.message,
+    //       actionText: this.translateService.instant(marker('common.close'))
+    //     });
+    //     return of(false);
+    //   }),
+    //   finalize(() => {
+    //     this.spinnerService.hide(spinner);
+    //   })
+    // );
     return of(true);
   }
 
@@ -132,7 +153,15 @@ export class ModalCardCustomerAttachmentsComponent extends ComponentToExtendForC
     return {
       show: true,
       leftSideButtons: [],
-      rightSideButtons: []
+      rightSideButtons: [
+        {
+          type: 'submit',
+          label: marker('common.save'),
+          design: 'raised',
+          color: 'primary',
+          hiddenFn: () => !this.showAddAttchment
+        }
+      ]
     };
   }
 

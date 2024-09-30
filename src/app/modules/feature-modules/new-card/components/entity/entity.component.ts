@@ -150,7 +150,7 @@ export class EntityComponent implements OnInit {
         disableClose: true,
         extendedComponentData: {
           attachmentTemplates: this.attachmentTemplates ? this.attachmentTemplates : null,
-          isEnabled: true
+          showAddAttchment: true
         },
         width: '900px'
       })

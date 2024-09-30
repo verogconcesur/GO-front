@@ -235,7 +235,7 @@ export class WorkflowColumnCustomizableEntityComponent implements OnInit, OnChan
         disableClose: true,
         extendedComponentData: {
           attachmentTemplates: this.attachmentTemplates ? this.attachmentTemplates : null,
-          isEnabled: false
+          showAddAttchment: false
         },
         width: '900px'
       })
