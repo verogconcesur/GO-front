@@ -32,5 +32,6 @@ export default interface TemplatesCommunicationDTO {
   variables?: VariablesDTO[];
   processedTemplate?: string;
   comunicationType: string;
+  contentSid?: string;
   templateComunicationItems: TemplateComunicationItemsDTO[];
 }
