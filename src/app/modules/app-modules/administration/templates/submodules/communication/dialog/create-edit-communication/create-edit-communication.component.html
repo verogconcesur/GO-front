@@ -45,15 +45,15 @@
                             <span>{{ labels.required | translate }}</span>
                         </mat-error>
                     </mat-form-field>
-                    <mat-form-field *ngIf="shouldShowWhatsAppField" appearance="outline" floatLabel="always">
-                        <mat-label>{{ labels.templateCodeWhatsApp | translate }}</mat-label>
-                        <input matInput formControlName="contentSid" />
-                        <mat-error
-                            *ngIf="communicationForm.get('contentSid').invalid && communicationForm.get('contentSid').touched"
-                        >
-                            <span>{{ labels.required | translate }}</span>
-                        </mat-error>
-                    </mat-form-field>
+                    <ng-container *ngFor="let item of comItems.controls; let i = index">
+                        <mat-form-field *ngIf="shouldShowWhatsAppField && i === 3" appearance="outline" floatLabel="always">
+                            <mat-label>{{ labels.templateCodeWhatsApp | translate }}</mat-label>
+                            <input matInput [formControl]="item.get('contentSid')" />
+                            <mat-error *ngIf="item.get('contentSid').invalid && item.get('contentSid').touched">
+                                <span>{{ labels.required | translate }}</span>
+                            </mat-error>
+                        </mat-form-field>
+                    </ng-container>
                 </div>
             </div>
             <mat-tab-group
