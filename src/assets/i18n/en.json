@@ -129,6 +129,7 @@
                 "edit": "Edit communication template",
                 "name": "Communication's template name",
                 "subject": "Subject",
+                "templateCodeWhatsApp": "WhatsApp template code",
                 "text": "Notes",
                 "title": "Communication"
             },

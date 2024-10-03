@@ -257,16 +257,32 @@ export class MessageClientDialogComponent extends ComponentToExtendForCustomDial
     const formValue = this.messageForm.getRawValue();
     const spinner = this.spinnerService.show();
     const template = this.messageForm.get('comunicationTemplate').value;
+
     if (this.remoteSignature?.id) {
       formValue.messageClients.map((m: CardMessageRenderDTO) => {
         m.cardInstanceRemoteSignatureId = this.remoteSignature.id;
         return m;
       });
     }
+
     const channels = this.messageForm
       .getRawValue()
       .messageChannels.filter((channel: { messageChannel: MessageChannelDTO; selected: boolean }) => channel.selected)
-      .map((channel: { messageChannel: MessageChannelDTO; selected: boolean }) => channel.messageChannel.id);
+      .map((channel: { messageChannel: MessageChannelDTO; selected: boolean }) => {
+        if (channel.messageChannel.id === 4) {
+          formValue.messageClients = formValue.messageClients.map((client: CardMessageRenderDTO) => {
+            if (client.messageChannelId === 4) {
+              return {
+                ...client,
+                templateId: template
+              };
+            }
+            return client;
+          });
+        }
+        return channel.messageChannel.id;
+      });
+
     if (template && channels && channels.length) {
       return this.cardService
         .sendMessageClients(this.cardInstance.cardInstanceWorkflow.id, channels, formValue.messageClients)
