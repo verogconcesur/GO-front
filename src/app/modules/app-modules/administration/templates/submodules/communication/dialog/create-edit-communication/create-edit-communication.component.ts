@@ -9,6 +9,7 @@ import {
   UntypedFormGroup,
   Validators
 } from '@angular/forms';
+import { MatTabChangeEvent } from '@angular/material/tabs';
 import { marker } from '@biesbjerg/ngx-translate-extract-marker';
 import BrandDTO from '@data/models/organization/brand-dto';
 import DepartmentDTO from '@data/models/organization/department-dto';
@@ -51,6 +52,7 @@ export class CreateEditCommunicationComponent extends ComponentToExtendForCustom
     name: marker('administration.templates.communications.name'),
     organization: marker('userProfile.organization'),
     edit: marker('administration.templates.communications.edit'),
+    templateCodeWhatsApp: marker('administration.templates.communications.templateCodeWhatsApp'),
     text: marker('administration.templates.communications.text'),
     subject: marker('administration.templates.communications.subject'),
     communicationType: marker('administration.templates.communications.communicationType'),
@@ -79,6 +81,7 @@ export class CreateEditCommunicationComponent extends ComponentToExtendForCustom
   public communicationTypes = CommunicationTypes;
   public startDate: Date;
   public endDate: Date;
+  public shouldShowWhatsAppField = false;
   constructor(
     private fb: UntypedFormBuilder,
     private spinnerService: ProgressSpinnerDialogService,
@@ -230,6 +233,20 @@ export class CreateEditCommunicationComponent extends ComponentToExtendForCustom
       ]
     };
   }
+  public onTabChange(event: MatTabChangeEvent) {
+    const selectedTabIndex = event.index;
+    const selectedItem = this.comItems.controls[selectedTabIndex];
+
+    if (selectedItem && selectedItem.value.messageChannel.id === 4) {
+      this.shouldShowWhatsAppField = true;
+      this.communicationForm.get('contentSid').setValidators([Validators.required]);
+    } else {
+      this.shouldShowWhatsAppField = false;
+      this.communicationForm.get('contentSid').clearValidators();
+    }
+    this.communicationForm.get('contentSid').updateValueAndValidity();
+  }
+
   public convertToPlain(html: string) {
     const tempDivElement = document.createElement('div');
     tempDivElement.innerHTML = html;
@@ -301,6 +318,7 @@ export class CreateEditCommunicationComponent extends ComponentToExtendForCustom
         specialties: [this.communicationToEdit ? this.communicationToEdit.template.specialties : null, Validators.required]
       }),
       comunicationType: [this.communicationToEdit ? this.communicationToEdit.comunicationType : null],
+      contentSid: [this.communicationToEdit ? this.communicationToEdit.contentSid : null],
       variables: [this.communicationToEdit ? this.communicationToEdit.variables : []],
       templateComunicationItems: this.fb.array([])
     });

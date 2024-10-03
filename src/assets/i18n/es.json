@@ -129,6 +129,7 @@
                 "edit": "Editar plantilla de comunicación",
                 "name": "Nombre de plantilla de comunicación",
                 "subject": "Asunto",
+                "templateCodeWhatsApp": "Código plantilla whatsapp",
                 "text": "Notas",
                 "title": "Comunicación"
             },
