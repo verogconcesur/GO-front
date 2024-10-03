@@ -15,6 +15,7 @@ export interface TemplateComunicationItemsDTO {
   processedEmail: string;
   processedText: string;
   subject: string;
+  contentSid?: string;
   messageChannel: MessageChannelDTO;
 }
 export default interface TemplatesCommunicationDTO {
@@ -32,6 +33,5 @@ export default interface TemplatesCommunicationDTO {
   variables?: VariablesDTO[];
   processedTemplate?: string;
   comunicationType: string;
-  contentSid?: string;
   templateComunicationItems: TemplateComunicationItemsDTO[];
 }

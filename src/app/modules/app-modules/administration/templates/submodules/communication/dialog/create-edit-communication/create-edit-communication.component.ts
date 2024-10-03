@@ -239,12 +239,12 @@ export class CreateEditCommunicationComponent extends ComponentToExtendForCustom
 
     if (selectedItem && selectedItem.value.messageChannel.id === 4) {
       this.shouldShowWhatsAppField = true;
-      this.communicationForm.get('contentSid').setValidators([Validators.required]);
+      this.communicationForm.get('templateComunicationItems').get('3').get('contentSid').setValidators([Validators.required]);
     } else {
       this.shouldShowWhatsAppField = false;
-      this.communicationForm.get('contentSid').clearValidators();
+      this.communicationForm.get('templateComunicationItems').get('3').get('contentSid').clearValidators();
     }
-    this.communicationForm.get('contentSid').updateValueAndValidity();
+    this.communicationForm.get('templateComunicationItems').get('3').get('contentSid').updateValueAndValidity();
   }
 
   public convertToPlain(html: string) {
@@ -318,7 +318,6 @@ export class CreateEditCommunicationComponent extends ComponentToExtendForCustom
         specialties: [this.communicationToEdit ? this.communicationToEdit.template.specialties : null, Validators.required]
       }),
       comunicationType: [this.communicationToEdit ? this.communicationToEdit.comunicationType : null],
-      contentSid: [this.communicationToEdit ? this.communicationToEdit.contentSid : null],
       variables: [this.communicationToEdit ? this.communicationToEdit.variables : []],
       templateComunicationItems: this.fb.array([])
     });
@@ -334,7 +333,8 @@ export class CreateEditCommunicationComponent extends ComponentToExtendForCustom
           id: [editItem ? editItem.id : null],
           text: [editItem ? editItem.text : '', messageChannel.id === 1 ? Validators.required : null],
           subject: [editItem ? editItem.subject : ''],
-          messageChannel: [messageChannel]
+          messageChannel: [messageChannel],
+          contentSid: [editItem ? editItem.contentSid : null]
         })
       );
     });
