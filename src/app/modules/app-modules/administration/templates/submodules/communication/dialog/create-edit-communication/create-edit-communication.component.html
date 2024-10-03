@@ -28,23 +28,40 @@
                         [form]="communicationForm.get('template')"
                     ></app-organization-levels-nested-combos>
                 </div>
-                <mat-form-field appearance="outline" floatLabel="always">
-                    <mat-label>{{ labels.communicationType | translate }}</mat-label>
-                    <mat-select formControlName="comunicationType" (selectionChange)="changeComunicationType()">
-                        <mat-option *ngFor="let type of communicationTypes" [value]="type.value">
-                            {{ type.label | translate }}</mat-option
+                <div class="content_space_between">
+                    <mat-form-field appearance="outline" floatLabel="always">
+                        <mat-label>{{ labels.communicationType | translate }}</mat-label>
+                        <mat-select formControlName="comunicationType" (selectionChange)="changeComunicationType()">
+                            <mat-option *ngFor="let type of communicationTypes" [value]="type.value">
+                                {{ type.label | translate }}</mat-option
+                            >
+                        </mat-select>
+                        <mat-error
+                            *ngIf="
+                                communicationForm.get('comunicationType').invalid &&
+                                communicationForm.get('comunicationType').touched
+                            "
                         >
-                    </mat-select>
-                    <mat-error
-                        *ngIf="
-                            communicationForm.get('comunicationType').invalid && communicationForm.get('comunicationType').touched
-                        "
-                    >
-                        <span>{{ labels.required | translate }}</span>
-                    </mat-error>
-                </mat-form-field>
+                            <span>{{ labels.required | translate }}</span>
+                        </mat-error>
+                    </mat-form-field>
+                    <mat-form-field *ngIf="shouldShowWhatsAppField" appearance="outline" floatLabel="always">
+                        <mat-label>{{ labels.templateCodeWhatsApp | translate }}</mat-label>
+                        <input matInput formControlName="contentSid" />
+                        <mat-error
+                            *ngIf="communicationForm.get('contentSid').invalid && communicationForm.get('contentSid').touched"
+                        >
+                            <span>{{ labels.required | translate }}</span>
+                        </mat-error>
+                    </mat-form-field>
+                </div>
             </div>
-            <mat-tab-group class="mat-tab-page-sections" mat-align-tabs="start" *ngIf="listVariables">
+            <mat-tab-group
+                (selectedTabChange)="onTabChange($event)"
+                class="mat-tab-page-sections"
+                mat-align-tabs="start"
+                *ngIf="listVariables"
+            >
                 <mat-tab *ngFor="let item of comItems.controls" [label]="getTabLabel(item)">
                     <ng-template matTabContent class="template-data__section">
                         <div class="template-data__section__group" *ngIf="item.value.messageChannel.id === 2">
