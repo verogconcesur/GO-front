@@ -110,6 +110,12 @@ export class FacilityService {
       .pipe(catchError((error) => throwError(error.error as ConcenetError)));
   }
 
+  public saveAndLoadCSVFile(facility: FacilityDTO, type: string): Observable<FacilityDTO> {
+    return this.http
+      .post<FacilityDTO>(`${this.env.apiBaseUrl}${this.GET_FACILITY}`, facility)
+      .pipe(catchError((error) => throwError(error.error as ConcenetError)));
+  }
+
   public deleteFacility(id: number): Observable<FacilityDTO> {
     return this.http
       .delete<FacilityDTO>(`${this.env.apiBaseUrl}${this.DELETE_FACILITY_PATH}/${id}`)
