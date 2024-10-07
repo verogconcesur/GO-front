@@ -21,6 +21,7 @@ export class FacilityService {
   private facilitiesByBrand: any = {};
   private readonly GET_FACILITY = '/api/facilities/';
   private readonly GET_FACILITIES_PATH = '/api/facilities/findAll/';
+  private readonly SAVE_CSV_FILE = '/api/facilities/saveAndLoadCSV';
   private readonly GET_FACILITY_INTEGRATION = '/api/facilities/findAllWithIntegration';
   private readonly DELETE_FACILITY_PATH = '/api/facilities';
   private readonly DUPLICATE_FACILITY_PATH = '/api/facilities/duplicate';
@@ -112,7 +113,7 @@ export class FacilityService {
 
   public saveAndLoadCSVFile(facility: FacilityDTO, type: string): Observable<FacilityDTO> {
     return this.http
-      .post<FacilityDTO>(`${this.env.apiBaseUrl}${this.GET_FACILITY}`, facility)
+      .post<FacilityDTO>(`${this.env.apiBaseUrl}${this.SAVE_CSV_FILE}/${type}`, facility)
       .pipe(catchError((error) => throwError(error.error as ConcenetError)));
   }
 
