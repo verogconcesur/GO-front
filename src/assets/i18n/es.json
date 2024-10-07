@@ -862,7 +862,7 @@
             "requireConfigApiExt": "Requiere configuración de API externa",
             "requireConfigEmail": "La configuración de correo requiere rellenar todos los campos para continuar",
             "requireConfigStockApiExt": "Requiere configuración para stock",
-            "responseSaveAndLoadCsvFile": "El proceso se está ejecutando y que recibirá un email con el resultado de la carga",
+            "responseSaveAndLoadCsvFile": "El proceso se está ejecutando y recibirá un email con el resultado de la carga",
             "retryLastMigration": "Reparar última migración",
             "retryLastMigrationInfo": "Si selecciona la opción de reparar última migración recuerde subir el mismo fichero que subió en la anterior ejecución (con el mismo número de registros y en el mismo orden).",
             "saveAndLoadCsvFile": "Guardar y cargar fichero CSV",
