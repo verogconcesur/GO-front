@@ -296,9 +296,9 @@
                         "
                         mat-button
                         matSuffix
-                        (click)="saveAndLoadFileCSV('ext')"
+                        (click)="saveAndLoadFileCSV('WORKSHOP')"
                     >
-                        Guardar y cargar fichero CSV
+                        {{ labels.saveAndLoadCsvFile | translate }}
                     </button>
 
                     <!-- Code -->
@@ -527,9 +527,9 @@
                         "
                         mat-button
                         matSuffix
-                        (click)="saveAndLoadFileCSV('stock')"
+                        (click)="saveAndLoadFileCSV('STOCK')"
                     >
-                        Guardar y cargar fichero CSV
+                        {{ labels.saveAndLoadCsvFile | translate }}
                     </button>
                     <!-- Code -->
                     <mat-form-field

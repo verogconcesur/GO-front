@@ -85,6 +85,7 @@ export class CreateEditFacilityComponent extends ComponentToExtendForCustomDialo
     workflowSubstate: marker('organizations.facilities.substateConfig'),
     workflowSubstateNew: marker('organizations.facilities.substateConfigNew'),
     workflowSubstateUsed: marker('organizations.facilities.substateConfigUsed'),
+    saveAndLoadCsvFile: marker('organizations.facilities.saveAndLoadCsvFile'),
     postalCode: marker('common.postalCode'),
     brands: marker('common.brands'),
     cif: marker('common.cif'),
@@ -544,7 +545,7 @@ export class CreateEditFacilityComponent extends ComponentToExtendForCustomDialo
     this.confirmDialogService
       .open({
         title: this.translateService.instant(marker('common.warning')),
-        message: this.translateService.instant(marker('Se guardaran los cambios y se lanzará la carga del fichero'))
+        message: this.translateService.instant(marker('organizations.facilities.modalLabelSaveAndLoadCsvFile'))
       })
       .pipe(take(1))
       .subscribe((ok: boolean) => {
@@ -611,9 +612,7 @@ export class CreateEditFacilityComponent extends ComponentToExtendForCustomDialo
             .subscribe({
               next: (response) => {
                 this.globalMessageService.showSuccess({
-                  message: this.translateService.instant(
-                    marker('El proceso se está ejecutando y que recibirá un email con el resultado de la carga')
-                  ),
+                  message: this.translateService.instant(marker('organizations.facilities.responseSaveAndLoadCsvFile')),
                   actionText: this.translateService.instant(marker('common.close'))
                 });
                 this.customDialogService.close(CreateEditFacilityComponentModalEnum.ID);
