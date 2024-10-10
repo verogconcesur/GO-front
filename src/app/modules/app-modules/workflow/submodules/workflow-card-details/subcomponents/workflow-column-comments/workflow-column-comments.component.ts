@@ -8,20 +8,20 @@ import UserDetailsDTO from '@data/models/user-permissions/user-details-dto';
 import { CardCommentsService } from '@data/services/card-comments.service';
 import { TranslateService } from '@ngx-translate/core';
 import { GlobalMessageService } from '@shared/services/global-message.service';
-import { skip, take } from 'rxjs/operators';
 import { forkJoin, Observable } from 'rxjs';
+import { skip, take } from 'rxjs/operators';
+// eslint-disable-next-line max-len
+import { ENV } from '@app/constants/global.constants';
+import { AuthenticationService } from '@app/security/authentication.service';
+import { RxStompService } from '@app/services/rx-stomp.service';
+import { Env } from '@app/types/env';
+import WorkflowSocketCardDetailDTO from '@data/models/workflows/workflow-sockect-card-detail-dto';
 // eslint-disable-next-line max-len
 import { TextEditorWrapperConfigI } from '@modules/feature-modules/text-editor-wrapper/interfaces/text-editor-wrapper-config.interface';
-import { ProgressSpinnerDialogService } from '@shared/services/progress-spinner-dialog.service';
 import { TextEditorWrapperComponent } from '@modules/feature-modules/text-editor-wrapper/text-editor-wrapper.component';
-import { NotificationSoundService } from '@shared/services/notification-sounds.service';
 import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
-import { RxStompService } from '@app/services/rx-stomp.service';
-import { IMessage } from '@stomp/stompjs';
-import WorkflowSocketCardDetailDTO from '@data/models/workflows/workflow-sockect-card-detail-dto';
-import { AuthenticationService } from '@app/security/authentication.service';
-import { ENV } from '@app/constants/global.constants';
-import { Env } from '@app/types/env';
+import { NotificationSoundService } from '@shared/services/notification-sounds.service';
+import { ProgressSpinnerDialogService } from '@shared/services/progress-spinner-dialog.service';
 
 @UntilDestroy()
 @Component({
@@ -156,6 +156,10 @@ export class WorkflowColumnCommentsComponent implements OnInit, OnDestroy {
         }
       );
     }
+  }
+
+  public deleteComment(comment: CardCommentDTO) {
+    console.log(comment);
   }
 
   public newCommentChange(comment: string): void {
