@@ -17,6 +17,8 @@ import { RxStompService } from '@app/services/rx-stomp.service';
 import { Env } from '@app/types/env';
 import WorkflowSocketCardDetailDTO from '@data/models/workflows/workflow-sockect-card-detail-dto';
 // eslint-disable-next-line max-len
+import { PermissionConstants } from '@app/constants/permission.constants';
+// eslint-disable-next-line max-len
 import { TextEditorWrapperConfigI } from '@modules/feature-modules/text-editor-wrapper/interfaces/text-editor-wrapper-config.interface';
 import { TextEditorWrapperComponent } from '@modules/feature-modules/text-editor-wrapper/text-editor-wrapper.component';
 import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
@@ -158,6 +160,10 @@ export class WorkflowColumnCommentsComponent implements OnInit, OnDestroy {
         }
       );
     }
+  }
+
+  public isAdmin(): boolean {
+    return this.authService.hasUserAnyPermission([PermissionConstants.ISADMIN]);
   }
 
   public deleteComment(comment: CardCommentDTO) {

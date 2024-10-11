@@ -8,7 +8,7 @@
         >
             <div class="actions-wrapper">
                 <mat-icon
-                    *ngIf="commentSelected === comment"
+                    *ngIf="commentSelected === comment && isAdmin()"
                     class="top-right"
                     (click)="$event.stopPropagation(); deleteComment(comment)"
                     >delete</mat-icon
