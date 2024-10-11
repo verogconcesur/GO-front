@@ -366,6 +366,7 @@
             "valueItem": "Nombre de la línea"
         },
         "create": "Crear tarjeta",
+        "deleteCommentsConfirmation": "¿Está seguro que desea eliminar este comentario?",
         "deleteConfirmation": "¿Está seguro que desea eliminar esta tarjeta?",
         "duplicateConfirmation": "¿Está seguro que desea duplicar esta tarjeta?",
         "eventHistoryTypes": "T. evento",

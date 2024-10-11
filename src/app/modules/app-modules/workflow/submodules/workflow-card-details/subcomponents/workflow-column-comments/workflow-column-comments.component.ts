@@ -9,7 +9,7 @@ import { CardCommentsService } from '@data/services/card-comments.service';
 import { TranslateService } from '@ngx-translate/core';
 import { GlobalMessageService } from '@shared/services/global-message.service';
 import { forkJoin, Observable } from 'rxjs';
-import { skip, take } from 'rxjs/operators';
+import { finalize, skip, take } from 'rxjs/operators';
 // eslint-disable-next-line max-len
 import { ENV } from '@app/constants/global.constants';
 import { AuthenticationService } from '@app/security/authentication.service';
@@ -20,6 +20,7 @@ import WorkflowSocketCardDetailDTO from '@data/models/workflows/workflow-sockect
 import { TextEditorWrapperConfigI } from '@modules/feature-modules/text-editor-wrapper/interfaces/text-editor-wrapper-config.interface';
 import { TextEditorWrapperComponent } from '@modules/feature-modules/text-editor-wrapper/text-editor-wrapper.component';
 import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
+import { ConfirmDialogService } from '@shared/services/confirm-dialog.service';
 import { NotificationSoundService } from '@shared/services/notification-sounds.service';
 import { ProgressSpinnerDialogService } from '@shared/services/progress-spinner-dialog.service';
 
@@ -64,7 +65,8 @@ export class WorkflowColumnCommentsComponent implements OnInit, OnDestroy {
     private spinnerService: ProgressSpinnerDialogService,
     private notificationSoundService: NotificationSoundService,
     private rxStompService: RxStompService,
-    private authService: AuthenticationService
+    private authService: AuthenticationService,
+    private confirmDialogService: ConfirmDialogService
   ) {}
 
   ngOnInit(): void {
@@ -159,7 +161,34 @@ export class WorkflowColumnCommentsComponent implements OnInit, OnDestroy {
   }
 
   public deleteComment(comment: CardCommentDTO) {
-    console.log(comment);
+    this.confirmDialogService
+      .open({
+        title: this.translateService.instant(marker('common.warning')),
+        message: this.translateService.instant(marker('cards.deleteCommentsConfirmation'))
+      })
+      .pipe(take(1))
+      .subscribe((ok: boolean) => {
+        if (ok) {
+          const spinner = this.spinnerService.show();
+          this.cardCommentsService
+            .deleteCommnts(comment.id.toString())
+            .pipe(
+              take(1),
+              finalize(() => this.spinnerService.hide(spinner))
+            )
+            .subscribe({
+              next: (response) => {
+                this.getData(false, false);
+              },
+              error: (error) => {
+                this.globalMessageService.showError({
+                  message: error.message,
+                  actionText: this.translateService.instant(marker('common.close'))
+                });
+              }
+            });
+        }
+      });
   }
 
   public newCommentChange(comment: string): void {

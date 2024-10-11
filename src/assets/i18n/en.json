@@ -366,6 +366,7 @@
             "valueItem": "Line name"
         },
         "create": "Create card",
+        "deleteCommentsConfirmation": "Do you really want to delete this comment?",
         "deleteConfirmation": "Do you really want to delete this card?",
         "duplicateConfirmation": "Do you really want to duplicate this card?",
         "eventHistoryTypes": "Event type",

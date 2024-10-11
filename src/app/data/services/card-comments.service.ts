@@ -6,7 +6,7 @@ import { Env } from '@app/types/env';
 import { ConcenetError } from '@app/types/error';
 import CardCommentDTO from '@data/models/cards/card-comment';
 import UserDetailsDTO from '@data/models/user-permissions/user-details-dto';
-import { Observable, throwError } from 'rxjs';
+import { Observable, of, throwError } from 'rxjs';
 import { catchError } from 'rxjs/operators';
 
 @Injectable({
@@ -69,5 +69,16 @@ export class CardCommentsService {
         `${this.env.apiBaseUrl}${this.GET_CARD_INSTANCE_PATH}${this.GET_DETAIL_PATH}${this.GET_COMMENTS_PATH}${this.READ_PATH}/${cardInstanceCommentId}`
       )
       .pipe(catchError((error) => throwError(error.error as ConcenetError)));
+  }
+
+  public deleteCommnts(commentId: string): Observable<any> {
+    return of(true);
+    // return this.http
+    //   .get<any>(
+    //     // eslint-disable-next-line max-len
+    //     `${this.env.apiBaseUrl}
+    //${this.GET_CARD_INSTANCE_PATH}${this.GET_DETAIL_PATH}${this.GET_COMMENTS_PATH}${this.READ_PATH}/${cardInstanceCommentId}`
+    //   )
+    //   .pipe(catchError((error) => throwError(error.error as ConcenetError)));
   }
 }
