@@ -333,7 +333,7 @@ export class WfEditSubstateMovementsTabComponent extends WfEditSubstateAbstractT
       workflowSubstateEventRequiredAttachments: this.initAttachmentsArray(move?.workflowMovementRequiredAttachments || []),
       workflowEventWebserviceConfig: this.fb.group(
         {
-          uthAttributeToken: [
+          authAttributeToken: [
             move?.workflowEventWebserviceConfig?.authAttributeToken ? move.workflowEventWebserviceConfig.authAttributeToken : null
           ],
           authPass: [move?.workflowEventWebserviceConfig?.authPass ? move.workflowEventWebserviceConfig.authPass : null],
