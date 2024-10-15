@@ -135,7 +135,8 @@ export class WfEditSubstateEventsDialogComponent extends ComponentToExtendForCus
     private cardService: CardService,
     private workflowService: WorkflowAdministrationService,
     private customDialogService: CustomDialogService,
-    private variablesService: VariablesService
+    private variablesService: VariablesService,
+    private administrationService: WorkflowAdministrationService
   ) {
     super(
       WfEditSubstateEventsComponentModalEnum.ID,
@@ -385,7 +386,7 @@ export class WfEditSubstateEventsDialogComponent extends ComponentToExtendForCus
         webservice: [data?.webservice ? true : false],
         workflowEventWebserviceConfig: this.fb.group(
           {
-            uthAttributeToken: [
+            authAttributeToken: [
               data?.workflowEventWebserviceConfig?.authAttributeToken
                 ? data.workflowEventWebserviceConfig.authAttributeToken
                 : null
@@ -807,7 +808,7 @@ export class WfEditSubstateEventsDialogComponent extends ComponentToExtendForCus
       }
       const requests = [
         this.workflowService.getWorkflowViewAttributes(this.workflowId).pipe(take(1)),
-        this.cardService.listTemplates('COMUNICATION').pipe(take(1)),
+        this.administrationService.getTemplates(this.workflowId, 'COMUNICATION').pipe(take(1)),
         this.workflowService.getWorkflowTimelineAttachments(this.workflowId).pipe(take(1))
       ];
       forkJoin(requests).subscribe(
