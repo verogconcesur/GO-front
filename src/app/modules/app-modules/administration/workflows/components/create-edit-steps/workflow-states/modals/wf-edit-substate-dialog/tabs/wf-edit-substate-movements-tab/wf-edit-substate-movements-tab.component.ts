@@ -1,6 +1,14 @@
 import { CdkDragDrop } from '@angular/cdk/drag-drop';
 import { Component, OnInit, ViewChild, ViewEncapsulation } from '@angular/core';
-import { FormBuilder, UntypedFormArray, UntypedFormControl, UntypedFormGroup, Validators } from '@angular/forms';
+import {
+  FormArray,
+  FormBuilder,
+  FormGroup,
+  UntypedFormArray,
+  UntypedFormControl,
+  UntypedFormGroup,
+  Validators
+} from '@angular/forms';
 import { MatMenuTrigger } from '@angular/material/menu';
 import { marker } from '@biesbjerg/ngx-translate-extract-marker';
 import WorkflowEventMailDTO from '@data/models/workflows/workflow-event-mail-dto';
@@ -84,7 +92,6 @@ export class WfEditSubstateMovementsTabComponent extends WfEditSubstateAbstractT
     });
     this.editSubstateAuxService.setFormGroupByTab(form, this.tabId);
     this.editSubstateAuxService.setFormOriginalData(this.form.value, this.tabId);
-    // console.log(this.form, this.form.value);
   }
 
   public getGroupNames() {
@@ -296,21 +303,37 @@ export class WfEditSubstateMovementsTabComponent extends WfEditSubstateAbstractT
         }
       );
   }
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  public initAttachmentsArray(attachments: any[]): FormArray {
+    return this.fb.array(attachments.map((attachment) => this.initAttachmentGroup(attachment)));
+  }
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  public initAttachmentGroup(attachment: any): FormGroup {
+    return this.fb.group({
+      id: [attachment.id || null],
+      workflowMovement: [attachment.workflowMovement || null],
+      tab: [attachment.tab || null],
+      templateAttachmentItem: [attachment.templateAttachmentItem || null],
+      numMinAttachRequired: [attachment.numMinAttachRequired || null]
+    });
+  }
 
   private createMovementFormGroup(move?: WorkflowMoveDTO): UntypedFormGroup {
     return this.fb.group({
       id: [move?.id ? move.id : null, [Validators.required]],
       orderNumber: [move?.orderNumber ? move.orderNumber : 0, [Validators.required]],
       requiredFields: [move?.requiredFields ? move.requiredFields : false],
+      requiredAttachments: [move?.requiredAttachments ? true : false],
       requiredFieldsList: [move?.requiredFieldsList ? move.requiredFieldsList : []],
       requiredHistoryComment: [move?.requiredHistoryComment ? move.requiredHistoryComment : false],
       requiredMyself: [move?.requiredMyself ? move.requiredMyself : false],
       requiredSize: [move?.requiredSize ? move.requiredSize : false],
       requiredUser: [move?.requiredUser ? move.requiredUser : false],
       webservice: [move?.webservice ? move.webservice : false],
+      workflowSubstateEventRequiredAttachments: this.initAttachmentsArray(move?.workflowMovementRequiredAttachments || []),
       workflowEventWebserviceConfig: this.fb.group(
         {
-          uthAttributeToken: [
+          authAttributeToken: [
             move?.workflowEventWebserviceConfig?.authAttributeToken ? move.workflowEventWebserviceConfig.authAttributeToken : null
           ],
           authPass: [move?.workflowEventWebserviceConfig?.authPass ? move.workflowEventWebserviceConfig.authPass : null],

@@ -17,6 +17,7 @@ export default interface CardInstanceWhatsappDTO {
   errorMessage?: string;
   from?: string;
   to?: string;
+  templateId?: string;
   user?: UserDTO;
   whatsappType?: 'CONVERSATION' | 'MESSAGE';
 }

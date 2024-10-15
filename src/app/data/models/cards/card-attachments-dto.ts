@@ -48,3 +48,19 @@ export interface CardInstanceAttachmentDTO {
 export interface CardWhatsapptAttachmentDTO {
   file: AttachmentDTO;
 }
+
+export interface errorAttachmentDTO {
+  id?: number;
+  numMinAttachRequired?: number;
+  tab?: {
+    colId: number;
+    id: number;
+    name: string;
+    templateId: number;
+  };
+  templateAttachmentItem?: {
+    id: number;
+    name: string;
+    orderNumber: number;
+  };
+}

@@ -19,11 +19,8 @@ import { NGXLogger } from 'ngx-logger';
 import { BehaviorSubject, Observable, forkJoin } from 'rxjs';
 import { take } from 'rxjs/operators';
 // eslint-disable-next-line max-len
+import WorkflowCardsLimitDTO, { CardLimitSlotDTO } from '@data/models/workflow-admin/workflow-card-limit-dto';
 import { WorkflowCardMovementPreparationComponent } from '../components/workflow-card-movement-preparation/workflow-card-movement-preparation.component';
-import WorkflowCardsLimitDTO, {
-  CardLimitSlotByDayDTO,
-  CardLimitSlotDTO
-} from '@data/models/workflow-admin/workflow-card-limit-dto';
 import { WorkflowRequiredFieldsAuxService } from './workflow-required-fields-aux.service';
 
 @Injectable({
@@ -59,6 +56,7 @@ export class WorkflowPrepareAndMoveService {
   ): void {
     this.spinner = this.spinnerService.show();
     this.requiredFieldsAuxService.resetRequiredFields();
+    this.requiredFieldsAuxService.resetRequiredAttachments();
     view = view ? view : 'MOVES_IN_THIS_WORKFLOW';
     const workflowCardsLimit: WorkflowCardsLimitDTO = move?.workflowCardsLimit;
     if (workflowCardsLimit && !workflowCardsLimit?.allowOverLimit) {
@@ -411,6 +409,9 @@ export class WorkflowPrepareAndMoveService {
         if (error.requiredFields?.length) {
           this.requiredFieldsAuxService.setRequiredFields(error.requiredFields);
         }
+        if (error.requiredAttachments?.length) {
+          this.requiredFieldsAuxService.setRequiredAttachments(error.requiredAttachments);
+        }
         this.reloadData$.next('UPDATE_INFORMATION');
         this.spinnerService.hide(this.spinner);
         this.globalMessageService.showError({
@@ -482,6 +483,9 @@ export class WorkflowPrepareAndMoveService {
           this.reloadData$.next('UPDATE_INFORMATION');
         },
         (error: ConcenetError) => {
+          if (error.requiredAttachments?.length) {
+            this.requiredFieldsAuxService.setRequiredAttachments(error.requiredAttachments);
+          }
           this.spinnerService.hide(this.spinner);
           this.logger.error(error);
           this.globalMessageService.showError({

@@ -6,16 +6,24 @@
             (click)="selectComment(comment)"
             [ngClass]="{ selected: commentSelected === comment }"
         >
+            <div class="actions-wrapper">
+                <mat-icon
+                    *ngIf="commentSelected === comment && isAdmin()"
+                    class="top-right"
+                    (click)="$event.stopPropagation(); deleteComment(comment)"
+                    >delete</mat-icon
+                >
+            </div>
             <div class="new-comment" *ngIf="comment.isNew"></div>
             <div class="fullname">
                 {{ getUserFullname(comment.user) }}
             </div>
             <div class="date">
-                {{ comment.dateComment | date: "dd/MM/yy, HH:mm" }}
+                {{ comment.dateComment | date : "dd/MM/yy, HH:mm" }}
             </div>
             <div class="comment" [innerHtml]="comment.comment"></div>
             <div class="mention-action" *ngIf="commentSelected === comment" mat-button (click)="answerComment(comment)">
-                <mat-icon>reply</mat-icon>@{{ comment.user.name }}
+                <mat-icon>reply</mat-icon>{{ "@" + comment.user.name }}
             </div>
         </div>
     </div>

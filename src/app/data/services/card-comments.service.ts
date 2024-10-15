@@ -16,6 +16,7 @@ export class CardCommentsService {
   private readonly GET_CARD_INSTANCE_PATH = '/api/cardInstanceWorkflow';
   private readonly GET_DETAIL_PATH = '/detail';
   private readonly GET_COMMENTS_PATH = '/comments';
+  private readonly GET_DELETE_PATH = '/delete';
   private readonly ADD_PATH = '/add';
   private readonly READ_PATH = '/read';
   private readonly GET_USERS_MENTION_PATH = '/usersMention';
@@ -67,6 +68,15 @@ export class CardCommentsService {
       .get<any>(
         // eslint-disable-next-line max-len
         `${this.env.apiBaseUrl}${this.GET_CARD_INSTANCE_PATH}${this.GET_DETAIL_PATH}${this.GET_COMMENTS_PATH}${this.READ_PATH}/${cardInstanceCommentId}`
+      )
+      .pipe(catchError((error) => throwError(error.error as ConcenetError)));
+  }
+
+  public deleteComents(commentId: number, workflowId: number): Observable<any> {
+    return this.http
+      .get<any>(
+        // eslint-disable-next-line max-len
+        `${this.env.apiBaseUrl}${this.GET_CARD_INSTANCE_PATH}${this.GET_DETAIL_PATH}${this.GET_COMMENTS_PATH}/${workflowId}${this.GET_DELETE_PATH}/${commentId}`
       )
       .pipe(catchError((error) => throwError(error.error as ConcenetError)));
   }

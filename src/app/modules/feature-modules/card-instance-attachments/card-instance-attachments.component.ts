@@ -1,10 +1,13 @@
 import { CdkDragDrop } from '@angular/cdk/drag-drop';
 import { Component, EventEmitter, Inject, Input, OnChanges, OnInit, Optional, Output, SimpleChanges } from '@angular/core';
 import { MAT_DIALOG_DATA, MatDialog, MatDialogRef } from '@angular/material/dialog';
+import { PermissionConstants } from '@app/constants/permission.constants';
+import { AuthenticationService } from '@app/security/authentication.service';
 import { ConcenetError } from '@app/types/error';
 import { marker } from '@biesbjerg/ngx-translate-extract-marker';
 import { AttachmentDTO, CardAttachmentsDTO } from '@data/models/cards/card-attachments-dto';
 import { CardAttachmentsService } from '@data/services/card-attachments.service';
+import { WorkflowRequiredFieldsAuxService } from '@modules/app-modules/workflow/aux-service/workflow-required-fields-aux.service';
 import { TranslateService } from '@ngx-translate/core';
 import { ConfirmDialogService } from '@shared/services/confirm-dialog.service';
 import { GlobalMessageService } from '@shared/services/global-message.service';
@@ -17,8 +20,6 @@ import CardInstanceAttachmentsConfig, {
   CardInstanceAttachmentsModalVersionConfig
 } from './card-instance-attachments-config-interface';
 import { RenameAttachmentComponent } from './subcomponets/rename-attachment/rename-attachment.component';
-import { PermissionConstants } from '@app/constants/permission.constants';
-import { AuthenticationService } from '@app/security/authentication.service';
 
 export const enum CardInstanceAttachmentsComponentEnum {
   ID = 'card-instances-attachments-id',
@@ -64,7 +65,8 @@ export class CardInstanceAttachmentsComponent implements OnInit, OnChanges {
     private globalMessageService: GlobalMessageService,
     private spinnerService: ProgressSpinnerDialogService,
     private mediaViewerService: MediaViewerService,
-    private authService: AuthenticationService
+    private authService: AuthenticationService,
+    public requiredFieldsAuxService: WorkflowRequiredFieldsAuxService
   ) {}
 
   ngOnInit(): void {
