@@ -177,14 +177,18 @@ export class WorkflowColumnCommentsComponent implements OnInit, OnDestroy {
         if (ok) {
           const spinner = this.spinnerService.show();
           this.cardCommentsService
-            .deleteCommnts(comment.id.toString())
+            .deleteComents(comment.id, this.idCard)
             .pipe(
               take(1),
               finalize(() => this.spinnerService.hide(spinner))
             )
             .subscribe({
               next: (response) => {
-                this.getData(false, false);
+                this.getData(false, true);
+                this.globalMessageService.showSuccess({
+                  message: this.translateService.instant(marker('common.successOperation')),
+                  actionText: this.translateService.instant(marker('common.close'))
+                });
               },
               error: (error) => {
                 this.globalMessageService.showError({

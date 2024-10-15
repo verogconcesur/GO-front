@@ -6,7 +6,7 @@ import { Env } from '@app/types/env';
 import { ConcenetError } from '@app/types/error';
 import CardCommentDTO from '@data/models/cards/card-comment';
 import UserDetailsDTO from '@data/models/user-permissions/user-details-dto';
-import { Observable, of, throwError } from 'rxjs';
+import { Observable, throwError } from 'rxjs';
 import { catchError } from 'rxjs/operators';
 
 @Injectable({
@@ -16,6 +16,7 @@ export class CardCommentsService {
   private readonly GET_CARD_INSTANCE_PATH = '/api/cardInstanceWorkflow';
   private readonly GET_DETAIL_PATH = '/detail';
   private readonly GET_COMMENTS_PATH = '/comments';
+  private readonly GET_DELETE_PATH = '/delete';
   private readonly ADD_PATH = '/add';
   private readonly READ_PATH = '/read';
   private readonly GET_USERS_MENTION_PATH = '/usersMention';
@@ -71,14 +72,12 @@ export class CardCommentsService {
       .pipe(catchError((error) => throwError(error.error as ConcenetError)));
   }
 
-  public deleteCommnts(commentId: string): Observable<any> {
-    return of(true);
-    // return this.http
-    //   .get<any>(
-    //     // eslint-disable-next-line max-len
-    //     `${this.env.apiBaseUrl}
-    //${this.GET_CARD_INSTANCE_PATH}${this.GET_DETAIL_PATH}${this.GET_COMMENTS_PATH}${this.READ_PATH}/${cardInstanceCommentId}`
-    //   )
-    //   .pipe(catchError((error) => throwError(error.error as ConcenetError)));
+  public deleteComents(commentId: number, workflowId: number): Observable<any> {
+    return this.http
+      .get<any>(
+        // eslint-disable-next-line max-len
+        `${this.env.apiBaseUrl}${this.GET_CARD_INSTANCE_PATH}${this.GET_DETAIL_PATH}${this.GET_COMMENTS_PATH}/${workflowId}${this.GET_DELETE_PATH}/${commentId}`
+      )
+      .pipe(catchError((error) => throwError(error.error as ConcenetError)));
   }
 }
