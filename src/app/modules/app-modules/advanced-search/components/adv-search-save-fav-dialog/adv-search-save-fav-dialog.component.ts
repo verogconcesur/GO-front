@@ -36,13 +36,13 @@ export class AdvSearchSaveFavDialogComponent extends ComponentToExtendForCustomD
   public showDate = false;
   public showWeekday = false;
   public showDayOfMonth = false;
-  public showTime = false;
+  public showDiary = false;
   public daysOfMonth: number[] = [];
   public filterOptions = [
     { id: 1, name: 'Unica' },
     { id: 2, name: 'Diaria' },
-    { id: 3, name: 'Mensual' },
-    { id: 4, name: 'Hora' }
+    { id: 3, name: 'Semanal' },
+    { id: 4, name: 'Mensual' }
   ];
   public weekDays = [
     { value: 'monday', label: 'Lunes' },
@@ -77,11 +77,11 @@ export class AdvSearchSaveFavDialogComponent extends ComponentToExtendForCustomD
     if (selectedValue === 1) {
       this.showDate = true;
     } else if (selectedValue === 2) {
-      this.showWeekday = true;
+      this.showDiary = true;
     } else if (selectedValue === 3) {
-      this.showDayOfMonth = true;
+      this.showWeekday = true;
     } else if (selectedValue === 4) {
-      this.showTime = true;
+      this.showDayOfMonth = true;
     }
   }
 
@@ -181,7 +181,7 @@ export class AdvSearchSaveFavDialogComponent extends ComponentToExtendForCustomD
     this.showDate = false;
     this.showWeekday = false;
     this.showDayOfMonth = false;
-    this.showTime = false;
+    this.showDiary = false;
   }
   private generateDaysOfMonth(): void {
     this.daysOfMonth = Array.from({ length: 31 }, (_, i) => i + 1);

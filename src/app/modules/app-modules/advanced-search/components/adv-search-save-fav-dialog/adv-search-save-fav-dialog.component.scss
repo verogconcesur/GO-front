@@ -3,6 +3,7 @@
 
 .save-fav {
   margin: 10px 0;
+
   &__form {
     &__row {
       display: flex;
@@ -20,5 +21,28 @@
         flex-grow: 1;
       }
     }
+  }
+
+  .form-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin: 15px 0;
+    width: 100%;
+  }
+
+  .form-field-container {
+    width: 69%;
+  }
+  .time-field-container {
+    width: 29%;
+  }
+
+  .time-field-container {
+    text-align: left;
+  }
+
+  .form-field-container {
+    text-align: right;
   }
 }

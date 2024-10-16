@@ -24,28 +24,34 @@
                 <mat-option *ngFor="let option of filterOptions" [value]="option.id">{{ option.name }}</mat-option>
             </mat-select>
         </mat-form-field>
-        <mat-form-field *ngIf="showDate" appearance="outline" floatLabel="always" style="width: 100%">
-            <mat-label>Fecha</mat-label>
-            <input matInput [matDatepicker]="picker" formControlName="typeDate" />
-            <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
-            <mat-datepicker #picker></mat-datepicker>
-        </mat-form-field>
-        <mat-form-field *ngIf="showWeekday" appearance="outline" floatLabel="always" style="width: 100%">
-            <mat-label>Selecciona el día de la semana</mat-label>
-            <mat-select formControlName="typeDate">
-                <mat-option *ngFor="let day of weekDays" [value]="day.value">{{ day.label }}</mat-option>
-            </mat-select>
-        </mat-form-field>
-        <mat-form-field *ngIf="showDayOfMonth" appearance="outline" floatLabel="always" style="width: 100%">
-            <mat-label>Dia del mes</mat-label>
-            <mat-select formControlName="typeDate">
-                <mat-option *ngFor="let day of daysOfMonth" [value]="day">{{ day }}</mat-option>
-            </mat-select>
-        </mat-form-field>
-        <div *ngIf="showTime" style="width: 47%" class="save-fav__form__row">
-            <h3 class="title-msg">Hora</h3>
-            <ngx-mat-timepicker formControlName="typeDate" [defaultTime]="[0, 0, 0]"></ngx-mat-timepicker>
+        <div class="form-container" *ngIf="showDate || showWeekday || showDayOfMonth || showDiary">
+            <div class="form-field-container">
+                <mat-form-field *ngIf="showDate" appearance="outline" floatLabel="always" style="width: 100%">
+                    <mat-label>Fecha</mat-label>
+                    <input matInput [matDatepicker]="picker" formControlName="typeDate" />
+                    <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+                    <mat-datepicker #picker></mat-datepicker>
+                </mat-form-field>
+
+                <mat-form-field *ngIf="showWeekday" appearance="outline" floatLabel="always" style="width: 100%">
+                    <mat-label>Selecciona el día de la semana</mat-label>
+                    <mat-select formControlName="typeDate">
+                        <mat-option *ngFor="let day of weekDays" [value]="day.value">{{ day.label }}</mat-option>
+                    </mat-select>
+                </mat-form-field>
+
+                <mat-form-field *ngIf="showDayOfMonth" appearance="outline" floatLabel="always" style="width: 100%">
+                    <mat-label>Dia del mes</mat-label>
+                    <mat-select formControlName="typeDate">
+                        <mat-option *ngFor="let day of daysOfMonth" [value]="day">{{ day }}</mat-option>
+                    </mat-select>
+                </mat-form-field>
+            </div>
+            <div class="time-field-container">
+                <ngx-mat-timepicker formControlName="typeDate" [defaultTime]="[0, 0, 0]"></ngx-mat-timepicker>
+            </div>
         </div>
+
         <mat-form-field appearance="outline" floatLabel="always" style="width: 100%">
             <mat-label>Receptores</mat-label>
             <input matInput formControlName="listEmails" placeholder="Receptores" />
