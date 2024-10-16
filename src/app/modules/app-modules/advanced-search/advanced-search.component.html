@@ -121,9 +121,9 @@
                                     fxLayoutAlign="space-between start"
                                 >
                                     <mat-form-field appearance="outline" floatLabel="always" style="width: 100%">
-                                        <mat-label>Filtros prefijados</mat-label>
+                                        <mat-label>Tipo de fecha prefijada</mat-label>
                                         <mat-select
-                                            formControlName="scheduledReports"
+                                            formControlName="dateContextType"
                                             (selectionChange)="onFilterChange($event.value)"
                                         >
                                             <mat-option *ngFor="let option of filterOptions" [value]="option.id">{{

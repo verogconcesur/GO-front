@@ -37,7 +37,6 @@ export class AdvSearchSaveFavDialogComponent extends ComponentToExtendForCustomD
   public showWeekday = false;
   public showDayOfMonth = false;
   public showDiary = false;
-  public daysOfMonth: number[] = [];
   public filterOptions = [
     { id: 1, name: 'Unica' },
     { id: 2, name: 'Diaria' },
@@ -45,13 +44,27 @@ export class AdvSearchSaveFavDialogComponent extends ComponentToExtendForCustomD
     { id: 4, name: 'Mensual' }
   ];
   public weekDays = [
-    { value: 'monday', label: 'Lunes' },
-    { value: 'tuesday', label: 'Martes' },
-    { value: 'wednesday', label: 'Miércoles' },
-    { value: 'thursday', label: 'Jueves' },
-    { value: 'friday', label: 'Viernes' },
-    { value: 'saturday', label: 'Sábado' },
-    { value: 'sunday', label: 'Domingo' }
+    { value: '1', label: 'Lunes' },
+    { value: '2', label: 'Martes' },
+    { value: '3', label: 'Miércoles' },
+    { value: '4', label: 'Jueves' },
+    { value: '5', label: 'Viernes' },
+    { value: '6', label: 'Sábado' },
+    { value: '7', label: 'Domingo' }
+  ];
+  public monthDays = [
+    { value: '1', label: 'Enero' },
+    { value: '2', label: 'Febrero' },
+    { value: '3', label: 'Marzo' },
+    { value: '4', label: 'Abril' },
+    { value: '5', label: 'Mayo' },
+    { value: '6', label: 'Junio' },
+    { value: '7', label: 'Julio' },
+    { value: '8', label: 'Agosto' },
+    { value: '9', label: 'Septiembre' },
+    { value: '10', label: 'Octubre' },
+    { value: '11', label: 'Noviembre' },
+    { value: '12', label: 'Diciembre' }
   ];
   private previousName: string = null;
   constructor(
@@ -86,7 +99,6 @@ export class AdvSearchSaveFavDialogComponent extends ComponentToExtendForCustomD
   }
 
   ngOnInit(): void {
-    this.generateDaysOfMonth();
     this.previousName = this.extendedComponentData.advSearchForm.get('name').value;
     this.advSearchForm = lodash.cloneDeep(this.extendedComponentData.advSearchForm);
     this.isAdmin = this.extendedComponentData.isAdmin;
@@ -182,8 +194,5 @@ export class AdvSearchSaveFavDialogComponent extends ComponentToExtendForCustomD
     this.showWeekday = false;
     this.showDayOfMonth = false;
     this.showDiary = false;
-  }
-  private generateDaysOfMonth(): void {
-    this.daysOfMonth = Array.from({ length: 31 }, (_, i) => i + 1);
   }
 }

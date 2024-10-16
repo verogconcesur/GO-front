@@ -9,9 +9,13 @@ export default interface AdvSearchDTO {
   userId: number;
   allUsers: boolean;
   scheduledQueries?: string;
-  typeDate?: string;
-  listEmails?: string[];
-  queryMark?: boolean;
+  scheduled?: boolean;
+  scheduleType?: string;
+  scheduledDate?: string;
+  scheduledWeekDay?: string;
+  scheduledMonthDay?: string;
+  scheduledTime?: string;
+  scheduledReceivers?: string[];
   editable: boolean;
   unionType: 'TYPE_AND' | 'TYPE_OR';
   advancedSearchItems: AdvancedSearchItem[];
@@ -30,6 +34,7 @@ export interface AdvancedSearchItem {
 export interface AdvancedSearchContext {
   dateCardFrom?: string;
   dateCardTo?: string;
+  dateContextType?: string;
   facilitiesIds?: number[];
   workflowsIds?: number[];
   statesIds?: number[];

@@ -94,12 +94,12 @@ export class AdvancedSearchComponent implements OnInit {
   public escapedValue = '';
   public operators: AdvSearchOperatorDTO[] = [];
   public filterOptions = [
-    { id: 1, name: 'Hoy' },
-    { id: 2, name: 'Semana en curso' },
-    { id: 3, name: 'Última semana' },
-    { id: 4, name: 'Mes en curso' },
-    { id: 5, name: 'Último mes' },
-    { id: 6, name: 'Custom' }
+    { id: 'TODAY', name: 'Hoy' },
+    { id: 'CURRENT_WEEK', name: 'Semana en curso' },
+    { id: 'LAST_WEEK', name: 'Última semana' },
+    { id: 'CURRENT_MONTH', name: 'Mes en curso' },
+    { id: 'LAST_MONTH', name: 'Último mes' },
+    { id: 'CUSTOM', name: 'Custom' }
   ];
   constructor(
     private advSearchService: AdvSearchService,
@@ -126,11 +126,11 @@ export class AdvancedSearchComponent implements OnInit {
   }
 
   public contextErrors(): boolean {
-    const scheduledReportsValue = this.advSearchForm.get('advancedSearchContext').get('scheduledReports')?.value;
+    const scheduledReportsValue = this.advSearchForm.get('advancedSearchContext').get('dateContextType')?.value;
     if (!scheduledReportsValue) {
       return true;
     }
-    if (scheduledReportsValue === 6) {
+    if (scheduledReportsValue === 'CUSTOM') {
       return (
         !this.advSearchForm.get('advancedSearchContext')?.get('dateCardFrom')?.value ||
         !this.advSearchForm.get('advancedSearchContext')?.get('dateCardTo')?.value
@@ -152,8 +152,41 @@ export class AdvancedSearchComponent implements OnInit {
     return error;
   }
 
-  public onFilterChange(selectedValue: number): void {
-    this.showDateRangePicker = selectedValue === 6;
+  public onFilterChange(selectedValue: string): void {
+    if (selectedValue === 'TODAY') {
+      const today = moment().toDate();
+      this.advSearchForm.get('advancedSearchContext')?.get('dateCardFrom')?.setValue(today);
+      this.advSearchForm.get('advancedSearchContext')?.get('dateCardTo')?.setValue(today);
+      this.showDateRangePicker = true;
+    } else if (selectedValue === 'CURRENT_WEEK') {
+      const startOfWeek = moment().startOf('isoWeek').toDate();
+      const today = moment().toDate();
+      this.advSearchForm.get('advancedSearchContext')?.get('dateCardFrom')?.setValue(startOfWeek);
+      this.advSearchForm.get('advancedSearchContext')?.get('dateCardTo')?.setValue(today);
+      this.showDateRangePicker = true;
+    } else if (selectedValue === 'LAST_WEEK') {
+      const startOfLastWeek = moment().subtract(1, 'week').startOf('isoWeek').toDate();
+      const endOfLastWeek = moment().subtract(1, 'week').endOf('isoWeek').toDate();
+      this.advSearchForm.get('advancedSearchContext')?.get('dateCardFrom')?.setValue(startOfLastWeek);
+      this.advSearchForm.get('advancedSearchContext')?.get('dateCardTo')?.setValue(endOfLastWeek);
+      this.showDateRangePicker = true;
+    } else if (selectedValue === 'CURRENT_MONTH') {
+      const startOfMonth = moment().startOf('month').toDate();
+      const today = moment().toDate();
+      this.advSearchForm.get('advancedSearchContext')?.get('dateCardFrom')?.setValue(startOfMonth);
+      this.advSearchForm.get('advancedSearchContext')?.get('dateCardTo')?.setValue(today);
+      this.showDateRangePicker = true;
+    } else if (selectedValue === 'LAST_MONTH') {
+      const startOfLastMonth = moment().subtract(1, 'month').startOf('month').toDate();
+      const endOfLastMonth = moment().subtract(1, 'month').endOf('month').toDate();
+      this.advSearchForm.get('advancedSearchContext')?.get('dateCardFrom')?.setValue(startOfLastMonth);
+      this.advSearchForm.get('advancedSearchContext')?.get('dateCardTo')?.setValue(endOfLastMonth);
+      this.showDateRangePicker = true;
+    } else {
+      this.advSearchForm.get('advancedSearchContext')?.get('dateCardFrom')?.setValue(null);
+      this.advSearchForm.get('advancedSearchContext')?.get('dateCardTo')?.setValue(null);
+      this.showDateRangePicker = true;
+    }
   }
 
   public runSearch(): void {
@@ -177,6 +210,7 @@ export class AdvancedSearchComponent implements OnInit {
     }
   }
   public setAdvSearchData(): void {
+    console.log('entra');
     this.advSearchSelected = this.advSearchSelected
       ? this.advSearchSelected
       : {
@@ -194,7 +228,10 @@ export class AdvancedSearchComponent implements OnInit {
     this.advSearchSelected.advancedSearchCols = this.columns.getRawValue();
     this.advSearchSelected.advancedSearchContext = {};
     const context = this.advSearchForm.get('advancedSearchContext').getRawValue() as AdvancedSearchContext;
+    this.advSearchSelected.advancedSearchContext.dateContextType = context.dateContextType;
+    console.log(context.dateContextType);
     this.advSearchSelected.advancedSearchContext.dateCardFrom = moment(context.dateCardFrom).format('DD/MM/YYYY');
+    console.log(moment(context.dateCardFrom).format('DD/MM/YYYY'));
     this.advSearchSelected.advancedSearchContext.dateCardTo = moment(context.dateCardTo).format('DD/MM/YYYY');
     this.advSearchSelected.advancedSearchContext.facilitiesIds = context.facilities.map((f: FacilityDTO) => f.id);
     this.advSearchSelected.advancedSearchContext.workflowsIds = context.workflows.map((f: FacilityDTO) => f.id);
@@ -703,9 +740,13 @@ export class AdvancedSearchComponent implements OnInit {
       userId: [advSearch?.userId ? advSearch.userId : this.admService.getUserId()],
       allUsers: [advSearch?.allUsers ? advSearch.allUsers : false],
       scheduledQueries: [advSearch?.scheduledQueries ? advSearch.scheduledQueries : null],
-      typeDate: [advSearch?.typeDate ? advSearch.typeDate : null],
-      listEmails: [advSearch?.listEmails ? advSearch.listEmails : null, EmailValidator.validate],
-      queryMark: [advSearch?.queryMark ? advSearch.queryMark : false],
+      scheduleType: [advSearch?.scheduleType ? advSearch.scheduleType : null],
+      scheduledDate: [advSearch?.scheduledDate ? advSearch.scheduledDate : null],
+      scheduledWeekDay: [advSearch?.scheduledWeekDay ? advSearch.scheduledWeekDay : null],
+      scheduledMonthDay: [advSearch?.scheduledMonthDay ? advSearch.scheduledMonthDay : null],
+      scheduledTime: [advSearch?.scheduledTime ? advSearch.scheduledTime : null],
+      scheduledReceivers: [advSearch?.scheduledReceivers ? advSearch.scheduledReceivers : null, EmailValidator.validate],
+      scheduled: [advSearch?.scheduled ? advSearch.scheduled : false],
       editable: [advSearch?.editable === false ? advSearch.editable : true],
       advancedSearchContext: this.fb.group({
         facilities: [[]],
@@ -714,7 +755,7 @@ export class AdvancedSearchComponent implements OnInit {
         substates: [[]],
         dateCardFrom: [null, Validators.required],
         dateCardTo: [null, Validators.required],
-        scheduledReports: [''],
+        dateContextType: [''],
         filterStateForm: [''],
         filterSubstateForm: ['']
       }),
@@ -729,6 +770,10 @@ export class AdvancedSearchComponent implements OnInit {
         }
         if (advSearch.advancedSearchContext.dateCardTo) {
           this.context.dateCardTo.setValue(moment(advSearch.advancedSearchContext.dateCardTo, 'DD-MM-YYYY').toDate());
+        }
+        if (advSearch.advancedSearchContext.dateContextType) {
+          this.context.dateContextType.setValue(advSearch.advancedSearchContext.dateContextType);
+          this.showDateRangePicker = true;
         }
         if (advSearch.advancedSearchContext.facilitiesIds) {
           this.context.facilities.setValue(
