@@ -48,13 +48,16 @@
                 </mat-form-field>
             </div>
             <div class="time-field-container">
-                <input
-                    id="scheduledTime"
-                    type="time"
-                    formControlName="scheduledTime"
-                    class="time-input"
-                    (change)="validateTime($event)"
-                />
+                <div class="time-field-container">
+                    <ngx-mat-timepicker
+                        formControlName="scheduledTime"
+                        [stepMinute]="30"
+                        [defaultTime]="[0, 0, 0]"
+                        (keydown)="$event.preventDefault()"
+                    >
+                        > > ></ngx-mat-timepicker
+                    >
+                </div>
             </div>
         </div>
 

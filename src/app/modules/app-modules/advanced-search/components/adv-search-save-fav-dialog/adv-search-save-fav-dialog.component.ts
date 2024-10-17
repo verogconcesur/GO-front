@@ -28,7 +28,36 @@ export class AdvSearchSaveFavDialogComponent extends ComponentToExtendForCustomD
     name: marker('advSearch.saveFavOperation.name'),
     required: marker('errors.required'),
     allUsers: marker('advSearch.saveFavOperation.allUsers'),
-    saveAsNew: marker('advSearch.saveFavOperation.saveAsNew')
+    saveAsNew: marker('advSearch.saveFavOperation.saveAsNew'),
+    scheduledQueryMark: marker('advSearch.saveFavOperation.scheduledQueryMark'),
+    typeOfFrequency: marker('advSearch.saveFavOperation.typeOfFrequency'),
+    date: marker('advSearch.saveFavOperation.date'),
+    dayOfWeek: marker('advSearch.saveFavOperation.dayOfWeek'),
+    dayOfMonth: marker('advSearch.saveFavOperation.dayOfMonth'),
+    receivers: marker('advSearch.saveFavOperation.receivers'),
+    monday: marker('advSearch.saveFavOperation.monday'),
+    tuesday: marker('advSearch.saveFavOperation.tuesday'),
+    wednesday: marker('advSearch.saveFavOperation.wednesday'),
+    thursday: marker('advSearch.saveFavOperation.thursday'),
+    friday: marker('advSearch.saveFavOperation.friday'),
+    saturday: marker('advSearch.saveFavOperation.saturday'),
+    sunday: marker('advSearch.saveFavOperation.sunday'),
+    january: marker('advSearch.saveFavOperation.january'),
+    february: marker('advSearch.saveFavOperation.february'),
+    march: marker('advSearch.saveFavOperation.march'),
+    april: marker('advSearch.saveFavOperation.april'),
+    may: marker('advSearch.saveFavOperation.may'),
+    june: marker('advSearch.saveFavOperation.june'),
+    july: marker('advSearch.saveFavOperation.july'),
+    august: marker('advSearch.saveFavOperation.august'),
+    september: marker('advSearch.saveFavOperation.september'),
+    october: marker('advSearch.saveFavOperation.october'),
+    november: marker('advSearch.saveFavOperation.november'),
+    december: marker('advSearch.saveFavOperation.december'),
+    single: marker('advSearch.saveFavOperation.single'),
+    daily: marker('advSearch.saveFavOperation.daily'),
+    weekly: marker('advSearch.saveFavOperation.weekly'),
+    monthly: marker('advSearch.saveFavOperation.monthly')
   };
   public advSearchForm: FormGroup;
   public isAdmin = false;
@@ -38,34 +67,35 @@ export class AdvSearchSaveFavDialogComponent extends ComponentToExtendForCustomD
   public showDayOfMonth = false;
   public showDiary = false;
   public filterOptions = [
-    { id: 'SINGLE', name: 'Unica' },
-    { id: 'DAILY', name: 'Diaria' },
-    { id: 'WEEKLY', name: 'Semanal' },
-    { id: 'MONTHLY', name: 'Mensual' }
+    { id: 'SINGLE', name: this.translateService.instant('advSearch.saveFavOperation.single') },
+    { id: 'DAILY', name: this.translateService.instant('advSearch.saveFavOperation.daily') },
+    { id: 'WEEKLY', name: this.translateService.instant('advSearch.saveFavOperation.weekly') },
+    { id: 'MONTHLY', name: this.translateService.instant('advSearch.saveFavOperation.monthly') }
   ];
   public weekDays = [
-    { value: '1', label: 'Lunes' },
-    { value: '2', label: 'Martes' },
-    { value: '3', label: 'Miércoles' },
-    { value: '4', label: 'Jueves' },
-    { value: '5', label: 'Viernes' },
-    { value: '6', label: 'Sábado' },
-    { value: '7', label: 'Domingo' }
+    { value: '1', label: this.translateService.instant('advSearch.saveFavOperation.monday') },
+    { value: '2', label: this.translateService.instant('advSearch.saveFavOperation.tuesday') },
+    { value: '3', label: this.translateService.instant('advSearch.saveFavOperation.wednesday') },
+    { value: '4', label: this.translateService.instant('advSearch.saveFavOperation.thursday') },
+    { value: '5', label: this.translateService.instant('advSearch.saveFavOperation.friday') },
+    { value: '6', label: this.translateService.instant('advSearch.saveFavOperation.saturday') },
+    { value: '7', label: this.translateService.instant('advSearch.saveFavOperation.sunday') }
   ];
   public monthDays = [
-    { value: '1', label: 'Enero' },
-    { value: '2', label: 'Febrero' },
-    { value: '3', label: 'Marzo' },
-    { value: '4', label: 'Abril' },
-    { value: '5', label: 'Mayo' },
-    { value: '6', label: 'Junio' },
-    { value: '7', label: 'Julio' },
-    { value: '8', label: 'Agosto' },
-    { value: '9', label: 'Septiembre' },
-    { value: '10', label: 'Octubre' },
-    { value: '11', label: 'Noviembre' },
-    { value: '12', label: 'Diciembre' }
+    { value: '1', label: this.translateService.instant('advSearch.saveFavOperation.january') },
+    { value: '2', label: this.translateService.instant('advSearch.saveFavOperation.february') },
+    { value: '3', label: this.translateService.instant('advSearch.saveFavOperation.march') },
+    { value: '4', label: this.translateService.instant('advSearch.saveFavOperation.april') },
+    { value: '5', label: this.translateService.instant('advSearch.saveFavOperation.may') },
+    { value: '6', label: this.translateService.instant('advSearch.saveFavOperation.june') },
+    { value: '7', label: this.translateService.instant('advSearch.saveFavOperation.july') },
+    { value: '8', label: this.translateService.instant('advSearch.saveFavOperation.august') },
+    { value: '9', label: this.translateService.instant('advSearch.saveFavOperation.september') },
+    { value: '10', label: this.translateService.instant('advSearch.saveFavOperation.october') },
+    { value: '11', label: this.translateService.instant('advSearch.saveFavOperation.november') },
+    { value: '12', label: this.translateService.instant('advSearch.saveFavOperation.december') }
   ];
+
   private previousName: string = null;
   constructor(
     private translateService: TranslateService,
@@ -83,10 +113,7 @@ export class AdvSearchSaveFavDialogComponent extends ComponentToExtendForCustomD
   get form() {
     return this.advSearchForm.controls;
   }
-  // onCheckboxChange(event: MatCheckboxChange): void {
-  //   console.log(event.checked);
-  //   console.log(this.advSearchForm.get('scheduled').value);
-  // }
+
   public onFilterChange(selectedValue: string): void {
     this.resetVisibility();
     if (selectedValue === 'SINGLE') {
@@ -181,20 +208,6 @@ export class AdvSearchSaveFavDialogComponent extends ComponentToExtendForCustomD
         this.spinnerService.hide(spinner);
       })
     );
-  }
-
-  validateTime(event: Event): void {
-    const input = event.target as HTMLInputElement;
-    const timeValue = input.value;
-    const [hours, minutes] = timeValue.split(':').map(Number);
-    const roundedMinutes = Math.round(minutes / 30) * 30;
-    const newHours = roundedMinutes === 60 ? hours + 1 : hours;
-    const newMinutes = roundedMinutes === 60 ? 0 : roundedMinutes;
-    const formattedTime = `${String(newHours).padStart(2, '0')}:${String(newMinutes).padStart(2, '0')}`;
-    if (formattedTime !== timeValue) {
-      input.value = formattedTime;
-      this.advSearchForm.get('scheduledTime')?.setValue(formattedTime);
-    }
   }
 
   public setAndGetFooterConfig(): CustomDialogFooterConfigI | null {

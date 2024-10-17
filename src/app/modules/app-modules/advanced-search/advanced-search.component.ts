@@ -77,7 +77,14 @@ export class AdvancedSearchComponent implements OnInit {
     search: marker('common.search'),
     selectAll: marker('common.selectAll'),
     unselectAll: marker('common.unselectAll'),
-    required: marker('errors.required')
+    required: marker('errors.required'),
+    today: marker('advSearch.today'),
+    current_week: marker('advSearch.current_week'),
+    last_week: marker('advSearch.last_week'),
+    current_month: marker('advSearch.current_month'),
+    last_month: marker('advSearch.last_month'),
+    custom: marker('advSearch.custom'),
+    presetDateType: marker('advSearch.presetDateType')
   };
   public isAdmin = false;
   public showDateRangePicker = false;
@@ -94,12 +101,12 @@ export class AdvancedSearchComponent implements OnInit {
   public escapedValue = '';
   public operators: AdvSearchOperatorDTO[] = [];
   public filterOptions = [
-    { id: 'TODAY', name: 'Hoy' },
-    { id: 'CURRENT_WEEK', name: 'Semana en curso' },
-    { id: 'LAST_WEEK', name: 'Última semana' },
-    { id: 'CURRENT_MONTH', name: 'Mes en curso' },
-    { id: 'LAST_MONTH', name: 'Último mes' },
-    { id: 'CUSTOM', name: 'Custom' }
+    { id: 'TODAY', name: this.translateService.instant('advSearch.today') },
+    { id: 'CURRENT_WEEK', name: this.translateService.instant('advSearch.current_week') },
+    { id: 'LAST_WEEK', name: this.translateService.instant('advSearch.last_week') },
+    { id: 'CURRENT_MONTH', name: this.translateService.instant('advSearch.current_month') },
+    { id: 'LAST_MONTH', name: this.translateService.instant('advSearch.last_month') },
+    { id: 'CUSTOM', name: this.translateService.instant('advSearch.custom') }
   ];
   constructor(
     private advSearchService: AdvSearchService,
@@ -743,7 +750,7 @@ export class AdvancedSearchComponent implements OnInit {
       scheduledDate: [advSearch?.scheduledDate ? new Date(advSearch.scheduledDate) : null],
       scheduledWeekDay: [advSearch?.scheduledWeekDay ? advSearch.scheduledWeekDay.toString() : null],
       scheduledMonthDay: [advSearch?.scheduledMonthDay ? advSearch.scheduledMonthDay.toString() : null],
-      scheduledTime: [advSearch?.scheduledTime ? advSearch.scheduledTime : null],
+      scheduledTime: [advSearch?.scheduledTime ? moment(advSearch.scheduledTime, 'HH:mm:ss') : null],
       scheduledReceivers: [advSearch?.scheduledReceivers ? advSearch.scheduledReceivers : null, EmailValidator.validate],
       scheduled: [advSearch?.scheduled ? advSearch.scheduled : false],
       editable: [advSearch?.editable === false ? advSearch.editable : true],
@@ -819,7 +826,6 @@ export class AdvancedSearchComponent implements OnInit {
       }
     }
     this.changeWorkflow();
-    console.log(this.advSearchForm);
   }
   private initListeners(): void {
     this.statesOptions = this.advSearchForm
