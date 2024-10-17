@@ -15,16 +15,16 @@
         <div class="save-fav__form__row" *ngIf="form.editable.value && form.id.value">
             <mat-checkbox [formControl]="saveAsNewFormControl">{{ labels.saveAsNew | translate }}</mat-checkbox>
         </div>
-        <div class="save-fav__form__row">
-            <mat-checkbox formControlName="scheduled ">Marca de consulta programada</mat-checkbox>
+        <div *ngIf="isAdmin" class="save-fav__form__row">
+            <mat-checkbox formControlName="scheduled">Marca de consulta programada</mat-checkbox>
         </div>
-        <mat-form-field appearance="outline" floatLabel="always" style="width: 100%">
+        <mat-form-field *ngIf="isAdmin" appearance="outline" floatLabel="always" style="width: 100%">
             <mat-label>Tipo de periodicidad</mat-label>
             <mat-select (selectionChange)="onFilterChange($event.value)" formControlName="scheduleType">
                 <mat-option *ngFor="let option of filterOptions" [value]="option.id">{{ option.name }}</mat-option>
             </mat-select>
         </mat-form-field>
-        <div class="form-container" *ngIf="showDate || showWeekday || showDayOfMonth || showDiary">
+        <div class="form-container" *ngIf="(showDate || showWeekday || showDayOfMonth || showDiary) && isAdmin">
             <div class="form-field-container">
                 <mat-form-field *ngIf="showDate" appearance="outline" floatLabel="always" style="width: 100%">
                     <mat-label>Fecha</mat-label>
@@ -48,11 +48,17 @@
                 </mat-form-field>
             </div>
             <div class="time-field-container">
-                <ngx-mat-timepicker formControlName="scheduledTime" [defaultTime]="[0, 0, 0]"></ngx-mat-timepicker>
+                <input
+                    id="scheduledTime"
+                    type="time"
+                    formControlName="scheduledTime"
+                    class="time-input"
+                    (change)="validateTime($event)"
+                />
             </div>
         </div>
 
-        <mat-form-field appearance="outline" floatLabel="always" style="width: 100%">
+        <mat-form-field *ngIf="isAdmin" appearance="outline" floatLabel="always" style="width: 100%">
             <mat-label>Receptores</mat-label>
             <input matInput formControlName="scheduledReceivers" placeholder="Receptores" />
             <mat-error *ngIf="advSearchForm.get('scheduledReceivers')?.hasError('invalidEmail')">

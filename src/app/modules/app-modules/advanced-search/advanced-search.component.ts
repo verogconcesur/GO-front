@@ -210,7 +210,6 @@ export class AdvancedSearchComponent implements OnInit {
     }
   }
   public setAdvSearchData(): void {
-    console.log('entra');
     this.advSearchSelected = this.advSearchSelected
       ? this.advSearchSelected
       : {
@@ -229,9 +228,7 @@ export class AdvancedSearchComponent implements OnInit {
     this.advSearchSelected.advancedSearchContext = {};
     const context = this.advSearchForm.get('advancedSearchContext').getRawValue() as AdvancedSearchContext;
     this.advSearchSelected.advancedSearchContext.dateContextType = context.dateContextType;
-    console.log(context.dateContextType);
     this.advSearchSelected.advancedSearchContext.dateCardFrom = moment(context.dateCardFrom).format('DD/MM/YYYY');
-    console.log(moment(context.dateCardFrom).format('DD/MM/YYYY'));
     this.advSearchSelected.advancedSearchContext.dateCardTo = moment(context.dateCardTo).format('DD/MM/YYYY');
     this.advSearchSelected.advancedSearchContext.facilitiesIds = context.facilities.map((f: FacilityDTO) => f.id);
     this.advSearchSelected.advancedSearchContext.workflowsIds = context.workflows.map((f: FacilityDTO) => f.id);
@@ -631,6 +628,7 @@ export class AdvancedSearchComponent implements OnInit {
         }
       });
   }
+
   editCriteria(criteria: FormGroup) {
     this.customDialogService
       .open({
@@ -655,6 +653,7 @@ export class AdvancedSearchComponent implements OnInit {
   hasErrors(): boolean {
     return !this.columns.length || this.criteriaErrors() || this.contextErrors();
   }
+
   saveFav(): void {
     this.customDialogService
       .open({
@@ -741,9 +740,9 @@ export class AdvancedSearchComponent implements OnInit {
       allUsers: [advSearch?.allUsers ? advSearch.allUsers : false],
       scheduledQueries: [advSearch?.scheduledQueries ? advSearch.scheduledQueries : null],
       scheduleType: [advSearch?.scheduleType ? advSearch.scheduleType : null],
-      scheduledDate: [advSearch?.scheduledDate ? advSearch.scheduledDate : null],
-      scheduledWeekDay: [advSearch?.scheduledWeekDay ? advSearch.scheduledWeekDay : null],
-      scheduledMonthDay: [advSearch?.scheduledMonthDay ? advSearch.scheduledMonthDay : null],
+      scheduledDate: [advSearch?.scheduledDate ? new Date(advSearch.scheduledDate) : null],
+      scheduledWeekDay: [advSearch?.scheduledWeekDay ? advSearch.scheduledWeekDay.toString() : null],
+      scheduledMonthDay: [advSearch?.scheduledMonthDay ? advSearch.scheduledMonthDay.toString() : null],
       scheduledTime: [advSearch?.scheduledTime ? advSearch.scheduledTime : null],
       scheduledReceivers: [advSearch?.scheduledReceivers ? advSearch.scheduledReceivers : null, EmailValidator.validate],
       scheduled: [advSearch?.scheduled ? advSearch.scheduled : false],
@@ -820,6 +819,7 @@ export class AdvancedSearchComponent implements OnInit {
       }
     }
     this.changeWorkflow();
+    console.log(this.advSearchForm);
   }
   private initListeners(): void {
     this.statesOptions = this.advSearchForm

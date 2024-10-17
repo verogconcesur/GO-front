@@ -38,10 +38,10 @@ export class AdvSearchSaveFavDialogComponent extends ComponentToExtendForCustomD
   public showDayOfMonth = false;
   public showDiary = false;
   public filterOptions = [
-    { id: 1, name: 'Unica' },
-    { id: 2, name: 'Diaria' },
-    { id: 3, name: 'Semanal' },
-    { id: 4, name: 'Mensual' }
+    { id: 'SINGLE', name: 'Unica' },
+    { id: 'DAILY', name: 'Diaria' },
+    { id: 'WEEKLY', name: 'Semanal' },
+    { id: 'MONTHLY', name: 'Mensual' }
   ];
   public weekDays = [
     { value: '1', label: 'Lunes' },
@@ -83,17 +83,19 @@ export class AdvSearchSaveFavDialogComponent extends ComponentToExtendForCustomD
   get form() {
     return this.advSearchForm.controls;
   }
-
-  public onFilterChange(selectedValue: number): void {
+  // onCheckboxChange(event: MatCheckboxChange): void {
+  //   console.log(event.checked);
+  //   console.log(this.advSearchForm.get('scheduled').value);
+  // }
+  public onFilterChange(selectedValue: string): void {
     this.resetVisibility();
-
-    if (selectedValue === 1) {
+    if (selectedValue === 'SINGLE') {
       this.showDate = true;
-    } else if (selectedValue === 2) {
+    } else if (selectedValue === 'DAILY') {
       this.showDiary = true;
-    } else if (selectedValue === 3) {
+    } else if (selectedValue === 'WEEKLY') {
       this.showWeekday = true;
-    } else if (selectedValue === 4) {
+    } else if (selectedValue === 'MONTHLY') {
       this.showDayOfMonth = true;
     }
   }
@@ -110,6 +112,9 @@ export class AdvSearchSaveFavDialogComponent extends ComponentToExtendForCustomD
       super.MODAL_TITLE = this.translateService.instant(marker('advSearch.saveFavOperation.duplicateModeTitle'));
     } else {
       super.MODAL_TITLE = this.translateService.instant(marker('advSearch.saveFavOperation.title'));
+    }
+    if (this.advSearchForm.get('scheduleType')?.value) {
+      this.onFilterChange(this.advSearchForm.get('scheduleType')?.value);
     }
   }
 
@@ -129,11 +134,20 @@ export class AdvSearchSaveFavDialogComponent extends ComponentToExtendForCustomD
 
   public onSubmitCustomDialog(): Observable<AdvSearchDTO | boolean> {
     const dataToSend: AdvSearchDTO = this.advSearchForm.getRawValue();
+    console.log(dataToSend);
+    console.log(dataToSend);
+    const scheduledTime = dataToSend.scheduledTime;
+    if (scheduledTime) {
+      const formattedTime = moment(scheduledTime, 'HH:mm').format('HH:mm:ss');
+      dataToSend.scheduledTime = formattedTime;
+    }
+
     if ((!this.advSearch.editable && this.advSearch.id) || this.saveAsNewFormControl.value) {
       dataToSend.id = null;
     }
     dataToSend.advancedSearchContext.dateCardFrom = moment(dataToSend.advancedSearchContext.dateCardFrom).format('DD/MM/YYYY');
     dataToSend.advancedSearchContext.dateCardTo = moment(dataToSend.advancedSearchContext.dateCardTo).format('DD/MM/YYYY');
+
     if (dataToSend.advancedSearchContext.states.length) {
       dataToSend.advancedSearchContext.statesIds = dataToSend.advancedSearchContext.states.map((item) => item.id);
     }
@@ -146,6 +160,7 @@ export class AdvSearchSaveFavDialogComponent extends ComponentToExtendForCustomD
     if (dataToSend.advancedSearchContext.facilities.length) {
       dataToSend.advancedSearchContext.facilitiesIds = dataToSend.advancedSearchContext.facilities.map((item) => item.id);
     }
+
     const spinner = this.spinnerService.show();
     return this.advSearchService.createAdvSearch(dataToSend).pipe(
       map((response) => {
@@ -166,6 +181,20 @@ export class AdvSearchSaveFavDialogComponent extends ComponentToExtendForCustomD
         this.spinnerService.hide(spinner);
       })
     );
+  }
+
+  validateTime(event: Event): void {
+    const input = event.target as HTMLInputElement;
+    const timeValue = input.value;
+    const [hours, minutes] = timeValue.split(':').map(Number);
+    const roundedMinutes = Math.round(minutes / 30) * 30;
+    const newHours = roundedMinutes === 60 ? hours + 1 : hours;
+    const newMinutes = roundedMinutes === 60 ? 0 : roundedMinutes;
+    const formattedTime = `${String(newHours).padStart(2, '0')}:${String(newMinutes).padStart(2, '0')}`;
+    if (formattedTime !== timeValue) {
+      input.value = formattedTime;
+      this.advSearchForm.get('scheduledTime')?.setValue(formattedTime);
+    }
   }
 
   public setAndGetFooterConfig(): CustomDialogFooterConfigI | null {
