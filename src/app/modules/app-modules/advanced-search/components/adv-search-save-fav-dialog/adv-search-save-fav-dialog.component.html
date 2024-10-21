@@ -16,38 +16,41 @@
             <mat-checkbox [formControl]="saveAsNewFormControl">{{ labels.saveAsNew | translate }}</mat-checkbox>
         </div>
         <div *ngIf="isAdmin" class="save-fav__form__row">
-            <mat-checkbox formControlName="scheduled">Marca de consulta programada</mat-checkbox>
+            <mat-checkbox formControlName="scheduled">{{ labels.scheduledQueryMark | translate }}</mat-checkbox>
         </div>
-        <mat-form-field *ngIf="isAdmin" appearance="outline" floatLabel="always" style="width: 100%">
-            <mat-label>Tipo de periodicidad</mat-label>
-            <mat-select (selectionChange)="onFilterChange($event.value)" formControlName="scheduleType">
-                <mat-option *ngFor="let option of filterOptions" [value]="option.id">{{ option.name }}</mat-option>
-            </mat-select>
-        </mat-form-field>
-        <div class="form-container" *ngIf="(showDate || showWeekday || showDayOfMonth || showDiary) && isAdmin">
-            <div class="form-field-container">
-                <mat-form-field *ngIf="showDate" appearance="outline" floatLabel="always" style="width: 100%">
-                    <mat-label>Fecha</mat-label>
-                    <input matInput [matDatepicker]="picker" formControlName="scheduledDate" />
-                    <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
-                    <mat-datepicker #picker></mat-datepicker>
-                </mat-form-field>
+        <div class="save-fav__form__row">
+            <mat-form-field *ngIf="isAdmin" appearance="outline" floatLabel="always" style="width: 100%">
+                <mat-label>{{ labels.typeOfFrequency | translate }}</mat-label>
+                <mat-select (selectionChange)="onFilterChange($event.value)" formControlName="scheduleType">
+                    <mat-option *ngFor="let option of filterOptions" [value]="option.id">{{ option.name }}</mat-option>
+                </mat-select>
+            </mat-form-field>
+        </div>
+        <div style="margin: 15px">
+            <div class="form-container" *ngIf="(showDate || showWeekday || showDayOfMonth || showDiary) && isAdmin">
+                <div class="form-field-container">
+                    <mat-form-field *ngIf="showDate" appearance="outline" floatLabel="always" style="width: 100%">
+                        <mat-label>{{ labels.date | translate }}</mat-label>
+                        <input matInput [matDatepicker]="picker" formControlName="scheduledDate" />
+                        <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+                        <mat-datepicker #picker></mat-datepicker>
+                    </mat-form-field>
 
-                <mat-form-field *ngIf="showWeekday" appearance="outline" floatLabel="always" style="width: 100%">
-                    <mat-label>Día de la semana</mat-label>
-                    <mat-select formControlName="scheduledWeekDay">
-                        <mat-option *ngFor="let day of weekDays" [value]="day.value">{{ day.label }}</mat-option>
-                    </mat-select>
-                </mat-form-field>
+                    <mat-form-field *ngIf="showWeekday" appearance="outline" floatLabel="always" style="width: 100%">
+                        <mat-label>{{ labels.dayOfWeek | translate }}</mat-label>
+                        <mat-select formControlName="scheduledWeekDay">
+                            <mat-option *ngFor="let day of weekDays" [value]="day.value">{{ day.label }}</mat-option>
+                        </mat-select>
+                    </mat-form-field>
 
-                <mat-form-field *ngIf="showDayOfMonth" appearance="outline" floatLabel="always" style="width: 100%">
-                    <mat-label>Dia del mes</mat-label>
-                    <mat-select formControlName="scheduledMonthDay">
-                        <mat-option *ngFor="let month of monthDays" [value]="month.value">{{ month.label }}</mat-option>
-                    </mat-select>
-                </mat-form-field>
-            </div>
-            <div class="time-field-container">
+                    <mat-form-field *ngIf="showDayOfMonth" appearance="outline" floatLabel="always" style="width: 100%">
+                        <mat-label>{{ labels.dayOfMonth | translate }}</mat-label>
+                        <mat-select formControlName="scheduledMonthDay">
+                            <mat-option *ngFor="let month of monthDays" [value]="month.value">{{ month.label }}</mat-option>
+                        </mat-select>
+                    </mat-form-field>
+                </div>
+
                 <div class="time-field-container">
                     <ngx-mat-timepicker
                         formControlName="scheduledTime"
@@ -55,23 +58,53 @@
                         [defaultTime]="[0, 0, 0]"
                         (keydown)="$event.preventDefault()"
                     >
-                        > > ></ngx-mat-timepicker
+                        ></ngx-mat-timepicker
                     >
                 </div>
             </div>
         </div>
+        <div class="users-container" *ngIf="isAdmin">
+            <div class="users-container__section">
+                <div class="users-container__section__title">
+                    <h1>{{ labels.receivers | translate }}</h1>
 
-        <mat-form-field *ngIf="isAdmin" appearance="outline" floatLabel="always" style="width: 100%">
-            <mat-label>Receptores</mat-label>
-            <input matInput formControlName="scheduledReceivers" placeholder="Receptores" />
-            <mat-error *ngIf="advSearchForm.get('scheduledReceivers')?.hasError('invalidEmail')">
-                {{
-                    "El formato de los correos electrónicos no es válido. Asegúrese de que los correos estén separados por comas y sean válidos."
-                }}
-            </mat-error>
-        </mat-form-field>
-        <mat-error *ngIf="getSubmitError()">
-            {{ getSubmitError() }}
-        </mat-error>
+                    <button (click)="addUser()" mat-raised-button color="primary">
+                        + <span class="create-action__normal-label">{{ labels.addUser | translate }}</span>
+                    </button>
+                </div>
+                <div class="users-container__section__content">
+                    <mat-accordion class="header-color-primary" multi>
+                        <mat-expansion-panel class="mat-elevation-z2" [expanded]="true">
+                            <mat-expansion-panel-header> </mat-expansion-panel-header>
+                            <table class="table-users table-ellipsis" mat-table [dataSource]="tableUsers" style="width: 100%">
+                                <!-- fullname Column -->
+                                <ng-container matColumnDef="fullName">
+                                    <th mat-header-cell *matHeaderCellDef>{{ labels.fullName | translate }}</th>
+                                    <td mat-cell *matCellDef="let element">
+                                        <!-- <mat-checkbox
+                                            class="user-checkbox"
+                                            [(ngModel)]="element.selected"
+                                            (ngModelChange)="userSelectionChange()"
+                                        ></mat-checkbox -->
+                                        <span>&nbsp;&nbsp;{{ element.fullName }}&nbsp; </span>
+                                    </td>
+                                </ng-container>
+                                <ng-container matColumnDef="email">
+                                    <th mat-header-cell *matHeaderCellDef>{{ labels.email | translate }}</th>
+                                    <td mat-cell *matCellDef="let element">{{ element.email }}</td>
+                                </ng-container>
+                                <tr mat-header-row *matHeaderRowDef="displayedColumns; sticky: true"></tr>
+                                <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
+                                <tr class="mat-row" *matNoDataRow>
+                                    <td class="mat-cell" style="text-align: center" [attr.colspan]="displayedColumns.length">
+                                        {{ labels.noDataToShow | translate }}
+                                    </td>
+                                </tr>
+                            </table>
+                        </mat-expansion-panel>
+                    </mat-accordion>
+                </div>
+            </div>
+        </div>
     </form>
 </div>

@@ -1,5 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import CardColumnTabItemDTO from '../cards/card-column-tab-item-dto';
+import UserDTO from '../user-permissions/user-dto';
 import AdvSearchOperatorDTO from './adv-search-operator-dto';
 import AdvSearchVariableDTO from './adv-search-variable-dto';
 
@@ -15,7 +16,7 @@ export default interface AdvSearchDTO {
   scheduledWeekDay?: string;
   scheduledMonthDay?: string;
   scheduledTime?: string;
-  scheduledReceivers?: string[];
+  scheduledReceivers?: UserDTO[];
   editable: boolean;
   unionType: 'TYPE_AND' | 'TYPE_OR';
   advancedSearchItems: AdvancedSearchItem[];

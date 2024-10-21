@@ -25,7 +25,6 @@ import { ProgressSpinnerDialogService } from '@shared/services/progress-spinner-
 import { haveArraysSameValues } from '@shared/utils/array-comparation-function';
 import { moveItemInFormArray } from '@shared/utils/moveItemInFormArray';
 import { removeItemInFormArray } from '@shared/utils/removeItemInFormArray';
-import { EmailValidator } from '@shared/validators/fav-email.validator';
 import _ from 'lodash';
 import moment from 'moment';
 import { NGXLogger } from 'ngx-logger';
@@ -750,8 +749,8 @@ export class AdvancedSearchComponent implements OnInit {
       scheduledDate: [advSearch?.scheduledDate ? new Date(advSearch.scheduledDate) : null],
       scheduledWeekDay: [advSearch?.scheduledWeekDay ? advSearch.scheduledWeekDay.toString() : null],
       scheduledMonthDay: [advSearch?.scheduledMonthDay ? advSearch.scheduledMonthDay.toString() : null],
-      scheduledTime: [advSearch?.scheduledTime ? moment(advSearch.scheduledTime, 'HH:mm:ss') : null],
-      scheduledReceivers: [advSearch?.scheduledReceivers ? advSearch.scheduledReceivers : null, EmailValidator.validate],
+      scheduledTime: [advSearch?.scheduledTime ? moment(advSearch.scheduledTime, 'HH:mm') : null],
+      scheduledReceivers: [advSearch?.scheduledReceivers ? advSearch.scheduledReceivers : null],
       scheduled: [advSearch?.scheduled ? advSearch.scheduled : false],
       editable: [advSearch?.editable === false ? advSearch.editable : true],
       advancedSearchContext: this.fb.group({

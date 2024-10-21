@@ -121,7 +121,7 @@
                                     fxLayoutAlign="space-between start"
                                 >
                                     <mat-form-field appearance="outline" floatLabel="always" style="width: 100%">
-                                        <mat-label>Tipo de fecha prefijada</mat-label>
+                                        <mat-label>{{ labels.presetDateType | translate }}</mat-label>
                                         <mat-select
                                             formControlName="dateContextType"
                                             (selectionChange)="onFilterChange($event.value)"
