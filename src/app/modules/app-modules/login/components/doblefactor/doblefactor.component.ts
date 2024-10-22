@@ -1,0 +1,136 @@
+import { Component, Inject, OnDestroy, OnInit } from '@angular/core';
+import { UntypedFormBuilder, UntypedFormGroup, Validators } from '@angular/forms';
+import { MAT_DIALOG_DATA } from '@angular/material/dialog';
+import { ActivatedRoute, Router } from '@angular/router';
+import { RouteConstants } from '@app/constants/route.constants';
+import { marker } from '@biesbjerg/ngx-translate-extract-marker';
+import UserDTO from '@data/models/user-permissions/user-dto';
+import { UserService } from '@data/services/user.service';
+import { CustomDialogFooterConfigI } from '@shared/modules/custom-dialog/interfaces/custom-dialog-footer-config';
+import { ComponentToExtendForCustomDialog } from '@shared/modules/custom-dialog/models/component-for-custom-dialog';
+import { CustomDialogService } from '@shared/modules/custom-dialog/services/custom-dialog.service';
+import { log } from 'console';
+import { finalize, Observable, of } from 'rxjs';
+
+export const enum DobleFactorComponentModalEnum {
+  ID = 'doble-factor-dialog-id',
+  PANEL_CLASS = 'doble-factor-dialog',
+  TITLE = 'DOBLE FACTOR'
+}
+
+@Component({
+  selector: 'app-doblefactor',
+  templateUrl: './doblefactor.component.html',
+  styleUrls: ['./doblefactor.component.scss']
+})
+export class DoblefactorComponent extends ComponentToExtendForCustomDialog implements OnInit,OnDestroy {
+
+  public labels = {
+    title: marker('dobleFactor.title'),
+    description: marker('dobleFactor.description'),
+    code2FA: marker('dobleFactor.code2FA'),
+    code2FAError: marker('dobleFactor.code2FAEror'),
+    noCheck2FA: marker('dobleFactor.noCheck2FA'),
+    send: marker('common.send')
+  };
+
+  public dobleFactorForm: UntypedFormGroup;
+  public userId: string = '';
+  public showNocheck: boolean = false;
+  public isCheck: boolean = false;
+  public user: UserDTO;
+
+  constructor(
+    private fb: UntypedFormBuilder,
+    private router: Router,
+    private route: ActivatedRoute,
+    private userservice: UserService,
+    private customDialogService: CustomDialogService,
+    @Inject(MAT_DIALOG_DATA) public data: UserDTO
+  ) {
+    super(
+      DobleFactorComponentModalEnum.ID,
+      DobleFactorComponentModalEnum.PANEL_CLASS,
+      DobleFactorComponentModalEnum.TITLE
+    );
+  }
+
+  ngOnInit(): void {
+    this.user = this.extendedComponentData;
+    this.userId = this.user.id.toString();
+    this.initializeForm();
+    this.sendMail2FA();
+  }
+
+  ngOnDestroy(): void {}
+
+  public confirmCloseCustomDialog(): Observable<boolean> {
+    return of(true);
+  }
+
+  public onSubmitCustomDialog(): Observable<boolean> {
+    this.userservice.checkUser2FA(this.userId, this.dobleFactorForm.value.code2FA).subscribe(
+      res => {
+        this.showNocheck = !res.valueOf();
+        this.isCheck = res.valueOf();
+        if (res) {// Si pasas la validacion 2FA
+          // Crear la cookie 2FA
+
+          // se resuelve la navegacion
+          let checkDueDatePass = this.checkDueDatePassword(this.user);
+          console.log("CheckDueDatePass:" + checkDueDatePass);
+          if (checkDueDatePass) {
+            this.router.navigate(['/', RouteConstants.DASHBOARD]);
+          } else {
+            this.router.navigate(['/login/', RouteConstants.UPDATE_PASSWORD]);
+            //this.navToUpdate();
+          }
+          this.customDialogService.close(DobleFactorComponentModalEnum.ID);
+        }
+        
+      }
+    );
+
+    return of(false);
+  }
+
+  public setAndGetFooterConfig(): CustomDialogFooterConfigI | null {
+    return {
+      show: true,
+      leftSideButtons: [],
+      rightSideButtons: [
+        {
+          type: 'submit',
+          label: this.labels.send,
+          design: 'raised',
+          color: 'primary',
+          disabledFn: () => !this.dobleFactorForm.valid
+        }
+      ]
+    };
+  }
+
+  private initializeForm(): void {
+    this.dobleFactorForm = this.fb.group(
+      {
+        code2FA: ["", Validators.minLength(4)]
+      }
+    );
+  }
+
+  private sendMail2FA(): void {
+    this.userservice.sendUser2FA(this.userId).subscribe();
+  }
+
+  private checkDueDatePassword(user:UserDTO): boolean{
+    let sixMonthBeforeDate = new Date();
+    sixMonthBeforeDate.setMonth(sixMonthBeforeDate.getMonth() - 6);
+    return (user.dueDatePass == null || user.dueDatePass < sixMonthBeforeDate) ? false : true;
+  }
+
+  private navToUpdate(): void {
+    this.router.navigate(['/login/', RouteConstants.UPDATE_PASSWORD], {
+      relativeTo: this.route
+    });
+  }
+}

@@ -6,11 +6,15 @@ import { AuthenticationService } from '@app/security/authentication.service';
 import { ConcenetError } from '@app/types/error';
 import { marker } from '@biesbjerg/ngx-translate-extract-marker';
 import LoginDTO from '@data/models/user-permissions/login-dto';
+import UserDTO from '@data/models/user-permissions/user-dto';
 import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
 import { TranslateService } from '@ngx-translate/core';
+import { CustomDialogService } from '@shared/modules/custom-dialog/services/custom-dialog.service';
 import { GlobalMessageService } from '@shared/services/global-message.service';
 import { ProgressSpinnerDialogService } from '@shared/services/progress-spinner-dialog.service';
 import { finalize } from 'rxjs/operators';
+import { DoblefactorComponent, DobleFactorComponentModalEnum } from './components/doblefactor/doblefactor.component';
+import { UserService } from '@data/services/user.service';
 
 @UntilDestroy()
 @Component({
@@ -39,7 +43,9 @@ export class LoginComponent implements OnInit {
     private spinnerService: ProgressSpinnerDialogService,
     private authenticationService: AuthenticationService,
     private globalMessageService: GlobalMessageService,
-    private translateService: TranslateService
+    private translateService: TranslateService,
+    private customDialogService: CustomDialogService,
+    private userService: UserService
   ) {}
 
   ngOnInit(): void {
@@ -70,6 +76,7 @@ export class LoginComponent implements OnInit {
       )
       .subscribe({
         next: (response: LoginDTO) => {
+          sessionStorage.setItem('userName', response.user.userName);
           this.loginSuccess(response);
         },
         error: (error: ConcenetError) => {
@@ -87,7 +94,21 @@ export class LoginComponent implements OnInit {
 
   private loginSuccess(loginData: LoginDTO): void {
     this.authenticationService.setLoggedUser(loginData);
-    this.router.navigate(['/', RouteConstants.DASHBOARD]);
+
+    this.use2FAAndNavigate(loginData);
+  }
+
+  private use2FAAndNavigate(loginData: LoginDTO) {
+    let user: UserDTO = loginData.user;
+    // El 2FA se aplica solo a los usuarios normales y que tengan un email.
+    if (user.id > 1000 && user.email != null) {
+      // Si existe la cookie 2FA
+        //this.router.navigate(['/', RouteConstants.DASHBOARD]);
+      // Si no existe la cookie 2FA (porque expira a los 7 días)
+        this.openDobleFactorDialog(loginData.user);
+    } else {
+      this.router.navigate(['/', RouteConstants.DASHBOARD]);
+    }
   }
 
   private loginError(error: ConcenetError): void {
@@ -96,4 +117,15 @@ export class LoginComponent implements OnInit {
       actionText: this.translateService.instant(marker('common.close'))
     });
   }
+
+  public openDobleFactorDialog = (user?: UserDTO): void => {
+    this.customDialogService
+      .open({
+        id: DobleFactorComponentModalEnum.ID,
+        panelClass: DobleFactorComponentModalEnum.PANEL_CLASS,
+        component: DoblefactorComponent,
+        width: '500px',
+        extendedComponentData:  user
+      });
+  };
 }

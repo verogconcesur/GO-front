@@ -22,6 +22,8 @@ import ConfirmPasswordValidator from '@shared/validators/confirm-password.valida
 import { Observable, of } from 'rxjs';
 import { catchError, finalize, map, take, tap } from 'rxjs/operators';
 import { UsersPermissionsComponent } from '../users-permissions/users-permissions.component';
+import { WorkflowsService } from '@data/services/workflows.service';
+import WorkflowDTO from '@data/models/workflows/workflow-dto';
 
 export const enum CreateEditUserComponentModalEnum {
   ID = 'create-edit-user-dialog-id',
@@ -72,6 +74,9 @@ export class CreateEditUserComponent extends ComponentToExtendForCustomDialog im
   public userForm: UntypedFormGroup;
   public rolesAsyncList: Observable<RoleDTO[]>;
   public userToEdit: UserDetailsDTO = null;
+  public workflowList: WorkflowDTO[];
+  public nombresWF: Array<{nombre:string}>;
+  public displayWFList: string = "none";
 
   constructor(
     private fb: UntypedFormBuilder,
@@ -82,7 +87,8 @@ export class CreateEditUserComponent extends ComponentToExtendForCustomDialog im
     private globalMessageService: GlobalMessageService,
     private roleService: RoleService,
     private permissionsService: PermissionsService,
-    private customDialogService: CustomDialogService
+    private customDialogService: CustomDialogService,
+    private workflowsService: WorkflowsService
   ) {
     super(
       CreateEditUserComponentModalEnum.ID,
@@ -103,6 +109,10 @@ export class CreateEditUserComponent extends ComponentToExtendForCustomDialog im
     }
     this.getUsersPermissions();
     this.initializeForm();
+    if (this.userToEdit != null) {
+      this.getWorkflowList(this.userToEdit.id);
+      this.checkUser();
+    }
     this.getListOptions();
   }
 
@@ -290,6 +300,32 @@ export class CreateEditUserComponent extends ComponentToExtendForCustomDialog im
           .map((pObj) => pObj.permission)
           .map((p) => p.id)
       ].sort()
+    );
+  }
+
+  private getWorkflowList(userId:number): void {
+    this.workflowsService
+      .getWorkflowsListByUserId(userId)
+      .pipe(take(1))
+      .subscribe(
+        (data) => {
+          this.workflowList = data ? data : [];
+          this.nombresWF = [{nombre:"Sin Workflows asociados."}];
+          if (this.workflowList != null && this.workflowList.length > 0) {
+            this.nombresWF = [];
+            this.workflowList.forEach((workflow: WorkflowDTO) => {
+              this.nombresWF.push({nombre: workflow.name});
+            });
+          }
+        }
+      );
+  }
+
+  private checkUser(): void {
+    this.userService.checkUser2FA('1001', '1234').subscribe(
+      res => {
+        console.log(res);
+      }
     );
   }
 }

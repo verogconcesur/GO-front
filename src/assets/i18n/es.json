@@ -1172,5 +1172,12 @@
         "workOrderInformation": "Información de la orden de trabajo",
         "workflowSubstateTargetCardsLimit": "Subestado destino si sobrepasa el límite",
         "workflowSubstateTargetExtra": "Subestado destino del movimiento extra"
+    },
+    "dobleFactor": {
+        "title": "Doble Factor Autenticación",
+        "description": "Para mantener la seguridad en GO y evitar la suplantación de identidad se ha implementado el Doble Factor de Autenticación (2FA). Para verificar su identidad se ha enviado un código a su correo.",
+        "code2FA": "Código 2FA",
+        "code2FAError": "Debe introducir 4 dígitos",
+        "noCheck2FA": "El código introducido no es correcto" 
     }
 }

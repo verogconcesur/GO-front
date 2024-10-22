@@ -75,6 +75,17 @@ export class WorkflowsService {
   }
 
   /**
+   * Devuelve el listado de workflow del usuario pasado por parametro userId.
+   *
+   * @returns WorkflowDTO[]
+   */
+    public getWorkflowsListByUserId(userId:number): Observable<WorkflowDTO[]> {
+      return this.http
+        .get<WorkflowDTO[]>(`${this.env.apiBaseUrl}${this.GET_WORKFLOWS_PATH}${this.GET_WORKFLOWS_LIST_PATH}/${userId}`)
+        .pipe(catchError((error) => throwError(error.error as ConcenetError)));
+    }
+
+  /**
    * Obtiene las tarjetas visibles para el usuario cuyos datos matrícula, vin, NIF/NIE o Referencia de la orden contenga el texto enviado.
    *
    * @returns WorkflowCardDTO[]

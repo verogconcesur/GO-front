@@ -1,0 +1,16 @@
+<p>{{ labels.description | translate }}</p>
+<form [formGroup]="dobleFactorForm" *ngIf="dobleFactorForm">
+
+    <div>
+        <mat-form-field appearance="outline">
+            <mat-label>{{ labels.code2FA | translate }}</mat-label>
+            <input matInput formControlName="code2FA" />
+            <mat-error class="doble-factor-error"
+                *ngIf="dobleFactorForm.controls.code2FA.invalid && dobleFactorForm.controls.code2FA.touched">
+                {{ labels.code2FAError | translate }}
+            </mat-error>
+        </mat-form-field>
+    </div>
+
+    <p *ngIf="showNocheck">{{ labels.noCheck2FA | translate }}</p>
+</form>
