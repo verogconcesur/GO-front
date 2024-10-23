@@ -625,6 +625,7 @@
             "import": "Import customer",
             "lastName": "Second name",
             "name": "Name",
+            "notValidPattern": "Format not valid",
             "phone": "Phone",
             "reference": "Reference",
             "socialSecurityId": "Identity document",
