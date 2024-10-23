@@ -7,6 +7,7 @@ import { ConcenetError } from '@app/types/error';
 import { marker } from '@biesbjerg/ngx-translate-extract-marker';
 import LoginDTO from '@data/models/user-permissions/login-dto';
 import UserDTO from '@data/models/user-permissions/user-dto';
+import { UserService } from '@data/services/user.service';
 import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
 import { TranslateService } from '@ngx-translate/core';
 import { CustomDialogService } from '@shared/modules/custom-dialog/services/custom-dialog.service';
@@ -14,7 +15,6 @@ import { GlobalMessageService } from '@shared/services/global-message.service';
 import { ProgressSpinnerDialogService } from '@shared/services/progress-spinner-dialog.service';
 import { finalize } from 'rxjs/operators';
 import { DoblefactorComponent, DobleFactorComponentModalEnum } from './components/doblefactor/doblefactor.component';
-import { UserService } from '@data/services/user.service';
 
 @UntilDestroy()
 @Component({
@@ -85,6 +85,16 @@ export class LoginComponent implements OnInit {
       });
   }
 
+  public openDobleFactorDialog = (user?: UserDTO): void => {
+    this.customDialogService.open({
+      id: DobleFactorComponentModalEnum.ID,
+      panelClass: DobleFactorComponentModalEnum.PANEL_CLASS,
+      component: DoblefactorComponent,
+      width: '500px',
+      extendedComponentData: user
+    });
+  };
+
   private initializeForm(): void {
     this.loginForm = this.fb.group({
       userName: ['', Validators.required],
@@ -99,13 +109,13 @@ export class LoginComponent implements OnInit {
   }
 
   private use2FAAndNavigate(loginData: LoginDTO) {
-    let user: UserDTO = loginData.user;
+    const user: UserDTO = loginData.user;
     // El 2FA se aplica solo a los usuarios normales y que tengan un email.
     if (user.id > 1000 && user.email != null) {
       // Si existe la cookie 2FA
-        //this.router.navigate(['/', RouteConstants.DASHBOARD]);
+      //this.router.navigate(['/', RouteConstants.DASHBOARD]);
       // Si no existe la cookie 2FA (porque expira a los 7 días)
-        this.openDobleFactorDialog(loginData.user);
+      this.openDobleFactorDialog(loginData.user);
     } else {
       this.router.navigate(['/', RouteConstants.DASHBOARD]);
     }
@@ -117,15 +127,4 @@ export class LoginComponent implements OnInit {
       actionText: this.translateService.instant(marker('common.close'))
     });
   }
-
-  public openDobleFactorDialog = (user?: UserDTO): void => {
-    this.customDialogService
-      .open({
-        id: DobleFactorComponentModalEnum.ID,
-        panelClass: DobleFactorComponentModalEnum.PANEL_CLASS,
-        component: DoblefactorComponent,
-        width: '500px',
-        extendedComponentData:  user
-      });
-  };
 }

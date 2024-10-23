@@ -9,8 +9,7 @@ import { UserService } from '@data/services/user.service';
 import { CustomDialogFooterConfigI } from '@shared/modules/custom-dialog/interfaces/custom-dialog-footer-config';
 import { ComponentToExtendForCustomDialog } from '@shared/modules/custom-dialog/models/component-for-custom-dialog';
 import { CustomDialogService } from '@shared/modules/custom-dialog/services/custom-dialog.service';
-import { log } from 'console';
-import { finalize, Observable, of } from 'rxjs';
+import { Observable, of } from 'rxjs';
 
 export const enum DobleFactorComponentModalEnum {
   ID = 'doble-factor-dialog-id',
@@ -23,8 +22,7 @@ export const enum DobleFactorComponentModalEnum {
   templateUrl: './doblefactor.component.html',
   styleUrls: ['./doblefactor.component.scss']
 })
-export class DoblefactorComponent extends ComponentToExtendForCustomDialog implements OnInit,OnDestroy {
-
+export class DoblefactorComponent extends ComponentToExtendForCustomDialog implements OnInit, OnDestroy {
   public labels = {
     title: marker('dobleFactor.title'),
     description: marker('dobleFactor.description'),
@@ -35,9 +33,9 @@ export class DoblefactorComponent extends ComponentToExtendForCustomDialog imple
   };
 
   public dobleFactorForm: UntypedFormGroup;
-  public userId: string = '';
-  public showNocheck: boolean = false;
-  public isCheck: boolean = false;
+  public userId = '';
+  public showNocheck = false;
+  public isCheck = false;
   public user: UserDTO;
 
   constructor(
@@ -48,11 +46,7 @@ export class DoblefactorComponent extends ComponentToExtendForCustomDialog imple
     private customDialogService: CustomDialogService,
     @Inject(MAT_DIALOG_DATA) public data: UserDTO
   ) {
-    super(
-      DobleFactorComponentModalEnum.ID,
-      DobleFactorComponentModalEnum.PANEL_CLASS,
-      DobleFactorComponentModalEnum.TITLE
-    );
+    super(DobleFactorComponentModalEnum.ID, DobleFactorComponentModalEnum.PANEL_CLASS, DobleFactorComponentModalEnum.TITLE);
   }
 
   ngOnInit(): void {
@@ -69,27 +63,25 @@ export class DoblefactorComponent extends ComponentToExtendForCustomDialog imple
   }
 
   public onSubmitCustomDialog(): Observable<boolean> {
-    this.userservice.checkUser2FA(this.userId, this.dobleFactorForm.value.code2FA).subscribe(
-      res => {
-        this.showNocheck = !res.valueOf();
-        this.isCheck = res.valueOf();
-        if (res) {// Si pasas la validacion 2FA
-          // Crear la cookie 2FA
+    this.userservice.checkUser2FA(this.userId, this.dobleFactorForm.value.code2FA).subscribe((res) => {
+      this.showNocheck = !res.valueOf();
+      this.isCheck = res.valueOf();
+      if (res) {
+        // Si pasas la validacion 2FA
+        // Crear la cookie 2FA
 
-          // se resuelve la navegacion
-          let checkDueDatePass = this.checkDueDatePassword(this.user);
-          console.log("CheckDueDatePass:" + checkDueDatePass);
-          if (checkDueDatePass) {
-            this.router.navigate(['/', RouteConstants.DASHBOARD]);
-          } else {
-            this.router.navigate(['/login/', RouteConstants.UPDATE_PASSWORD]);
-            //this.navToUpdate();
-          }
-          this.customDialogService.close(DobleFactorComponentModalEnum.ID);
+        // se resuelve la navegacion
+        const checkDueDatePass = this.checkDueDatePassword(this.user);
+        console.log('CheckDueDatePass:' + checkDueDatePass);
+        if (checkDueDatePass) {
+          this.router.navigate(['/', RouteConstants.DASHBOARD]);
+        } else {
+          this.router.navigate(['/login/', RouteConstants.UPDATE_PASSWORD]);
+          //this.navToUpdate();
         }
-        
+        this.customDialogService.close(DobleFactorComponentModalEnum.ID);
       }
-    );
+    });
 
     return of(false);
   }
@@ -111,21 +103,19 @@ export class DoblefactorComponent extends ComponentToExtendForCustomDialog imple
   }
 
   private initializeForm(): void {
-    this.dobleFactorForm = this.fb.group(
-      {
-        code2FA: ["", Validators.minLength(4)]
-      }
-    );
+    this.dobleFactorForm = this.fb.group({
+      code2FA: ['', Validators.minLength(4)]
+    });
   }
 
   private sendMail2FA(): void {
     this.userservice.sendUser2FA(this.userId).subscribe();
   }
 
-  private checkDueDatePassword(user:UserDTO): boolean{
-    let sixMonthBeforeDate = new Date();
+  private checkDueDatePassword(user: UserDTO): boolean {
+    const sixMonthBeforeDate = new Date();
     sixMonthBeforeDate.setMonth(sixMonthBeforeDate.getMonth() - 6);
-    return (user.dueDatePass == null || user.dueDatePass < sixMonthBeforeDate) ? false : true;
+    return user.dueDatePass == null || user.dueDatePass < sixMonthBeforeDate ? false : true;
   }
 
   private navToUpdate(): void {

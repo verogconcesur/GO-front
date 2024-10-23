@@ -7,9 +7,11 @@ import { marker } from '@biesbjerg/ngx-translate-extract-marker';
 import PermissionsDTO from '@data/models/user-permissions/permissions-dto';
 import RoleDTO from '@data/models/user-permissions/role-dto';
 import UserDetailsDTO from '@data/models/user-permissions/user-details-dto';
+import WorkflowDTO from '@data/models/workflows/workflow-dto';
 import { PermissionsService } from '@data/services/permissions.service';
 import { RoleService } from '@data/services/role.service';
 import { UserService } from '@data/services/user.service';
+import { WorkflowsService } from '@data/services/workflows.service';
 import { TranslateService } from '@ngx-translate/core';
 import { CustomDialogFooterConfigI } from '@shared/modules/custom-dialog/interfaces/custom-dialog-footer-config';
 import { ComponentToExtendForCustomDialog } from '@shared/modules/custom-dialog/models/component-for-custom-dialog';
@@ -22,8 +24,6 @@ import ConfirmPasswordValidator from '@shared/validators/confirm-password.valida
 import { Observable, of } from 'rxjs';
 import { catchError, finalize, map, take, tap } from 'rxjs/operators';
 import { UsersPermissionsComponent } from '../users-permissions/users-permissions.component';
-import { WorkflowsService } from '@data/services/workflows.service';
-import WorkflowDTO from '@data/models/workflows/workflow-dto';
 
 export const enum CreateEditUserComponentModalEnum {
   ID = 'create-edit-user-dialog-id',
@@ -53,6 +53,8 @@ export class CreateEditUserComponent extends ComponentToExtendForCustomDialog im
     edit: marker('userProfile.edit'),
     sign: marker('userProfile.sign'),
     data: marker('userProfile.data'),
+    notWorkflowData: marker('userProfile.notWorkflowData'),
+    userWorkflow: marker('userProfile.userWorkflow'),
     nameRequired: marker('userProfile.nameRequired'),
     firstNameRequired: marker('userProfile.firstNameRequired'),
     password: marker('login.password'),
@@ -75,8 +77,9 @@ export class CreateEditUserComponent extends ComponentToExtendForCustomDialog im
   public rolesAsyncList: Observable<RoleDTO[]>;
   public userToEdit: UserDetailsDTO = null;
   public workflowList: WorkflowDTO[];
-  public nombresWF: Array<{nombre:string}>;
-  public displayWFList: string = "none";
+  public nombresWF: Array<{ name: string }>;
+  // eslint-disable-next-line
+  public displayWFList: string = 'none';
 
   constructor(
     private fb: UntypedFormBuilder,
@@ -109,7 +112,7 @@ export class CreateEditUserComponent extends ComponentToExtendForCustomDialog im
     }
     this.getUsersPermissions();
     this.initializeForm();
-    if (this.userToEdit != null) {
+    if (this.userToEdit !== null) {
       this.getWorkflowList(this.userToEdit.id);
       this.checkUser();
     }
@@ -303,29 +306,25 @@ export class CreateEditUserComponent extends ComponentToExtendForCustomDialog im
     );
   }
 
-  private getWorkflowList(userId:number): void {
+  private getWorkflowList(userId: number): void {
     this.workflowsService
       .getWorkflowsListByUserId(userId)
       .pipe(take(1))
-      .subscribe(
-        (data) => {
-          this.workflowList = data ? data : [];
-          this.nombresWF = [{nombre:"Sin Workflows asociados."}];
-          if (this.workflowList != null && this.workflowList.length > 0) {
-            this.nombresWF = [];
-            this.workflowList.forEach((workflow: WorkflowDTO) => {
-              this.nombresWF.push({nombre: workflow.name});
-            });
-          }
+      .subscribe((data) => {
+        this.workflowList = data ? data : [];
+        this.nombresWF = [{ name: this.translateService.instant('userProfile.notWorkflowData') }]; //Sin Workflows asociados.
+        if (this.workflowList != null && this.workflowList.length > 0) {
+          this.nombresWF = [];
+          this.workflowList.forEach((workflow: WorkflowDTO) => {
+            this.nombresWF.push({ name: workflow.name });
+          });
         }
-      );
+      });
   }
 
   private checkUser(): void {
-    this.userService.checkUser2FA('1001', '1234').subscribe(
-      res => {
-        console.log(res);
-      }
-    );
+    this.userService.checkUser2FA('1001', '1234').subscribe((res) => {
+      console.log(res);
+    });
   }
 }

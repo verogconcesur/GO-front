@@ -125,12 +125,12 @@
             </div>
 
             <!-- Workflows -->
-            <div class="user-data__section" style="height: 200px;" [style.display]="userToEdit != null ? 'block' : 'none'">
+            <div class="user-data__section" style="height: 200px" [style.display]="userToEdit !== null ? 'block' : 'none'">
                 <div class="user-data__section__title">
-                    Workflows de este Usuario
-                    <div style="border: 2px solid #4746A3; height: 160px; border-radius: 8px; overflow: auto;">
+                    {{ labels.userWorkflow | translate }}
+                    <div class="user-data__workflows-container">
                         <ol>
-                            <li *ngFor="let nombreWF of nombresWF">{{ nombreWF.nombre }}</li>
+                            <li *ngFor="let nombreWF of nombresWF">{{ nombreWF.name }}</li>
                         </ol>
                     </div>
                 </div>

@@ -9,7 +9,6 @@ import { UserService } from '@data/services/user.service';
 import { TranslateService } from '@ngx-translate/core';
 import { GlobalMessageService } from '@shared/services/global-message.service';
 import ConfirmPasswordValidator from '@shared/validators/confirm-password.validator';
-import { forEach } from 'lodash';
 
 @Component({
   selector: 'app-update-password',
@@ -17,22 +16,21 @@ import { forEach } from 'lodash';
   styleUrls: ['./update-password.component.scss']
 })
 export class UpdatePasswordComponent implements OnInit {
-
   public updatePasswordForm: UntypedFormGroup;
-  public userName: string = '';
+  public userName = '';
 
   public labels = {
-    title: 'Actualizar Contraseña',
-    description: 'Debe reiniciar la contraseña porque es su primer inicio de sesión o porque han pasado 6 meses desde que puso una nueva contraseña.',
-    userName: 'Usuario',
-    password1: 'Nueva Contraseña',
-    password2: 'Repite Nueva Contraseña',
-    save: 'Guardar contraseña',
-    passwordRequired: 'Es necessario indicar la nueva contrasña',
-    passwordPattern: 'Es necessario repetir la nueva contrasña',
-    passwordPatternError: 'No cumple con los requisitos de la contraseña',
-    passwordMatch: 'Las contraseñas deben coincidir'
-  }
+    title: marker('updatePassword.title'),
+    description: marker('updatePassword.description'),
+    userName: marker('updatePassword.userName'),
+    password1: marker('updatePassword.password1'),
+    password2: marker('updatePassword.password2'),
+    save: marker('updatePassword.save'),
+    passwordRequired: marker('updatePassword.passwordRequired'),
+    passwordPattern: marker('updatePassword.passwordPattern'),
+    passwordPatternError: marker('updatePassword.passwordPatternError'),
+    passwordMatch: marker('updatePassword.passwordMatch')
+  };
 
   constructor(
     private fb: UntypedFormBuilder,
@@ -47,12 +45,21 @@ export class UpdatePasswordComponent implements OnInit {
     return this.updatePasswordForm.controls;
   }
 
-
   ngOnInit(): void {
     this.userName = sessionStorage.getItem('userName');
     this.initializeForm();
   }
 
+  public saveNewPassword(): void {
+    this.userservice.updatePassByUser({ hash: '', ...this.updatePasswordForm.value }).subscribe({
+      next: (response) => {
+        this.updatePasswordSuccessfully();
+      },
+      error: (error) => {
+        this.updatePasswordError(error);
+      }
+    });
+  }
 
   private initializeForm(): void {
     this.updatePasswordForm = this.fb.group(
@@ -65,21 +72,6 @@ export class UpdatePasswordComponent implements OnInit {
         validators: ConfirmPasswordValidator.mustMatch('pass', 'passConfirmation')
       }
     );
-  }
-
-  public saveNewPassword(): void {
-    this.userservice
-      .updatePassByUser({ hash: '', ...this.updatePasswordForm.value })
-      .subscribe({
-        next: (response) => {
-          console.log('updatePass Correct ' + response.fullName);
-          this.updatePasswordSuccessfully();
-        },
-        error: (error) => {
-          console.log('updatePass error' + error);
-          this.updatePasswordError(error);
-        }
-      });
   }
 
   private updatePasswordSuccessfully(): void {

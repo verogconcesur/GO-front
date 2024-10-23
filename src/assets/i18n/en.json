@@ -608,6 +608,13 @@
     "customer": {
         "searchDialog": "Customer searcher"
     },
+    "dobleFactor": {
+        "code2FA": "2FA Code",
+        "code2FAEror": "You must enter 4 digits",
+        "description": "To maintain security in GO and prevent identity theft, Two-Factor Authentication (2FA) has been implemented. A code has been sent to your email to verify your identity",
+        "noCheck2FA": "The code entered is not correct",
+        "title": "Two-Factor Authentication"
+    },
     "emails": {
         "receivers": "To",
         "subject": "Subject"
@@ -955,6 +962,18 @@
         "tpvCode": "TPV's code",
         "tpvTerminal": "TPV's terminal"
     },
+    "updatePassword": {
+        "description": "You must reset your password because this is your first login or because 6 months have passed since you last set a new password",
+        "password1": "New password",
+        "password2": "Repeat new password",
+        "passwordMatch": "Passwords must match",
+        "passwordPattern": "It is necessary to repeat the new password",
+        "passwordPatternError": "Does not meet password requirements",
+        "passwordRequired": "New password is required",
+        "save": "Save password",
+        "title": "Update password",
+        "userName": "Username"
+    },
     "user": {
         "add": "Add user",
         "delete": "Delete user",
@@ -985,12 +1004,14 @@
         "name": "Name",
         "nameRequired": "Name required",
         "nick": "User's nick",
+        "notWorkflowData": "Without associated Workflows",
         "organization": "Organization",
         "role": "Role",
         "sign": "Sign",
         "specialty": "Specialty",
         "title": "Your profile",
-        "userName": "User's name"
+        "userName": "User's name",
+        "userWorkflow": "Workflows of this User"
     },
     "users": {
         "create": "Create user",

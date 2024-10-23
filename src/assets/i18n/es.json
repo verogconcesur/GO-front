@@ -608,6 +608,13 @@
     "customer": {
         "searchDialog": "Buscador de cliente"
     },
+    "dobleFactor": {
+        "code2FA": "Código 2FA",
+        "code2FAError": "Debe introducir 4 dígitos",
+        "description": "Para mantener la seguridad en GO y evitar la suplantación de identidad se ha implementado el Doble Factor de Autenticación (2FA). Para verificar su identidad se ha enviado un código a su correo.",
+        "noCheck2FA": "El código introducido no es correcto",
+        "title": "Doble Factor de Autenticación"
+    },
     "emails": {
         "receivers": "Destinatarios",
         "subject": "Asunto"
@@ -952,6 +959,18 @@
         "tpvCode": "Número de comercio",
         "tpvTerminal": "Número de terminal"
     },
+    "updatePassword": {
+        "description": "Debe reiniciar la contraseña porque es su primer inicio de sesión o porque han pasado 6 meses desde que puso una nueva contraseña",
+        "password1": "Nueva contraseña",
+        "password2": "Repite nueva contraseña",
+        "passwordMatch": "Las contraseñas deben coincidir",
+        "passwordPattern": "Es necessario repetir la nueva contraseña",
+        "passwordPatternError": "No cumple con los requisitos de la contraseña",
+        "passwordRequired": "Es necessario indicar la nueva contraseña",
+        "save": "Guardar contraseña",
+        "title": "Actualizar contraseña",
+        "userName": "Usuario"
+    },
     "user": {
         "add": "Añadir usuario",
         "delete": "Eliminar usuario",
@@ -982,12 +1001,14 @@
         "name": "Nombre",
         "nameRequired": "El nombre es obligatorio",
         "nick": "Nick de usuario",
+        "notWorkflowData": "Sin Workflows asociados",
         "organization": "Organización",
         "role": "Rol",
         "sign": "Firma",
         "specialty": "Especialidad",
         "title": "Tu perfil",
-        "userName": "Nombre de usuario"
+        "userName": "Nombre de usuario",
+        "userWorkflow": "Workflows de este Usuario"
     },
     "users": {
         "create": "Crear usuario",
@@ -1172,12 +1193,5 @@
         "workOrderInformation": "Información de la orden de trabajo",
         "workflowSubstateTargetCardsLimit": "Subestado destino si sobrepasa el límite",
         "workflowSubstateTargetExtra": "Subestado destino del movimiento extra"
-    },
-    "dobleFactor": {
-        "title": "Doble Factor Autenticación",
-        "description": "Para mantener la seguridad en GO y evitar la suplantación de identidad se ha implementado el Doble Factor de Autenticación (2FA). Para verificar su identidad se ha enviado un código a su correo.",
-        "code2FA": "Código 2FA",
-        "code2FAError": "Debe introducir 4 dígitos",
-        "noCheck2FA": "El código introducido no es correcto" 
     }
 }

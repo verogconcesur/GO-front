@@ -99,15 +99,15 @@ export class UserService {
       .pipe(catchError((error) => throwError(error.error as ConcenetError)));
   }
 
-  public sendUser2FA(userId: String): Observable<Boolean> {
+  public sendUser2FA(userId: string): Observable<boolean> {
     return this.http
-      .get<Boolean>(`${this.env.apiBaseUrl}${this.USER_SEND2FA_PATH}/${userId}`)
+      .get<boolean>(`${this.env.apiBaseUrl}${this.USER_SEND2FA_PATH}/${userId}`)
       .pipe(catchError((error) => throwError(error.error as ConcenetError)));
   }
 
-  public checkUser2FA(userId: String, code2FA: String): Observable<Boolean> {
+  public checkUser2FA(userId: string, code2FA: string): Observable<boolean> {
     return this.http
-      .get<Boolean>(`${this.env.apiBaseUrl}${this.USER_CHECK2FA_PATH}/${userId}/?code2FA=${code2FA}`)
+      .get<boolean>(`${this.env.apiBaseUrl}${this.USER_CHECK2FA_PATH}/${userId}/?code2FA=${code2FA}`)
       .pipe(catchError((error) => throwError(error.error as ConcenetError)));
   }
 
