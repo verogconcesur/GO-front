@@ -37,7 +37,8 @@ export class ModalCustomerComponent extends ComponentToExtendForCustomDialog imp
     socialSecurityId: marker('entities.customers.socialSecurityId'),
     emailError: marker('errors.emailPattern'),
     required: marker('errors.required'),
-    data: marker('userProfile.data')
+    data: marker('userProfile.data'),
+    notValidPattern: marker('entities.customers.notValidPattern')
   };
   public minLength = 3;
   public customerForm: FormGroup;
@@ -132,9 +133,12 @@ export class ModalCustomerComponent extends ComponentToExtendForCustomDialog imp
       name: [this.customerToEdit ? this.customerToEdit.name : null],
       firstName: [this.customerToEdit ? this.customerToEdit.firstName : null],
       secondName: [this.customerToEdit ? this.customerToEdit.secondName : null],
-      email: [this.customerToEdit ? this.customerToEdit.email : null, [Validators.email]],
-      socialSecurityId: [this.customerToEdit ? this.customerToEdit.socialSecurityId : null, [Validators.required]],
-      phone: [this.customerToEdit ? this.customerToEdit.phone : null]
+      email: [this.customerToEdit ? this.customerToEdit.email : null, [Validators.email, Validators.required]],
+      socialSecurityId: [
+        this.customerToEdit ? this.customerToEdit.socialSecurityId : null,
+        [Validators.required, Validators.pattern(/^[A-Za-z0-9]*$/)]
+      ],
+      phone: [this.customerToEdit ? this.customerToEdit.phone : null, [Validators.required]]
     });
   };
 }
