@@ -230,6 +230,8 @@
             "dayOfMonth": "Day of month",
             "dayOfWeek": "Day of week",
             "december": "December",
+            "deleteReceiver": "Delete receiver",
+            "deleteReceiverMessage": "Are you sure you want to delete the receiver? The action will not be completed until saved",
             "duplicateModeTitle": "Save favourite search as copy",
             "editModeTitle": "Edit favourite search",
             "email": "Email",

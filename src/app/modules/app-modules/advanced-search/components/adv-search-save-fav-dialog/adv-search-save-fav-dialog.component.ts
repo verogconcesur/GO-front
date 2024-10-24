@@ -12,6 +12,7 @@ import { TranslateService } from '@ngx-translate/core';
 import { CustomDialogFooterConfigI } from '@shared/modules/custom-dialog/interfaces/custom-dialog-footer-config';
 import { ComponentToExtendForCustomDialog } from '@shared/modules/custom-dialog/models/component-for-custom-dialog';
 import { CustomDialogService } from '@shared/modules/custom-dialog/services/custom-dialog.service';
+import { ConfirmDialogService } from '@shared/services/confirm-dialog.service';
 import { GlobalMessageService } from '@shared/services/global-message.service';
 import { ProgressSpinnerDialogService } from '@shared/services/progress-spinner-dialog.service';
 import lodash from 'lodash';
@@ -69,7 +70,7 @@ export class AdvSearchSaveFavDialogComponent extends ComponentToExtendForCustomD
     email: marker('advSearch.saveFavOperation.email'),
     noDataToShow: marker('advSearch.saveFavOperation.noDataToShow')
   };
-  public displayedColumns = ['fullName', 'email'];
+  public displayedColumns = ['fullName', 'email', 'actions'];
   public advSearchForm: FormGroup;
   public isAdmin = false;
   public saveAsNewFormControl = new FormControl(false);
@@ -114,7 +115,8 @@ export class AdvSearchSaveFavDialogComponent extends ComponentToExtendForCustomD
     private advSearchService: AdvSearchService,
     private globalMessageService: GlobalMessageService,
     private spinnerService: ProgressSpinnerDialogService,
-    private customDialogService: CustomDialogService
+    private customDialogService: CustomDialogService,
+    private confirmDialogService: ConfirmDialogService
   ) {
     super(AdvSearchSaveFavDialogComponentModalEnum.ID, AdvSearchSaveFavDialogComponentModalEnum.PANEL_CLASS, '');
   }
@@ -223,6 +225,21 @@ export class AdvSearchSaveFavDialogComponent extends ComponentToExtendForCustomD
     );
   }
 
+  public openDeleteDialog(id: number) {
+    this.confirmDialogService
+      .open({
+        maxWidth: 500,
+        title: this.translateService.instant(marker('advSearch.saveFavOperation.deleteReceiver')),
+        message: this.translateService.instant(marker('advSearch.saveFavOperation.deleteReceiverMessage'))
+      })
+      .pipe(take(1))
+      .subscribe((ok: boolean) => {
+        if (ok) {
+          const usuariosActualizados = this.tableUsers.filter((usuarioExistente: UserDTO) => usuarioExistente.id !== id);
+          this.tableUsers = [...usuariosActualizados];
+        }
+      });
+  }
   public addUser(): void {
     this.customDialogService
       .open({

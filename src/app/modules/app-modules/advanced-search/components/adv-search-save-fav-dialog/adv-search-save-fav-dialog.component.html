@@ -79,8 +79,10 @@
                             <table class="table-users table-ellipsis" mat-table [dataSource]="tableUsers" style="width: 100%">
                                 <!-- fullname Column -->
                                 <ng-container matColumnDef="fullName">
-                                    <th mat-header-cell *matHeaderCellDef>{{ labels.fullName | translate }}</th>
-                                    <td mat-cell *matCellDef="let element">
+                                    <th mat-header-cell style="width: 42.5%" *matHeaderCellDef>
+                                        {{ labels.fullName | translate }}
+                                    </th>
+                                    <td mat-cell style="width: 42.5%" *matCellDef="let element">
                                         <!-- <mat-checkbox
                                             class="user-checkbox"
                                             [(ngModel)]="element.selected"
@@ -90,8 +92,21 @@
                                     </td>
                                 </ng-container>
                                 <ng-container matColumnDef="email">
-                                    <th mat-header-cell *matHeaderCellDef>{{ labels.email | translate }}</th>
-                                    <td mat-cell *matCellDef="let element">{{ element.email }}</td>
+                                    <th mat-header-cell style="width: 42.5%" *matHeaderCellDef>{{ labels.email | translate }}</th>
+                                    <td mat-cell style="width: 42.5%" *matCellDef="let element">{{ element.email }}</td>
+                                </ng-container>
+                                <ng-container matColumnDef="actions">
+                                    <th mat-header-cell style="width: 15%; text-align: center" *matHeaderCellDef>Acciones</th>
+                                    <td
+                                        mat-cell
+                                        style="width: 15%; text-align: center"
+                                        *matCellDef="let element"
+                                        class="action-buttons no-ellipsis"
+                                    >
+                                        <button mat-icon-button aria-label="details">
+                                            <mat-icon (click)="openDeleteDialog(element.id)">delete</mat-icon>
+                                        </button>
+                                    </td>
                                 </ng-container>
                                 <tr mat-header-row *matHeaderRowDef="displayedColumns; sticky: true"></tr>
                                 <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>

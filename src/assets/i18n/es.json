@@ -230,6 +230,8 @@
             "dayOfMonth": "Día del mes",
             "dayOfWeek": "Día de la semana",
             "december": "Diciembre",
+            "deleteReceiver": "Eliminar receptor",
+            "deleteReceiverMessage": "¿Esta seguro de que quiere eliminar el receptor? La accion no se completará hasta guardar",
             "duplicateModeTitle": "Guardar búsqueda favorita como duplicada",
             "editModeTitle": "Editar búsqueda favorita",
             "email": "Email",
