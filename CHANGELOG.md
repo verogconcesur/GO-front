@@ -2,6 +2,22 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [1.1.5](https://github.com/Delivery-Projects/concesur/concenet_front/-/compare/v1.1.4...v1.1.5) (2024-10-24)
+
+
+### Features
+
+* icono y posicionamiento al borrar comentarios ([cda2070](https://github.com/Delivery-Projects/concesur/concenet_front/-/commit/cda20707e2eec14aceaa088ab4ff72389a3a4fd5))
+* mas estilos y modal confirmacion(falta servicio) ([0b64dbc](https://github.com/Delivery-Projects/concesur/concenet_front/-/commit/0b64dbc5919cffe2ede4326f4a4f8a36177f1ec0))
+* mostrar el boton solo si tiene rol admin ([df050d4](https://github.com/Delivery-Projects/concesur/concenet_front/-/commit/df050d4af59f574b5801bce4e5e99574623bb22a))
+* servicio eliminar comentarios ([271013f](https://github.com/Delivery-Projects/concesur/concenet_front/-/commit/271013f5984fa31607eaa062edcd59f10ba3815e))
+* ticket soporte 747874 ([a038c76](https://github.com/Delivery-Projects/concesur/concenet_front/-/commit/a038c76982d0c2186e8c148cd6ab48db5fc0b345))
+
+
+### Bug Fixes
+
+* ticket soporte-109344 ([2681176](https://github.com/Delivery-Projects/concesur/concenet_front/-/commit/268117679190b11df421286f2102b1a981e20e42))
+
 ### [1.1.4](https://github.com/Delivery-Projects/concesur/concenet_front/-/compare/v1.1.3...v1.1.4) (2024-10-09)
 
 
