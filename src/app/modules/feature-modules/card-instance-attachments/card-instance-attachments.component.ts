@@ -7,6 +7,7 @@ import { ConcenetError } from '@app/types/error';
 import { marker } from '@biesbjerg/ngx-translate-extract-marker';
 import { AttachmentDTO, CardAttachmentsDTO } from '@data/models/cards/card-attachments-dto';
 import { CardAttachmentsService } from '@data/services/card-attachments.service';
+import { WorkflowRequiredFieldsAuxService } from '@modules/app-modules/workflow/aux-service/workflow-required-fields-aux.service';
 import { TranslateService } from '@ngx-translate/core';
 import { ConfirmDialogService } from '@shared/services/confirm-dialog.service';
 import { GlobalMessageService } from '@shared/services/global-message.service';
@@ -65,7 +66,8 @@ export class CardInstanceAttachmentsComponent implements OnInit, OnChanges {
     private globalMessageService: GlobalMessageService,
     private spinnerService: ProgressSpinnerDialogService,
     private mediaViewerService: MediaViewerService,
-    private authService: AuthenticationService
+    private authService: AuthenticationService,
+    public requiredFieldsAuxService: WorkflowRequiredFieldsAuxService
   ) {}
 
   ngOnInit(): void {
