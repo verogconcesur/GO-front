@@ -36,6 +36,12 @@
                         <mat-datepicker #picker></mat-datepicker>
                     </mat-form-field>
 
+                    <mat-form-field *ngIf="showDiary" appearance="outline" floatLabel="always" style="width: 100%">
+                        <input readonly="true" matInput [matDatepicker]="picker" />
+                        <mat-datepicker-toggle matSuffix [disabled]="true" [for]="picker"></mat-datepicker-toggle>
+                        <mat-datepicker #picker></mat-datepicker>
+                    </mat-form-field>
+
                     <mat-form-field *ngIf="showWeekday" appearance="outline" floatLabel="always" style="width: 100%">
                         <mat-label>{{ labels.dayOfWeek | translate }}</mat-label>
                         <mat-select formControlName="scheduledWeekDay">

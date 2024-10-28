@@ -183,12 +183,10 @@ export class AdvSearchSaveFavDialogComponent extends ComponentToExtendForCustomD
     }
     dataToSend.advancedSearchContext.dateCardFrom = moment(dataToSend.advancedSearchContext.dateCardFrom).format('DD/MM/YYYY');
     dataToSend.advancedSearchContext.dateCardTo = moment(dataToSend.advancedSearchContext.dateCardTo).format('DD/MM/YYYY');
-    if (dataToSend.scheduledTime) {
-      const time = moment(dataToSend.scheduledTime, 'HH:mm');
-      if (time.isValid()) {
-        time.add(2, 'hours');
-        dataToSend.scheduledTime = time.valueOf().toString();
-      }
+    const scheduledTime = dataToSend.scheduledTime;
+    if (scheduledTime) {
+      const formattedTime = moment(scheduledTime, 'HH:mm').format('HH:mm');
+      dataToSend.scheduledTime = formattedTime;
     }
     if (dataToSend.advancedSearchContext.states.length) {
       dataToSend.advancedSearchContext.statesIds = dataToSend.advancedSearchContext.states.map((item) => item.id);
