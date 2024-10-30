@@ -1,38 +1,40 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
+import { CdkDragDrop } from '@angular/cdk/drag-drop';
 import { Component, OnInit, ViewChild, ViewEncapsulation } from '@angular/core';
+import { AbstractControl, FormArray, FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { MatDrawer } from '@angular/material/sidenav';
+import { PermissionConstants } from '@app/constants/permission.constants';
+import { AuthenticationService } from '@app/security/authentication.service';
 import { ConcenetError } from '@app/types/error';
 import { marker } from '@biesbjerg/ngx-translate-extract-marker';
 import AdvSearchDTO, { AdvancedSearchContext, AdvancedSearchItem } from '@data/models/adv-search/adv-search-dto';
-import { AdvSearchService } from '@data/services/adv-search.service';
-import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
-import { ProgressSpinnerDialogService } from '@shared/services/progress-spinner-dialog.service';
-import { Observable, forkJoin, map, startWith, take } from 'rxjs';
-import { AdvSearchCardTableComponent } from './components/adv-search-card-table/adv-search-card-table.component';
-import { NGXLogger } from 'ngx-logger';
-import { GlobalMessageService } from '@shared/services/global-message.service';
-import { TranslateService } from '@ngx-translate/core';
-import { MatDrawer } from '@angular/material/sidenav';
-import { ConfirmDialogService } from '@shared/services/confirm-dialog.service';
+import AdvSearchOperatorDTO from '@data/models/adv-search/adv-search-operator-dto';
+import AdvancedSearchOptionsDTO from '@data/models/adv-search/adv-search-options-dto';
 import FacilityDTO from '@data/models/organization/facility-dto';
-import { FacilityService } from '@data/services/facility.sevice';
 import WorkflowCreateCardDTO from '@data/models/workflows/workflow-create-card-dto';
-import { AbstractControl, FormArray, FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
-import { AuthenticationService } from '@app/security/authentication.service';
-import { haveArraysSameValues } from '@shared/utils/array-comparation-function';
 import WorkflowStateDTO from '@data/models/workflows/workflow-state-dto';
 import WorkflowSubstateDTO from '@data/models/workflows/workflow-substate-dto';
+import { AdvSearchService } from '@data/services/adv-search.service';
+import { FacilityService } from '@data/services/facility.sevice';
+import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
+import { TranslateService } from '@ngx-translate/core';
+import { CustomDialogService } from '@shared/modules/custom-dialog/services/custom-dialog.service';
+import { ConfirmDialogService } from '@shared/services/confirm-dialog.service';
+import { GlobalMessageService } from '@shared/services/global-message.service';
+import { ProgressSpinnerDialogService } from '@shared/services/progress-spinner-dialog.service';
+import { haveArraysSameValues } from '@shared/utils/array-comparation-function';
+import { moveItemInFormArray } from '@shared/utils/moveItemInFormArray';
+import { removeItemInFormArray } from '@shared/utils/removeItemInFormArray';
 import _ from 'lodash';
 import moment from 'moment';
-import AdvancedSearchOptionsDTO from '@data/models/adv-search/adv-search-options-dto';
-import { CustomDialogService } from '@frontend/custom-dialog';
+import { NGXLogger } from 'ngx-logger';
+import { Observable, forkJoin, map, startWith, take } from 'rxjs';
+import { WorkflowPrepareAndMoveService } from '../workflow/aux-service/workflow-prepare-and-move-aux.service';
+import { AdvSearchCardTableComponent } from './components/adv-search-card-table/adv-search-card-table.component';
 import {
   AdvSearchCriteriaDialogComponent,
   AdvSearchCriteriaDialogComponentModalEnum
 } from './components/adv-search-criteria-dialog/adv-search-criteria-dialog.component';
-import { CdkDragDrop } from '@angular/cdk/drag-drop';
-import { moveItemInFormArray } from '@shared/utils/moveItemInFormArray';
-import { removeItemInFormArray } from '@shared/utils/removeItemInFormArray';
-import AdvSearchOperatorDTO from '@data/models/adv-search/adv-search-operator-dto';
 import {
   AdvSearchCriteriaEditionDialogComponent,
   AdvSearchCriteriaEditionDialogComponentModalEnum
@@ -41,7 +43,6 @@ import {
   AdvSearchSaveFavDialogComponent,
   AdvSearchSaveFavDialogComponentModalEnum
 } from './components/adv-search-save-fav-dialog/adv-search-save-fav-dialog.component';
-import { PermissionConstants } from '@app/constants/permission.constants';
 
 @UntilDestroy()
 @Component({
@@ -75,9 +76,17 @@ export class AdvancedSearchComponent implements OnInit {
     search: marker('common.search'),
     selectAll: marker('common.selectAll'),
     unselectAll: marker('common.unselectAll'),
-    required: marker('errors.required')
+    required: marker('errors.required'),
+    today: marker('advSearch.today'),
+    current_week: marker('advSearch.current_week'),
+    last_week: marker('advSearch.last_week'),
+    current_month: marker('advSearch.current_month'),
+    last_month: marker('advSearch.last_month'),
+    custom: marker('advSearch.custom'),
+    presetDateType: marker('advSearch.presetDateType')
   };
   public isAdmin = false;
+  public showDateRangePicker = false;
   public advSearchFav: AdvSearchDTO[] = [];
   public facilityList: FacilityDTO[] = [];
   public workflowList: WorkflowCreateCardDTO[] = [];
@@ -90,6 +99,14 @@ export class AdvancedSearchComponent implements OnInit {
   public modeDrawer: 'criteria' | 'context' | 'column';
   public escapedValue = '';
   public operators: AdvSearchOperatorDTO[] = [];
+  public filterOptions = [
+    { id: 'TODAY', name: this.translateService.instant('advSearch.today') },
+    { id: 'CURRENT_WEEK', name: this.translateService.instant('advSearch.current_week') },
+    { id: 'LAST_WEEK', name: this.translateService.instant('advSearch.last_week') },
+    { id: 'CURRENT_MONTH', name: this.translateService.instant('advSearch.current_month') },
+    { id: 'LAST_MONTH', name: this.translateService.instant('advSearch.last_month') },
+    { id: 'CUSTOM', name: this.translateService.instant('advSearch.custom') }
+  ];
   constructor(
     private advSearchService: AdvSearchService,
     private facilityService: FacilityService,
@@ -101,7 +118,8 @@ export class AdvancedSearchComponent implements OnInit {
     private translateService: TranslateService,
     private admService: AuthenticationService,
     private customDialogService: CustomDialogService,
-    private authService: AuthenticationService
+    private authService: AuthenticationService,
+    private prepareAndMoveService: WorkflowPrepareAndMoveService
   ) {}
   get context() {
     return (this.advSearchForm.get('advancedSearchContext') as FormGroup).controls;
@@ -114,10 +132,17 @@ export class AdvancedSearchComponent implements OnInit {
   }
 
   public contextErrors(): boolean {
-    return (
-      !this.advSearchForm.get('advancedSearchContext')?.get('dateCardFrom')?.value ||
-      !this.advSearchForm.get('advancedSearchContext')?.get('dateCardTo')?.value
-    );
+    const scheduledReportsValue = this.advSearchForm.get('advancedSearchContext').get('dateContextType')?.value;
+    if (!scheduledReportsValue) {
+      return true;
+    }
+    if (scheduledReportsValue === 'CUSTOM') {
+      return (
+        !this.advSearchForm.get('advancedSearchContext')?.get('dateCardFrom')?.value ||
+        !this.advSearchForm.get('advancedSearchContext')?.get('dateCardTo')?.value
+      );
+    }
+    return false;
   }
   public criteriaErrors(): boolean {
     let error = false;
@@ -127,10 +152,47 @@ export class AdvancedSearchComponent implements OnInit {
       }
       return error;
     }, false);
-    if (!error && this.criteria.length === 0) {
-      error = true;
-    }
+    // if (!error && this.criteria.length === 0) {
+    //   error = true;
+    // }
     return error;
+  }
+
+  public onFilterChange(selectedValue: string): void {
+    if (selectedValue === 'TODAY') {
+      const today = moment().toDate();
+      this.advSearchForm.get('advancedSearchContext')?.get('dateCardFrom')?.setValue(today);
+      this.advSearchForm.get('advancedSearchContext')?.get('dateCardTo')?.setValue(today);
+      this.showDateRangePicker = true;
+    } else if (selectedValue === 'CURRENT_WEEK') {
+      const startOfWeek = moment().startOf('isoWeek').toDate();
+      const today = moment().toDate();
+      this.advSearchForm.get('advancedSearchContext')?.get('dateCardFrom')?.setValue(startOfWeek);
+      this.advSearchForm.get('advancedSearchContext')?.get('dateCardTo')?.setValue(today);
+      this.showDateRangePicker = true;
+    } else if (selectedValue === 'LAST_WEEK') {
+      const startOfLastWeek = moment().subtract(1, 'week').startOf('isoWeek').toDate();
+      const endOfLastWeek = moment().subtract(1, 'week').endOf('isoWeek').toDate();
+      this.advSearchForm.get('advancedSearchContext')?.get('dateCardFrom')?.setValue(startOfLastWeek);
+      this.advSearchForm.get('advancedSearchContext')?.get('dateCardTo')?.setValue(endOfLastWeek);
+      this.showDateRangePicker = true;
+    } else if (selectedValue === 'CURRENT_MONTH') {
+      const startOfMonth = moment().startOf('month').toDate();
+      const today = moment().toDate();
+      this.advSearchForm.get('advancedSearchContext')?.get('dateCardFrom')?.setValue(startOfMonth);
+      this.advSearchForm.get('advancedSearchContext')?.get('dateCardTo')?.setValue(today);
+      this.showDateRangePicker = true;
+    } else if (selectedValue === 'LAST_MONTH') {
+      const startOfLastMonth = moment().subtract(1, 'month').startOf('month').toDate();
+      const endOfLastMonth = moment().subtract(1, 'month').endOf('month').toDate();
+      this.advSearchForm.get('advancedSearchContext')?.get('dateCardFrom')?.setValue(startOfLastMonth);
+      this.advSearchForm.get('advancedSearchContext')?.get('dateCardTo')?.setValue(endOfLastMonth);
+      this.showDateRangePicker = true;
+    } else {
+      this.advSearchForm.get('advancedSearchContext')?.get('dateCardFrom')?.setValue(null);
+      this.advSearchForm.get('advancedSearchContext')?.get('dateCardTo')?.setValue(null);
+      this.showDateRangePicker = true;
+    }
   }
 
   public runSearch(): void {
@@ -171,6 +233,7 @@ export class AdvancedSearchComponent implements OnInit {
     this.advSearchSelected.advancedSearchCols = this.columns.getRawValue();
     this.advSearchSelected.advancedSearchContext = {};
     const context = this.advSearchForm.get('advancedSearchContext').getRawValue() as AdvancedSearchContext;
+    this.advSearchSelected.advancedSearchContext.dateContextType = context.dateContextType;
     this.advSearchSelected.advancedSearchContext.dateCardFrom = moment(context.dateCardFrom).format('DD/MM/YYYY');
     this.advSearchSelected.advancedSearchContext.dateCardTo = moment(context.dateCardTo).format('DD/MM/YYYY');
     this.advSearchSelected.advancedSearchContext.facilitiesIds = context.facilities.map((f: FacilityDTO) => f.id);
@@ -382,17 +445,20 @@ export class AdvancedSearchComponent implements OnInit {
       .pipe(take(1))
       .subscribe((data: AdvancedSearchItem[]) => {
         const criteriaItems = this.criteria.getRawValue();
-        data = data ? data : [];
-        data = data.filter((elem: AdvancedSearchItem) => {
-          if (elem.tabItem) {
-            return !criteriaItems.find((item: AdvancedSearchItem) => item.tabItem && item.tabItem.id === elem.tabItem.id);
-          } else {
-            return !criteriaItems.find((item: AdvancedSearchItem) => item.variable && item.variable.id === elem.variable.id);
+        const currentCriteriaIds = criteriaItems.map((col: AdvancedSearchItem) => this.getColCustomId(col));
+        data.forEach((col: AdvancedSearchItem) => {
+          const index = currentCriteriaIds.indexOf(this.getColCustomId(col));
+          if (index >= 0) {
+            //Ya lo tengo dentro del formulario
+            currentCriteriaIds.splice(index, 1);
+          } else if (index === -1) {
+            //No lo tengo en el formulario
+            this.addCriteria(col);
           }
         });
-        _.forEach(data, (value) => {
-          this.addCriteria(value);
-        });
+        if (currentCriteriaIds.length) {
+          this.removeCriteriaOrColFromFormArray(this.criteria, currentCriteriaIds);
+        }
       });
   }
   addColumns(): void {
@@ -412,17 +478,21 @@ export class AdvancedSearchComponent implements OnInit {
       .pipe(take(1))
       .subscribe((data: AdvancedSearchItem[]) => {
         const currentCols = this.columns.getRawValue();
-        data = data ? data : [];
-        data = data.filter((elem: AdvancedSearchItem) => {
-          if (elem.tabItem) {
-            return !currentCols.find((col: AdvancedSearchItem) => col.tabItem && col.tabItem.id === elem.tabItem.id);
-          } else {
-            return !currentCols.find((col: AdvancedSearchItem) => col.variable && col.variable.id === elem.variable.id);
+        const currentColdIds = currentCols.map((col: AdvancedSearchItem) => this.getColCustomId(col));
+        data.forEach((col: AdvancedSearchItem) => {
+          const index = currentColdIds.indexOf(this.getColCustomId(col));
+          if (index >= 0) {
+            //Ya lo tengo dentro del formulario
+            currentColdIds.splice(index, 1);
+          } else if (index === -1) {
+            //No lo tengo en el formulario
+            this.addColumn(col);
           }
         });
-        _.forEach(data, (value) => {
-          this.addColumn(value);
-        });
+        //Dentro de currentColIds debería tener las que quité y por tanto tengo que quitar del formulario
+        if (currentColdIds.length) {
+          this.removeCriteriaOrColFromFormArray(this.columns, currentColdIds);
+        }
       });
   }
   addColumn(value: AdvancedSearchItem): void {
@@ -455,6 +525,25 @@ export class AdvancedSearchComponent implements OnInit {
           value: [value.value ? value.value : null]
         })
       );
+    }
+  }
+  removeCriteriaOrColFromFormArray = (formArray: FormArray, ids: string[]): void => {
+    const nextId = ids.shift();
+    const control = formArray.controls.find((col: FormGroup) => this.getColCustomId(col.value) === nextId);
+    removeItemInFormArray(formArray, control.value.orderNumber - 1);
+    //Verificar y corregir los ordeNumbers de los elementos restantes
+    formArray.controls.forEach((col: FormGroup, index: number) => {
+      col.get('orderNumber').setValue(index + 1);
+    });
+    if (ids.length) {
+      this.removeCriteriaOrColFromFormArray(formArray, ids);
+    }
+  };
+  getColCustomId(col: AdvancedSearchItem): string {
+    if (col.tabItem) {
+      return `tabItem-${col.tabItem.id}`;
+    } else {
+      return `variable-${col.variable.id}`;
     }
   }
   getColName(col: FormGroup): string {
@@ -545,6 +634,7 @@ export class AdvancedSearchComponent implements OnInit {
         }
       });
   }
+
   editCriteria(criteria: FormGroup) {
     this.customDialogService
       .open({
@@ -569,6 +659,7 @@ export class AdvancedSearchComponent implements OnInit {
   hasErrors(): boolean {
     return !this.columns.length || this.criteriaErrors() || this.contextErrors();
   }
+
   saveFav(): void {
     this.customDialogService
       .open({
@@ -653,6 +744,14 @@ export class AdvancedSearchComponent implements OnInit {
       unionType: [advSearch?.unionType ? advSearch.unionType : 'TYPE_AND'],
       userId: [advSearch?.userId ? advSearch.userId : this.admService.getUserId()],
       allUsers: [advSearch?.allUsers ? advSearch.allUsers : false],
+      scheduledQueries: [advSearch?.scheduledQueries ? advSearch.scheduledQueries : null],
+      scheduleType: [advSearch?.scheduleType ? advSearch.scheduleType : null],
+      scheduledDate: [advSearch?.scheduledDate ? new Date(advSearch.scheduledDate) : null],
+      scheduledWeekDay: [advSearch?.scheduledWeekDay ? advSearch.scheduledWeekDay.toString() : null],
+      scheduledMonthDay: [advSearch?.scheduledMonthDay ? advSearch.scheduledMonthDay.toString() : null],
+      scheduledTime: [advSearch?.scheduledTime ? moment(advSearch.scheduledTime, 'HH:mm') : null],
+      scheduledReceivers: [advSearch?.scheduledReceivers ? advSearch.scheduledReceivers : null],
+      scheduled: [advSearch?.scheduled ? advSearch.scheduled : false],
       editable: [advSearch?.editable === false ? advSearch.editable : true],
       advancedSearchContext: this.fb.group({
         facilities: [[]],
@@ -661,6 +760,7 @@ export class AdvancedSearchComponent implements OnInit {
         substates: [[]],
         dateCardFrom: [null, Validators.required],
         dateCardTo: [null, Validators.required],
+        dateContextType: [''],
         filterStateForm: [''],
         filterSubstateForm: ['']
       }),
@@ -675,6 +775,10 @@ export class AdvancedSearchComponent implements OnInit {
         }
         if (advSearch.advancedSearchContext.dateCardTo) {
           this.context.dateCardTo.setValue(moment(advSearch.advancedSearchContext.dateCardTo, 'DD-MM-YYYY').toDate());
+        }
+        if (advSearch.advancedSearchContext.dateContextType) {
+          this.context.dateContextType.setValue(advSearch.advancedSearchContext.dateContextType);
+          this.showDateRangePicker = true;
         }
         if (advSearch.advancedSearchContext.facilitiesIds) {
           this.context.facilities.setValue(
@@ -740,6 +844,13 @@ export class AdvancedSearchComponent implements OnInit {
         startWith(''),
         map((value) => this.filter('subStates', value || ''))
       );
+    this.prepareAndMoveService.reloadData$
+      .pipe(untilDestroyed(this))
+      .subscribe((data: 'MOVES_IN_THIS_WORKFLOW' | 'MOVES_IN_OTHER_WORKFLOWS' | 'UPDATE_INFORMATION') => {
+        if (data === 'MOVES_IN_THIS_WORKFLOW' || data === 'MOVES_IN_OTHER_WORKFLOWS' || data === 'UPDATE_INFORMATION') {
+          this.prepareAndMoveService.reloadData$.next(null);
+        }
+      });
   }
   private filter = (from: 'states' | 'subStates', value: string): any[] => {
     const filterValue = `${value}`.toLowerCase().trim();

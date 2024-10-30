@@ -6,9 +6,11 @@ import FacilityDTO from '@data/models/organization/facility-dto';
 import { CustomersService } from '@data/services/customers.service';
 import { EntitiesService } from '@data/services/entities.service';
 import { FacilityService } from '@data/services/facility.sevice';
-import { ComponentToExtendForCustomDialog, CustomDialogFooterConfigI, CustomDialogService } from '@frontend/custom-dialog';
 import { untilDestroyed } from '@ngneat/until-destroy';
 import { TranslateService } from '@ngx-translate/core';
+import { CustomDialogFooterConfigI } from '@shared/modules/custom-dialog/interfaces/custom-dialog-footer-config';
+import { ComponentToExtendForCustomDialog } from '@shared/modules/custom-dialog/models/component-for-custom-dialog';
+import { CustomDialogService } from '@shared/modules/custom-dialog/services/custom-dialog.service';
 import { ConfirmDialogService } from '@shared/services/confirm-dialog.service';
 import { GlobalMessageService } from '@shared/services/global-message.service';
 import { ProgressSpinnerDialogService } from '@shared/services/progress-spinner-dialog.service';
@@ -51,7 +53,8 @@ export class ModalCustomerComponent extends ComponentToExtendForCustomDialog imp
     socialSecurityId: marker('entities.customers.socialSecurityId'),
     emailError: marker('errors.emailPattern'),
     required: marker('errors.required'),
-    data: marker('userProfile.data')
+    data: marker('userProfile.data'),
+    notValidPattern: marker('entities.customers.notValidPattern')
   };
   public facilityAsyncList: Observable<FacilityDTO[]>;
   //@ts-ignore
@@ -236,13 +239,18 @@ export class ModalCustomerComponent extends ComponentToExtendForCustomDialog imp
         id: [this.customerToEdit ? this.customerToEdit.id : null],
         customerId: [this.customerToEdit ? this.customerToEdit.customerId : null],
         reference: [this.customerToEdit ? this.customerToEdit.reference : null],
+        //Deshabilitar referencia cliente
+        // reference: [{ value: this.customerToEdit ? this.customerToEdit.reference : null, disabled: true }],
         name: [this.customerToEdit ? this.customerToEdit.name : null],
         firstName: [this.customerToEdit ? this.customerToEdit.firstName : null],
         secondName: [this.customerToEdit ? this.customerToEdit.secondName : null],
         facility: [this.customerToEdit ? this.customerToEdit.facility : null, [Validators.required]],
         email: [this.customerToEdit ? this.customerToEdit.email : null, [Validators.email, Validators.required]],
-        socialSecurityId: [this.customerToEdit ? this.customerToEdit.socialSecurityId : null, [Validators.required]],
-        phone: [this.customerToEdit ? this.customerToEdit.phone : null],
+        socialSecurityId: [
+          this.customerToEdit ? this.customerToEdit.socialSecurityId : null,
+          [Validators.required, Validators.pattern(/^[A-Za-z0-9]*$/)]
+        ],
+        phone: [this.customerToEdit ? this.customerToEdit.phone : null, [Validators.required]],
         businessTypeCode: [this.customerToEdit ? this.customerToEdit.businessTypeCode : null, [Validators.required]],
         addressPostalCode: [this.customerToEdit ? this.customerToEdit.addressPostalCode : null, [Validators.required]],
         communicationPreferredPhone: [

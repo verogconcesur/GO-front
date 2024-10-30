@@ -1,3 +1,4 @@
+import { errorAttachmentDTO } from '@data/models/cards/card-attachments-dto';
 import CardColumnTabItemDTO from '@data/models/cards/card-column-tab-item-dto';
 
 export type ConcenetError = {
@@ -8,4 +9,5 @@ export type ConcenetError = {
   path: string;
   code?: string;
   requiredFields?: CardColumnTabItemDTO[];
+  requiredAttachments: errorAttachmentDTO[];
 };

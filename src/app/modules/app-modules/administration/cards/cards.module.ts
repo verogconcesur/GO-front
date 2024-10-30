@@ -20,6 +20,8 @@ import { TabItemConfigOptionComponent } from './components/tab-items/tab-item-co
 import { TabItemConfigTextComponent } from './components/tab-items/tab-item-config-text/tab-item-config-text.component';
 import { TabItemConfigTitleComponent } from './components/tab-items/tab-item-config-title/tab-item-config-title.component';
 import { TextEditorWrapperModule } from '@modules/feature-modules/text-editor-wrapper/text-editor-wrapper.module';
+// eslint-disable-next-line max-len
+import { ModalLinksCreationEditionDialogModule } from '@modules/feature-modules/modal-links-creation-edition/links-creation-edition-dialog.module';
 
 @NgModule({
   declarations: [
@@ -43,7 +45,8 @@ import { TextEditorWrapperModule } from '@modules/feature-modules/text-editor-wr
     SharedModule,
     FilterDrawerModule,
     AdministrationCommonHeaderSectionModule,
-    TextEditorWrapperModule
+    TextEditorWrapperModule,
+    ModalLinksCreationEditionDialogModule
   ]
 })
 export class CardsModule {}

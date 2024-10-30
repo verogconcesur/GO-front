@@ -15,6 +15,7 @@ export interface TemplateComunicationItemsDTO {
   processedEmail: string;
   processedText: string;
   subject: string;
+  contentSid?: string;
   messageChannel: MessageChannelDTO;
 }
 export default interface TemplatesCommunicationDTO {

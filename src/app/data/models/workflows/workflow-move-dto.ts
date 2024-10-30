@@ -1,14 +1,24 @@
 import CardColumnTabItemDTO from '../cards/card-column-tab-item-dto';
-import BrandDTO from '../organization/brand-dto';
-import DepartmentDTO from '../organization/department-dto';
-import FacilityDTO from '../organization/facility-dto';
-import SpecialtyDTO from '../organization/specialty-dto';
 import TemplatesCommunicationDTO from '../templates/templates-communication-dto';
 import RoleDTO from '../user-permissions/role-dto';
+import VariablesDTO from '../variables-dto';
 import WorkflowCardsLimitDTO from '../workflow-admin/workflow-card-limit-dto';
 import WorkflowEventMailDTO from './workflow-event-mail-dto';
 import WorkflowSubstateDTO from './workflow-substate-dto';
 
+export interface WorkflowEventWebserviceConfigDTO {
+  authAttributeToken: string;
+  authPass: string;
+  authUrl: string;
+  authUser: string;
+  blocker: boolean;
+  body: string;
+  id: number;
+  method: 'GET' | 'POST';
+  requireAuth: boolean;
+  variables: VariablesDTO[];
+  webserviceUrl: string;
+}
 export default interface WorkflowMoveDTO {
   id: number;
   orderNumber: number;
@@ -20,6 +30,8 @@ export default interface WorkflowMoveDTO {
   requiredMyself: boolean;
   requiredSize: boolean;
   requiredUser: boolean;
+  webservice: boolean;
+  workflowEventWebserviceConfig: WorkflowEventWebserviceConfigDTO;
   roles: RoleDTO[];
   sendMail: boolean;
   workflowEventMails: WorkflowEventMailDTO[];
@@ -35,4 +47,12 @@ export default interface WorkflowMoveDTO {
   movementExtraAuto?: boolean;
   movementExtraConfirm?: boolean;
   requiredMovementExtra?: boolean;
+  requiredAttachments?: boolean;
+  workflowSubstateEventRequiredAttachments?: WorkflowSubstateEventRequiredAttachment[];
+  workflowMovementRequiredAttachments?: WorkflowSubstateEventRequiredAttachment[];
+}
+export interface WorkflowSubstateEventRequiredAttachment {
+  tab: { id: number };
+  templateAttachmentItem: { id: number };
+  numMinAttachRequired: number;
 }

@@ -3,17 +3,17 @@ import { FormGroup, UntypedFormBuilder, Validators } from '@angular/forms';
 import { marker } from '@biesbjerg/ngx-translate-extract-marker';
 import CardInstanceDTO from '@data/models/cards/card-instance-dto';
 import CardInstanceWhatsappDTO from '@data/models/cards/card-instance-whatsapp-dto';
-import CardMessageRenderDTO from '@data/models/cards/card-message-render';
 import CustomerEntityDTO from '@data/models/entities/customer-entity-dto';
 import TemplatesCommonDTO from '@data/models/templates/templates-common-dto';
 import { CardMessagesService } from '@data/services/card-messages.service';
 import { EntitiesService } from '@data/services/entities.service';
-import { ComponentToExtendForCustomDialog, CustomDialogFooterConfigI } from '@frontend/custom-dialog';
 import { TranslateService } from '@ngx-translate/core';
+import { CustomDialogFooterConfigI } from '@shared/modules/custom-dialog/interfaces/custom-dialog-footer-config';
+import { ComponentToExtendForCustomDialog } from '@shared/modules/custom-dialog/models/component-for-custom-dialog';
 import { ConfirmDialogService } from '@shared/services/confirm-dialog.service';
 import { GlobalMessageService } from '@shared/services/global-message.service';
 import { ProgressSpinnerDialogService } from '@shared/services/progress-spinner-dialog.service';
-import { Observable, of, map, catchError, finalize, take, forkJoin } from 'rxjs';
+import { catchError, finalize, forkJoin, map, Observable, of, take } from 'rxjs';
 
 export const enum StartConversationComponentModalEnum {
   ID = 'start-conversation-dialog-id',
@@ -122,7 +122,11 @@ export class ModalStartConversationComponent extends ComponentToExtendForCustomD
   }
   public onSubmitCustomDialog(): Observable<boolean> {
     const formValue = this.conversationForm.value;
-    const body: CardInstanceWhatsappDTO = { body: formValue.body, to: formValue.phone };
+    const body: CardInstanceWhatsappDTO = {
+      body: formValue.body,
+      to: formValue.phone,
+      templateId: this.conversationForm.get('template').value
+    };
     const spinner = this.spinnerService.show();
     return this.cardMessagesService.sendWhatsappConversation(body, this.cardInstance.cardInstanceWorkflow.id).pipe(
       map(() => {

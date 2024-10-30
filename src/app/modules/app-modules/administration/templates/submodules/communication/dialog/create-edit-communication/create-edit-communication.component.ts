@@ -9,6 +9,7 @@ import {
   UntypedFormGroup,
   Validators
 } from '@angular/forms';
+import { MatTabChangeEvent } from '@angular/material/tabs';
 import { marker } from '@biesbjerg/ngx-translate-extract-marker';
 import BrandDTO from '@data/models/organization/brand-dto';
 import DepartmentDTO from '@data/models/organization/department-dto';
@@ -22,15 +23,17 @@ import TemplatesCommunicationDTO, {
 import VariablesDTO from '@data/models/variables-dto';
 import { TemplatesCommunicationService } from '@data/services/templates-communication.service';
 import { VariablesService } from '@data/services/variables.service';
-import { ComponentToExtendForCustomDialog, CustomDialogFooterConfigI, CustomDialogService } from '@frontend/custom-dialog';
 // eslint-disable-next-line max-len
 import { TextEditorWrapperConfigI } from '@modules/feature-modules/text-editor-wrapper/interfaces/text-editor-wrapper-config.interface';
 import { TranslateService } from '@ngx-translate/core';
+import { CustomDialogFooterConfigI } from '@shared/modules/custom-dialog/interfaces/custom-dialog-footer-config';
+import { ComponentToExtendForCustomDialog } from '@shared/modules/custom-dialog/models/component-for-custom-dialog';
+import { CustomDialogService } from '@shared/modules/custom-dialog/services/custom-dialog.service';
 import { ConfirmDialogService } from '@shared/services/confirm-dialog.service';
 import { GlobalMessageService } from '@shared/services/global-message.service';
 import { ProgressSpinnerDialogService } from '@shared/services/progress-spinner-dialog.service';
 import { Observable, of } from 'rxjs';
-import { catchError, finalize, map, take, tap } from 'rxjs/operators';
+import { catchError, finalize, map, take } from 'rxjs/operators';
 
 export const enum CreateEditCommunicationComponentModalEnum {
   ID = 'create-edit-communication-dialog-id',
@@ -49,6 +52,7 @@ export class CreateEditCommunicationComponent extends ComponentToExtendForCustom
     name: marker('administration.templates.communications.name'),
     organization: marker('userProfile.organization'),
     edit: marker('administration.templates.communications.edit'),
+    templateCodeWhatsApp: marker('administration.templates.communications.templateCodeWhatsApp'),
     text: marker('administration.templates.communications.text'),
     subject: marker('administration.templates.communications.subject'),
     communicationType: marker('administration.templates.communications.communicationType'),
@@ -77,6 +81,7 @@ export class CreateEditCommunicationComponent extends ComponentToExtendForCustom
   public communicationTypes = CommunicationTypes;
   public startDate: Date;
   public endDate: Date;
+  public shouldShowWhatsAppField = false;
   constructor(
     private fb: UntypedFormBuilder,
     private spinnerService: ProgressSpinnerDialogService,
@@ -228,6 +233,20 @@ export class CreateEditCommunicationComponent extends ComponentToExtendForCustom
       ]
     };
   }
+  public onTabChange(event: MatTabChangeEvent) {
+    const selectedTabIndex = event.index;
+    const selectedItem = this.comItems.controls[selectedTabIndex];
+
+    if (selectedItem && selectedItem.value.messageChannel.id === 4) {
+      this.shouldShowWhatsAppField = true;
+      this.communicationForm.get('templateComunicationItems').get('3').get('contentSid').setValidators([Validators.required]);
+    } else {
+      this.shouldShowWhatsAppField = false;
+      this.communicationForm.get('templateComunicationItems').get('3').get('contentSid').clearValidators();
+    }
+    this.communicationForm.get('templateComunicationItems').get('3').get('contentSid').updateValueAndValidity();
+  }
+
   public convertToPlain(html: string) {
     const tempDivElement = document.createElement('div');
     tempDivElement.innerHTML = html;
@@ -314,7 +333,8 @@ export class CreateEditCommunicationComponent extends ComponentToExtendForCustom
           id: [editItem ? editItem.id : null],
           text: [editItem ? editItem.text : '', messageChannel.id === 1 ? Validators.required : null],
           subject: [editItem ? editItem.subject : ''],
-          messageChannel: [messageChannel]
+          messageChannel: [messageChannel],
+          contentSid: [editItem ? editItem.contentSid : null]
         })
       );
     });

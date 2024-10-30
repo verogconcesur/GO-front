@@ -1,20 +1,25 @@
 import { CdkDragDrop } from '@angular/cdk/drag-drop';
 import { Component, Input, OnInit } from '@angular/core';
-import { FormControl, UntypedFormArray, UntypedFormBuilder, UntypedFormGroup, Validators } from '@angular/forms';
+import { UntypedFormArray, UntypedFormBuilder, UntypedFormGroup, Validators } from '@angular/forms';
 import { actionsTabItems } from '@app/constants/actionsTabItems.constants';
 import { marker } from '@biesbjerg/ngx-translate-extract-marker';
 import CardColumnDTO from '@data/models/cards/card-column-dto';
 import CardColumnTabDTO from '@data/models/cards/card-column-tab-dto';
 import VariablesDTO from '@data/models/variables-dto';
-import { CardService } from '@data/services/cards.service';
 import { VariablesService } from '@data/services/variables.service';
 // eslint-disable-next-line max-len
-import { TextEditorWrapperConfigI } from '@modules/feature-modules/text-editor-wrapper/interfaces/text-editor-wrapper-config.interface';
+import {
+  LinksCreationEditionDialogComponent,
+  LinksCreationEditionDialogComponentModalEnum
+} from '@modules/feature-modules/modal-links-creation-edition/links-creation-edition-dialog.component';
 import { TranslateService } from '@ngx-translate/core';
+import { CustomDialogService } from '@shared/modules/custom-dialog/services/custom-dialog.service';
 import { ConfirmDialogService } from '@shared/services/confirm-dialog.service';
+import { ProgressSpinnerDialogService } from '@shared/services/progress-spinner-dialog.service';
 import { moveItemInFormArray } from '@shared/utils/moveItemInFormArray';
 import { removeItemInFormArray } from '@shared/utils/removeItemInFormArray';
-import { take } from 'rxjs/operators';
+import CombinedRequiredFieldsValidator from '@shared/validators/combined-required-fields.validator';
+import { finalize, take } from 'rxjs/operators';
 
 @Component({
   selector: 'app-custom-actions',
@@ -41,17 +46,13 @@ export class CustomActionsComponent implements OnInit {
     actions: marker('common.actions')
   };
   public actionsTabItems = actionsTabItems;
-  public textEditorToolbarOnlyMacroOptions: TextEditorWrapperConfigI = {
-    onlyMacroOption: true,
-    addMacroListOption: true,
-    macroListOptions: [],
-    width: 450
-  };
   constructor(
     private fb: UntypedFormBuilder,
     private translateService: TranslateService,
     private confirmationDialog: ConfirmDialogService,
-    private variablesService: VariablesService
+    private variablesService: VariablesService,
+    private spinnerService: ProgressSpinnerDialogService,
+    private customDialogService: CustomDialogService
   ) {}
   get form() {
     return this.formCol.controls;
@@ -83,15 +84,43 @@ export class CustomActionsComponent implements OnInit {
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   public dropLink(event: CdkDragDrop<string[]>) {
-    moveItemInFormArray(this.tabItems, event.previousIndex + 3, event.currentIndex + 3);
+    moveItemInFormArray(this.tabItems, event.previousIndex + 4, event.currentIndex + 4);
   }
   public showTabAction(tabItem: UntypedFormGroup) {
     const visible = tabItem.get('tabItemConfigAction').get('visible');
     visible.setValue(!visible.value);
   }
-  public showTabLink(tabItem: UntypedFormGroup) {
-    const visible = tabItem.get('tabItemConfigLink').get('visible');
-    visible.setValue(!visible.value);
+  public editTab(tab: UntypedFormGroup) {
+    // console.log(tab);
+    this.customDialogService
+      .open({
+        component: LinksCreationEditionDialogComponent,
+        extendedComponentData: { form: tab, listVariables: this.listVariables },
+        id: LinksCreationEditionDialogComponentModalEnum.ID,
+        panelClass: LinksCreationEditionDialogComponentModalEnum.PANEL_CLASS,
+        disableClose: true,
+        width: '750px'
+      })
+      .subscribe((result) => {
+        if (result?.tabItemConfigLink) {
+          if (result.tabItemConfigLink.linkMethod === 'GET') {
+            tab.get('tabItemConfigLink').get('body').setValue(null);
+            if (result.tabItemConfigLink.redirect) {
+              tab.get('tabItemConfigLink').get('requireAuth').setValue(false);
+              result.tabItemConfigLink.requireAuth = false;
+            }
+          }
+          if (result.tabItemConfigLink.linkMethod === 'POST') {
+            tab.get('tabItemConfigLink').get('redirect').setValue(false);
+          }
+          if (!result.tabItemConfigLink.requireAuth) {
+            tab.get('tabItemConfigLink').get('authPass').setValue(null);
+            tab.get('tabItemConfigLink').get('authUrl').setValue(null);
+            tab.get('tabItemConfigLink').get('authUser').setValue(null);
+            tab.get('tabItemConfigLink').get('authAttributeToken').setValue(null);
+          }
+        }
+      });
   }
   public newTab(tab?: CardColumnTabDTO): UntypedFormGroup {
     return this.fb.group({
@@ -133,13 +162,46 @@ export class CustomActionsComponent implements OnInit {
               typeItem: [tabItem.typeItem],
               orderNumber: [tabItem.orderNumber, [Validators.required]],
               name: [tabItem.name, [Validators.required]],
-              tabItemConfigLink: this.fb.group({
-                id: [tabItem.tabItemConfigLink.id],
-                tabItemId: [tabItem.tabItemConfigLink.tabItemId],
-                link: [tabItem.tabItemConfigLink.link, [Validators.required]],
-                color: [tabItem.tabItemConfigLink.color, [Validators.required]],
-                variables: [tabItem.tabItemConfigLink.variables]
-              })
+              tabItemConfigLink: this.fb.group(
+                {
+                  id: [tabItem.tabItemConfigLink.id],
+                  tabItemId: [tabItem.tabItemConfigLink.tabItemId],
+                  link: [tabItem.tabItemConfigLink.link, [Validators.required]],
+                  color: [tabItem.tabItemConfigLink.color, [Validators.required]],
+                  variables: [tabItem.tabItemConfigLink.variables],
+                  linkMethod: [tabItem.tabItemConfigLink.linkMethod, [Validators.required]],
+                  body: [
+                    tabItem.tabItemConfigLink.linkMethod === 'GET'
+                      ? null
+                      : tabItem.tabItemConfigLink.body ?? '{ "attribute": "example", "attribute2": "example2" }'
+                  ],
+                  redirect: [tabItem.tabItemConfigLink.redirect],
+                  requireAuth: [tabItem.tabItemConfigLink.requireAuth],
+                  authUrl: [tabItem.tabItemConfigLink.authUrl],
+                  authUser: [tabItem.tabItemConfigLink.authUser],
+                  authPass: [tabItem.tabItemConfigLink.authPass],
+                  authAttributeToken: [tabItem.tabItemConfigLink.authAttributeToken]
+                },
+                {
+                  validators: [
+                    CombinedRequiredFieldsValidator.field1RequiredIfFieldsConditions('body', [
+                      { control: 'linkMethod', operation: 'equal', value: 'POST' }
+                    ]),
+                    CombinedRequiredFieldsValidator.field1RequiredIfFieldsConditions('authUrl', [
+                      { control: 'requireAuth', operation: 'equal', value: true }
+                    ]),
+                    CombinedRequiredFieldsValidator.field1RequiredIfFieldsConditions('authUser', [
+                      { control: 'requireAuth', operation: 'equal', value: true }
+                    ]),
+                    CombinedRequiredFieldsValidator.field1RequiredIfFieldsConditions('authPass', [
+                      { control: 'requireAuth', operation: 'equal', value: true }
+                    ]),
+                    CombinedRequiredFieldsValidator.field1RequiredIfFieldsConditions('authAttributeToken', [
+                      { control: 'requireAuth', operation: 'equal', value: true }
+                    ])
+                  ]
+                }
+              )
             })
           );
         }
@@ -199,40 +261,46 @@ export class CustomActionsComponent implements OnInit {
         typeItem: ['LINK'],
         orderNumber: [this.tabItems.length + 1, [Validators.required]],
         name: [this.translateService.instant(this.labels.nameLink), [Validators.required]],
-        tabItemConfigLink: this.fb.group({
-          id: [null],
-          tabItemId: [null],
-          link: ['', [Validators.required]],
-          color: ['#FFFFFF'],
-          variables: [null]
-        })
+        tabItemConfigLink: this.fb.group(
+          {
+            id: [null],
+            tabItemId: [null],
+            link: ['', [Validators.required]],
+            color: ['#FFFFFF'],
+            variables: [null],
+            linkMethod: ['GET', [Validators.required]],
+            body: ['{ "attribute": "example", "attribute2": "example2" }'],
+            redirect: [false],
+            requireAuth: [false],
+            authUrl: [null],
+            authUser: [null],
+            authPass: [null],
+            authAttributeToken: [null]
+          },
+          {
+            validators: [
+              CombinedRequiredFieldsValidator.field1RequiredIfFieldsConditions('body', [
+                { control: 'linkMethod', operation: 'equal', value: 'POST' }
+              ]),
+              CombinedRequiredFieldsValidator.field1RequiredIfFieldsConditions('authUrl', [
+                { control: 'requireAuth', operation: 'equal', value: true }
+              ]),
+              CombinedRequiredFieldsValidator.field1RequiredIfFieldsConditions('authUser', [
+                { control: 'requireAuth', operation: 'equal', value: true }
+              ]),
+              CombinedRequiredFieldsValidator.field1RequiredIfFieldsConditions('authPass', [
+                { control: 'requireAuth', operation: 'equal', value: true }
+              ]),
+              CombinedRequiredFieldsValidator.field1RequiredIfFieldsConditions('authAttributeToken', [
+                { control: 'requireAuth', operation: 'equal', value: true }
+              ])
+            ]
+          }
+        )
       })
     );
   }
 
-  public textEditorContentChanged(html: string, form: FormControl, plain?: boolean) {
-    if (html !== form.value) {
-      if (plain) {
-        html = this.convertToPlain(html);
-      }
-      if ((html === '' || this.convertToPlain(html) === '') && html.length < 20) {
-        html = null;
-      }
-      form.get('link').setValue(html, { emitEvent: true });
-      const variablesOnText = this.listVariables.filter((variable) => {
-        let variableUsed = false;
-        this.listVariables.forEach((item: VariablesDTO) => {
-          if (html && html.indexOf(`[${variable.name}]`) !== -1) {
-            variableUsed = true;
-          }
-        });
-        return variableUsed;
-      });
-      form.get('variables').setValue(variablesOnText);
-      this.formCol.markAsDirty();
-      this.formCol.markAsTouched();
-    }
-  }
   ngOnInit(): void {
     this.getVariable();
     if (this.colEdit) {
@@ -243,18 +311,16 @@ export class CustomActionsComponent implements OnInit {
       this.tabs.push(this.newTab());
     }
   }
-  public convertToPlain(html: string) {
-    const tempDivElement = document.createElement('div');
-    tempDivElement.innerHTML = html;
-    return tempDivElement.textContent || tempDivElement.innerText || '';
-  }
 
   private getVariable(): void {
+    const spinner = this.spinnerService.show();
     this.variablesService
       .searchVariables()
-      .pipe(take(1))
+      .pipe(
+        take(1),
+        finalize(() => this.spinnerService.hide(spinner))
+      )
       .subscribe((res) => {
-        this.textEditorToolbarOnlyMacroOptions.macroListOptions = res.map((item: VariablesDTO) => item.name);
         this.listVariables = res;
       });
   }

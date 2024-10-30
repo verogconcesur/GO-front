@@ -6,9 +6,11 @@ import VehicleEntityDTO, { TakeAllVehicle, Variants } from '@data/models/entitie
 import FacilityDTO from '@data/models/organization/facility-dto';
 import { EntitiesService } from '@data/services/entities.service';
 import { FacilityService } from '@data/services/facility.sevice';
-import { ComponentToExtendForCustomDialog, CustomDialogFooterConfigI, CustomDialogService } from '@frontend/custom-dialog';
 import { untilDestroyed } from '@ngneat/until-destroy';
 import { TranslateService } from '@ngx-translate/core';
+import { CustomDialogFooterConfigI } from '@shared/modules/custom-dialog/interfaces/custom-dialog-footer-config';
+import { ComponentToExtendForCustomDialog } from '@shared/modules/custom-dialog/models/component-for-custom-dialog';
+import { CustomDialogService } from '@shared/modules/custom-dialog/services/custom-dialog.service';
 import { ConfirmDialogService } from '@shared/services/confirm-dialog.service';
 import { GlobalMessageService } from '@shared/services/global-message.service';
 import { ProgressSpinnerDialogService } from '@shared/services/progress-spinner-dialog.service';
@@ -242,14 +244,14 @@ export class ModalVehicleComponent extends ComponentToExtendForCustomDialog impl
       body.inventories.push({
         id: this.vehicleToEdit.inventories[this.vehicleToEdit.inventories.length - 1].id,
         commissionNumber: formValue.commissionNumber ? formValue.commissionNumber : null,
-        enterpriseId: formValue.facilityStock ? formValue.facilityStock.configStockEnterpriseId : null,
-        storeId: formValue.facilityStock ? formValue.facilityStock.configStockStoreId : null
+        enterpriseId: formValue.facility ? formValue.facility.configStockEnterpriseId : null,
+        storeId: formValue.facility ? formValue.facility.configStockStoreId : null
       });
     } else if (formValue.commissionNumber) {
       body.inventories.push({
         commissionNumber: formValue.commissionNumber ? formValue.commissionNumber : null,
-        enterpriseId: formValue.facilityStock ? formValue.facilityStock.configStockEnterpriseId : null,
-        storeId: formValue.facilityStock ? formValue.facilityStock.configStockStoreId : null
+        enterpriseId: formValue.facility ? formValue.facility.configStockEnterpriseId : null,
+        storeId: formValue.facility ? formValue.facility.configStockStoreId : null
       });
     }
     if (formValue.commissionNumber) {

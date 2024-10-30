@@ -1,7 +1,7 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { FormBuilder, UntypedFormGroup, Validators } from '@angular/forms';
 import { marker } from '@biesbjerg/ngx-translate-extract-marker';
-import { AttachmentDTO, CardPaymentAttachmentsDTO } from '@data/models/cards/card-attachments-dto';
+import { AttachmentDTO, CardInstanceAttachmentDTO } from '@data/models/cards/card-attachments-dto';
 import {
   CardPaymentLineDTO,
   CardPaymentsDTO,
@@ -11,9 +11,10 @@ import {
   PaymentTypeDTO
 } from '@data/models/cards/card-payments-dto';
 import { CardAttachmentsService } from '@data/services/card-attachments.service';
-import { ComponentToExtendForCustomDialog, CustomDialogFooterConfigI } from '@frontend/custom-dialog';
 import { MediaViewerService } from '@modules/feature-modules/media-viewer-dialog/media-viewer.service';
 import { TranslateService } from '@ngx-translate/core';
+import { CustomDialogFooterConfigI } from '@shared/modules/custom-dialog/interfaces/custom-dialog-footer-config';
+import { ComponentToExtendForCustomDialog } from '@shared/modules/custom-dialog/models/component-for-custom-dialog';
 import { ConfirmDialogService } from '@shared/services/confirm-dialog.service';
 import { GlobalMessageService } from '@shared/services/global-message.service';
 import { ProgressSpinnerDialogService } from '@shared/services/progress-spinner-dialog.service';
@@ -37,7 +38,7 @@ export class CardPaymentDialogFormComponent extends ComponentToExtendForCustomDi
   public paymentDescriptions: PaymentPosibleDescriptionDTO = null;
   public cardInstancePayment: CardPaymentsDTO = null;
   public paymentLineForm: UntypedFormGroup = null;
-  public attachmentsList: CardPaymentAttachmentsDTO[];
+  public attachmentsList: CardInstanceAttachmentDTO[];
   public cardInstanceWorkflowId: number;
   public mode: 'PAYMENT' | 'TOTAL' | 'TOTAL_DETAIL' = 'PAYMENT';
   public editionDisabled = false;
@@ -166,7 +167,7 @@ export class CardPaymentDialogFormComponent extends ComponentToExtendForCustomDi
   public compareDescriptions(object1: PaymentDescriptionDTO, object2: PaymentDescriptionDTO) {
     return object1 && object2 && object1.id === object2.id;
   }
-  public compareAttachments(object1: CardPaymentAttachmentsDTO, object2: CardPaymentAttachmentsDTO) {
+  public compareAttachments(object1: CardInstanceAttachmentDTO, object2: CardInstanceAttachmentDTO) {
     return object1 && object2 && object1.file.id === object2.file.id;
   }
   public changePaymentType(): void {
@@ -182,7 +183,7 @@ export class CardPaymentDialogFormComponent extends ComponentToExtendForCustomDi
     }
   }
 
-  public openMedia(attachment: CardPaymentAttachmentsDTO): void {
+  public openMedia(attachment: CardInstanceAttachmentDTO): void {
     const file: AttachmentDTO = attachment.file;
     if (file.content) {
       this.mediaViewerService.openMediaViewer(file);

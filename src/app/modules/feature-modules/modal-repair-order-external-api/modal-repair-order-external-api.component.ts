@@ -5,13 +5,14 @@ import RepairOrderEntityApiDTO from '@data/models/entities/repair-order-entity-a
 import RepairOrderEntityDTO from '@data/models/entities/repair-order-entity-dto';
 import RepairOrderFilterDTO from '@data/models/entities/repair-order-filter-dto';
 import { EntitiesService } from '@data/services/entities.service';
-import { ComponentToExtendForCustomDialog, CustomDialogFooterConfigI } from '@frontend/custom-dialog';
 import { TranslateService } from '@ngx-translate/core';
+import { CustomDialogFooterConfigI } from '@shared/modules/custom-dialog/interfaces/custom-dialog-footer-config';
+import { ComponentToExtendForCustomDialog } from '@shared/modules/custom-dialog/models/component-for-custom-dialog';
 import { ConfirmDialogService } from '@shared/services/confirm-dialog.service';
 import { GlobalMessageService } from '@shared/services/global-message.service';
 import { ProgressSpinnerDialogService } from '@shared/services/progress-spinner-dialog.service';
 import { Observable, of } from 'rxjs';
-import { finalize, catchError, take, map } from 'rxjs/operators';
+import { catchError, finalize, map, take } from 'rxjs/operators';
 
 export const enum CreateEditRepairOrderExternalApiComponentModalEnum {
   ID = 'create-edit-repair-order-external-api-dialog-id',

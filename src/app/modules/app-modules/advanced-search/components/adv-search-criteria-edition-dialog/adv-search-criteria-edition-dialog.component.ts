@@ -1,15 +1,15 @@
 import { COMMA, ENTER } from '@angular/cdk/keycodes';
 import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
-import { MatChipInput, MatChipInputEvent } from '@angular/material/chips';
+import { MatChipInputEvent } from '@angular/material/chips';
 import { marker } from '@biesbjerg/ngx-translate-extract-marker';
 import { AdvancedSearchItem } from '@data/models/adv-search/adv-search-dto';
 import AdvSearchOperatorDTO from '@data/models/adv-search/adv-search-operator-dto';
-import RoleDTO from '@data/models/user-permissions/role-dto';
 import { AdvSearchService } from '@data/services/adv-search.service';
-import { ComponentToExtendForCustomDialog, CustomDialogFooterConfigI } from '@frontend/custom-dialog';
-import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
+import { untilDestroyed } from '@ngneat/until-destroy';
 import { TranslateService } from '@ngx-translate/core';
+import { CustomDialogFooterConfigI } from '@shared/modules/custom-dialog/interfaces/custom-dialog-footer-config';
+import { ComponentToExtendForCustomDialog } from '@shared/modules/custom-dialog/models/component-for-custom-dialog';
 import { ConfirmDialogService } from '@shared/services/confirm-dialog.service';
 import { GlobalMessageService } from '@shared/services/global-message.service';
 import moment from 'moment';
@@ -155,9 +155,26 @@ export class AdvSearchCriteriaEditionDialogComponent extends ComponentToExtendFo
         settingValueOptions = true;
       }
     }
-    this.operators = this.extendedComponentData.operators.filter(
-      (op: AdvSearchOperatorDTO) => op.dataTypes.indexOf(this.dataType) >= 0
-    );
+    this.operators = this.extendedComponentData.operators.filter((op: AdvSearchOperatorDTO) => {
+      if (
+        op.dataTypes.indexOf(this.dataType) >= 0 &&
+        this.criteria &&
+        this.criteria.tabItem?.typeItem === 'LIST' &&
+        this.criteria.tabItem?.tabItemConfigList?.selectionType === 'MULTIPLE'
+      ) {
+        //Evitar EQ y NEQ puesto que no son múltiples
+        return ['EQ', 'NEQ'].indexOf(op.code) === -1;
+      } else if (
+        op.dataTypes.indexOf(this.dataType) >= 0 &&
+        this.criteria &&
+        this.criteria.tabItem?.typeItem === 'LIST' &&
+        this.criteria.tabItem?.tabItemConfigList?.selectionType === 'SIMPLE'
+      ) {
+        //Evitar IN y NIN puesto que no son simples
+        return ['IN', 'NIN'].indexOf(op.code) === -1;
+      }
+      return op.dataTypes.indexOf(this.dataType) >= 0;
+    });
     //Ya tengo valueOptions y operatos, inicializo los form.
     if (this.criteria?.advancedSearchOperator) {
       this.operatorFormControl.setValue(this.operators.find((op) => op.id === this.criteria.advancedSearchOperator.id));

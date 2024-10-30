@@ -72,6 +72,8 @@ export enum RouteConstants {
   CREATE_EDIT_CHECKLIST = 'create-edit-checklist',
   ATTACHMENTS = 'attachments',
   CLIENT_TIMELINE = 'client-timeline',
+  CREATE_EDIT_ACCOUNTING = 'create-edit-accounting',
+  ACCOUNTING = 'accounting',
 
   //Cards
   CARDS = 'cards',

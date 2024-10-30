@@ -1,0 +1,15 @@
+.custom-dialog {
+  &__header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    &__title {
+      margin: 0;
+    }
+    &__close-button {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+  }
+}

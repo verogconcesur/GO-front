@@ -1,13 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import {
-  UntypedFormGroup,
-  UntypedFormBuilder,
-  FormArray,
-  FormGroup,
-  AbstractControl,
-  Validators,
-  FormControl
-} from '@angular/forms';
+import { FormArray, FormControl, FormGroup, UntypedFormBuilder, UntypedFormGroup, Validators } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
 import { marker } from '@biesbjerg/ngx-translate-extract-marker';
 import { AttachmentDTO, CardAttachmentsDTO } from '@data/models/cards/card-attachments-dto';
@@ -19,7 +11,6 @@ import TemplatesCommonDTO from '@data/models/templates/templates-common-dto';
 import { CardAttachmentsService } from '@data/services/card-attachments.service';
 import { CardMessagesService } from '@data/services/card-messages.service';
 import { TemplatesCommunicationService } from '@data/services/templates-communication.service';
-import { ComponentToExtendForCustomDialog, CustomDialogFooterConfigI } from '@frontend/custom-dialog';
 // eslint-disable-next-line max-len
 import CardInstanceAttachmentsConfig, {
   CardInstanceAttachmentsModalVersionConfig
@@ -31,6 +22,8 @@ import {
 // eslint-disable-next-line max-len
 import { TextEditorWrapperConfigI } from '@modules/feature-modules/text-editor-wrapper/interfaces/text-editor-wrapper-config.interface';
 import { TranslateService } from '@ngx-translate/core';
+import { CustomDialogFooterConfigI } from '@shared/modules/custom-dialog/interfaces/custom-dialog-footer-config';
+import { ComponentToExtendForCustomDialog } from '@shared/modules/custom-dialog/models/component-for-custom-dialog';
 import { ConfirmDialogService } from '@shared/services/confirm-dialog.service';
 import { GlobalMessageService } from '@shared/services/global-message.service';
 import { ProgressSpinnerDialogService } from '@shared/services/progress-spinner-dialog.service';
@@ -264,16 +257,32 @@ export class MessageClientDialogComponent extends ComponentToExtendForCustomDial
     const formValue = this.messageForm.getRawValue();
     const spinner = this.spinnerService.show();
     const template = this.messageForm.get('comunicationTemplate').value;
+
     if (this.remoteSignature?.id) {
       formValue.messageClients.map((m: CardMessageRenderDTO) => {
         m.cardInstanceRemoteSignatureId = this.remoteSignature.id;
         return m;
       });
     }
+
     const channels = this.messageForm
       .getRawValue()
       .messageChannels.filter((channel: { messageChannel: MessageChannelDTO; selected: boolean }) => channel.selected)
-      .map((channel: { messageChannel: MessageChannelDTO; selected: boolean }) => channel.messageChannel.id);
+      .map((channel: { messageChannel: MessageChannelDTO; selected: boolean }) => {
+        if (channel.messageChannel.id === 4) {
+          formValue.messageClients = formValue.messageClients.map((client: CardMessageRenderDTO) => {
+            if (client.messageChannelId === 4) {
+              return {
+                ...client,
+                templateId: template
+              };
+            }
+            return client;
+          });
+        }
+        return channel.messageChannel.id;
+      });
+
     if (template && channels && channels.length) {
       return this.cardService
         .sendMessageClients(this.cardInstance.cardInstanceWorkflow.id, channels, formValue.messageClients)

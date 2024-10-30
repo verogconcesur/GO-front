@@ -1,6 +1,6 @@
 {
     "name": "Concenet_Front",
-    "version": "1.1.0",
+    "version": "1.1.5",
     "jenga_FrontVersion": "1.3.1",
     "scripts": {
         "ng": "ng",
@@ -10,7 +10,10 @@
         "build_qa": "npm run build -- --configuration=qa",
         "build_pre": "npm run build -- --configuration=pre",
         "build_stg": "npm run build -- --configuration=stg",
+        "build_go_des": "npm run build -- --configuration=go_des",
         "build_production": "npm run build -- --configuration=production",
+        "build_production_la_baronia": "npm run build -- --configuration=production_la_baronia",
+        "build_production_servidauto": "npm run build -- --configuration=production_servidauto",
         "test": "ng test --code-coverage",
         "test:ci": "ng test --watch=false --code-coverage",
         "lint": "ng lint",
@@ -49,8 +52,6 @@
         "@angular/platform-browser-dynamic": "^14.2.3",
         "@angular/router": "^14.2.3",
         "@biesbjerg/ngx-translate-extract-marker": "^1.0.0",
-        "@frontend/bread-crumbs": "1.4.1",
-        "@frontend/custom-dialog": "1.4.1",
         "@messageformat/core": "^3.0.1",
         "@ngneat/until-destroy": "^9.0.2",
         "@ngx-translate/core": "^14.0.0",
@@ -124,5 +125,5 @@
         "ts-node": "^8.10.2",
         "typescript": "^4.8.3"
     },
-    "Concenet_FrontVersion": "1.1.0"
+    "Concenet_FrontVersion": "1.1.5"
 }

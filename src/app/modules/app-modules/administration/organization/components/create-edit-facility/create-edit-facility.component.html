@@ -123,12 +123,192 @@
                         labels.requireConfigApiExt | translate
                     }}</mat-checkbox>
                 </div>
+                <!-- configApiExtDefault: Instalación por defecto autoline -->
+                <!-- <div class="facility-data__section__group" *ngIf="facilityForm.controls.requireConfigApiExt.value">
+                    <mat-checkbox formControlName="configApiExtDefault">{{
+                        labels.configApiExtDefault | translate
+                    }}</mat-checkbox>
+                </div> -->
                 <div class="facility-data__section__group grid-group">
-                    <!-- Code -->
                     <mat-form-field
                         appearance="outline"
                         floatLabel="always"
                         *ngIf="facilityForm.controls.requireConfigApiExt.value"
+                    >
+                        <mat-label> {{ labels.configApiExtType | translate }}</mat-label>
+                        <mat-select formControlName="configApiExtType">
+                            <mat-option *ngFor="let type of configType" [value]="type.value"> {{ type.name }}</mat-option>
+                        </mat-select>
+                        <mat-error
+                            class="facility-data__error"
+                            *ngIf="
+                                facilityForm.controls.configApiExtType.invalid && facilityForm.controls.configApiExtType.touched
+                            "
+                        >
+                            {{ labels.required | translate }}
+                        </mat-error>
+                    </mat-form-field>
+                    <mat-form-field
+                        appearance="outline"
+                        floatLabel="always"
+                        *ngIf="facilityForm.controls.configApiExtType.value === 'DMS'"
+                    >
+                        <mat-label> {{ labels.configApiExtDmsType | translate }}</mat-label>
+                        <mat-select formControlName="configApiExtDmsType">
+                            <mat-option *ngFor="let type of configDmsType" [value]="type.value"> {{ type.name }}</mat-option>
+                        </mat-select>
+                        <mat-error
+                            class="facility-data__error"
+                            *ngIf="
+                                facilityForm.controls.configApiExtDmsType.invalid &&
+                                facilityForm.controls.configApiExtDmsType.touched
+                            "
+                        >
+                            {{ labels.required | translate }}
+                        </mat-error>
+                    </mat-form-field>
+                    <mat-form-field
+                        appearance="outline"
+                        floatLabel="always"
+                        *ngIf="
+                            facilityForm.controls.requireConfigApiExt.value &&
+                            facilityForm.controls.configApiExtType.value === 'CSV'
+                        "
+                    >
+                        <mat-label>{{ labels.configApiExtCsvHost | translate }}</mat-label>
+                        <input matInput formControlName="configApiExtCsvHost" />
+                        <mat-error
+                            class="facility-data__error"
+                            *ngIf="
+                                facilityForm.controls.configApiExtCsvHost.invalid &&
+                                facilityForm.controls.configApiExtCsvHost.touched
+                            "
+                        >
+                            {{ labels.required | translate }}
+                        </mat-error>
+                    </mat-form-field>
+                    <mat-form-field
+                        appearance="outline"
+                        floatLabel="always"
+                        *ngIf="
+                            facilityForm.controls.requireConfigApiExt.value &&
+                            facilityForm.controls.configApiExtType.value === 'CSV'
+                        "
+                    >
+                        <mat-label>{{ labels.configApiExtCsvPort | translate }}</mat-label>
+                        <input matInput formControlName="configApiExtCsvPort" />
+                        <mat-error
+                            class="facility-data__error"
+                            *ngIf="
+                                facilityForm.controls.configApiExtCsvPort.invalid &&
+                                facilityForm.controls.configApiExtCsvPort.touched
+                            "
+                        >
+                            {{ labels.required | translate }}
+                        </mat-error>
+                    </mat-form-field>
+                    <mat-form-field
+                        appearance="outline"
+                        floatLabel="always"
+                        *ngIf="
+                            facilityForm.controls.requireConfigApiExt.value &&
+                            facilityForm.controls.configApiExtType.value === 'CSV'
+                        "
+                    >
+                        <mat-label>{{ labels.configApiExtCsvDirectory | translate }}</mat-label>
+                        <input matInput formControlName="configApiExtCsvDirectory" />
+                        <mat-error
+                            class="facility-data__error"
+                            *ngIf="
+                                facilityForm.controls.configApiExtCsvDirectory.invalid &&
+                                facilityForm.controls.configApiExtCsvDirectory.touched
+                            "
+                        >
+                            {{ labels.required | translate }}
+                        </mat-error>
+                    </mat-form-field>
+                    <mat-form-field
+                        appearance="outline"
+                        floatLabel="always"
+                        *ngIf="
+                            facilityForm.controls.requireConfigApiExt.value &&
+                            facilityForm.controls.configApiExtType.value === 'CSV'
+                        "
+                    >
+                        <mat-label>{{ labels.configApiExtCsvPrefixFile | translate }}</mat-label>
+                        <input matInput formControlName="configApiExtCsvPrefixFile" />
+                        <mat-error
+                            class="facility-data__error"
+                            *ngIf="
+                                facilityForm.controls.configApiExtCsvPrefixFile.invalid &&
+                                facilityForm.controls.configApiExtCsvPrefixFile.touched
+                            "
+                        >
+                            {{ labels.required | translate }}
+                        </mat-error>
+                    </mat-form-field>
+                    <mat-form-field
+                        appearance="outline"
+                        floatLabel="always"
+                        *ngIf="
+                            facilityForm.controls.requireConfigApiExt.value &&
+                            facilityForm.controls.configApiExtType.value === 'CSV'
+                        "
+                    >
+                        <mat-label>{{ labels.configApiExtCsvUser | translate }}</mat-label>
+                        <input matInput formControlName="configApiExtCsvUser" />
+                        <mat-error
+                            class="facility-data__error"
+                            *ngIf="
+                                facilityForm.controls.configApiExtCsvUser.invalid &&
+                                facilityForm.controls.configApiExtCsvUser.touched
+                            "
+                        >
+                            {{ labels.required | translate }}
+                        </mat-error>
+                    </mat-form-field>
+                    <mat-form-field
+                        appearance="outline"
+                        floatLabel="always"
+                        *ngIf="
+                            facilityForm.controls.requireConfigApiExt.value &&
+                            facilityForm.controls.configApiExtType.value === 'CSV'
+                        "
+                    >
+                        <mat-label>{{ labels.configApiExtCsvPass | translate }}</mat-label>
+                        <input matInput formControlName="configApiExtCsvPass" type="password" />
+                        <mat-error
+                            class="facility-data__error"
+                            *ngIf="
+                                facilityForm.controls.configApiExtCsvPass.invalid &&
+                                facilityForm.controls.configApiExtCsvPass.touched
+                            "
+                        >
+                            {{ labels.required | translate }}
+                        </mat-error>
+                    </mat-form-field>
+
+                    <button
+                        class="button-csv"
+                        *ngIf="
+                            facilityForm.controls.requireConfigApiExt.value &&
+                            facilityForm.controls.configApiExtType.value === 'CSV'
+                        "
+                        mat-button
+                        matSuffix
+                        (click)="saveAndLoadFileCSV('WORKSHOP')"
+                    >
+                        {{ labels.saveAndLoadCsvFile | translate }}
+                    </button>
+
+                    <!-- Code -->
+                    <mat-form-field
+                        appearance="outline"
+                        floatLabel="always"
+                        *ngIf="
+                            facilityForm.controls.requireConfigApiExt.value &&
+                            facilityForm.controls.configApiExtType.value === 'DMS'
+                        "
                     >
                         <mat-label>{{ labels.code | translate }}</mat-label>
                         <input matInput formControlName="code" />
@@ -143,7 +323,10 @@
                     <mat-form-field
                         appearance="outline"
                         floatLabel="always"
-                        *ngIf="facilityForm.controls.requireConfigApiExt.value"
+                        *ngIf="
+                            facilityForm.controls.requireConfigApiExt.value &&
+                            facilityForm.controls.configApiExtType.value === 'DMS'
+                        "
                     >
                         <mat-label>{{ labels.enterpriseId | translate }}</mat-label>
                         <input matInput formControlName="enterpriseId" />
@@ -158,7 +341,10 @@
                     <mat-form-field
                         appearance="outline"
                         floatLabel="always"
-                        *ngIf="facilityForm.controls.requireConfigApiExt.value"
+                        *ngIf="
+                            facilityForm.controls.requireConfigApiExt.value &&
+                            facilityForm.controls.configApiExtType.value === 'DMS'
+                        "
                     >
                         <mat-label>{{ labels.storeId | translate }}</mat-label>
                         <input matInput formControlName="storeId" />
@@ -187,6 +373,288 @@
                             >
                         </mat-select>
                         <button matSuffix mat-icon-button aria-label="Clear" (click)="removeSubstate(); $event.stopPropagation()">
+                            <mat-icon>close</mat-icon>
+                        </button>
+                    </mat-form-field>
+                </div>
+                <div class="facility-data__section__group">
+                    <mat-checkbox formControlName="requireConfigStockApiExt" (change)="requiredConfigChangeStock($event.checked)">
+                        {{ labels.requireConfigStockApiExt | translate }}
+                    </mat-checkbox>
+                </div>
+                <div class="facility-data__section__group grid-group">
+                    <mat-form-field
+                        appearance="outline"
+                        floatLabel="always"
+                        *ngIf="facilityForm.controls.requireConfigStockApiExt.value"
+                    >
+                        <mat-label> {{ labels.configStockType | translate }}</mat-label>
+                        <mat-select formControlName="configStockType">
+                            <mat-option *ngFor="let type of configType" [value]="type.value"> {{ type.name }}</mat-option>
+                        </mat-select>
+                        <mat-error
+                            class="facility-data__error"
+                            *ngIf="facilityForm.controls.configStockType.invalid && facilityForm.controls.configStockType.touched"
+                        >
+                            {{ labels.required | translate }}
+                        </mat-error>
+                    </mat-form-field>
+                    <mat-form-field
+                        appearance="outline"
+                        floatLabel="always"
+                        *ngIf="
+                            facilityForm.controls.requireConfigStockApiExt.value &&
+                            facilityForm.controls.configStockType.value === 'CSV'
+                        "
+                    >
+                        <mat-label>{{ labels.configStockCsvHost | translate }}</mat-label>
+                        <input matInput formControlName="configStockCsvHost" />
+                        <mat-error
+                            class="facility-data__error"
+                            *ngIf="
+                                facilityForm.controls.configStockCsvHost.invalid &&
+                                facilityForm.controls.configStockCsvHost.touched
+                            "
+                        >
+                            {{ labels.required | translate }}
+                        </mat-error>
+                    </mat-form-field>
+                    <mat-form-field
+                        appearance="outline"
+                        floatLabel="always"
+                        *ngIf="
+                            facilityForm.controls.requireConfigStockApiExt.value &&
+                            facilityForm.controls.configStockType.value === 'CSV'
+                        "
+                    >
+                        <mat-label>{{ labels.configStockCsvPort | translate }}</mat-label>
+                        <input matInput formControlName="configStockCsvPort" />
+                        <mat-error
+                            class="facility-data__error"
+                            *ngIf="
+                                facilityForm.controls.configStockCsvPort.invalid &&
+                                facilityForm.controls.configStockCsvPort.touched
+                            "
+                        >
+                            {{ labels.required | translate }}
+                        </mat-error>
+                    </mat-form-field>
+                    <mat-form-field
+                        appearance="outline"
+                        floatLabel="always"
+                        *ngIf="
+                            facilityForm.controls.requireConfigStockApiExt.value &&
+                            facilityForm.controls.configStockType.value === 'CSV'
+                        "
+                    >
+                        <mat-label>{{ labels.configStockCsvDirectory | translate }}</mat-label>
+                        <input matInput formControlName="configStockCsvDirectory" />
+                        <mat-error
+                            class="facility-data__error"
+                            *ngIf="
+                                facilityForm.controls.configStockCsvDirectory.invalid &&
+                                facilityForm.controls.configStockCsvDirectory.touched
+                            "
+                        >
+                            {{ labels.required | translate }}
+                        </mat-error>
+                    </mat-form-field>
+                    <mat-form-field
+                        appearance="outline"
+                        floatLabel="always"
+                        *ngIf="
+                            facilityForm.controls.requireConfigStockApiExt.value &&
+                            facilityForm.controls.configStockType.value === 'CSV'
+                        "
+                    >
+                        <mat-label>{{ labels.configStockCsvPrefixFile | translate }}</mat-label>
+                        <input matInput formControlName="configStockCsvPrefixFile" />
+                        <mat-error
+                            class="facility-data__error"
+                            *ngIf="
+                                facilityForm.controls.configStockCsvPrefixFile.invalid &&
+                                facilityForm.controls.configStockCsvPrefixFile.touched
+                            "
+                        >
+                            {{ labels.required | translate }}
+                        </mat-error>
+                    </mat-form-field>
+                    <mat-form-field
+                        appearance="outline"
+                        floatLabel="always"
+                        *ngIf="
+                            facilityForm.controls.requireConfigStockApiExt.value &&
+                            facilityForm.controls.configStockType.value === 'CSV'
+                        "
+                    >
+                        <mat-label>{{ labels.configStockCsvUser | translate }}</mat-label>
+                        <input matInput formControlName="configStockCsvUser" />
+                        <mat-error
+                            class="facility-data__error"
+                            *ngIf="
+                                facilityForm.controls.configStockCsvUser.invalid &&
+                                facilityForm.controls.configStockCsvUser.touched
+                            "
+                        >
+                            {{ labels.required | translate }}
+                        </mat-error>
+                    </mat-form-field>
+                    <mat-form-field
+                        appearance="outline"
+                        floatLabel="always"
+                        *ngIf="
+                            facilityForm.controls.requireConfigStockApiExt.value &&
+                            facilityForm.controls.configStockType.value === 'CSV'
+                        "
+                    >
+                        <mat-label>{{ labels.configStockCsvPass | translate }}</mat-label>
+                        <input matInput formControlName="configStockCsvPass" type="password" />
+                        <mat-error
+                            class="facility-data__error"
+                            *ngIf="
+                                facilityForm.controls.configStockCsvPass.invalid &&
+                                facilityForm.controls.configStockCsvPass.touched
+                            "
+                        >
+                            {{ labels.required | translate }}
+                        </mat-error>
+                    </mat-form-field>
+                    <button
+                        class="button-csv"
+                        *ngIf="
+                            facilityForm.controls.requireConfigStockApiExt.value &&
+                            facilityForm.controls.configStockType.value === 'CSV'
+                        "
+                        mat-button
+                        matSuffix
+                        (click)="saveAndLoadFileCSV('STOCK')"
+                    >
+                        {{ labels.saveAndLoadCsvFile | translate }}
+                    </button>
+                    <!-- Code -->
+                    <mat-form-field
+                        appearance="outline"
+                        floatLabel="always"
+                        *ngIf="
+                            facilityForm.controls.requireConfigStockApiExt.value &&
+                            facilityForm.controls.configStockType.value === 'DMS'
+                        "
+                    >
+                        <mat-label>{{ labels.code | translate }}</mat-label>
+                        <input matInput formControlName="configStockCode" />
+                        <mat-error
+                            class="facility-data__error"
+                            *ngIf="facilityForm.controls.configStockCode.invalid && facilityForm.controls.configStockCode.touched"
+                        >
+                            {{ labels.required | translate }}
+                        </mat-error>
+                    </mat-form-field>
+                    <!-- EnterpriseId -->
+                    <mat-form-field
+                        appearance="outline"
+                        floatLabel="always"
+                        *ngIf="
+                            facilityForm.controls.requireConfigStockApiExt.value &&
+                            facilityForm.controls.configStockType.value === 'DMS'
+                        "
+                    >
+                        <mat-label>{{ labels.enterpriseId | translate }}</mat-label>
+                        <input matInput formControlName="configStockEnterpriseId" />
+                        <mat-error
+                            class="facility-data__error"
+                            *ngIf="
+                                facilityForm.controls.configStockEnterpriseId.invalid &&
+                                facilityForm.controls.configStockEnterpriseId.touched
+                            "
+                        >
+                            {{ labels.required | translate }}
+                        </mat-error>
+                    </mat-form-field>
+                    <!-- StoreId -->
+                    <mat-form-field
+                        appearance="outline"
+                        floatLabel="always"
+                        *ngIf="
+                            facilityForm.controls.requireConfigStockApiExt.value &&
+                            facilityForm.controls.configStockType.value === 'DMS'
+                        "
+                    >
+                        <mat-label>{{ labels.storeId | translate }}</mat-label>
+                        <input matInput formControlName="configStockStoreId" />
+                        <mat-error
+                            class="facility-data__error"
+                            *ngIf="
+                                facilityForm.controls.configStockStoreId.invalid &&
+                                facilityForm.controls.configStockStoreId.touched
+                            "
+                        >
+                            {{ labels.required | translate }}
+                        </mat-error>
+                    </mat-form-field>
+                </div>
+                <div class="facility-data__section__group substateList-grid">
+                    <!-- workflowSubstate NEW -->
+                    <mat-form-field
+                        appearance="outline"
+                        floatLabel="always"
+                        *ngIf="facilityForm.controls.requireConfigStockApiExt.value"
+                        class="grid-item-1"
+                    >
+                        <input matInput value="{{ labels.workflowSubstateNew | translate }}" readonly />
+                    </mat-form-field>
+                    <mat-form-field
+                        appearance="outline"
+                        floatLabel="always"
+                        [matMenuTriggerFor]="attrSearcherMenuNew"
+                        *ngIf="facilityForm.controls.requireConfigStockApiExt.value"
+                        class="grid-item-3"
+                    >
+                        <mat-label>{{ labels.workflowSubstate | translate }}</mat-label>
+                        <mat-select formControlName="workflowSubstateNew" [placeholder]="labels.select | translate">
+                            <mat-option style="display: none" *ngFor="let substate of substateList" [value]="substate">
+                                {{ substate.workflowState.workflow.name }}/{{ substate.workflowState.name }}/{{ substate.name }}
+                            </mat-option>
+                        </mat-select>
+                        <button
+                            matSuffix
+                            mat-icon-button
+                            aria-label="Clear"
+                            (click)="removeStockSubstate('NEW'); $event.stopPropagation()"
+                        >
+                            <mat-icon>close</mat-icon>
+                        </button>
+                    </mat-form-field>
+                </div>
+
+                <div class="facility-data__section__group substateList-grid">
+                    <!-- workflowSubstate USED -->
+                    <mat-form-field
+                        appearance="outline"
+                        floatLabel="always"
+                        *ngIf="facilityForm.controls.requireConfigStockApiExt.value"
+                        class="grid-item-1"
+                    >
+                        <input matInput value="{{ labels.workflowSubstateUsed | translate }}" readonly />
+                    </mat-form-field>
+                    <mat-form-field
+                        appearance="outline"
+                        floatLabel="always"
+                        [matMenuTriggerFor]="attrSearcherMenuUsed"
+                        *ngIf="facilityForm.controls.requireConfigStockApiExt.value"
+                        class="grid-item-3"
+                    >
+                        <mat-label>{{ labels.workflowSubstate | translate }}</mat-label>
+                        <mat-select formControlName="workflowSubstateUsed" [placeholder]="labels.select | translate">
+                            <mat-option style="display: none" *ngFor="let substate of substateList" [value]="substate">
+                                {{ substate.workflowState.workflow.name }}/{{ substate.workflowState.name }}/{{ substate.name }}
+                            </mat-option>
+                        </mat-select>
+                        <button
+                            matSuffix
+                            mat-icon-button
+                            aria-label="Clear"
+                            (click)="removeStockSubstate('USED'); $event.stopPropagation()"
+                        >
                             <mat-icon>close</mat-icon>
                         </button>
                     </mat-form-field>
@@ -408,5 +876,21 @@
         #genericTreeNodeSearcher
         [originalData]="treeData"
         (nodeSelected)="selectAttribute($event)"
+    ></app-generic-tree-node-searcher>
+</mat-menu>
+<button style="display: none" #menuTriggerNew="matMenuTrigger" [matMenuTriggerFor]="attrSearcherMenuNew"></button>
+<mat-menu #attrSearcherMenuNew="matMenu" class="attr-menu" (closed)="genericTreeNodeSearcherNew.resetFilter()">
+    <app-generic-tree-node-searcher
+        #genericTreeNodeSearcherNew
+        [originalData]="treeData"
+        (nodeSelected)="selectAttributeNew($event)"
+    ></app-generic-tree-node-searcher>
+</mat-menu>
+<button style="display: none" #menuTriggerUsed="matMenuTrigger" [matMenuTriggerFor]="attrSearcherMenuUsed"></button>
+<mat-menu #attrSearcherMenuUsed="matMenu" class="attr-menu" (closed)="genericTreeNodeSearcherUsed.resetFilter()">
+    <app-generic-tree-node-searcher
+        #genericTreeNodeSearcherUsed
+        [originalData]="treeData"
+        (nodeSelected)="selectAttributeUsed($event)"
     ></app-generic-tree-node-searcher>
 </mat-menu>

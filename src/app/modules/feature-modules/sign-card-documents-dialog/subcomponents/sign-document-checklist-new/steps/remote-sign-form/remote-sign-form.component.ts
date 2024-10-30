@@ -1,20 +1,19 @@
 import { Component, ElementRef, EventEmitter, Input, OnInit, Output, ViewChild, ViewEncapsulation } from '@angular/core';
 import { FormBuilder, FormControl, UntypedFormArray, UntypedFormControl, UntypedFormGroup, Validators } from '@angular/forms';
-import CombinedRequiredFieldsValidator from '@shared/validators/combined-required-fields.validator';
-import { finalize, take } from 'rxjs';
+import { marker } from '@biesbjerg/ngx-translate-extract-marker';
+import { AttachmentDTO, CardAttachmentsDTO } from '@data/models/cards/card-attachments-dto';
+import { TemplateChecklistItemDTO } from '@data/models/templates/templates-checklists-dto';
+import { TemplatesChecklistsService } from '@data/services/templates-checklists.service';
 import {
   InsertSignComponentModalEnum,
   ModalInsertSignComponent
 } from '@modules/feature-modules/modal-insert-sign/modal-insert-sign.component';
-import { CustomDialogService } from '@frontend/custom-dialog';
-import { TemplateChecklistItemDTO } from '@data/models/templates/templates-checklists-dto';
-import { marker } from '@biesbjerg/ngx-translate-extract-marker';
-import { AttachmentDTO, CardAttachmentsDTO } from '@data/models/cards/card-attachments-dto';
 import { TranslateService } from '@ngx-translate/core';
+import { CustomDialogService } from '@shared/modules/custom-dialog/services/custom-dialog.service';
 import { GlobalMessageService } from '@shared/services/global-message.service';
 import { ProgressSpinnerDialogService } from '@shared/services/progress-spinner-dialog.service';
-import { TemplatesChecklistsService } from '@data/services/templates-checklists.service';
-import { constants } from 'perf_hooks';
+import CombinedRequiredFieldsValidator from '@shared/validators/combined-required-fields.validator';
+import { finalize, take } from 'rxjs';
 
 @Component({
   selector: 'app-remote-sign-form',

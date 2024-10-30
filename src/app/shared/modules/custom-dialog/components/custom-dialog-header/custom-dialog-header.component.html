@@ -1,0 +1,15 @@
+<div class="custom-dialog__header">
+  <div class="custom-dialog__header__title mat-title">
+    {{ getTitleLabel() | translate }}
+  </div>
+  <div class="custom-dialog__header__close-button">
+    <button
+      mat-icon-button
+      aria-label="close"
+      class="close-modal-button"
+      (click)="close.emit(true)"
+    >
+      <mat-icon>close</mat-icon>
+    </button>
+  </div>
+</div>

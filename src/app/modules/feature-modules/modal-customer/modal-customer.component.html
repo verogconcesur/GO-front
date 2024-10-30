@@ -55,6 +55,9 @@
                             <span *ngIf="customerForm.controls.socialSecurityId.errors.required">{{
                                 labels.required | translate
                             }}</span>
+                            <span *ngIf="customerForm.controls.socialSecurityId.errors.pattern">
+                                {{ labels.notValidPattern | translate }}
+                            </span>
                         </mat-error>
                     </mat-form-field>
                     <mat-form-field appearance="outline" floatLabel="always">
@@ -88,6 +91,9 @@
                     <mat-form-field appearance="outline" floatLabel="always">
                         <mat-label>{{ labels.phone | translate }}</mat-label>
                         <input matInput formControlName="phone" />
+                        <mat-error *ngIf="customerForm.controls?.phone.invalid">
+                            <span *ngIf="customerForm.controls.phone.errors.required">{{ labels.required | translate }}</span>
+                        </mat-error>
                     </mat-form-field>
                     <mat-form-field appearance="outline" floatLabel="always">
                         <mat-label>{{ labels.communicationLandline | translate }}</mat-label>
@@ -113,14 +119,13 @@
                     <mat-form-field appearance="outline" floatLabel="always">
                         <mat-label>{{ labels.email | translate }}</mat-label>
                         <input matInput formControlName="email" />
-                        <mat-error
-                            *ngIf="
-                                customerForm.controls.email.invalid &&
-                                customerForm.controls.email.touched &&
-                                customerForm.controls.email.hasError('email')
-                            "
-                        >
-                            {{ labels.emailError | translate }}
+                        <mat-error *ngIf="customerForm.controls.email.invalid && customerForm.controls.email.touched">
+                            <span *ngIf="customerForm.controls.email.hasError('required')">
+                                {{ labels.required | translate }}
+                            </span>
+                            <span *ngIf="customerForm.controls.email.hasError('email')">
+                                {{ labels.emailError | translate }}
+                            </span>
                         </mat-error>
                         <mat-error
                             *ngIf="

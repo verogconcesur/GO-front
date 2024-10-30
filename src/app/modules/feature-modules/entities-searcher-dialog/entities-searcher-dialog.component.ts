@@ -7,9 +7,9 @@ import RepairOrderEntityDTO from '@data/models/entities/repair-order-entity-dto'
 import UserEntityDTO from '@data/models/entities/user-entity-dto';
 import VehicleEntityDTO, { InventoryVehicle } from '@data/models/entities/vehicle-entity-dto';
 import { EntitiesService } from '@data/services/entities.service';
-import { CustomDialogService } from '@frontend/custom-dialog';
 import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
 import { TranslateService } from '@ngx-translate/core';
+import { CustomDialogService } from '@shared/modules/custom-dialog/services/custom-dialog.service';
 import { GlobalMessageService } from '@shared/services/global-message.service';
 import { take } from 'rxjs/operators';
 import {

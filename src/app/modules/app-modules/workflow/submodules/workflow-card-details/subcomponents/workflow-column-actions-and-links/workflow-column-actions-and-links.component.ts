@@ -2,41 +2,40 @@ import { Component, Input, OnInit } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { ActivatedRoute, Router } from '@angular/router';
 import { RouteConstants } from '@app/constants/route.constants';
+import { AuthenticationService } from '@app/security/authentication.service';
 import { ConcenetError } from '@app/types/error';
 import { marker } from '@biesbjerg/ngx-translate-extract-marker';
 import CardColumnTabDTO from '@data/models/cards/card-column-tab-dto';
 import CardDTO from '@data/models/cards/card-dto';
 import CardInstanceDTO from '@data/models/cards/card-instance-dto';
+import CardInstanceRemoteSignatureDTO from '@data/models/cards/card-instance-remote-signature-dto';
+import CardInstanceWhatsappDTO from '@data/models/cards/card-instance-whatsapp-dto';
+import RoleDTO from '@data/models/user-permissions/role-dto';
 import WorkflowCardTabItemDTO from '@data/models/workflows/workflow-card-tab-item-dto';
 import WorkflowMoveDTO from '@data/models/workflows/workflow-move-dto';
+import WorkflowSubstateUserDTO from '@data/models/workflows/workflow-substate-user-dto';
+import { CardAttachmentsService } from '@data/services/card-attachments.service';
+import { CardMessagesService } from '@data/services/card-messages.service';
 import { CardService } from '@data/services/cards.service';
-import { CustomDialogService } from '@frontend/custom-dialog';
 import { WorkflowPrepareAndMoveService } from '@modules/app-modules/workflow/aux-service/workflow-prepare-and-move-aux.service';
+import { ModalChatWhatsappComponent } from '@modules/feature-modules/modal-chat-whatsapp/modal-chat-whatsapp.component';
+import {
+  ModalStartConversationComponent,
+  StartConversationComponentModalEnum
+} from '@modules/feature-modules/modal-start-conversation/modal-start-conversation.component';
+import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
 import { TranslateService } from '@ngx-translate/core';
+import { CustomDialogService } from '@shared/modules/custom-dialog/services/custom-dialog.service';
 import { GlobalMessageService } from '@shared/services/global-message.service';
+import { ProgressSpinnerDialogService } from '@shared/services/progress-spinner-dialog.service';
+import { SortService } from '@shared/services/sort.service';
 import { replacerFunc } from '@shared/utils/replacer-function';
-import { take } from 'rxjs/operators';
+import { finalize, take } from 'rxjs/operators';
 import {
   MessageClientDialogComponent,
   MessageClientDialogComponentModalEnum
 } from '../message-client-dialog/message-client-dialog.component';
 import { MoveCardDialogComponent } from '../move-card-dialog/move-card-dialog.component';
-import CardInstanceRemoteSignatureDTO from '@data/models/cards/card-instance-remote-signature-dto';
-import { CardAttachmentsService } from '@data/services/card-attachments.service';
-import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
-import {
-  ModalStartConversationComponent,
-  StartConversationComponentModalEnum
-} from '@modules/feature-modules/modal-start-conversation/modal-start-conversation.component';
-import { CardMessagesService } from '@data/services/card-messages.service';
-import { ModalChatWhatsappComponent } from '@modules/feature-modules/modal-chat-whatsapp/modal-chat-whatsapp.component';
-import CardInstanceWhatsappDTO from '@data/models/cards/card-instance-whatsapp-dto';
-import WorkflowDTO from '@data/models/workflows/workflow-dto';
-import RoleDTO from '@data/models/user-permissions/role-dto';
-import { AuthenticationService } from '@app/security/authentication.service';
-import { PermissionConstants } from '@app/constants/permission.constants';
-import { SortService } from '@shared/services/sort.service';
-import WorkflowSubstateUserDTO from '@data/models/workflows/workflow-substate-user-dto';
 
 @UntilDestroy()
 @Component({
@@ -75,7 +74,8 @@ export class WorkflowColumnActionsAndLinksComponent implements OnInit {
     private cardMessagesService: CardMessagesService,
     private router: Router,
     private authService: AuthenticationService,
-    private sortService: SortService
+    private sortService: SortService,
+    private spinnerService: ProgressSpinnerDialogService
   ) {}
 
   ngOnInit(): void {
@@ -157,12 +157,36 @@ export class WorkflowColumnActionsAndLinksComponent implements OnInit {
   }
 
   public btnClick(btn: WorkflowCardTabItemDTO, remoteSignature: CardInstanceRemoteSignatureDTO = null): void {
-    if (btn.typeItem === 'LINK') {
+    if (btn.typeItem === 'LINK' && btn.tabItemConfigLink.redirect) {
       let link = btn.tabItemConfigLink.link;
       if (btn.tabItemConfigLink.link.indexOf('http') === -1) {
         link = 'http://' + btn.tabItemConfigLink.link;
       }
       window.open(link, '_blank');
+    } else if (btn.typeItem === 'LINK') {
+      const spinner = this.spinnerService.show();
+      this.cardService
+        .callExternalApi(this.idCard, btn.tabId, btn.id)
+        .pipe(
+          take(1),
+          finalize(() => {
+            this.spinnerService.hide(spinner);
+          })
+        )
+        .subscribe(
+          (response: boolean) => {
+            this.globalMessageService.showSuccess({
+              message: this.translateService.instant(marker('common.successOperation')),
+              actionText: this.translateService.instant(marker('common.close'))
+            });
+          },
+          (error: ConcenetError) => {
+            this.globalMessageService.showError({
+              message: error?.message ? error.message : this.translateService.instant(marker('errors.unknown')),
+              actionText: this.translateService.instant(marker('common.close'))
+            });
+          }
+        );
     } else if (btn.typeItem === 'ACTION') {
       switch (btn.tabItemConfigAction.actionType) {
         case 'ATTACH_DOC':
