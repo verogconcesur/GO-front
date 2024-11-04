@@ -59,6 +59,9 @@ export class ModalCustomerComponent extends ComponentToExtendForCustomDialog imp
   public facilityAsyncList: Observable<FacilityDTO[]>;
   //@ts-ignore
   public allBusiness: BusinessTypes[];
+  public showReference = true;
+  public showBusnesType = false;
+  public facilityList: FacilityDTO[];
   public phoneList: { value: string; name: string }[];
   public genderList: { value: string; name: string }[];
   public minLength = 3;
@@ -117,65 +120,112 @@ export class ModalCustomerComponent extends ComponentToExtendForCustomDialog imp
 
   public confirmCreateCustomer = () => {
     const formValue = this.customerForm.value;
-    this.confirmationDialog
-      .open({
-        title: this.translateService.instant(marker('common.warning')),
-        message: this.customerToEdit
-          ? this.translateService.instant(marker('entities.customers.editTitle'))
-          : this.translateService.instant(marker('entities.customers.createTitle'))
-      })
-      .pipe(take(1))
-      .subscribe((ok: boolean) => {
-        if (ok) {
-          const spinner = this.spinnerService.show();
-          this.entitiesService
-            .createCustomer({
-              id: formValue.id,
-              customerId: formValue.customerId,
-              reference: formValue.reference,
-              name: formValue.name,
-              firstName: formValue.firstName,
-              secondName: formValue.secondName,
-              facility: formValue.facility,
-              email: formValue.email,
-              socialSecurityId: formValue.socialSecurityId,
-              phone: formValue.phone,
-              businessTypeCode: formValue.businessTypeCode.code,
-              businessTypeDescription: formValue.businessTypeCode.description,
-              addressPostalCode: formValue.addressPostalCode,
-              communicationPreferredPhone: formValue.communicationPreferredPhone,
-              communicationLandline: formValue.communicationLandline,
-              communicationWorkMobile: formValue.communicationWorkMobile,
-              communicationWorkLandline: formValue.communicationWorkLandline,
-              gender: formValue.gender
-            })
-            .pipe(
-              take(1),
-              finalize(() => this.spinnerService.hide(spinner))
-            )
-            .subscribe({
-              next: (response) => {
-                this.customDialogService.close(this.MODAL_ID, response);
-                this.globalMessageService.showSuccess({
-                  message: this.translateService.instant(marker('common.successOperation')),
-                  actionText: this.translateService.instant(marker('common.close'))
-                });
-                return response;
-              },
-              error: (error) => {
-                this.globalMessageService.showError({
-                  message: error.message,
-                  actionText: this.translateService.instant(marker('common.close'))
-                });
-              }
+    if (this.showBusnesType === true) {
+      this.confirmationDialog
+        .open({
+          title: this.translateService.instant(marker('common.warning')),
+          message: this.customerToEdit
+            ? this.translateService.instant(marker('entities.customers.editTitle'))
+            : this.translateService.instant(marker('entities.customers.createTitle'))
+        })
+        .pipe(take(1))
+        .subscribe((ok: boolean) => {
+          if (ok) {
+            const spinner = this.spinnerService.show();
+            this.entitiesService
+              .createCustomer({
+                id: formValue.id,
+                customerId: formValue.customerId,
+                reference: formValue.reference,
+                name: formValue.name,
+                firstName: formValue.firstName,
+                secondName: formValue.secondName,
+                facility: formValue.facility,
+                email: formValue.email,
+                socialSecurityId: formValue.socialSecurityId,
+                phone: formValue.phone,
+                businessTypeCode: formValue.businessTypeCode.code,
+                businessTypeDescription: formValue.businessTypeCode.description,
+                addressPostalCode: formValue.addressPostalCode,
+                communicationPreferredPhone: formValue.communicationPreferredPhone,
+                communicationLandline: formValue.communicationLandline,
+                communicationWorkMobile: formValue.communicationWorkMobile,
+                communicationWorkLandline: formValue.communicationWorkLandline,
+                gender: formValue.gender
+              })
+              .pipe(
+                take(1),
+                finalize(() => this.spinnerService.hide(spinner))
+              )
+              .subscribe({
+                next: (response) => {
+                  this.customDialogService.close(this.MODAL_ID, response);
+                  this.globalMessageService.showSuccess({
+                    message: this.translateService.instant(marker('common.successOperation')),
+                    actionText: this.translateService.instant(marker('common.close'))
+                  });
+                  return response;
+                },
+                error: (error) => {
+                  this.globalMessageService.showError({
+                    message: error.message,
+                    actionText: this.translateService.instant(marker('common.close'))
+                  });
+                }
+              });
+          }
+        });
+    } else {
+      const spinner = this.spinnerService.show();
+      this.entitiesService
+        .createCustomer({
+          id: formValue.id,
+          customerId: formValue.customerId,
+          reference: formValue.reference,
+          name: formValue.name,
+          firstName: formValue.firstName,
+          secondName: formValue.secondName,
+          facility: formValue.facility,
+          email: formValue.email,
+          socialSecurityId: formValue.socialSecurityId,
+          phone: formValue.phone,
+          businessTypeCode: formValue.businessTypeCode.code,
+          businessTypeDescription: formValue.businessTypeCode.description,
+          addressPostalCode: formValue.addressPostalCode,
+          communicationPreferredPhone: formValue.communicationPreferredPhone,
+          communicationLandline: formValue.communicationLandline,
+          communicationWorkMobile: formValue.communicationWorkMobile,
+          communicationWorkLandline: formValue.communicationWorkLandline,
+          gender: formValue.gender
+        })
+        .pipe(
+          take(1),
+          finalize(() => this.spinnerService.hide(spinner))
+        )
+        .subscribe({
+          next: (response) => {
+            this.customDialogService.close(this.MODAL_ID, response);
+            this.globalMessageService.showSuccess({
+              message: this.translateService.instant(marker('common.successOperation')),
+              actionText: this.translateService.instant(marker('common.close'))
             });
-        }
-      });
+            return response;
+          },
+          error: (error) => {
+            this.globalMessageService.showError({
+              message: error.message,
+              actionText: this.translateService.instant(marker('common.close'))
+            });
+          }
+        });
+    }
   };
   public getOptionList() {
     this.facilityAsyncList = this.facilityService.getFacilitiesByBrandsIds().pipe(
       tap({
         next: (facilities: FacilityDTO[]) => {
+          this.facilityList = facilities;
+          this.isAutoline();
           const selectedFacility = this.customerForm.get('facility').value;
           if (selectedFacility) {
             this.customerForm.get('facility').setValue(
@@ -217,6 +267,21 @@ export class ModalCustomerComponent extends ComponentToExtendForCustomDialog imp
         });
     }
   }
+  public isAutoline() {
+    const facilitySelected = this.facilityList.find((facility) => facility?.id === this.form.facility?.value?.id);
+    if (facilitySelected) {
+      if (facilitySelected.configApiExtDmsType === 'AUTOLINE') {
+        this.showReference = false;
+        this.showBusnesType = true;
+        this.customerForm.get('reference').setValue(null);
+        this.customerForm.get('businessTypeCode').addValidators(Validators.required);
+      } else {
+        this.showReference = true;
+        this.showBusnesType = false;
+        this.customerForm.get('businessTypeCode').clearValidators();
+      }
+    }
+  }
   public setAndGetFooterConfig(): CustomDialogFooterConfigI | null {
     return {
       show: true,
@@ -251,7 +316,7 @@ export class ModalCustomerComponent extends ComponentToExtendForCustomDialog imp
           [Validators.required, Validators.pattern(/^[A-Za-z0-9]*$/)]
         ],
         phone: [this.customerToEdit ? this.customerToEdit.phone : null, [Validators.required]],
-        businessTypeCode: [this.customerToEdit ? this.customerToEdit.businessTypeCode : null, [Validators.required]],
+        businessTypeCode: [this.customerToEdit ? this.customerToEdit.businessTypeCode : null],
         addressPostalCode: [this.customerToEdit ? this.customerToEdit.addressPostalCode : null, [Validators.required]],
         communicationPreferredPhone: [
           this.customerToEdit ? this.customerToEdit.communicationPreferredPhone : null,
@@ -272,6 +337,7 @@ export class ModalCustomerComponent extends ComponentToExtendForCustomDialog imp
       }
     );
     this.customerForm.controls.facility.valueChanges.pipe(untilDestroyed(this)).subscribe((x) => {
+      this.isAutoline();
       this.form.businessTypeCode.setValue(null);
       this.getBusinessTypes();
     });

@@ -5,6 +5,7 @@ import RepairOrderEntityDTO from '@data/models/entities/repair-order-entity-dto'
 import FacilityDTO from '@data/models/organization/facility-dto';
 import { EntitiesService } from '@data/services/entities.service';
 import { FacilityService } from '@data/services/facility.sevice';
+import { untilDestroyed } from '@ngneat/until-destroy';
 import { TranslateService } from '@ngx-translate/core';
 import { CustomDialogFooterConfigI } from '@shared/modules/custom-dialog/interfaces/custom-dialog-footer-config';
 import { ComponentToExtendForCustomDialog } from '@shared/modules/custom-dialog/models/component-for-custom-dialog';
@@ -54,6 +55,8 @@ export class ModalRepairOrderComponent extends ComponentToExtendForCustomDialog 
   public startDate: Date;
   public endDate: Date;
   public facilityAsyncList: Observable<FacilityDTO[]>;
+  public showReference = true;
+  public facilityList: FacilityDTO[];
 
   constructor(
     private fb: UntypedFormBuilder,
@@ -91,6 +94,8 @@ export class ModalRepairOrderComponent extends ComponentToExtendForCustomDialog 
     this.facilityAsyncList = this.facilityService.getFacilitiesByBrandsIds().pipe(
       tap({
         next: (facilities: FacilityDTO[]) => {
+          this.facilityList = facilities;
+          this.isAutoline();
           const selectedFacility = this.repairOrderForm.get('facility').value;
           if (typeof selectedFacility === 'object') {
             this.repairOrderForm.get('facility').setValue(
@@ -125,48 +130,93 @@ export class ModalRepairOrderComponent extends ComponentToExtendForCustomDialog 
 
   public confirmCreateOrderRepair = () => {
     const formValue = this.repairOrderForm.getRawValue();
-    this.confirmationDialog
-      .open({
-        title: this.translateService.instant(marker('common.warning')),
-        message: this.translateService.instant(marker('entities.repairOrders.createTitle'))
-      })
-      .pipe(take(1))
-      .subscribe((ok: boolean) => {
-        if (ok) {
-          const spinner = this.spinnerService.show();
-          this.entitiesService
-            .createRepairOrder({
-              id: formValue.id,
-              reference: formValue.reference,
-              jobsDescription: formValue.jobsDescription,
-              vehicle: formValue.vehicle,
-              customer: formValue.customer,
-              dueInDatetime: this.convertToMilliseconds(formValue.dueInDatetime).toString(),
-              facility: formValue.facility
-            })
-            .pipe(
-              take(1),
-              finalize(() => this.spinnerService.hide(spinner))
-            )
-            .subscribe({
-              next: (response) => {
-                this.customDialogService.close(this.MODAL_ID, response);
-                this.globalMessageService.showSuccess({
-                  message: this.translateService.instant(marker('common.successOperation')),
-                  actionText: this.translateService.instant(marker('common.close'))
-                });
-                return response;
-              },
-              error: (error) => {
-                this.globalMessageService.showError({
-                  message: error.message,
-                  actionText: this.translateService.instant(marker('common.close'))
-                });
-              }
+    if (this.showReference === true) {
+      const spinner = this.spinnerService.show();
+      this.entitiesService
+        .createRepairOrder({
+          id: formValue.id,
+          reference: formValue.reference,
+          jobsDescription: formValue.jobsDescription,
+          vehicle: formValue.vehicle,
+          customer: formValue.customer,
+          dueInDatetime: this.convertToMilliseconds(formValue.dueInDatetime).toString(),
+          facility: formValue.facility
+        })
+        .pipe(
+          take(1),
+          finalize(() => this.spinnerService.hide(spinner))
+        )
+        .subscribe({
+          next: (response) => {
+            this.customDialogService.close(this.MODAL_ID, response);
+            this.globalMessageService.showSuccess({
+              message: this.translateService.instant(marker('common.successOperation')),
+              actionText: this.translateService.instant(marker('common.close'))
             });
-        }
-      });
+            return response;
+          },
+          error: (error) => {
+            this.globalMessageService.showError({
+              message: error.message,
+              actionText: this.translateService.instant(marker('common.close'))
+            });
+          }
+        });
+    } else {
+      this.confirmationDialog
+        .open({
+          title: this.translateService.instant(marker('common.warning')),
+          message: this.translateService.instant(marker('entities.repairOrders.createTitle'))
+        })
+        .pipe(take(1))
+        .subscribe((ok: boolean) => {
+          if (ok) {
+            const spinner = this.spinnerService.show();
+            this.entitiesService
+              .createRepairOrder({
+                id: formValue.id,
+                reference: formValue.reference,
+                jobsDescription: formValue.jobsDescription,
+                vehicle: formValue.vehicle,
+                customer: formValue.customer,
+                dueInDatetime: this.convertToMilliseconds(formValue.dueInDatetime).toString(),
+                facility: formValue.facility
+              })
+              .pipe(
+                take(1),
+                finalize(() => this.spinnerService.hide(spinner))
+              )
+              .subscribe({
+                next: (response) => {
+                  this.customDialogService.close(this.MODAL_ID, response);
+                  this.globalMessageService.showSuccess({
+                    message: this.translateService.instant(marker('common.successOperation')),
+                    actionText: this.translateService.instant(marker('common.close'))
+                  });
+                  return response;
+                },
+                error: (error) => {
+                  this.globalMessageService.showError({
+                    message: error.message,
+                    actionText: this.translateService.instant(marker('common.close'))
+                  });
+                }
+              });
+          }
+        });
+    }
   };
+  public isAutoline() {
+    const facilitySelected = this.facilityList.find((facility) => facility.id === this.form.facility.value.id);
+    if (facilitySelected) {
+      if (facilitySelected.configApiExtDmsType === 'AUTOLINE') {
+        this.showReference = false;
+        this.repairOrderForm.get('reference').setValue(null);
+      } else {
+        this.showReference = true;
+      }
+    }
+  }
   public convertToMilliseconds(value: CustomDateObject): number | null {
     if (!value) {
       return null;
@@ -203,11 +253,14 @@ export class ModalRepairOrderComponent extends ComponentToExtendForCustomDialog 
     this.repairOrderForm = this.fb.group({
       id: [this.repairOrderToEdit ? this.repairOrderToEdit?.id : null],
       reference: [this.repairOrderToEdit ? this.repairOrderToEdit?.reference : null],
-      jobsDescription: [this.repairOrderToEdit ? this.repairOrderToEdit?.jobsDescription : null, [Validators.required]],
+      jobsDescription: [this.repairOrderToEdit ? this.repairOrderToEdit?.jobsDescription : null],
       vehicle: [this.repairOrderToEdit ? this.repairOrderToEdit?.vehicle : null],
       customer: [this.repairOrderToEdit ? this.repairOrderToEdit?.customer : null],
       dueInDatetime: [this.repairOrderToEdit ? new Date(this.repairOrderToEdit?.dueInDatetime) : null, [Validators.required]],
       facility: [{ value: this.repairOrderToEdit ? this.repairOrderToEdit?.facility : null, disabled: true }]
+    });
+    this.repairOrderForm.controls.facility.valueChanges.pipe(untilDestroyed(this)).subscribe((x) => {
+      this.isAutoline();
     });
   };
 }
