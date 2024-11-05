@@ -60,7 +60,7 @@
                             </span>
                         </mat-error>
                     </mat-form-field>
-                    <mat-form-field *ngIf="showReference" appearance="outline" floatLabel="always">
+                    <mat-form-field appearance="outline" floatLabel="always">
                         <mat-label>{{ labels.reference | translate }}</mat-label>
                         <input matInput formControlName="reference" />
                     </mat-form-field>
@@ -148,7 +148,7 @@
                             <span *ngIf="customerForm.controls.facility.errors.required">{{ labels.required | translate }}</span>
                         </mat-error>
                     </mat-form-field>
-                    <mat-form-field *ngIf="showBusnesType" appearance="outline" floatLabel="always">
+                    <mat-form-field appearance="outline" floatLabel="always">
                         <mat-label>{{ labels.businessTypeCode | translate }}</mat-label>
                         <mat-select formControlName="businessTypeCode">
                             <mat-option *ngFor="let business of allBusiness" [value]="business">{{

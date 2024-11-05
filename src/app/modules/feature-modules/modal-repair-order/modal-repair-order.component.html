@@ -60,7 +60,7 @@
                             getDateErrorMessage(pickerIniInput.value)
                         }}</mat-error>
                     </mat-form-field>
-                    <mat-form-field *ngIf="showReference" appearance="outline" floatLabel="always">
+                    <mat-form-field appearance="outline" floatLabel="always">
                         <mat-label>{{ labels.reference | translate }}</mat-label>
                         <input matInput formControlName="reference" />
                         <mat-error *ngIf="repairOrderForm.controls?.reference.invalid">

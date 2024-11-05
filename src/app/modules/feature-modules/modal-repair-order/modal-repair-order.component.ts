@@ -95,7 +95,7 @@ export class ModalRepairOrderComponent extends ComponentToExtendForCustomDialog 
       tap({
         next: (facilities: FacilityDTO[]) => {
           this.facilityList = facilities;
-          this.isAutoline();
+          this.isAutoline(true);
           const selectedFacility = this.repairOrderForm.get('facility').value;
           if (typeof selectedFacility === 'object') {
             this.repairOrderForm.get('facility').setValue(
@@ -206,14 +206,19 @@ export class ModalRepairOrderComponent extends ComponentToExtendForCustomDialog 
         });
     }
   };
-  public isAutoline() {
-    const facilitySelected = this.facilityList.find((facility) => facility.id === this.form.facility.value.id);
+  public isAutoline(firstLoad: boolean) {
+    const facilitySelected = this.facilityList.find((facility) => facility.id === this.repairOrderForm.get('facility').value);
+    console.log(facilitySelected);
     if (facilitySelected) {
       if (facilitySelected.configApiExtDmsType === 'AUTOLINE') {
         this.showReference = false;
-        this.repairOrderForm.get('reference').setValue(null);
+        this.repairOrderForm.get('reference').disable();
+        if (!firstLoad) {
+          this.repairOrderForm.get('reference').setValue(null);
+        }
       } else {
         this.showReference = true;
+        this.repairOrderForm.get('reference').enable();
       }
     }
   }
@@ -252,7 +257,7 @@ export class ModalRepairOrderComponent extends ComponentToExtendForCustomDialog 
   private initializeForm = (): void => {
     this.repairOrderForm = this.fb.group({
       id: [this.repairOrderToEdit ? this.repairOrderToEdit?.id : null],
-      reference: [this.repairOrderToEdit ? this.repairOrderToEdit?.reference : null],
+      reference: [{ value: this.repairOrderToEdit ? this.repairOrderToEdit?.reference : null, disabled: true }],
       jobsDescription: [this.repairOrderToEdit ? this.repairOrderToEdit?.jobsDescription : null],
       vehicle: [this.repairOrderToEdit ? this.repairOrderToEdit?.vehicle : null],
       customer: [this.repairOrderToEdit ? this.repairOrderToEdit?.customer : null],
@@ -260,7 +265,7 @@ export class ModalRepairOrderComponent extends ComponentToExtendForCustomDialog 
       facility: [{ value: this.repairOrderToEdit ? this.repairOrderToEdit?.facility : null, disabled: true }]
     });
     this.repairOrderForm.controls.facility.valueChanges.pipe(untilDestroyed(this)).subscribe((x) => {
-      this.isAutoline();
+      this.isAutoline(false);
     });
   };
 }

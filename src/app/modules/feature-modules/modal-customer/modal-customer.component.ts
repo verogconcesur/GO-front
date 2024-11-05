@@ -225,7 +225,7 @@ export class ModalCustomerComponent extends ComponentToExtendForCustomDialog imp
       tap({
         next: (facilities: FacilityDTO[]) => {
           this.facilityList = facilities;
-          this.isAutoline();
+          this.isAutoline(true);
           const selectedFacility = this.customerForm.get('facility').value;
           if (selectedFacility) {
             this.customerForm.get('facility').setValue(
@@ -236,7 +236,6 @@ export class ModalCustomerComponent extends ComponentToExtendForCustomDialog imp
         }
       })
     );
-    this.getBusinessTypes();
     this.phoneList = this.customerService.typePhoneComunications;
     this.genderList = this.customerService.genderTypes;
   }
@@ -267,19 +266,31 @@ export class ModalCustomerComponent extends ComponentToExtendForCustomDialog imp
         });
     }
   }
-  public isAutoline() {
+  public isAutoline(firstLoad: boolean) {
     const facilitySelected = this.facilityList.find((facility) => facility?.id === this.form.facility?.value?.id);
     if (facilitySelected) {
       if (facilitySelected.configApiExtDmsType === 'AUTOLINE') {
         this.showReference = false;
         this.showBusnesType = true;
-        this.customerForm.get('reference').setValue(null);
+        if (!firstLoad) {
+          this.customerForm.get('reference').setValue(null);
+        }
+        this.customerForm.get('reference').disable();
+        this.customerForm.get('businessTypeCode').enable();
         this.customerForm.get('businessTypeCode').addValidators(Validators.required);
+        this.getBusinessTypes();
       } else {
         this.showReference = true;
         this.showBusnesType = false;
         this.customerForm.get('businessTypeCode').clearValidators();
+        if (!firstLoad) {
+          this.customerForm.get('businessTypeCode').setValue(null);
+        }
+        this.customerForm.get('businessTypeCode').disable();
+        this.customerForm.get('reference').enable();
       }
+    } else {
+      this.customerForm.get('reference').enable();
     }
   }
   public setAndGetFooterConfig(): CustomDialogFooterConfigI | null {
@@ -303,7 +314,7 @@ export class ModalCustomerComponent extends ComponentToExtendForCustomDialog imp
       {
         id: [this.customerToEdit ? this.customerToEdit.id : null],
         customerId: [this.customerToEdit ? this.customerToEdit.customerId : null],
-        reference: [this.customerToEdit ? this.customerToEdit.reference : null],
+        reference: [{ value: this.customerToEdit ? this.customerToEdit.reference : null, disabled: true }],
         //Deshabilitar referencia cliente
         // reference: [{ value: this.customerToEdit ? this.customerToEdit.reference : null, disabled: true }],
         name: [this.customerToEdit ? this.customerToEdit.name : null],
@@ -316,7 +327,7 @@ export class ModalCustomerComponent extends ComponentToExtendForCustomDialog imp
           [Validators.required, Validators.pattern(/^[A-Za-z0-9]*$/)]
         ],
         phone: [this.customerToEdit ? this.customerToEdit.phone : null, [Validators.required]],
-        businessTypeCode: [this.customerToEdit ? this.customerToEdit.businessTypeCode : null],
+        businessTypeCode: [{ value: this.customerToEdit ? this.customerToEdit.businessTypeCode : null, disabled: true }],
         addressPostalCode: [this.customerToEdit ? this.customerToEdit.addressPostalCode : null, [Validators.required]],
         communicationPreferredPhone: [
           this.customerToEdit ? this.customerToEdit.communicationPreferredPhone : null,
@@ -337,9 +348,8 @@ export class ModalCustomerComponent extends ComponentToExtendForCustomDialog imp
       }
     );
     this.customerForm.controls.facility.valueChanges.pipe(untilDestroyed(this)).subscribe((x) => {
-      this.isAutoline();
+      this.isAutoline(false);
       this.form.businessTypeCode.setValue(null);
-      this.getBusinessTypes();
     });
   };
 }
