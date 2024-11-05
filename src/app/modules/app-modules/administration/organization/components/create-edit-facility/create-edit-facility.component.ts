@@ -142,7 +142,7 @@ export class CreateEditFacilityComponent extends ComponentToExtendForCustomDialo
     { name: 'CSV', value: 'CSV' }
   ];
   public configDmsType = [
-    { name: 'AUTOLINE', value: 'AUTOLINE' },
+    { name: 'KEYLOOP', value: 'AUTOLINE' },
     { name: 'SPIGA', value: 'SPIGA' }
   ];
 
