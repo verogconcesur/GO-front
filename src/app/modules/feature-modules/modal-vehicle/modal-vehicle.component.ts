@@ -14,8 +14,8 @@ import { CustomDialogService } from '@shared/modules/custom-dialog/services/cust
 import { ConfirmDialogService } from '@shared/services/confirm-dialog.service';
 import { GlobalMessageService } from '@shared/services/global-message.service';
 import { ProgressSpinnerDialogService } from '@shared/services/progress-spinner-dialog.service';
-import { combineLatest, Observable, of } from 'rxjs';
-import { catchError, finalize, map, take, tap } from 'rxjs/operators';
+import { merge, Observable, of } from 'rxjs';
+import { catchError, filter, finalize, map, take, tap } from 'rxjs/operators';
 
 export const enum CreateEditVehicleComponentModalEnum {
   ID = 'create-edit-vehicle-dialog-id',
@@ -116,13 +116,23 @@ export class ModalVehicleComponent extends ComponentToExtendForCustomDialog impl
   }
 
   public listenVinFacilityChanges(): void {
-    const vinChanges = this.vehicleForm.get('vin')?.valueChanges;
-    const facilityChanges = this.vehicleForm.get('facility')?.valueChanges;
-
+    const vinControl = this.vehicleForm.get('vin');
+    const facilityControl = this.vehicleForm.get('facility');
+    const vinChanges = vinControl?.valueChanges;
+    const facilityChanges = facilityControl?.valueChanges;
     if (vinChanges && facilityChanges) {
-      combineLatest([vinChanges, facilityChanges])
-        .pipe(untilDestroyed(this))
-        .subscribe(([vinValue, facilityValue]) => {
+      merge(vinChanges, facilityChanges)
+        .pipe(
+          filter(() => {
+            const vinValue = vinControl?.value;
+            const facilityValue = facilityControl?.value;
+            return !!vinValue && !!facilityValue;
+          }),
+          untilDestroyed(this)
+        )
+        .subscribe(() => {
+          const vinValue = vinControl?.value;
+          const facilityValue = facilityControl?.value;
           if (vinValue && facilityValue) {
             this.searchMakes(vinValue, facilityValue.id);
           }
