@@ -58,9 +58,11 @@
                     <!-- userId -->
                     <mat-form-field appearance="outline" floatLabel="always">
                         <mat-label>{{ labels.userId | translate }}</mat-label>
-                        <input matInput formControlName="userId" />
-                        <mat-error *ngIf="userForm.controls?.userId.invalid && userForm.controls?.userId.touched">
-                            <span *ngIf="userForm.controls.userId.errors.required">{{ labels.required | translate }}</span>
+                        <input matInput formControlName="externalUserId" />
+                        <mat-error *ngIf="userForm.controls?.externalUserId.invalid && userForm.controls?.externalUserId.touched">
+                            <span *ngIf="userForm.controls.externalUserId.errors.required">{{
+                                labels.required | translate
+                            }}</span>
                         </mat-error>
                     </mat-form-field>
 

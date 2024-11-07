@@ -235,7 +235,7 @@ export class CreateEditUserComponent extends ComponentToExtendForCustomDialog im
         lastName: [this.userToEdit ? this.userToEdit.lastName : null],
         email: [this.userToEdit ? this.userToEdit.email : null, [Validators.email]],
         code: [this.userToEdit ? this.userToEdit.code : null],
-        userId: [this.userToEdit ? this.userToEdit.userId : null],
+        externalUserId: [this.userToEdit ? this.userToEdit.externalUserId : null],
         userName: [this.userToEdit ? this.userToEdit.userName : null, Validators.required],
         role: [this.userToEdit ? this.userToEdit.role : null, Validators.required],
         newPassword: [
