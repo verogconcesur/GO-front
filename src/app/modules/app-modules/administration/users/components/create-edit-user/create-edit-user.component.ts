@@ -77,7 +77,7 @@ export class CreateEditUserComponent extends ComponentToExtendForCustomDialog im
   public rolesAsyncList: Observable<RoleDTO[]>;
   public userToEdit: UserDetailsDTO = null;
   public workflowList: WorkflowDTO[];
-  public nombresWF: Array<{ name: string }>;
+  public nombresWF: { name: string }[] = [];
   // eslint-disable-next-line
   public displayWFList: string = 'none';
 

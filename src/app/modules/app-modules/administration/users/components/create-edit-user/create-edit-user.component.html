@@ -125,7 +125,11 @@
             </div>
 
             <!-- Workflows -->
-            <div class="user-data__section" style="height: 200px" [style.display]="userToEdit !== null ? 'block' : 'none'">
+            <div
+                class="user-data__section"
+                style="height: 200px"
+                [style.display]="userToEdit !== null && nombresWF.length ? 'block' : 'none'"
+            >
                 <div class="user-data__section__title">
                     {{ labels.userWorkflow | translate }}
                     <div class="user-data__workflows-container">
