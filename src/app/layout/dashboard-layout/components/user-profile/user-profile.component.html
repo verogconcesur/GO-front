@@ -5,7 +5,6 @@
 <mat-menu #profileMenu="matMenu" class="user-profile-menu">
     <section class="user-profile-menu__header">
         <div class="mat-subheading-1 user-profile-menu__header__title">{{ labels.title | translate }}</div>
-        <div class="user-profile-menu__header__version">{{ appVersion }}</div>
     </section>
 
     <!-- Spinner -->
@@ -122,4 +121,8 @@
         <span>{{ labels.logout | translate }}</span>
         <mat-icon>exit_to_app</mat-icon>
     </button>
+    <div class="versions-container">
+        <div class="version">{{ appVersion }}</div>
+        <div class="version">{{ backAppVersion }}</div>
+    </div>
 </mat-menu>
