@@ -57,6 +57,7 @@ export class CardInstanceAccountingComponent implements OnInit {
       value: null
     }
   ];
+  public isDisabled = false;
   public taxTypeToApply: AccountingTaxTypeDTO = this.taxTypes[0];
   public editingTaxType = false;
   public attachmentsList: CardInstanceAttachmentDTO[] = [];
@@ -120,6 +121,10 @@ export class CardInstanceAccountingComponent implements OnInit {
       });
   }
 
+  public disableEnableAccpuntingTab() {
+    this.isDisabled = !this.isDisabled;
+  }
+
   public setTaxType(): void {
     const spinner = this.spinnerService.show();
     this.accountingService
@@ -160,6 +165,7 @@ export class CardInstanceAccountingComponent implements OnInit {
           cardInstanceWorkflowId: this.cardInstanceWorkflowId,
           tabId: this.tabId,
           editionDisabled: this.cardInstanceAccountingConfig.disableAccountingEdition,
+          isTabDisabled: this.isDisabled,
           mode: 'BLOCK'
         },
         id: CardAccoutingDialogEnum.ID,
@@ -192,6 +198,7 @@ export class CardInstanceAccountingComponent implements OnInit {
             cardInstanceWorkflowId: this.cardInstanceWorkflowId,
             tabId: this.tabId,
             editionDisabled: this.cardInstanceAccountingConfig.disableAccountingEdition,
+            isTabDisabled: this.isDisabled,
             mode: 'LINE'
           },
           id: CardAccoutingDialogEnum.ID,
