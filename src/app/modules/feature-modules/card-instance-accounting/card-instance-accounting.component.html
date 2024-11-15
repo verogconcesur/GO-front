@@ -61,7 +61,11 @@
                         </mat-icon>
                         <mat-icon
                             [color]="'primary'"
-                            style="cursor: pointer"
+                            [ngStyle]="{
+                                'pointer-events': data.locked ? 'none' : 'auto',
+                                opacity: data.locked ? 0.5 : 1,
+                                cursor: data.locked ? 'not-allowed' : 'pointer'
+                            }"
                             (click)="editBlock(block)"
                             *ngIf="!block.attachments?.length"
                         >
@@ -110,7 +114,11 @@
                     </mat-icon>
                     <mat-icon
                         [color]="'primary'"
-                        style="cursor: pointer"
+                        [ngStyle]="{
+                            'pointer-events': data.locked ? 'none' : 'auto',
+                            opacity: data.locked ? 0.5 : 1,
+                            cursor: data.locked ? 'not-allowed' : 'pointer'
+                        }"
                         (click)="editLine(item)"
                         *ngIf="!item.attachments?.length"
                     >
