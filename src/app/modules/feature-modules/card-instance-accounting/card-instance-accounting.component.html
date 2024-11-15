@@ -28,9 +28,9 @@
                 <mat-icon
                     [color]="editingTaxType ? '' : 'primary'"
                     [ngStyle]="{
-                        'pointer-events': isDisabled ? 'none' : 'auto',
-                        opacity: isDisabled ? 0.5 : 1,
-                        cursor: isDisabled ? 'not-allowed' : 'pointer'
+                        'pointer-events': data.locked ? 'none' : 'auto',
+                        opacity: data.locked ? 0.5 : 1,
+                        cursor: data.locked ? 'not-allowed' : 'pointer'
                     }"
                     (click)="editTaxType(); $event.stopPropagation()"
                     *ngIf="!cardInstanceAccountingConfig.disableAccountingEdition"
@@ -119,9 +119,9 @@
                     <mat-icon
                         [color]="'primary'"
                         [ngStyle]="{
-                            'pointer-events': isDisabled ? 'none' : 'auto',
-                            opacity: isDisabled ? 0.5 : 1,
-                            cursor: isDisabled ? 'not-allowed' : 'pointer'
+                            'pointer-events': data.locked ? 'none' : 'auto',
+                            opacity: data.locked ? 0.5 : 1,
+                            cursor: data.locked ? 'not-allowed' : 'pointer'
                         }"
                         (click)="editLine(item)"
                         *ngIf="!cardInstanceAccountingConfig.disableAccountingEdition"
@@ -187,9 +187,9 @@
                 <div fxFlex="15" fxLayoutAlign="end center" class="actions"></div>
             </div>
         </div>
-        <div class="block_button">
+        <div *ngIf="canBlockAccounting()" class="block_button">
             <button mat-raised-button color="primary" (click)="disableEnableAccpuntingTab()">
-                {{ isDisabled ? "Desbloquear" : "Bloquear" }}
+                {{ data.locked ? (labels.unlock | translate) : (labels.lock | translate) }}
             </button>
         </div>
     </div>

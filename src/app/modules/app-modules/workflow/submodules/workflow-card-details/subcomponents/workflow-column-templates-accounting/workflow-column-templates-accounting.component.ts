@@ -3,15 +3,16 @@ import { ActivatedRoute } from '@angular/router';
 import { ConcenetError } from '@app/types/error';
 import { marker } from '@biesbjerg/ngx-translate-extract-marker';
 import CardColumnTabDTO from '@data/models/cards/card-column-tab-dto';
+import CardInstanceDTO from '@data/models/cards/card-instance-dto';
 import { TranslateService } from '@ngx-translate/core';
 import { GlobalMessageService } from '@shared/services/global-message.service';
-import { take } from 'rxjs/operators';
 import { NGXLogger } from 'ngx-logger';
-import CardInstanceDTO from '@data/models/cards/card-instance-dto';
+import { take } from 'rxjs/operators';
+// eslint-disable-next-line max-len
+import { CardAccountingDTO } from '@data/models/cards/card-accounting-dto';
+import { CardAccountingService } from '@data/services/card-accounting.service';
 // eslint-disable-next-line max-len
 import CardInstanceAccountingConfig from '@modules/feature-modules/card-instance-accounting/card-instance-accounting-config-interface';
-import { CardAccountingService } from '@data/services/card-accounting.service';
-import { CardAccountingDTO } from '@data/models/cards/card-accounting-dto';
 
 @Component({
   selector: 'app-workflow-column-templates-accounting',
@@ -47,6 +48,7 @@ export class WorkflowColumnTemplatesAccountingComponent implements OnInit, OnCha
   }
 
   public fetchData(): void {
+    console.log();
     this.accountingData = null;
     this.dataLoaded = false;
     this.setShowLoading.emit(true);

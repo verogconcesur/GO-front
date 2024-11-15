@@ -283,11 +283,13 @@
     },
     "cardDetail": {
         "accounting": {
+            "block": "Lock",
             "newLine": "New line",
             "taxType": "New type",
             "taxTypeNoApply": "Select a tax type",
             "totalAmountPlusTax": "Total amount plus tax",
-            "totalTax": "Tax value"
+            "totalTax": "Tax value",
+            "unblock": "Unlock"
         },
         "accountings": {
             "accumulatedLineEditionBlocked": "Amount edition locked (accumulated line)",

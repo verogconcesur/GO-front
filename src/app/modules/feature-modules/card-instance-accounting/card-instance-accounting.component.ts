@@ -3,6 +3,8 @@ import { Component, EventEmitter, Input, OnInit, Output, ViewEncapsulation } fro
 import { marker } from '@biesbjerg/ngx-translate-extract-marker';
 import { AttachmentDTO, CardAttachmentsDTO, CardInstanceAttachmentDTO } from '@data/models/cards/card-attachments-dto';
 // eslint-disable-next-line max-len
+import { PermissionConstants } from '@app/constants/permission.constants';
+import { AuthenticationService } from '@app/security/authentication.service';
 import { ConcenetError } from '@app/types/error';
 import { CardAccountingBlockDTO, CardAccountingDTO, CardAccountingLineDTO } from '@data/models/cards/card-accounting-dto';
 import CardInstanceDTO from '@data/models/cards/card-instance-dto';
@@ -47,7 +49,9 @@ export class CardInstanceAccountingComponent implements OnInit {
     value: marker('common.value'),
     totalTax: marker('cardDetail.accounting.totalTax'),
     totalAmountPlusTax: marker('cardDetail.accounting.totalAmountPlusTax'),
-    actions: marker('common.actions')
+    actions: marker('common.actions'),
+    lock: marker('cardDetail.accounting.block'),
+    unlock: marker('cardDetail.accounting.unblock')
   };
 
   public taxTypes: AccountingTaxTypeDTO[] = [
@@ -57,7 +61,6 @@ export class CardInstanceAccountingComponent implements OnInit {
       value: null
     }
   ];
-  public isDisabled = false;
   public taxTypeToApply: AccountingTaxTypeDTO = this.taxTypes[0];
   public editingTaxType = false;
   public attachmentsList: CardInstanceAttachmentDTO[] = [];
@@ -71,7 +74,8 @@ export class CardInstanceAccountingComponent implements OnInit {
     private customDialogService: CustomDialogService,
     private attachmentService: CardAttachmentsService,
     private templateAccountingsService: TemplatesAccountingsService,
-    private spinnerService: ProgressSpinnerDialogService
+    private spinnerService: ProgressSpinnerDialogService,
+    private authService: AuthenticationService
   ) {}
 
   ngOnInit(): void {
@@ -121,8 +125,35 @@ export class CardInstanceAccountingComponent implements OnInit {
       });
   }
 
+  public canBlockAccounting(): boolean {
+    return this.authService.hasUserAnyPermission([PermissionConstants.LOCKACCOUNTING]);
+  }
+
   public disableEnableAccpuntingTab() {
-    this.isDisabled = !this.isDisabled;
+    let disabled: number;
+    if (this.data.locked) {
+      disabled = 0;
+    } else {
+      disabled = 1;
+    }
+    const spinner = this.spinnerService.show();
+    this.accountingService
+      .disableEnableAccpuntingTab(this.cardInstanceWorkflowId, this.tabId, disabled)
+      .pipe(
+        take(1),
+        finalize(() => this.spinnerService.hide(spinner))
+      )
+      .subscribe({
+        next: (data: any) => {
+          this.reload.emit(true);
+        },
+        error: (error: ConcenetError) => {
+          this.globalMessageService.showError({
+            message: error.message,
+            actionText: this.translateService.instant(marker('common.close'))
+          });
+        }
+      });
   }
 
   public setTaxType(): void {
@@ -165,7 +196,7 @@ export class CardInstanceAccountingComponent implements OnInit {
           cardInstanceWorkflowId: this.cardInstanceWorkflowId,
           tabId: this.tabId,
           editionDisabled: this.cardInstanceAccountingConfig.disableAccountingEdition,
-          isTabDisabled: this.isDisabled,
+          isTabDisabled: this.data.locked,
           mode: 'BLOCK'
         },
         id: CardAccoutingDialogEnum.ID,
@@ -198,7 +229,7 @@ export class CardInstanceAccountingComponent implements OnInit {
             cardInstanceWorkflowId: this.cardInstanceWorkflowId,
             tabId: this.tabId,
             editionDisabled: this.cardInstanceAccountingConfig.disableAccountingEdition,
-            isTabDisabled: this.isDisabled,
+            isTabDisabled: this.data.locked,
             mode: 'LINE'
           },
           id: CardAccoutingDialogEnum.ID,
