@@ -421,6 +421,8 @@
             "CHANGE_STATE": "Change state",
             "EDIT_INFO": "Edit info",
             "INCOMING_CALL": "Incoming call",
+            "LOCKED_TAB": "Lock tab",
+            "UNLOCKED_TAB": "Unlock tab",
             "OUTCOMING_CALL": "Outcoming call",
             "REMOTE_SIGN": "Remote sign"
         },

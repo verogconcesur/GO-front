@@ -420,6 +420,8 @@
             "ASIG_USER": "Asignar usuario",
             "CHANGE_STATE": "Cambiar estado",
             "EDIT_INFO": "Editar información",
+            "LOCKED_TAB": "Bloquear pestaña",
+            "UNLOCKED_TAB": "Desbloquear pestaña",
             "INCOMING_CALL": "Llamada entrante",
             "OUTCOMING_CALL": "Llamada saliente",
             "REMOTE_SIGN": "Firma remota"
