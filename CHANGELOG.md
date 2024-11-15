@@ -2,6 +2,16 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [1.1.6](https://github.com/Delivery-Projects/concesur/concenet_front/-/compare/v1.1.5...v1.1.6) (2024-11-14)
+
+
+### Features
+
+* aniadir version back en perfil usuario ([08550af](https://github.com/Delivery-Projects/concesur/concenet_front/-/commit/08550af3f1224094606a11fbbfd54f75f7ee0ba7))
+* cambiar literal autoline por keyloop ([7167bf6](https://github.com/Delivery-Projects/concesur/concenet_front/-/commit/7167bf60db64f66cb633c6c4ab6eed5f51609f15))
+* nueva imagen candado ([e40ba3a](https://github.com/Delivery-Projects/concesur/concenet_front/-/commit/e40ba3afa0fa26f20734ea558de9dbab0e29de77))
+* nuevo entorno grupo velasco ([827cfc0](https://github.com/Delivery-Projects/concesur/concenet_front/-/commit/827cfc0c40c2666d248d15cd351815ec06dbc4e5))
+
 ### [1.1.5](https://github.com/Delivery-Projects/concesur/concenet_front/-/compare/v1.1.4...v1.1.5) (2024-10-24)
 
 
