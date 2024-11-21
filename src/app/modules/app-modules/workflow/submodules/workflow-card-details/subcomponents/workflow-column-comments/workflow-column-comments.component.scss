@@ -64,9 +64,13 @@
       }
       .mention-action {
         display: flex;
+        padding-left: 0;
+        margin-left: 0;
         justify-content: flex-start;
         align-items: center;
         color: mat-color($primary, 600);
+        font-weight: normal;
+        font-size: 0.9rem;
       }
     }
   }
