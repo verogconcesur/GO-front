@@ -5,4 +5,5 @@ export default interface CustomerEntityApiDTO {
   mobile: string;
   socialSecurityId: string;
   reference: string;
+  isCompany: boolean;
 }
