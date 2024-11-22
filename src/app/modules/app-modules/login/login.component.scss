@@ -43,4 +43,11 @@
     background: url(/assets/img/login-img@2x.png) no-repeat;
     background-size: cover;
   }
+  .app-version {
+    position: absolute;
+    bottom: 0;
+    right: 0;
+    margin: 10px;
+    color: white;
+  }
 }
