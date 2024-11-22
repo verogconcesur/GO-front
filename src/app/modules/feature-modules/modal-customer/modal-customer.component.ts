@@ -38,7 +38,8 @@ export class ModalCustomerComponent extends ComponentToExtendForCustomDialog imp
     emailError: marker('errors.emailPattern'),
     required: marker('errors.required'),
     data: marker('userProfile.data'),
-    notValidPattern: marker('entities.customers.notValidPattern')
+    notValidPattern: marker('entities.customers.notValidPattern'),
+    isCompany: marker('entities.customers.isCompany')
   };
   public minLength = 3;
   public customerForm: FormGroup;

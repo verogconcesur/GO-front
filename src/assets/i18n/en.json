@@ -422,9 +422,9 @@
             "EDIT_INFO": "Edit info",
             "INCOMING_CALL": "Incoming call",
             "LOCKED_TAB": "Lock tab",
-            "UNLOCKED_TAB": "Unlock tab",
             "OUTCOMING_CALL": "Outcoming call",
-            "REMOTE_SIGN": "Remote sign"
+            "REMOTE_SIGN": "Remote sign",
+            "UNLOCKED_TAB": "Unlock tab"
         },
         "messages": {
             "chanels": "Channels",
@@ -669,6 +669,7 @@
             "email": "Email",
             "firstName": "First name",
             "import": "Import customer",
+            "isCompany": "Is company",
             "lastName": "Second name",
             "name": "Name",
             "notValidPattern": "Format not valid",
