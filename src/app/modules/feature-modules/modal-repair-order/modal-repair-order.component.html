@@ -69,6 +69,23 @@
                             }}</span>
                         </mat-error>
                     </mat-form-field>
+                    <ng-container formArrayName="lines">
+                        <mat-form-field
+                            *ngFor="let line of lines.controls; let i = index"
+                            appearance="outline"
+                            floatLabel="always"
+                            [formGroupName]="i"
+                        >
+                            <mat-label>Línea {{ i + 1 }}</mat-label>
+                            <input matInput formControlName="name" />
+                            <mat-error *ngIf="line.get('name').invalid">
+                                {{ labels.required | translate }}
+                            </mat-error>
+                        </mat-form-field>
+                    </ng-container>
+                    <button class="add_line" mat-raised-button color="primary" (click)="addLine()">
+                        Añadir nueva línea <mat-icon>add</mat-icon>
+                    </button>
                 </div>
             </div>
         </form>

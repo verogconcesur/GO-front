@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { FormGroup, UntypedFormBuilder, Validators } from '@angular/forms';
+import { FormArray, FormGroup, UntypedFormBuilder, Validators } from '@angular/forms';
 import { marker } from '@biesbjerg/ngx-translate-extract-marker';
 import RepairOrderEntityDTO from '@data/models/entities/repair-order-entity-dto';
 import FacilityDTO from '@data/models/organization/facility-dto';
@@ -80,6 +80,9 @@ export class ModalRepairOrderComponent extends ComponentToExtendForCustomDialog 
   get form() {
     return this.repairOrderForm.controls;
   }
+  get lines(): FormArray {
+    return this.repairOrderForm.get('lines') as FormArray;
+  }
 
   ngOnInit(): void {
     this.repairOrderToEdit = this.extendedComponentData;
@@ -140,7 +143,8 @@ export class ModalRepairOrderComponent extends ComponentToExtendForCustomDialog 
           vehicle: formValue.vehicle,
           customer: formValue.customer,
           dueInDatetime: this.convertToMilliseconds(formValue.dueInDatetime).toString(),
-          facility: formValue.facility
+          facility: formValue.facility,
+          notes: formValue.notes
         })
         .pipe(
           take(1),
@@ -180,7 +184,8 @@ export class ModalRepairOrderComponent extends ComponentToExtendForCustomDialog 
                 vehicle: formValue.vehicle,
                 customer: formValue.customer,
                 dueInDatetime: this.convertToMilliseconds(formValue.dueInDatetime).toString(),
-                facility: formValue.facility
+                facility: formValue.facility,
+                notes: formValue.notes
               })
               .pipe(
                 take(1),
@@ -254,6 +259,13 @@ export class ModalRepairOrderComponent extends ComponentToExtendForCustomDialog 
       ]
     };
   }
+  addLine(): void {
+    const lineIndex = this.lines.length + 1;
+    const newLine = this.fb.group({
+      name: ['', Validators.required]
+    });
+    this.lines.push(newLine);
+  }
   private initializeForm = (): void => {
     this.repairOrderForm = this.fb.group({
       id: [this.repairOrderToEdit ? this.repairOrderToEdit?.id : null],
@@ -262,7 +274,9 @@ export class ModalRepairOrderComponent extends ComponentToExtendForCustomDialog 
       vehicle: [this.repairOrderToEdit ? this.repairOrderToEdit?.vehicle : null],
       customer: [this.repairOrderToEdit ? this.repairOrderToEdit?.customer : null],
       dueInDatetime: [this.repairOrderToEdit ? new Date(this.repairOrderToEdit?.dueInDatetime) : null, [Validators.required]],
-      facility: [{ value: this.repairOrderToEdit ? this.repairOrderToEdit?.facility : null, disabled: true }]
+      facility: [{ value: this.repairOrderToEdit ? this.repairOrderToEdit?.facility : null, disabled: true }],
+      notes: [this.repairOrderToEdit ? this.repairOrderToEdit?.notes : null],
+      lines: this.fb.array([])
     });
     this.repairOrderForm.controls.facility.valueChanges.pipe(untilDestroyed(this)).subscribe((x) => {
       this.isAutoline(false);
