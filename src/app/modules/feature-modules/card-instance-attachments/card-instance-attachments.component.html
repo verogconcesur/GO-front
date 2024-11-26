@@ -8,7 +8,12 @@
     <div class="attachments__content" cdkDropListGroup cdkScrollable>
         <div class="attachments__content__templates" *ngFor="let template of data">
             <div class="attachments__content__templates__header">
-                <label>{{ template.templateAttachmentItem.name }}</label>
+                <label
+                    [ngClass]="{
+                        required: requiredFieldsAuxService.isFieldRequired(template.tabId, template.templateAttachmentItem.id)
+                    }"
+                    >{{ template.templateAttachmentItem.name }}</label
+                >
                 <button
                     mat-icon-button
                     color="primary"

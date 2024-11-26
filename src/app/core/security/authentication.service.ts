@@ -4,14 +4,14 @@ import { Inject, Injectable, OnDestroy } from '@angular/core';
 import { ENV } from '@app/constants/global.constants';
 import { Env } from '@app/types/env';
 import { ConcenetError } from '@app/types/error';
+import WarningDTO from '@data/models/notifications/warning-dto';
 import LoginDTO from '@data/models/user-permissions/login-dto';
-import RoleDTO from '@data/models/user-permissions/role-dto';
 import PermissionsDTO from '@data/models/user-permissions/permissions-dto';
+import RoleDTO from '@data/models/user-permissions/role-dto';
+import { UserService } from '@data/services/user.service';
+import moment from 'moment';
 import { Observable, throwError } from 'rxjs';
 import { catchError, take } from 'rxjs/operators';
-import { UserService } from '@data/services/user.service';
-import WarningDTO from '@data/models/notifications/warning-dto';
-import moment from 'moment';
 
 @Injectable({
   providedIn: 'root'
@@ -22,6 +22,7 @@ export class AuthenticationService implements OnDestroy {
 
   private readonly ACCESS_TOKEN = 'access_token';
   private readonly EXPIRES_IN = 'expires_in';
+  private readonly PROJECT_VERSION = 'project_version';
   private readonly REFRESH_EXPIRES = 'refresh_expire_token';
   private readonly TOKEN_TIMESTAMP = 'token_timestamp';
   private readonly USER_ID = 'user_id';
@@ -195,6 +196,22 @@ export class AuthenticationService implements OnDestroy {
   }
 
   /**
+   * Remove the saved project_version
+   */
+  removeProjectVersion() {
+    localStorage.removeItem(this.PROJECT_VERSION);
+  }
+
+  /**
+   * Retrieves the userId
+   *
+   * @returns the project version
+   */
+  getProjectVersion() {
+    return localStorage.getItem(this.PROJECT_VERSION);
+  }
+
+  /**
    * Remove the userId
    */
   removeUserId() {
@@ -312,6 +329,7 @@ export class AuthenticationService implements OnDestroy {
     localStorage.setItem(this.EXPIRES_IN, loginData.expires_in.toString());
     localStorage.setItem(this.REFRESH_EXPIRES, loginData.refresh_expire_token.toString());
     localStorage.setItem(this.TOKEN_TIMESTAMP, (+new Date()).toString());
+    localStorage.setItem(this.PROJECT_VERSION, loginData.project_version);
     this.keepTokenAlive();
   }
 
@@ -347,6 +365,7 @@ export class AuthenticationService implements OnDestroy {
    */
   logout(): void {
     this.removeToken();
+    this.removeProjectVersion();
     this.removeExpiresIn();
     this.removeUserId();
     this.removeUserFullName();

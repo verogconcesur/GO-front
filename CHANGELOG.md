@@ -2,6 +2,88 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [1.1.7](https://github.com/Delivery-Projects/concesur/concenet_front/-/compare/v1.1.6...v1.1.7) (2024-11-19)
+
+
+### Features
+
+* ajustes formulario busqueda avanzada ([a017b86](https://github.com/Delivery-Projects/concesur/concenet_front/-/commit/a017b86998803b76631292713dc73f95b3226e66))
+* arreglar payload y cambiar timepeaker ([12bc544](https://github.com/Delivery-Projects/concesur/concenet_front/-/commit/12bc544213b2bb33a8c68db1f097779cd57d2845))
+* cambio formulario filtros prefijados ([1f90453](https://github.com/Delivery-Projects/concesur/concenet_front/-/commit/1f904531cc29e07417f0dced9ccb8b37f1ae35a6))
+* cambio tipo hora, deshabilitar elemento si es diario ([4cf491b](https://github.com/Delivery-Projects/concesur/concenet_front/-/commit/4cf491b11d3a89683c4638d0827781213ed1ed4f))
+* controlar emails, validadores y estilos filtro avanzado ([1a157f8](https://github.com/Delivery-Projects/concesur/concenet_front/-/commit/1a157f8b51448f8b9037bd8deacf3e9e157ad95c))
+* eliminar receptores ([5e968ce](https://github.com/Delivery-Projects/concesur/concenet_front/-/commit/5e968ce18fbeccb130b144a42e33e77db0ee521a))
+* filtros prefijados ([1db2e70](https://github.com/Delivery-Projects/concesur/concenet_front/-/commit/1db2e70167b9bae12a0f1eabd267176c3a22485d))
+* guardado de busqueda y programacion ([fc4fa6c](https://github.com/Delivery-Projects/concesur/concenet_front/-/commit/fc4fa6c3c1a4cdc740bd6c616b8fe57abad91865))
+* integracion nuevo atributo centrix ([6fcef57](https://github.com/Delivery-Projects/concesur/concenet_front/-/commit/6fcef574ba5c18478c37a118f633e0e10360327c))
+* nueva imagen logo ([a08b154](https://github.com/Delivery-Projects/concesur/concenet_front/-/commit/a08b15473b35afe9f58141d581a472debaa8c2e5))
+* nueva tabla receptores ([5b77063](https://github.com/Delivery-Projects/concesur/concenet_front/-/commit/5b770633296ae5c23b4229b9bb276a502e5921db))
+* traducciones correcciones hora ([14903dd](https://github.com/Delivery-Projects/concesur/concenet_front/-/commit/14903dd1dfb5d50f5d9ae3d236a3039946231132))
+
+### [1.1.6](https://github.com/Delivery-Projects/concesur/concenet_front/-/compare/v1.1.5...v1.1.6) (2024-11-14)
+
+
+### Features
+
+* aniadir version back en perfil usuario ([08550af](https://github.com/Delivery-Projects/concesur/concenet_front/-/commit/08550af3f1224094606a11fbbfd54f75f7ee0ba7))
+* cambiar literal autoline por keyloop ([7167bf6](https://github.com/Delivery-Projects/concesur/concenet_front/-/commit/7167bf60db64f66cb633c6c4ab6eed5f51609f15))
+* nueva imagen candado ([e40ba3a](https://github.com/Delivery-Projects/concesur/concenet_front/-/commit/e40ba3afa0fa26f20734ea558de9dbab0e29de77))
+* nuevo entorno grupo velasco ([827cfc0](https://github.com/Delivery-Projects/concesur/concenet_front/-/commit/827cfc0c40c2666d248d15cd351815ec06dbc4e5))
+
+### [1.1.5](https://github.com/Delivery-Projects/concesur/concenet_front/-/compare/v1.1.4...v1.1.5) (2024-10-24)
+
+
+### Features
+
+* icono y posicionamiento al borrar comentarios ([cda2070](https://github.com/Delivery-Projects/concesur/concenet_front/-/commit/cda20707e2eec14aceaa088ab4ff72389a3a4fd5))
+* mas estilos y modal confirmacion(falta servicio) ([0b64dbc](https://github.com/Delivery-Projects/concesur/concenet_front/-/commit/0b64dbc5919cffe2ede4326f4a4f8a36177f1ec0))
+* mostrar el boton solo si tiene rol admin ([df050d4](https://github.com/Delivery-Projects/concesur/concenet_front/-/commit/df050d4af59f574b5801bce4e5e99574623bb22a))
+* servicio eliminar comentarios ([271013f](https://github.com/Delivery-Projects/concesur/concenet_front/-/commit/271013f5984fa31607eaa062edcd59f10ba3815e))
+* ticket soporte 747874 ([a038c76](https://github.com/Delivery-Projects/concesur/concenet_front/-/commit/a038c76982d0c2186e8c148cd6ab48db5fc0b345))
+
+
+### Bug Fixes
+
+* ticket soporte-109344 ([2681176](https://github.com/Delivery-Projects/concesur/concenet_front/-/commit/268117679190b11df421286f2102b1a981e20e42))
+
+### [1.1.4](https://github.com/Delivery-Projects/concesur/concenet_front/-/compare/v1.1.3...v1.1.4) (2024-10-09)
+
+
+### Features
+
+* adjuntos requeridos en eventos ([01101a4](https://github.com/Delivery-Projects/concesur/concenet_front/-/commit/01101a4d86a18a9639c61eed50ab51bbc34ad61a))
+* ajustar estilos boton csv ([542f3e8](https://github.com/Delivery-Projects/concesur/concenet_front/-/commit/542f3e86425afa5a3d520241ba487907f32d42a0))
+* arreglo para que funcione twilio con wathsapp ([cf0b92a](https://github.com/Delivery-Projects/concesur/concenet_front/-/commit/cf0b92aa71f4a5a91387678336dde380e2c8db30))
+* cambiar texto y no permitir numeros negativos ([90c8300](https://github.com/Delivery-Projects/concesur/concenet_front/-/commit/90c8300b86f62af343d4424d4896e833f1dcde1f))
+* cambio estilos workflows ([ff3cfa2](https://github.com/Delivery-Projects/concesur/concenet_front/-/commit/ff3cfa23abb3e8f9f72cc1f3996b5aede6858e40))
+* csv translations ([1370b0f](https://github.com/Delivery-Projects/concesur/concenet_front/-/commit/1370b0fc8ccf4e8e7f0ce5eb6e8f698fe9ac5228))
+* dialogo de alerta boton csv y servicio(en progreso) ([a6aef4e](https://github.com/Delivery-Projects/concesur/concenet_front/-/commit/a6aef4e68195071bb1a666810ce9d92947be85eb))
+* establecer adjunto minimo a 1 ([1e2927e](https://github.com/Delivery-Projects/concesur/concenet_front/-/commit/1e2927e5fa61b0b328a7dce7c637a4d04c05ee0c))
+* integracion csv ([15656fe](https://github.com/Delivery-Projects/concesur/concenet_front/-/commit/15656fe51c85cb209ff5293ca4f1d424954cdb8b))
+* mejoras spiga ([ac59105](https://github.com/Delivery-Projects/concesur/concenet_front/-/commit/ac59105842e7f9ee36976c6fa386d7e4bcfcf1e5))
+* mejoras spiga y traducciones ([7b66413](https://github.com/Delivery-Projects/concesur/concenet_front/-/commit/7b66413764245270af6c2e81d251d2bcf8aa33e5))
+* mostrar campos requeridos en adjuntos ([a43d543](https://github.com/Delivery-Projects/concesur/concenet_front/-/commit/a43d543729a92c99b0abbf126e2b57d90425771e))
+* mostrar errores adjuntos en la ficha ([2759b4d](https://github.com/Delivery-Projects/concesur/concenet_front/-/commit/2759b4db358c5b4b3acfe4f95e11970ad5424ca5))
+* movements attachments ([8b0b354](https://github.com/Delivery-Projects/concesur/concenet_front/-/commit/8b0b354152a54961d9337476fcfcdfd05f37d421))
+* new client goDes ([73991ce](https://github.com/Delivery-Projects/concesur/concenet_front/-/commit/73991ce931fcac37f81e85d45b77047398449023))
+* new client servidauto ([a2a0330](https://github.com/Delivery-Projects/concesur/concenet_front/-/commit/a2a0330ae5224122b11ceeb2c5b77289b7befde3))
+* nuevo boton cargar fichero csv(en progreso) ([802b77c](https://github.com/Delivery-Projects/concesur/concenet_front/-/commit/802b77c348a534b43022804c4b688e99d4a3cd64))
+* pasar libreria a componentes y actualizar imports de la app ([9e3945c](https://github.com/Delivery-Projects/concesur/concenet_front/-/commit/9e3945c11864a8fb52ed25a3570fd66aa14bd9fd))
+* poner libreria en local ([1c76e82](https://github.com/Delivery-Projects/concesur/concenet_front/-/commit/1c76e82a6e9c546b1737ec88f50b2c73c9815dde))
+* select tipo dms ([bf33db6](https://github.com/Delivery-Projects/concesur/concenet_front/-/commit/bf33db672adeae611bbf02c28ab39e2ee751af45))
+* servicio y traducciones funcionalidad fichero csv ([1087de2](https://github.com/Delivery-Projects/concesur/concenet_front/-/commit/1087de25510df7de759361a0095a9c773600c584))
+
+
+### Bug Fixes
+
+* atributo se envia donde no es ([b9e6bf7](https://github.com/Delivery-Projects/concesur/concenet_front/-/commit/b9e6bf7f2de09326695cc1c3aad419a13f4554ef))
+* bad translation in csv ([3049ad4](https://github.com/Delivery-Projects/concesur/concenet_front/-/commit/3049ad43b9ccaa0b48c656766c90a260322be2db))
+* error carga infinita al no tener lista de adjuntos ([b806cc9](https://github.com/Delivery-Projects/concesur/concenet_front/-/commit/b806cc9def057a15d0c85d4a55d7301f6c9cc210))
+* error traduccion ([4606663](https://github.com/Delivery-Projects/concesur/concenet_front/-/commit/4606663f915be739509abb72b877a8b277983e96))
+* new client goDes arreglado ([bbd4fe9](https://github.com/Delivery-Projects/concesur/concenet_front/-/commit/bbd4fe9d0b6ed8b969e6f81acf66c57a14c3e934))
+* requiredFields se envia vacio ([83de36c](https://github.com/Delivery-Projects/concesur/concenet_front/-/commit/83de36c0d9185c533617b1653e9faaf7a9c79b14))
+* resaltar campos de cada ficha en errores ([fb6c810](https://github.com/Delivery-Projects/concesur/concenet_front/-/commit/fb6c810afc953dc23c624deb62ec035403a63034))
+
 ### [1.1.3](https://gitlab.alten.es/Delivery-Projects/concesur/concenet_front/-/compare/v1.1.2...v1.1.3) (2024-08-30)
 
 

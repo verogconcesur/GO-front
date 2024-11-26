@@ -122,7 +122,11 @@ export class ModalStartConversationComponent extends ComponentToExtendForCustomD
   }
   public onSubmitCustomDialog(): Observable<boolean> {
     const formValue = this.conversationForm.value;
-    const body: CardInstanceWhatsappDTO = { body: formValue.body, to: formValue.phone };
+    const body: CardInstanceWhatsappDTO = {
+      body: formValue.body,
+      to: formValue.phone,
+      templateId: this.conversationForm.get('template').value
+    };
     const spinner = this.spinnerService.show();
     return this.cardMessagesService.sendWhatsappConversation(body, this.cardInstance.cardInstanceWorkflow.id).pipe(
       map(() => {

@@ -3,6 +3,7 @@ export default interface CustomerEntityDTO {
   email: string;
   phone: string;
   socialSecurityId: string;
+  isCompany: boolean;
   reference: string;
   name: string;
   firstName: string;

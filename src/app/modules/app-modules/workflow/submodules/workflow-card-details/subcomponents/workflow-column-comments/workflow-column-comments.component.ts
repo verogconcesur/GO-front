@@ -8,20 +8,23 @@ import UserDetailsDTO from '@data/models/user-permissions/user-details-dto';
 import { CardCommentsService } from '@data/services/card-comments.service';
 import { TranslateService } from '@ngx-translate/core';
 import { GlobalMessageService } from '@shared/services/global-message.service';
-import { skip, take } from 'rxjs/operators';
 import { forkJoin, Observable } from 'rxjs';
+import { finalize, skip, take } from 'rxjs/operators';
+// eslint-disable-next-line max-len
+import { ENV } from '@app/constants/global.constants';
+import { AuthenticationService } from '@app/security/authentication.service';
+import { RxStompService } from '@app/services/rx-stomp.service';
+import { Env } from '@app/types/env';
+import WorkflowSocketCardDetailDTO from '@data/models/workflows/workflow-sockect-card-detail-dto';
+// eslint-disable-next-line max-len
+import { PermissionConstants } from '@app/constants/permission.constants';
 // eslint-disable-next-line max-len
 import { TextEditorWrapperConfigI } from '@modules/feature-modules/text-editor-wrapper/interfaces/text-editor-wrapper-config.interface';
-import { ProgressSpinnerDialogService } from '@shared/services/progress-spinner-dialog.service';
 import { TextEditorWrapperComponent } from '@modules/feature-modules/text-editor-wrapper/text-editor-wrapper.component';
-import { NotificationSoundService } from '@shared/services/notification-sounds.service';
 import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
-import { RxStompService } from '@app/services/rx-stomp.service';
-import { IMessage } from '@stomp/stompjs';
-import WorkflowSocketCardDetailDTO from '@data/models/workflows/workflow-sockect-card-detail-dto';
-import { AuthenticationService } from '@app/security/authentication.service';
-import { ENV } from '@app/constants/global.constants';
-import { Env } from '@app/types/env';
+import { ConfirmDialogService } from '@shared/services/confirm-dialog.service';
+import { NotificationSoundService } from '@shared/services/notification-sounds.service';
+import { ProgressSpinnerDialogService } from '@shared/services/progress-spinner-dialog.service';
 
 @UntilDestroy()
 @Component({
@@ -64,7 +67,8 @@ export class WorkflowColumnCommentsComponent implements OnInit, OnDestroy {
     private spinnerService: ProgressSpinnerDialogService,
     private notificationSoundService: NotificationSoundService,
     private rxStompService: RxStompService,
-    private authService: AuthenticationService
+    private authService: AuthenticationService,
+    private confirmDialogService: ConfirmDialogService
   ) {}
 
   ngOnInit(): void {
@@ -156,6 +160,45 @@ export class WorkflowColumnCommentsComponent implements OnInit, OnDestroy {
         }
       );
     }
+  }
+
+  public isAdmin(): boolean {
+    return this.authService.hasUserAnyPermission([PermissionConstants.ISADMIN]);
+  }
+
+  public deleteComment(comment: CardCommentDTO) {
+    this.confirmDialogService
+      .open({
+        title: this.translateService.instant(marker('common.warning')),
+        message: this.translateService.instant(marker('cards.deleteCommentsConfirmation'))
+      })
+      .pipe(take(1))
+      .subscribe((ok: boolean) => {
+        if (ok) {
+          const spinner = this.spinnerService.show();
+          this.cardCommentsService
+            .deleteComents(comment.id, this.idCard)
+            .pipe(
+              take(1),
+              finalize(() => this.spinnerService.hide(spinner))
+            )
+            .subscribe({
+              next: (response) => {
+                this.getData(false, true);
+                this.globalMessageService.showSuccess({
+                  message: this.translateService.instant(marker('common.successOperation')),
+                  actionText: this.translateService.instant(marker('common.close'))
+                });
+              },
+              error: (error) => {
+                this.globalMessageService.showError({
+                  message: error.message,
+                  actionText: this.translateService.instant(marker('common.close'))
+                });
+              }
+            });
+        }
+      });
   }
 
   public newCommentChange(comment: string): void {

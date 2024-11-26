@@ -60,11 +60,18 @@ export class UserProfileComponent implements OnInit {
 
   public get appVersion(): string {
     if (this.env.appVersion.includes('-')) {
-      return `v${this.env.appVersion.split('-')[0]}`;
+      return `fv${this.env.appVersion.split('-')[0]}`;
     }
-    return `v${this.env.appVersion}`;
+    return `fv${this.env.appVersion}`;
   }
 
+  public get backAppVersion(): string {
+    const version = this.authenticationService.getProjectVersion();
+    if (version?.includes('-')) {
+      return `bv${version?.split('-')[0]}`;
+    }
+    return `bv${version}`;
+  }
   ngOnInit(): void {
     this.getUserDetails();
   }

@@ -114,6 +114,11 @@
     .summatory-line {
       height: 55px !important;
     }
+    .block_button {
+      margin: 10px;
+      display: flex;
+      justify-content: flex-end;
+    }
   }
   &__button {
     padding: 20px;

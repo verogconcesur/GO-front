@@ -19,6 +19,7 @@ export class CardAccountingService {
   private readonly ACCOUNTING_LINE_PATH = '/accountingLine';
   private readonly ACCOUNTING_BLOCK_PATH = '/accountingBlock';
   private readonly SET_TAX_TYPE_PATH = '/setTaxType';
+  private readonly LOCKED = '/locked';
 
   constructor(@Inject(ENV) private env: Env, private http: HttpClient) {}
 
@@ -62,6 +63,14 @@ export class CardAccountingService {
       .pipe(catchError((error) => throwError(error.error as ConcenetError)));
   }
 
+  public disableEnableAccpuntingTab(cardInstanceWorkflowId: number, tabId: number, status: number) {
+    return this.http
+      .get(
+        // eslint-disable-next-line max-len
+        `${this.env.apiBaseUrl}${this.GET_CARD_INSTANCE_PATH}${this.DETAIL_PATH}/${cardInstanceWorkflowId}${this.ACCOUNTING_PATH}/${tabId}${this.LOCKED}/${status}`
+      )
+      .pipe(catchError((error) => throwError(error.error as ConcenetError)));
+  }
   public editBlock(cardInstanceWorkflowId: number, tabId: number, block: CardAccountingBlockDTO): Observable<boolean> {
     return this.http
       .post<boolean>(

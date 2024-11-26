@@ -39,6 +39,7 @@ export class CardAccountingDialogFormComponent extends ComponentToExtendForCusto
   public editionDisabled = false;
   public amount = 0;
   public description = '';
+  public isDisabled: boolean;
   public labels = {
     okClient: marker('common.okClient'),
     description: marker('common.description'),
@@ -70,6 +71,8 @@ export class CardAccountingDialogFormComponent extends ComponentToExtendForCusto
     console.log(this.line);
     this.block = this.extendedComponentData.block;
     this.cardInstanceWorkflowId = this.extendedComponentData.cardInstanceWorkflowId;
+    this.isDisabled = this.extendedComponentData.isTabDisabled;
+    console.log(this.isDisabled);
     this.tabId = this.extendedComponentData.tabId;
     this.taxType = this.extendedComponentData.taxType;
     this.attachmentsList = this.extendedComponentData.attachmentsList;
