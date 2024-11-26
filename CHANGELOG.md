@@ -2,6 +2,34 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [1.1.7](https://github.com/Delivery-Projects/concesur/concenet_front/-/compare/v1.1.6...v1.1.7) (2024-11-19)
+
+
+### Features
+
+* ajustes formulario busqueda avanzada ([a017b86](https://github.com/Delivery-Projects/concesur/concenet_front/-/commit/a017b86998803b76631292713dc73f95b3226e66))
+* arreglar payload y cambiar timepeaker ([12bc544](https://github.com/Delivery-Projects/concesur/concenet_front/-/commit/12bc544213b2bb33a8c68db1f097779cd57d2845))
+* cambio formulario filtros prefijados ([1f90453](https://github.com/Delivery-Projects/concesur/concenet_front/-/commit/1f904531cc29e07417f0dced9ccb8b37f1ae35a6))
+* cambio tipo hora, deshabilitar elemento si es diario ([4cf491b](https://github.com/Delivery-Projects/concesur/concenet_front/-/commit/4cf491b11d3a89683c4638d0827781213ed1ed4f))
+* controlar emails, validadores y estilos filtro avanzado ([1a157f8](https://github.com/Delivery-Projects/concesur/concenet_front/-/commit/1a157f8b51448f8b9037bd8deacf3e9e157ad95c))
+* eliminar receptores ([5e968ce](https://github.com/Delivery-Projects/concesur/concenet_front/-/commit/5e968ce18fbeccb130b144a42e33e77db0ee521a))
+* filtros prefijados ([1db2e70](https://github.com/Delivery-Projects/concesur/concenet_front/-/commit/1db2e70167b9bae12a0f1eabd267176c3a22485d))
+* guardado de busqueda y programacion ([fc4fa6c](https://github.com/Delivery-Projects/concesur/concenet_front/-/commit/fc4fa6c3c1a4cdc740bd6c616b8fe57abad91865))
+* integracion nuevo atributo centrix ([6fcef57](https://github.com/Delivery-Projects/concesur/concenet_front/-/commit/6fcef574ba5c18478c37a118f633e0e10360327c))
+* nueva imagen logo ([a08b154](https://github.com/Delivery-Projects/concesur/concenet_front/-/commit/a08b15473b35afe9f58141d581a472debaa8c2e5))
+* nueva tabla receptores ([5b77063](https://github.com/Delivery-Projects/concesur/concenet_front/-/commit/5b770633296ae5c23b4229b9bb276a502e5921db))
+* traducciones correcciones hora ([14903dd](https://github.com/Delivery-Projects/concesur/concenet_front/-/commit/14903dd1dfb5d50f5d9ae3d236a3039946231132))
+
+### [1.1.6](https://github.com/Delivery-Projects/concesur/concenet_front/-/compare/v1.1.5...v1.1.6) (2024-11-14)
+
+
+### Features
+
+* aniadir version back en perfil usuario ([08550af](https://github.com/Delivery-Projects/concesur/concenet_front/-/commit/08550af3f1224094606a11fbbfd54f75f7ee0ba7))
+* cambiar literal autoline por keyloop ([7167bf6](https://github.com/Delivery-Projects/concesur/concenet_front/-/commit/7167bf60db64f66cb633c6c4ab6eed5f51609f15))
+* nueva imagen candado ([e40ba3a](https://github.com/Delivery-Projects/concesur/concenet_front/-/commit/e40ba3afa0fa26f20734ea558de9dbab0e29de77))
+* nuevo entorno grupo velasco ([827cfc0](https://github.com/Delivery-Projects/concesur/concenet_front/-/commit/827cfc0c40c2666d248d15cd351815ec06dbc4e5))
+
 ### [1.1.5](https://github.com/Delivery-Projects/concesur/concenet_front/-/compare/v1.1.4...v1.1.5) (2024-10-24)
 
 

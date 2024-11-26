@@ -54,7 +54,8 @@ export class ModalCustomerComponent extends ComponentToExtendForCustomDialog imp
     emailError: marker('errors.emailPattern'),
     required: marker('errors.required'),
     data: marker('userProfile.data'),
-    notValidPattern: marker('entities.customers.notValidPattern')
+    notValidPattern: marker('entities.customers.notValidPattern'),
+    isCompany: marker('entities.customers.isCompany')
   };
   public facilityAsyncList: Observable<FacilityDTO[]>;
   //@ts-ignore
@@ -142,6 +143,7 @@ export class ModalCustomerComponent extends ComponentToExtendForCustomDialog imp
                 secondName: formValue.secondName,
                 facility: formValue.facility,
                 email: formValue.email,
+                isCompany: formValue.isCompany,
                 socialSecurityId: formValue.socialSecurityId,
                 phone: formValue.phone,
                 businessTypeCode: formValue.businessTypeCode.code,
@@ -187,6 +189,7 @@ export class ModalCustomerComponent extends ComponentToExtendForCustomDialog imp
           secondName: formValue.secondName,
           facility: formValue.facility,
           email: formValue.email,
+          isCompany: formValue.isCompany,
           socialSecurityId: formValue.socialSecurityId,
           phone: formValue.phone,
           businessTypeCode: formValue.businessTypeCode.code,
@@ -333,6 +336,7 @@ export class ModalCustomerComponent extends ComponentToExtendForCustomDialog imp
           this.customerToEdit ? this.customerToEdit.communicationPreferredPhone : null,
           [Validators.required]
         ],
+        isCompany: [this.customerToEdit ? this.customerToEdit.isCompany : false],
         communicationLandline: [this.customerToEdit ? this.customerToEdit.communicationLandline : null],
         communicationWorkMobile: [this.customerToEdit ? this.customerToEdit.communicationWorkMobile : null],
         communicationWorkLandline: [this.customerToEdit ? this.customerToEdit.communicationWorkLandline : null],

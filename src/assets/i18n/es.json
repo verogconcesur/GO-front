@@ -283,11 +283,13 @@
     },
     "cardDetail": {
         "accounting": {
+            "block": "Bloquear",
             "newLine": "Nueva línea",
             "taxType": "Tipo de impuesto",
             "taxTypeNoApply": "Impuesto no seleccionado",
             "totalAmountPlusTax": "Cantidad total con IVA",
-            "totalTax": "IVA"
+            "totalTax": "IVA",
+            "unblock": "Desbloquear"
         },
         "accountings": {
             "accumulatedLineEditionBlocked": "Edición de cantidad bloqueada (cantidad calculada automáticamente).",
@@ -419,8 +421,10 @@
             "CHANGE_STATE": "Cambiar estado",
             "EDIT_INFO": "Editar información",
             "INCOMING_CALL": "Llamada entrante",
+            "LOCKED_TAB": "Bloquear pestaña",
             "OUTCOMING_CALL": "Llamada saliente",
-            "REMOTE_SIGN": "Firma remota"
+            "REMOTE_SIGN": "Firma remota",
+            "UNLOCKED_TAB": "Desbloquear pestaña"
         },
         "messages": {
             "chanels": "Canales",
@@ -677,6 +681,7 @@
             "email": "Email",
             "firstName": "Primer apellido",
             "import": "Importar cliente",
+            "isCompany": "Es empresa",
             "lastName": "Segundo apellido",
             "name": "Nombre",
             "notValidPattern": "El formato no es válido",

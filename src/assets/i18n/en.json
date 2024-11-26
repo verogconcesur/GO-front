@@ -283,11 +283,13 @@
     },
     "cardDetail": {
         "accounting": {
+            "block": "Lock",
             "newLine": "New line",
             "taxType": "New type",
             "taxTypeNoApply": "Select a tax type",
             "totalAmountPlusTax": "Total amount plus tax",
-            "totalTax": "Tax value"
+            "totalTax": "Tax value",
+            "unblock": "Unlock"
         },
         "accountings": {
             "accumulatedLineEditionBlocked": "Amount edition locked (accumulated line)",
@@ -419,8 +421,10 @@
             "CHANGE_STATE": "Change state",
             "EDIT_INFO": "Edit info",
             "INCOMING_CALL": "Incoming call",
+            "LOCKED_TAB": "Lock tab",
             "OUTCOMING_CALL": "Outcoming call",
-            "REMOTE_SIGN": "Remote sign"
+            "REMOTE_SIGN": "Remote sign",
+            "UNLOCKED_TAB": "Unlock tab"
         },
         "messages": {
             "chanels": "Channels",
@@ -677,6 +681,7 @@
             "firstName": "First name",
             "gender": "Gender",
             "import": "Import customer",
+            "isCompany": "Is company",
             "lastName": "Second name",
             "name": "Name",
             "notValidPattern": "Format not valid",

@@ -4,7 +4,7 @@
             <div class="accounting-line-data__section__group" *ngIf="mode === 'LINE'">
                 <mat-form-field appearance="outline" floatLabel="always" class="w-100">
                     <mat-label>{{ labels.description | translate }}</mat-label>
-                    <input matInput [(ngModel)]="description" />
+                    <input matInput [disabled]="isDisabled" [(ngModel)]="description" />
                 </mat-form-field>
                 <mat-form-field appearance="outline" floatLabel="always" class="w-100">
                     <mat-label>{{ labels.amount | translate }}</mat-label>
@@ -13,6 +13,7 @@
                         matInput
                         [(ngModel)]="amount"
                         [readonly]="editionDisabled || line.templateAccountingItemLine.accumulated"
+                        [disabled]="isDisabled"
                     />
                     <span matSuffix>€</span>
                 </mat-form-field>
@@ -32,7 +33,7 @@
                         multiple
                         [(ngModel)]="attachmentsSelected"
                         [compareWith]="compareAttachments"
-                        [disabled]="editionDisabled"
+                        [disabled]="editionDisabled || isDisabled"
                     >
                         <mat-option *ngFor="let attachment of attachmentsList" [value]="attachment">
                             {{ attachment.file.name }}

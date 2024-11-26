@@ -1,8 +1,10 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, Inject, OnInit } from '@angular/core';
 import { UntypedFormBuilder, UntypedFormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
+import { ENV } from '@app/constants/global.constants';
 import { RouteConstants } from '@app/constants/route.constants';
 import { AuthenticationService } from '@app/security/authentication.service';
+import { Env } from '@app/types/env';
 import { ConcenetError } from '@app/types/error';
 import { marker } from '@biesbjerg/ngx-translate-extract-marker';
 import LoginDTO from '@data/models/user-permissions/login-dto';
@@ -33,6 +35,7 @@ export class LoginComponent implements OnInit {
   public loginForm: UntypedFormGroup;
 
   constructor(
+    @Inject(ENV) private env: Env,
     private fb: UntypedFormBuilder,
     private router: Router,
     private route: ActivatedRoute,
@@ -41,6 +44,13 @@ export class LoginComponent implements OnInit {
     private globalMessageService: GlobalMessageService,
     private translateService: TranslateService
   ) {}
+
+  public get appVersion(): string {
+    if (this.env.appVersion.includes('-')) {
+      return `v${this.env.appVersion.split('-')[0]}`;
+    }
+    return `v${this.env.appVersion}`;
+  }
 
   ngOnInit(): void {
     if (this.authenticationService.isUserLogged()) {

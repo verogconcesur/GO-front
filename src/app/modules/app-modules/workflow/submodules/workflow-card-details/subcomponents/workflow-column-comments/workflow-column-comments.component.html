@@ -22,9 +22,14 @@
                 {{ comment.dateComment | date : "dd/MM/yy, HH:mm" }}
             </div>
             <div class="comment" [innerHtml]="comment.comment"></div>
-            <div class="mention-action" *ngIf="commentSelected === comment" mat-button (click)="answerComment(comment)">
+            <button
+                class="mention-action"
+                *ngIf="commentSelected === comment"
+                mat-button
+                (click)="$event.stopPropagation(); answerComment(comment)"
+            >
                 <mat-icon>reply</mat-icon>{{ "@" + comment.user.name }}
-            </div>
+            </button>
         </div>
     </div>
     <div class="card-comments__new">

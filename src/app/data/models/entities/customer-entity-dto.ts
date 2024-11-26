@@ -14,6 +14,7 @@ export default interface CustomerEntityDTO {
   communicationWorkLandline: string;
   businessTypeDescription: string;
   gender: string;
+  isCompany: boolean;
   reference: string;
   name: string;
   firstName: string;
