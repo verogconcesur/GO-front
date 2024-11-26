@@ -16,7 +16,10 @@ import { CustomDialogService } from '@shared/modules/custom-dialog/services/cust
 import { GlobalMessageService } from '@shared/services/global-message.service';
 import { ProgressSpinnerDialogService } from '@shared/services/progress-spinner-dialog.service';
 import { finalize } from 'rxjs/operators';
-import { DoblefactorComponent, DobleFactorComponentModalEnum } from './components/doblefactor/doblefactor.component';
+import {
+  ChooseDoblefactorComponent,
+  ChooseDobleFactorOptionComponentModalEnum
+} from './components/choose-doublefactor-option/choose-doublefactor-option.component';
 
 @UntilDestroy()
 @Component({
@@ -97,10 +100,10 @@ export class LoginComponent implements OnInit {
 
   public openDobleFactorDialog = (user?: UserDTO): void => {
     this.customDialogService.open({
-      id: DobleFactorComponentModalEnum.ID,
-      panelClass: DobleFactorComponentModalEnum.PANEL_CLASS,
-      component: DoblefactorComponent,
-      width: '500px',
+      id: ChooseDobleFactorOptionComponentModalEnum.ID,
+      panelClass: ChooseDobleFactorOptionComponentModalEnum.PANEL_CLASS,
+      component: ChooseDoblefactorComponent,
+      width: '700px',
       extendedComponentData: user
     });
   };
@@ -121,14 +124,15 @@ export class LoginComponent implements OnInit {
   private use2FAAndNavigate(loginData: LoginDTO) {
     const user: UserDTO = loginData.user;
     // El 2FA se aplica solo a los usuarios normales y que tengan un email.
-    if (user.id > 1000 && user.email != null) {
-      // Si existe la cookie 2FA
-      //this.router.navigate(['/', RouteConstants.DASHBOARD]);
-      // Si no existe la cookie 2FA (porque expira a los 7 días)
-      this.openDobleFactorDialog(loginData.user);
-    } else {
-      this.router.navigate(['/', RouteConstants.DASHBOARD]);
-    }
+    // if (user.id > 1000 && user.email != null) {
+    //   // Si existe la cookie 2FA
+    //   //this.router.navigate(['/', RouteConstants.DASHBOARD]);
+    //   // Si no existe la cookie 2FA (porque expira a los 7 días)
+    //   this.openDobleFactorDialog(loginData.user);
+    // } else {
+    //   this.router.navigate(['/', RouteConstants.DASHBOARD]);
+    // }
+    this.openDobleFactorDialog(loginData.user);
   }
 
   private loginError(error: ConcenetError): void {

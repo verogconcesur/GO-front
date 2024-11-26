@@ -1,0 +1,48 @@
+<div class="login-content" fxLayout="column">
+    <div class="login-content__information">
+        <p>Seleccione un método de autenticación</p>
+    </div>
+
+    <div class="login-content__link" fxLayout="row" fxLayoutAlign="start center" (click)="selectOption(user)">
+        <div class="login-content__icon-container">
+            <mat-icon class="login-content__icon">email</mat-icon>
+        </div>
+        <div fxLayout="column">
+            <div class="login-content__link__title">
+                <span>Email</span>
+            </div>
+            <div class="login-content__link__value">
+                <span>12345</span>
+            </div>
+        </div>
+    </div>
+
+    <div class="login-content__link" fxLayout="row" fxLayoutAlign="start center" (click)="selectOption(user)">
+        <div class="login-content__icon-container">
+            <mat-icon class="login-content__icon">sms</mat-icon>
+        </div>
+        <div fxLayout="column">
+            <div class="login-content__link__title">
+                <span>SMS</span>
+            </div>
+            <div class="login-content__link__value">
+                <span>12345</span>
+            </div>
+        </div>
+    </div>
+
+    <div class="login-content__link" fxLayout="row" fxLayoutAlign="start center" (click)="selectOption(user)">
+        <div class="login-content__icon-container">
+            <mat-icon class="login-content__icon">security</mat-icon>
+        </div>
+        <div fxLayout="column">
+            <div class="login-content__link__title">
+                <span>Aplicación Microsoft Authenticator</span>
+            </div>
+            <div class="login-content__link__value">
+                <span>&nbsp;</span>
+                <!-- Añadimos un span vacío para mantener consistencia -->
+            </div>
+        </div>
+    </div>
+</div>

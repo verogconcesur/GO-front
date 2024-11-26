@@ -1,6 +1,7 @@
 import { CommonModule } from '@angular/common';
 import { NgModule } from '@angular/core';
 import { SharedModule } from '@shared/shared.module';
+import { ChooseDoblefactorComponent } from './components/choose-doublefactor-option/choose-doublefactor-option.component';
 import { DoblefactorComponent } from './components/doblefactor/doblefactor.component';
 import { ForgotPasswordComponent } from './components/forgot-password/forgot-password.component';
 import { RestorePasswordComponent } from './components/restore-password/restore-password.component';
@@ -15,7 +16,8 @@ import { LoginComponent } from './login.component';
     ForgotPasswordComponent,
     RestorePasswordComponent,
     UpdatePasswordComponent,
-    DoblefactorComponent
+    DoblefactorComponent,
+    ChooseDoblefactorComponent
   ],
   imports: [CommonModule, LoginRoutingModule, SharedModule]
 })
