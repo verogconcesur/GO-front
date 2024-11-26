@@ -36,7 +36,7 @@
                     </mat-form-field>
                     <mat-form-field
                         appearance="outline"
-                        class="smaller-mat-form-fields__no-margin date-picker"
+                        class="smaller-mat-form-fields__no-margin date-picker custom-margin-top"
                         floatLabel="always"
                     >
                         <mat-label>{{ labels.date | translate }}</mat-label>
@@ -86,6 +86,12 @@
                     <button class="add_line" mat-raised-button color="primary" (click)="addLine()">
                         Añadir nueva línea <mat-icon>add</mat-icon>
                     </button>
+                </div>
+                <div class="notes-section">
+                    <mat-form-field appearance="outline" style="width: 100%" floatLabel="always">
+                        <mat-label>Notas</mat-label>
+                        <textarea matInput formControlName="notes" rows="5"></textarea>
+                    </mat-form-field>
                 </div>
             </div>
         </form>

@@ -4,27 +4,49 @@
 .create-edit-repair-order-content {
   width: 100%;
   padding-right: 15px;
+
   .create-edit-repair-order-content__form {
     width: 100%;
+
     .repair-order-data__section {
       &__title {
         margin: 0 0 10px 0;
         color: mat-color($primary, 500);
         font-size: 1rem;
         font-weight: 600;
+
         &.first-child {
           margin-top: 0px;
         }
       }
+
       &__group {
+        margin: 10px;
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+        grid-gap: 20px;
+        align-items: start;
+
         mat-form-field {
-          margin-right: 20px;
+          width: 100%;
         }
       }
+      .custom-margin-top {
+        margin-top: 4px;
+      }
     }
+
     .add_line {
-      width: 203px;
-      margin-right: 20px;
+      width: 100%;
+      margin-top: 0.25rem;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      margin-right: 0;
     }
+  }
+
+  .notes-section {
+    margin: 10px;
   }
 }
