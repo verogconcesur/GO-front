@@ -21,7 +21,7 @@
             <div class="date">
                 {{ comment.dateComment | date : "dd/MM/yy, HH:mm" }}
             </div>
-            <div class="comment" [innerHtml]="comment.comment"></div>
+            <div class="comment" [innerHtml]="comment.comment" (mousedown)="$event.stopPropagation()"></div>
             <button
                 class="mention-action"
                 *ngIf="commentSelected === comment"
