@@ -1,8 +1,7 @@
 import { Component, Inject, OnDestroy, OnInit, ViewEncapsulation } from '@angular/core';
-import { UntypedFormBuilder, UntypedFormGroup, Validators } from '@angular/forms';
+import { UntypedFormBuilder, UntypedFormGroup } from '@angular/forms';
 import { MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { ActivatedRoute, Router } from '@angular/router';
-import { RouteConstants } from '@app/constants/route.constants';
 import { marker } from '@biesbjerg/ngx-translate-extract-marker';
 import UserDTO from '@data/models/user-permissions/user-dto';
 import { UserService } from '@data/services/user.service';
@@ -38,7 +37,8 @@ export class ChooseDoblefactorComponent extends ComponentToExtendForCustomDialog
   public userId = '';
   public showNocheck = false;
   public isCheck = false;
-  public user: UserDTO;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  public config: any;
 
   constructor(
     private fb: UntypedFormBuilder,
@@ -46,7 +46,8 @@ export class ChooseDoblefactorComponent extends ComponentToExtendForCustomDialog
     private route: ActivatedRoute,
     private userservice: UserService,
     private customDialogService: CustomDialogService,
-    @Inject(MAT_DIALOG_DATA) public data: UserDTO
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    @Inject(MAT_DIALOG_DATA) public data: any
   ) {
     super(
       ChooseDobleFactorOptionComponentModalEnum.ID,
@@ -56,9 +57,7 @@ export class ChooseDoblefactorComponent extends ComponentToExtendForCustomDialog
   }
 
   ngOnInit(): void {
-    this.user = this.extendedComponentData;
-    this.userId = this.user.id.toString();
-    this.initializeForm();
+    this.config = this.extendedComponentData;
   }
 
   ngOnDestroy(): void {}
@@ -67,37 +66,17 @@ export class ChooseDoblefactorComponent extends ComponentToExtendForCustomDialog
     return of(true);
   }
 
-  public selectOption = (user?: UserDTO): void => {
+  public selectOption = (user: UserDTO, type: 'SMS' | 'EMAIL' | 'AUTHENTICATOR'): void => {
     this.customDialogService.open({
       id: ChooseDobleFactorOptionComponentModalEnum.ID,
       panelClass: ChooseDobleFactorOptionComponentModalEnum.PANEL_CLASS,
       component: DoblefactorComponent,
       width: '500px',
-      extendedComponentData: user
+      extendedComponentData: { user, type }
     });
   };
 
   public onSubmitCustomDialog(): Observable<boolean> {
-    this.userservice.checkUser2FA(this.userId, this.dobleFactorForm.value.code2FA).subscribe((res) => {
-      this.showNocheck = !res.valueOf();
-      this.isCheck = res.valueOf();
-      if (res) {
-        // Si pasas la validacion 2FA
-        // Crear la cookie 2FA
-
-        // se resuelve la navegacion
-        const checkDueDatePass = this.checkDueDatePassword(this.user);
-        console.log('CheckDueDatePass:' + checkDueDatePass);
-        if (checkDueDatePass) {
-          this.router.navigate(['/', RouteConstants.DASHBOARD]);
-        } else {
-          this.router.navigate(['/login/', RouteConstants.UPDATE_PASSWORD]);
-          //this.navToUpdate();
-        }
-        this.customDialogService.close(ChooseDobleFactorOptionComponentModalEnum.ID);
-      }
-    });
-
     return of(false);
   }
 
@@ -109,21 +88,15 @@ export class ChooseDoblefactorComponent extends ComponentToExtendForCustomDialog
     };
   }
 
-  private initializeForm(): void {
-    this.dobleFactorForm = this.fb.group({
-      code2FA: ['', Validators.minLength(4)]
-    });
-  }
+  // private checkDueDatePassword(user: UserDTO): boolean {
+  //   const sixMonthBeforeDate = new Date();
+  //   sixMonthBeforeDate.setMonth(sixMonthBeforeDate.getMonth() - 6);
+  //   return user.dueDatePass == null || user.dueDatePass < sixMonthBeforeDate ? false : true;
+  // }
 
-  private checkDueDatePassword(user: UserDTO): boolean {
-    const sixMonthBeforeDate = new Date();
-    sixMonthBeforeDate.setMonth(sixMonthBeforeDate.getMonth() - 6);
-    return user.dueDatePass == null || user.dueDatePass < sixMonthBeforeDate ? false : true;
-  }
-
-  private navToUpdate(): void {
-    this.router.navigate(['/login/', RouteConstants.UPDATE_PASSWORD], {
-      relativeTo: this.route
-    });
-  }
+  // private navToUpdate(): void {
+  //   this.router.navigate(['/login/', RouteConstants.UPDATE_PASSWORD], {
+  //     relativeTo: this.route
+  //   });
+  // }
 }

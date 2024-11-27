@@ -15,7 +15,7 @@ import { TranslateService } from '@ngx-translate/core';
 import { CustomDialogService } from '@shared/modules/custom-dialog/services/custom-dialog.service';
 import { GlobalMessageService } from '@shared/services/global-message.service';
 import { ProgressSpinnerDialogService } from '@shared/services/progress-spinner-dialog.service';
-import { finalize } from 'rxjs/operators';
+import { finalize, take } from 'rxjs/operators';
 import {
   ChooseDoblefactorComponent,
   ChooseDobleFactorOptionComponentModalEnum
@@ -78,7 +78,11 @@ export class LoginComponent implements OnInit {
 
   public doLogin(): void {
     const spinner = this.spinnerService.show();
-
+    //Back puede obtener la informacion de la cabecera con userAgent pero es poco seguro
+    //Opcion de usar ClientJS una libreria de javascript
+    //Utilizar una combinacion de informacion para generar un id unico para back
+    // e identificar si se esta usando un navegador conocido.
+    // const browserFingerprint = this.generateBrowserFingerprint();
     this.authenticationService
       .signIn(this.loginForm.value)
       .pipe(
@@ -97,16 +101,30 @@ export class LoginComponent implements OnInit {
         }
       });
   }
-
-  public openDobleFactorDialog = (user?: UserDTO): void => {
-    this.customDialogService.open({
-      id: ChooseDobleFactorOptionComponentModalEnum.ID,
-      panelClass: ChooseDobleFactorOptionComponentModalEnum.PANEL_CLASS,
-      component: ChooseDoblefactorComponent,
-      width: '700px',
-      extendedComponentData: user
-    });
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  public openDobleFactorDialog = (config: any): void => {
+    this.customDialogService
+      .open({
+        id: ChooseDobleFactorOptionComponentModalEnum.ID,
+        panelClass: ChooseDobleFactorOptionComponentModalEnum.PANEL_CLASS,
+        component: ChooseDoblefactorComponent,
+        width: '700px',
+        extendedComponentData: config
+      })
+      .pipe(take(1))
+      .subscribe((response) => {
+        if (response) {
+          this.customDialogService.close(ChooseDobleFactorOptionComponentModalEnum.ID);
+        }
+      });
   };
+
+  // private generateBrowserFingerprint(): string {
+  //   const userAgent = window.navigator.userAgent;
+  //   const screenResolution = window.screen.width + 'x' + window.screen.height;
+  //   const timezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
+  //   return btoa(`${userAgent}_${screenResolution}_${timezone}`);
+  // }
 
   private initializeForm(): void {
     this.loginForm = this.fb.group({
@@ -132,7 +150,21 @@ export class LoginComponent implements OnInit {
     // } else {
     //   this.router.navigate(['/', RouteConstants.DASHBOARD]);
     // }
-    this.openDobleFactorDialog(loginData.user);
+    this.authenticationService
+      .getF2AConfig()
+      .pipe(take(1))
+      .subscribe((resp) => {
+        console.log(resp);
+        if (resp.f2a) {
+          if (!resp.a2aPredefined) {
+            this.openDobleFactorDialog(resp);
+          } else {
+            //Si tiene un metodo predefinido se llama al metodo de back y se abre la modal para introducir directamente el codigo
+          }
+        } else {
+          this.router.navigate(['/', RouteConstants.DASHBOARD]);
+        }
+      });
   }
 
   private loginError(error: ConcenetError): void {

@@ -3,6 +3,10 @@ import { UntypedFormBuilder, UntypedFormGroup, Validators } from '@angular/forms
 import { marker } from '@biesbjerg/ngx-translate-extract-marker';
 import UserDetailsDTO from '@data/models/user-permissions/user-details-dto';
 import { UserService } from '@data/services/user.service';
+import {
+  ChooseDoblefactorComponent,
+  ChooseDobleFactorOptionComponentModalEnum
+} from '@modules/app-modules/login/components/choose-doublefactor-option/choose-doublefactor-option.component';
 import { TranslateService } from '@ngx-translate/core';
 import { CustomDialogFooterConfigI } from '@shared/modules/custom-dialog/interfaces/custom-dialog-footer-config';
 import { ComponentToExtendForCustomDialog } from '@shared/modules/custom-dialog/models/component-for-custom-dialog';
@@ -183,6 +187,13 @@ export class MyProfileComponent extends ComponentToExtendForCustomDialog impleme
           color: 'warn',
           clickFn: this.showPasswordFieldsAndSet,
           hiddenFn: () => this.showPasswordFields
+        },
+        {
+          type: 'custom',
+          label: 'Cambiar opcion F2A',
+          design: 'stroked',
+          color: 'warn',
+          clickFn: this.openModalF2A
         }
       ],
       rightSideButtons: [
@@ -203,6 +214,17 @@ export class MyProfileComponent extends ComponentToExtendForCustomDialog impleme
     }
     return true;
   }
+
+  public openModalF2A = () => {
+    //Hacer llamada al servicio para saber que F2A deben aparecer y luego abrir modal
+    this.customDialogService.open({
+      id: ChooseDobleFactorOptionComponentModalEnum.ID,
+      panelClass: ChooseDobleFactorOptionComponentModalEnum.PANEL_CLASS,
+      component: ChooseDoblefactorComponent,
+      width: '700px',
+      extendedComponentData: this.userDetails
+    });
+  };
 
   private showPasswordFieldsAndSet = () => {
     this.profileForm.get('password').setValue('');

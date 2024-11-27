@@ -10,7 +10,7 @@ import PermissionsDTO from '@data/models/user-permissions/permissions-dto';
 import RoleDTO from '@data/models/user-permissions/role-dto';
 import { UserService } from '@data/services/user.service';
 import moment from 'moment';
-import { Observable, throwError } from 'rxjs';
+import { Observable, of, throwError } from 'rxjs';
 import { catchError, take } from 'rxjs/operators';
 
 @Injectable({
@@ -78,6 +78,28 @@ export class AuthenticationService implements OnDestroy {
         }, timeToExpire);
       }
     }
+  }
+
+  getF2AConfig(): Observable<{
+    userId: number;
+    f2a: boolean;
+    a2aPredefined: string | null;
+    sms: string;
+    email: string;
+    qrCode: string | null;
+  }> {
+    const predefinedObject = {
+      userId: 1,
+      f2a: true,
+      // @ts-ignore
+      a2aPredefined: null,
+      sms: '1234567890',
+      email: 'example@example.com',
+      // @ts-ignore
+      qrCode: null
+    };
+
+    return of(predefinedObject);
   }
 
   public refreshToken(): Observable<LoginDTO> {
