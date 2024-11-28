@@ -2,14 +2,14 @@ import { Component, Inject, OnDestroy, OnInit, ViewEncapsulation } from '@angula
 import { UntypedFormBuilder, UntypedFormGroup } from '@angular/forms';
 import { MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { ActivatedRoute, Router } from '@angular/router';
+import { AuthenticationService } from '@app/security/authentication.service';
 import { marker } from '@biesbjerg/ngx-translate-extract-marker';
-import UserDTO from '@data/models/user-permissions/user-dto';
 import { UserService } from '@data/services/user.service';
 import { CustomDialogFooterConfigI } from '@shared/modules/custom-dialog/interfaces/custom-dialog-footer-config';
 import { ComponentToExtendForCustomDialog } from '@shared/modules/custom-dialog/models/component-for-custom-dialog';
 import { CustomDialogService } from '@shared/modules/custom-dialog/services/custom-dialog.service';
-import { Observable, of } from 'rxjs';
-import { DoblefactorComponent } from '../doblefactor/doblefactor.component';
+import { Observable, of, take } from 'rxjs';
+import { DoblefactorComponent, DobleFactorComponentModalEnum } from '../doblefactor/doblefactor.component';
 
 export const enum ChooseDobleFactorOptionComponentModalEnum {
   ID = 'choose-doble-factor-dialog-id',
@@ -46,6 +46,7 @@ export class ChooseDoblefactorComponent extends ComponentToExtendForCustomDialog
     private route: ActivatedRoute,
     private userservice: UserService,
     private customDialogService: CustomDialogService,
+    private authenticationService: AuthenticationService,
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     @Inject(MAT_DIALOG_DATA) public data: any
   ) {
@@ -66,14 +67,26 @@ export class ChooseDoblefactorComponent extends ComponentToExtendForCustomDialog
     return of(true);
   }
 
-  public selectOption = (user: UserDTO, type: 'SMS' | 'EMAIL' | 'AUTHENTICATOR'): void => {
-    this.customDialogService.open({
-      id: ChooseDobleFactorOptionComponentModalEnum.ID,
-      panelClass: ChooseDobleFactorOptionComponentModalEnum.PANEL_CLASS,
-      component: DoblefactorComponent,
-      width: '500px',
-      extendedComponentData: { user, type }
-    });
+  public selectOption = (type: 'SMS' | 'EMAIL' | 'AUTHENTICATOR'): void => {
+    this.authenticationService
+      .sendAuthentication(this.config.userId, type)
+      .pipe(take(1))
+      .subscribe((data) => {
+        this.customDialogService
+          .open({
+            id: DobleFactorComponentModalEnum.ID,
+            panelClass: DobleFactorComponentModalEnum.PANEL_CLASS,
+            component: DoblefactorComponent,
+            width: '500px',
+            extendedComponentData: { data, type }
+          })
+          .pipe(take(1))
+          .subscribe((response) => {
+            if (response) {
+              this.customDialogService.close(DobleFactorComponentModalEnum.ID);
+            }
+          });
+      });
   };
 
   public onSubmitCustomDialog(): Observable<boolean> {

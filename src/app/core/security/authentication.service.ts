@@ -86,20 +86,38 @@ export class AuthenticationService implements OnDestroy {
     a2aPredefined: string | null;
     sms: string;
     email: string;
-    qrCode: string | null;
+    isNewBrowser: boolean;
+    last30days: boolean;
   }> {
-    const predefinedObject = {
+    const configF2A = {
       userId: 1,
       f2a: true,
       // @ts-ignore
       a2aPredefined: null,
       sms: '1234567890',
       email: 'example@example.com',
-      // @ts-ignore
-      qrCode: null
+      isNewBrowser: false,
+      last30days: false
     };
 
-    return of(predefinedObject);
+    return of(configF2A);
+  }
+
+  sendAuthentication(
+    userId: number,
+    type: string
+  ): Observable<{
+    qr: string;
+  }> {
+    const resp = {
+      userId: 1,
+      qr: 'Prueba qr'
+    };
+    if (type === 'SMS' || type === 'EMAIL') {
+      return of(null);
+    } else {
+      return of(resp);
+    }
   }
 
   public refreshToken(): Observable<LoginDTO> {

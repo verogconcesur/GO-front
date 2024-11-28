@@ -8,7 +8,7 @@
         fxLayout="row"
         fxLayoutAlign="start center"
         *ngIf="config.email"
-        (click)="selectOption(config, 'EMAIL')"
+        (click)="selectOption('EMAIL')"
     >
         <div class="login-content__icon-container">
             <mat-icon class="login-content__icon">email</mat-icon>
@@ -23,13 +23,7 @@
         </div>
     </div>
 
-    <div
-        class="login-content__link"
-        fxLayout="row"
-        fxLayoutAlign="start center"
-        *ngIf="config.sms"
-        (click)="selectOption(config, 'SMS')"
-    >
+    <div class="login-content__link" fxLayout="row" fxLayoutAlign="start center" *ngIf="config.sms" (click)="selectOption('SMS')">
         <div class="login-content__icon-container">
             <mat-icon class="login-content__icon">sms</mat-icon>
         </div>
@@ -43,7 +37,7 @@
         </div>
     </div>
 
-    <div class="login-content__link" fxLayout="row" fxLayoutAlign="start center" (click)="selectOption(config, 'AUTHENTICATOR')">
+    <div class="login-content__link" fxLayout="row" fxLayoutAlign="start center" (click)="selectOption('AUTHENTICATOR')">
         <div class="login-content__icon-container">
             <mat-icon class="login-content__icon">security</mat-icon>
         </div>

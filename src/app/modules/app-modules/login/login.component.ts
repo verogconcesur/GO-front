@@ -8,7 +8,6 @@ import { Env } from '@app/types/env';
 import { ConcenetError } from '@app/types/error';
 import { marker } from '@biesbjerg/ngx-translate-extract-marker';
 import LoginDTO from '@data/models/user-permissions/login-dto';
-import UserDTO from '@data/models/user-permissions/user-dto';
 import { UserService } from '@data/services/user.service';
 import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
 import { TranslateService } from '@ngx-translate/core';
@@ -78,11 +77,7 @@ export class LoginComponent implements OnInit {
 
   public doLogin(): void {
     const spinner = this.spinnerService.show();
-    //Back puede obtener la informacion de la cabecera con userAgent pero es poco seguro
-    //Opcion de usar ClientJS una libreria de javascript
-    //Utilizar una combinacion de informacion para generar un id unico para back
-    // e identificar si se esta usando un navegador conocido.
-    // const browserFingerprint = this.generateBrowserFingerprint();
+    console.log(this.generateBrowserFingerprint());
     this.authenticationService
       .signIn(this.loginForm.value)
       .pipe(
@@ -119,12 +114,56 @@ export class LoginComponent implements OnInit {
       });
   };
 
-  // private generateBrowserFingerprint(): string {
-  //   const userAgent = window.navigator.userAgent;
-  //   const screenResolution = window.screen.width + 'x' + window.screen.height;
-  //   const timezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
-  //   return btoa(`${userAgent}_${screenResolution}_${timezone}`);
-  // }
+  private generateBrowserFingerprint(): string {
+    // Obtener User Agent del navegador
+    const userAgent = window.navigator.userAgent;
+    // Obtener la zona horaria
+    const timezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
+    // Obtener puntos tactiles de la pantalla
+    const tactil = window.navigator.maxTouchPoints;
+    // Obtener GPU (WebGL info)
+    const gpuInfo = this.getWebGLInfo();
+    // Combinar todo en una cadena y codificar en Base64
+    const fingerprintData = `${userAgent}__${timezone}_${tactil}_${gpuInfo}`;
+    console.log(fingerprintData);
+    // Codificar en Base64 para que sea más compacto
+    return btoa(fingerprintData);
+  }
+
+  private getWebGLInfo(): string {
+    // Crear un elemento 'canvas' que se utilizará para obtener el contexto WebGL
+    const canvas = document.createElement('canvas');
+    // Intentar obtener el contexto de WebGL de forma explícita.
+    // 'getContext("webgl")' devuelve el contexto WebGL si está disponible.
+    // Si no está disponible, 'getContext("experimental-webgl")'
+    //intenta usar una versión experimental de WebGL en navegadores más antiguos.
+    const gl =
+      (canvas.getContext('webgl') as WebGLRenderingContext) || (canvas.getContext('experimental-webgl') as WebGLRenderingContext);
+    // Si no se puede obtener el contexto WebGL, significa que el navegador no soporta WebGL.
+    // En ese caso, se devuelve 'NaN' para indicar que no se puede obtener la información.
+    if (!gl) {
+      return 'NaN';
+    }
+    // Intentar obtener la extensión 'WEBGL_debug_renderer_info', que proporciona detalles más específicos sobre la GPU.
+    // Esta extensión permite acceder al fabricante (vendor) y al modelo (renderer) de la tarjeta gráfica.
+    const debugInfo = gl.getExtension('WEBGL_debug_renderer_info');
+    // Si la extensión no está disponible (algunos navegadores pueden bloquearla por privacidad o seguridad),
+    // se devuelve 'NaN', indicando que no se puede obtener información de la GPU.
+    if (!debugInfo) {
+      return 'NaN';
+    }
+    // Obtener el nombre del fabricante de la GPU.
+    // 'UNMASKED_VENDOR_WEBGL' es el parámetro que devuelve el
+    //fabricante de la tarjeta gráfica (por ejemplo, "NVIDIA", "Intel", "AMD").
+    const vendor = gl.getParameter(debugInfo.UNMASKED_VENDOR_WEBGL) || 'NaN';
+    // Obtener el nombre del modelo de la GPU.
+    // 'UNMASKED_RENDERER_WEBGL' es el parámetro que devuelve el
+    //modelo exacto de la tarjeta gráfica (por ejemplo, "GeForce GTX 1050").
+    const renderer = gl.getParameter(debugInfo.UNMASKED_RENDERER_WEBGL) || 'NaN';
+    // Devolver un identificador único basado en la combinación del fabricante y el modelo de la GPU.
+    // Si no se pueden obtener estos valores, se devolverá 'NaN' como valor predeterminado.
+    return `${vendor}_${renderer}`;
+  }
 
   private initializeForm(): void {
     this.loginForm = this.fb.group({
@@ -135,21 +174,10 @@ export class LoginComponent implements OnInit {
 
   private loginSuccess(loginData: LoginDTO): void {
     this.authenticationService.setLoggedUser(loginData);
-
-    this.use2FAAndNavigate(loginData);
+    this.use2FAAndNavigate();
   }
 
-  private use2FAAndNavigate(loginData: LoginDTO) {
-    const user: UserDTO = loginData.user;
-    // El 2FA se aplica solo a los usuarios normales y que tengan un email.
-    // if (user.id > 1000 && user.email != null) {
-    //   // Si existe la cookie 2FA
-    //   //this.router.navigate(['/', RouteConstants.DASHBOARD]);
-    //   // Si no existe la cookie 2FA (porque expira a los 7 días)
-    //   this.openDobleFactorDialog(loginData.user);
-    // } else {
-    //   this.router.navigate(['/', RouteConstants.DASHBOARD]);
-    // }
+  private use2FAAndNavigate() {
     this.authenticationService
       .getF2AConfig()
       .pipe(take(1))
@@ -159,7 +187,12 @@ export class LoginComponent implements OnInit {
           if (!resp.a2aPredefined) {
             this.openDobleFactorDialog(resp);
           } else {
-            //Si tiene un metodo predefinido se llama al metodo de back y se abre la modal para introducir directamente el codigo
+            if (resp.isNewBrowser || resp.last30days) {
+              // Si es un navegador nuevo o han pasado 30 días, llamamos al backend y abrimos la modal para introducir el código.
+            } else {
+              // Si no cumple ninguna de esas condiciones, puede navegar directamente al dashboard
+              this.router.navigate(['/', RouteConstants.DASHBOARD]);
+            }
           }
         } else {
           this.router.navigate(['/', RouteConstants.DASHBOARD]);
