@@ -84,6 +84,73 @@
                     </mat-form-field>
                 </div>
             </div>
+            <div class="users-container">
+                <div class="users-container__section">
+                    <div class="users-container__section__title">
+                        <h1>Listado de clientes del vehiculo</h1>
+
+                        <button (click)="openModalAddCustomer()" mat-raised-button color="primary">
+                            + <span class="create-action__normal-label">Añadir cliente</span>
+                        </button>
+                    </div>
+                    <div class="users-container__section__content">
+                        <mat-accordion class="header-color-primary" multi>
+                            <mat-expansion-panel class="mat-elevation-z2" [expanded]="true">
+                                <mat-expansion-panel-header> </mat-expansion-panel-header>
+                                <table
+                                    class="table-users table-ellipsis"
+                                    mat-table
+                                    [dataSource]="tableCustomers"
+                                    style="width: 100%"
+                                >
+                                    <!-- fullname Column -->
+                                    <ng-container matColumnDef="fullName">
+                                        <th mat-header-cell style="width: 35%" *matHeaderCellDef>Nombre</th>
+                                        <td mat-cell style="width: 35%" *matCellDef="let element">
+                                            <!-- <mat-checkbox
+                                                class="user-checkbox"
+                                                [(ngModel)]="element.selected"
+                                                (ngModelChange)="userSelectionChange()"
+                                            ></mat-checkbox -->
+                                            <span>&nbsp;&nbsp;{{ element.customer.fullName }}&nbsp; </span>
+                                        </td>
+                                    </ng-container>
+                                    <ng-container matColumnDef="dni">
+                                        <th mat-header-cell style="width: 21%" *matHeaderCellDef>DNI</th>
+                                        <td mat-cell style="width: 21%" *matCellDef="let element">
+                                            {{ element.customer.socialSecurityId }}
+                                        </td>
+                                    </ng-container>
+                                    <ng-container matColumnDef="relate">
+                                        <th mat-header-cell style="width: 28%" *matHeaderCellDef>Relacion</th>
+                                        <td mat-cell style="width: 28%" *matCellDef="let element">Relacion</td>
+                                    </ng-container>
+                                    <ng-container matColumnDef="actions">
+                                        <th mat-header-cell style="width: 15%; text-align: center" *matHeaderCellDef>Acciones</th>
+                                        <td
+                                            mat-cell
+                                            style="width: 15%; text-align: center"
+                                            *matCellDef="let element"
+                                            class="action-buttons no-ellipsis"
+                                        >
+                                            <button mat-icon-button aria-label="details">
+                                                <mat-icon (click)="(null)">delete</mat-icon>
+                                            </button>
+                                        </td>
+                                    </ng-container>
+                                    <tr mat-header-row *matHeaderRowDef="displayedColumns; sticky: true"></tr>
+                                    <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
+                                    <tr class="mat-row" *matNoDataRow>
+                                        <td class="mat-cell" style="text-align: center" [attr.colspan]="displayedColumns.length">
+                                            No hay informacion
+                                        </td>
+                                    </tr>
+                                </table>
+                            </mat-expansion-panel>
+                        </mat-accordion>
+                    </div>
+                </div>
+            </div>
         </form>
     </div>
     <div class="create-edit-vehicle-content__buttons">

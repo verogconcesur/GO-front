@@ -24,3 +24,52 @@
     }
   }
 }
+.users-container {
+  padding: 20px;
+  &__section {
+    margin-bottom: 20px;
+    &__title {
+      width: 100%;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 10px;
+    }
+    &__content {
+      table {
+        margin-top: -15px;
+        .user-checkbox {
+          margin-left: -22px;
+        }
+        .send {
+          color: rgb(2, 201, 2);
+          &.indeterminate,
+          &.indeterminate.hide.visible {
+            color: rgb(138, 138, 138);
+          }
+          &.indeterminate.hide,
+          &.hide {
+            color: rgb(218, 0, 0);
+          }
+          &.indeterminate.visible {
+            color: rgb(2, 201, 2);
+          }
+        }
+        .move {
+          color: rgb(2, 201, 2);
+          &.indeterminate,
+          &.indeterminate.hide.visible {
+            color: rgb(138, 138, 138);
+          }
+          &.indeterminate.hide,
+          &.hide {
+            color: rgb(218, 0, 0);
+          }
+          &.indeterminate.visible {
+            color: rgb(2, 201, 2);
+          }
+        }
+      }
+    }
+  }
+}

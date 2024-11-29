@@ -1,4 +1,5 @@
 import FacilityDTO from '../organization/facility-dto';
+import CustomerEntityDTO from './customer-entity-dto';
 
 export default interface VehicleEntityDTO {
   stockId?: string;
@@ -19,6 +20,7 @@ export default interface VehicleEntityDTO {
   reference?: string;
   vin?: string;
   inventories?: InventoryVehicle[];
+  vehicleCustomers?: CustomerVehicles[];
   cardInstanceId?: number;
 }
 export interface InventoryVehicle {
@@ -40,4 +42,10 @@ export interface TakeAllVehicle {
 }
 export interface Variants {
   [key: string]: string[];
+}
+export interface CustomerVehicles {
+  id: number;
+  vehicleId: number;
+  customer: CustomerEntityDTO;
+  relationship: string;
 }

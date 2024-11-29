@@ -2,6 +2,7 @@ import { ChangeDetectorRef, Component, OnDestroy, OnInit } from '@angular/core';
 import { FormGroup, UntypedFormBuilder, Validators } from '@angular/forms';
 import { ConcenetError } from '@app/types/error';
 import { marker } from '@biesbjerg/ngx-translate-extract-marker';
+import CustomerEntityDTO from '@data/models/entities/customer-entity-dto';
 import VehicleEntityDTO, { TakeAllVehicle, Variants } from '@data/models/entities/vehicle-entity-dto';
 import FacilityDTO from '@data/models/organization/facility-dto';
 import { EntitiesService } from '@data/services/entities.service';
@@ -16,6 +17,8 @@ import { GlobalMessageService } from '@shared/services/global-message.service';
 import { ProgressSpinnerDialogService } from '@shared/services/progress-spinner-dialog.service';
 import { merge, Observable, of } from 'rxjs';
 import { catchError, filter, finalize, map, take, tap } from 'rxjs/operators';
+import { CustomerVehicles } from '../../../data/models/entities/vehicle-entity-dto';
+import { EntitiesSearcherDialogService } from '../entities-searcher-dialog/entities-searcher-dialog.service';
 
 export const enum CreateEditVehicleComponentModalEnum {
   ID = 'create-edit-vehicle-dialog-id',
@@ -54,8 +57,10 @@ export class ModalVehicleComponent extends ComponentToExtendForCustomDialog impl
   public vehicleToEdit: VehicleEntityDTO;
   public facilityList: FacilityDTO[] = [];
   public facilityAsyncList: Observable<FacilityDTO[]>;
+  public tableCustomers: CustomerVehicles[];
   public variants: Variants;
   public isStockVehicle = false;
+  public displayedColumns = ['fullName', 'dni', 'relate', 'actions'];
 
   constructor(
     private fb: UntypedFormBuilder,
@@ -66,6 +71,7 @@ export class ModalVehicleComponent extends ComponentToExtendForCustomDialog impl
     private entitiesService: EntitiesService,
     private facilityService: FacilityService,
     private customDialogService: CustomDialogService,
+    private entitySearcher: EntitiesSearcherDialogService,
     private cdr: ChangeDetectorRef
   ) {
     super(
@@ -113,6 +119,27 @@ export class ModalVehicleComponent extends ComponentToExtendForCustomDialog impl
     this.form.facilityStock.setValue(null);
     this.vehicleForm.markAsTouched();
     this.vehicleForm.markAsDirty();
+  }
+
+  public openModalAddCustomer() {
+    console.log('entra');
+    this.entitySearcher.openEntitySearcher(null, this.vehicleForm.controls.facility.value, 'CUSTOMER').then((data) => {
+      if (data) {
+        const newVehicle: CustomerVehicles = {
+          id: null,
+          vehicleId: this.vehicleForm.controls.id.value,
+          customer: data.entity as CustomerEntityDTO,
+          relationship: null
+        };
+        this.tableCustomers = this.tableCustomers || [];
+        const yaExiste = this.tableCustomers?.some(
+          (userExist: CustomerVehicles) => userExist.customer.id === newVehicle.customer.id
+        );
+        if (!yaExiste) {
+          this.tableCustomers = [...this.tableCustomers, newVehicle as CustomerVehicles];
+        }
+      }
+    });
   }
 
   public listenVinFacilityChanges(): void {
@@ -363,6 +390,7 @@ export class ModalVehicleComponent extends ComponentToExtendForCustomDialog impl
       vehicleId: [this.vehicleToEdit ? this.vehicleToEdit.vehicleId : null],
       facility: [this.vehicleToEdit ? this.vehicleToEdit.facility : null],
       variantCode: [this.vehicleToEdit ? this.vehicleToEdit?.variantCode : null],
+      vehicleCustomers: [this.vehicleToEdit ? this.vehicleToEdit?.vehicleCustomers : null],
       commissionNumber: [null],
       facilityStock: [null],
       makeCode: [null],
@@ -378,6 +406,7 @@ export class ModalVehicleComponent extends ComponentToExtendForCustomDialog impl
       );
       this.form.facilityStock.setValue(facility);
     }
+    this.tableCustomers = this.vehicleForm.controls.vehicleCustomers.value;
     this.listenVinFacilityChanges();
     this.isStockVehicle = true;
   };
