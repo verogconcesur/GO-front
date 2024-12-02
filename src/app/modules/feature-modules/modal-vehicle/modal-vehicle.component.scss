@@ -41,6 +41,10 @@
         .user-checkbox {
           margin-left: -22px;
         }
+        ::ng-deep .mat-form-field-wrapper {
+          padding: 0 !important;
+          margin: 0 !important;
+        }
         .send {
           color: rgb(2, 201, 2);
           &.indeterminate,

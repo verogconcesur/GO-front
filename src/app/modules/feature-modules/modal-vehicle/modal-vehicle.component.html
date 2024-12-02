@@ -97,34 +97,42 @@
                         <mat-accordion class="header-color-primary" multi>
                             <mat-expansion-panel class="mat-elevation-z2" [expanded]="true">
                                 <mat-expansion-panel-header> </mat-expansion-panel-header>
-                                <table
-                                    class="table-users table-ellipsis"
-                                    mat-table
-                                    [dataSource]="tableCustomers"
-                                    style="width: 100%"
-                                >
+                                <table mat-table [dataSource]="vehicleCustomersList" style="width: 100%">
                                     <!-- fullname Column -->
                                     <ng-container matColumnDef="fullName">
-                                        <th mat-header-cell style="width: 35%" *matHeaderCellDef>Nombre</th>
-                                        <td mat-cell style="width: 35%" *matCellDef="let element">
-                                            <!-- <mat-checkbox
-                                                class="user-checkbox"
-                                                [(ngModel)]="element.selected"
-                                                (ngModelChange)="userSelectionChange()"
-                                            ></mat-checkbox -->
+                                        <th mat-header-cell *matHeaderCellDef>Nombre</th>
+                                        <td mat-cell *matCellDef="let element">
                                             <span>&nbsp;&nbsp;{{ element.customer.fullName }}&nbsp; </span>
                                         </td>
                                     </ng-container>
+
+                                    <!-- dni Column -->
                                     <ng-container matColumnDef="dni">
-                                        <th mat-header-cell style="width: 21%" *matHeaderCellDef>DNI</th>
-                                        <td mat-cell style="width: 21%" *matCellDef="let element">
+                                        <th mat-header-cell *matHeaderCellDef>DNI</th>
+                                        <td mat-cell *matCellDef="let element">
                                             {{ element.customer.socialSecurityId }}
                                         </td>
                                     </ng-container>
+
+                                    <!-- relate Column -->
                                     <ng-container matColumnDef="relate">
-                                        <th mat-header-cell style="width: 28%" *matHeaderCellDef>Relacion</th>
-                                        <td mat-cell style="width: 28%" *matCellDef="let element">Relacion</td>
+                                        <th mat-header-cell *matHeaderCellDef>Relación</th>
+                                        <td mat-cell *matCellDef="let element; let i = index">
+                                            <mat-form-field appearance="outline" floatLabel="always" style="width: 100%">
+                                                <mat-label>Selecciona relación</mat-label>
+                                                <mat-select
+                                                    [value]="element.relationship"
+                                                    (selectionChange)="onSelectionChange($event, element)"
+                                                >
+                                                    <mat-option *ngFor="let option of relationOptions" [value]="option.value">
+                                                        {{ option.name }}
+                                                    </mat-option>
+                                                </mat-select>
+                                            </mat-form-field>
+                                        </td>
                                     </ng-container>
+
+                                    <!-- actions Column -->
                                     <ng-container matColumnDef="actions">
                                         <th mat-header-cell style="width: 15%; text-align: center" *matHeaderCellDef>Acciones</th>
                                         <td
@@ -138,11 +146,13 @@
                                             </button>
                                         </td>
                                     </ng-container>
+
+                                    <!-- Table headers and rows -->
                                     <tr mat-header-row *matHeaderRowDef="displayedColumns; sticky: true"></tr>
                                     <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
                                     <tr class="mat-row" *matNoDataRow>
                                         <td class="mat-cell" style="text-align: center" [attr.colspan]="displayedColumns.length">
-                                            No hay informacion
+                                            No hay información
                                         </td>
                                     </tr>
                                 </table>

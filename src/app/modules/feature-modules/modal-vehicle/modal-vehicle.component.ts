@@ -1,5 +1,5 @@
 import { ChangeDetectorRef, Component, OnDestroy, OnInit } from '@angular/core';
-import { FormGroup, UntypedFormBuilder, Validators } from '@angular/forms';
+import { FormArray, FormGroup, UntypedFormBuilder, Validators } from '@angular/forms';
 import { ConcenetError } from '@app/types/error';
 import { marker } from '@biesbjerg/ngx-translate-extract-marker';
 import CustomerEntityDTO from '@data/models/entities/customer-entity-dto';
@@ -57,9 +57,15 @@ export class ModalVehicleComponent extends ComponentToExtendForCustomDialog impl
   public vehicleToEdit: VehicleEntityDTO;
   public facilityList: FacilityDTO[] = [];
   public facilityAsyncList: Observable<FacilityDTO[]>;
-  public tableCustomers: CustomerVehicles[];
   public variants: Variants;
+  public vehicleCustomersList: CustomerVehicles[] = [];
   public isStockVehicle = false;
+  public relationOptions = [
+    { value: 'REGISTEREDKEEPER', name: 'Propietario Registrado' },
+    { value: 'HOLDER', name: 'Titular' },
+    { value: 'DRIVER', name: 'Conductor' },
+    { value: 'DEFAULTSERVICEPAYER', name: 'Pagador Predeterminado' }
+  ];
   public displayedColumns = ['fullName', 'dni', 'relate', 'actions'];
 
   constructor(
@@ -84,6 +90,9 @@ export class ModalVehicleComponent extends ComponentToExtendForCustomDialog impl
   // Convenience getter for easy access to form fields
   get form() {
     return this.vehicleForm.controls;
+  }
+  get vehicleCustomersArray(): FormArray {
+    return this.vehicleForm.get('vehicleCustomers') as FormArray;
   }
 
   ngOnInit(): void {
@@ -131,14 +140,17 @@ export class ModalVehicleComponent extends ComponentToExtendForCustomDialog impl
           customer: data.entity as CustomerEntityDTO,
           relationship: null
         };
-        this.tableCustomers = this.tableCustomers || [];
-        const yaExiste = this.tableCustomers?.some(
+        const customerArray = this.vehicleForm.get('vehicleCustomers') as FormArray;
+        // Verifica si el cliente ya existe en el FormArray
+        const yaExiste = customerArray.value.some(
           (userExist: CustomerVehicles) => userExist.customer.id === newVehicle.customer.id
         );
         if (!yaExiste) {
-          this.tableCustomers = [...this.tableCustomers, newVehicle as CustomerVehicles];
+          customerArray.push(this.createCustomerFormGroup(newVehicle));
+          this.vehicleCustomersList = [...this.vehicleCustomersList, newVehicle];
         }
       }
+      console.log(this.vehicleForm.get('vehicleCustomers')?.value);
     });
   }
 
@@ -362,6 +374,21 @@ export class ModalVehicleComponent extends ComponentToExtendForCustomDialog impl
   public onSubmitCustomDialog(): Observable<boolean | VehicleEntityDTO> {
     return of(true);
   }
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  public onSelectionChange(event: any, element: any): void {
+    const selectedValue = event.value;
+    const customerIndex = this.vehicleCustomersArray.controls.findIndex((control) => control.value.id === element.id);
+    if (customerIndex !== -1) {
+      const customerFormGroup = this.vehicleCustomersArray.at(customerIndex) as FormGroup;
+
+      customerFormGroup.get('relationship')?.setValue(selectedValue);
+
+      const customerInArrayIndex = this.vehicleCustomersList.findIndex((customer) => customer.id === element.id);
+      if (customerInArrayIndex !== -1) {
+        this.vehicleCustomersList[customerInArrayIndex].relationship = selectedValue;
+      }
+    }
+  }
 
   public setAndGetFooterConfig(): CustomDialogFooterConfigI | null {
     return {
@@ -390,12 +417,15 @@ export class ModalVehicleComponent extends ComponentToExtendForCustomDialog impl
       vehicleId: [this.vehicleToEdit ? this.vehicleToEdit.vehicleId : null],
       facility: [this.vehicleToEdit ? this.vehicleToEdit.facility : null],
       variantCode: [this.vehicleToEdit ? this.vehicleToEdit?.variantCode : null],
-      vehicleCustomers: [this.vehicleToEdit ? this.vehicleToEdit?.vehicleCustomers : null],
+      vehicleCustomers: this.fb.array([]),
       commissionNumber: [null],
       facilityStock: [null],
       makeCode: [null],
       modelCode: [null]
     });
+    if (this.vehicleToEdit?.vehicleCustomers?.length) {
+      this.setVehicleCustomers(this.vehicleToEdit.vehicleCustomers);
+    }
     if (this.vehicleToEdit && this.vehicleToEdit.inventories && this.vehicleToEdit.inventories.length) {
       this.form.commissionNumber.setValue(
         this.vehicleToEdit.inventories[this.vehicleToEdit.inventories.length - 1].commissionNumber
@@ -406,8 +436,24 @@ export class ModalVehicleComponent extends ComponentToExtendForCustomDialog impl
       );
       this.form.facilityStock.setValue(facility);
     }
-    this.tableCustomers = this.vehicleForm.controls.vehicleCustomers.value;
     this.listenVinFacilityChanges();
     this.isStockVehicle = true;
   };
+
+  private setVehicleCustomers(customers: CustomerVehicles[]): void {
+    const customerArray = this.vehicleForm.get('vehicleCustomers') as FormArray;
+    this.vehicleCustomersList = [...customers];
+    customers.forEach((customer: CustomerVehicles) => {
+      customerArray.push(this.createCustomerFormGroup(customer));
+    });
+  }
+
+  private createCustomerFormGroup(customer: CustomerVehicles): FormGroup {
+    return this.fb.group({
+      id: [customer.id],
+      vehicleId: [customer.vehicleId],
+      customer: [customer.customer],
+      relationship: [customer.relationship]
+    });
+  }
 }
