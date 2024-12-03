@@ -225,6 +225,23 @@ export class ModalVehicleComponent extends ComponentToExtendForCustomDialog impl
       this.form.model.enable();
     }
   }
+  public openDeleteDialog(index: number) {
+    this.confirmDialogService
+      .open({
+        maxWidth: 500,
+        title: this.translateService.instant(marker('advSearch.saveFavOperation.deleteReceiver')),
+        message: this.translateService.instant(marker('advSearch.saveFavOperation.deleteReceiverMessage'))
+      })
+      .pipe(take(1))
+      .subscribe((ok: boolean) => {
+        if (ok) {
+          this.vehicleCustomersList.splice(index, 1);
+          this.vehicleCustomersList = [...this.vehicleCustomersList];
+          const customerArray = this.vehicleForm.get('vehicleCustomers') as FormArray;
+          customerArray.removeAt(index);
+        }
+      });
+  }
   public getfacilityList() {
     this.facilityAsyncList = this.facilityService.getFacilitiesByBrandsIds().pipe(
       take(1),

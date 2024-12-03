@@ -138,11 +138,11 @@
                                         <td
                                             mat-cell
                                             style="width: 15%; text-align: center"
-                                            *matCellDef="let element"
+                                            *matCellDef="let element; let i = index"
                                             class="action-buttons no-ellipsis"
                                         >
                                             <button mat-icon-button aria-label="details">
-                                                <mat-icon (click)="(null)">delete</mat-icon>
+                                                <mat-icon (click)="openDeleteDialog(i)">delete</mat-icon>
                                             </button>
                                         </td>
                                     </ng-container>
