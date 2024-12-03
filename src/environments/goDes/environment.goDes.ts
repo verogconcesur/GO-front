@@ -6,6 +6,6 @@ export const environment: Env = {
   production: true,
   socketsEnabled: false,
   apiBaseUrl: 'https://godes.gogestiono.es/concenet-rest',
-  socketUrl: 'wss://https://godes.gogestiono.es/concenet-rest/socket/',
+  socketUrl: 'wss://godes.gogestiono.es/concenet-rest/socket/',
   logLevel: NgxLoggerLevel.ERROR
 };
