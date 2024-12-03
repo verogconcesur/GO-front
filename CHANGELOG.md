@@ -2,6 +2,27 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [1.1.8](https://github.com/Delivery-Projects/concesur/concenet_front/-/compare/v1.1.7...v1.1.8) (2024-12-03)
+
+
+### Features
+
+* bloquear contabilidad ([849cf8b](https://github.com/Delivery-Projects/concesur/concenet_front/-/commit/849cf8bb9120772c487856d3eb2534de84cca797))
+* deshabilitar icono adjuntos sin adjuntos ([f9f44f1](https://github.com/Delivery-Projects/concesur/concenet_front/-/commit/f9f44f1849720c8b8afba10064e4cbf906f60771))
+* integracion aswin ([612aa1a](https://github.com/Delivery-Projects/concesur/concenet_front/-/commit/612aa1a373c24640a472c4f4dd0990b63ba2d5a1))
+* servicios y permisos para bloquear contabilidad ([9084b2d](https://github.com/Delivery-Projects/concesur/concenet_front/-/commit/9084b2dab529e807d9bad60393288759be8331c8))
+* sustituir archivo migration ([065db69](https://github.com/Delivery-Projects/concesur/concenet_front/-/commit/065db699cb8e55fb4089be4cb309f114f72312b9))
+* ticket ticket soporte-671720 ([e9d6090](https://github.com/Delivery-Projects/concesur/concenet_front/-/commit/e9d6090038a427b885608ca1435132976448b657))
+* traducciones integracion aswin ([a12587b](https://github.com/Delivery-Projects/concesur/concenet_front/-/commit/a12587b7565d29ff3843d3e8b61c0d2f15e5c5e3))
+* traducciones para eventos historicos nuevos ([602dde2](https://github.com/Delivery-Projects/concesur/concenet_front/-/commit/602dde2eb9f2ecdfcb2d13fcbe16c2b0a5d34b19))
+* version front en login ([271dd1d](https://github.com/Delivery-Projects/concesur/concenet_front/-/commit/271dd1d0879423cd7e41274da44b92b7514f09af))
+
+
+### Bug Fixes
+
+* socket url godes ([b1ff54f](https://github.com/Delivery-Projects/concesur/concenet_front/-/commit/b1ff54f16a3916b6a02ce6a0d10a4ccea1f3ae53))
+* ticket soporte 436799 ([58224dc](https://github.com/Delivery-Projects/concesur/concenet_front/-/commit/58224dcbde7e3d42fb34b7feec2c71946d7137d0))
+
 ### [1.1.7](https://github.com/Delivery-Projects/concesur/concenet_front/-/compare/v1.1.6...v1.1.7) (2024-11-19)
 
 
