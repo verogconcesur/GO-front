@@ -3,12 +3,13 @@
         <p>Seleccione un método de autenticación</p>
     </div>
 
+    <!-- Opción EMAIL -->
     <div
         class="login-content__link"
         fxLayout="row"
         fxLayoutAlign="start center"
-        *ngIf="config.email"
-        (click)="selectOption('EMAIL')"
+        [ngClass]="{ disabled: !config.email }"
+        (click)="config.email ? selectOption('EMAIL') : null"
     >
         <div class="login-content__icon-container">
             <mat-icon class="login-content__icon">email</mat-icon>
@@ -18,12 +19,21 @@
                 <span>Email</span>
             </div>
             <div class="login-content__link__value">
-                <span>12345</span>
+                <span>{{ config.email }}</span>
             </div>
         </div>
     </div>
+    <!-- Mensaje de opción no disponible -->
+    <span *ngIf="!config.email" class="login-content__not-available">No hay email registrado en el sistema</span>
 
-    <div class="login-content__link" fxLayout="row" fxLayoutAlign="start center" *ngIf="config.sms" (click)="selectOption('SMS')">
+    <!-- Opción SMS -->
+    <div
+        class="login-content__link"
+        fxLayout="row"
+        fxLayoutAlign="start center"
+        [ngClass]="{ disabled: !config.sms }"
+        (click)="config.sms ? selectOption('SMS') : null"
+    >
         <div class="login-content__icon-container">
             <mat-icon class="login-content__icon">sms</mat-icon>
         </div>
@@ -32,11 +42,13 @@
                 <span>SMS</span>
             </div>
             <div class="login-content__link__value">
-                <span>12345</span>
+                <span>{{ config.sms }}</span>
             </div>
         </div>
     </div>
+    <span *ngIf="!config.sms" class="login-content__not-available">No hay telefono registrado en el sistema</span>
 
+    <!-- Opción Authenticator -->
     <div class="login-content__link" fxLayout="row" fxLayoutAlign="start center" (click)="selectOption('AUTHENTICATOR')">
         <div class="login-content__icon-container">
             <mat-icon class="login-content__icon">security</mat-icon>
@@ -47,7 +59,6 @@
             </div>
             <div class="login-content__link__value">
                 <span>&nbsp;</span>
-                <!-- Añadimos un span vacío para mantener consistencia -->
             </div>
         </div>
     </div>

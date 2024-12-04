@@ -94,8 +94,10 @@ export class AuthenticationService implements OnDestroy {
       f2a: true,
       // @ts-ignore
       a2aPredefined: null,
-      sms: '1234567890',
-      email: 'example@example.com',
+      // @ts-ignore
+      sms: null,
+      // @ts-ignore
+      email: null,
       isNewBrowser: false,
       last30days: false
     };

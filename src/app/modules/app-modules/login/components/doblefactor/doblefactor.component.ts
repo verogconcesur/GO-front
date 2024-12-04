@@ -34,9 +34,8 @@ export class DoblefactorComponent extends ComponentToExtendForCustomDialog imple
 
   public dobleFactorForm: UntypedFormGroup;
   public userId = '';
-  public showNocheck = false;
-  public isCheck = false;
-  public user: UserDTO;
+  public f2aMethod: string;
+  public qrCode: string;
 
   constructor(
     private fb: UntypedFormBuilder,
@@ -50,10 +49,10 @@ export class DoblefactorComponent extends ComponentToExtendForCustomDialog imple
   }
 
   ngOnInit(): void {
-    this.user = this.extendedComponentData;
-    this.userId = this.user.id.toString();
+    this.f2aMethod = this.extendedComponentData.type;
+    this.qrCode = this.extendedComponentData.data;
+
     this.initializeForm();
-    this.sendMail2FA();
   }
 
   ngOnDestroy(): void {}
@@ -64,22 +63,7 @@ export class DoblefactorComponent extends ComponentToExtendForCustomDialog imple
 
   public onSubmitCustomDialog(): Observable<boolean> {
     this.userservice.checkUser2FA(this.userId, this.dobleFactorForm.value.code2FA).subscribe((res) => {
-      this.showNocheck = !res.valueOf();
-      this.isCheck = res.valueOf();
       if (res) {
-        // Si pasas la validacion 2FA
-        // Crear la cookie 2FA
-
-        // se resuelve la navegacion
-        const checkDueDatePass = this.checkDueDatePassword(this.user);
-        console.log('CheckDueDatePass:' + checkDueDatePass);
-        if (checkDueDatePass) {
-          this.router.navigate(['/', RouteConstants.DASHBOARD]);
-        } else {
-          this.router.navigate(['/login/', RouteConstants.UPDATE_PASSWORD]);
-          //this.navToUpdate();
-        }
-        this.customDialogService.close(DobleFactorComponentModalEnum.ID);
       }
     });
 
@@ -108,15 +92,9 @@ export class DoblefactorComponent extends ComponentToExtendForCustomDialog imple
     });
   }
 
-  private sendMail2FA(): void {
-    this.userservice.sendUser2FA(this.userId).subscribe();
-  }
-
-  private checkDueDatePassword(user: UserDTO): boolean {
-    const sixMonthBeforeDate = new Date();
-    sixMonthBeforeDate.setMonth(sixMonthBeforeDate.getMonth() - 6);
-    return user.dueDatePass == null || user.dueDatePass < sixMonthBeforeDate ? false : true;
-  }
+  // private sendMail2FA(): void {
+  //   this.userservice.sendUser2FA(this.userId).subscribe();
+  // }
 
   private navToUpdate(): void {
     this.router.navigate(['/login/', RouteConstants.UPDATE_PASSWORD], {
