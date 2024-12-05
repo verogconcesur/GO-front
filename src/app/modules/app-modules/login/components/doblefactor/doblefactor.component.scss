@@ -1,5 +1,13 @@
 @import 'utils/core';
 
-.doble-factor-error {
-    color: red;
+.qr-code-container {
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+.qr-code-image {
+  max-width: 150px; /* Tamaño prefijado */
+  height: auto;
+  display: block;
+  margin: 0 auto; /* Centrar la imagen */
 }

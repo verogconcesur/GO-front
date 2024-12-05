@@ -113,7 +113,7 @@ export class AuthenticationService implements OnDestroy {
   }> {
     const resp = {
       userId: 1,
-      qr: 'Prueba qr'
+      qr: 'https://upload.wikimedia.org/wikipedia/commons/d/d7/Commons_QR_code.png'
     };
     if (type === 'SMS' || type === 'EMAIL') {
       return of(null);

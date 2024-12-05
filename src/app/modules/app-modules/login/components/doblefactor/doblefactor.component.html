@@ -1,7 +1,25 @@
-<p>{{ labels.description | translate }}</p>
+<!-- Mensaje condicional según el tipo de autenticación -->
+<p *ngIf="f2aMethod === 'EMAIL'">
+    {{ "Introduce el código que hemos enviado a tu email" | translate }}
+</p>
+<p *ngIf="f2aMethod === 'SMS'">
+    {{ "Introduce el código que hemos enviado a tu teléfono" | translate }}
+</p>
+<p *ngIf="f2aMethod === 'AUTHENTICATOR' && !qrCode">
+    {{ "Introduce el código que aparece en tu aplicación de Microsoft Authenticator" | translate }}
+</p>
+<p *ngIf="f2aMethod === 'AUTHENTICATOR' && qrCode">
+    {{ "Escanea el código QR e introduce el código que aparece en tu aplicación Authenticator" | translate }}
+</p>
+
 <form [formGroup]="dobleFactorForm" *ngIf="dobleFactorForm">
+    <!-- Mostrar código QR si está disponible -->
+    <div *ngIf="qrCode" class="qr-code-container">
+        <img [src]="qrCode" alt="QR Code" class="qr-code-image" />
+    </div>
+
     <div>
-        <mat-form-field appearance="outline">
+        <mat-form-field appearance="outline" style="width: 100%">
             <mat-label>{{ labels.code2FA | translate }}</mat-label>
             <input matInput formControlName="code2FA" />
             <mat-error

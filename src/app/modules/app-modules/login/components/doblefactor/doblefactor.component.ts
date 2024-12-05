@@ -1,5 +1,5 @@
 import { Component, Inject, OnDestroy, OnInit } from '@angular/core';
-import { UntypedFormBuilder, UntypedFormGroup, Validators } from '@angular/forms';
+import { UntypedFormBuilder, UntypedFormGroup } from '@angular/forms';
 import { MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { ActivatedRoute, Router } from '@angular/router';
 import { RouteConstants } from '@app/constants/route.constants';
@@ -50,7 +50,8 @@ export class DoblefactorComponent extends ComponentToExtendForCustomDialog imple
 
   ngOnInit(): void {
     this.f2aMethod = this.extendedComponentData.type;
-    this.qrCode = this.extendedComponentData.data;
+    this.qrCode = this.extendedComponentData.data.qr;
+    console.log(this.qrCode);
 
     this.initializeForm();
   }
@@ -80,7 +81,7 @@ export class DoblefactorComponent extends ComponentToExtendForCustomDialog imple
           label: this.labels.send,
           design: 'raised',
           color: 'primary',
-          disabledFn: () => !this.dobleFactorForm.valid
+          disabledFn: () => !this.dobleFactorForm.controls.code2FA.value
         }
       ]
     };
@@ -88,7 +89,7 @@ export class DoblefactorComponent extends ComponentToExtendForCustomDialog imple
 
   private initializeForm(): void {
     this.dobleFactorForm = this.fb.group({
-      code2FA: ['', Validators.minLength(4)]
+      code2FA: ['']
     });
   }
 
