@@ -80,6 +80,10 @@ export class CreateEditUserComponent extends ComponentToExtendForCustomDialog im
   public nombresWF: { name: string }[] = [];
   // eslint-disable-next-line
   public displayWFList: string = 'none';
+  public userTypeList = [
+    { name: 'GO', value: 'GO' },
+    { name: 'EXTERNAL', value: 'EXTERNAL' }
+  ];
 
   constructor(
     private fb: UntypedFormBuilder,
@@ -246,6 +250,7 @@ export class CreateEditUserComponent extends ComponentToExtendForCustomDialog im
         firstName: [this.userToEdit ? this.userToEdit.firstName : null],
         lastName: [this.userToEdit ? this.userToEdit.lastName : null],
         email: [this.userToEdit ? this.userToEdit.email : null, [Validators.email]],
+        phone: [this.userToEdit ? this.userToEdit.phone : null],
         code: [this.userToEdit ? this.userToEdit.code : null],
         userName: [this.userToEdit ? this.userToEdit.userName : null, Validators.required],
         role: [this.userToEdit ? this.userToEdit.role : null, Validators.required],
@@ -260,7 +265,8 @@ export class CreateEditUserComponent extends ComponentToExtendForCustomDialog im
         brands: [this.userToEdit ? this.userToEdit.brands : null, Validators.required],
         facilities: [this.userToEdit ? this.userToEdit.facilities : null, Validators.required],
         departments: [this.userToEdit ? this.userToEdit.departments : null, Validators.required],
-        specialties: [this.userToEdit ? this.userToEdit.specialties : null, Validators.required]
+        specialties: [this.userToEdit ? this.userToEdit.specialties : null, Validators.required],
+        externalUser: [this.userToEdit ? this.userToEdit.externalUser : null]
       },
       {
         validators: ConfirmPasswordValidator.mustMatch('newPassword', 'newPasswordConfirmation')

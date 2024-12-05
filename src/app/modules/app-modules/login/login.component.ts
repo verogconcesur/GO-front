@@ -19,6 +19,7 @@ import {
   ChooseDoblefactorComponent,
   ChooseDobleFactorOptionComponentModalEnum
 } from './components/choose-doublefactor-option/choose-doublefactor-option.component';
+import { DoblefactorComponent, DobleFactorComponentModalEnum } from './components/doblefactor/doblefactor.component';
 
 @UntilDestroy()
 @Component({
@@ -97,7 +98,7 @@ export class LoginComponent implements OnInit {
       });
   }
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  public openDobleFactorDialog = (config: any): void => {
+  public openChooseDobleFactorDialog = (config: any): void => {
     this.customDialogService
       .open({
         id: ChooseDobleFactorOptionComponentModalEnum.ID,
@@ -110,6 +111,24 @@ export class LoginComponent implements OnInit {
       .subscribe((response) => {
         if (response) {
           this.customDialogService.close(ChooseDobleFactorOptionComponentModalEnum.ID);
+        }
+      });
+  };
+
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  public openDobleFactorDialog = (type: string): void => {
+    this.customDialogService
+      .open({
+        id: DobleFactorComponentModalEnum.ID,
+        panelClass: DobleFactorComponentModalEnum.PANEL_CLASS,
+        component: DoblefactorComponent,
+        width: '500px',
+        extendedComponentData: { data: null, type }
+      })
+      .pipe(take(1))
+      .subscribe((response) => {
+        if (response) {
+          this.customDialogService.close(DobleFactorComponentModalEnum.ID);
         }
       });
   };
@@ -184,17 +203,29 @@ export class LoginComponent implements OnInit {
       .subscribe((resp) => {
         console.log(resp);
         if (resp.f2a) {
-          if (!resp.a2aPredefined) {
-            this.openDobleFactorDialog(resp);
+          // Comprobamos si a2aPredefined está presente y verificamos las propiedades correspondientes
+          let isPredefinedValid = true;
+          // Comprobamos los casos de EMAIL o SMS y validamos las propiedades asociadas
+          if (resp.a2aPredefined === 'EMAIL' && !resp.email) {
+            isPredefinedValid = false; // Si es EMAIL pero no hay email, es inválido
+          } else if (resp.a2aPredefined === 'SMS' && !resp.sms) {
+            isPredefinedValid = false; // Si es SMS pero no hay sms, es inválido
+          }
+          // Si no hay a2aPredefined o no es válido (ni EMAIL ni SMS válidos)
+          if (!resp.a2aPredefined || !isPredefinedValid) {
+            this.openChooseDobleFactorDialog(resp);
           } else {
+            // Si es AUTHENTICATOR, no necesitamos más comprobaciones y seguimos la lógica establecida
             if (resp.isNewBrowser || resp.last30days) {
-              // Si es un navegador nuevo o han pasado 30 días, llamamos al backend y abrimos la modal para introducir el código.
+              // Si es un navegador nuevo o han pasado 30 días, llamamos al backend y abrimos la modal para introducir el código
+              this.openChooseDobleFactorDialog(resp.a2aPredefined);
             } else {
               // Si no cumple ninguna de esas condiciones, puede navegar directamente al dashboard
               this.router.navigate(['/', RouteConstants.DASHBOARD]);
             }
           }
         } else {
+          // Si f2a es falso, navegamos al dashboard directamente
           this.router.navigate(['/', RouteConstants.DASHBOARD]);
         }
       });

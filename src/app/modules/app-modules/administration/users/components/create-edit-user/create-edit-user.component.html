@@ -47,6 +47,11 @@
                             <span *ngIf="userForm.controls.email.errors.email">{{ labels.emailError | translate }}</span>
                         </mat-error>
                     </mat-form-field>
+                    <!-- Telefono -->
+                    <mat-form-field appearance="outline" floatLabel="always">
+                        <mat-label>Telefono</mat-label>
+                        <input matInput formControlName="phone" />
+                    </mat-form-field>
                     <!-- Code -->
                     <mat-form-field appearance="outline" floatLabel="always">
                         <mat-label>{{ labels.code | translate }}</mat-label>
@@ -71,6 +76,16 @@
                         </mat-select>
                         <mat-error *ngIf="userForm.controls?.role.invalid && userForm.controls?.role.touched">
                             <span *ngIf="userForm.controls.role.errors.required">{{ labels.required | translate }}</span>
+                        </mat-error>
+                    </mat-form-field>
+
+                    <mat-form-field appearance="outline" floatLabel="always">
+                        <mat-label>Tipo usuario</mat-label>
+                        <mat-select formControlName="externalUser">
+                            <mat-option *ngFor="let userType of userTypeList" [value]="userType">{{ userType.name }}</mat-option>
+                        </mat-select>
+                        <mat-error *ngIf="userForm.controls?.externalUser.invalid && userForm.controls?.externalUser.touched">
+                            <span *ngIf="userForm.controls.externalUser.errors.required">{{ labels.required | translate }}</span>
                         </mat-error>
                     </mat-form-field>
 
