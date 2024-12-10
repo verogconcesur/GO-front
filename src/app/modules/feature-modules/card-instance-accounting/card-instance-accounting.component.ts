@@ -223,6 +223,7 @@ export class CardInstanceAccountingComponent implements OnInit {
           component: CardAccountingDialogFormComponent,
           extendedComponentData: {
             line: JSON.parse(JSON.stringify(line)),
+            taxList: this.taxTypes,
             taxType: this.taxTypeToApply,
             block: null,
             attachmentsList: this.attachmentsList,
