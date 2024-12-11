@@ -19,6 +19,8 @@ import { catchError, take } from 'rxjs/operators';
 export class AuthenticationService implements OnDestroy {
   public readonly LOGIN_PATH = '/api/users/login';
   public readonly REFRESH_TOKEN_PATH = '/api/users/refreshToken';
+  public readonly GET_F2A_PATH = '/api/users/sendPass2FA';
+  private readonly USER_CHECK2FA_PATH = '/api/users/checkUser2FA';
 
   private readonly ACCESS_TOKEN = 'access_token';
   private readonly EXPIRES_IN = 'expires_in';
@@ -29,6 +31,8 @@ export class AuthenticationService implements OnDestroy {
   private readonly USER_FULL_NAME = 'user_full_name';
   private readonly USER_ROLE = 'user_role';
   private readonly USER_PERMISSIONS = 'user_permissions';
+  private readonly REQUIRE_2FA = 'require_2fa';
+  private readonly DEFAULT_MODE_2FA = 'default_mode_2fa';
 
   private readonly WARNING_STATUS = 'warning_status';
 
@@ -47,7 +51,7 @@ export class AuthenticationService implements OnDestroy {
     }
   }
 
-  public signIn(credentials: { userName: string; password: string }): Observable<LoginDTO> {
+  public signIn(credentials: { userName: string; password: string; deviceSignature: string }): Observable<LoginDTO> {
     return this.http
       .post<LoginDTO>(`${this.env.apiBaseUrl}${this.LOGIN_PATH}`, credentials)
       .pipe(catchError((error) => throwError(error as ConcenetError)));
@@ -126,6 +130,23 @@ export class AuthenticationService implements OnDestroy {
     return this.http
       .get<LoginDTO>(`${this.env.apiBaseUrl}${this.REFRESH_TOKEN_PATH}`)
       .pipe(catchError((error) => throwError(error as ConcenetError)));
+  }
+
+  public sendF2APass(userId: number, type: string) {
+    return this.http
+      .get(`${this.env.apiBaseUrl}${this.GET_F2A_PATH}/${userId}/${type}`)
+      .pipe(catchError((error) => throwError(error as ConcenetError)));
+  }
+
+  public checkUser2FA(f2aInfo: {
+    userId: number;
+    code2FA: string;
+    deviceSignature: string;
+    trust: boolean;
+  }): Observable<LoginDTO> {
+    return this.http
+      .post<LoginDTO>(`${this.env.apiBaseUrl}${this.USER_CHECK2FA_PATH}`, f2aInfo)
+      .pipe(catchError((error) => throwError(error.error as ConcenetError)));
   }
 
   /**
@@ -360,6 +381,8 @@ export class AuthenticationService implements OnDestroy {
     localStorage.setItem(this.USER_FULL_NAME, loginData.user.fullName);
     localStorage.setItem(this.USER_ROLE, JSON.stringify(loginData.user.role));
     localStorage.setItem(this.USER_PERMISSIONS, JSON.stringify(loginData.user.permissions));
+    localStorage.setItem(this.REQUIRE_2FA, JSON.stringify(loginData.require2FA));
+    localStorage.setItem(this.DEFAULT_MODE_2FA, JSON.stringify(loginData.defaultMode2FA));
   }
 
   setTokenData(loginData: LoginDTO): void {

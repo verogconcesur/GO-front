@@ -118,7 +118,6 @@ export class CreateEditUserComponent extends ComponentToExtendForCustomDialog im
     this.initializeForm();
     if (this.userToEdit !== null) {
       this.getWorkflowList(this.userToEdit.id);
-      this.checkUser();
     }
     this.getListOptions();
   }
@@ -250,7 +249,7 @@ export class CreateEditUserComponent extends ComponentToExtendForCustomDialog im
         firstName: [this.userToEdit ? this.userToEdit.firstName : null],
         lastName: [this.userToEdit ? this.userToEdit.lastName : null],
         email: [this.userToEdit ? this.userToEdit.email : null, [Validators.email]],
-        phone: [this.userToEdit ? this.userToEdit.phone : null],
+        phoneNumber: [this.userToEdit ? this.userToEdit.phoneNumber : null],
         code: [this.userToEdit ? this.userToEdit.code : null],
         userName: [this.userToEdit ? this.userToEdit.userName : null, Validators.required],
         role: [this.userToEdit ? this.userToEdit.role : null, Validators.required],
@@ -266,7 +265,7 @@ export class CreateEditUserComponent extends ComponentToExtendForCustomDialog im
         facilities: [this.userToEdit ? this.userToEdit.facilities : null, Validators.required],
         departments: [this.userToEdit ? this.userToEdit.departments : null, Validators.required],
         specialties: [this.userToEdit ? this.userToEdit.specialties : null, Validators.required],
-        externalUser: [this.userToEdit ? this.userToEdit.externalUser : null]
+        userType: [this.userToEdit ? this.userToEdit.userType : this.userTypeList[0]]
       },
       {
         validators: ConfirmPasswordValidator.mustMatch('newPassword', 'newPasswordConfirmation')
@@ -326,11 +325,5 @@ export class CreateEditUserComponent extends ComponentToExtendForCustomDialog im
           });
         }
       });
-  }
-
-  private checkUser(): void {
-    this.userService.checkUser2FA('1001', '1234').subscribe((res) => {
-      console.log(res);
-    });
   }
 }

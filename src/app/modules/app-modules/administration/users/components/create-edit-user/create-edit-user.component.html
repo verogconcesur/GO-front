@@ -50,7 +50,7 @@
                     <!-- Telefono -->
                     <mat-form-field appearance="outline" floatLabel="always">
                         <mat-label>Telefono</mat-label>
-                        <input matInput formControlName="phone" />
+                        <input matInput formControlName="phoneNumber" />
                     </mat-form-field>
                     <!-- Code -->
                     <mat-form-field appearance="outline" floatLabel="always">
@@ -81,12 +81,11 @@
 
                     <mat-form-field appearance="outline" floatLabel="always">
                         <mat-label>Tipo usuario</mat-label>
-                        <mat-select formControlName="externalUser">
-                            <mat-option *ngFor="let userType of userTypeList" [value]="userType">{{ userType.name }}</mat-option>
+                        <mat-select formControlName="userType">
+                            <mat-option *ngFor="let userType of userTypeList" [value]="userType.value">{{
+                                userType.name
+                            }}</mat-option>
                         </mat-select>
-                        <mat-error *ngIf="userForm.controls?.externalUser.invalid && userForm.controls?.externalUser.touched">
-                            <span *ngIf="userForm.controls.externalUser.errors.required">{{ labels.required | translate }}</span>
-                        </mat-error>
                     </mat-form-field>
 
                     <!-- newPassword -->

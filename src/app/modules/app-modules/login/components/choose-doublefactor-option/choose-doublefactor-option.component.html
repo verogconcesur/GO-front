@@ -8,8 +8,8 @@
         class="login-content__link"
         fxLayout="row"
         fxLayoutAlign="start center"
-        [ngClass]="{ disabled: !config.email }"
-        (click)="config.email ? selectOption('EMAIL') : null"
+        [ngClass]="{ disabled: !email }"
+        (click)="email ? selectOption('EMAIL') : null"
     >
         <div class="login-content__icon-container">
             <mat-icon class="login-content__icon">email</mat-icon>
@@ -19,20 +19,20 @@
                 <span>Email</span>
             </div>
             <div class="login-content__link__value">
-                <span>{{ config.email }}</span>
+                <span>{{ email }}</span>
             </div>
         </div>
     </div>
     <!-- Mensaje de opción no disponible -->
-    <span *ngIf="!config.email" class="login-content__not-available">No hay email registrado en el sistema</span>
+    <span *ngIf="!email" class="login-content__not-available">No hay email registrado en el sistema</span>
 
     <!-- Opción SMS -->
     <div
         class="login-content__link"
         fxLayout="row"
         fxLayoutAlign="start center"
-        [ngClass]="{ disabled: !config.sms }"
-        (click)="config.sms ? selectOption('SMS') : null"
+        [ngClass]="{ disabled: !phoneNumber }"
+        (click)="phoneNumber ? selectOption('SMS') : null"
     >
         <div class="login-content__icon-container">
             <mat-icon class="login-content__icon">sms</mat-icon>
@@ -42,11 +42,11 @@
                 <span>SMS</span>
             </div>
             <div class="login-content__link__value">
-                <span>{{ config.sms }}</span>
+                <span>{{ phoneNumber }}</span>
             </div>
         </div>
     </div>
-    <span *ngIf="!config.sms" class="login-content__not-available">No hay telefono registrado en el sistema</span>
+    <span *ngIf="!phoneNumber" class="login-content__not-available">No hay telefono registrado en el sistema</span>
 
     <!-- Opción Authenticator -->
     <div class="login-content__link" fxLayout="row" fxLayoutAlign="start center" (click)="selectOption('AUTHENTICATOR')">

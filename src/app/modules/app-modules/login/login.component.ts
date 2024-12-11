@@ -40,6 +40,7 @@ export class LoginComponent implements OnInit {
   };
 
   public loginForm: UntypedFormGroup;
+  public fingerprint: string;
 
   constructor(
     @Inject(ENV) private env: Env,
@@ -65,6 +66,7 @@ export class LoginComponent implements OnInit {
     if (this.authenticationService.isUserLogged()) {
       this.router.navigate(['/', RouteConstants.DASHBOARD]);
     } else {
+      this.fingerprint = this.generateBrowserFingerprint();
       this.authenticationService.logout();
       this.initializeForm();
     }
@@ -77,8 +79,8 @@ export class LoginComponent implements OnInit {
   }
 
   public doLogin(): void {
+    this.loginForm.get('deviceSignature').setValue(this.fingerprint);
     const spinner = this.spinnerService.show();
-    console.log(this.generateBrowserFingerprint());
     this.authenticationService
       .signIn(this.loginForm.value)
       .pipe(
@@ -99,13 +101,14 @@ export class LoginComponent implements OnInit {
   }
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   public openChooseDobleFactorDialog = (config: any): void => {
+    console.log(config);
     this.customDialogService
       .open({
         id: ChooseDobleFactorOptionComponentModalEnum.ID,
         panelClass: ChooseDobleFactorOptionComponentModalEnum.PANEL_CLASS,
         component: ChooseDoblefactorComponent,
         width: '700px',
-        extendedComponentData: config
+        extendedComponentData: { id: config.user.id, phone: config.user.phoneNumber, email: config.user.email }
       })
       .pipe(take(1))
       .subscribe((response) => {
@@ -116,20 +119,25 @@ export class LoginComponent implements OnInit {
   };
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  public openDobleFactorDialog = (type: string): void => {
-    this.customDialogService
-      .open({
-        id: DobleFactorComponentModalEnum.ID,
-        panelClass: DobleFactorComponentModalEnum.PANEL_CLASS,
-        component: DoblefactorComponent,
-        width: '500px',
-        extendedComponentData: { data: null, type }
-      })
-      .pipe(take(1))
-      .subscribe((response) => {
-        if (response) {
-          this.customDialogService.close(DobleFactorComponentModalEnum.ID);
-        }
+  public openDobleFactorDialog = (userId: number, fingerprint: string, type: string): void => {
+    this.authenticationService
+      .sendF2APass(userId, type)
+      .pipe(untilDestroyed(this))
+      .subscribe((resp) => {
+        this.customDialogService
+          .open({
+            id: DobleFactorComponentModalEnum.ID,
+            panelClass: DobleFactorComponentModalEnum.PANEL_CLASS,
+            component: DoblefactorComponent,
+            width: '500px',
+            extendedComponentData: { userId, type, fingerprint, qr: resp || null }
+          })
+          .pipe(take(1))
+          .subscribe((response) => {
+            if (response) {
+              this.customDialogService.close(DobleFactorComponentModalEnum.ID);
+            }
+          });
       });
   };
 
@@ -187,48 +195,42 @@ export class LoginComponent implements OnInit {
   private initializeForm(): void {
     this.loginForm = this.fb.group({
       userName: ['', Validators.required],
-      password: ['', Validators.required]
+      password: ['', Validators.required],
+      deviceSignature: [null]
     });
   }
 
   private loginSuccess(loginData: LoginDTO): void {
+    console.log(loginData);
     this.authenticationService.setLoggedUser(loginData);
-    this.use2FAAndNavigate();
+    this.use2FAAndNavigate(loginData);
   }
 
-  private use2FAAndNavigate() {
-    this.authenticationService
-      .getF2AConfig()
-      .pipe(take(1))
-      .subscribe((resp) => {
-        console.log(resp);
-        if (resp.f2a) {
-          // Comprobamos si a2aPredefined está presente y verificamos las propiedades correspondientes
-          let isPredefinedValid = true;
-          // Comprobamos los casos de EMAIL o SMS y validamos las propiedades asociadas
-          if (resp.a2aPredefined === 'EMAIL' && !resp.email) {
-            isPredefinedValid = false; // Si es EMAIL pero no hay email, es inválido
-          } else if (resp.a2aPredefined === 'SMS' && !resp.sms) {
-            isPredefinedValid = false; // Si es SMS pero no hay sms, es inválido
-          }
-          // Si no hay a2aPredefined o no es válido (ni EMAIL ni SMS válidos)
-          if (!resp.a2aPredefined || !isPredefinedValid) {
-            this.openChooseDobleFactorDialog(resp);
-          } else {
-            // Si es AUTHENTICATOR, no necesitamos más comprobaciones y seguimos la lógica establecida
-            if (resp.isNewBrowser || resp.last30days) {
-              // Si es un navegador nuevo o han pasado 30 días, llamamos al backend y abrimos la modal para introducir el código
-              this.openChooseDobleFactorDialog(resp.a2aPredefined);
-            } else {
-              // Si no cumple ninguna de esas condiciones, puede navegar directamente al dashboard
-              this.router.navigate(['/', RouteConstants.DASHBOARD]);
-            }
-          }
-        } else {
-          // Si f2a es falso, navegamos al dashboard directamente
-          this.router.navigate(['/', RouteConstants.DASHBOARD]);
-        }
-      });
+  private use2FAAndNavigate(loginData: LoginDTO) {
+    // Extraemos las propiedades necesarias de loginData
+    const { require2FA, defaultMode2FA, user } = loginData;
+    const email = user.email;
+    const phoneNumber = user.phoneNumber;
+    if (require2FA) {
+      let isPredefinedValid = true;
+      // Validamos el modo de 2FA predefinido
+      if (defaultMode2FA === 'EMAIL' && !email) {
+        isPredefinedValid = false; // Si es EMAIL pero no hay email, es inválido
+      } else if (defaultMode2FA === 'SMS' && !phoneNumber) {
+        isPredefinedValid = false; // Si es SMS pero no hay número de teléfono, es inválido
+      }
+      // Si no hay defaultMode2FA o no es válido (ni EMAIL ni SMS válidos)
+      if (!defaultMode2FA || !isPredefinedValid) {
+        // Abrimos el modal para que el usuario elija el método de doble factor
+        this.openChooseDobleFactorDialog(loginData);
+      } else {
+        // Abrimos el modal para introducir el código según el método predefinido
+        this.openDobleFactorDialog(loginData.user.id, this.fingerprint, defaultMode2FA);
+      }
+    } else {
+      // Si require2FA es falso, navegamos directamente al dashboard
+      this.router.navigate(['/', RouteConstants.DASHBOARD]);
+    }
   }
 
   private loginError(error: ConcenetError): void {

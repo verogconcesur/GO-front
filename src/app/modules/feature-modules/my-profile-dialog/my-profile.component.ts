@@ -240,7 +240,7 @@ export class MyProfileComponent extends ComponentToExtendForCustomDialog impleme
         firstName: [this.userDetails.firstName],
         lastName: [this.userDetails.lastName],
         email: [this.userDetails.email],
-        phone: [this.userDetails.phone],
+        phoneNumber: [this.userDetails.phoneNumber],
         userName: [{ value: this.userDetails.userName, disabled: true }, Validators.required],
         role: [{ value: this.userDetails.role.name, disabled: true }, Validators.required],
         password: [this.userDetails.password, Validators.required],

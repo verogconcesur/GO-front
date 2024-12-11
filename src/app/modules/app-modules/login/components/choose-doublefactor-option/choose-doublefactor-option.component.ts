@@ -34,11 +34,12 @@ export class ChooseDoblefactorComponent extends ComponentToExtendForCustomDialog
   };
 
   public dobleFactorForm: UntypedFormGroup;
-  public userId = '';
+  public userId: number;
   public showNocheck = false;
   public isCheck = false;
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  public config: any;
+  public email: string;
+  public phoneNumber: string;
 
   constructor(
     private fb: UntypedFormBuilder,
@@ -58,7 +59,9 @@ export class ChooseDoblefactorComponent extends ComponentToExtendForCustomDialog
   }
 
   ngOnInit(): void {
-    this.config = this.extendedComponentData;
+    this.userId = this.extendedComponentData.id;
+    this.phoneNumber = this.extendedComponentData.phoneNumber;
+    this.email = this.extendedComponentData.email;
   }
 
   ngOnDestroy(): void {}
@@ -69,7 +72,7 @@ export class ChooseDoblefactorComponent extends ComponentToExtendForCustomDialog
 
   public selectOption = (type: 'SMS' | 'EMAIL' | 'AUTHENTICATOR'): void => {
     this.authenticationService
-      .sendAuthentication(this.config.userId, type)
+      .sendAuthentication(this.userId, type)
       .pipe(take(1))
       .subscribe((data) => {
         this.customDialogService

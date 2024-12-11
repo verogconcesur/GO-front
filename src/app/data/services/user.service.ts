@@ -25,7 +25,6 @@ export class UserService {
   private readonly USER_ADD_PATH = '/api/users';
   private readonly USER_DELETE_PATH = '/api/users';
   private readonly USER_SEND2FA_PATH = '/api/users/sendUser2FA';
-  private readonly USER_CHECK2FA_PATH = '/api/users/checkUser2FA';
   private readonly USER_UPDATEPASS_PATH = '/api/users/updatePassByUser';
 
   constructor(@Inject(ENV) private env: Env, private http: HttpClient) {}
@@ -102,12 +101,6 @@ export class UserService {
   public sendUser2FA(userId: string): Observable<boolean> {
     return this.http
       .get<boolean>(`${this.env.apiBaseUrl}${this.USER_SEND2FA_PATH}/${userId}`)
-      .pipe(catchError((error) => throwError(error.error as ConcenetError)));
-  }
-
-  public checkUser2FA(userId: string, code2FA: string): Observable<boolean> {
-    return this.http
-      .get<boolean>(`${this.env.apiBaseUrl}${this.USER_CHECK2FA_PATH}/${userId}/?code2FA=${code2FA}`)
       .pipe(catchError((error) => throwError(error.error as ConcenetError)));
   }
 
