@@ -25,7 +25,7 @@
                     {{ labels.accumulatedLine | translate }}
                 </mat-error>
                 <mat-form-field appearance="outline" floatLabel="always" class="w-100">
-                    <mat-label>Tipo de impuesto</mat-label>
+                    <mat-label>{{ "cardDetail.accounting.taxType" | translate }}</mat-label>
                     <mat-select #matSelect [(ngModel)]="taxType" [disabled]="editionDisabled || isDisabled">
                         <mat-option *ngFor="let tax of taxList" [value]="tax">
                             {{ tax.description | translate }} <span *ngIf="tax.value">({{ tax.value }}%)</span>

@@ -48,6 +48,7 @@ export class CardInstanceAccountingComponent implements OnInit {
     generalInfo: marker('cardDetail.payments.generalInfo'),
     value: marker('common.value'),
     totalTax: marker('cardDetail.accounting.totalTax'),
+    taxes: marker('cardDetail.accounting.taxes'),
     totalAmountPlusTax: marker('cardDetail.accounting.totalAmountPlusTax'),
     actions: marker('common.actions'),
     lock: marker('cardDetail.accounting.block'),

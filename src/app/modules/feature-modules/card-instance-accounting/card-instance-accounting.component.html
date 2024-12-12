@@ -76,11 +76,11 @@
             </div>
             <div class="accountings__main__header subheader">
                 <div class="accountings__main__header__item" fxLayout="row">
-                    <div fxFlex="23" fxLayoutAlign="start center" fxFill>{{ labels.line | translate }}</div>
-                    <div fxFlex="17" fxLayoutAlign="start center" fxFill>{{ labels.type | translate }}</div>
-                    <div fxFlex="25" fxLayoutAlign="start center" fxFill>Tipo impuesto</div>
+                    <div fxFlex="25" fxLayoutAlign="start center" fxFill>{{ labels.line | translate }}</div>
+                    <div fxFlex="20" fxLayoutAlign="start center" fxFill>{{ labels.type | translate }}</div>
+                    <div fxFlex="15" fxLayoutAlign="start center" fxFill>{{ labels.taxes | translate }}</div>
                     <div fxFlex="25" fxLayoutAlign="center center" fxFill>{{ labels.amount | translate }}</div>
-                    <div fxFlex="10" fxLayoutAlign="end center" fxFill>{{ labels.actions | translate }}</div>
+                    <div fxFlex="15" fxLayoutAlign="end center" fxFill>{{ labels.actions | translate }}</div>
                 </div>
             </div>
             <div
@@ -88,17 +88,17 @@
                 fxLayout="row"
                 *ngFor="let item of block.accountingLines; let i = index"
             >
-                <div fxFlex="20" fxLayoutAlign="start center" class="description">{{ item.description }}</div>
-                <div fxFlex="25" fxLayoutAlign="start center">
+                <div fxFlex="25" fxLayoutAlign="start center" class="description">{{ item.description }}</div>
+                <div fxFlex="20" fxLayoutAlign="start center">
                     {{ item.templateAccountingItemLine.accountingLineType.description }}
                 </div>
-                <div fxFlex="25" fxLayoutAlign="start center">
+                <div fxFlex="15" fxLayoutAlign="start center">
                     {{ item.taxType?.description }}
                 </div>
-                <div fxFlex="20" fxLayoutAlign="center center">
+                <div fxFlex="25" fxLayoutAlign="center center">
                     {{ item.amount | number : "1.2-2" }}<span *ngIf="item.amount || item.amount === 0" matSuffix> €</span>
                 </div>
-                <div fxFlex="10" fxLayoutAlign="end center" class="actions">
+                <div fxFlex="15" fxLayoutAlign="end center" class="actions">
                     <!-- <mat-icon
                         [style.color]="getFontColorAccumulatedLine(item)"
                         (click)="showAccumulated(item)"
@@ -150,14 +150,13 @@
                             : (labels.total | translate)
                     }}
                 </div>
-                <div fxFlex="10" fxLayoutAlign="center center"></div>
-                <div fxFlex="20" fxLayoutAlign="center center" *ngIf="block.amountTotal">
+                <div fxFlex="25" fxLayoutAlign="center center" *ngIf="block.amountTotal">
                     {{ block.amountTotal | number : "1.2-2" }}<span matSuffix> €</span>
                 </div>
-                <div fxFlex="20" fxLayoutAlign="center center" *ngIf="!block.amountTotal">
+                <div fxFlex="25" fxLayoutAlign="center center" *ngIf="!block.amountTotal">
                     {{ 0 | number : "1.2-2" }}<span matSuffix> €</span>
                 </div>
-                <div fxFlex="10" fxLayoutAlign="end center" class="actions"></div>
+                <div fxFlex="15" fxLayoutAlign="end center" class="actions"></div>
             </div>
             <div
                 class="accountings__main__line item smaller-mat-form-fields bold"
@@ -171,14 +170,13 @@
                             : (labels.totalTax | translate)
                     }}
                 </div>
-                <div fxFlex="10" fxLayoutAlign="center center"></div>
-                <div fxFlex="20" fxLayoutAlign="center center" *ngIf="block.amountTotalTax">
+                <div fxFlex="25" fxLayoutAlign="center center" *ngIf="block.amountTotalTax">
                     {{ block.amountTotalTax | number : "1.2-2" }}<span matSuffix> €</span>
                 </div>
-                <div fxFlex="20" fxLayoutAlign="center center" *ngIf="!block.amountTotalTax">
+                <div fxFlex="25" fxLayoutAlign="center center" *ngIf="!block.amountTotalTax">
                     {{ 0 | number : "1.2-2" }}<span matSuffix> €</span>
                 </div>
-                <div fxFlex="10" fxLayoutAlign="end center" class="actions"></div>
+                <div fxFlex="15" fxLayoutAlign="end center" class="actions"></div>
             </div>
             <div
                 class="accountings__main__line item smaller-mat-form-fields bold"
@@ -192,14 +190,13 @@
                             : (labels.totalAmountPlusTax | translate)
                     }}
                 </div>
-                <div fxFlex="10" fxLayoutAlign="center center"></div>
-                <div fxFlex="20" fxLayoutAlign="center center" *ngIf="block.amountTotalPlusTax">
+                <div fxFlex="25" fxLayoutAlign="center center" *ngIf="block.amountTotalPlusTax">
                     {{ block.amountTotalPlusTax | number : "1.2-2" }}<span matSuffix> €</span>
                 </div>
-                <div fxFlex="20" fxLayoutAlign="center center" *ngIf="!block.amountTotalPlusTax">
+                <div fxFlex="25" fxLayoutAlign="center center" *ngIf="!block.amountTotalPlusTax">
                     {{ 0 | number : "1.2-2" }}<span matSuffix> €</span>
                 </div>
-                <div fxFlex="10" fxLayoutAlign="end center" class="actions"></div>
+                <div fxFlex="15" fxLayoutAlign="end center" class="actions"></div>
             </div>
         </div>
         <div *ngIf="canBlockAccounting()" class="block_button">
