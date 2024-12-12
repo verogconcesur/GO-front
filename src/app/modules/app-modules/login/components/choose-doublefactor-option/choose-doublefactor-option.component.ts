@@ -1,6 +1,5 @@
-import { Component, Inject, OnDestroy, OnInit, ViewEncapsulation } from '@angular/core';
+import { Component, OnDestroy, OnInit, ViewEncapsulation } from '@angular/core';
 import { UntypedFormBuilder, UntypedFormGroup } from '@angular/forms';
-import { MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { ActivatedRoute, Router } from '@angular/router';
 import { AuthenticationService } from '@app/security/authentication.service';
 import { marker } from '@biesbjerg/ngx-translate-extract-marker';
@@ -14,7 +13,7 @@ import { DoblefactorComponent, DobleFactorComponentModalEnum } from '../doblefac
 export const enum ChooseDobleFactorOptionComponentModalEnum {
   ID = 'choose-doble-factor-dialog-id',
   PANEL_CLASS = 'choose-doble-factor-dialog',
-  TITLE = 'Metodo de autenticacion'
+  TITLE = 'MÉTODO DE AUTENTICACIÓN'
 }
 
 @Component({
@@ -37,9 +36,9 @@ export class ChooseDoblefactorComponent extends ComponentToExtendForCustomDialog
   public userId: number;
   public showNocheck = false;
   public isCheck = false;
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   public email: string;
   public phoneNumber: string;
+  public fingerprint: string;
 
   constructor(
     private fb: UntypedFormBuilder,
@@ -47,9 +46,7 @@ export class ChooseDoblefactorComponent extends ComponentToExtendForCustomDialog
     private route: ActivatedRoute,
     private userservice: UserService,
     private customDialogService: CustomDialogService,
-    private authenticationService: AuthenticationService,
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    @Inject(MAT_DIALOG_DATA) public data: any
+    private authenticationService: AuthenticationService
   ) {
     super(
       ChooseDobleFactorOptionComponentModalEnum.ID,
@@ -62,6 +59,7 @@ export class ChooseDoblefactorComponent extends ComponentToExtendForCustomDialog
     this.userId = this.extendedComponentData.id;
     this.phoneNumber = this.extendedComponentData.phoneNumber;
     this.email = this.extendedComponentData.email;
+    this.fingerprint = this.extendedComponentData.fingerprint;
   }
 
   ngOnDestroy(): void {}
@@ -72,7 +70,7 @@ export class ChooseDoblefactorComponent extends ComponentToExtendForCustomDialog
 
   public selectOption = (type: 'SMS' | 'EMAIL' | 'AUTHENTICATOR'): void => {
     this.authenticationService
-      .sendAuthentication(this.userId, type)
+      .sendF2APass(this.userId, type)
       .pipe(take(1))
       .subscribe((data) => {
         this.customDialogService
@@ -80,13 +78,13 @@ export class ChooseDoblefactorComponent extends ComponentToExtendForCustomDialog
             id: DobleFactorComponentModalEnum.ID,
             panelClass: DobleFactorComponentModalEnum.PANEL_CLASS,
             component: DoblefactorComponent,
-            width: '500px',
-            extendedComponentData: { data, type }
+            width: '550px',
+            extendedComponentData: { userId: this.userId, type, fingerprint: this.fingerprint, qr: data || null }
           })
           .pipe(take(1))
           .subscribe((response) => {
             if (response) {
-              this.customDialogService.close(DobleFactorComponentModalEnum.ID);
+              this.customDialogService.close(ChooseDobleFactorOptionComponentModalEnum.ID);
             }
           });
       });

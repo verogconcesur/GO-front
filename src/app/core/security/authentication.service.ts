@@ -440,4 +440,55 @@ export class AuthenticationService implements OnDestroy {
     this.userService.userLogged$.next(null);
     clearTimeout(this.tokenTimeout);
   }
+
+  generateBrowserFingerprint(): string {
+    // Obtener User Agent del navegador
+    const userAgent = window.navigator.userAgent;
+    // Obtener la zona horaria
+    const timezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
+    // Obtener puntos tactiles de la pantalla
+    const tactil = window.navigator.maxTouchPoints;
+    // Obtener GPU (WebGL info)
+    const gpuInfo = this.getWebGLInfo();
+    // Combinar todo en una cadena y codificar en Base64
+    const fingerprintData = `${userAgent}__${timezone}_${tactil}_${gpuInfo}`;
+    console.log(fingerprintData);
+    // Codificar en Base64 para que sea más compacto
+    return btoa(fingerprintData);
+  }
+
+  getWebGLInfo(): string {
+    // Crear un elemento 'canvas' que se utilizará para obtener el contexto WebGL
+    const canvas = document.createElement('canvas');
+    // Intentar obtener el contexto de WebGL de forma explícita.
+    // 'getContext("webgl")' devuelve el contexto WebGL si está disponible.
+    // Si no está disponible, 'getContext("experimental-webgl")'
+    //intenta usar una versión experimental de WebGL en navegadores más antiguos.
+    const gl =
+      (canvas.getContext('webgl') as WebGLRenderingContext) || (canvas.getContext('experimental-webgl') as WebGLRenderingContext);
+    // Si no se puede obtener el contexto WebGL, significa que el navegador no soporta WebGL.
+    // En ese caso, se devuelve 'NaN' para indicar que no se puede obtener la información.
+    if (!gl) {
+      return 'NaN';
+    }
+    // Intentar obtener la extensión 'WEBGL_debug_renderer_info', que proporciona detalles más específicos sobre la GPU.
+    // Esta extensión permite acceder al fabricante (vendor) y al modelo (renderer) de la tarjeta gráfica.
+    const debugInfo = gl.getExtension('WEBGL_debug_renderer_info');
+    // Si la extensión no está disponible (algunos navegadores pueden bloquearla por privacidad o seguridad),
+    // se devuelve 'NaN', indicando que no se puede obtener información de la GPU.
+    if (!debugInfo) {
+      return 'NaN';
+    }
+    // Obtener el nombre del fabricante de la GPU.
+    // 'UNMASKED_VENDOR_WEBGL' es el parámetro que devuelve el
+    //fabricante de la tarjeta gráfica (por ejemplo, "NVIDIA", "Intel", "AMD").
+    const vendor = gl.getParameter(debugInfo.UNMASKED_VENDOR_WEBGL) || 'NaN';
+    // Obtener el nombre del modelo de la GPU.
+    // 'UNMASKED_RENDERER_WEBGL' es el parámetro que devuelve el
+    //modelo exacto de la tarjeta gráfica (por ejemplo, "GeForce GTX 1050").
+    const renderer = gl.getParameter(debugInfo.UNMASKED_RENDERER_WEBGL) || 'NaN';
+    // Devolver un identificador único basado en la combinación del fabricante y el modelo de la GPU.
+    // Si no se pueden obtener estos valores, se devolverá 'NaN' como valor predeterminado.
+    return `${vendor}_${renderer}`;
+  }
 }

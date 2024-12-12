@@ -100,11 +100,15 @@ export class TokenInterceptor implements HttpInterceptor {
   }
 
   private handle403Error(error: ConcenetError): ObservableResponse {
-    this.router.navigate([RouteConstants.DASHBOARD]);
-    this.globalMessage.showError({
-      message: this.translateService.instant(marker('common.accessDenied')),
-      actionText: this.translateService.instant(marker('common.close'))
-    });
+    const currentUrl = this.router.url;
+    if (currentUrl !== `/${RouteConstants.LOGIN}`) {
+      console.log('entra');
+      this.router.navigate([RouteConstants.DASHBOARD]);
+      this.globalMessage.showError({
+        message: this.translateService.instant(marker('common.accessDenied')),
+        actionText: this.translateService.instant(marker('common.close'))
+      });
+    }
     return throwError(error);
   }
 }

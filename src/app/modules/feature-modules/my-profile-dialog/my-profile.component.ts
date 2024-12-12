@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { UntypedFormBuilder, UntypedFormGroup, Validators } from '@angular/forms';
+import { AuthenticationService } from '@app/security/authentication.service';
 import { marker } from '@biesbjerg/ngx-translate-extract-marker';
 import UserDetailsDTO from '@data/models/user-permissions/user-details-dto';
 import { UserService } from '@data/services/user.service';
@@ -62,6 +63,7 @@ export class MyProfileComponent extends ComponentToExtendForCustomDialog impleme
   public showPasswordFields = false;
   public profileForm: UntypedFormGroup;
   public userDetails: UserDetailsDTO = null;
+  public fingerprint: string;
 
   constructor(
     private fb: UntypedFormBuilder,
@@ -70,7 +72,8 @@ export class MyProfileComponent extends ComponentToExtendForCustomDialog impleme
     private customDialogService: CustomDialogService,
     private translateService: TranslateService,
     private userService: UserService,
-    private globalMessageService: GlobalMessageService
+    private globalMessageService: GlobalMessageService,
+    private authenticationService: AuthenticationService
   ) {
     super(MyProfileComponentModalEnum.ID, MyProfileComponentModalEnum.PANEL_CLASS, marker(MyProfileComponentModalEnum.TITLE));
   }
@@ -82,6 +85,7 @@ export class MyProfileComponent extends ComponentToExtendForCustomDialog impleme
 
   ngOnInit() {
     this.userDetails = this.extendedComponentData;
+    this.fingerprint = this.authenticationService.generateBrowserFingerprint();
     this.initializeForm();
   }
 
@@ -132,6 +136,7 @@ export class MyProfileComponent extends ComponentToExtendForCustomDialog impleme
       firstName: formValue.firstName,
       lastName: formValue.lastName,
       email: formValue.email,
+      phoneNumber: formValue.phoneNumber,
       currentPass: null,
       newPass: null,
       newPassConfirmation: null,
@@ -190,7 +195,7 @@ export class MyProfileComponent extends ComponentToExtendForCustomDialog impleme
         },
         {
           type: 'custom',
-          label: 'Cambiar opcion F2A',
+          label: 'Cambiar opción F2A',
           design: 'stroked',
           color: 'warn',
           clickFn: this.openModalF2A
@@ -216,14 +221,26 @@ export class MyProfileComponent extends ComponentToExtendForCustomDialog impleme
   }
 
   public openModalF2A = () => {
-    //Hacer llamada al servicio para saber que F2A deben aparecer y luego abrir modal
-    this.customDialogService.open({
-      id: ChooseDobleFactorOptionComponentModalEnum.ID,
-      panelClass: ChooseDobleFactorOptionComponentModalEnum.PANEL_CLASS,
-      component: ChooseDoblefactorComponent,
-      width: '700px',
-      extendedComponentData: this.userDetails
-    });
+    this.customDialogService
+      .open({
+        id: ChooseDobleFactorOptionComponentModalEnum.ID,
+        panelClass: ChooseDobleFactorOptionComponentModalEnum.PANEL_CLASS,
+        component: ChooseDoblefactorComponent,
+        width: '700px',
+        extendedComponentData: {
+          id: this.userDetails.id,
+          phoneNumber: this.userDetails.phoneNumber,
+          email: this.userDetails.email,
+          fingerprint: this.fingerprint
+        }
+      })
+      .pipe(take(1))
+      .subscribe((response) => {
+        if (response) {
+          console.log('entra');
+          this.customDialogService.close(ChooseDobleFactorOptionComponentModalEnum.ID);
+        }
+      });
   };
 
   private showPasswordFieldsAndSet = () => {

@@ -49,7 +49,7 @@
     <span *ngIf="!phoneNumber" class="login-content__not-available">No hay telefono registrado en el sistema</span>
 
     <!-- Opción Authenticator -->
-    <div class="login-content__link" fxLayout="row" fxLayoutAlign="start center" (click)="selectOption('AUTHENTICATOR')">
+    <div [ngClass]="{ disabled: true }" class="login-content__link" fxLayout="row" fxLayoutAlign="start center" (click)="(null)">
         <div class="login-content__icon-container">
             <mat-icon class="login-content__icon">security</mat-icon>
         </div>
