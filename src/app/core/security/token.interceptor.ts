@@ -33,7 +33,7 @@ export class TokenInterceptor implements HttpInterceptor {
   private static readonly CACHE = 'Cache-Control';
   private static readonly OFFSET = 'Offset';
 
-  private readonly BYPASS_URLS: string[] = ['/assets/', 'accounts.logout'];
+  private readonly BYPASS_URLS: string[] = ['/assets/', 'accounts.logout', 'checkUser2FA'];
 
   constructor(
     @Inject(ENV) private env: Env,
