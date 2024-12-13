@@ -283,10 +283,13 @@
     },
     "cardDetail": {
         "accounting": {
+            "allTaxesChange": "Se cambirán los impuestos de todas las líneas",
             "block": "Bloquear",
             "newLine": "Nueva línea",
+            "someTaxTypes": "Varios tipos de impuestos aplicados",
             "taxType": "Tipo de impuesto",
             "taxTypeNoApply": "Impuesto no seleccionado",
+            "taxes": "Impuesto",
             "totalAmountPlusTax": "Cantidad total con IVA",
             "totalTax": "IVA",
             "unblock": "Desbloquear"
