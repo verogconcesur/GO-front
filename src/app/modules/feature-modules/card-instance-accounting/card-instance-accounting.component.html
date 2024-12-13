@@ -14,7 +14,7 @@
                 <mat-form-field appearance="outline" floatLabel="always" *ngIf="editingTaxType">
                     <mat-label>{{ labels.taxType | translate }}</mat-label>
                     <mat-select [(ngModel)]="taxTypeToApply" (selectionChange)="setTaxType()" [compareWith]="compareTax">
-                        <mat-option *ngFor="let tax of taxTypes" [value]="tax">
+                        <mat-option *ngFor="let tax of taxTypes" [value]="tax" [disabled]="tax.id === null">
                             {{ tax.description | translate }} <span *ngIf="tax.value"> ({{ tax.value }}%)</span>
                         </mat-option>
                     </mat-select>
@@ -92,9 +92,7 @@
                 <div fxFlex="20" fxLayoutAlign="start center">
                     {{ item.templateAccountingItemLine.accountingLineType.description }}
                 </div>
-                <div fxFlex="15" fxLayoutAlign="start center">
-                    {{ item.taxType?.description }}
-                </div>
+                <div fxFlex="15" fxLayoutAlign="start center">{{ item.taxType?.value ? item.taxType.value + "%" : "" }}</div>
                 <div fxFlex="25" fxLayoutAlign="center center">
                     {{ item.amount | number : "1.2-2" }}<span *ngIf="item.amount || item.amount === 0" matSuffix> €</span>
                 </div>

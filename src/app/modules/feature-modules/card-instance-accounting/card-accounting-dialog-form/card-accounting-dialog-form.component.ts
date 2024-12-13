@@ -33,7 +33,8 @@ export class CardAccountingDialogFormComponent extends ComponentToExtendForCusto
   public attachmentsList: CardInstanceAttachmentDTO[] = [];
   public attachmentsSelected: CardInstanceAttachmentDTO[] = [];
   public taxList: AccountingTaxTypeDTO[] = [];
-  public taxType: AccountingTaxTypeDTO = null;
+  public taxTypeLine: AccountingTaxTypeDTO = null;
+  public defaultTaxType: AccountingTaxTypeDTO = null;
   public cardInstanceWorkflowId: number;
   public tabId: number;
   public mode: 'BLOCK' | 'LINE' = 'BLOCK';
@@ -69,16 +70,17 @@ export class CardAccountingDialogFormComponent extends ComponentToExtendForCusto
 
   ngOnInit(): void {
     this.line = this.extendedComponentData.line;
-    console.log(this.line);
     this.block = this.extendedComponentData.block;
     this.cardInstanceWorkflowId = this.extendedComponentData.cardInstanceWorkflowId;
     this.isDisabled = this.extendedComponentData.isTabDisabled;
-    console.log(this.isDisabled);
     this.tabId = this.extendedComponentData.tabId;
-    this.taxType = this.extendedComponentData.taxType;
-    console.log(this.taxType);
+    this.defaultTaxType = this.extendedComponentData.defaultTaxType;
+    if (this.defaultTaxType.id && !this.extendedComponentData?.taxType?.id) {
+      this.taxTypeLine = this.defaultTaxType;
+    } else {
+      this.taxTypeLine = this.extendedComponentData.taxType;
+    }
     this.taxList = this.extendedComponentData.taxList;
-    console.log(this.taxList);
     this.attachmentsList = this.extendedComponentData.attachmentsList;
     this.editionDisabled = this.extendedComponentData.editionDisabled;
     this.mode = this.extendedComponentData.mode ? this.extendedComponentData.mode : 'BLOCK';
@@ -112,7 +114,7 @@ export class CardAccountingDialogFormComponent extends ComponentToExtendForCusto
         return false;
       };
       const isTaxTypeChanged = (): boolean => {
-        const newTaxType = JSON.stringify(this.taxType);
+        const newTaxType = JSON.stringify(this.taxTypeLine);
         const originalTaxType = JSON.stringify(this.line.taxType);
         return newTaxType !== originalTaxType;
       };
@@ -184,7 +186,7 @@ export class CardAccountingDialogFormComponent extends ComponentToExtendForCusto
         this.line.amount = Number(this.amount);
         this.line.description = this.description;
         this.line.attachments = this.attachmentsSelected;
-        this.line.taxType = this.taxType?.id ? this.taxType : null;
+        this.line.taxType = this.taxTypeLine?.id ? this.taxTypeLine : null;
         return this.accountingService.editLine(this.cardInstanceWorkflowId, this.tabId, this.line).pipe(
           take(1),
           catchError((error: ConcenetError) => {
@@ -213,6 +215,10 @@ export class CardAccountingDialogFormComponent extends ComponentToExtendForCusto
     } else {
       return of(false);
     }
+  }
+
+  public compareTax(object1: AccountingTaxTypeDTO, object2: AccountingTaxTypeDTO) {
+    return object1 && object2 && object1.id === object2.id;
   }
 
   public setAndGetFooterConfig(): CustomDialogFooterConfigI | null {

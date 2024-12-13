@@ -283,8 +283,10 @@
     },
     "cardDetail": {
         "accounting": {
+            "allTaxesChange": "The taxes on all the lines will be changed",
             "block": "Lock",
             "newLine": "New line",
+            "someTaxTypes": "Several types of taxes applied",
             "taxType": "New type",
             "taxTypeNoApply": "Select a tax type",
             "taxes": "Taxes",
