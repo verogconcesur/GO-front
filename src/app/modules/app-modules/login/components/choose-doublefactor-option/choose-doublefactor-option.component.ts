@@ -79,7 +79,7 @@ export class ChooseDoblefactorComponent extends ComponentToExtendForCustomDialog
             panelClass: DobleFactorComponentModalEnum.PANEL_CLASS,
             component: DoblefactorComponent,
             width: '550px',
-            extendedComponentData: { userId: this.userId, type, fingerprint: this.fingerprint, qr: data || null }
+            extendedComponentData: { userId: this.userId, type, fingerprint: this.fingerprint, data: data || null }
           })
           .pipe(take(1))
           .subscribe((response) => {

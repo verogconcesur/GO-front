@@ -1,6 +1,9 @@
 <div class="login-content" fxLayout="column">
-    <div class="login-content__information">
+    <div *ngIf="email || phoneNumber" class="login-content__information">
         <p>Seleccione un método de autenticación</p>
+    </div>
+    <div *ngIf="!email && !phoneNumber" class="login-content__information_no">
+        <p>No hay métodos de autenticación disponibles, contacte con su administrador</p>
     </div>
 
     <!-- Opción EMAIL -->
@@ -49,7 +52,13 @@
     <span *ngIf="!phoneNumber" class="login-content__not-available">No hay telefono registrado en el sistema</span>
 
     <!-- Opción Authenticator -->
-    <div [ngClass]="{ disabled: true }" class="login-content__link" fxLayout="row" fxLayoutAlign="start center" (click)="(null)">
+    <div
+        class="login-content__link"
+        fxLayout="row"
+        fxLayoutAlign="start center"
+        [ngClass]="{ disabled: !email }"
+        (click)="email ? selectOption('AUTHENTICATOR') : null"
+    >
         <div class="login-content__icon-container">
             <mat-icon class="login-content__icon">security</mat-icon>
         </div>
@@ -62,4 +71,5 @@
             </div>
         </div>
     </div>
+    <span *ngIf="!email" class="login-content__not-available">No hay email registrado en el sistema</span>
 </div>

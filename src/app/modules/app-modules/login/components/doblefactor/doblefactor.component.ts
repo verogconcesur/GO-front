@@ -57,7 +57,11 @@ export class DoblefactorComponent extends ComponentToExtendForCustomDialog imple
     this.f2aMethod = this.extendedComponentData.type;
     this.userId = this.extendedComponentData.userId;
     this.fingerprint = this.extendedComponentData.fingerprint;
-    this.qrCode = this.extendedComponentData.qr;
+    if (this.extendedComponentData.data?.authenticatorQR) {
+      this.qrCode = `data:image/png;base64,${this.extendedComponentData.data?.authenticatorQR}`;
+    }
+
+    console.log(this.qrCode);
 
     this.initializeForm();
   }
@@ -90,7 +94,7 @@ export class DoblefactorComponent extends ComponentToExtendForCustomDialog imple
         }),
         catchError((error) => {
           this.globalMessageService.showError({
-            message: error.message,
+            message: 'El código no es correcto',
             actionText: this.translateService.instant(marker('common.close'))
           });
           return of(false);

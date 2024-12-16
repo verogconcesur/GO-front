@@ -61,6 +61,7 @@ export class MyProfileComponent extends ComponentToExtendForCustomDialog impleme
   };
 
   public showPasswordFields = false;
+  public showF2AButtonField = false;
   public profileForm: UntypedFormGroup;
   public userDetails: UserDetailsDTO = null;
   public fingerprint: string;
@@ -105,6 +106,11 @@ export class MyProfileComponent extends ComponentToExtendForCustomDialog impleme
         this.profileForm.markAsDirty();
         this.profileForm.markAsTouched();
       });
+  }
+  public showF2AButton() {
+    if (this.authenticationService.getDefaultMode2FA()) {
+      this.showF2AButtonField = true;
+    }
   }
 
   public getSignSrc(): string {
@@ -191,14 +197,15 @@ export class MyProfileComponent extends ComponentToExtendForCustomDialog impleme
           design: 'stroked',
           color: 'warn',
           clickFn: this.showPasswordFieldsAndSet,
-          hiddenFn: () => this.showPasswordFields
+          hiddenFn: () => this.showF2AButtonField
         },
         {
           type: 'custom',
           label: 'Cambiar opción F2A',
           design: 'stroked',
           color: 'warn',
-          clickFn: this.openModalF2A
+          clickFn: this.openModalF2A,
+          hiddenFn: () => this.showPasswordFields
         }
       ],
       rightSideButtons: [

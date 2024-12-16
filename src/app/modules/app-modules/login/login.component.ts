@@ -124,25 +124,42 @@ export class LoginComponent implements OnInit {
   };
 
   public openDobleFactorDialog = (userId: number, fingerprint: string, type: string): void => {
-    this.authenticationService
-      .sendF2APass(userId, type)
-      .pipe(take(1))
-      .subscribe((resp) => {
-        this.customDialogService
-          .open({
-            id: DobleFactorComponentModalEnum.ID,
-            panelClass: DobleFactorComponentModalEnum.PANEL_CLASS,
-            component: DoblefactorComponent,
-            width: '500px',
-            extendedComponentData: { userId, type, fingerprint, qr: resp || null }
-          })
-          .pipe(take(1))
-          .subscribe((response) => {
-            if (response) {
-              this.customDialogService.close(DobleFactorComponentModalEnum.ID);
-            }
-          });
-      });
+    if (type !== 'AUTHENTICATOR') {
+      this.authenticationService
+        .sendF2APass(userId, type)
+        .pipe(take(1))
+        .subscribe((resp) => {
+          this.customDialogService
+            .open({
+              id: DobleFactorComponentModalEnum.ID,
+              panelClass: DobleFactorComponentModalEnum.PANEL_CLASS,
+              component: DoblefactorComponent,
+              width: '500px',
+              extendedComponentData: { userId, type, fingerprint, qr: resp || null }
+            })
+            .pipe(take(1))
+            .subscribe((response) => {
+              if (response) {
+                this.customDialogService.close(DobleFactorComponentModalEnum.ID);
+              }
+            });
+        });
+    } else {
+      this.customDialogService
+        .open({
+          id: DobleFactorComponentModalEnum.ID,
+          panelClass: DobleFactorComponentModalEnum.PANEL_CLASS,
+          component: DoblefactorComponent,
+          width: '500px',
+          extendedComponentData: { userId, type, fingerprint, qr: null }
+        })
+        .pipe(take(1))
+        .subscribe((response) => {
+          if (response) {
+            this.customDialogService.close(DobleFactorComponentModalEnum.ID);
+          }
+        });
+    }
   };
 
   private initializeForm(): void {

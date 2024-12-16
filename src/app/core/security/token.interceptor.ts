@@ -33,7 +33,7 @@ export class TokenInterceptor implements HttpInterceptor {
   private static readonly CACHE = 'Cache-Control';
   private static readonly OFFSET = 'Offset';
 
-  private readonly BYPASS_URLS: string[] = ['/assets/', 'accounts.logout', 'checkUser2FA'];
+  private readonly BYPASS_URLS: string[] = ['/assets/', 'accounts.logout'];
 
   constructor(
     @Inject(ENV) private env: Env,
@@ -92,7 +92,6 @@ export class TokenInterceptor implements HttpInterceptor {
         this.dialog.closeAll();
         return this.logout(error.error);
       case 403:
-        this.dialog.closeAll();
         return this.handle403Error(error.error);
       default:
         return throwError(error);
@@ -101,8 +100,11 @@ export class TokenInterceptor implements HttpInterceptor {
 
   private handle403Error(error: ConcenetError): ObservableResponse {
     const currentUrl = this.router.url;
-    if (currentUrl !== `/${RouteConstants.LOGIN}`) {
-      console.log('entra');
+    if (
+      (currentUrl !== `/${RouteConstants.LOGIN}` && !error.path.endsWith('checkUser2FA')) ||
+      !error.path.endsWith('checkUser2FA')
+    ) {
+      this.dialog.closeAll();
       this.router.navigate([RouteConstants.DASHBOARD]);
       this.globalMessage.showError({
         message: this.translateService.instant(marker('common.accessDenied')),

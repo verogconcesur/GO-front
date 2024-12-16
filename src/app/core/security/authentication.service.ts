@@ -266,12 +266,42 @@ export class AuthenticationService implements OnDestroy {
   }
 
   /**
-   * Retrieves the userId
+   * Retrieves the require2FA
    *
    * @returns the project version
    */
   getProjectVersion() {
     return localStorage.getItem(this.PROJECT_VERSION);
+  }
+
+  /**
+   * Retrieves the require2FA
+   *
+   * @returns the require2FA
+   */
+  getRequire2FA() {
+    return localStorage.getItem(this.REQUIRE_2FA);
+  }
+  /**
+   * remove the require2FA
+   */
+  removeRequire2FA() {
+    return localStorage.removeItem(this.REQUIRE_2FA);
+  }
+
+  /**
+   * Retrieves the defaultMode2FA
+   *
+   * @returns the defaultMode2FA
+   */
+  getDefaultMode2FA() {
+    return localStorage.getItem(this.DEFAULT_MODE_2FA);
+  }
+  /**
+   * remove the defaultMode2FA
+   */
+  removeDefaultMode2FA() {
+    return localStorage.removeItem(this.DEFAULT_MODE_2FA);
   }
 
   /**
@@ -437,6 +467,8 @@ export class AuthenticationService implements OnDestroy {
     this.removeUserRole();
     this.removeUserPermissions();
     this.removeWarningStatus();
+    this.removeDefaultMode2FA();
+    this.removeRequire2FA();
     this.userService.userLogged$.next(null);
     clearTimeout(this.tokenTimeout);
   }
