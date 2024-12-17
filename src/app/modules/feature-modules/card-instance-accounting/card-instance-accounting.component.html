@@ -87,6 +87,7 @@
                 class="accountings__main__line item smaller-mat-form-fields"
                 fxLayout="row"
                 *ngFor="let item of block.accountingLines; let i = index"
+                [id]="'line-' + i"
             >
                 <div fxFlex="25" fxLayoutAlign="start center" class="description">{{ item.description }}</div>
                 <div fxFlex="20" fxLayoutAlign="start center">
@@ -109,7 +110,7 @@
                         style="cursor: pointer; color: green"
                         [matBadge]="item.attachments?.length"
                         matBadgePosition="before"
-                        (click)="editLine(item)"
+                        (click)="editLine(item, 'line-' + i)"
                         *ngIf="item.attachments?.length"
                     >
                         attach_file
@@ -121,7 +122,7 @@
                             opacity: data.locked ? 0.5 : 1,
                             cursor: data.locked ? 'not-allowed' : 'pointer'
                         }"
-                        (click)="editLine(item)"
+                        (click)="editLine(item, 'line-' + i)"
                         *ngIf="!item.attachments?.length"
                     >
                         attach_file
@@ -133,7 +134,7 @@
                             opacity: data.locked ? 0.5 : 1,
                             cursor: data.locked ? 'not-allowed' : 'pointer'
                         }"
-                        (click)="editLine(item)"
+                        (click)="editLine(item, 'line-' + i)"
                         *ngIf="!cardInstanceAccountingConfig.disableAccountingEdition"
                     >
                         edit
