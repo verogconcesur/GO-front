@@ -103,6 +103,7 @@ export class CardInstanceAccountingComponent implements OnInit {
               } as CardInstanceAttachmentDTO);
             });
           });
+          this.scrollToEditedLine();
         },
         error: (error: ConcenetError) => {
           this.globalMessageService.showError({
@@ -262,7 +263,8 @@ export class CardInstanceAccountingComponent implements OnInit {
       });
   }
 
-  public editLine(line: CardAccountingLineDTO): void {
+  public editLine(line: CardAccountingLineDTO, lineId: string): void {
+    this.accountingService.setLastEditedLineId(lineId);
     this.customDialogService
       .open({
         component: CardAccountingDialogFormComponent,
@@ -294,6 +296,20 @@ export class CardInstanceAccountingComponent implements OnInit {
           this.reload.emit(true);
         }
       });
+  }
+
+  public scrollToEditedLine() {
+    const lineId = this.accountingService.getLastEditedLineId();
+    if (lineId) {
+      const element = document.getElementById(lineId);
+      if (element) {
+        element.scrollIntoView({
+          block: 'center',
+          inline: 'nearest'
+        });
+        element.focus();
+      }
+    }
   }
 
   public hasTaxApplyOrExempt(block?: CardAccountingBlockDTO): boolean {
