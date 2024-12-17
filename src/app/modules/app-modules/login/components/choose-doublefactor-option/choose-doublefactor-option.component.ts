@@ -13,7 +13,7 @@ import { DoblefactorComponent, DobleFactorComponentModalEnum } from '../doblefac
 export const enum ChooseDobleFactorOptionComponentModalEnum {
   ID = 'choose-doble-factor-dialog-id',
   PANEL_CLASS = 'choose-doble-factor-dialog',
-  TITLE = 'MÉTODO DE AUTENTICACIÓN'
+  TITLE = 'dobleFactor.chooseTitle'
 }
 
 @Component({
@@ -29,7 +29,15 @@ export class ChooseDoblefactorComponent extends ComponentToExtendForCustomDialog
     code2FA: marker('dobleFactor.code2FA'),
     code2FAError: marker('dobleFactor.code2FAEror'),
     noCheck2FA: marker('dobleFactor.noCheck2FA'),
-    send: marker('common.send')
+    send: marker('common.send'),
+    selectAuthMethod: marker('dobleFactor.selectAuthMethod'),
+    noAuthMethod: marker('dobleFactor.noAuthMethod'),
+    email: marker('dobleFactor.email'),
+    emailError: marker('dobleFactor.emailError'),
+    sms: marker('dobleFactor.sms'),
+    phoneError: marker('dobleFactor.phoneError'),
+    authenticator: marker('dobleFactor.authenticator'),
+    authenticatorError: marker('dobleFactor.authenticatorError')
   };
 
   public dobleFactorForm: UntypedFormGroup;

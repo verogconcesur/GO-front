@@ -49,7 +49,7 @@
                     </mat-form-field>
                     <!-- Telefono -->
                     <mat-form-field appearance="outline" floatLabel="always">
-                        <mat-label>Telefono</mat-label>
+                        <mat-label>{{ labels.phoneNumber | translate }}</mat-label>
                         <input matInput formControlName="phoneNumber" />
                     </mat-form-field>
                     <!-- Code -->
@@ -80,7 +80,7 @@
                     </mat-form-field>
 
                     <mat-form-field appearance="outline" floatLabel="always">
-                        <mat-label>Tipo usuario</mat-label>
+                        <mat-label>{{ labels.userType | translate }}</mat-label>
                         <mat-select formControlName="userType">
                             <mat-option *ngFor="let userType of userTypeList" [value]="userType.value">{{
                                 userType.name

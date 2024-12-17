@@ -1,15 +1,11 @@
 <!-- Mensaje condicional según el tipo de autenticación -->
-<p *ngIf="f2aMethod === 'EMAIL'">
-    {{ "Introduce el código que hemos enviado a tu email" | translate }}
-</p>
-<p *ngIf="f2aMethod === 'SMS'">
-    {{ "Introduce el código que hemos enviado a tu teléfono" | translate }}
-</p>
+<p *ngIf="f2aMethod === 'EMAIL'">{{ labels.emailCode | translate }}</p>
+<p *ngIf="f2aMethod === 'SMS'">{{ labels.phoneCode | translate }}</p>
 <p *ngIf="f2aMethod === 'AUTHENTICATOR' && !qrCode">
-    {{ "Introduce el código que aparece en tu aplicación de Microsoft Authenticator" | translate }}
+    {{ labels.authCode | translate }}
 </p>
 <p *ngIf="f2aMethod === 'AUTHENTICATOR' && qrCode">
-    {{ "Escanea el código QR e introduce el código que aparece en tu aplicación Microsoft Authenticator" | translate }}
+    {{ labels.qrCode | translate }}
 </p>
 
 <form [formGroup]="dobleFactorForm" *ngIf="dobleFactorForm">
@@ -29,6 +25,6 @@
                 {{ labels.code2FAError | translate }}
             </mat-error>
         </mat-form-field>
-        <mat-checkbox formControlName="trust">Confiar en este dispositivo</mat-checkbox>
+        <mat-checkbox formControlName="trust">{{ labels.trust | translate }}</mat-checkbox>
     </div>
 </form>

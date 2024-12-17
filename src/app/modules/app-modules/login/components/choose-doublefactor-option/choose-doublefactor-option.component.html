@@ -1,9 +1,9 @@
 <div class="login-content" fxLayout="column">
     <div *ngIf="email || phoneNumber" class="login-content__information">
-        <p>Seleccione un método de autenticación</p>
+        <p>{{ labels.selectAuthMethod | translate }}</p>
     </div>
     <div *ngIf="!email && !phoneNumber" class="login-content__information_no">
-        <p>No hay métodos de autenticación disponibles, contacte con su administrador</p>
+        <p>{{ labels.noAuthMethod | translate }}</p>
     </div>
 
     <!-- Opción EMAIL -->
@@ -19,7 +19,7 @@
         </div>
         <div fxLayout="column">
             <div class="login-content__link__title">
-                <span>Email</span>
+                <span>{{ labels.email | translate }}</span>
             </div>
             <div class="login-content__link__value">
                 <span>{{ email }}</span>
@@ -27,7 +27,7 @@
         </div>
     </div>
     <!-- Mensaje de opción no disponible -->
-    <span *ngIf="!email" class="login-content__not-available">No hay email registrado en el sistema</span>
+    <span *ngIf="!email" class="login-content__not-available">{{ labels.emailError | translate }}</span>
 
     <!-- Opción SMS -->
     <div
@@ -42,14 +42,14 @@
         </div>
         <div fxLayout="column">
             <div class="login-content__link__title">
-                <span>SMS</span>
+                <span>{{ labels.sms | translate }}</span>
             </div>
             <div class="login-content__link__value">
                 <span>{{ phoneNumber }}</span>
             </div>
         </div>
     </div>
-    <span *ngIf="!phoneNumber" class="login-content__not-available">No hay telefono registrado en el sistema</span>
+    <span *ngIf="!phoneNumber" class="login-content__not-available">{{ labels.phoneError | translate }}</span>
 
     <!-- Opción Authenticator -->
     <div
@@ -64,12 +64,12 @@
         </div>
         <div fxLayout="column">
             <div class="login-content__link__title">
-                <span>Aplicación Microsoft Authenticator</span>
+                <span>{{ labels.authenticator | translate }}</span>
             </div>
             <div class="login-content__link__value">
                 <span>&nbsp;</span>
             </div>
         </div>
     </div>
-    <span *ngIf="!email" class="login-content__not-available">No hay email registrado en el sistema</span>
+    <span *ngIf="!email" class="login-content__not-available">{{ labels.authenticatorError | translate }}</span>
 </div>

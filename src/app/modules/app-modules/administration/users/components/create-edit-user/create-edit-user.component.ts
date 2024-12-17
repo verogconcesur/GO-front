@@ -53,6 +53,8 @@ export class CreateEditUserComponent extends ComponentToExtendForCustomDialog im
     edit: marker('userProfile.edit'),
     sign: marker('userProfile.sign'),
     data: marker('userProfile.data'),
+    userType: marker('userProfile.userType'),
+    phoneNumber: marker('userProfile.phoneNumber'),
     notWorkflowData: marker('userProfile.notWorkflowData'),
     userWorkflow: marker('userProfile.userWorkflow'),
     nameRequired: marker('userProfile.nameRequired'),
@@ -265,7 +267,7 @@ export class CreateEditUserComponent extends ComponentToExtendForCustomDialog im
         facilities: [this.userToEdit ? this.userToEdit.facilities : null, Validators.required],
         departments: [this.userToEdit ? this.userToEdit.departments : null, Validators.required],
         specialties: [this.userToEdit ? this.userToEdit.specialties : null, Validators.required],
-        userType: [this.userToEdit ? this.userToEdit.userType : this.userTypeList[0]]
+        userType: [this.userToEdit ? this.userToEdit.userType : this.userTypeList[0].value]
       },
       {
         validators: ConfirmPasswordValidator.mustMatch('newPassword', 'newPasswordConfirmation')

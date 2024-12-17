@@ -661,11 +661,27 @@
         "searchDialog": "Buscador de cliente"
     },
     "dobleFactor": {
+        "authCode": "Introduce el código que aparece en tu aplicación de Microsoft Authenticator",
+        "authCodeTitle": "CÓDIGO DE AUTENTICACIÓN",
+        "authenticator": "Aplicación Microsoft Authenticator",
+        "authenticatorError": "Se necesita un email para asociar a Micosoft Authenticator",
+        "chooseTitle": "MÉTODO DE AUTENTICACIÓN",
         "code2FA": "Código 2FA",
+        "code2FAEror": "",
         "code2FAError": "Debe introducir 4 dígitos",
         "description": "Para mantener la seguridad en GO y evitar la suplantación de identidad se ha implementado el Doble Factor de Autenticación (2FA). Para verificar su identidad se ha enviado un código a su correo.",
+        "email": "Email",
+        "emailCode": "Introduce el código que hemos enviado a tu Email",
+        "emailError": "No hay email registrado en el sistema",
+        "noAuthMethod": "No hay métodos de autenticación disponibles, contacte con su administrador",
         "noCheck2FA": "El código introducido no es correcto",
-        "title": "Doble Factor de Autenticación"
+        "phoneCode": "Introduce el código que hemos enviado a tu teléfono",
+        "phoneError": "No hay teléfono registrado en el sistema",
+        "qrCode": "Escanea el código QR e introduce el código que aparece en tu aplicación Microsoft Authenticator",
+        "selectAuthMethod": "Seleccione un método de autenticación",
+        "sms": "SMS",
+        "title": "Doble Factor de Autenticación",
+        "trust": "Confiar en este dispositivo"
     },
     "emails": {
         "receivers": "Destinatarios",
@@ -1075,11 +1091,13 @@
         "nick": "Nick de usuario",
         "notWorkflowData": "Sin Workflows asociados",
         "organization": "Organización",
+        "phoneNumber": "Teléfono",
         "role": "Rol",
         "sign": "Firma",
         "specialty": "Especialidad",
         "title": "Tu perfil",
         "userName": "Nombre de usuario",
+        "userType": "Tipo usuario",
         "userWorkflow": "Workflows de este Usuario"
     },
     "users": {

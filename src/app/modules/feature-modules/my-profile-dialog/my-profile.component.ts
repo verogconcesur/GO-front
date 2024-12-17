@@ -47,6 +47,7 @@ export class MyProfileComponent extends ComponentToExtendForCustomDialog impleme
     data: marker('userProfile.data'),
     brand: marker('userProfile.brand'),
     facility: marker('userProfile.facility'),
+    phoneNumber: marker('userProfile.phoneNumber'),
     department: marker('userProfile.department'),
     specialty: marker('userProfile.specialty'),
     nameRequired: marker('userProfile.nameRequired'),

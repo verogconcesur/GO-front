@@ -16,7 +16,7 @@ import { catchError, finalize, map, Observable, of } from 'rxjs';
 export const enum DobleFactorComponentModalEnum {
   ID = 'doble-factor-dialog-id',
   PANEL_CLASS = 'doble-factor-dialog',
-  TITLE = 'CÓDIGO DE AUTENTICACIÓN'
+  TITLE = 'dobleFactor.authCodeTitle' //CÓDIGO DE AUTENTICACIÓN
 }
 
 @Component({
@@ -31,7 +31,12 @@ export class DoblefactorComponent extends ComponentToExtendForCustomDialog imple
     code2FA: marker('dobleFactor.code2FA'),
     code2FAError: marker('dobleFactor.code2FAEror'),
     noCheck2FA: marker('dobleFactor.noCheck2FA'),
-    send: marker('common.send')
+    send: marker('common.send'),
+    emailCode: marker('dobleFactor.emailCode'),
+    phoneCode: marker('dobleFactor.phoneCode'),
+    authCode: marker('dobleFactor.authCode'),
+    qrCode: marker('dobleFactor.qrCode'),
+    trust: marker('dobleFactor.trust')
   };
 
   public dobleFactorForm: UntypedFormGroup;

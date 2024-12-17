@@ -661,11 +661,26 @@
         "searchDialog": "Customer searcher"
     },
     "dobleFactor": {
+        "authCode": "Enter the code displayed in your Microsoft Authenticator app",
+        "authCodeTitle": "AUTHENTICATION CODE",
+        "authenticator": "Microsoft Authenticator App",
+        "authenticatorError": "An email is required to link to Microsoft Authenticator",
+        "chooseTitle": "AUTHENTICATION METHOD",
         "code2FA": "2FA Code",
         "code2FAEror": "You must enter 4 digits",
         "description": "To maintain security in GO and prevent identity theft, Two-Factor Authentication (2FA) has been implemented. A code has been sent to your email to verify your identity",
+        "email": "Email",
+        "emailCode": "Enter the code we have sent to your Email",
+        "emailError": "There is no email registered in the system",
+        "noAuthMethod": "There are no authentication methods available, please contact your administrator.",
         "noCheck2FA": "The code entered is not correct",
-        "title": "Two-Factor Authentication"
+        "phoneCode": "Enter the code we have sent to your phone",
+        "phoneError": "There is no phone number registered in the system",
+        "qrCode": "Scan the QR code and enter the code that appears in your Microsoft Authenticator app",
+        "selectAuthMethod": "Select an authentication method",
+        "sms": "SMS",
+        "title": "Two-Factor Authentication",
+        "trust": "Trust this device"
     },
     "emails": {
         "receivers": "To",
@@ -1078,11 +1093,13 @@
         "nick": "User's nick",
         "notWorkflowData": "Without associated Workflows",
         "organization": "Organization",
+        "phoneNumber": "Phone",
         "role": "Role",
         "sign": "Sign",
         "specialty": "Specialty",
         "title": "Your profile",
         "userName": "User's name",
+        "userType": "User type",
         "userWorkflow": "Workflows of this User"
     },
     "users": {
