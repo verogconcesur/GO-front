@@ -1,5 +1,5 @@
 import { HttpClient, HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
-import { NgModule } from '@angular/core';
+import { APP_INITIALIZER, NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { DEFAULT_I18N_LANG, ENV } from '@app/constants/global.constants';
@@ -15,6 +15,7 @@ import { LoggerModule, NgxLoggerLevel } from 'ngx-logger';
 import { TranslateMessageFormatCompiler } from 'ngx-translate-messageformat-compiler';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
+import { configFactory, ConfigService } from '@app/services/config.service';
 
 @NgModule({
   declarations: [AppComponent],
@@ -43,6 +44,12 @@ import { AppComponent } from './app.component';
   ],
   providers: [
     TranslateService,
+    {
+      provide: APP_INITIALIZER,
+      useFactory: configFactory,
+      multi: true,
+      deps: [ConfigService]
+    },
     // * IMPORTANT: When you need to use environment variables,
     // * provide them like this! And use them with `@Inject(ENV)`.
     // * See `app.component.ts` for an example.
