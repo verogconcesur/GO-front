@@ -123,25 +123,27 @@ export class ModalCustomerExternalApiComponent extends ComponentToExtendForCusto
 
   public onSubmitCustomDialog(): Observable<boolean | CustomerEntityDTO> {
     const spinner = this.spinnerService.show();
-    return this.entitiesService.createCustomerApi(this.customerSelected.customerId, this.facilityId).pipe(
-      map((response) => {
-        this.globalMessageService.showSuccess({
-          message: this.translateService.instant(marker('common.successOperation')),
-          actionText: this.translateService.instant(marker('common.close'))
-        });
-        return response;
-      }),
-      catchError((error) => {
-        this.globalMessageService.showError({
-          message: error.message,
-          actionText: this.translateService.instant(marker('common.close'))
-        });
-        return of(false);
-      }),
-      finalize(() => {
-        this.spinnerService.hide(spinner);
-      })
-    );
+    return this.entitiesService
+      .createCustomerApi(this.customerSelected.customerId, this.facilityId, this.customerSelected.isCompany)
+      .pipe(
+        map((response) => {
+          this.globalMessageService.showSuccess({
+            message: this.translateService.instant(marker('common.successOperation')),
+            actionText: this.translateService.instant(marker('common.close'))
+          });
+          return response;
+        }),
+        catchError((error) => {
+          this.globalMessageService.showError({
+            message: error.message,
+            actionText: this.translateService.instant(marker('common.close'))
+          });
+          return of(false);
+        }),
+        finalize(() => {
+          this.spinnerService.hide(spinner);
+        })
+      );
   }
 
   public setAndGetFooterConfig(): CustomDialogFooterConfigI | null {

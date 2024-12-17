@@ -24,11 +24,6 @@
             letter-spacing: normal;
             text-transform: uppercase;
           }
-          &__version {
-            color: mat-contrast($primary, 100);
-            font-size: 0.7em;
-            margin: 0 0 16px;
-          }
         }
 
         .user-data-group {
@@ -85,6 +80,18 @@
             vertical-align: text-bottom;
           }
         }
+      }
+      .versions-container {
+        display: flex;
+        justify-content: flex-end;
+        gap: 8px;
+        margin-top: 5px;
+      }
+
+      .version {
+        color: mat-contrast($primary, 100);
+        font-size: 0.7em;
+        margin: 0;
       }
     }
   }

@@ -1,10 +1,98 @@
+@import 'utils/core';
+@import 'utils/theme';
+
 .save-fav {
   margin: 10px 0;
+
   &__form {
     &__row {
       display: flex;
+      align-items: center;
+      margin: 15px;
+
+      .title-msg {
+        color: mat-color($primary, 500);
+        font-weight: 600;
+        margin-right: 15px;
+        flex-shrink: 0;
+      }
+
+      ngx-mat-timepicker {
+        flex-grow: 1;
+      }
+    }
+  }
+
+  .form-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+  }
+
+  .form-field-container {
+    width: 89%;
+  }
+  .time-field-container {
+    width: 19%;
+    margin-left: 10px;
+    margin-bottom: 5px;
+  }
+
+  .time-field-container {
+    text-align: left;
+  }
+
+  .form-field-container {
+    text-align: right;
+  }
+}
+.users-container {
+  padding: 20px;
+  &__section {
+    margin-bottom: 20px;
+    &__title {
+      width: 100%;
+      display: flex;
       justify-content: space-between;
       align-items: center;
+      margin-bottom: 10px;
+    }
+    &__content {
+      table {
+        margin-top: -15px;
+        .user-checkbox {
+          margin-left: -22px;
+        }
+        .send {
+          color: rgb(2, 201, 2);
+          &.indeterminate,
+          &.indeterminate.hide.visible {
+            color: rgb(138, 138, 138);
+          }
+          &.indeterminate.hide,
+          &.hide {
+            color: rgb(218, 0, 0);
+          }
+          &.indeterminate.visible {
+            color: rgb(2, 201, 2);
+          }
+        }
+        .move {
+          color: rgb(2, 201, 2);
+          &.indeterminate,
+          &.indeterminate.hide.visible {
+            color: rgb(138, 138, 138);
+          }
+          &.indeterminate.hide,
+          &.hide {
+            color: rgb(218, 0, 0);
+          }
+          &.indeterminate.visible {
+            color: rgb(2, 201, 2);
+          }
+        }
+      }
     }
   }
 }

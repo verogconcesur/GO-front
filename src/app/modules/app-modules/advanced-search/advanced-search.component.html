@@ -121,6 +121,22 @@
                                     fxLayoutAlign="space-between start"
                                 >
                                     <mat-form-field appearance="outline" floatLabel="always" style="width: 100%">
+                                        <mat-label>{{ labels.presetDateType | translate }}</mat-label>
+                                        <mat-select
+                                            formControlName="dateContextType"
+                                            (selectionChange)="onFilterChange($event.value)"
+                                        >
+                                            <mat-option *ngFor="let option of filterOptions" [value]="option.id">{{
+                                                option.name
+                                            }}</mat-option>
+                                        </mat-select>
+                                    </mat-form-field>
+                                    <mat-form-field
+                                        *ngIf="showDateRangePicker"
+                                        appearance="outline"
+                                        floatLabel="always"
+                                        style="width: 100%"
+                                    >
                                         <mat-label>{{ labels.rangeDate | translate }}</mat-label>
                                         <mat-date-range-input [rangePicker]="campaignOnePicker">
                                             <input

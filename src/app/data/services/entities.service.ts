@@ -176,10 +176,10 @@ export class EntitiesService {
    *
    * @returns CustomerEntityDTO
    */
-  public createCustomerApi(customerId: number, facilityId: number): Observable<CustomerEntityDTO> {
+  public createCustomerApi(customerId: number, facilityId: number, isCompany: boolean): Observable<CustomerEntityDTO> {
     return this.http
       .get<CustomerEntityDTO>(
-        `${this.env.apiBaseUrl}${this.GET_CUSTOMERS_PATH}${this.SAVE__EXTERNAL_API_PATH}${customerId}/${facilityId}`
+        `${this.env.apiBaseUrl}${this.GET_CUSTOMERS_PATH}${this.SAVE__EXTERNAL_API_PATH}${customerId}/${facilityId}/${isCompany}`
       )
       .pipe(catchError((error) => throwError(error.error as ConcenetError)));
   }

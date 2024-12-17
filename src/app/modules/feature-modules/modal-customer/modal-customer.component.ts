@@ -38,7 +38,8 @@ export class ModalCustomerComponent extends ComponentToExtendForCustomDialog imp
     emailError: marker('errors.emailPattern'),
     required: marker('errors.required'),
     data: marker('userProfile.data'),
-    notValidPattern: marker('entities.customers.notValidPattern')
+    notValidPattern: marker('entities.customers.notValidPattern'),
+    isCompany: marker('entities.customers.isCompany')
   };
   public minLength = 3;
   public customerForm: FormGroup;
@@ -134,6 +135,7 @@ export class ModalCustomerComponent extends ComponentToExtendForCustomDialog imp
       firstName: [this.customerToEdit ? this.customerToEdit.firstName : null],
       secondName: [this.customerToEdit ? this.customerToEdit.secondName : null],
       email: [this.customerToEdit ? this.customerToEdit.email : null, [Validators.email, Validators.required]],
+      isCompany: [this.customerToEdit ? this.customerToEdit.isCompany : false],
       socialSecurityId: [
         this.customerToEdit ? this.customerToEdit.socialSecurityId : null,
         [Validators.required, Validators.pattern(/^[A-Za-z0-9]*$/)]
