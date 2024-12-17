@@ -188,6 +188,8 @@ export class LoginComponent implements OnInit {
         isPredefinedValid = false; // Si es EMAIL pero no hay email, es inválido
       } else if (defaultMode2FA === 'SMS' && !phoneNumber) {
         isPredefinedValid = false; // Si es SMS pero no hay número de teléfono, es inválido
+      } else if (defaultMode2FA === 'AUTHENTICATOR' && !email) {
+        isPredefinedValid = false; //Si es AUTHENTICATOR pero no hay email, es inválido
       }
       // Si no hay defaultMode2FA o no es válido (ni EMAIL ni SMS válidos)
       if (!defaultMode2FA || !isPredefinedValid) {
