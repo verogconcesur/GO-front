@@ -40,7 +40,7 @@
             </div>
         </div>
         <!-- Bloques -->
-        <div *ngFor="let block of data.accountingBlocks">
+        <div *ngFor="let block of data.accountingBlocks; let blockIndex = index">
             <div class="accountings__main__header mt-20">
                 <div class="accountings__main__header__item" fxLayout="row">
                     <div fxFlex="85" fxLayoutAlign="start center" fxFill class="color-primary">
@@ -87,7 +87,7 @@
                 class="accountings__main__line item smaller-mat-form-fields"
                 fxLayout="row"
                 *ngFor="let item of block.accountingLines; let i = index"
-                [id]="'line-' + i"
+                [id]="'block-' + blockIndex + '-line-' + i"
             >
                 <div fxFlex="25" fxLayoutAlign="start center" class="description">{{ item.description }}</div>
                 <div fxFlex="20" fxLayoutAlign="start center">
@@ -110,7 +110,7 @@
                         style="cursor: pointer; color: green"
                         [matBadge]="item.attachments?.length"
                         matBadgePosition="before"
-                        (click)="editLine(item, 'line-' + i)"
+                        (click)="editLine(item, 'block-' + blockIndex + '-line-' + i)"
                         *ngIf="item.attachments?.length"
                     >
                         attach_file
@@ -122,7 +122,7 @@
                             opacity: data.locked ? 0.5 : 1,
                             cursor: data.locked ? 'not-allowed' : 'pointer'
                         }"
-                        (click)="editLine(item, 'line-' + i)"
+                        (click)="editLine(item, 'block-' + blockIndex + '-line-' + i)"
                         *ngIf="!item.attachments?.length"
                     >
                         attach_file
@@ -134,7 +134,7 @@
                             opacity: data.locked ? 0.5 : 1,
                             cursor: data.locked ? 'not-allowed' : 'pointer'
                         }"
-                        (click)="editLine(item, 'line-' + i)"
+                        (click)="editLine(item, 'block-' + blockIndex + '-line-' + i)"
                         *ngIf="!cardInstanceAccountingConfig.disableAccountingEdition"
                     >
                         edit
