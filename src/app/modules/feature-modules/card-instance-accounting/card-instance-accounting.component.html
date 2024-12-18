@@ -14,9 +14,9 @@
                 <mat-form-field appearance="outline" floatLabel="always" *ngIf="editingTaxType">
                     <mat-label>{{ labels.taxType | translate }}</mat-label>
                     <mat-select [(ngModel)]="taxTypeToApply" (selectionChange)="setTaxType()" [compareWith]="compareTax">
-                        <mat-option *ngFor="let tax of taxTypes" [value]="tax"
-                            >{{ tax.description | translate }} <span *ngIf="tax.value">({{ tax.value }}%)</span></mat-option
-                        >
+                        <mat-option *ngFor="let tax of taxTypes" [value]="tax" [disabled]="tax.id === null">
+                            {{ tax.description | translate }} <span *ngIf="tax.value"> ({{ tax.value }}%)</span>
+                        </mat-option>
                     </mat-select>
                 </mat-form-field>
                 <div *ngIf="!editingTaxType && taxTypeToApply">
@@ -40,7 +40,7 @@
             </div>
         </div>
         <!-- Bloques -->
-        <div *ngFor="let block of data.accountingBlocks">
+        <div *ngFor="let block of data.accountingBlocks; let blockIndex = index">
             <div class="accountings__main__header mt-20">
                 <div class="accountings__main__header__item" fxLayout="row">
                     <div fxFlex="85" fxLayoutAlign="start center" fxFill class="color-primary">
@@ -76,8 +76,9 @@
             </div>
             <div class="accountings__main__header subheader">
                 <div class="accountings__main__header__item" fxLayout="row">
-                    <div fxFlex="30" fxLayoutAlign="start center" fxFill>{{ labels.line | translate }}</div>
-                    <div fxFlex="30" fxLayoutAlign="start center" fxFill>{{ labels.type | translate }}</div>
+                    <div fxFlex="25" fxLayoutAlign="start center" fxFill>{{ labels.line | translate }}</div>
+                    <div fxFlex="20" fxLayoutAlign="start center" fxFill>{{ labels.type | translate }}</div>
+                    <div fxFlex="15" fxLayoutAlign="start center" fxFill>{{ labels.taxes | translate }}</div>
                     <div fxFlex="25" fxLayoutAlign="center center" fxFill>{{ labels.amount | translate }}</div>
                     <div fxFlex="15" fxLayoutAlign="end center" fxFill>{{ labels.actions | translate }}</div>
                 </div>
@@ -86,11 +87,13 @@
                 class="accountings__main__line item smaller-mat-form-fields"
                 fxLayout="row"
                 *ngFor="let item of block.accountingLines; let i = index"
+                [id]="'block-' + blockIndex + '-line-' + i"
             >
-                <div fxFlex="30" fxLayoutAlign="start center" class="description">{{ item.description }}</div>
-                <div fxFlex="30" fxLayoutAlign="start center">
+                <div fxFlex="25" fxLayoutAlign="start center" class="description">{{ item.description }}</div>
+                <div fxFlex="20" fxLayoutAlign="start center">
                     {{ item.templateAccountingItemLine.accountingLineType.description }}
                 </div>
+                <div fxFlex="15" fxLayoutAlign="start center">{{ item.taxType?.value ? item.taxType.value + "%" : "" }}</div>
                 <div fxFlex="25" fxLayoutAlign="center center">
                     {{ item.amount | number : "1.2-2" }}<span *ngIf="item.amount || item.amount === 0" matSuffix> €</span>
                 </div>
@@ -107,7 +110,7 @@
                         style="cursor: pointer; color: green"
                         [matBadge]="item.attachments?.length"
                         matBadgePosition="before"
-                        (click)="editLine(item)"
+                        (click)="editLine(item, 'block-' + blockIndex + '-line-' + i)"
                         *ngIf="item.attachments?.length"
                     >
                         attach_file
@@ -119,7 +122,7 @@
                             opacity: data.locked ? 0.5 : 1,
                             cursor: data.locked ? 'not-allowed' : 'pointer'
                         }"
-                        (click)="editLine(item)"
+                        (click)="editLine(item, 'block-' + blockIndex + '-line-' + i)"
                         *ngIf="!item.attachments?.length"
                     >
                         attach_file
@@ -131,7 +134,7 @@
                             opacity: data.locked ? 0.5 : 1,
                             cursor: data.locked ? 'not-allowed' : 'pointer'
                         }"
-                        (click)="editLine(item)"
+                        (click)="editLine(item, 'block-' + blockIndex + '-line-' + i)"
                         *ngIf="!cardInstanceAccountingConfig.disableAccountingEdition"
                     >
                         edit

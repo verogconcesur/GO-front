@@ -13,6 +13,7 @@ import { catchError } from 'rxjs/operators';
   providedIn: 'root'
 })
 export class CardAccountingService {
+  private lastEditedLineId: string | null = null;
   private readonly GET_CARD_INSTANCE_PATH = '/api/cardInstanceWorkflow';
   private readonly DETAIL_PATH = '/detail';
   private readonly ACCOUNTING_PATH = '/accounting';
@@ -79,5 +80,12 @@ export class CardAccountingService {
         block
       )
       .pipe(catchError((error) => throwError(error.error as ConcenetError)));
+  }
+  public setLastEditedLineId(lineId: string): void {
+    this.lastEditedLineId = lineId;
+  }
+
+  public getLastEditedLineId(): string | null {
+    return this.lastEditedLineId;
   }
 }
