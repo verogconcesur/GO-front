@@ -103,7 +103,6 @@ export class CardInstanceAccountingComponent implements OnInit {
               } as CardInstanceAttachmentDTO);
             });
           });
-          this.scrollToEditedLine();
         },
         error: (error: ConcenetError) => {
           this.globalMessageService.showError({
@@ -116,7 +115,10 @@ export class CardInstanceAccountingComponent implements OnInit {
       .getListTaxTypes()
       .pipe(
         take(1),
-        finalize(() => this.spinnerService.hide(spinner))
+        finalize(() => {
+          this.spinnerService.hide(spinner);
+          this.scrollToEditedLine();
+        })
       )
       .subscribe({
         next: (data: AccountingTaxTypeDTO[]) => {
@@ -264,7 +266,6 @@ export class CardInstanceAccountingComponent implements OnInit {
   }
 
   public editLine(line: CardAccountingLineDTO, lineId: string): void {
-    this.accountingService.setLastEditedLineId(lineId);
     this.customDialogService
       .open({
         component: CardAccountingDialogFormComponent,
@@ -293,6 +294,7 @@ export class CardInstanceAccountingComponent implements OnInit {
             message: this.translateService.instant(marker('common.success')),
             actionText: this.translateService.instant(marker('common.close'))
           });
+          this.accountingService.setLastEditedLineId(lineId);
           this.reload.emit(true);
         }
       });
