@@ -14,8 +14,15 @@
             >
                 <mat-icon cdkDragHandle>drag_indicator</mat-icon>
                 <div class="custom-links-item-formContainer" fxLayout="row wrap" fxLayoutAlign="left center">
-                    <mat-form-field appearance="outline" class="smaller-mat-form-fields__no-margin" floatLabel="always">
-                        <mat-label>{{ entityAttributesFormArray.at(i).get("tabItemConfigVariable")?.value?.variable?.name }}</mat-label>
+                    <mat-form-field
+                        appearance="outline"
+                        class="smaller-mat-form-fields__no-margin"
+                        floatLabel="always"
+                        style="width: 400px"
+                    >
+                        <mat-label>{{
+                            entityAttributesFormArray.at(i).get("tabItemConfigVariable")?.value?.variable?.name
+                        }}</mat-label>
                         <input type="text" matInput [formControl]="entityAttributesFormArray.at(i).get('name')" />
                     </mat-form-field>
                 </div>
