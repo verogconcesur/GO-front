@@ -2,6 +2,24 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [1.1.9](https://github.com/Delivery-Projects/concesur/concenet_front/-/compare/v1.1.8...v1.1.9) (2024-12-18)
+
+
+### Features
+
+* cambiar env de produccion para unico build ([3b0c37c](https://github.com/Delivery-Projects/concesur/concenet_front/-/commit/3b0c37c511ae1fe18470cbb783ef49a427a9e1a7))
+* contabilidad iva en linea ([e46a4bb](https://github.com/Delivery-Projects/concesur/concenet_front/-/commit/e46a4bbfbad34d5bfedebf6a2ad77e022818c37b))
+* controlar si hay varios tipos de iva ([4c92cff](https://github.com/Delivery-Projects/concesur/concenet_front/-/commit/4c92cff33fc1307640dd7d92a474ec4384bc596d))
+* scroll en linea IVA ([dc792fa](https://github.com/Delivery-Projects/concesur/concenet_front/-/commit/dc792fad33a158889575b3d0d3e5b8ed31ed079c))
+* test app_initializer to get apiBaseUrl from server file /config/config.json ([552ed41](https://github.com/Delivery-Projects/concesur/concenet_front/-/commit/552ed414ccf3268151652ce66ccbe7cdc44fe40a))
+* traducciones iva linea y estilos ([37960a7](https://github.com/Delivery-Projects/concesur/concenet_front/-/commit/37960a799eb704e5a2913e3c6519a85b0ef1c61c))
+
+
+### Bug Fixes
+
+* scroll block and line ([6c8aac0](https://github.com/Delivery-Projects/concesur/concenet_front/-/commit/6c8aac0b50314872efa152a5094b11ee56b88820))
+* scroll in iva line ([ae78197](https://github.com/Delivery-Projects/concesur/concenet_front/-/commit/ae78197de80bb266f644632b11517ef3521f37b5))
+
 ### [1.1.8](https://github.com/Delivery-Projects/concesur/concenet_front/-/compare/v1.1.7...v1.1.8) (2024-12-03)
 
 
