@@ -48,6 +48,7 @@ export class CardInstanceAccountingComponent implements OnInit {
     generalInfo: marker('cardDetail.payments.generalInfo'),
     value: marker('common.value'),
     totalTax: marker('cardDetail.accounting.totalTax'),
+    taxes: marker('cardDetail.accounting.taxes'),
     totalAmountPlusTax: marker('cardDetail.accounting.totalAmountPlusTax'),
     actions: marker('common.actions'),
     lock: marker('cardDetail.accounting.block'),
@@ -59,12 +60,18 @@ export class CardInstanceAccountingComponent implements OnInit {
       id: null,
       description: marker('cardDetail.accounting.taxTypeNoApply'),
       value: null
+    },
+    {
+      id: null,
+      description: marker('cardDetail.accounting.someTaxTypes'),
+      value: null
     }
   ];
   public taxTypeToApply: AccountingTaxTypeDTO = this.taxTypes[0];
   public editingTaxType = false;
   public attachmentsList: CardInstanceAttachmentDTO[] = [];
   public accumulatedLineSelected: CardAccountingLineDTO = null;
+  public typeTaxRollBack: AccountingTaxTypeDTO = null;
 
   constructor(
     private accountingService: CardAccountingService,
@@ -75,7 +82,8 @@ export class CardInstanceAccountingComponent implements OnInit {
     private attachmentService: CardAttachmentsService,
     private templateAccountingsService: TemplatesAccountingsService,
     private spinnerService: ProgressSpinnerDialogService,
-    private authService: AuthenticationService
+    private authService: AuthenticationService,
+    private confirmDialogService: ConfirmDialogService
   ) {}
 
   ngOnInit(): void {
@@ -107,14 +115,41 @@ export class CardInstanceAccountingComponent implements OnInit {
       .getListTaxTypes()
       .pipe(
         take(1),
-        finalize(() => this.spinnerService.hide(spinner))
+        finalize(() => {
+          this.spinnerService.hide(spinner);
+          this.scrollToEditedLine();
+        })
       )
       .subscribe({
         next: (data: AccountingTaxTypeDTO[]) => {
           this.taxTypes = [...this.taxTypes, ...data];
-          if (this.data.taxType) {
-            this.taxTypeToApply = this.taxTypes.find((type) => this.data.taxType.id === type.id);
+          let taxTypeIdToApply: number | null = null;
+          for (const block of this.data.accountingBlocks) {
+            if (Array.isArray(block.accountingLines)) {
+              const firstLineWithTaxType = block.accountingLines.find((line: any) => line.taxType?.id);
+              if (firstLineWithTaxType) {
+                taxTypeIdToApply = firstLineWithTaxType.taxType.id;
+                break;
+              }
+            }
           }
+          if (taxTypeIdToApply !== null) {
+            const allIdsMatch = this.data.accountingBlocks.every((block: any) => {
+              if (Array.isArray(block.accountingLines) && taxTypeIdToApply !== null) {
+                return block.accountingLines.every((line: any) => {
+                  const lineTaxTypeId = line.taxType?.id;
+                  return lineTaxTypeId === undefined || lineTaxTypeId === taxTypeIdToApply;
+                });
+              }
+              return true;
+            });
+            if (allIdsMatch) {
+              this.taxTypeToApply = this.taxTypes.find((type) => type.id === taxTypeIdToApply);
+            } else {
+              this.taxTypeToApply = this.taxTypes[1];
+            }
+          }
+          this.typeTaxRollBack = this.taxTypeToApply;
         },
         error: (error: ConcenetError) => {
           this.globalMessageService.showError({
@@ -157,23 +192,37 @@ export class CardInstanceAccountingComponent implements OnInit {
   }
 
   public setTaxType(): void {
-    const spinner = this.spinnerService.show();
-    this.accountingService
-      .setTaxType(this.cardInstanceWorkflowId, this.tabId, this.taxTypeToApply)
-      .pipe(
-        take(1),
-        finalize(() => this.spinnerService.hide(spinner))
-      )
-      .subscribe({
-        next: (data: any) => {
-          this.data = data;
-        },
-        error: (error: ConcenetError) => {
-          this.globalMessageService.showError({
-            message: error.message,
-            actionText: this.translateService.instant(marker('common.close'))
-          });
-          this.reload.emit(true);
+    this.confirmDialogService
+      .open({
+        title: this.translateService.instant(marker('common.warning')),
+        message: this.translateService.instant(marker('cardDetail.accounting.allTaxesChange'))
+      })
+      .pipe(take(1))
+      .subscribe((ok: boolean) => {
+        if (ok) {
+          const spinner = this.spinnerService.show();
+          this.accountingService
+            .setTaxType(this.cardInstanceWorkflowId, this.tabId, this.taxTypeToApply)
+            .pipe(
+              take(1),
+              finalize(() => this.spinnerService.hide(spinner))
+            )
+            .subscribe({
+              next: (data: any) => {
+                this.data = data;
+                this.editingTaxType = false;
+              },
+              error: (error: ConcenetError) => {
+                this.globalMessageService.showError({
+                  message: error.message,
+                  actionText: this.translateService.instant(marker('common.close'))
+                });
+                this.reload.emit(true);
+              }
+            });
+        } else {
+          this.taxTypeToApply = this.typeTaxRollBack;
+          this.editingTaxType = false;
         }
       });
   }
@@ -216,42 +265,52 @@ export class CardInstanceAccountingComponent implements OnInit {
       });
   }
 
-  public editLine(line: CardAccountingLineDTO): void {
-    if ((line.templateAccountingItemLine.taxApply && this.taxTypeToApply.id) || !line.templateAccountingItemLine.taxApply) {
-      this.customDialogService
-        .open({
-          component: CardAccountingDialogFormComponent,
-          extendedComponentData: {
-            line: JSON.parse(JSON.stringify(line)),
-            taxType: this.taxTypeToApply,
-            block: null,
-            attachmentsList: this.attachmentsList,
-            cardInstanceWorkflowId: this.cardInstanceWorkflowId,
-            tabId: this.tabId,
-            editionDisabled: this.cardInstanceAccountingConfig.disableAccountingEdition,
-            isTabDisabled: this.data.locked,
-            mode: 'LINE'
-          },
-          id: CardAccoutingDialogEnum.ID,
-          panelClass: CardAccoutingDialogEnum.PANEL_CLASS,
-          disableClose: true,
-          width: '500px'
-        })
-        .pipe(take(1))
-        .subscribe((response) => {
-          if (response) {
-            this.globalMessageService.showSuccess({
-              message: this.translateService.instant(marker('common.success')),
-              actionText: this.translateService.instant(marker('common.close'))
-            });
-            this.reload.emit(true);
-          }
-        });
-    } else {
-      this.globalMessageService.showError({
-        message: this.translateService.instant(marker('errors.requiredIVA')),
-        actionText: this.translateService.instant(marker('common.close'))
+  public editLine(line: CardAccountingLineDTO, lineId: string): void {
+    this.customDialogService
+      .open({
+        component: CardAccountingDialogFormComponent,
+        extendedComponentData: {
+          line: JSON.parse(JSON.stringify(line)),
+          taxList: this.taxTypes,
+          taxType: line.taxType,
+          defaultTaxType: this.taxTypeToApply,
+          block: null,
+          attachmentsList: this.attachmentsList,
+          cardInstanceWorkflowId: this.cardInstanceWorkflowId,
+          tabId: this.tabId,
+          editionDisabled: this.cardInstanceAccountingConfig.disableAccountingEdition,
+          isTabDisabled: this.data.locked,
+          mode: 'LINE'
+        },
+        id: CardAccoutingDialogEnum.ID,
+        panelClass: CardAccoutingDialogEnum.PANEL_CLASS,
+        disableClose: true,
+        width: '500px'
+      })
+      .pipe(take(1))
+      .subscribe((response) => {
+        if (response) {
+          this.globalMessageService.showSuccess({
+            message: this.translateService.instant(marker('common.success')),
+            actionText: this.translateService.instant(marker('common.close'))
+          });
+          this.accountingService.setLastEditedLineId(lineId);
+          this.reload.emit(true);
+        }
       });
+  }
+
+  public scrollToEditedLine() {
+    const lineId = this.accountingService.getLastEditedLineId();
+    if (lineId) {
+      const element = document.getElementById(lineId);
+      if (element) {
+        element.scrollIntoView({
+          block: 'center',
+          inline: 'nearest'
+        });
+        element.focus();
+      }
     }
   }
 
