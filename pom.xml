@@ -53,7 +53,7 @@
                             <goal>npm</goal>
                         </goals>
                         <configuration>
-                          <arguments>install --force</arguments>
+                          <arguments>install --force --loglevel verbose</arguments>
                         </configuration>
                     </execution>
                     <execution>
