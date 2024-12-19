@@ -9,7 +9,6 @@
     <packaging>war</packaging>
 
     <name>${project.finalName}</name>
-    <finalName>${project.finalName}</finalName>
 
     <!-- <parent>
         <groupId>org.springframework.boot</groupId>
@@ -26,6 +25,9 @@
 
 
     <build>
+    
+        <finalName>${project.finalName}</finalName>
+
         <plugins>
             <!-- <plugin>
                 <groupId>org.springframework.boot</groupId>
