@@ -64,7 +64,9 @@
                         <mat-label>{{ labels.reference | translate }}</mat-label>
                         <input matInput formControlName="reference" />
                     </mat-form-field>
-                    <mat-checkbox formControlName="isCompany"> {{ labels.isCompany | translate }}</mat-checkbox>
+                    <mat-checkbox [disabled]="customerToEdit" formControlName="isCompany">
+                        {{ labels.isCompany | translate }}</mat-checkbox
+                    >
                 </div>
 
                 <div class="customer-data__section__group">
