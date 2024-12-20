@@ -53,7 +53,7 @@
                             <goal>npm</goal>
                         </goals>
                         <configuration>
-                          <arguments>install --force --loglevel verbose</arguments>
+                          <arguments>--max-old-space-size=20480 install --legacy-peer-deps --loglevel verbose</arguments>
                         </configuration>
                     </execution>
                     <execution>
@@ -62,7 +62,7 @@
                             <goal>npm</goal>
                         </goals>
                         <configuration>
-                            <arguments>run build_dev</arguments>
+                            <arguments>--max-old-space-size=20480 run build_dev</arguments>
                         </configuration>
                     </execution>
                     <!-- <execution>
