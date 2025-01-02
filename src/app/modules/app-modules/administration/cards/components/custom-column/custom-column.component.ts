@@ -5,22 +5,17 @@ import { tabTypes } from '@app/constants/tabTypes.constants';
 import { marker } from '@biesbjerg/ngx-translate-extract-marker';
 import CardColumnDTO from '@data/models/cards/card-column-dto';
 import CardColumnTabDTO from '@data/models/cards/card-column-tab-dto';
-import { TranslateService } from '@ngx-translate/core';
-import { CardService } from '@data/services/cards.service';
-import { moveItemInFormArray } from '@shared/utils/moveItemInFormArray';
-import CardContentTypeDTO from '@data/models/cards/card-content-type-dto';
+import CardColumnTabItemDTO, { TabItemConfigListItemDTO } from '@data/models/cards/card-column-tab-item-dto';
 import CardContentSourceDTO from '@data/models/cards/card-content-source-dto';
-import { ConfirmDialogService } from '@shared/services/confirm-dialog.service';
-import { GlobalMessageService } from '@shared/services/global-message.service';
-import { map, take } from 'rxjs/operators';
-import { removeItemInFormArray } from '@shared/utils/removeItemInFormArray';
-import WorkflowCardSlotDTO from '@data/models/workflows/workflow-card-slot-dto';
-import CardColumnTabItemDTO, {
-  CardTabItemInstanceDTO,
-  TabItemConfigListItemDTO,
-  TabItemConfigTableColDTO
-} from '@data/models/cards/card-column-tab-item-dto';
+import CardContentTypeDTO from '@data/models/cards/card-content-type-dto';
 import TemplatesCommonDTO from '@data/models/templates/templates-common-dto';
+import WorkflowCardSlotDTO from '@data/models/workflows/workflow-card-slot-dto';
+import { CardService } from '@data/services/cards.service';
+import { TranslateService } from '@ngx-translate/core';
+import { ConfirmDialogService } from '@shared/services/confirm-dialog.service';
+import { moveItemInFormArray } from '@shared/utils/moveItemInFormArray';
+import { removeItemInFormArray } from '@shared/utils/removeItemInFormArray';
+import { take } from 'rxjs/operators';
 import { CustomizableInputSelectorAuxService } from '../../aux-service/customizable-input-selector-aux.service';
 
 @Component({
@@ -448,9 +443,42 @@ export class CustomColumnComponent implements OnInit {
         this.formTab.value.contentSourceId &&
         this.formTab.value.tabItems?.length
       ) {
-        this.tabSlotsBackup[
-          `${this.formTab.value.id}-${this.formTab.value.contentTypeId}-${this.formTab.value.contentSourceId}`
-        ] = this.formTab.value.tabItems;
+        this.cardService
+          .getEntityAttributes(this.formTab.value.contentSourceId)
+          .pipe(take(1))
+          .subscribe((res: WorkflowCardSlotDTO[]) => {
+            const tabItemsArray = this.formTab.value.tabItems;
+            let currentMaxOrderNumber =
+              tabItemsArray.length > 0
+                ? // eslint-disable-next-line @typescript-eslint/no-explicit-any
+                  Math.max(...tabItemsArray.map((item: any) => item.orderNumber))
+                : 0;
+            res.forEach((data) => {
+              const matchingItems = tabItemsArray.filter(
+                // eslint-disable-next-line @typescript-eslint/no-explicit-any
+                (item: any) => item.tabItemConfigVariable.variable.id === data.id
+              );
+              // Si el item no existe, lo agregamos al FormArray con un orderNumber incrementado
+              if (matchingItems.length === 0) {
+                currentMaxOrderNumber += 1; // Incrementamos el orderNumber
+                (this.formTab.get('tabItems') as UntypedFormArray).push(
+                  this.newTabItemVariable(
+                    {
+                      attributeName: data.name,
+                      name: data.name,
+                      variableId: data.id,
+                      visible: false,
+                      tabId: this.formTab.value.id
+                    },
+                    currentMaxOrderNumber
+                  )
+                );
+              }
+            });
+            this.tabSlotsBackup[
+              `${this.formTab.value.id}-${this.formTab.value.contentTypeId}-${this.formTab.value.contentSourceId}`
+            ] = this.formTab.value.tabItems;
+          });
       }
     } else if (
       (this.formTab && this.formTab.value.contentTypeId === 1) ||

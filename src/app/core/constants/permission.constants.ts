@@ -3,6 +3,8 @@ export enum PermissionConstants {
   ISADMIN = 'ISADMIN',
   //Asignar fichas a otros usuarios
   ASIGFICH = 'ASIGFICH',
+  //Puede bloquear tab contabilidad
+  LOCKACCOUNTING = 'LOCKACCOUNTING',
   //Reordenar fichas cuando sea posible
   REORDFICH = 'REORDFICH',
   //OCultar rutas

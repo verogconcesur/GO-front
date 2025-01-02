@@ -1,7 +1,8 @@
 import { Env } from '@app/types/env';
 import { NgxLoggerLevel } from 'ngx-logger';
 
-export const environment: Env = {
+// eslint-disable-next-line prefer-const
+export let environment: Env = {
   appVersion: `${require('../../package.json').version}-dev.local`,
   production: false,
   socketsEnabled: false,

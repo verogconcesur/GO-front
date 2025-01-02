@@ -167,17 +167,33 @@ export class WorkflowColumnCustomizableEntityComponent implements OnInit, OnChan
   }
 
   public getDataValue(data: WorkflowCardTabItemDTO): string | number {
-    if (!data.tabItemConfigVariable.variable.value) {
+    const value = data.tabItemConfigVariable.variable.value;
+    if (!value) {
       return '';
     }
-    if (data.tabItemConfigVariable.variable.dataType.toUpperCase() === 'DATE') {
-      return this.datePipe.transform(new Date(data.tabItemConfigVariable.variable.value), 'dd-MM-yyyy');
-    } else if (data.tabItemConfigVariable.variable.dataType.toUpperCase() === 'DATETIME') {
-      return this.datePipe.transform(new Date(data.tabItemConfigVariable.variable.value), 'dd-MM-yyyy, HH:mm');
-    } else if (data.tabItemConfigVariable.variable.dataType.toUpperCase() === 'TIME') {
-      return this.datePipe.transform(new Date(data.tabItemConfigVariable.variable.value), 'HH:mm');
+    const dataType = data.tabItemConfigVariable.variable.dataType.toUpperCase();
+
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const correctDateFormat = (dateValue: any): string => {
+      if (typeof dateValue === 'string') {
+        const dateParts = dateValue.split('/');
+        if (dateParts.length === 3) {
+          return `${dateParts[1]}/${dateParts[0]}/${dateParts[2]}`;
+        }
+      }
+      return dateValue;
+    };
+    if (dataType === 'DATE' || dataType === 'DATETIME' || dataType === 'TIME') {
+      const correctedDate = correctDateFormat(value);
+      if (dataType === 'DATE') {
+        return this.datePipe.transform(new Date(correctedDate), 'dd-MM-yyyy');
+      } else if (dataType === 'DATETIME') {
+        return this.datePipe.transform(new Date(correctedDate), 'dd-MM-yyyy, HH:mm');
+      } else if (dataType === 'TIME') {
+        return this.datePipe.transform(new Date(correctedDate), 'HH:mm');
+      }
     }
-    return data.tabItemConfigVariable.variable.value;
+    return value;
   }
 
   public changeEntity(): void {

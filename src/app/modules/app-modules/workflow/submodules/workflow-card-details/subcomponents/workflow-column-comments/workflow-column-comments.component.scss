@@ -16,7 +16,7 @@
       position: relative;
       cursor: pointer;
       .actions-wrapper {
-        position: absolute;
+        position: relative;
         border-radius: 15px;
         top: 0px;
         left: 0px;
@@ -27,8 +27,7 @@
           cursor: pointer;
           position: absolute;
           &.top-right {
-            top: 10px;
-            right: 5px;
+            right: 1px;
           }
           &.bottom-right {
             bottom: 10px;
@@ -61,12 +60,17 @@
       .comment {
         margin-top: 5px;
         overflow-wrap: break-word;
+        z-index: 9999;
       }
       .mention-action {
         display: flex;
+        padding-left: 0;
+        margin-left: 0;
         justify-content: flex-start;
         align-items: center;
         color: mat-color($primary, 600);
+        font-weight: normal;
+        font-size: 0.9rem;
       }
     }
   }
