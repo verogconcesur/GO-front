@@ -1,31 +1,32 @@
 import { Component, Inject, OnDestroy, OnInit, ViewChild } from '@angular/core';
+import { FormArray, FormBuilder, FormGroup } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
+import { MatMenuTrigger } from '@angular/material/menu';
 import { Router } from '@angular/router';
+import { ENV } from '@app/constants/global.constants';
 import { PermissionConstants } from '@app/constants/permission.constants';
 import { RouteConstants } from '@app/constants/route.constants';
 import { AuthenticationService } from '@app/security/authentication.service';
 import { RxStompService } from '@app/services/rx-stomp.service';
+import { Env } from '@app/types/env';
+import { ConcenetError } from '@app/types/error';
 import { marker } from '@biesbjerg/ngx-translate-extract-marker';
+import { AttachmentDTO } from '@data/models/cards/card-attachments-dto';
 import WarningDTO from '@data/models/notifications/warning-dto';
+import ModularizationDTO from '@data/models/user-permissions/modularization.dto';
+import { AdvSearchService } from '@data/services/adv-search.service';
 import { NotificationService } from '@data/services/notifications.service';
 import { NewCardComponent, NewCardComponentModalEnum } from '@modules/feature-modules/new-card/new-card.component';
 import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
+import { TranslateService } from '@ngx-translate/core';
+import { GlobalMessageService } from '@shared/services/global-message.service';
 import { NotificationSoundService } from '@shared/services/notification-sounds.service';
+import { removeItemInFormArray } from '@shared/utils/removeItemInFormArray';
+import { IMessage } from '@stomp/stompjs';
+import saveAs from 'file-saver';
 import { take } from 'rxjs/operators';
 import { MentionsComponent } from '../mentions/mentions.component';
 import { NotificationsComponent } from '../notifications/notifications.component';
-import { IMessage } from '@stomp/stompjs';
-import { ENV } from '@app/constants/global.constants';
-import { Env } from '@app/types/env';
-import { AdvSearchService } from '@data/services/adv-search.service';
-import { FormArray, FormBuilder, FormGroup } from '@angular/forms';
-import { ConcenetError } from '@app/types/error';
-import { GlobalMessageService } from '@shared/services/global-message.service';
-import { TranslateService } from '@ngx-translate/core';
-import { removeItemInFormArray } from '@shared/utils/removeItemInFormArray';
-import saveAs from 'file-saver';
-import { AttachmentDTO } from '@data/models/cards/card-attachments-dto';
-import { MatMenuTrigger } from '@angular/material/menu';
 
 @UntilDestroy()
 @Component({
@@ -43,6 +44,11 @@ export class NavbarComponent implements OnInit, OnDestroy {
   public readonly MENTIONS_PATH = RouteConstants.MENTIONS;
   public readonly NOTIFICATIONS_PATH = RouteConstants.NOTIFICATIONS;
   public readonly ADVANCED_SEARCH_PATH = RouteConstants.ADVANCED_SEARCH;
+  public modularizationPermisions: ModularizationDTO = {
+    listView: false,
+    advancedSearch: false,
+    calendarView: false
+  };
   public labels = {
     title: marker('app.title'),
     workflow: marker('app.menu.workflow'),

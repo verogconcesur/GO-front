@@ -1,13 +1,15 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 import { RouteConstants } from '@app/constants/route.constants';
-import { AdvancedSearchComponent } from './advanced-search.component';
 import { AuthGuardService } from '@app/security/guards/authentication.guard';
+import { ModularizationGuard } from '@app/security/guards/modularization.guard';
+import { AdvancedSearchComponent } from './advanced-search.component';
 
 const routes: Routes = [
   {
     path: RouteConstants.EMPTY,
-    canActivate: [AuthGuardService],
+    canActivate: [AuthGuardService, ModularizationGuard],
+    data: { property: 'advancedSearch' },
     component: AdvancedSearchComponent,
     children: [
       {

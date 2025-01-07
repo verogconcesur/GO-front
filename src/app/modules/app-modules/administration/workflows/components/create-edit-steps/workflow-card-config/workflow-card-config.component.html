@@ -41,7 +41,7 @@
             </div>
         </div>
     </div>
-    <div class="card-config__item">
+    <div *ngIf="modularizationPermisions.calendarView" class="card-config__item">
         <h2 class="card-config__item__title">{{ labels.calendarView | translate }}</h2>
         <div class="card-config__item__card">
             <div class="card-config__item__card__colors">
@@ -87,7 +87,7 @@
             </div>
         </div>
     </div>
-    <div class="card-config__item">
+    <div *ngIf="modularizationPermisions.listView" class="card-config__item">
         <h2 class="card-config__item__title">{{ labels.tableView | translate }}</h2>
         <div class="card-config__item__card">
             <div class="card-config__item__card__colors">

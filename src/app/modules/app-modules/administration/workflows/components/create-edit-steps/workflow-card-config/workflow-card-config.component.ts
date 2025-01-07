@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { Component, Input, OnInit, ViewChild, ViewEncapsulation } from '@angular/core';
+import { Component, Input, OnInit, ViewChild } from '@angular/core';
 import { UntypedFormBuilder, UntypedFormGroup, Validators } from '@angular/forms';
 import { MatMenuTrigger } from '@angular/material/menu';
 import { ConcenetError } from '@app/types/error';
@@ -8,6 +8,7 @@ import TreeNode from '@data/interfaces/tree-node';
 import CardColumnDTO from '@data/models/cards/card-column-dto';
 import CardColumnTabDTO from '@data/models/cards/card-column-tab-dto';
 import CardColumnTabItemDTO from '@data/models/cards/card-column-tab-item-dto';
+import ModularizationDTO from '@data/models/user-permissions/modularization.dto';
 import WorkflowViewDTO from '@data/models/workflow-admin/workflow-view-dto';
 import { WorkflowAdministrationService } from '@data/services/workflow-administration.service';
 import { UntilDestroy } from '@ngneat/until-destroy';
@@ -44,6 +45,11 @@ export class WorkflowCardConfigComponent extends WorkflowStepAbstractClass imple
     cardDetailHeaderField: marker('workflows.cardDetailHeaderField')
   };
   public treeData: TreeNode[] = [];
+  public modularizationPermisions: ModularizationDTO = {
+    listView: false,
+    advancedSearch: false,
+    calendarView: false
+  };
   private lastInputSelected: {
     viewType: 'BOARD' | 'TABLE' | 'CALENDAR' | 'LANDING_CARD' | 'LANDING_DETAIL' | 'DETAIL';
     fieldIndex: number;
