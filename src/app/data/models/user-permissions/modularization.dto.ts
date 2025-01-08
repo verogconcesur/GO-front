@@ -1,5 +1,7 @@
 export default interface ModularizationDTO {
-  advancedSearch: boolean;
-  listView: boolean;
-  calendarView: boolean;
+  advancedSearch?: boolean;
+  listView?: boolean;
+  calendarView?: boolean;
+  smsSend?: boolean;
+  whatsappSend?: boolean;
 }

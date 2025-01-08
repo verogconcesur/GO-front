@@ -1,7 +1,7 @@
-import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { ModalChatWhatsappComponent } from './modal-chat-whatsapp.component';
+import { NgModule } from '@angular/core';
 import { SharedModule } from '@shared/shared.module';
+import { ModalChatWhatsappComponent } from './modal-chat-whatsapp.component';
 
 @NgModule({
   declarations: [ModalChatWhatsappComponent],

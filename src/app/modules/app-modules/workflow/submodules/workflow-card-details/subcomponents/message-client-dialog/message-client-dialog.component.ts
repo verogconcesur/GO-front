@@ -8,6 +8,7 @@ import CardInstanceRemoteSignatureDTO from '@data/models/cards/card-instance-rem
 import CardMessageRenderDTO from '@data/models/cards/card-message-render';
 import MessageChannelDTO from '@data/models/templates/message-channels-dto';
 import TemplatesCommonDTO from '@data/models/templates/templates-common-dto';
+import ModularizationDTO from '@data/models/user-permissions/modularization.dto';
 import { CardAttachmentsService } from '@data/services/card-attachments.service';
 import { CardMessagesService } from '@data/services/card-messages.service';
 import { TemplatesCommunicationService } from '@data/services/templates-communication.service';
@@ -71,6 +72,13 @@ export class MessageClientDialogComponent extends ComponentToExtendForCustomDial
   public messageForm: UntypedFormGroup;
   public messageChannels: MessageChannelDTO[] = [];
   public templateList: TemplatesCommonDTO[] = [];
+  public modularizationPermisions: ModularizationDTO = {
+    listView: false,
+    advancedSearch: false,
+    calendarView: false,
+    smsSend: false,
+    whatsappSend: false
+  };
   constructor(
     private fb: UntypedFormBuilder,
     private spinnerService: ProgressSpinnerDialogService,
@@ -92,8 +100,18 @@ export class MessageClientDialogComponent extends ComponentToExtendForCustomDial
   get form() {
     return this.messageForm.controls;
   }
-  get messageChannelsForm() {
-    return this.messageForm.get('messageChannels') as FormArray;
+  // get messageChannelsForm() {
+  //   return this.messageForm.get('messageChannels') as FormArray;
+  // }
+  get messageChannelsForm(): FormArray {
+    const formArray = this.messageForm.get('messageChannels') as FormArray;
+    const filteredChannels = formArray.controls.filter((control) => {
+      const messageChannelId = control.value.messageChannel.id;
+      const allowSms = !(messageChannelId === 3 && !this.modularizationPermisions.smsSend);
+      const allowWhatsapp = !(messageChannelId === 4 && !this.modularizationPermisions.whatsappSend);
+      return allowSms && allowWhatsapp;
+    });
+    return new FormArray(filteredChannels);
   }
   get messageClientsForm() {
     return this.messageForm.get('messageClients') as FormArray;

@@ -13,6 +13,7 @@ import CountryDTO from '@data/models/location/country-dto';
 import ProvinceDTO from '@data/models/location/province-dto';
 import TownDTO from '@data/models/location/town-dto';
 import BrandDTO from '@data/models/organization/brand-dto';
+import ModularizationDTO from '@data/models/user-permissions/modularization.dto';
 import WorkflowStateDTO from '@data/models/workflows/workflow-state-dto';
 import WorkflowSubstateDTO from '@data/models/workflows/workflow-substate-dto';
 import { BrandService } from '@data/services/brand.service';
@@ -145,6 +146,13 @@ export class CreateEditFacilityComponent extends ComponentToExtendForCustomDialo
     { name: 'KEYLOOP', value: 'AUTOLINE' },
     { name: 'SPIGA', value: 'SPIGA' }
   ];
+  public modularizationPermisions: ModularizationDTO = {
+    listView: false,
+    advancedSearch: false,
+    calendarView: false,
+    smsSend: false,
+    whatsappSend: false
+  };
 
   constructor(
     private fb: UntypedFormBuilder,

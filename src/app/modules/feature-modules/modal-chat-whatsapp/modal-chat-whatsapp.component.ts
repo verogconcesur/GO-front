@@ -1,26 +1,27 @@
+import { DatePipe } from '@angular/common';
 import { ChangeDetectorRef, Component, Inject, OnDestroy, OnInit } from '@angular/core';
 import { FormGroup, UntypedFormBuilder } from '@angular/forms';
+import { MAT_DIALOG_DATA, MatDialog, MatDialogRef } from '@angular/material/dialog';
+import { DomSanitizer } from '@angular/platform-browser';
 import { marker } from '@biesbjerg/ngx-translate-extract-marker';
+import { AttachmentDTO, CardAttachmentsDTO, CardWhatsapptAttachmentDTO } from '@data/models/cards/card-attachments-dto';
 import CardInstanceWhatsappDTO from '@data/models/cards/card-instance-whatsapp-dto';
+import CardMessageDTO from '@data/models/cards/card-message';
+import ModularizationDTO from '@data/models/user-permissions/modularization.dto';
+import { CardAttachmentsService } from '@data/services/card-attachments.service';
 import { CardMessagesService } from '@data/services/card-messages.service';
 import { TranslateService } from '@ngx-translate/core';
 import { GlobalMessageService } from '@shared/services/global-message.service';
 import { ProgressSpinnerDialogService } from '@shared/services/progress-spinner-dialog.service';
-import { take, forkJoin, finalize } from 'rxjs';
-import CardMessageDTO from '@data/models/cards/card-message';
 import { NGXLogger } from 'ngx-logger';
-import { MatDialogRef, MAT_DIALOG_DATA, MatDialog } from '@angular/material/dialog';
-import { DomSanitizer } from '@angular/platform-browser';
+import { finalize, forkJoin, take } from 'rxjs';
 import CardInstanceAttachmentsConfig, {
   CardInstanceAttachmentsModalVersionConfig
 } from '../card-instance-attachments/card-instance-attachments-config-interface';
-import { CardAttachmentsService } from '@data/services/card-attachments.service';
-import { AttachmentDTO, CardAttachmentsDTO, CardWhatsapptAttachmentDTO } from '@data/models/cards/card-attachments-dto';
 import {
   CardInstanceAttachmentsComponent,
   CardInstanceAttachmentsComponentEnum
 } from '../card-instance-attachments/card-instance-attachments.component';
-import { DatePipe } from '@angular/common';
 import { MediaViewerService } from '../media-viewer-dialog/media-viewer.service';
 @Component({
   selector: 'app-modal-chat-whatsapp',
@@ -48,6 +49,13 @@ export class ModalChatWhatsappComponent implements OnInit, OnDestroy {
   public chunks: BlobPart[] = [];
   public barList = Array(20).fill(0);
   public interval: NodeJS.Timeout;
+  public modularizationPermisions: ModularizationDTO = {
+    listView: false,
+    advancedSearch: false,
+    calendarView: false,
+    smsSend: false,
+    whatsappSend: false
+  };
 
   constructor(
     private fb: UntypedFormBuilder,

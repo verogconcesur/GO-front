@@ -20,6 +20,7 @@ import TemplatesCommunicationDTO, {
   CommunicationTypes,
   TemplateComunicationItemsDTO
 } from '@data/models/templates/templates-communication-dto';
+import ModularizationDTO from '@data/models/user-permissions/modularization.dto';
 import VariablesDTO from '@data/models/variables-dto';
 import { TemplatesCommunicationService } from '@data/services/templates-communication.service';
 import { VariablesService } from '@data/services/variables.service';
@@ -82,6 +83,13 @@ export class CreateEditCommunicationComponent extends ComponentToExtendForCustom
   public startDate: Date;
   public endDate: Date;
   public shouldShowWhatsAppField = false;
+  public modularizationPermisions: ModularizationDTO = {
+    listView: false,
+    advancedSearch: false,
+    calendarView: false,
+    smsSend: false,
+    whatsappSend: false
+  };
   constructor(
     private fb: UntypedFormBuilder,
     private spinnerService: ProgressSpinnerDialogService,
@@ -103,8 +111,18 @@ export class CreateEditCommunicationComponent extends ComponentToExtendForCustom
     return this.communicationForm.controls;
   }
 
+  // get comItems(): FormArray {
+  //   return this.communicationForm.get('templateComunicationItems') as FormArray;
+  // }
   get comItems(): FormArray {
-    return this.communicationForm.get('templateComunicationItems') as FormArray;
+    const formArray = this.communicationForm.get('templateComunicationItems') as FormArray;
+    const filteredItems = formArray.controls.filter((control) => {
+      const messageChannelId = control.value.messageChannel.id;
+      const allowSms = !(messageChannelId === 3 && !this.modularizationPermisions.smsSend);
+      const allowWhatsapp = !(messageChannelId === 4 && !this.modularizationPermisions.whatsappSend);
+      return allowSms && allowWhatsapp;
+    });
+    return new FormArray(filteredItems);
   }
   ngOnInit(): void {
     this.communicationToEdit = this.extendedComponentData;
