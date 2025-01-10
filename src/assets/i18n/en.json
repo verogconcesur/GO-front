@@ -66,6 +66,7 @@
             "checklists": {
                 "SIGN_CLIENT": "Client sign",
                 "SIGN_USER": "User sign",
+                "accounting": "Accounting",
                 "addAttachmentPdf": "Add PDF file",
                 "check": "Check",
                 "config": "Config checklist",
