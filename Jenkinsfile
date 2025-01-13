@@ -4,7 +4,7 @@ pipeline {
     nodejs 'node 16.15.0'
   }
   parameters {
-    string(name: 'DEPLOY_BRANCH', defaultValue: 'init', description: 'Branch to deploy')
+    string(name: 'DEPLOY_BRANCH', defaultValue: 'develop', description: 'Branch to deploy')
     string(name: 'ENV', defaultValue: 'dev', description: 'Environment for build')
   }
   stages {
