@@ -2,29 +2,29 @@
 /* eslint-disable @typescript-eslint/member-ordering */
 /* eslint-disable max-len */
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { Component, ViewEncapsulation, OnInit, ElementRef, ViewChild } from '@angular/core';
+import { Component, ElementRef, OnInit, ViewChild, ViewEncapsulation } from '@angular/core';
 import { FormControl, UntypedFormArray, UntypedFormBuilder, UntypedFormGroup } from '@angular/forms';
+import { ActivatedRoute, Router } from '@angular/router';
+import { RouteConstants } from '@app/constants/route.constants';
+import { ConcenetError } from '@app/types/error';
+import { marker } from '@biesbjerg/ngx-translate-extract-marker';
 import TemplatesChecklistsDTO, {
   AuxChecklistItemsGroupBySyncDTO,
   AuxChecklistItemsGroupByTypeDTO,
   TemplateChecklistItemDTO
 } from '@data/models/templates/templates-checklists-dto';
+import WorkflowCardSlotDTO from '@data/models/workflows/workflow-card-slot-dto';
+import { TemplatesChecklistsService } from '@data/services/templates-checklists.service';
+import { VariablesService } from '@data/services/variables.service';
 import { TranslateService } from '@ngx-translate/core';
-import { marker } from '@biesbjerg/ngx-translate-extract-marker';
 import { ConfirmDialogService } from '@shared/services/confirm-dialog.service';
 import { GlobalMessageService } from '@shared/services/global-message.service';
 import { ProgressSpinnerDialogService } from '@shared/services/progress-spinner-dialog.service';
 import $ from 'jquery';
 import 'jqueryui';
 import { forkJoin, Subject } from 'rxjs';
-import { VariablesService } from '@data/services/variables.service';
 import { finalize, take } from 'rxjs/operators';
-import WorkflowCardSlotDTO from '@data/models/workflows/workflow-card-slot-dto';
 import { CreateEditChecklistAuxService } from './create-edit-checklist-aux.service';
-import { ActivatedRoute, ActivatedRouteSnapshot, Router } from '@angular/router';
-import { RouteConstants } from '@app/constants/route.constants';
-import { TemplatesChecklistsService } from '@data/services/templates-checklists.service';
-import { ConcenetError } from '@app/types/error';
 
 @Component({
   selector: 'app-create-edit-checklist',
@@ -58,6 +58,7 @@ export class CreateEditChecklistComponent implements OnInit {
     drawing: marker('administration.templates.checklists.freeDraw'),
     check: marker('administration.templates.checklists.check'),
     variable: marker('administration.templates.checklists.var'),
+    accounting: marker('administration.templates.checklists.accounting'),
     image: marker('administration.templates.checklists.image'),
     name: marker('administration.templates.checklists.name'),
     nameRequired: marker('userProfile.nameRequired'),
@@ -187,6 +188,7 @@ export class CreateEditChecklistComponent implements OnInit {
             typeItem: item.typeItem,
             typeSign: item.typeSign,
             variable: item.variable,
+            accounting: item.accounting,
             syncronized: false,
             templateChecklistItems: this.fb.array([
               (this.checklistForm.get('templateChecklistItems') as UntypedFormArray).at(index)
@@ -210,6 +212,7 @@ export class CreateEditChecklistComponent implements OnInit {
               typeItem: item.typeItem,
               typeSign: item.typeSign,
               variable: item.variable,
+              accounting: item.accounting,
               syncronized: false,
               templateChecklistItems: this.fb.array([
                 (this.checklistForm.get('templateChecklistItems') as UntypedFormArray).at(index)
@@ -745,6 +748,7 @@ export class CreateEditChecklistComponent implements OnInit {
 
   private printItemInPdfPage(templateItemFG: UntypedFormGroup): void {
     const item = $(`#checklistItemToDrag__${templateItemFG.get('typeItem').value.toLowerCase()}`);
+    console.log(item);
     const pageWidthAndHeight = this.createEditChecklistAuxService.getPageWidthAndHeight(`${templateItemFG.get('numPage').value}`);
     const pageNumber = `${templateItemFG.get('numPage').value}`;
     const uniqueId = templateItemFG.get('orderNumber').value;
@@ -776,6 +780,7 @@ export class CreateEditChecklistComponent implements OnInit {
       width: (pageWidthAndHeight.width * templateItemFG.get('width').value) / 100 + 'px',
       height: (pageWidthAndHeight.height * templateItemFG.get('height').value) / 100 + 'px'
     });
+    console.log(newItem);
     newItem.appendTo($('.canvasDropZone-page' + pageNumber));
   }
 

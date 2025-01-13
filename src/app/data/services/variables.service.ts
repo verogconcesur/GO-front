@@ -13,6 +13,7 @@ import { catchError } from 'rxjs/operators';
 })
 export class VariablesService {
   private readonly GET_VARIABLE_PATH = '/api/variables';
+  private readonly GET_CUSTOM_VARIABLE_PATH = '/api/cards/tabItemsCustom';
   constructor(@Inject(ENV) private env: Env, private http: HttpClient) {}
 
   public searchVariables(): Observable<VariablesDTO[]> {
@@ -23,6 +24,12 @@ export class VariablesService {
   public searchVariablesSlots(): Observable<WorkflowCardSlotDTO[]> {
     return this.http
       .get<WorkflowCardSlotDTO[]>(`${this.env.apiBaseUrl}${this.GET_VARIABLE_PATH}`)
+      .pipe(catchError((error) => throwError(error as ConcenetError)));
+  }
+
+  public searchCustomVariables(): Observable<VariablesDTO[]> {
+    return this.http
+      .get<VariablesDTO[]>(`${this.env.apiBaseUrl}${this.GET_CUSTOM_VARIABLE_PATH}`)
       .pipe(catchError((error) => throwError(error as ConcenetError)));
   }
 }

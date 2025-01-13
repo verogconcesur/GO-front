@@ -1,11 +1,11 @@
-import { FormControl, UntypedFormArray } from '@angular/forms';
+import { UntypedFormArray } from '@angular/forms';
 import { AttachmentDTO } from '../cards/card-attachments-dto';
-import WorkflowCardSlotDTO from '../workflows/workflow-card-slot-dto';
-import TemplatesCommonDTO from './templates-common-dto';
 import BrandDTO from '../organization/brand-dto';
 import DepartmentDTO from '../organization/department-dto';
 import FacilityDTO from '../organization/facility-dto';
 import SpecialtyDTO from '../organization/specialty-dto';
+import WorkflowCardSlotDTO from '../workflows/workflow-card-slot-dto';
+import TemplatesCommonDTO from './templates-common-dto';
 
 export interface TemplateChecklistItemListDTO {
   id: number;
@@ -36,16 +36,17 @@ export interface TemplateChecklistItemDTO {
   sincronizedItems: number[];
   staticValue: boolean;
   defaultValue: boolean;
-  typeItem: 'SIGN' | 'TEXT' | 'VARIABLE' | 'CHECK' | 'DRAWING' | 'IMAGE';
+  typeItem: 'SIGN' | 'TEXT' | 'VARIABLE' | 'CHECK' | 'DRAWING' | 'IMAGE' | 'ACCOUNTING';
   typeSign: null | 'SIGN_USER' | 'SIGN_CLIENT';
   variable: WorkflowCardSlotDTO;
+  accounting?: WorkflowCardSlotDTO;
   width: number;
   auxOrderNumber?: number;
   auxSincronizedItems?: number[];
 }
 
 export interface AuxChecklistItemsGroupByTypeDTO {
-  typeItem: 'SIGN' | 'TEXT' | 'VARIABLE' | 'CHECK' | 'DRAWING' | 'IMAGE';
+  typeItem: 'SIGN' | 'TEXT' | 'VARIABLE' | 'CHECK' | 'DRAWING' | 'IMAGE' | 'ACCOUNTING';
   typeLabel: string;
   numPages: number[];
   orderNumbers: number[];
@@ -57,9 +58,10 @@ export interface AuxChecklistItemsGroupBySyncDTO {
   numPages: number[];
   sincronizedItems: number[]; //orderNumbers
   selectedItem: number;
-  typeItem: 'SIGN' | 'TEXT' | 'VARIABLE' | 'CHECK' | 'DRAWING' | 'IMAGE';
+  typeItem: 'SIGN' | 'TEXT' | 'VARIABLE' | 'CHECK' | 'DRAWING' | 'IMAGE' | 'ACCOUNTING';
   typeSign: null | 'SIGN_USER' | 'SIGN_CLIENT';
   variable: WorkflowCardSlotDTO;
+  accounting?: WorkflowCardSlotDTO;
   syncronized: boolean;
   templateChecklistItems: UntypedFormArray;
 }

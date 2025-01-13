@@ -66,6 +66,7 @@
             "checklists": {
                 "SIGN_CLIENT": "Firma de cliente",
                 "SIGN_USER": "Firma de usuario",
+                "accounting": "Contabilidad",
                 "addAttachmentPdf": "Añadir archivo PDF",
                 "check": "Check",
                 "config": "Configuración del checklist",
