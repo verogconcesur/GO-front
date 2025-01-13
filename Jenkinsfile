@@ -16,7 +16,7 @@ pipeline {
 
     stage('Build: dist files') {
       steps {
-        sh "npm run --silent build -- --configuration=${params.ENV}"
+        sh "npm run build -- --configuration=${params.ENV}"
       }
     }
 
