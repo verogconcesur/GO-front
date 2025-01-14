@@ -1,10 +1,8 @@
 import { Injectable } from '@angular/core';
 import { UntypedFormBuilder, UntypedFormGroup, Validators } from '@angular/forms';
-import { TemplateAtachmentItemsDTO } from '@data/models/templates/templates-attachment-dto';
 import TemplatesChecklistsDTO, { TemplateChecklistItemDTO } from '@data/models/templates/templates-checklists-dto';
 import WorkflowCardSlotDTO from '@data/models/workflows/workflow-card-slot-dto';
 import CombinedRequiredFieldsValidator from '@shared/validators/combined-required-fields.validator';
-import { BehaviorSubject, Observable } from 'rxjs';
 
 @Injectable({
   providedIn: 'root'
@@ -85,9 +83,9 @@ export class CreateEditChecklistAuxService {
           textValue: [item.itemVal?.textValue ? item.itemVal.textValue : null]
         }),
         variable: [
-          this.listVariables && item.variable?.id
-            ? this.listVariables.find((variable: WorkflowCardSlotDTO) => variable.id === item.variable.id)
-            : item.variable
+          this.listVariables && (item.variable?.id || item.tabItem?.id)
+            ? this.listVariables.find((variable: WorkflowCardSlotDTO) => variable.id === (item.variable?.id || item.tabItem?.id))
+            : item.variable || item.tabItem
         ]
       },
       {
@@ -146,7 +144,8 @@ export class CreateEditChecklistAuxService {
           id: [null],
           textValue: [null]
         }),
-        variable: [null]
+        variable: [null],
+        tabItem: [null]
       },
       {
         validators: [
