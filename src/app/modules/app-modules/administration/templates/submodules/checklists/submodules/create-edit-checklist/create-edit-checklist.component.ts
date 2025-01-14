@@ -45,6 +45,8 @@ export class CreateEditChecklistComponent implements OnInit {
   public itemListToShow: AuxChecklistItemsGroupByTypeDTO[] = [];
   public expansionPanelOpened: any = {};
   public listVariables: WorkflowCardSlotDTO[] = [];
+  public customListVariables: WorkflowCardSlotDTO[] = [];
+  public allList: WorkflowCardSlotDTO[] = [];
   public pagesSelectedToAddItem: FormControl = new FormControl(null);
   public labels: any = {
     newCheckList: marker('administration.templates.checklists.new'),
@@ -100,18 +102,27 @@ export class CreateEditChecklistComponent implements OnInit {
 
   ngOnInit(): void {
     const variablesRequest = this.variablesService.searchVariablesSlots();
+    const customVariableRequest = this.variablesService.searchCustomVariablesSlots();
 
     if (this.route?.snapshot?.params?.id) {
       const spinner = this.spinnerService.show();
-      forkJoin([variablesRequest, this.templatesChecklistsService.findChecklistById(this.route.snapshot.params.id)])
+      forkJoin([
+        variablesRequest,
+        this.templatesChecklistsService.findChecklistById(this.route.snapshot.params.id),
+        customVariableRequest
+      ])
         .pipe(
           take(1),
           finalize(() => this.spinnerService.hide(spinner))
         )
         .subscribe(
-          (responses: [WorkflowCardSlotDTO[], TemplatesChecklistsDTO]) => {
-            this.listVariables = responses[0];
+          (responses: [WorkflowCardSlotDTO[], TemplatesChecklistsDTO, WorkflowCardSlotDTO[]]) => {
+            this.listVariables = [...responses[0], ...responses[2]].sort((a, b) => {
+              return a.name.localeCompare(b.name);
+            });
             this.checklistToEdit = responses[1];
+
+            // Cálculo de uniqueIdOrder
             this.uniqueIdOrder = this.checklistToEdit.templateChecklistItems?.reduce(
               (prev: number, curr: TemplateChecklistItemDTO) => {
                 if (curr.orderNumber > prev) {
@@ -121,11 +132,14 @@ export class CreateEditChecklistComponent implements OnInit {
               },
               0
             );
+
+            // Inicializamos el formulario y refrescamos
             this.initForm();
             this.fileTemplateBase64.next(this.checklistForm.get('templateFile').get('content').value);
             this.refreshItemsAndPdf();
           },
           (errors) => {
+            // Manejo de errores
             this.globalMessageService.showError({
               message: this.translateService.instant(errors[1]?.message),
               actionText: this.translateService.instant(marker('common.close'))
@@ -134,10 +148,15 @@ export class CreateEditChecklistComponent implements OnInit {
           }
         );
     } else {
-      variablesRequest.pipe(take(1)).subscribe((res) => {
-        this.listVariables = res;
-      });
-      this.initForm();
+      forkJoin([variablesRequest, customVariableRequest])
+        .pipe(take(1))
+        .subscribe(([variablesRes, customVariablesRes]) => {
+          this.listVariables = [...variablesRes, ...customVariablesRes];
+          this.listVariables = [...variablesRes, ...customVariablesRes].sort((a, b) => {
+            return a.name.localeCompare(b.name);
+          });
+          this.initForm();
+        });
     }
   }
 
@@ -636,7 +655,12 @@ export class CreateEditChecklistComponent implements OnInit {
           data.templateChecklistItems.map((item: any) => {
             item.sincronizedItems = item.sincronizedItems.length === 1 || item.staticValue ? null : item.sincronizedItems;
             if (item.typeItem === 'VARIABLE') {
-              item.variable = { id: item.variable.id };
+              if (item.variable.tabId) {
+                item.tabItem = { id: item.variable.id };
+                delete item.variable;
+              } else {
+                item.variable = { id: item.variable.id };
+              }
             }
             if (
               (item.staticValue || item.defaultValue) &&
@@ -748,7 +772,6 @@ export class CreateEditChecklistComponent implements OnInit {
 
   private printItemInPdfPage(templateItemFG: UntypedFormGroup): void {
     const item = $(`#checklistItemToDrag__${templateItemFG.get('typeItem').value.toLowerCase()}`);
-    console.log(item);
     const pageWidthAndHeight = this.createEditChecklistAuxService.getPageWidthAndHeight(`${templateItemFG.get('numPage').value}`);
     const pageNumber = `${templateItemFG.get('numPage').value}`;
     const uniqueId = templateItemFG.get('orderNumber').value;
@@ -780,7 +803,6 @@ export class CreateEditChecklistComponent implements OnInit {
       width: (pageWidthAndHeight.width * templateItemFG.get('width').value) / 100 + 'px',
       height: (pageWidthAndHeight.height * templateItemFG.get('height').value) / 100 + 'px'
     });
-    console.log(newItem);
     newItem.appendTo($('.canvasDropZone-page' + pageNumber));
   }
 

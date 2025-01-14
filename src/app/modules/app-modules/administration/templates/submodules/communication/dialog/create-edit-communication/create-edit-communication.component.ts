@@ -326,8 +326,8 @@ export class CreateEditCommunicationComponent extends ComponentToExtendForCustom
       variables: this.variablesService.searchVariables().pipe(take(1)),
       customVariables: this.variablesService.searchCustomVariables().pipe(take(1))
     }).subscribe((res) => {
-      const variables = res.variables;
-      const customVariables = res.customVariables;
+      const variables = res.variables.map((variable) => ({ ...variable, type: 'variable' }));
+      const customVariables = res.customVariables.map((customVariable) => ({ ...customVariable, type: 'custom' }));
       const allVariables = variables.concat(customVariables);
       const sortedVariables = allVariables.sort((a: VariablesDTO, b: VariablesDTO) => a.name.localeCompare(b.name));
       this.textEditorToolbarOptions.macroListOptions = sortedVariables.map((item: VariablesDTO) => item.name);

@@ -5,7 +5,7 @@ import { Env } from '@app/types/env';
 import { ConcenetError } from '@app/types/error';
 import VariablesDTO from '@data/models/variables-dto';
 import WorkflowCardSlotDTO from '@data/models/workflows/workflow-card-slot-dto';
-import { Observable, throwError } from 'rxjs';
+import { map, Observable, throwError } from 'rxjs';
 import { catchError } from 'rxjs/operators';
 
 @Injectable({
@@ -28,8 +28,17 @@ export class VariablesService {
   }
 
   public searchCustomVariables(): Observable<VariablesDTO[]> {
-    return this.http
-      .get<VariablesDTO[]>(`${this.env.apiBaseUrl}${this.GET_CUSTOM_VARIABLE_PATH}`)
-      .pipe(catchError((error) => throwError(error as ConcenetError)));
+    return this.http.get<VariablesDTO[]>(`${this.env.apiBaseUrl}${this.GET_CUSTOM_VARIABLE_PATH}`).pipe(
+      map((variables: VariablesDTO[]) => variables.map((variable: VariablesDTO) => ({ ...variable, name: variable.fullName }))),
+      catchError((error) => throwError(error as ConcenetError))
+    );
+  }
+  public searchCustomVariablesSlots(): Observable<WorkflowCardSlotDTO[]> {
+    return this.http.get<WorkflowCardSlotDTO[]>(`${this.env.apiBaseUrl}${this.GET_CUSTOM_VARIABLE_PATH}`).pipe(
+      map((variables: WorkflowCardSlotDTO[]) =>
+        variables.map((variable: WorkflowCardSlotDTO) => ({ ...variable, name: variable.fullName }))
+      ),
+      catchError((error) => throwError(error as ConcenetError))
+    );
   }
 }
