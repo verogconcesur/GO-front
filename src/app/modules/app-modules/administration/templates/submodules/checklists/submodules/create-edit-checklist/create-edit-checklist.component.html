@@ -170,9 +170,21 @@
                                                         formControlName="variable"
                                                         (selectionChange)="updateValueAndValidityForm()"
                                                     >
-                                                        <mat-option *ngFor="let variable of listVariables" [value]="variable">{{
-                                                            variable.name
-                                                        }}</mat-option>
+                                                        <mat-option
+                                                            *ngFor="let variable of listVariables"
+                                                            [value]="variable"
+                                                            [ngStyle]="{
+                                                                'white-space': 'normal',
+                                                                'word-wrap': 'break-word',
+                                                                'overflow-wrap': 'break-word',
+                                                                'line-height': '1.5',
+                                                                'min-height': '42px',
+                                                                padding: '4px 10px',
+                                                                height: 'auto',
+                                                                'box-sizing': 'border-box'
+                                                            }"
+                                                            >{{ variable.name }}</mat-option
+                                                        >
                                                     </mat-select>
                                                 </mat-form-field>
                                             </section>
