@@ -48,6 +48,17 @@ export class CreateEditChecklistComponent implements OnInit {
   public customListVariables: WorkflowCardSlotDTO[] = [];
   public allList: WorkflowCardSlotDTO[] = [];
   public pagesSelectedToAddItem: FormControl = new FormControl(null);
+  listTemplates = [
+    { id: 1, name: 'Plantilla 1' },
+    { id: 2, name: 'Plantilla 2' }
+  ];
+
+  types = ['Bloque', 'Línea'];
+  blockAttributes = ['Atributo Bloque 1', 'Atributo Bloque 2'];
+  lineAttributes = ['Atributo Línea 1', 'Atributo Línea 2'];
+
+  selectedType: string | null = null;
+  showTypeSelect = false;
   public labels: any = {
     newCheckList: marker('administration.templates.checklists.new'),
     cheklistConfig: marker('administration.templates.checklists.config'),
@@ -620,6 +631,15 @@ export class CreateEditChecklistComponent implements OnInit {
       }
     }
     return errores;
+  }
+
+  public onTemplateChange(event: any): void {
+    this.showTypeSelect = !!event.value;
+    this.selectedType = null;
+  }
+
+  onTypeChange(event: any): void {
+    this.selectedType = event.value;
   }
 
   public save(): void {

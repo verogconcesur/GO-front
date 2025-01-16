@@ -189,18 +189,65 @@
                                                 </mat-form-field>
                                             </section>
                                             <section *ngIf="groupByType.typeItem === 'ACCOUNTING'">
+                                                <!-- Primer mat-select - Plantilla -->
                                                 <mat-form-field appearance="outline" floatLabel="always" style="width: 100%">
-                                                    <mat-label>{{ labels.variable | translate }}*</mat-label>
+                                                    <mat-label>Plantilla*</mat-label>
                                                     <mat-select
-                                                        formControlName="variable"
-                                                        (selectionChange)="updateValueAndValidityForm()"
+                                                        formControlName="templateType"
+                                                        (selectionChange)="onTemplateChange($event)"
                                                     >
-                                                        <mat-option *ngFor="let variable of listVariables" [value]="variable">{{
-                                                            variable.name
-                                                        }}</mat-option>
+                                                        <mat-option *ngFor="let template of listTemplates" [value]="template">
+                                                            {{ template.name }}
+                                                        </mat-option>
+                                                    </mat-select>
+                                                </mat-form-field>
+
+                                                <!-- Segundo mat-select - Tipo (se muestra después de seleccionar la plantilla) -->
+                                                <mat-form-field
+                                                    appearance="outline"
+                                                    floatLabel="always"
+                                                    style="width: 100%"
+                                                    *ngIf="showTypeSelect"
+                                                >
+                                                    <mat-label>Selecciona tipo*</mat-label>
+                                                    <mat-select formControlName="type" (selectionChange)="onTypeChange($event)">
+                                                        <mat-option *ngFor="let type of types" [value]="type">
+                                                            {{ type }}
+                                                        </mat-option>
+                                                    </mat-select>
+                                                </mat-form-field>
+
+                                                <!-- Tercer mat-select - Atributo Bloque (se muestra si se selecciona "Bloque") -->
+                                                <mat-form-field
+                                                    appearance="outline"
+                                                    floatLabel="always"
+                                                    style="width: 100%"
+                                                    *ngIf="selectedType === 'Bloque'"
+                                                >
+                                                    <mat-label>Atributo Bloque*</mat-label>
+                                                    <mat-select formControlName="blockAttribute">
+                                                        <mat-option *ngFor="let blockAttr of blockAttributes" [value]="blockAttr">
+                                                            {{ blockAttr }}
+                                                        </mat-option>
+                                                    </mat-select>
+                                                </mat-form-field>
+
+                                                <!-- Cuarto mat-select - Atributo Línea (se muestra si se selecciona "Línea") -->
+                                                <mat-form-field
+                                                    appearance="outline"
+                                                    floatLabel="always"
+                                                    style="width: 100%"
+                                                    *ngIf="selectedType === 'Línea'"
+                                                >
+                                                    <mat-label>Atributo Línea*</mat-label>
+                                                    <mat-select formControlName="lineAttribute">
+                                                        <mat-option *ngFor="let lineAttr of lineAttributes" [value]="lineAttr">
+                                                            {{ lineAttr }}
+                                                        </mat-option>
                                                     </mat-select>
                                                 </mat-form-field>
                                             </section>
+
                                             <!-- Static value -->
                                             <section
                                                 *ngIf="
