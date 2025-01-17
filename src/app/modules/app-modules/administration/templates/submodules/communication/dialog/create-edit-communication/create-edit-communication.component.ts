@@ -154,32 +154,37 @@ export class CreateEditCommunicationComponent extends ComponentToExtendForCustom
 
   public onSubmitCustomDialog(): Observable<boolean | TemplatesCommunicationDTO> {
     const formValue = this.communicationForm.getRawValue();
-    const variablesOnText = this.listVariables.filter((variable) => {
-      let variableUsed = false;
-      formValue.templateComunicationItems.forEach((item: TemplateComunicationItemsDTO) => {
-        if (item.text && item.text.indexOf(variable.name) !== -1) {
-          variableUsed = true;
-        }
-        if (item.subject && item.subject.indexOf(variable.name) !== -1) {
-          variableUsed = true;
-        }
-      });
-      return variableUsed;
-    });
-    formValue.variables = variablesOnText;
-    const customVariablesOnText = this.listCustomVariables.filter((customVariable) => {
-      let customVariableUsed = false;
-      formValue.templateComunicationItems.forEach((item: TemplateComunicationItemsDTO) => {
-        if (item.text && item.text.indexOf(customVariable.name) !== -1) {
-          customVariableUsed = true;
-        }
-        if (item.subject && item.subject.indexOf(customVariable.name) !== -1) {
-          customVariableUsed = true;
-        }
-      });
-      return customVariableUsed;
-    });
-    formValue.tabItems = customVariablesOnText;
+    const variableIdsOnText = this.listVariables
+      .filter((variable) => {
+        let variableUsed = false;
+        formValue.templateComunicationItems.forEach((item: TemplateComunicationItemsDTO) => {
+          if (item.text && item.text.indexOf(variable.name) !== -1) {
+            variableUsed = true;
+          }
+          if (item.subject && item.subject.indexOf(variable.name) !== -1) {
+            variableUsed = true;
+          }
+        });
+        return variableUsed;
+      })
+      .map((variable) => ({ id: variable.id }));
+
+    formValue.variables = variableIdsOnText;
+    const customVariableIdsOnText = this.listCustomVariables
+      .filter((customVariable) => {
+        let customVariableUsed = false;
+        formValue.templateComunicationItems.forEach((item: TemplateComunicationItemsDTO) => {
+          if (item.text && item.text.indexOf(customVariable.name) !== -1) {
+            customVariableUsed = true;
+          }
+          if (item.subject && item.subject.indexOf(customVariable.name) !== -1) {
+            customVariableUsed = true;
+          }
+        });
+        return customVariableUsed;
+      })
+      .map((customVariable) => ({ id: customVariable.id }));
+    formValue.tabItems = customVariableIdsOnText;
     if (this.communicationToEdit) {
       formValue.id = this.communicationToEdit.id;
       formValue.template.id = this.communicationToEdit.template.id;
@@ -329,12 +334,8 @@ export class CreateEditCommunicationComponent extends ComponentToExtendForCustom
       const variables = res.variables.map((variable) => ({ ...variable, type: 'variable' }));
       const customVariables = res.customVariables.map((customVariable) => ({ ...customVariable, type: 'custom' }));
       const allVariables = variables.concat(customVariables);
-      const sortedVariables = allVariables.sort((a: VariablesDTO, b: VariablesDTO) => {
-        const nameA = a.name;
-        const nameB = b.fullName || b.name;
-        return nameA.localeCompare(nameB);
-      });
-      this.textEditorToolbarOptions.macroListOptions = sortedVariables.map((item: VariablesDTO) => item.fullName || item.name);
+      const sortedVariables = allVariables.sort((a: VariablesDTO, b: VariablesDTO) => a.name.localeCompare(b.name));
+      this.textEditorToolbarOptions.macroListOptions = sortedVariables.map((item: VariablesDTO) => item.name);
       this.textEditorToolbarOnlyMacroOptions.macroListOptions = this.textEditorToolbarOptions.macroListOptions;
       this.listVariables = variables;
       this.listCustomVariables = customVariables;
