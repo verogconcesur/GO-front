@@ -28,9 +28,10 @@ export class VariablesService {
   }
 
   public searchCustomVariables(): Observable<VariablesDTO[]> {
-    return this.http
-      .get<VariablesDTO[]>(`${this.env.apiBaseUrl}${this.GET_CUSTOM_VARIABLE_PATH}`)
-      .pipe(catchError((error) => throwError(error as ConcenetError)));
+    return this.http.get<VariablesDTO[]>(`${this.env.apiBaseUrl}${this.GET_CUSTOM_VARIABLE_PATH}`).pipe(
+      map((variables: VariablesDTO[]) => variables.map((variable: VariablesDTO) => ({ ...variable, name: variable.fullName }))),
+      catchError((error) => throwError(error as ConcenetError))
+    );
   }
   public searchCustomVariablesSlots(): Observable<WorkflowCardSlotDTO[]> {
     return this.http.get<WorkflowCardSlotDTO[]>(`${this.env.apiBaseUrl}${this.GET_CUSTOM_VARIABLE_PATH}`).pipe(
