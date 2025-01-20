@@ -8,12 +8,20 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { RouteConstants } from '@app/constants/route.constants';
 import { ConcenetError } from '@app/types/error';
 import { marker } from '@biesbjerg/ngx-translate-extract-marker';
+import {
+  TemplateAccountingItemDTO,
+  TemplateAccountingItemLineDTO,
+  TemplatesAccountingDTO
+} from '@data/models/templates/templates-accounting-dto';
 import TemplatesChecklistsDTO, {
   AuxChecklistItemsGroupBySyncDTO,
   AuxChecklistItemsGroupByTypeDTO,
   TemplateChecklistItemDTO
 } from '@data/models/templates/templates-checklists-dto';
+import TemplatesCommonDTO from '@data/models/templates/templates-common-dto';
 import WorkflowCardSlotDTO from '@data/models/workflows/workflow-card-slot-dto';
+import { CardService } from '@data/services/cards.service';
+import { TemplatesAccountingsService } from '@data/services/templates-accountings.service';
 import { TemplatesChecklistsService } from '@data/services/templates-checklists.service';
 import { VariablesService } from '@data/services/variables.service';
 import { TranslateService } from '@ngx-translate/core';
@@ -48,14 +56,27 @@ export class CreateEditChecklistComponent implements OnInit {
   public customListVariables: WorkflowCardSlotDTO[] = [];
   public allList: WorkflowCardSlotDTO[] = [];
   public pagesSelectedToAddItem: FormControl = new FormControl(null);
-  listTemplates = [
-    { id: 1, name: 'Plantilla 1' },
-    { id: 2, name: 'Plantilla 2' }
+  public listTemplates: TemplatesCommonDTO[];
+  public templateAccountingItem: TemplatesAccountingDTO;
+  public allBlocks: TemplateAccountingItemDTO[] = [];
+  public allLines: TemplateAccountingItemLineDTO[] = [];
+  public blockAttributes = [
+    { id: 'NAME', name: 'Nombre' },
+    { id: 'TYPE', name: 'Tipo' },
+    { id: 'LINE', name: 'Línea' },
+    { id: 'TYPE_TAX', name: 'Tipo IVA' },
+    { id: 'TOTAL', name: 'Total' },
+    { id: 'TOTAL_TAX', name: 'Total IVA' },
+    { id: 'TOTAL_PLUS_TAX', name: 'Total con IVA' }
   ];
-
-  types = ['Bloque', 'Línea'];
-  blockAttributes = ['Atributo Bloque 1', 'Atributo Bloque 2'];
-  lineAttributes = ['Atributo Línea 1', 'Atributo Línea 2'];
+  public lineAttributes = [
+    { id: 'NAME', name: 'Nombre' },
+    { id: 'TYPE', name: 'Tipo' },
+    { id: 'TYPE_TAX', name: 'Tipo IVA' },
+    { id: 'AMOUNT', name: 'Cantidad' },
+    { id: 'AMOUNT_TAX', name: 'Cantidad con IVA' },
+    { id: 'AMOUNT_PLUS_TAX', name: 'Cantidad IVA Incluido' }
+  ];
 
   selectedType: string | null = null;
   showTypeSelect = false;
@@ -108,7 +129,9 @@ export class CreateEditChecklistComponent implements OnInit {
     private createEditChecklistAuxService: CreateEditChecklistAuxService,
     private router: Router,
     private templatesChecklistsService: TemplatesChecklistsService,
-    private route: ActivatedRoute
+    private route: ActivatedRoute,
+    private cardService: CardService,
+    private templateAccountingService: TemplatesAccountingsService
   ) {}
 
   ngOnInit(): void {
@@ -117,6 +140,7 @@ export class CreateEditChecklistComponent implements OnInit {
 
     if (this.route?.snapshot?.params?.id) {
       const spinner = this.spinnerService.show();
+      this.getAccountingTemplates();
       forkJoin([
         variablesRequest,
         this.templatesChecklistsService.findChecklistById(this.route.snapshot.params.id),
@@ -184,7 +208,15 @@ export class CreateEditChecklistComponent implements OnInit {
     }
     return this.translateService.instant(this.labels.newCheckList);
   }
-
+  public getAccountingTemplates() {
+    this.cardService
+      .listTemplates('ACCOUNTING')
+      .pipe(take(1))
+      .subscribe((resp) => {
+        console.log(resp);
+        this.listTemplates = resp;
+      });
+  }
   public setItemListToShow(): void {
     let items: TemplateChecklistItemDTO[] = this.checklistForm?.get('templateChecklistItems').getRawValue();
     if (this.isRemoteSign()) {
@@ -218,12 +250,17 @@ export class CreateEditChecklistComponent implements OnInit {
             typeItem: item.typeItem,
             typeSign: item.typeSign,
             variable: item.variable,
-            accounting: item.accounting,
+            templateAccountingId: item.templateAccountingId,
+            templateAccountingItemId: item.templateAccountingItemId,
+            accountingItemAttributeType: item.accountingItemAttributeType,
+            templateAccountingItemLineId: item.templateAccountingItemLineId,
+            accountingItemLineAttributeType: item.accountingItemLineAttributeType,
             syncronized: false,
             templateChecklistItems: this.fb.array([
               (this.checklistForm.get('templateChecklistItems') as UntypedFormArray).at(index)
             ])
           });
+          console.log(group);
         }
       } else {
         const orderNumberPageAssociation: any = {};
@@ -242,7 +279,11 @@ export class CreateEditChecklistComponent implements OnInit {
               typeItem: item.typeItem,
               typeSign: item.typeSign,
               variable: item.variable,
-              accounting: item.accounting,
+              templateAccountingId: item.templateAccountingId,
+              templateAccountingItemId: item.templateAccountingItemId,
+              accountingItemAttributeType: item.accountingItemAttributeType,
+              templateAccountingItemLineId: item.templateAccountingItemLineId,
+              accountingItemLineAttributeType: item.accountingItemLineAttributeType,
               syncronized: false,
               templateChecklistItems: this.fb.array([
                 (this.checklistForm.get('templateChecklistItems') as UntypedFormArray).at(index)
@@ -633,7 +674,41 @@ export class CreateEditChecklistComponent implements OnInit {
     return errores;
   }
 
+  public onBlockAttributeChange(event: any, orderNumber: number): void {
+    const selectedAttribute = event.value;
+    if (selectedAttribute.id === 'LINE') {
+      const templateChecklistItems = this.checklistForm.get('templateChecklistItems').value;
+      console.log(templateChecklistItems);
+      const selectedBlock = templateChecklistItems[orderNumber - 1];
+      console.log(selectedBlock);
+      const block = this.allBlocks.find((b) => b.id === selectedBlock.templateAccountingItemId.id);
+      // Si se encuentra el bloque, actualizar allLines con las líneas de ese bloque
+      if (block && block.templateAccountingItemLines) {
+        this.allLines = block.templateAccountingItemLines;
+      }
+    }
+  }
+
   public onTemplateChange(event: any): void {
+    this.templateAccountingService
+      .findById(event.value.id)
+      .pipe()
+      .subscribe((resp) => {
+        this.templateAccountingItem = resp;
+
+        // Recorrer los templateAccountingItems y almacenarlos en allBlocks
+        resp.templateAccountingItems.forEach((item) => {
+          console.log(item);
+
+          // Agregar cada objeto de templateAccountingItems a allBlocks
+          if (item) {
+            this.allBlocks = [...this.allBlocks, item];
+          }
+        });
+
+        console.log('Todos los bloques acumulados:', this.allBlocks);
+      });
+
     this.showTypeSelect = !!event.value;
     this.selectedType = null;
   }

@@ -82,6 +82,11 @@ export class CreateEditChecklistAuxService {
           id: [item.itemVal?.id ? item.itemVal.id : null],
           textValue: [item.itemVal?.textValue ? item.itemVal.textValue : null]
         }),
+        templateAccountingId: [item.templateAccountingId ? item.templateAccountingId : null],
+        templateAccountingItemId: [item.templateAccountingItemId ? item.templateAccountingItemId : null],
+        accountingItemAttributeType: [item.accountingItemAttributeType ? item.accountingItemAttributeType : null],
+        templateAccountingItemLineId: [item.templateAccountingItemLineId ? item.templateAccountingItemLineId : null],
+        accountingItemLineAttributeType: [item.accountingItemLineAttributeType ? item.accountingItemLineAttributeType : null],
         variable: [
           this.listVariables && (item.variable?.id || item.tabItem?.id)
             ? this.listVariables.find((variable: WorkflowCardSlotDTO) => variable.id === (item.variable?.id || item.tabItem?.id))
@@ -144,6 +149,11 @@ export class CreateEditChecklistAuxService {
           id: [null],
           textValue: [null]
         }),
+        templateAccountingId: [null],
+        templateAccountingItemId: [null],
+        accountingItemAttributeType: [null],
+        templateAccountingItemLineId: [null],
+        accountingItemLineAttributeType: [null],
         variable: [null],
         tabItem: [null]
       },

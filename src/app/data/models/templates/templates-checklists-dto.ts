@@ -40,7 +40,11 @@ export interface TemplateChecklistItemDTO {
   typeSign: null | 'SIGN_USER' | 'SIGN_CLIENT';
   variable?: WorkflowCardSlotDTO;
   tabItem?: WorkflowCardSlotDTO;
-  accounting?: WorkflowCardSlotDTO;
+  templateAccountingId?: number;
+  templateAccountingItemId?: number;
+  accountingItemAttributeType?: string;
+  templateAccountingItemLineId?: number;
+  accountingItemLineAttributeType?: string;
   width: number;
   auxOrderNumber?: number;
   auxSincronizedItems?: number[];
@@ -63,7 +67,11 @@ export interface AuxChecklistItemsGroupBySyncDTO {
   typeSign: null | 'SIGN_USER' | 'SIGN_CLIENT';
   variable?: WorkflowCardSlotDTO;
   tabItem?: WorkflowCardSlotDTO;
-  accounting?: WorkflowCardSlotDTO;
+  templateAccountingId?: number;
+  templateAccountingItemId?: number;
+  accountingItemAttributeType?: string;
+  templateAccountingItemLineId?: number;
+  accountingItemLineAttributeType?: string;
   syncronized: boolean;
   templateChecklistItems: UntypedFormArray;
 }
