@@ -191,53 +191,70 @@
                                             <section *ngIf="groupByType.typeItem === 'ACCOUNTING'">
                                                 <mat-form-field appearance="outline" floatLabel="always" style="width: 100%">
                                                     <mat-label>Plantilla*</mat-label>
-                                                    <mat-select
-                                                        formControlName="templateAccountingId"
-                                                        (selectionChange)="onTemplateChange($event)"
-                                                    >
-                                                        <mat-option *ngFor="let template of listTemplates" [value]="template">
-                                                            {{ template.name }}
+                                                    <mat-select formControlName="templateAccountingId">
+                                                        <mat-option *ngFor="let template of listTemplates" [value]="template.id">
+                                                            {{ template.template.name }}
                                                         </mat-option>
                                                     </mat-select>
                                                 </mat-form-field>
 
-                                                <mat-form-field appearance="outline" floatLabel="always" style="width: 100%">
+                                                <mat-form-field
+                                                    appearance="outline"
+                                                    floatLabel="always"
+                                                    style="width: 100%"
+                                                    *ngIf="isTemplateSelected(syncGroup)"
+                                                >
                                                     <mat-label>Selecciona bloque</mat-label>
-                                                    <mat-select
-                                                        formControlName="templateAccountingItemId"
-                                                        (selectionChange)="onTypeChange($event)"
-                                                    >
-                                                        <mat-option *ngFor="let block of allBlocks" [value]="block">
+                                                    <mat-select formControlName="templateAccountingItemId">
+                                                        <mat-option
+                                                            *ngFor="let block of getAllBlocks(syncGroup)"
+                                                            [value]="block.id"
+                                                        >
                                                             {{ block.description }}
                                                         </mat-option>
                                                     </mat-select>
                                                 </mat-form-field>
 
-                                                <mat-form-field appearance="outline" floatLabel="always" style="width: 100%">
+                                                <mat-form-field
+                                                    appearance="outline"
+                                                    floatLabel="always"
+                                                    style="width: 100%"
+                                                    *ngIf="isBlockSelected(syncGroup)"
+                                                >
                                                     <mat-label>Atributo Bloque</mat-label>
-                                                    <mat-select
-                                                        formControlName="accountingItemAttributeType"
-                                                        (selectionChange)="onBlockAttributeChange($event, syncGroup.selectedItem)"
-                                                    >
-                                                        <mat-option *ngFor="let blockAttr of blockAttributes" [value]="blockAttr">
+                                                    <mat-select formControlName="accountingItemAttributeType">
+                                                        <mat-option
+                                                            *ngFor="let blockAttr of blockAttributes"
+                                                            [value]="blockAttr.id"
+                                                        >
                                                             {{ blockAttr.name }}
                                                         </mat-option>
                                                     </mat-select>
                                                 </mat-form-field>
 
-                                                <mat-form-field appearance="outline" floatLabel="always" style="width: 100%">
+                                                <mat-form-field
+                                                    appearance="outline"
+                                                    floatLabel="always"
+                                                    style="width: 100%"
+                                                    *ngIf="isLineSelected(syncGroup)"
+                                                >
                                                     <mat-label>Seleccionar linea</mat-label>
                                                     <mat-select formControlName="templateAccountingItemLineId">
-                                                        <mat-option *ngFor="let line of allLines" [value]="line">
+                                                        <mat-option *ngFor="let line of getLines(syncGroup)" [value]="line.id">
                                                             {{ line.description }}
                                                         </mat-option>
                                                     </mat-select>
                                                 </mat-form-field>
 
-                                                <mat-form-field appearance="outline" floatLabel="always" style="width: 100%">
+                                                <mat-form-field
+                                                    appearance="outline"
+                                                    floatLabel="always"
+                                                    style="width: 100%"
+                                                    *ngIf="isLineAttibuteSelected(syncGroup)"
+                                                >
                                                     <mat-label>Atributo Linea</mat-label>
                                                     <mat-select formControlName="accountingItemLineAttributeType">
-                                                        <mat-option *ngFor="let lineAttr of lineAttributes" [value]="lineAttr">
+                                                        <mat-option *ngFor="let lineAttr of lineAttributes" [value]="lineAttr.id">
                                                             {{ lineAttr.name }}
                                                         </mat-option>
                                                     </mat-select>

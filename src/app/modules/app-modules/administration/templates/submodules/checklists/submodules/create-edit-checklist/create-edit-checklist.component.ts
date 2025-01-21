@@ -8,17 +8,12 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { RouteConstants } from '@app/constants/route.constants';
 import { ConcenetError } from '@app/types/error';
 import { marker } from '@biesbjerg/ngx-translate-extract-marker';
-import {
-  TemplateAccountingItemDTO,
-  TemplateAccountingItemLineDTO,
-  TemplatesAccountingDTO
-} from '@data/models/templates/templates-accounting-dto';
+import { TemplatesAccountingDTO } from '@data/models/templates/templates-accounting-dto';
 import TemplatesChecklistsDTO, {
   AuxChecklistItemsGroupBySyncDTO,
   AuxChecklistItemsGroupByTypeDTO,
   TemplateChecklistItemDTO
 } from '@data/models/templates/templates-checklists-dto';
-import TemplatesCommonDTO from '@data/models/templates/templates-common-dto';
 import WorkflowCardSlotDTO from '@data/models/workflows/workflow-card-slot-dto';
 import { CardService } from '@data/services/cards.service';
 import { TemplatesAccountingsService } from '@data/services/templates-accountings.service';
@@ -31,7 +26,7 @@ import { ProgressSpinnerDialogService } from '@shared/services/progress-spinner-
 import $ from 'jquery';
 import 'jqueryui';
 import { forkJoin, Subject } from 'rxjs';
-import { finalize, take } from 'rxjs/operators';
+import { finalize, map, switchMap, take } from 'rxjs/operators';
 import { CreateEditChecklistAuxService } from './create-edit-checklist-aux.service';
 
 @Component({
@@ -56,10 +51,8 @@ export class CreateEditChecklistComponent implements OnInit {
   public customListVariables: WorkflowCardSlotDTO[] = [];
   public allList: WorkflowCardSlotDTO[] = [];
   public pagesSelectedToAddItem: FormControl = new FormControl(null);
-  public listTemplates: TemplatesCommonDTO[];
+  public listTemplates: TemplatesAccountingDTO[];
   public templateAccountingItem: TemplatesAccountingDTO;
-  public allBlocks: TemplateAccountingItemDTO[] = [];
-  public allLines: TemplateAccountingItemLineDTO[] = [];
   public blockAttributes = [
     { id: 'NAME', name: 'Nombre' },
     { id: 'TYPE', name: 'Tipo' },
@@ -73,11 +66,9 @@ export class CreateEditChecklistComponent implements OnInit {
     { id: 'NAME', name: 'Nombre' },
     { id: 'TYPE', name: 'Tipo' },
     { id: 'TYPE_TAX', name: 'Tipo IVA' },
-    { id: 'AMOUNT', name: 'Cantidad' },
-    { id: 'AMOUNT_TAX', name: 'Cantidad con IVA' },
-    { id: 'AMOUNT_PLUS_TAX', name: 'Cantidad IVA Incluido' }
+    { id: 'AMOUNT', name: 'Cantidad' }
   ];
-
+  public allBlocksMap: Map<string, any[]> = new Map();
   selectedType: string | null = null;
   showTypeSelect = false;
   public labels: any = {
@@ -209,12 +200,31 @@ export class CreateEditChecklistComponent implements OnInit {
     return this.translateService.instant(this.labels.newCheckList);
   }
   public getAccountingTemplates() {
-    this.cardService
-      .listTemplates('ACCOUNTING')
-      .pipe(take(1))
-      .subscribe((resp) => {
-        console.log(resp);
-        this.listTemplates = resp;
+    this.templateAccountingService
+      .findAccountingTemplates()
+      .pipe(
+        take(1),
+        switchMap((templates) => {
+          this.listTemplates = templates;
+          console.log(this.listTemplates);
+          const accountingItemsRequests = templates.map((template) =>
+            this.templateAccountingService.findById(template.template.id).pipe(
+              map((resp) => {
+                return {
+                  templateId: template.id,
+                  allBlocks: resp.templateAccountingItems || []
+                };
+              })
+            )
+          );
+          return forkJoin(accountingItemsRequests);
+        })
+      )
+      .subscribe((allBlocksList) => {
+        this.allBlocksMap = new Map<string, any[]>();
+        allBlocksList.forEach((item) => {
+          this.allBlocksMap.set(item.templateId.toString(), item.allBlocks);
+        });
       });
   }
   public setItemListToShow(): void {
@@ -260,7 +270,6 @@ export class CreateEditChecklistComponent implements OnInit {
               (this.checklistForm.get('templateChecklistItems') as UntypedFormArray).at(index)
             ])
           });
-          console.log(group);
         }
       } else {
         const orderNumberPageAssociation: any = {};
@@ -674,47 +683,53 @@ export class CreateEditChecklistComponent implements OnInit {
     return errores;
   }
 
-  public onBlockAttributeChange(event: any, orderNumber: number): void {
-    const selectedAttribute = event.value;
-    if (selectedAttribute.id === 'LINE') {
-      const templateChecklistItems = this.checklistForm.get('templateChecklistItems').value;
-      console.log(templateChecklistItems);
-      const selectedBlock = templateChecklistItems[orderNumber - 1];
-      console.log(selectedBlock);
-      const block = this.allBlocks.find((b) => b.id === selectedBlock.templateAccountingItemId.id);
-      // Si se encuentra el bloque, actualizar allLines con las líneas de ese bloque
+  public getLines(syncGroup: AuxChecklistItemsGroupBySyncDTO): any[] {
+    const templateChecklistItems = this.checklistForm.get('templateChecklistItems').value;
+    const selectedBlock = templateChecklistItems[syncGroup.selectedItem - 1];
+    const templateId = selectedBlock.templateAccountingId;
+    const blocks = this.allBlocksMap.get(templateId.toString());
+    if (blocks) {
+      const block = blocks.find((b) => b.id === selectedBlock.templateAccountingItemId);
       if (block && block.templateAccountingItemLines) {
-        this.allLines = block.templateAccountingItemLines;
+        return block.templateAccountingItemLines;
       }
     }
+    return [];
   }
 
-  public onTemplateChange(event: any): void {
-    this.templateAccountingService
-      .findById(event.value.id)
-      .pipe()
-      .subscribe((resp) => {
-        this.templateAccountingItem = resp;
-
-        // Recorrer los templateAccountingItems y almacenarlos en allBlocks
-        resp.templateAccountingItems.forEach((item) => {
-          console.log(item);
-
-          // Agregar cada objeto de templateAccountingItems a allBlocks
-          if (item) {
-            this.allBlocks = [...this.allBlocks, item];
-          }
-        });
-
-        console.log('Todos los bloques acumulados:', this.allBlocks);
-      });
-
-    this.showTypeSelect = !!event.value;
-    this.selectedType = null;
+  public getAllBlocks(syncGroup: AuxChecklistItemsGroupBySyncDTO): any[] {
+    const index = syncGroup.selectedItem - 1;
+    const templateChecklistItems = this.checklistForm.get('templateChecklistItems') as UntypedFormArray;
+    const templateId = templateChecklistItems.at(index).value.templateAccountingId;
+    return this.allBlocksMap.get(templateId?.toString()) || [];
   }
 
-  onTypeChange(event: any): void {
-    this.selectedType = event.value;
+  public isTemplateSelected(syncGroup: any): boolean {
+    const index = syncGroup.selectedItem - 1;
+    const templateChecklistItems = this.checklistForm.get('templateChecklistItems') as UntypedFormArray;
+    const templateId = templateChecklistItems.at(index)?.value.templateAccountingId;
+    return !!templateId;
+  }
+
+  public isBlockSelected(syncGroup: any): boolean {
+    const index = syncGroup.selectedItem - 1;
+    const templateChecklistItems = this.checklistForm.get('templateChecklistItems') as UntypedFormArray;
+    const blockId = templateChecklistItems.at(index)?.value.templateAccountingItemId;
+    return !!blockId;
+  }
+
+  public isLineSelected(syncGroup: any): boolean {
+    const index = syncGroup.selectedItem - 1;
+    const templateChecklistItems = this.checklistForm.get('templateChecklistItems') as UntypedFormArray;
+    const accountingItemAttributeType = templateChecklistItems.at(index)?.value.accountingItemAttributeType;
+    return accountingItemAttributeType === 'LINE';
+  }
+
+  public isLineAttibuteSelected(syncGroup: any): boolean {
+    const index = syncGroup.selectedItem - 1;
+    const templateChecklistItems = this.checklistForm.get('templateChecklistItems') as UntypedFormArray;
+    const templateAccountingItemLineId = templateChecklistItems.at(index)?.value.templateAccountingItemLineId;
+    return !!templateAccountingItemLineId;
   }
 
   public save(): void {
