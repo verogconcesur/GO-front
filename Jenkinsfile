@@ -5,7 +5,8 @@ pipeline {
   }
   parameters {
     string(name: 'DEPLOY_BRANCH', defaultValue: 'develop', description: 'Branch to deploy')
-    string(name: 'ENV', defaultValue: 'dev', description: 'Environment for build')
+    string(name: 'ENV', defaultValue: 'dev', description: 'Environment for build (dev, pre or production)')
+    string(name: 'DEPLOY_DIR', defaultValue: '/sftp/DEV/new', description: 'SFTP path to deploy (/sftp/DEV/new or /sftp/PRE/new)')
   }
   stages {
     stage('Dependencies') {
