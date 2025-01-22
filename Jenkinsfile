@@ -17,7 +17,7 @@ pipeline {
     stage('Build: dist files') {
       steps {
         sh """
-        node --max_old_space_size=4096 ./node_modules/@angular/cli/bin/ng build --configuration=${params.ENV} --source-map=false
+        node --max_old_space_size=4096 ./node_modules/@angular/cli/bin/ng build --configuration=${params.ENV}
         """
       }
     }
