@@ -120,7 +120,8 @@
                             ]
                         },
                         "pre": {
-                            "optimization": true,
+                            "buildOptimizer": false,
+                            "optimization": false,
                             "fileReplacements": [
                                 {
                                     "replace": "src/environments/environment.ts",
