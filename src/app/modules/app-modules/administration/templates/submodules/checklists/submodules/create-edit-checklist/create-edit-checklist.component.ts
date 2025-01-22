@@ -54,19 +54,19 @@ export class CreateEditChecklistComponent implements OnInit {
   public listTemplates: TemplatesAccountingDTO[];
   public templateAccountingItem: TemplatesAccountingDTO;
   public blockAttributes = [
-    { id: 'NAME', name: 'Nombre' },
-    { id: 'TYPE', name: 'Tipo' },
-    { id: 'LINE', name: 'Línea' },
-    { id: 'TYPE_TAX', name: 'Tipo IVA' },
-    { id: 'TOTAL', name: 'Total' },
-    { id: 'TOTAL_TAX', name: 'Total IVA' },
-    { id: 'TOTAL_PLUS_TAX', name: 'Total con IVA' }
+    { id: 'NAME', name: this.translateService.instant(marker('administration.templates.checklists.nameBlock')) }, //'Nombre'
+    { id: 'TYPE', name: this.translateService.instant(marker('administration.templates.checklists.typeBlock')) }, //'Tipo'
+    { id: 'LINE', name: this.translateService.instant(marker('administration.templates.checklists.lineBlock')) }, //'Línea'
+    { id: 'TYPE_TAX', name: this.translateService.instant(marker('administration.templates.checklists.typeIvaBlock')) }, //'Tipo IVA'
+    { id: 'TOTAL', name: this.translateService.instant(marker('administration.templates.checklists.totalBlock')) }, //'Total'
+    { id: 'TOTAL_TAX', name: this.translateService.instant(marker('administration.templates.checklists.totalIvaBlock')) }, //'Total IVA'
+    { id: 'TOTAL_PLUS_TAX', name: this.translateService.instant(marker('administration.templates.checklists.totalplusIvaBlock')) } //'Total con IVA'
   ];
   public lineAttributes = [
-    { id: 'NAME', name: 'Nombre' },
-    { id: 'TYPE', name: 'Tipo' },
-    { id: 'TYPE_TAX', name: 'Tipo IVA' },
-    { id: 'AMOUNT', name: 'Cantidad' }
+    { id: 'NAME', name: this.translateService.instant(marker('administration.templates.checklists.nameLine')) }, //'Nombre'
+    { id: 'TYPE', name: this.translateService.instant(marker('administration.templates.checklists.typeLine')) }, //'Tipo'
+    { id: 'TYPE_TAX', name: this.translateService.instant(marker('administration.templates.checklists.typeIvaLine')) }, //'Tipo IVA'
+    { id: 'AMOUNT', name: this.translateService.instant(marker('administration.templates.checklists.amountLine')) } //'Importe'
   ];
   public allBlocksMap: Map<string, any[]> = new Map();
   selectedType: string | null = null;
@@ -87,6 +87,11 @@ export class CreateEditChecklistComponent implements OnInit {
     image: marker('administration.templates.checklists.image'),
     name: marker('administration.templates.checklists.name'),
     nameRequired: marker('userProfile.nameRequired'),
+    templates: marker('administration.templates.checklists.templates'),
+    selectBlock: marker('administration.templates.checklists.selectBlock'),
+    attrBlock: marker('administration.templates.checklists.attrBlock'),
+    selectLine: marker('administration.templates.checklists.selectLine'),
+    attrLine: marker('administration.templates.checklists.attrLine'),
     includeFile: marker('administration.templates.checklists.includeFile'),
     remoteSignature: marker('administration.templates.checklists.remoteSignature'),
     dropHere: marker('administration.templates.checklists.dropHere'),
@@ -128,10 +133,9 @@ export class CreateEditChecklistComponent implements OnInit {
   ngOnInit(): void {
     const variablesRequest = this.variablesService.searchVariablesSlots();
     const customVariableRequest = this.variablesService.searchCustomVariablesSlots();
-
+    this.getAccountingTemplates();
     if (this.route?.snapshot?.params?.id) {
       const spinner = this.spinnerService.show();
-      this.getAccountingTemplates();
       forkJoin([
         variablesRequest,
         this.templatesChecklistsService.findChecklistById(this.route.snapshot.params.id),
@@ -206,7 +210,6 @@ export class CreateEditChecklistComponent implements OnInit {
         take(1),
         switchMap((templates) => {
           this.listTemplates = templates;
-          console.log(this.listTemplates);
           const accountingItemsRequests = templates.map((template) =>
             this.templateAccountingService.findById(template.template.id).pipe(
               map((resp) => {
