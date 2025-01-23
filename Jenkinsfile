@@ -5,7 +5,8 @@ pipeline {
   }
   parameters {
     string(name: 'DEPLOY_BRANCH', defaultValue: 'develop', description: 'Branch to deploy')
-    string(name: 'ENV', defaultValue: 'dev', description: 'Environment for build')
+    string(name: 'ENV', defaultValue: 'dev', description: 'Environment for build (dev, pre or production)')
+    string(name: 'DEPLOY_DIR', defaultValue: '/sftp/DEV/new', description: 'SFTP path to deploy (/sftp/DEV/new or /sftp/PRE/new)')
   }
   stages {
     stage('Dependencies') {
@@ -17,7 +18,7 @@ pipeline {
     stage('Build: dist files') {
       steps {
         sh """
-        node --max_old_space_size=4096 ./node_modules/@angular/cli/bin/ng build --configuration=${params.ENV} --source-map=false
+        node --max_old_space_size=4096 ./node_modules/@angular/cli/bin/ng build --configuration=${params.ENV}
         """
       }
     }
