@@ -120,6 +120,7 @@
                             ]
                         },
                         "pre": {
+                            "buildOptimizer": false,
                             "optimization": true,
                             "fileReplacements": [
                                 {
