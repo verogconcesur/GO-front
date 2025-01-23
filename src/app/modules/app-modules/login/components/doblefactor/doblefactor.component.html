@@ -1,0 +1,30 @@
+<!-- Mensaje condicional según el tipo de autenticación -->
+<p *ngIf="f2aMethod === 'EMAIL'">{{ labels.emailCode | translate }}</p>
+<p *ngIf="f2aMethod === 'SMS'">{{ labels.phoneCode | translate }}</p>
+<p *ngIf="f2aMethod === 'AUTHENTICATOR' && !qrCode">
+    {{ labels.authCode | translate }}
+</p>
+<p *ngIf="f2aMethod === 'AUTHENTICATOR' && qrCode">
+    {{ labels.qrCode | translate }}
+</p>
+
+<form [formGroup]="dobleFactorForm" *ngIf="dobleFactorForm">
+    <!-- Mostrar código QR si está disponible -->
+    <div *ngIf="f2aMethod === 'AUTHENTICATOR' && qrCode" class="qr-code-container">
+        <img [src]="qrCode" alt="QR Code" class="qr-code-image" />
+    </div>
+
+    <div>
+        <mat-form-field appearance="outline" style="width: 100%">
+            <mat-label>{{ labels.code2FA | translate }}</mat-label>
+            <input matInput formControlName="code2FA" />
+            <mat-error
+                class="doble-factor-error"
+                *ngIf="dobleFactorForm.controls.code2FA.invalid && dobleFactorForm.controls.code2FA.touched"
+            >
+                {{ labels.code2FAError | translate }}
+            </mat-error>
+        </mat-form-field>
+        <mat-checkbox formControlName="trust">{{ labels.trust | translate }}</mat-checkbox>
+    </div>
+</form>

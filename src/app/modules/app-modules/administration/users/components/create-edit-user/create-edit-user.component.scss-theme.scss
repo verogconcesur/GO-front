@@ -31,6 +31,14 @@
           }
         }
       }
+
+      .user-data__workflows-container {
+        border: 2px solid #4746a3;
+        height: 160px;
+        border-radius: 8px;
+        overflow: auto;
+      }
+
       .smaller-mat-form-fields {
         @include respond-to(calc(#{$tablet-small} - 25px)) {
           mat-form-field {

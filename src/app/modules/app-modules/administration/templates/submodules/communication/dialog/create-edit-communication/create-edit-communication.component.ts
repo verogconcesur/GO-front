@@ -32,7 +32,7 @@ import { CustomDialogService } from '@shared/modules/custom-dialog/services/cust
 import { ConfirmDialogService } from '@shared/services/confirm-dialog.service';
 import { GlobalMessageService } from '@shared/services/global-message.service';
 import { ProgressSpinnerDialogService } from '@shared/services/progress-spinner-dialog.service';
-import { Observable, of } from 'rxjs';
+import { forkJoin, Observable, of } from 'rxjs';
 import { catchError, finalize, map, take } from 'rxjs/operators';
 
 export const enum CreateEditCommunicationComponentModalEnum {
@@ -74,6 +74,7 @@ export class CreateEditCommunicationComponent extends ComponentToExtendForCustom
     macroListOptions: []
   };
   public listVariables: VariablesDTO[];
+  public listCustomVariables: VariablesDTO[];
   public communicationForm: UntypedFormGroup;
   public communicationTemplateForm: UntypedFormGroup;
   public communicationToEdit: TemplatesCommunicationDTO = null;
@@ -153,19 +154,37 @@ export class CreateEditCommunicationComponent extends ComponentToExtendForCustom
 
   public onSubmitCustomDialog(): Observable<boolean | TemplatesCommunicationDTO> {
     const formValue = this.communicationForm.getRawValue();
-    const variablesOnText = this.listVariables.filter((variable) => {
-      let variableUsed = false;
-      formValue.templateComunicationItems.forEach((item: TemplateComunicationItemsDTO) => {
-        if (item.text && item.text.indexOf(variable.name) !== -1) {
-          variableUsed = true;
-        }
-        if (item.subject && item.subject.indexOf(variable.name) !== -1) {
-          variableUsed = true;
-        }
-      });
-      return variableUsed;
-    });
-    formValue.variables = variablesOnText;
+    const variableIdsOnText = this.listVariables
+      .filter((variable) => {
+        let variableUsed = false;
+        formValue.templateComunicationItems.forEach((item: TemplateComunicationItemsDTO) => {
+          if (item.text && item.text.indexOf(variable.name) !== -1) {
+            variableUsed = true;
+          }
+          if (item.subject && item.subject.indexOf(variable.name) !== -1) {
+            variableUsed = true;
+          }
+        });
+        return variableUsed;
+      })
+      .map((variable) => ({ id: variable.id }));
+
+    formValue.variables = variableIdsOnText;
+    const customVariableIdsOnText = this.listCustomVariables
+      .filter((customVariable) => {
+        let customVariableUsed = false;
+        formValue.templateComunicationItems.forEach((item: TemplateComunicationItemsDTO) => {
+          if (item.text && item.text.indexOf(customVariable.name) !== -1) {
+            customVariableUsed = true;
+          }
+          if (item.subject && item.subject.indexOf(customVariable.name) !== -1) {
+            customVariableUsed = true;
+          }
+        });
+        return customVariableUsed;
+      })
+      .map((customVariable) => ({ id: customVariable.id }));
+    formValue.tabItems = customVariableIdsOnText;
     if (this.communicationToEdit) {
       formValue.id = this.communicationToEdit.id;
       formValue.template.id = this.communicationToEdit.template.id;
@@ -297,15 +316,30 @@ export class CreateEditCommunicationComponent extends ComponentToExtendForCustom
       });
   };
 
+  // private getVariable(): void {
+  //   this.variablesService
+  //     .searchVariables()
+  //     .pipe(take(1))
+  //     .subscribe((res) => {
+  //       this.textEditorToolbarOptions.macroListOptions = res.map((item: VariablesDTO) => item.name);
+  //       this.textEditorToolbarOnlyMacroOptions.macroListOptions = this.textEditorToolbarOptions.macroListOptions;
+  //       this.listVariables = res;
+  //     });
+  // }
   private getVariable(): void {
-    this.variablesService
-      .searchVariables()
-      .pipe(take(1))
-      .subscribe((res) => {
-        this.textEditorToolbarOptions.macroListOptions = res.map((item: VariablesDTO) => item.name);
-        this.textEditorToolbarOnlyMacroOptions.macroListOptions = this.textEditorToolbarOptions.macroListOptions;
-        this.listVariables = res;
-      });
+    forkJoin({
+      variables: this.variablesService.searchVariables().pipe(take(1)),
+      customVariables: this.variablesService.searchCustomVariables().pipe(take(1))
+    }).subscribe((res) => {
+      const variables = res.variables.map((variable) => ({ ...variable, type: 'variable' }));
+      const customVariables = res.customVariables.map((customVariable) => ({ ...customVariable, type: 'custom' }));
+      const allVariables = variables.concat(customVariables);
+      const sortedVariables = allVariables.sort((a: VariablesDTO, b: VariablesDTO) => a.name.localeCompare(b.name));
+      this.textEditorToolbarOptions.macroListOptions = sortedVariables.map((item: VariablesDTO) => item.name);
+      this.textEditorToolbarOnlyMacroOptions.macroListOptions = this.textEditorToolbarOptions.macroListOptions;
+      this.listVariables = variables;
+      this.listCustomVariables = customVariables;
+    });
   }
 
   private initializeForm(): void {

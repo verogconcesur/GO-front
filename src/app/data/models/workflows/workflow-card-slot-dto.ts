@@ -6,6 +6,7 @@ export default interface WorkflowCardSlotDTO {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   value: any;
   name?: string;
+  fullName?: string;
   contentSource?: {
     contentType: {
       id: number;

@@ -10,7 +10,7 @@ import PermissionsDTO from '@data/models/user-permissions/permissions-dto';
 import RoleDTO from '@data/models/user-permissions/role-dto';
 import { UserService } from '@data/services/user.service';
 import moment from 'moment';
-import { Observable, throwError } from 'rxjs';
+import { Observable, of, throwError } from 'rxjs';
 import { catchError, take } from 'rxjs/operators';
 
 @Injectable({
@@ -19,6 +19,8 @@ import { catchError, take } from 'rxjs/operators';
 export class AuthenticationService implements OnDestroy {
   public readonly LOGIN_PATH = '/api/users/login';
   public readonly REFRESH_TOKEN_PATH = '/api/users/refreshToken';
+  public readonly GET_F2A_PATH = '/api/users/sendPass2FA';
+  private readonly USER_CHECK2FA_PATH = '/api/users/checkUser2FA';
 
   private readonly ACCESS_TOKEN = 'access_token';
   private readonly EXPIRES_IN = 'expires_in';
@@ -29,6 +31,8 @@ export class AuthenticationService implements OnDestroy {
   private readonly USER_FULL_NAME = 'user_full_name';
   private readonly USER_ROLE = 'user_role';
   private readonly USER_PERMISSIONS = 'user_permissions';
+  private readonly REQUIRE_2FA = 'require_2fa';
+  private readonly DEFAULT_MODE_2FA = 'default_mode_2fa';
 
   private readonly WARNING_STATUS = 'warning_status';
 
@@ -47,7 +51,7 @@ export class AuthenticationService implements OnDestroy {
     }
   }
 
-  public signIn(credentials: { userName: string; password: string }): Observable<LoginDTO> {
+  public signIn(credentials: { userName: string; password: string; deviceSignature: string }): Observable<LoginDTO> {
     return this.http
       .post<LoginDTO>(`${this.env.apiBaseUrl}${this.LOGIN_PATH}`, credentials)
       .pipe(catchError((error) => throwError(error as ConcenetError)));
@@ -80,10 +84,69 @@ export class AuthenticationService implements OnDestroy {
     }
   }
 
+  getF2AConfig(): Observable<{
+    userId: number;
+    f2a: boolean;
+    a2aPredefined: string | null;
+    sms: string;
+    email: string;
+    isNewBrowser: boolean;
+    last30days: boolean;
+  }> {
+    const configF2A = {
+      userId: 1,
+      f2a: true,
+      // @ts-ignore
+      a2aPredefined: null,
+      // @ts-ignore
+      sms: null,
+      // @ts-ignore
+      email: null,
+      isNewBrowser: false,
+      last30days: false
+    };
+
+    return of(configF2A);
+  }
+
+  sendAuthentication(
+    userId: number,
+    type: string
+  ): Observable<{
+    qr: string;
+  }> {
+    const resp = {
+      userId: 1,
+      qr: 'https://upload.wikimedia.org/wikipedia/commons/d/d7/Commons_QR_code.png'
+    };
+    if (type === 'SMS' || type === 'EMAIL') {
+      return of(null);
+    } else {
+      return of(resp);
+    }
+  }
+
   public refreshToken(): Observable<LoginDTO> {
     return this.http
       .get<LoginDTO>(`${this.env.apiBaseUrl}${this.REFRESH_TOKEN_PATH}`)
       .pipe(catchError((error) => throwError(error as ConcenetError)));
+  }
+
+  public sendF2APass(userId: number, type: string) {
+    return this.http
+      .get(`${this.env.apiBaseUrl}${this.GET_F2A_PATH}/${userId}/${type}`)
+      .pipe(catchError((error) => throwError(error as ConcenetError)));
+  }
+
+  public checkUser2FA(f2aInfo: {
+    userId: number;
+    code2FA: string;
+    deviceSignature: string;
+    trust: boolean;
+  }): Observable<LoginDTO> {
+    return this.http
+      .post<LoginDTO>(`${this.env.apiBaseUrl}${this.USER_CHECK2FA_PATH}`, f2aInfo)
+      .pipe(catchError((error) => throwError(error.error as ConcenetError)));
   }
 
   /**
@@ -203,12 +266,42 @@ export class AuthenticationService implements OnDestroy {
   }
 
   /**
-   * Retrieves the userId
+   * Retrieves the require2FA
    *
    * @returns the project version
    */
   getProjectVersion() {
     return localStorage.getItem(this.PROJECT_VERSION);
+  }
+
+  /**
+   * Retrieves the require2FA
+   *
+   * @returns the require2FA
+   */
+  getRequire2FA() {
+    return localStorage.getItem(this.REQUIRE_2FA);
+  }
+  /**
+   * remove the require2FA
+   */
+  removeRequire2FA() {
+    return localStorage.removeItem(this.REQUIRE_2FA);
+  }
+
+  /**
+   * Retrieves the defaultMode2FA
+   *
+   * @returns the defaultMode2FA
+   */
+  getDefaultMode2FA() {
+    return localStorage.getItem(this.DEFAULT_MODE_2FA);
+  }
+  /**
+   * remove the defaultMode2FA
+   */
+  removeDefaultMode2FA() {
+    return localStorage.removeItem(this.DEFAULT_MODE_2FA);
   }
 
   /**
@@ -318,6 +411,8 @@ export class AuthenticationService implements OnDestroy {
     localStorage.setItem(this.USER_FULL_NAME, loginData.user.fullName);
     localStorage.setItem(this.USER_ROLE, JSON.stringify(loginData.user.role));
     localStorage.setItem(this.USER_PERMISSIONS, JSON.stringify(loginData.user.permissions));
+    localStorage.setItem(this.REQUIRE_2FA, JSON.stringify(loginData.require2FA));
+    localStorage.setItem(this.DEFAULT_MODE_2FA, JSON.stringify(loginData.defaultMode2FA));
   }
 
   setTokenData(loginData: LoginDTO): void {
@@ -372,7 +467,60 @@ export class AuthenticationService implements OnDestroy {
     this.removeUserRole();
     this.removeUserPermissions();
     this.removeWarningStatus();
+    this.removeDefaultMode2FA();
+    this.removeRequire2FA();
     this.userService.userLogged$.next(null);
     clearTimeout(this.tokenTimeout);
+  }
+
+  generateBrowserFingerprint(): string {
+    // Obtener User Agent del navegador
+    const userAgent = window.navigator.userAgent;
+    // Obtener la zona horaria
+    const timezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
+    // Obtener puntos tactiles de la pantalla
+    const tactil = window.navigator.maxTouchPoints;
+    // Obtener GPU (WebGL info)
+    const gpuInfo = this.getWebGLInfo();
+    // Combinar todo en una cadena y codificar en Base64
+    const fingerprintData = `${userAgent}__${timezone}_${tactil}_${gpuInfo}`;
+    console.log(fingerprintData);
+    // Codificar en Base64 para que sea más compacto
+    return btoa(fingerprintData);
+  }
+
+  getWebGLInfo(): string {
+    // Crear un elemento 'canvas' que se utilizará para obtener el contexto WebGL
+    const canvas = document.createElement('canvas');
+    // Intentar obtener el contexto de WebGL de forma explícita.
+    // 'getContext("webgl")' devuelve el contexto WebGL si está disponible.
+    // Si no está disponible, 'getContext("experimental-webgl")'
+    //intenta usar una versión experimental de WebGL en navegadores más antiguos.
+    const gl =
+      (canvas.getContext('webgl') as WebGLRenderingContext) || (canvas.getContext('experimental-webgl') as WebGLRenderingContext);
+    // Si no se puede obtener el contexto WebGL, significa que el navegador no soporta WebGL.
+    // En ese caso, se devuelve 'NaN' para indicar que no se puede obtener la información.
+    if (!gl) {
+      return 'NaN';
+    }
+    // Intentar obtener la extensión 'WEBGL_debug_renderer_info', que proporciona detalles más específicos sobre la GPU.
+    // Esta extensión permite acceder al fabricante (vendor) y al modelo (renderer) de la tarjeta gráfica.
+    const debugInfo = gl.getExtension('WEBGL_debug_renderer_info');
+    // Si la extensión no está disponible (algunos navegadores pueden bloquearla por privacidad o seguridad),
+    // se devuelve 'NaN', indicando que no se puede obtener información de la GPU.
+    if (!debugInfo) {
+      return 'NaN';
+    }
+    // Obtener el nombre del fabricante de la GPU.
+    // 'UNMASKED_VENDOR_WEBGL' es el parámetro que devuelve el
+    //fabricante de la tarjeta gráfica (por ejemplo, "NVIDIA", "Intel", "AMD").
+    const vendor = gl.getParameter(debugInfo.UNMASKED_VENDOR_WEBGL) || 'NaN';
+    // Obtener el nombre del modelo de la GPU.
+    // 'UNMASKED_RENDERER_WEBGL' es el parámetro que devuelve el
+    //modelo exacto de la tarjeta gráfica (por ejemplo, "GeForce GTX 1050").
+    const renderer = gl.getParameter(debugInfo.UNMASKED_RENDERER_WEBGL) || 'NaN';
+    // Devolver un identificador único basado en la combinación del fabricante y el modelo de la GPU.
+    // Si no se pueden obtener estos valores, se devolverá 'NaN' como valor predeterminado.
+    return `${vendor}_${renderer}`;
   }
 }

@@ -53,6 +53,12 @@ export class TemplatesAccountingsService {
       .pipe(catchError((error) => throwError(error as ConcenetError)));
   }
 
+  public findAccountingTemplates(): Observable<TemplatesAccountingDTO[]> {
+    return this.http
+      .get<TemplatesAccountingDTO[]>(`${this.env.apiBaseUrl}${this.POST_ACCOUNTING_PATH}`)
+      .pipe(catchError((error) => throwError(error as ConcenetError)));
+  }
+
   public addOrEditAccounting(data: TemplatesAccountingDTO): Observable<TemplatesAccountingDTO> {
     return this.http
       .post<TemplatesAccountingDTO>(`${this.env.apiBaseUrl}${this.POST_ACCOUNTING_PATH}`, {

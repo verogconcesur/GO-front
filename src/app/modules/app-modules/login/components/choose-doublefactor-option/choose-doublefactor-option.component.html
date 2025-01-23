@@ -1,0 +1,75 @@
+<div class="login-content" fxLayout="column">
+    <div *ngIf="email || phoneNumber" class="login-content__information">
+        <p>{{ labels.selectAuthMethod | translate }}</p>
+    </div>
+    <div *ngIf="!email && !phoneNumber" class="login-content__information_no">
+        <p>{{ labels.noAuthMethod | translate }}</p>
+    </div>
+
+    <!-- Opción EMAIL -->
+    <div
+        class="login-content__link"
+        fxLayout="row"
+        fxLayoutAlign="start center"
+        [ngClass]="{ disabled: !email }"
+        (click)="email ? selectOption('EMAIL') : null"
+    >
+        <div class="login-content__icon-container">
+            <mat-icon class="login-content__icon">email</mat-icon>
+        </div>
+        <div fxLayout="column">
+            <div class="login-content__link__title">
+                <span>{{ labels.email | translate }}</span>
+            </div>
+            <div class="login-content__link__value">
+                <span>{{ email }}</span>
+            </div>
+        </div>
+    </div>
+    <!-- Mensaje de opción no disponible -->
+    <span *ngIf="!email" class="login-content__not-available">{{ labels.emailError | translate }}</span>
+
+    <!-- Opción SMS -->
+    <div
+        class="login-content__link"
+        fxLayout="row"
+        fxLayoutAlign="start center"
+        [ngClass]="{ disabled: !phoneNumber }"
+        (click)="phoneNumber ? selectOption('SMS') : null"
+    >
+        <div class="login-content__icon-container">
+            <mat-icon class="login-content__icon">sms</mat-icon>
+        </div>
+        <div fxLayout="column">
+            <div class="login-content__link__title">
+                <span>{{ labels.sms | translate }}</span>
+            </div>
+            <div class="login-content__link__value">
+                <span>{{ phoneNumber }}</span>
+            </div>
+        </div>
+    </div>
+    <span *ngIf="!phoneNumber" class="login-content__not-available">{{ labels.phoneError | translate }}</span>
+
+    <!-- Opción Authenticator -->
+    <div
+        class="login-content__link"
+        fxLayout="row"
+        fxLayoutAlign="start center"
+        [ngClass]="{ disabled: !email }"
+        (click)="email ? selectOption('AUTHENTICATOR') : null"
+    >
+        <div class="login-content__icon-container">
+            <mat-icon class="login-content__icon">security</mat-icon>
+        </div>
+        <div fxLayout="column">
+            <div class="login-content__link__title">
+                <span>{{ labels.authenticator | translate }}</span>
+            </div>
+            <div class="login-content__link__value">
+                <span>&nbsp;</span>
+            </div>
+        </div>
+    </div>
+    <span *ngIf="!email" class="login-content__not-available">{{ labels.authenticatorError | translate }}</span>
+</div>
