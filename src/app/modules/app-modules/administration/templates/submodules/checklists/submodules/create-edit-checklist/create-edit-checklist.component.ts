@@ -406,18 +406,16 @@ export class CreateEditChecklistComponent implements OnInit {
       $('.checklistItemToDrag.dropped').remove();
     }
     if (this.checklistForm?.value?.templateChecklistItems?.length > 0) {
-      setTimeout(() => {
-        this.checklistForm.value.templateChecklistItems.forEach((item: TemplateChecklistItemDTO, index: number) => {
-          if (page && item.numPage === page) {
-            this.printItemInPdfPage(
-              (this.checklistForm.get('templateChecklistItems') as UntypedFormArray).at(index) as UntypedFormGroup
-            );
-          } else if (!page) {
-            this.printItemInPdfPage(
-              (this.checklistForm.get('templateChecklistItems') as UntypedFormArray).at(index) as UntypedFormGroup
-            );
-          }
-        });
+      this.checklistForm.value.templateChecklistItems.forEach((item: TemplateChecklistItemDTO, index: number) => {
+        if (page && item.numPage === page) {
+          this.printItemInPdfPage(
+            (this.checklistForm.get('templateChecklistItems') as UntypedFormArray).at(index) as UntypedFormGroup
+          );
+        } else if (!page) {
+          this.printItemInPdfPage(
+            (this.checklistForm.get('templateChecklistItems') as UntypedFormArray).at(index) as UntypedFormGroup
+          );
+        }
       });
     }
   }
