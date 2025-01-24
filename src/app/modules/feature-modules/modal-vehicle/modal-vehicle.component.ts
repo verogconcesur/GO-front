@@ -298,6 +298,7 @@ export class ModalVehicleComponent extends ComponentToExtendForCustomDialog impl
       vin: formValue.vin ? formValue.vin : null,
       description: formValue.description ? formValue.description : null,
       vehicleId: formValue.vehicleId ? formValue.vehicleId : null,
+      vehicleCustomers: formValue.vehicleCustomers ? formValue.vehicleCustomers : null,
       inventories: [],
       ...(hasComissionNumber && formValue.model ? { model: formValue.model } : {}),
       ...(hasComissionNumber && formValue.make ? { make: formValue.make } : {}),
