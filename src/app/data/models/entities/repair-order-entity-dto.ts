@@ -13,5 +13,7 @@ export default interface RepairOrderEntityDTO {
   };
   facility: FacilityDTO;
   repairOrderId?: number;
+  playerAccount?: string;
   notes: string;
+  jobs?: string[];
 }

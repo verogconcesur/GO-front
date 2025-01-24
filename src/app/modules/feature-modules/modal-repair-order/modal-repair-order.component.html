@@ -69,6 +69,15 @@
                             }}</span>
                         </mat-error>
                     </mat-form-field>
+                    <mat-form-field appearance="outline" floatLabel="always">
+                        <mat-label>Cuenta contable</mat-label>
+                        <input matInput formControlName="playerAccount" />
+                        <mat-error *ngIf="repairOrderForm.controls?.playerAccount.invalid">
+                            <span *ngIf="repairOrderForm.controls.playerAccount.errors.required">{{
+                                labels.required | translate
+                            }}</span>
+                        </mat-error>
+                    </mat-form-field>
                     <ng-container formArrayName="lines">
                         <mat-form-field
                             *ngFor="let line of lines.controls; let i = index"
@@ -76,15 +85,15 @@
                             floatLabel="always"
                             [formGroupName]="i"
                         >
-                            <mat-label>Línea {{ i + 1 }}</mat-label>
+                            <mat-label>Trabajos {{ i + 1 }}</mat-label>
                             <input matInput formControlName="name" />
                             <mat-error *ngIf="line.get('name').invalid">
                                 {{ labels.required | translate }}
                             </mat-error>
                         </mat-form-field>
                     </ng-container>
-                    <button class="add_line" mat-raised-button color="primary" (click)="addLine()">
-                        Añadir nueva línea <mat-icon>add</mat-icon>
+                    <button *ngIf="showButtonLines" class="add_line" mat-raised-button color="primary" (click)="addLine()">
+                        Añadir nuevo trabajo <mat-icon>add</mat-icon>
                     </button>
                 </div>
                 <div class="notes-section">

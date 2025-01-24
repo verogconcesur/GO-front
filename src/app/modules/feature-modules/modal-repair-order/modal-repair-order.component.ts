@@ -57,6 +57,7 @@ export class ModalRepairOrderComponent extends ComponentToExtendForCustomDialog 
   public facilityAsyncList: Observable<FacilityDTO[]>;
   public showReference = true;
   public facilityList: FacilityDTO[];
+  public showButtonLines = false;
 
   constructor(
     private fb: UntypedFormBuilder,
@@ -133,6 +134,14 @@ export class ModalRepairOrderComponent extends ComponentToExtendForCustomDialog 
 
   public confirmCreateOrderRepair = () => {
     const formValue = this.repairOrderForm.getRawValue();
+    const jobNames: string[] = [];
+    const linesArray = this.repairOrderForm.get('lines') as FormArray;
+    linesArray.controls.forEach((lineGroup: FormGroup) => {
+      const nameControl = lineGroup.get('name');
+      if (nameControl) {
+        jobNames.push(nameControl.value);
+      }
+    });
     if (this.showReference === true) {
       const spinner = this.spinnerService.show();
       this.entitiesService
@@ -144,7 +153,9 @@ export class ModalRepairOrderComponent extends ComponentToExtendForCustomDialog 
           customer: formValue.customer,
           dueInDatetime: this.convertToMilliseconds(formValue.dueInDatetime).toString(),
           facility: formValue.facility,
-          notes: formValue.notes
+          notes: formValue.notes,
+          playerAccount: formValue.plaplayerAccount,
+          jobs: jobNames
         })
         .pipe(
           take(1),
@@ -185,7 +196,9 @@ export class ModalRepairOrderComponent extends ComponentToExtendForCustomDialog 
                 customer: formValue.customer,
                 dueInDatetime: this.convertToMilliseconds(formValue.dueInDatetime).toString(),
                 facility: formValue.facility,
-                notes: formValue.notes
+                notes: formValue.notes,
+                playerAccount: formValue.plaplayerAccount,
+                jobs: jobNames
               })
               .pipe(
                 take(1),
@@ -218,12 +231,14 @@ export class ModalRepairOrderComponent extends ComponentToExtendForCustomDialog 
       if (facilitySelected.configApiExtDmsType === 'AUTOLINE') {
         this.showReference = false;
         this.repairOrderForm.get('reference').disable();
+        this.repairOrderForm.get('jobsDescription').disable();
         if (!firstLoad) {
           this.repairOrderForm.get('reference').setValue(null);
         }
       } else {
         this.showReference = true;
         this.repairOrderForm.get('reference').enable();
+        this.repairOrderForm.get('jobsDescription').enable();
       }
     }
   }
@@ -273,6 +288,7 @@ export class ModalRepairOrderComponent extends ComponentToExtendForCustomDialog 
       jobsDescription: [this.repairOrderToEdit ? this.repairOrderToEdit?.jobsDescription : null],
       vehicle: [this.repairOrderToEdit ? this.repairOrderToEdit?.vehicle : null],
       customer: [this.repairOrderToEdit ? this.repairOrderToEdit?.customer : null],
+      playerAccount: [this.repairOrderToEdit ? this.repairOrderToEdit?.playerAccount : null],
       dueInDatetime: [this.repairOrderToEdit ? new Date(this.repairOrderToEdit?.dueInDatetime) : null, [Validators.required]],
       facility: [{ value: this.repairOrderToEdit ? this.repairOrderToEdit?.facility : null, disabled: true }],
       notes: [this.repairOrderToEdit ? this.repairOrderToEdit?.notes : null],
