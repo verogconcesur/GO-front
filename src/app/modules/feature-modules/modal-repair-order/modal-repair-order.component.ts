@@ -232,11 +232,13 @@ export class ModalRepairOrderComponent extends ComponentToExtendForCustomDialog 
         this.showReference = false;
         this.repairOrderForm.get('reference').disable();
         this.repairOrderForm.get('jobsDescription').disable();
+        this.showButtonLines = true;
         if (!firstLoad) {
           this.repairOrderForm.get('reference').setValue(null);
         }
       } else {
         this.showReference = true;
+        this.showButtonLines = false;
         this.repairOrderForm.get('reference').enable();
         this.repairOrderForm.get('jobsDescription').enable();
       }
