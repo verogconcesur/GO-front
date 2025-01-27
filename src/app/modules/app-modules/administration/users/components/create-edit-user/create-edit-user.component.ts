@@ -7,9 +7,11 @@ import { marker } from '@biesbjerg/ngx-translate-extract-marker';
 import PermissionsDTO from '@data/models/user-permissions/permissions-dto';
 import RoleDTO from '@data/models/user-permissions/role-dto';
 import UserDetailsDTO from '@data/models/user-permissions/user-details-dto';
+import WorkflowDTO from '@data/models/workflows/workflow-dto';
 import { PermissionsService } from '@data/services/permissions.service';
 import { RoleService } from '@data/services/role.service';
 import { UserService } from '@data/services/user.service';
+import { WorkflowsService } from '@data/services/workflows.service';
 import { TranslateService } from '@ngx-translate/core';
 import { CustomDialogFooterConfigI } from '@shared/modules/custom-dialog/interfaces/custom-dialog-footer-config';
 import { ComponentToExtendForCustomDialog } from '@shared/modules/custom-dialog/models/component-for-custom-dialog';
@@ -43,6 +45,7 @@ export class CreateEditUserComponent extends ComponentToExtendForCustomDialog im
     firstName: marker('userProfile.firstName'),
     lastName: marker('userProfile.lastName2'),
     code: marker('userProfile.code'),
+    userId: marker('userProfile.userId'),
     userName: marker('userProfile.userName'),
     email: marker('userProfile.email'),
     role: marker('userProfile.role'),
@@ -51,6 +54,10 @@ export class CreateEditUserComponent extends ComponentToExtendForCustomDialog im
     edit: marker('userProfile.edit'),
     sign: marker('userProfile.sign'),
     data: marker('userProfile.data'),
+    userType: marker('userProfile.userType'),
+    phoneNumber: marker('userProfile.phoneNumber'),
+    notWorkflowData: marker('userProfile.notWorkflowData'),
+    userWorkflow: marker('userProfile.userWorkflow'),
     nameRequired: marker('userProfile.nameRequired'),
     firstNameRequired: marker('userProfile.firstNameRequired'),
     password: marker('login.password'),
@@ -72,6 +79,14 @@ export class CreateEditUserComponent extends ComponentToExtendForCustomDialog im
   public userForm: UntypedFormGroup;
   public rolesAsyncList: Observable<RoleDTO[]>;
   public userToEdit: UserDetailsDTO = null;
+  public workflowList: WorkflowDTO[];
+  public nombresWF: { name: string }[] = [];
+  // eslint-disable-next-line
+  public displayWFList: string = 'none';
+  public userTypeList = [
+    { name: 'GO', value: 'GO' },
+    { name: 'EXTERNAL', value: 'EXTERNAL' }
+  ];
 
   constructor(
     private fb: UntypedFormBuilder,
@@ -82,7 +97,8 @@ export class CreateEditUserComponent extends ComponentToExtendForCustomDialog im
     private globalMessageService: GlobalMessageService,
     private roleService: RoleService,
     private permissionsService: PermissionsService,
-    private customDialogService: CustomDialogService
+    private customDialogService: CustomDialogService,
+    private workflowsService: WorkflowsService
   ) {
     super(
       CreateEditUserComponentModalEnum.ID,
@@ -103,6 +119,9 @@ export class CreateEditUserComponent extends ComponentToExtendForCustomDialog im
     }
     this.getUsersPermissions();
     this.initializeForm();
+    if (this.userToEdit !== null) {
+      this.getWorkflowList(this.userToEdit.id);
+    }
     this.getListOptions();
   }
 
@@ -233,7 +252,9 @@ export class CreateEditUserComponent extends ComponentToExtendForCustomDialog im
         firstName: [this.userToEdit ? this.userToEdit.firstName : null],
         lastName: [this.userToEdit ? this.userToEdit.lastName : null],
         email: [this.userToEdit ? this.userToEdit.email : null, [Validators.email]],
+        phoneNumber: [this.userToEdit ? this.userToEdit.phoneNumber : null],
         code: [this.userToEdit ? this.userToEdit.code : null],
+        externalUserId: [this.userToEdit ? this.userToEdit.externalUserId : null],
         userName: [this.userToEdit ? this.userToEdit.userName : null, Validators.required],
         role: [this.userToEdit ? this.userToEdit.role : null, Validators.required],
         newPassword: [
@@ -247,7 +268,8 @@ export class CreateEditUserComponent extends ComponentToExtendForCustomDialog im
         brands: [this.userToEdit ? this.userToEdit.brands : null, Validators.required],
         facilities: [this.userToEdit ? this.userToEdit.facilities : null, Validators.required],
         departments: [this.userToEdit ? this.userToEdit.departments : null, Validators.required],
-        specialties: [this.userToEdit ? this.userToEdit.specialties : null, Validators.required]
+        specialties: [this.userToEdit ? this.userToEdit.specialties : null, Validators.required],
+        userType: [this.userToEdit ? this.userToEdit.userType : this.userTypeList[0].value]
       },
       {
         validators: ConfirmPasswordValidator.mustMatch('newPassword', 'newPasswordConfirmation')
@@ -291,5 +313,21 @@ export class CreateEditUserComponent extends ComponentToExtendForCustomDialog im
           .map((p) => p.id)
       ].sort()
     );
+  }
+
+  private getWorkflowList(userId: number): void {
+    this.workflowsService
+      .getWorkflowsListByUserId(userId)
+      .pipe(take(1))
+      .subscribe((data) => {
+        this.workflowList = data ? data : [];
+        this.nombresWF = [{ name: this.translateService.instant('userProfile.notWorkflowData') }]; //Sin Workflows asociados.
+        if (this.workflowList != null && this.workflowList.length > 0) {
+          this.nombresWF = [];
+          this.workflowList.forEach((workflow: WorkflowDTO) => {
+            this.nombresWF.push({ name: workflow.name });
+          });
+        }
+      });
   }
 }

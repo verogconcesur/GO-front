@@ -3,42 +3,40 @@
 /* eslint-disable max-len */
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import {
-  Component,
-  OnInit,
-  ElementRef,
-  ViewChild,
-  Input,
-  EventEmitter,
-  Output,
-  HostListener,
   AfterViewInit,
+  Component,
+  ElementRef,
+  EventEmitter,
+  Input,
   OnDestroy,
+  OnInit,
+  Output,
+  ViewChild,
   ViewEncapsulation
 } from '@angular/core';
 import { UntypedFormArray, UntypedFormBuilder, UntypedFormControl, UntypedFormGroup } from '@angular/forms';
+import { MatStepper } from '@angular/material/stepper';
+import { Router } from '@angular/router';
+import { RouteConstants } from '@app/constants/route.constants';
+import { marker } from '@biesbjerg/ngx-translate-extract-marker';
 import TemplatesChecklistsDTO, {
   AuxChecklistItemsGroupBySyncDTO,
   AuxChecklistItemsGroupByTypeDTO,
   SignDocumentExchangeDTO,
   TemplateChecklistItemDTO
 } from '@data/models/templates/templates-checklists-dto';
+import { TemplatesChecklistsService } from '@data/services/templates-checklists.service';
 import { TranslateService } from '@ngx-translate/core';
-import { marker } from '@biesbjerg/ngx-translate-extract-marker';
 import { ConfirmDialogService } from '@shared/services/confirm-dialog.service';
 import { GlobalMessageService } from '@shared/services/global-message.service';
 import { ProgressSpinnerDialogService } from '@shared/services/progress-spinner-dialog.service';
 import $ from 'jquery';
 import 'jqueryui';
+import { NGXLogger } from 'ngx-logger';
 import p5 from 'p5';
 import { Subject } from 'rxjs';
 import { finalize, take } from 'rxjs/operators';
 import { SignDocumentAuxService } from './sign-document-aux.service';
-import { Router } from '@angular/router';
-import { RouteConstants } from '@app/constants/route.constants';
-import { TemplatesChecklistsService } from '@data/services/templates-checklists.service';
-import { NGXLogger } from 'ngx-logger';
-import { AttachmentDTO, CardAttachmentsDTO } from '@data/models/cards/card-attachments-dto';
-import { MatStepper } from '@angular/material/stepper';
 import { RemoteSignFormComponent } from './steps/remote-sign-form/remote-sign-form.component';
 
 @Component({
@@ -79,6 +77,7 @@ export class SignDocumentChecklistNewComponent implements OnInit, AfterViewInit,
     drawing: marker('administration.templates.checklists.freeDraw'),
     check: marker('administration.templates.checklists.check'),
     variable: marker('administration.templates.checklists.var'),
+    accounting: marker('administration.templates.checklists.accounting'),
     image: marker('administration.templates.checklists.image'),
     noData: marker('errors.noDataToShow'),
     pages: marker('pagination.pages'),
@@ -937,7 +936,7 @@ export class SignDocumentChecklistNewComponent implements OnInit, AfterViewInit,
           this.checklistToEdit.templateChecklistItems = [...this.checklistToEdit.templateChecklistItems].filter((item) => {
             if (item.staticValue) {
               return false;
-            } else if (item.typeItem === 'VARIABLE') {
+            } else if (item.typeItem === 'VARIABLE' || item.typeItem === 'ACCOUNTING') {
               return false;
             }
             return true;

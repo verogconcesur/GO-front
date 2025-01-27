@@ -1,10 +1,8 @@
 import { Injectable } from '@angular/core';
 import { UntypedFormBuilder, UntypedFormGroup, Validators } from '@angular/forms';
-import { TemplateAtachmentItemsDTO } from '@data/models/templates/templates-attachment-dto';
 import TemplatesChecklistsDTO, { TemplateChecklistItemDTO } from '@data/models/templates/templates-checklists-dto';
 import WorkflowCardSlotDTO from '@data/models/workflows/workflow-card-slot-dto';
 import CombinedRequiredFieldsValidator from '@shared/validators/combined-required-fields.validator';
-import { BehaviorSubject, Observable } from 'rxjs';
 
 @Injectable({
   providedIn: 'root'
@@ -84,10 +82,15 @@ export class CreateEditChecklistAuxService {
           id: [item.itemVal?.id ? item.itemVal.id : null],
           textValue: [item.itemVal?.textValue ? item.itemVal.textValue : null]
         }),
+        templateAccountingId: [item.templateAccountingId ? item.templateAccountingId : null],
+        templateAccountingItemId: [item.templateAccountingItemId ? item.templateAccountingItemId : null],
+        accountingItemAttributeType: [item.accountingItemAttributeType ? item.accountingItemAttributeType : null],
+        templateAccountingItemLineId: [item.templateAccountingItemLineId ? item.templateAccountingItemLineId : null],
+        accountingItemLineAttributeType: [item.accountingItemLineAttributeType ? item.accountingItemLineAttributeType : null],
         variable: [
-          this.listVariables && item.variable?.id
-            ? this.listVariables.find((variable: WorkflowCardSlotDTO) => variable.id === item.variable.id)
-            : item.variable
+          this.listVariables && (item.variable?.id || item.tabItem?.id)
+            ? this.listVariables.find((variable: WorkflowCardSlotDTO) => variable.id === (item.variable?.id || item.tabItem?.id))
+            : item.variable || item.tabItem
         ]
       },
       {
@@ -146,7 +149,13 @@ export class CreateEditChecklistAuxService {
           id: [null],
           textValue: [null]
         }),
-        variable: [null]
+        templateAccountingId: [null],
+        templateAccountingItemId: [null],
+        accountingItemAttributeType: [null],
+        templateAccountingItemLineId: [null],
+        accountingItemLineAttributeType: [null],
+        variable: [null],
+        tabItem: [null]
       },
       {
         validators: [

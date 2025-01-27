@@ -92,7 +92,6 @@ export class TokenInterceptor implements HttpInterceptor {
         this.dialog.closeAll();
         return this.logout(error.error);
       case 403:
-        this.dialog.closeAll();
         return this.handle403Error(error.error);
       default:
         return throwError(error);
@@ -100,11 +99,18 @@ export class TokenInterceptor implements HttpInterceptor {
   }
 
   private handle403Error(error: ConcenetError): ObservableResponse {
-    this.router.navigate([RouteConstants.DASHBOARD]);
-    this.globalMessage.showError({
-      message: this.translateService.instant(marker('common.accessDenied')),
-      actionText: this.translateService.instant(marker('common.close'))
-    });
+    const currentUrl = this.router.url;
+    if (
+      (currentUrl !== `/${RouteConstants.LOGIN}` && !error.path.endsWith('checkUser2FA')) ||
+      !error.path.endsWith('checkUser2FA')
+    ) {
+      this.dialog.closeAll();
+      this.router.navigate([RouteConstants.DASHBOARD]);
+      this.globalMessage.showError({
+        message: this.translateService.instant(marker('common.accessDenied')),
+        actionText: this.translateService.instant(marker('common.close'))
+      });
+    }
     return throwError(error);
   }
 }

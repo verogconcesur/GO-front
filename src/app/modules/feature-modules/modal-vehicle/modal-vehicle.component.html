@@ -10,6 +10,17 @@
                     {{ labels.data | translate }}
                 </div>
                 <div class="vehicle-data__section__group">
+                    <mat-form-field appearance="outline" floatLabel="always">
+                        <mat-label>{{ labels.facility | translate }}</mat-label>
+                        <mat-select formControlName="facility">
+                            <mat-option *ngFor="let facility of facilityAsyncList | async" [value]="facility">{{
+                                facility.name
+                            }}</mat-option>
+                        </mat-select>
+                        <mat-error class="facility-data__error" *ngIf="form.facility.invalid && form.facility.touched">
+                            <span *ngIf="form.facility.errors.required">{{ labels.required | translate }}</span>
+                        </mat-error>
+                    </mat-form-field>
                     <!-- licensePlate -->
                     <mat-form-field appearance="outline" floatLabel="always">
                         <mat-label>{{ labels.licensePlate | translate }}</mat-label>
@@ -18,7 +29,7 @@
                     <!-- vin -->
                     <mat-form-field appearance="outline" floatLabel="always">
                         <mat-label>{{ labels.vin | translate }}</mat-label>
-                        <input matInput formControlName="vin" />
+                        <input matInput formControlName="vin" (change)="changeVin()" />
                     </mat-form-field>
                     <!-- make -->
                     <mat-form-field appearance="outline" floatLabel="always">
@@ -38,12 +49,15 @@
                     <!-- vehicleId -->
                     <mat-form-field appearance="outline" floatLabel="always">
                         <mat-label>{{ labels.vehicleId | translate }}</mat-label>
-                        <input matInput formControlName="vehicleId" />
+                        <input matInput formControlName="vehicleId" readonly />
                     </mat-form-field>
-                    <!-- chassis -->
                     <mat-form-field appearance="outline" floatLabel="always">
-                        <mat-label>{{ labels.chassis | translate }}</mat-label>
-                        <input matInput formControlName="chassis" />
+                        <mat-label>{{ labels.variants | translate }}</mat-label>
+                        <mat-select formControlName="variantCode" [disabled]="form.commissionNumber.value">
+                            <mat-option *ngFor="let variant of variants | keyvalue" [value]="variant.key">{{
+                                variant.value
+                            }}</mat-option>
+                        </mat-select>
                     </mat-form-field>
                 </div>
                 <div class="vehicle-data__section__title first-child">
@@ -57,17 +71,94 @@
                     </mat-form-field>
                     <!-- Facility -->
                     <mat-form-field appearance="outline" floatLabel="always">
-                        <mat-label>{{ labels.facility | translate }}</mat-label>
-                        <mat-select formControlName="facility" [disabled]="!form.commissionNumber.value">
+                        <mat-label>{{ labels.facilityStock | translate }}</mat-label>
+                        <mat-select formControlName="facilityStock" [disabled]="!form.commissionNumber.value">
                             <mat-option *ngFor="let facility of facilityList" [value]="facility">{{ facility.name }}</mat-option>
                         </mat-select>
                         <button matSuffix mat-icon-button aria-label="Clear" (click)="removeFacility(); $event.stopPropagation()">
                             <mat-icon>close</mat-icon>
                         </button>
-                        <mat-error *ngIf="form?.facility.invalid">
-                            <span *ngIf="form.facility.errors.required"> {{ labels.required | translate }} </span>
+                        <mat-error *ngIf="form?.facilityStock.invalid">
+                            <span *ngIf="form.facilityStock.errors.required"> {{ labels.required | translate }} </span>
                         </mat-error>
                     </mat-form-field>
+                </div>
+            </div>
+            <div class="users-container">
+                <div class="users-container__section">
+                    <div class="users-container__section__title">
+                        <h1>Listado de clientes del vehiculo</h1>
+
+                        <button (click)="openModalAddCustomer()" mat-raised-button color="primary">
+                            + <span class="create-action__normal-label">Añadir cliente</span>
+                        </button>
+                    </div>
+                    <div class="users-container__section__content">
+                        <mat-accordion class="header-color-primary" multi>
+                            <mat-expansion-panel class="mat-elevation-z2" [expanded]="true">
+                                <mat-expansion-panel-header> </mat-expansion-panel-header>
+                                <table mat-table [dataSource]="vehicleCustomersList" style="width: 100%">
+                                    <!-- fullname Column -->
+                                    <ng-container matColumnDef="fullName">
+                                        <th mat-header-cell *matHeaderCellDef>Nombre</th>
+                                        <td mat-cell *matCellDef="let element">
+                                            <span>&nbsp;&nbsp;{{ element.customer.fullName }}&nbsp; </span>
+                                        </td>
+                                    </ng-container>
+
+                                    <!-- dni Column -->
+                                    <ng-container matColumnDef="dni">
+                                        <th mat-header-cell *matHeaderCellDef>DNI</th>
+                                        <td mat-cell *matCellDef="let element">
+                                            {{ element.customer.socialSecurityId }}
+                                        </td>
+                                    </ng-container>
+
+                                    <!-- relate Column -->
+                                    <ng-container matColumnDef="relate">
+                                        <th mat-header-cell *matHeaderCellDef>Relación</th>
+                                        <td mat-cell *matCellDef="let element; let i = index">
+                                            <mat-form-field appearance="outline" floatLabel="always" style="width: 100%">
+                                                <mat-label>Selecciona relación</mat-label>
+                                                <mat-select
+                                                    [value]="element.relationship"
+                                                    (selectionChange)="onSelectionChange($event, element)"
+                                                >
+                                                    <mat-option *ngFor="let option of relationOptions" [value]="option.value">
+                                                        {{ option.name }}
+                                                    </mat-option>
+                                                </mat-select>
+                                            </mat-form-field>
+                                        </td>
+                                    </ng-container>
+
+                                    <!-- actions Column -->
+                                    <ng-container matColumnDef="actions">
+                                        <th mat-header-cell style="width: 15%; text-align: center" *matHeaderCellDef>Acciones</th>
+                                        <td
+                                            mat-cell
+                                            style="width: 15%; text-align: center"
+                                            *matCellDef="let element; let i = index"
+                                            class="action-buttons no-ellipsis"
+                                        >
+                                            <button mat-icon-button aria-label="details">
+                                                <mat-icon (click)="openDeleteDialog(i)">delete</mat-icon>
+                                            </button>
+                                        </td>
+                                    </ng-container>
+
+                                    <!-- Table headers and rows -->
+                                    <tr mat-header-row *matHeaderRowDef="displayedColumns; sticky: true"></tr>
+                                    <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
+                                    <tr class="mat-row" *matNoDataRow>
+                                        <td class="mat-cell" style="text-align: center" [attr.colspan]="displayedColumns.length">
+                                            No hay información
+                                        </td>
+                                    </tr>
+                                </table>
+                            </mat-expansion-panel>
+                        </mat-accordion>
+                    </div>
                 </div>
             </div>
         </form>

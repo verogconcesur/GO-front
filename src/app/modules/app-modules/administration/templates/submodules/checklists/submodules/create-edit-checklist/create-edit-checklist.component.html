@@ -170,12 +170,97 @@
                                                         formControlName="variable"
                                                         (selectionChange)="updateValueAndValidityForm()"
                                                     >
-                                                        <mat-option *ngFor="let variable of listVariables" [value]="variable">{{
-                                                            variable.name
-                                                        }}</mat-option>
+                                                        <mat-option
+                                                            *ngFor="let variable of listVariables"
+                                                            [value]="variable"
+                                                            [ngStyle]="{
+                                                                'white-space': 'normal',
+                                                                'word-wrap': 'break-word',
+                                                                'overflow-wrap': 'break-word',
+                                                                'line-height': '1.5',
+                                                                'min-height': '42px',
+                                                                padding: '4px 10px',
+                                                                height: 'auto',
+                                                                'box-sizing': 'border-box'
+                                                            }"
+                                                            >{{ variable.name }}</mat-option
+                                                        >
                                                     </mat-select>
                                                 </mat-form-field>
                                             </section>
+                                            <section *ngIf="groupByType.typeItem === 'ACCOUNTING'">
+                                                <mat-form-field appearance="outline" floatLabel="always" style="width: 100%">
+                                                    <mat-label>Plantilla*</mat-label>
+                                                    <mat-select formControlName="templateAccountingId">
+                                                        <mat-option *ngFor="let template of listTemplates" [value]="template.id">
+                                                            {{ template.template.name }}
+                                                        </mat-option>
+                                                    </mat-select>
+                                                </mat-form-field>
+
+                                                <mat-form-field
+                                                    appearance="outline"
+                                                    floatLabel="always"
+                                                    style="width: 100%"
+                                                    *ngIf="isTemplateSelected(syncGroup)"
+                                                >
+                                                    <mat-label>Selecciona bloque</mat-label>
+                                                    <mat-select formControlName="templateAccountingItemId">
+                                                        <mat-option
+                                                            *ngFor="let block of getAllBlocks(syncGroup)"
+                                                            [value]="block.id"
+                                                        >
+                                                            {{ block.description }}
+                                                        </mat-option>
+                                                    </mat-select>
+                                                </mat-form-field>
+
+                                                <mat-form-field
+                                                    appearance="outline"
+                                                    floatLabel="always"
+                                                    style="width: 100%"
+                                                    *ngIf="isBlockSelected(syncGroup)"
+                                                >
+                                                    <mat-label>Atributo Bloque</mat-label>
+                                                    <mat-select formControlName="accountingItemAttributeType">
+                                                        <mat-option
+                                                            *ngFor="let blockAttr of blockAttributes"
+                                                            [value]="blockAttr.id"
+                                                        >
+                                                            {{ blockAttr.name }}
+                                                        </mat-option>
+                                                    </mat-select>
+                                                </mat-form-field>
+
+                                                <mat-form-field
+                                                    appearance="outline"
+                                                    floatLabel="always"
+                                                    style="width: 100%"
+                                                    *ngIf="isLineSelected(syncGroup)"
+                                                >
+                                                    <mat-label>Seleccionar linea</mat-label>
+                                                    <mat-select formControlName="templateAccountingItemLineId">
+                                                        <mat-option *ngFor="let line of getLines(syncGroup)" [value]="line.id">
+                                                            {{ line.description }}
+                                                        </mat-option>
+                                                    </mat-select>
+                                                </mat-form-field>
+
+                                                <mat-form-field
+                                                    appearance="outline"
+                                                    floatLabel="always"
+                                                    style="width: 100%"
+                                                    *ngIf="isLineAttibuteSelected(syncGroup)"
+                                                >
+                                                    <mat-label>Atributo Linea</mat-label>
+                                                    <mat-select formControlName="accountingItemLineAttributeType">
+                                                        <mat-option *ngFor="let lineAttr of lineAttributes" [value]="lineAttr.id">
+                                                            {{ lineAttr.name }}
+                                                        </mat-option>
+                                                    </mat-select>
+                                                </mat-form-field>
+                                            </section>
+
                                             <!-- Static value -->
                                             <section
                                                 *ngIf="
@@ -376,14 +461,14 @@
     <div class="checklist-config__column checklist-config__items">
         <!-- 'SIGN' | 'TEXT' | 'VARIABLE' | 'CHECK' | 'DRAWING' | 'IMAGE'; -->
         <div class="checklistItemToDrag undropped" id="checklistItemToDrag__text" data-type="TEXT">
-            <div class="resizable" style="height: 50px; width: 124px">
+            <div class="resizable" style="height: 50px; width: 135px">
                 <div class="checklistItemToDrag__text checklistItemToDrag__label">
                     <label>{{ labels.text | translate }}</label>
                 </div>
             </div>
         </div>
         <div class="checklistItemToDrag undropped" id="checklistItemToDrag__sign" data-type="SIGN">
-            <div class="resizable" style="height: 50px; width: 124px">
+            <div class="resizable" style="height: 50px; width: 135px">
                 <div class="checklistItemToDrag__sign checklistItemToDrag__label">
                     <label>{{ labels.sign | translate }}</label>
                 </div>
@@ -395,23 +480,30 @@
             data-type="DRAWING"
             [ngClass]="{ hidden: isRemoteSign() }"
         >
-            <div class="resizable" style="height: 50px; width: 124px">
+            <div class="resizable" style="height: 50px; width: 135px">
                 <div class="checklistItemToDrag__drawing checklistItemToDrag__label">
                     <label>{{ labels.drawing | translate }}</label>
                 </div>
             </div>
         </div>
         <div class="checklistItemToDrag undropped" id="checklistItemToDrag__check" data-type="CHECK">
-            <div class="resizable" style="height: 50px; width: 124px">
+            <div class="resizable" style="height: 50px; width: 135px">
                 <div class="checklistItemToDrag__check checklistItemToDrag__label">
                     <label>{{ labels.check | translate }}</label>
                 </div>
             </div>
         </div>
         <div class="checklistItemToDrag undropped" id="checklistItemToDrag__variable" data-type="VARIABLE">
-            <div class="resizable" style="height: 50px; width: 124px">
+            <div class="resizable" style="height: 50px; width: 135px">
                 <div class="checklistItemToDrag__variable checklistItemToDrag__label">
                     <label>{{ labels.variable | translate }}</label>
+                </div>
+            </div>
+        </div>
+        <div class="checklistItemToDrag undropped" id="checklistItemToDrag__accounting" data-type="ACCOUNTING">
+            <div class="resizable" style="height: 50px; width: 135px">
+                <div class="checklistItemToDrag__accounting checklistItemToDrag__label">
+                    <label>{{ labels.accounting | translate }}</label>
                 </div>
             </div>
         </div>
@@ -421,7 +513,7 @@
             data-type="IMAGE"
             [ngClass]="{ hidden: isRemoteSign() }"
         >
-            <div class="resizable" style="height: 50px; width: 124px">
+            <div class="resizable" style="height: 50px; width: 135px">
                 <div class="checklistItemToDrag__image checklistItemToDrag__label">
                     <label>{{ labels.image | translate }}</label>
                 </div>

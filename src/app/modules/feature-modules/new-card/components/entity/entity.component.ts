@@ -38,6 +38,7 @@ import { CustomDialogService } from '@shared/modules/custom-dialog/services/cust
 import { GlobalMessageService } from '@shared/services/global-message.service';
 import { ProgressSpinnerDialogService } from '@shared/services/progress-spinner-dialog.service';
 import { take } from 'rxjs/operators';
+import { StepColumnService } from '../step-column/step-column.service';
 
 @UntilDestroy()
 @Component({
@@ -75,7 +76,8 @@ export class EntityComponent implements OnInit {
     private translateService: TranslateService,
     private spinnerService: ProgressSpinnerDialogService,
     private globalMessageService: GlobalMessageService,
-    private customDialogService: CustomDialogService
+    private customDialogService: CustomDialogService,
+    private steperService: StepColumnService
   ) {}
   get tabItems(): FormArray {
     return this.formTab.get('tabItems') as FormArray;
@@ -237,25 +239,37 @@ export class EntityComponent implements OnInit {
               }
             });
         } else {
-          this.customDialogService
-            .open({
-              id: CreateEditRepairOrderComponentModalEnum.ID,
-              panelClass: CreateEditRepairOrderComponentModalEnum.PANEL_CLASS,
-              component: ModalRepairOrderComponent,
-              disableClose: true,
-              width: '900px'
-            })
-            .pipe(take(1))
-            .subscribe((response) => {
-              if (response) {
-                this.globalMessageService.showSuccess({
-                  message: this.translateService.instant(marker('common.successOperation')),
-                  actionText: this.translateService.instant(marker('common.close'))
-                });
-                this.searchForm.get('search').setValue(response);
-                this.selectEntity();
-              }
+          if (this.steperService.getCustomerId() && this.steperService.getVehicleId()) {
+            this.customDialogService
+              .open({
+                id: CreateEditRepairOrderComponentModalEnum.ID,
+                panelClass: CreateEditRepairOrderComponentModalEnum.PANEL_CLASS,
+                component: ModalRepairOrderComponent,
+                extendedComponentData: {
+                  facility: this.formWorkflow.controls.facility.value.id,
+                  vehicle: { id: this.steperService.getVehicleId() },
+                  customer: { id: this.steperService.getCustomerId() }
+                },
+                disableClose: true,
+                width: '900px'
+              })
+              .pipe(take(1))
+              .subscribe((response) => {
+                if (response) {
+                  this.globalMessageService.showSuccess({
+                    message: this.translateService.instant(marker('common.successOperation')),
+                    actionText: this.translateService.instant(marker('common.close'))
+                  });
+                  this.searchForm.get('search').setValue(response);
+                  this.selectEntity();
+                }
+              });
+          } else {
+            this.globalMessageService.showError({
+              message: this.translateService.instant(marker('entities.repairOrders.withAouCliAndVeh')),
+              actionText: this.translateService.instant(marker('common.close'))
             });
+          }
         }
         break;
     }

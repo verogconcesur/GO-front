@@ -10,6 +10,57 @@
                 </div>
                 <div class="repair-order-data__section__group">
                     <mat-form-field appearance="outline" floatLabel="always">
+                        <mat-label>Instalacion</mat-label>
+                        <mat-select formControlName="facility">
+                            <mat-option *ngFor="let facility of facilityAsyncList | async" [value]="facility">{{
+                                facility.name
+                            }}</mat-option>
+                        </mat-select>
+                        <mat-error
+                            class="facility-data__error"
+                            *ngIf="repairOrderForm.controls.facility.invalid && repairOrderForm.controls.facility.touched"
+                        >
+                            <span *ngIf="repairOrderForm.controls.facility.errors.required">{{
+                                labels.required | translate
+                            }}</span>
+                        </mat-error>
+                    </mat-form-field>
+                    <mat-form-field appearance="outline" floatLabel="always">
+                        <mat-label>{{ labels.jobsDescription | translate }}</mat-label>
+                        <input matInput formControlName="jobsDescription" />
+                        <mat-error *ngIf="repairOrderForm.controls?.jobsDescription.invalid">
+                            <span *ngIf="repairOrderForm.controls.jobsDescription.errors.required">{{
+                                labels.required | translate
+                            }}</span>
+                        </mat-error>
+                    </mat-form-field>
+                    <mat-form-field
+                        appearance="outline"
+                        class="smaller-mat-form-fields__no-margin date-picker custom-margin-top"
+                        floatLabel="always"
+                    >
+                        <mat-label>{{ labels.date | translate }}</mat-label>
+                        <input
+                            matInput
+                            readonly
+                            #pickerIniInput
+                            [ngxMatDatetimePicker]="pickerIni"
+                            placeholder="DD/MM/YYYY HH:mm"
+                            formControlName="dueInDatetime"
+                            [max]="endDate"
+                            (dateChange)="startDate = $event.value"
+                        />
+                        <mat-datepicker-toggle matSuffix [for]="pickerIni"></mat-datepicker-toggle>
+                        <ngx-mat-datetime-picker
+                            #pickerIni
+                            [showSeconds]="false"
+                            [enableMeridian]="false"
+                        ></ngx-mat-datetime-picker>
+                        <mat-error *ngIf="repairOrderForm.get('dueInDatetime').invalid">{{
+                            getDateErrorMessage(pickerIniInput.value)
+                        }}</mat-error>
+                    </mat-form-field>
+                    <mat-form-field appearance="outline" floatLabel="always">
                         <mat-label>{{ labels.reference | translate }}</mat-label>
                         <input matInput formControlName="reference" />
                         <mat-error *ngIf="repairOrderForm.controls?.reference.invalid">
@@ -19,8 +70,36 @@
                         </mat-error>
                     </mat-form-field>
                     <mat-form-field appearance="outline" floatLabel="always">
-                        <mat-label>{{ labels.jobsDescription | translate }}</mat-label>
-                        <input matInput formControlName="jobsDescription" />
+                        <mat-label>Cuenta contable</mat-label>
+                        <input matInput formControlName="playerAccount" />
+                        <mat-error *ngIf="repairOrderForm.controls?.playerAccount.invalid">
+                            <span *ngIf="repairOrderForm.controls.playerAccount.errors.required">{{
+                                labels.required | translate
+                            }}</span>
+                        </mat-error>
+                    </mat-form-field>
+                    <ng-container formArrayName="lines">
+                        <mat-form-field
+                            *ngFor="let line of lines.controls; let i = index"
+                            appearance="outline"
+                            floatLabel="always"
+                            [formGroupName]="i"
+                        >
+                            <mat-label>Trabajos {{ i + 1 }}</mat-label>
+                            <input matInput formControlName="name" />
+                            <mat-error *ngIf="line.get('name').invalid">
+                                {{ labels.required | translate }}
+                            </mat-error>
+                        </mat-form-field>
+                    </ng-container>
+                    <button *ngIf="showButtonLines" class="add_line" mat-raised-button color="primary" (click)="addLine()">
+                        Añadir nuevo trabajo <mat-icon>add</mat-icon>
+                    </button>
+                </div>
+                <div class="notes-section">
+                    <mat-form-field appearance="outline" style="width: 100%" floatLabel="always">
+                        <mat-label>Notas</mat-label>
+                        <textarea matInput formControlName="notes" rows="5"></textarea>
                     </mat-form-field>
                 </div>
             </div>

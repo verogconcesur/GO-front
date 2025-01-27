@@ -7,4 +7,6 @@ export default interface LoginDTO {
   project_version: string;
   refresh_expire_token: number;
   user: UserDTO;
+  require2FA: boolean;
+  defaultMode2FA: string;
 }
