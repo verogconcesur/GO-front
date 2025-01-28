@@ -11,7 +11,7 @@ import { ComponentToExtendForCustomDialog } from '@shared/modules/custom-dialog/
 import { CustomDialogService } from '@shared/modules/custom-dialog/services/custom-dialog.service';
 import { GlobalMessageService } from '@shared/services/global-message.service';
 import { ProgressSpinnerDialogService } from '@shared/services/progress-spinner-dialog.service';
-import { catchError, finalize, map, Observable, of } from 'rxjs';
+import { catchError, finalize, map, Observable, of, take } from 'rxjs';
 
 export const enum DobleFactorComponentModalEnum {
   ID = 'doble-factor-dialog-id',
@@ -90,7 +90,13 @@ export class DoblefactorComponent extends ComponentToExtendForCustomDialog imple
         map((response: LoginDTO) => {
           console.log(response);
           this.authenticationService.setLoggedUser(response);
-          this.router.navigate(['/', RouteConstants.DASHBOARD]);
+          this.authenticationService
+            .getConfigModules()
+            .pipe(take(1))
+            .subscribe((resp) => {
+              this.authenticationService.setConfigList(resp);
+              this.router.navigate(['/', RouteConstants.DASHBOARD]);
+            });
           this.globalMessageService.showSuccess({
             message: this.translateService.instant(marker('common.successOperation')),
             actionText: this.translateService.instant(marker('common.close'))

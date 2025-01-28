@@ -1,5 +1,6 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { FormGroup, UntypedFormBuilder, Validators } from '@angular/forms';
+import { AuthenticationService } from '@app/security/authentication.service';
 import { marker } from '@biesbjerg/ngx-translate-extract-marker';
 import CustomerEntityDTO, { BusinessTypes } from '@data/models/entities/customer-entity-dto';
 import FacilityDTO from '@data/models/organization/facility-dto';
@@ -79,7 +80,8 @@ export class ModalCustomerComponent extends ComponentToExtendForCustomDialog imp
     private customDialogService: CustomDialogService,
     private entitiesService: EntitiesService,
     private facilityService: FacilityService,
-    private customerService: CustomersService
+    private customerService: CustomersService,
+    private authService: AuthenticationService
   ) {
     super(
       CreateEditCustomerComponentModalEnum.ID,
@@ -313,11 +315,13 @@ export class ModalCustomerComponent extends ComponentToExtendForCustomDialog imp
     };
   }
   private initializeForm = (): void => {
+    const configList = this.authService.getConfigList();
+    const isWriteKeyloopEnabled = configList.includes('WRITE_KEYLOOP');
     this.customerForm = this.fb.group(
       {
         id: [this.customerToEdit ? this.customerToEdit.id : null],
         customerId: [this.customerToEdit ? this.customerToEdit.customerId : null],
-        reference: [{ value: this.customerToEdit ? this.customerToEdit.reference : null, disabled: true }],
+        reference: [{ value: this.customerToEdit ? this.customerToEdit.reference : null, disabled: isWriteKeyloopEnabled }],
         //Deshabilitar referencia cliente
         // reference: [{ value: this.customerToEdit ? this.customerToEdit.reference : null, disabled: true }],
         name: [this.customerToEdit ? this.customerToEdit.name : null],
