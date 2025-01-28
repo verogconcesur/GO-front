@@ -201,7 +201,13 @@ export class LoginComponent implements OnInit {
       }
     } else {
       // Si require2FA es falso, navegamos directamente al dashboard
-      this.router.navigate(['/', RouteConstants.DASHBOARD]);
+      this.authenticationService
+        .getConfigModules()
+        .pipe(take(1))
+        .subscribe((resp) => {
+          this.authenticationService.setConfigList(resp);
+          this.router.navigate(['/', RouteConstants.DASHBOARD]);
+        });
     }
   }
 

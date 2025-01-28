@@ -1,5 +1,6 @@
 import { ChangeDetectorRef, Component, OnDestroy, OnInit } from '@angular/core';
 import { FormArray, FormGroup, UntypedFormBuilder, Validators } from '@angular/forms';
+import { AuthenticationService } from '@app/security/authentication.service';
 import { ConcenetError } from '@app/types/error';
 import { marker } from '@biesbjerg/ngx-translate-extract-marker';
 import CustomerEntityDTO from '@data/models/entities/customer-entity-dto';
@@ -78,7 +79,8 @@ export class ModalVehicleComponent extends ComponentToExtendForCustomDialog impl
     private facilityService: FacilityService,
     private customDialogService: CustomDialogService,
     private entitySearcher: EntitiesSearcherDialogService,
-    private cdr: ChangeDetectorRef
+    private cdr: ChangeDetectorRef,
+    private authService: AuthenticationService
   ) {
     super(
       CreateEditVehicleComponentModalEnum.ID,
@@ -155,27 +157,31 @@ export class ModalVehicleComponent extends ComponentToExtendForCustomDialog impl
   }
 
   public listenVinFacilityChanges(): void {
-    const vinControl = this.vehicleForm.get('vin');
-    const facilityControl = this.vehicleForm.get('facility');
-    const vinChanges = vinControl?.valueChanges;
-    const facilityChanges = facilityControl?.valueChanges;
-    if (vinChanges && facilityChanges) {
-      merge(vinChanges, facilityChanges)
-        .pipe(
-          filter(() => {
+    const configList = this.authService.getConfigList();
+    const isWriteKeyloopEnabled = configList.includes('WRITE_KEYLOO');
+    if (isWriteKeyloopEnabled) {
+      const vinControl = this.vehicleForm.get('vin');
+      const facilityControl = this.vehicleForm.get('facility');
+      const vinChanges = vinControl?.valueChanges;
+      const facilityChanges = facilityControl?.valueChanges;
+      if (vinChanges && facilityChanges) {
+        merge(vinChanges, facilityChanges)
+          .pipe(
+            filter(() => {
+              const vinValue = vinControl?.value;
+              const facilityValue = facilityControl?.value;
+              return !!vinValue && !!facilityValue;
+            }),
+            untilDestroyed(this)
+          )
+          .subscribe(() => {
             const vinValue = vinControl?.value;
             const facilityValue = facilityControl?.value;
-            return !!vinValue && !!facilityValue;
-          }),
-          untilDestroyed(this)
-        )
-        .subscribe(() => {
-          const vinValue = vinControl?.value;
-          const facilityValue = facilityControl?.value;
-          if (vinValue && facilityValue) {
-            this.searchMakes(vinValue, facilityValue.id);
-          }
-        });
+            if (vinValue && facilityValue) {
+              this.searchMakes(vinValue, facilityValue.id);
+            }
+          });
+      }
     }
   }
   public changeCommissionNumber(): void {
@@ -272,20 +278,24 @@ export class ModalVehicleComponent extends ComponentToExtendForCustomDialog impl
   }
 
   searchMakes(vinValue: string, facilityValue: string): void {
-    if (this.vehicleForm.controls.vin.value && !this.vehicleForm.controls.commissionNumber.value) {
-      this.form.make.disable();
-      this.form.model.disable();
-      this.entitiesService
-        .getMake(vinValue, Number(facilityValue))
-        .pipe(take(1))
-        .subscribe((resp: TakeAllVehicle) => {
-          this.variants = resp.variants;
-          this.vehicleForm.controls.variantCode.enable();
-          this.vehicleForm.controls.model.setValue(resp.model);
-          this.vehicleForm.controls.make.setValue(resp.make);
-          this.vehicleForm.controls.makeCode.setValue(resp.makeCode);
-          this.vehicleForm.controls.modelCode.setValue(resp.modelCode);
-        });
+    const configList = this.authService.getConfigList();
+    const isWriteKeyloopEnabled = configList.includes('WRITE_KEYLOO');
+    if (isWriteKeyloopEnabled) {
+      if (this.vehicleForm.controls.vin.value && !this.vehicleForm.controls.commissionNumber.value) {
+        this.form.make.disable();
+        this.form.model.disable();
+        this.entitiesService
+          .getMake(vinValue, Number(facilityValue))
+          .pipe(take(1))
+          .subscribe((resp: TakeAllVehicle) => {
+            this.variants = resp.variants;
+            this.vehicleForm.controls.variantCode.enable();
+            this.vehicleForm.controls.model.setValue(resp.model);
+            this.vehicleForm.controls.make.setValue(resp.make);
+            this.vehicleForm.controls.makeCode.setValue(resp.makeCode);
+            this.vehicleForm.controls.modelCode.setValue(resp.modelCode);
+          });
+      }
     }
   }
 
@@ -425,6 +435,8 @@ export class ModalVehicleComponent extends ComponentToExtendForCustomDialog impl
     };
   }
   private initializeForm = (): void => {
+    const configList = this.authService.getConfigList();
+    const isWriteKeyloopEnabled = configList.includes('WRITE_KEYLOO');
     this.vehicleForm = this.fb.group({
       id: [this.vehicleToEdit ? this.vehicleToEdit.id : null],
       licensePlate: [this.vehicleToEdit ? this.vehicleToEdit.licensePlate : null],
@@ -434,7 +446,7 @@ export class ModalVehicleComponent extends ComponentToExtendForCustomDialog impl
       description: [this.vehicleToEdit ? this.vehicleToEdit.description : null],
       vehicleId: [this.vehicleToEdit ? this.vehicleToEdit.vehicleId : null],
       facility: [this.vehicleToEdit ? this.vehicleToEdit.facility : null],
-      variantCode: [this.vehicleToEdit ? this.vehicleToEdit?.variantCode : null],
+      variantCode: [{ value: this.vehicleToEdit ? this.vehicleToEdit?.variantCode : null, disabled: !isWriteKeyloopEnabled }],
       vehicleCustomers: this.fb.array([]),
       commissionNumber: [null],
       facilityStock: [null],

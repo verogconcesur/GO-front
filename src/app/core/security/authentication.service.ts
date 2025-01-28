@@ -21,8 +21,9 @@ export class AuthenticationService implements OnDestroy {
   public readonly REFRESH_TOKEN_PATH = '/api/users/refreshToken';
   public readonly GET_F2A_PATH = '/api/users/sendPass2FA';
   private readonly USER_CHECK2FA_PATH = '/api/users/checkUser2FA';
-
+  private readonly CONFIG_MODULES = '/api/users/listConfigModules';
   private readonly ACCESS_TOKEN = 'access_token';
+  private readonly LIST_CONFIG_MODULES = 'list_config_modules';
   private readonly EXPIRES_IN = 'expires_in';
   private readonly PROJECT_VERSION = 'project_version';
   private readonly REFRESH_EXPIRES = 'refresh_expire_token';
@@ -54,6 +55,12 @@ export class AuthenticationService implements OnDestroy {
   public signIn(credentials: { userName: string; password: string; deviceSignature: string }): Observable<LoginDTO> {
     return this.http
       .post<LoginDTO>(`${this.env.apiBaseUrl}${this.LOGIN_PATH}`, credentials)
+      .pipe(catchError((error) => throwError(error as ConcenetError)));
+  }
+
+  public getConfigModules(): Observable<string[]> {
+    return this.http
+      .get<string[]>(`${this.env.apiBaseUrl}${this.CONFIG_MODULES}`)
       .pipe(catchError((error) => throwError(error as ConcenetError)));
   }
 
@@ -165,6 +172,29 @@ export class AuthenticationService implements OnDestroy {
    */
   getToken(): string {
     return localStorage.getItem(this.ACCESS_TOKEN);
+  }
+
+  /**
+   * Stores a configlist
+   *
+   * @param configlist configlist to be stored
+   */
+  setConfigList(configList: string[]): void {
+    localStorage.setItem(this.LIST_CONFIG_MODULES, JSON.stringify(configList));
+  }
+
+  /**
+   * Retrieves the saved configlist
+   *
+   * @returns saved configlist
+   */
+  getConfigList(): string[] {
+    const configList = localStorage.getItem(this.LIST_CONFIG_MODULES);
+    return configList ? JSON.parse(configList) : [];
+  }
+
+  removeConfigList(): void {
+    localStorage.removeItem(this.LIST_CONFIG_MODULES);
   }
 
   /**
@@ -469,6 +499,7 @@ export class AuthenticationService implements OnDestroy {
     this.removeWarningStatus();
     this.removeDefaultMode2FA();
     this.removeRequire2FA();
+    this.removeConfigList();
     this.userService.userLogged$.next(null);
     clearTimeout(this.tokenTimeout);
   }
