@@ -75,6 +75,7 @@
                     },
                     "configurations": {
                         "production": {
+                            "buildOptimizer": false,
                             "optimization": true,
                             "fileReplacements": [
                                 {
@@ -84,6 +85,7 @@
                             ]
                         },
                         "production_la_baronia": {
+                            "buildOptimizer": false,
                             "optimization": true,
                             "fileReplacements": [
                                 {
@@ -93,6 +95,7 @@
                             ]
                         },
                         "production_servidauto": {
+                            "buildOptimizer": false,
                             "optimization": true,
                             "fileReplacements": [
                                 {
@@ -102,6 +105,7 @@
                             ]
                         },
                         "production_grupo_velasco": {
+                            "buildOptimizer": false,
                             "optimization": true,
                             "fileReplacements": [
                                 {
@@ -111,6 +115,7 @@
                             ]
                         },
                         "go_des": {
+                            "buildOptimizer": false,
                             "optimization": true,
                             "fileReplacements": [
                                 {
