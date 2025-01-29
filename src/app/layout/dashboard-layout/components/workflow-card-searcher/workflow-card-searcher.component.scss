@@ -28,6 +28,13 @@
     width: 150px;
   }
 }
+.custom-select-field .mat-form-field-infix {
+  padding: 0.6em 0 0.5em 0 !important;
+}
+
+.custom-select-field .mat-form-field-wrapper {
+  padding-bottom: 0;
+}
 
 .search-option-card {
   margin: 8px 0;
@@ -51,6 +58,17 @@
     font-weight: bold;
     color: #2020ab;
   }
+}
+.fixed-filters {
+  padding: 6px;
+  border-bottom: 1px solid #e0e0e0;
+  background-color: white;
+  z-index: 1001;
+}
+
+.scrollable-options {
+  max-height: 416px;
+  overflow-y: auto;
 }
 
 .search-option-spinner {

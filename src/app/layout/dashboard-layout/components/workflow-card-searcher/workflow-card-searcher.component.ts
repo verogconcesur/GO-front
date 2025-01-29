@@ -1,12 +1,11 @@
-import { Component, Input, OnInit, ViewChild, ViewEncapsulation } from '@angular/core';
+import { Component, Input, OnInit, ViewEncapsulation } from '@angular/core';
 import { FormBuilder, UntypedFormGroup } from '@angular/forms';
 import { marker } from '@biesbjerg/ngx-translate-extract-marker';
 import PaginationResponseI from '@data/interfaces/pagination-response';
 import WorkflowCardDTO from '@data/models/workflows/workflow-card-dto';
 import { WorkflowsService } from '@data/services/workflows.service';
 import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
-import { Observable, of } from 'rxjs';
-import { delay, finalize, map, switchMap, take } from 'rxjs/operators';
+import { finalize, take } from 'rxjs/operators';
 
 @UntilDestroy()
 @Component({
@@ -21,6 +20,24 @@ export class WorkflowCardSearcherComponent implements OnInit {
   public labels = {
     search: marker('common.search')
   };
+  selectedAttribute = 'Referencia de la OR';
+  selectedWorkflow = 'Todos los Workflows';
+
+  attributes: string[] = [
+    'Matrícula',
+    'VIN',
+    'Documento de identidad',
+    'Referencia de la OR',
+    'Identificador de la OR',
+    'Número de comisión',
+    'Etiqueta 1',
+    'Etiqueta 2',
+    'Etiqueta 3',
+    'Nombre y apellidos del cliente'
+  ];
+
+  workflows: string[] = ['Workflow 1', 'Workflow 2', 'Workflow 3', 'Todos los Workflows'];
+
   public lastSearch: string[] = [];
   public searching = 0;
   public filterValue: string;
@@ -51,9 +68,18 @@ export class WorkflowCardSearcherComponent implements OnInit {
       });
   }
 
+  onAutocompleteOpened() {
+    console.log('Autocomplete abierto');
+  }
+
+  onAutocompleteClosed() {
+    console.log('Autocomplete cerrado');
+  }
   public initForm(): void {
     this.searcherForm = this.fb.group({
-      search: [null]
+      search: [null],
+      attribute: [null],
+      workflow: [null]
     });
   }
 
