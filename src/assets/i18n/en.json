@@ -1211,6 +1211,7 @@
         "requiredMyself": "Assign to actual user",
         "requiredSize": "Assign size",
         "requiredUser": "Assign to other user",
+        "saturdayExcluded": "Exclude Saturdays from the calendar",
         "select": "Select a Workflow",
         "selectAttachmentTab": "Select a category for the Client's service attachments",
         "selectAttachmentTabWhats": "Select a category for the Whatsapp conversations",

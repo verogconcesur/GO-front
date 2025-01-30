@@ -1208,6 +1208,7 @@
         "requiredMyself": "Asignar al mismo usuario que está realizando el movimiento",
         "requiredSize": "Asignar un peso a la ficha",
         "requiredUser": "Asignar a un usuario",
+        "saturdayExcluded": "Excluir sabados del calendario",
         "select": "Selecciona un Workflow",
         "selectAttachmentTab": "Seleccione una categoría para los adjuntos del Área de clientes",
         "selectAttachmentTabWhats": "Seleccione una categoría para las conversaciones de Whatsapp",
