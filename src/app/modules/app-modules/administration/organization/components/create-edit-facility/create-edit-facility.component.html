@@ -747,7 +747,7 @@
             </div>
 
             <!-- Sms Configuration -->
-            <div *ngIf="modularizationPermisions.smsSend" class="facility-data__section">
+            <div *ngIf="isContractedModule('sms')" class="facility-data__section">
                 <div class="facility-data__section__title">
                     {{ labels.confSms | translate }}
                 </div>
@@ -766,7 +766,7 @@
             </div>
 
             <!-- Whatsapp Configuration -->
-            <div *ngIf="modularizationPermisions.whatsappSend" class="facility-data__section">
+            <div *ngIf="isContractedModule('whatsapp')" class="facility-data__section">
                 <div class="facility-data__section__title">
                     {{ labels.confWhatsapp | translate }}
                 </div>

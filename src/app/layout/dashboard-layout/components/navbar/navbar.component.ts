@@ -4,6 +4,7 @@ import { MatDialog } from '@angular/material/dialog';
 import { MatMenuTrigger } from '@angular/material/menu';
 import { Router } from '@angular/router';
 import { ENV } from '@app/constants/global.constants';
+import { ModulesConstants } from '@app/constants/modules.constants';
 import { PermissionConstants } from '@app/constants/permission.constants';
 import { RouteConstants } from '@app/constants/route.constants';
 import { AuthenticationService } from '@app/security/authentication.service';
@@ -13,7 +14,6 @@ import { ConcenetError } from '@app/types/error';
 import { marker } from '@biesbjerg/ngx-translate-extract-marker';
 import { AttachmentDTO } from '@data/models/cards/card-attachments-dto';
 import WarningDTO from '@data/models/notifications/warning-dto';
-import ModularizationDTO from '@data/models/user-permissions/modularization.dto';
 import { AdvSearchService } from '@data/services/adv-search.service';
 import { NotificationService } from '@data/services/notifications.service';
 import { NewCardComponent, NewCardComponentModalEnum } from '@modules/feature-modules/new-card/new-card.component';
@@ -44,11 +44,6 @@ export class NavbarComponent implements OnInit, OnDestroy {
   public readonly MENTIONS_PATH = RouteConstants.MENTIONS;
   public readonly NOTIFICATIONS_PATH = RouteConstants.NOTIFICATIONS;
   public readonly ADVANCED_SEARCH_PATH = RouteConstants.ADVANCED_SEARCH;
-  public modularizationPermisions: ModularizationDTO = {
-    listView: false,
-    advancedSearch: false,
-    calendarView: false
-  };
   public labels = {
     title: marker('app.title'),
     workflow: marker('app.menu.workflow'),
@@ -97,6 +92,11 @@ export class NavbarComponent implements OnInit, OnDestroy {
 
   public navigateToAdministration(): void {
     this.router.navigate([RouteConstants.ADMINISTRATION]);
+  }
+
+  public isAdvancedContractedModule(): boolean {
+    const configList = this.authService.getConfigList();
+    return configList.includes(ModulesConstants.ADVANCED_SEARCH);
   }
 
   public isAdmin(): boolean {

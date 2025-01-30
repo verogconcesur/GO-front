@@ -109,7 +109,7 @@
         <mat-divider [vertical]="true"></mat-divider>
         <div class="workflow-navbar__view-options">
             <mat-icon
-                *ngIf="modularizationPermisions.listView"
+                *ngIf="isContractedModule('listView')"
                 class="opt-view table-view"
                 (click)="goToView('tableView')"
                 [ngClass]="{ active: isView('tableView') }"
@@ -121,7 +121,7 @@
             </mat-icon>
             <mat-icon
                 class="opt-view calendar-view"
-                *ngIf="modularizationPermisions.calendarView"
+                *ngIf="isContractedModule('calendarView')"
                 (click)="goToView('calendarView')"
                 [ngClass]="{ active: isView('calendarView') }"
             >

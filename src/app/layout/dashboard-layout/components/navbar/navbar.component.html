@@ -35,7 +35,7 @@
                 <button
                     mat-button
                     *ngIf="
-                        modularizationPermisions.advancedSearch &&
+                        isAdvancedContractedModule() &&
                         (!authService.hasUserAnyPermission(['HIDEADVANCEDSEARCHTAB']) || isAdmin())
                     "
                     [routerLink]="ADVANCED_SEARCH_PATH"

@@ -3,11 +3,12 @@ import { ChangeDetectorRef, Component, Inject, OnDestroy, OnInit } from '@angula
 import { FormGroup, UntypedFormBuilder } from '@angular/forms';
 import { MAT_DIALOG_DATA, MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { DomSanitizer } from '@angular/platform-browser';
+import { ModulesConstants } from '@app/constants/modules.constants';
+import { AuthenticationService } from '@app/security/authentication.service';
 import { marker } from '@biesbjerg/ngx-translate-extract-marker';
 import { AttachmentDTO, CardAttachmentsDTO, CardWhatsapptAttachmentDTO } from '@data/models/cards/card-attachments-dto';
 import CardInstanceWhatsappDTO from '@data/models/cards/card-instance-whatsapp-dto';
 import CardMessageDTO from '@data/models/cards/card-message';
-import ModularizationDTO from '@data/models/user-permissions/modularization.dto';
 import { CardAttachmentsService } from '@data/services/card-attachments.service';
 import { CardMessagesService } from '@data/services/card-messages.service';
 import { TranslateService } from '@ngx-translate/core';
@@ -49,13 +50,6 @@ export class ModalChatWhatsappComponent implements OnInit, OnDestroy {
   public chunks: BlobPart[] = [];
   public barList = Array(20).fill(0);
   public interval: NodeJS.Timeout;
-  public modularizationPermisions: ModularizationDTO = {
-    listView: false,
-    advancedSearch: false,
-    calendarView: false,
-    smsSend: false,
-    whatsappSend: false
-  };
 
   constructor(
     private fb: UntypedFormBuilder,
@@ -70,6 +64,7 @@ export class ModalChatWhatsappComponent implements OnInit, OnDestroy {
     private datePipe: DatePipe,
     private mediaService: MediaViewerService,
     private attachmentService: CardAttachmentsService,
+    private authService: AuthenticationService,
     @Inject(MAT_DIALOG_DATA)
     public data: {
       message: CardMessageDTO;
@@ -136,6 +131,11 @@ export class ModalChatWhatsappComponent implements OnInit, OnDestroy {
         });
       }
     );
+  }
+
+  public isWhatsappContractedModule(): boolean {
+    const configList = this.authService.getConfigList();
+    return configList.includes(ModulesConstants.WHATSAPP_SEND);
   }
 
   public close() {

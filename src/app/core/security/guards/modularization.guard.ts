@@ -1,21 +1,18 @@
 import { Injectable } from '@angular/core';
 import { ActivatedRouteSnapshot, CanActivate, Router } from '@angular/router';
+import { ModulesConstants } from '@app/constants/modules.constants';
 import { RouteConstants } from '@app/constants/route.constants';
+import { AuthenticationService } from '../authentication.service';
 
 @Injectable({
   providedIn: 'root'
 })
 export class ModularizationGuard implements CanActivate {
-  public modularizationPermisions: { [key: string]: boolean } = {
-    listView: false,
-    advancedSearch: false,
-    calendarView: false
-  };
-  constructor(private router: Router) {}
+  constructor(private router: Router, private authService: AuthenticationService) {}
 
   canActivate(route: ActivatedRouteSnapshot): boolean {
-    const property = route.data.property;
-    if (this.modularizationPermisions[property] !== true) {
+    const configList = this.authService.getConfigList();
+    if (!configList.includes(ModulesConstants.ADVANCED_SEARCH)) {
       this.router.navigate([RouteConstants.DASHBOARD]);
       return false;
     }

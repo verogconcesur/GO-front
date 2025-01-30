@@ -1,5 +1,6 @@
 import { ChangeDetectorRef, Component, OnDestroy, OnInit } from '@angular/core';
 import { FormArray, FormGroup, UntypedFormBuilder, Validators } from '@angular/forms';
+import { ModulesConstants } from '@app/constants/modules.constants';
 import { AuthenticationService } from '@app/security/authentication.service';
 import { ConcenetError } from '@app/types/error';
 import { marker } from '@biesbjerg/ngx-translate-extract-marker';
@@ -158,7 +159,7 @@ export class ModalVehicleComponent extends ComponentToExtendForCustomDialog impl
 
   public listenVinFacilityChanges(): void {
     const configList = this.authService.getConfigList();
-    const isWriteKeyloopEnabled = configList.includes('WRITE_KEYLOO');
+    const isWriteKeyloopEnabled = configList.includes(ModulesConstants.WRITE_KEYLOOP);
     if (isWriteKeyloopEnabled) {
       const vinControl = this.vehicleForm.get('vin');
       const facilityControl = this.vehicleForm.get('facility');
@@ -279,7 +280,7 @@ export class ModalVehicleComponent extends ComponentToExtendForCustomDialog impl
 
   searchMakes(vinValue: string, facilityValue: string): void {
     const configList = this.authService.getConfigList();
-    const isWriteKeyloopEnabled = configList.includes('WRITE_KEYLOO');
+    const isWriteKeyloopEnabled = configList.includes(ModulesConstants.WRITE_KEYLOOP);
     if (isWriteKeyloopEnabled) {
       if (this.vehicleForm.controls.vin.value && !this.vehicleForm.controls.commissionNumber.value) {
         this.form.make.disable();
@@ -436,7 +437,7 @@ export class ModalVehicleComponent extends ComponentToExtendForCustomDialog impl
   }
   private initializeForm = (): void => {
     const configList = this.authService.getConfigList();
-    const isWriteKeyloopEnabled = configList.includes('WRITE_KEYLOO');
+    const isWriteKeyloopEnabled = configList.includes(ModulesConstants.WRITE_KEYLOOP);
     this.vehicleForm = this.fb.group({
       id: [this.vehicleToEdit ? this.vehicleToEdit.id : null],
       licensePlate: [this.vehicleToEdit ? this.vehicleToEdit.licensePlate : null],

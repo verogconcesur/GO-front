@@ -2,12 +2,13 @@ import { Component, Inject, OnDestroy, OnInit } from '@angular/core';
 import { UntypedFormBuilder, UntypedFormGroup } from '@angular/forms';
 import { ActivatedRoute, ChildActivationEnd, NavigationEnd, Router } from '@angular/router';
 import { ENV } from '@app/constants/global.constants';
+import { ModulesConstants } from '@app/constants/modules.constants';
 import { RouteConstants } from '@app/constants/route.constants';
+import { AuthenticationService } from '@app/security/authentication.service';
 import { RxStompService } from '@app/services/rx-stomp.service';
 import { Env } from '@app/types/env';
 import { marker } from '@biesbjerg/ngx-translate-extract-marker';
 import FacilityDTO from '@data/models/organization/facility-dto';
-import ModularizationDTO from '@data/models/user-permissions/modularization.dto';
 import WorkflowDTO from '@data/models/workflows/workflow-dto';
 import WorkflowListByFacilityDTO from '@data/models/workflows/workflow-list-by-facility-dto';
 import WorkflowSocketMoveDTO from '@data/models/workflows/workflow-socket-move-dto';
@@ -44,11 +45,6 @@ export class WorkflowNavbarComponent implements OnInit, OnDestroy {
   public facilitiesSelected: FacilityDTO[];
   public websocketSubscription: Subscription[] = [];
   public synchronizingData = false;
-  public modularizationPermisions: ModularizationDTO = {
-    listView: false,
-    advancedSearch: false,
-    calendarView: false
-  };
   public labels = {
     syncData: marker('workflows.syncData'),
     selectWorkflow: marker('workflows.select'),
@@ -70,7 +66,8 @@ export class WorkflowNavbarComponent implements OnInit, OnDestroy {
     private router: Router,
     private confirmationDialog: ConfirmDialogService,
     private rxStompService: RxStompService,
-    private globalMessageService: GlobalMessageService
+    private globalMessageService: GlobalMessageService,
+    private authService: AuthenticationService
   ) {}
 
   ngOnInit(): void {
@@ -131,6 +128,15 @@ export class WorkflowNavbarComponent implements OnInit, OnDestroy {
           );
         }
       }
+    }
+  }
+
+  public isContractedModule(option: string): boolean {
+    const configList = this.authService.getConfigList();
+    if (option === 'listView') {
+      return configList.includes(ModulesConstants.LIST_VIEW);
+    } else if (option === 'calendarView') {
+      return configList.includes(ModulesConstants.CALENDAR_VIEW);
     }
   }
 

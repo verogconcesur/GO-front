@@ -2,13 +2,14 @@
 import { Component, Input, OnInit, ViewChild } from '@angular/core';
 import { UntypedFormBuilder, UntypedFormGroup, Validators } from '@angular/forms';
 import { MatMenuTrigger } from '@angular/material/menu';
+import { ModulesConstants } from '@app/constants/modules.constants';
+import { AuthenticationService } from '@app/security/authentication.service';
 import { ConcenetError } from '@app/types/error';
 import { marker } from '@biesbjerg/ngx-translate-extract-marker';
 import TreeNode from '@data/interfaces/tree-node';
 import CardColumnDTO from '@data/models/cards/card-column-dto';
 import CardColumnTabDTO from '@data/models/cards/card-column-tab-dto';
 import CardColumnTabItemDTO from '@data/models/cards/card-column-tab-item-dto';
-import ModularizationDTO from '@data/models/user-permissions/modularization.dto';
 import WorkflowViewDTO from '@data/models/workflow-admin/workflow-view-dto';
 import { WorkflowAdministrationService } from '@data/services/workflow-administration.service';
 import { UntilDestroy } from '@ngneat/until-destroy';
@@ -45,11 +46,6 @@ export class WorkflowCardConfigComponent extends WorkflowStepAbstractClass imple
     cardDetailHeaderField: marker('workflows.cardDetailHeaderField')
   };
   public treeData: TreeNode[] = [];
-  public modularizationPermisions: ModularizationDTO = {
-    listView: false,
-    advancedSearch: false,
-    calendarView: false
-  };
   private lastInputSelected: {
     viewType: 'BOARD' | 'TABLE' | 'CALENDAR' | 'LANDING_CARD' | 'LANDING_DETAIL' | 'DETAIL';
     fieldIndex: number;
@@ -63,7 +59,8 @@ export class WorkflowCardConfigComponent extends WorkflowStepAbstractClass imple
     public translateService: TranslateService,
     public workflowService: WorkflowAdministrationService,
     private globalMessageService: GlobalMessageService,
-    private logger: NGXLogger
+    private logger: NGXLogger,
+    private authService: AuthenticationService
   ) {
     super(workflowsCreateEditAuxService, confirmationDialog, translateService);
   }
@@ -131,6 +128,15 @@ export class WorkflowCardConfigComponent extends WorkflowStepAbstractClass imple
         field1: this.getFieldFormGroup('DETAIL', 1, dataByViewType.DETAIL?.length >= 1 ? dataByViewType.DETAIL[0] : null)
       })
     });
+  }
+
+  public isContractedModule(option: string): boolean {
+    const configList = this.authService.getConfigList();
+    if (option === 'listView') {
+      return configList.includes(ModulesConstants.LIST_VIEW);
+    } else if (option === 'calendarView') {
+      return configList.includes(ModulesConstants.CALENDAR_VIEW);
+    }
   }
 
   public selectAttribute(node: CardColumnTabItemDTO): void {

@@ -9,7 +9,6 @@ const routes: Routes = [
   {
     path: RouteConstants.EMPTY,
     canActivate: [AuthGuardService, ModularizationGuard],
-    data: { property: 'advancedSearch' },
     component: AdvancedSearchComponent,
     children: [
       {

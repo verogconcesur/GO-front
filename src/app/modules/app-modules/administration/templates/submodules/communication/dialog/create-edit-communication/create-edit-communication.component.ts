@@ -10,6 +10,8 @@ import {
   Validators
 } from '@angular/forms';
 import { MatTabChangeEvent } from '@angular/material/tabs';
+import { ModulesConstants } from '@app/constants/modules.constants';
+import { AuthenticationService } from '@app/security/authentication.service';
 import { marker } from '@biesbjerg/ngx-translate-extract-marker';
 import BrandDTO from '@data/models/organization/brand-dto';
 import DepartmentDTO from '@data/models/organization/department-dto';
@@ -20,7 +22,6 @@ import TemplatesCommunicationDTO, {
   CommunicationTypes,
   TemplateComunicationItemsDTO
 } from '@data/models/templates/templates-communication-dto';
-import ModularizationDTO from '@data/models/user-permissions/modularization.dto';
 import VariablesDTO from '@data/models/variables-dto';
 import { TemplatesCommunicationService } from '@data/services/templates-communication.service';
 import { VariablesService } from '@data/services/variables.service';
@@ -84,13 +85,6 @@ export class CreateEditCommunicationComponent extends ComponentToExtendForCustom
   public startDate: Date;
   public endDate: Date;
   public shouldShowWhatsAppField = false;
-  public modularizationPermisions: ModularizationDTO = {
-    listView: false,
-    advancedSearch: false,
-    calendarView: false,
-    smsSend: false,
-    whatsappSend: false
-  };
   constructor(
     private fb: UntypedFormBuilder,
     private spinnerService: ProgressSpinnerDialogService,
@@ -99,7 +93,8 @@ export class CreateEditCommunicationComponent extends ComponentToExtendForCustom
     private communicationService: TemplatesCommunicationService,
     private globalMessageService: GlobalMessageService,
     private customDialogService: CustomDialogService,
-    private variablesService: VariablesService
+    private variablesService: VariablesService,
+    private authService: AuthenticationService
   ) {
     super(
       CreateEditCommunicationComponentModalEnum.ID,
@@ -119,8 +114,8 @@ export class CreateEditCommunicationComponent extends ComponentToExtendForCustom
     const formArray = this.communicationForm.get('templateComunicationItems') as FormArray;
     const filteredItems = formArray.controls.filter((control) => {
       const messageChannelId = control.value.messageChannel.id;
-      const allowSms = !(messageChannelId === 3 && !this.modularizationPermisions.smsSend);
-      const allowWhatsapp = !(messageChannelId === 4 && !this.modularizationPermisions.whatsappSend);
+      const allowSms = !(messageChannelId === 3 && !this.isContractedModule('sms'));
+      const allowWhatsapp = !(messageChannelId === 4 && !this.isContractedModule('whatsapp'));
       return allowSms && allowWhatsapp;
     });
     return new FormArray(filteredItems);
@@ -147,6 +142,15 @@ export class CreateEditCommunicationComponent extends ComponentToExtendForCustom
       return item.value.messageChannel.name + '*';
     } else {
       return item.value.messageChannel.name;
+    }
+  }
+
+  public isContractedModule(option: string): boolean {
+    const configList = this.authService.getConfigList();
+    if (option === 'sms') {
+      return configList.includes(ModulesConstants.SMS_SEND);
+    } else if (option === 'whatsapp') {
+      return configList.includes(ModulesConstants.WHATSAPP_SEND);
     }
   }
   public changeComunicationType(): void {

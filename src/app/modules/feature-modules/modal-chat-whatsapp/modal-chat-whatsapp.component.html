@@ -49,7 +49,7 @@
     <div
         class="chat-whatsapp-container__footer smaller-mat-form-fields"
         fxLayoutAlign="space-between center"
-        *ngIf="active && modularizationPermisions.whatsappSend"
+        *ngIf="active && isWhatsappContractedModule()"
     >
         <button mat-icon-button (click)="sendAttachments()" [disabled]="recording">
             <mat-icon>attach_file</mat-icon>

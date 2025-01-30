@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { FormArray, FormGroup, UntypedFormBuilder, Validators } from '@angular/forms';
+import { ModulesConstants } from '@app/constants/modules.constants';
 import { AuthenticationService } from '@app/security/authentication.service';
 import { marker } from '@biesbjerg/ngx-translate-extract-marker';
 import RepairOrderEntityDTO from '@data/models/entities/repair-order-entity-dto';
@@ -287,7 +288,7 @@ export class ModalRepairOrderComponent extends ComponentToExtendForCustomDialog 
   }
   private initializeForm = (): void => {
     const configList = this.authService.getConfigList();
-    const isWriteKeyloopEnabled = configList.includes('WRITE_KEYLOOP');
+    const isWriteKeyloopEnabled = configList.includes(ModulesConstants.WRITE_KEYLOOP);
     this.repairOrderForm = this.fb.group({
       id: [this.repairOrderToEdit ? this.repairOrderToEdit?.id : null],
       reference: [{ value: this.repairOrderToEdit ? this.repairOrderToEdit?.reference : null, disabled: isWriteKeyloopEnabled }],

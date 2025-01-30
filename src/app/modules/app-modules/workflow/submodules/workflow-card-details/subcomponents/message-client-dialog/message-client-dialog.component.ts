@@ -1,6 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { FormArray, FormControl, FormGroup, UntypedFormBuilder, UntypedFormGroup, Validators } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
+import { ModulesConstants } from '@app/constants/modules.constants';
+import { AuthenticationService } from '@app/security/authentication.service';
 import { marker } from '@biesbjerg/ngx-translate-extract-marker';
 import { AttachmentDTO, CardAttachmentsDTO } from '@data/models/cards/card-attachments-dto';
 import CardInstanceDTO from '@data/models/cards/card-instance-dto';
@@ -8,7 +10,6 @@ import CardInstanceRemoteSignatureDTO from '@data/models/cards/card-instance-rem
 import CardMessageRenderDTO from '@data/models/cards/card-message-render';
 import MessageChannelDTO from '@data/models/templates/message-channels-dto';
 import TemplatesCommonDTO from '@data/models/templates/templates-common-dto';
-import ModularizationDTO from '@data/models/user-permissions/modularization.dto';
 import { CardAttachmentsService } from '@data/services/card-attachments.service';
 import { CardMessagesService } from '@data/services/card-messages.service';
 import { TemplatesCommunicationService } from '@data/services/templates-communication.service';
@@ -72,13 +73,6 @@ export class MessageClientDialogComponent extends ComponentToExtendForCustomDial
   public messageForm: UntypedFormGroup;
   public messageChannels: MessageChannelDTO[] = [];
   public templateList: TemplatesCommonDTO[] = [];
-  public modularizationPermisions: ModularizationDTO = {
-    listView: false,
-    advancedSearch: false,
-    calendarView: false,
-    smsSend: false,
-    whatsappSend: false
-  };
   constructor(
     private fb: UntypedFormBuilder,
     private spinnerService: ProgressSpinnerDialogService,
@@ -88,7 +82,8 @@ export class MessageClientDialogComponent extends ComponentToExtendForCustomDial
     private cardService: CardMessagesService,
     private globalMessageService: GlobalMessageService,
     private cardAttachmentsService: CardAttachmentsService,
-    private dialog: MatDialog
+    private dialog: MatDialog,
+    private authService: AuthenticationService
   ) {
     super(
       MessageClientDialogComponentModalEnum.ID,
@@ -107,8 +102,8 @@ export class MessageClientDialogComponent extends ComponentToExtendForCustomDial
     const formArray = this.messageForm.get('messageChannels') as FormArray;
     const filteredChannels = formArray.controls.filter((control) => {
       const messageChannelId = control.value.messageChannel.id;
-      const allowSms = !(messageChannelId === 3 && !this.modularizationPermisions.smsSend);
-      const allowWhatsapp = !(messageChannelId === 4 && !this.modularizationPermisions.whatsappSend);
+      const allowSms = !(messageChannelId === 3 && !this.isContractedModule('sms'));
+      const allowWhatsapp = !(messageChannelId === 4 && !this.isContractedModule('whatsapp'));
       return allowSms && allowWhatsapp;
     });
     return new FormArray(filteredChannels);
@@ -155,6 +150,14 @@ export class MessageClientDialogComponent extends ComponentToExtendForCustomDial
       return marker('cards.messages.signatureTitle');
     }
     return this.labels.title;
+  }
+  public isContractedModule(option: string): boolean {
+    const configList = this.authService.getConfigList();
+    if (option === 'sms') {
+      return configList.includes(ModulesConstants.SMS_SEND);
+    } else if (option === 'whatsapp') {
+      return configList.includes(ModulesConstants.WHATSAPP_SEND);
+    }
   }
   public openAttachmentsModal(messageClient: FormGroup): void {
     const data: CardInstanceAttachmentsModalVersionConfig = {
