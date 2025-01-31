@@ -37,6 +37,7 @@ export class WorkflowCalendarComponent extends WorkflowStepAbstractClass {
     numCardsByHour: marker('workflows.numCardsByHour'),
     cardsByDayLimit: marker('workflows.cardsByDayLimit'),
     numCardsByDay: marker('workflows.numCardsByDay'),
+    saturdayExcluded: marker('workflows.saturdayExcluded'),
     allowOverLimit: marker('workflows.allowOverLimit'),
     workflowSubstateTargetCardsLimit: marker('workflows.workflowSubstateTargetCardsLimit'),
     allowMinDaysAdvanceNotice: marker('workflows.allowMinDaysAdvanceNotice'),
@@ -83,7 +84,7 @@ export class WorkflowCalendarComponent extends WorkflowStepAbstractClass {
             ? this.workflowSubstates.find((d) => d.id === data.workflowCardsLimits.workflowSubstate.id)
             : null
         ],
-        allowSaturdaysAdvanceNotice: [data?.workflowCardsLimits?.allowSaturdaysAdvanceNotice ? true : false],
+        saturdayExcluded: [data?.workflowCardsLimits?.saturdayExcluded ? true : false],
         allowMinDaysAdvanceNotice: [
           data?.workflowCardsLimits?.minDaysAdvanceNotice || data?.workflowCardsLimits?.minDaysAdvanceNotice === 0 ? true : false
         ],
