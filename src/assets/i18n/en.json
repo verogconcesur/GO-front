@@ -1165,6 +1165,22 @@
     "vehicle": {
         "searchDialog": "Vehicle searcher"
     },
+    "workflow-card-searcher": {
+        "CARD_TAG_1": "Tag 1",
+        "CARD_TAG_2": "Tag 2",
+        "CARD_TAG_3": "Tag 3",
+        "CUSTOMER_FULL_NAME": "Customer full name",
+        "CUSTOMER_SOCIAL_ID": "Customer social Id",
+        "INVENTORY_COMMISSION_NUMBER": "Inventory commission number",
+        "REPAIR_ORDER_ID": "Repair order Id",
+        "REPAIR_ORDER_REFERENCE": "Repair order reference",
+        "VEHICLE_LICENSE_PLATE": "Vehicle license plate",
+        "VEHICLE_VIN": "VIN",
+        "attr": "Attribute",
+        "error_attribute": "You must select an attribute to search by",
+        "error_search_length": "The search length must be at least 4 characters",
+        "error_workflow": "You must select a workflow"
+    },
     "workflows": {
         "addField": "Add field",
         "addMovement": "Add movement",
@@ -1271,6 +1287,7 @@
         "requiredMyself": "Assign to actual user",
         "requiredSize": "Assign size",
         "requiredUser": "Assign to other user",
+        "saturdayExcluded": "Exclude Saturdays from the calendar",
         "select": "Select a Workflow",
         "selectAttachmentTab": "Select a category for the Client's service attachments",
         "selectAttachmentTabWhats": "Select a category for the Whatsapp conversations",

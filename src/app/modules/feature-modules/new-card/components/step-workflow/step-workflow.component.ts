@@ -250,7 +250,8 @@ export class StepWorkflowComponent implements OnInit {
         (d.getFullYear() === new Date().getFullYear() &&
           d.getMonth() === new Date().getMonth() &&
           d.getDate() < new Date().getDate()) ||
-        d.getDay() === 0
+        d.getDay() === 0 ||
+        (wf.workflowCardsLimit?.saturdayExcluded && d.getDay() === 6)
       ) {
         return '';
       }
@@ -305,7 +306,7 @@ export class StepWorkflowComponent implements OnInit {
     d = d ? d : new Date();
     const wf: WorkflowCreateCardDTO = this.formWorkflow.get('workflow').value;
     // Prevent Sunday from being selected.
-    if (d.getDay() === 0 || !this.minDaysAdvanceNotice(d)) {
+    if (d.getDay() === 0 || (wf.workflowCardsLimit?.saturdayExcluded && d.getDay() === 6) || !this.minDaysAdvanceNotice(d)) {
       return false;
     }
     if (wf.workflowCardsLimit?.cardsLimit && !this.allowOverLimit()) {
