@@ -1,21 +1,21 @@
-import { Component, Input, OnInit } from '@angular/core';
-import { WorkflowsCreateEditAuxService } from '../../../aux-service/workflows-create-edit-aux.service';
-import { ConfirmDialogService } from '@shared/services/confirm-dialog.service';
-import { TranslateService } from '@ngx-translate/core';
-import { ProgressSpinnerDialogService } from '@shared/services/progress-spinner-dialog.service';
-import { WorkflowStepAbstractClass } from '../workflow-step-abstract-class';
+import { Component, Input } from '@angular/core';
 import { UntypedFormBuilder, Validators } from '@angular/forms';
-import { WorkflowAdministrationService } from '@data/services/workflow-administration.service';
-import { WorkflowAdministrationStatesSubstatesService } from '@data/services/workflow-administration-states-substates.service';
-import { finalize, forkJoin, take } from 'rxjs';
-import WorkflowStateDTO from '@data/models/workflows/workflow-state-dto';
-import CombinedRequiredFieldsValidator from '@shared/validators/combined-required-fields.validator';
-import WorkflowCardsLimitDTO, { MAX_CARDS_LIMIT_BY_DAY } from '@data/models/workflow-admin/workflow-card-limit-dto';
-import WorkflowSubstateDTO from '@data/models/workflows/workflow-substate-dto';
-import { GlobalMessageService } from '@shared/services/global-message.service';
-import { marker } from '@biesbjerg/ngx-translate-extract-marker';
 import { ConcenetError } from '@app/types/error';
+import { marker } from '@biesbjerg/ngx-translate-extract-marker';
 import RoleDTO from '@data/models/user-permissions/role-dto';
+import WorkflowCardsLimitDTO, { MAX_CARDS_LIMIT_BY_DAY } from '@data/models/workflow-admin/workflow-card-limit-dto';
+import WorkflowStateDTO from '@data/models/workflows/workflow-state-dto';
+import WorkflowSubstateDTO from '@data/models/workflows/workflow-substate-dto';
+import { WorkflowAdministrationStatesSubstatesService } from '@data/services/workflow-administration-states-substates.service';
+import { WorkflowAdministrationService } from '@data/services/workflow-administration.service';
+import { TranslateService } from '@ngx-translate/core';
+import { ConfirmDialogService } from '@shared/services/confirm-dialog.service';
+import { GlobalMessageService } from '@shared/services/global-message.service';
+import { ProgressSpinnerDialogService } from '@shared/services/progress-spinner-dialog.service';
+import CombinedRequiredFieldsValidator from '@shared/validators/combined-required-fields.validator';
+import { finalize, forkJoin, take } from 'rxjs';
+import { WorkflowsCreateEditAuxService } from '../../../aux-service/workflows-create-edit-aux.service';
+import { WorkflowStepAbstractClass } from '../workflow-step-abstract-class';
 
 @Component({
   selector: 'app-workflow-calendar',
@@ -37,6 +37,7 @@ export class WorkflowCalendarComponent extends WorkflowStepAbstractClass {
     numCardsByHour: marker('workflows.numCardsByHour'),
     cardsByDayLimit: marker('workflows.cardsByDayLimit'),
     numCardsByDay: marker('workflows.numCardsByDay'),
+    saturdayExcluded: marker('workflows.saturdayExcluded'),
     allowOverLimit: marker('workflows.allowOverLimit'),
     workflowSubstateTargetCardsLimit: marker('workflows.workflowSubstateTargetCardsLimit'),
     allowMinDaysAdvanceNotice: marker('workflows.allowMinDaysAdvanceNotice'),
@@ -83,6 +84,7 @@ export class WorkflowCalendarComponent extends WorkflowStepAbstractClass {
             ? this.workflowSubstates.find((d) => d.id === data.workflowCardsLimits.workflowSubstate.id)
             : null
         ],
+        saturdayExcluded: [data?.workflowCardsLimits?.saturdayExcluded ? true : false],
         allowMinDaysAdvanceNotice: [
           data?.workflowCardsLimits?.minDaysAdvanceNotice || data?.workflowCardsLimits?.minDaysAdvanceNotice === 0 ? true : false
         ],

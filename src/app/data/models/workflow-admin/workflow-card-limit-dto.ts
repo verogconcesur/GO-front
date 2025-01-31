@@ -21,6 +21,7 @@ export default interface WorkflowCardsLimitDTO {
   endTime: number;
   numCardsByDay: number;
   numCardsByHour: number;
+  saturdayExcluded: boolean;
   allowOverLimit: boolean;
   workflowSubstate: WorkflowSubstateDTO;
   minDaysAdvanceNotice: number;
