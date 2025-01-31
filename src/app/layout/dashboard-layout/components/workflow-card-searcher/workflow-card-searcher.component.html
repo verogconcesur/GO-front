@@ -88,6 +88,9 @@
                         {{ getWorkflowLabel(workflowSelected, true) || "" }}
                     </mat-select-trigger>
 
+                    <mat-option [value]="null" class="workflow-name capitalize">
+                        - {{ labels.anyOption | translate }} -</mat-option
+                    >
                     <mat-option
                         *ngFor="let workflow of workflowOptions | async"
                         [value]="workflow"

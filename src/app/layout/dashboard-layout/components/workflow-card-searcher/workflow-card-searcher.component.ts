@@ -26,7 +26,7 @@ export class WorkflowCardSearcherComponent implements OnInit {
 
   @ViewChild(MatMenuTrigger) filterMenuTrigger!: MatMenuTrigger;
 
-  DEFAULT_ATTRIBUTE = TypeFilterCard[5];
+  DEFAULT_ATTRIBUTE = TypeFilterCard[4];
   SESSION_FAST_SEARCHER_ATTR_KEY = 'userFastSearchAttrPreference';
   SESSION_FAST_SEARCHER_WF_KEY = 'userFastSearchWfPreference';
   MIN_SEARCH_LENGTH = 4;
@@ -48,7 +48,8 @@ export class WorkflowCardSearcherComponent implements OnInit {
     error_attribute: marker('workflow-card-searcher.error_attribute'),
     error_workflow: marker('workflow-card-searcher.error_workflow'),
     error_search_length: marker('workflow-card-searcher.error_search_length'),
-    filterWorkflow: marker('workflows.filter')
+    filterWorkflow: marker('workflows.filter'),
+    anyOption: marker('common.anyOption')
   };
 
   public idWfRouteSelected: number = null;
@@ -122,7 +123,7 @@ export class WorkflowCardSearcherComponent implements OnInit {
   }
 
   public cardSelected(card: WorkflowCardDTO): void {
-    this.filterMenuTrigger.closeMenu();
+    setTimeout(() => this.filterMenuTrigger.closeMenu());
     this.searcherForm.get('search').setValue(null);
     this.cards = [];
   }
@@ -177,7 +178,7 @@ export class WorkflowCardSearcherComponent implements OnInit {
     if (workflow && workflow.name) {
       return `${workflow.name}`;
     } else {
-      return '';
+      return this.translateService.instant(this.labels.anyOption);
     }
   }
 
@@ -200,7 +201,6 @@ export class WorkflowCardSearcherComponent implements OnInit {
   private checkValidations(): void {
     const value = this.searcherForm.get('search')?.value;
     const attr = this.filterForm.get('attribute')?.value;
-    const wId = this.filterForm.get('workflow')?.value?.id;
     this.searchValidationsErrors = [];
     if (!value || value.length < this.MIN_SEARCH_LENGTH) {
       this.searchValidationsErrors.push(this.labels.error_search_length);
@@ -208,14 +208,11 @@ export class WorkflowCardSearcherComponent implements OnInit {
     if (!attr) {
       this.searchValidationsErrors.push(this.labels.error_attribute);
     }
-    if (!wId) {
-      this.searchValidationsErrors.push(this.labels.error_workflow);
-    }
   }
 
   private fetchData() {
     const attr = this.filterForm.get('attribute')?.value;
-    const wId = this.filterForm.get('workflow')?.value?.id;
+    const wId = this.filterForm.get('workflow')?.value?.id ? this.filterForm.get('workflow')?.value?.id : null;
     this.workflowService
       .searchCardsInWorkflowsPaged(this.filterValue, attr, wId, this.paginationConfig)
       .pipe(

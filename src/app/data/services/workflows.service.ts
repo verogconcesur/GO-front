@@ -96,7 +96,7 @@ export class WorkflowsService {
   public searchCardsInWorkflowsPaged(
     search: string,
     typeFilterCard: string,
-    workflowId: number,
+    workflowId: number | null,
     pagination?: PaginationRequestI
   ): Observable<PaginationResponseI<WorkflowCardDTO>> {
     return this.http
