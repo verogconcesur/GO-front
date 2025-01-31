@@ -1102,6 +1102,22 @@
     "vehicle": {
         "searchDialog": "Buscador de vehículos"
     },
+    "workflow-card-searcher": {
+        "CARD_TAG_1": "Etiqueta 1",
+        "CARD_TAG_2": "Etiqueta 2",
+        "CARD_TAG_3": "Etiqueta 3",
+        "CUSTOMER_FULL_NAME": "Nombre completo cliente",
+        "CUSTOMER_SOCIAL_ID": "Documento de identidad cliente",
+        "INVENTORY_COMMISSION_NUMBER": "Nº de comisión",
+        "REPAIR_ORDER_ID": "Id orden reparación",
+        "REPAIR_ORDER_REFERENCE": "Referencia orden reparación",
+        "VEHICLE_LICENSE_PLATE": "Matrícula",
+        "VEHICLE_VIN": "VIN",
+        "attr": "Atributo",
+        "error_attribute": "Debe seleccionar un atributo por el que buscar",
+        "error_search_length": "La longitud de la búsqueda debe ser de al menos 4 caracteres",
+        "error_workflow": "Debe seleccionar un workflow"
+    },
     "workflows": {
         "addField": "Añadir campo",
         "addMovement": "Añadir movimiento",

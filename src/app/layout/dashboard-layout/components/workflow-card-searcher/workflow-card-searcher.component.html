@@ -1,142 +1,152 @@
 <div class="navbar__searcher" [ngClass]="{ centered: format === 'icon' }">
-    <form [formGroup]="searcherForm" class="navbar__search" fxLayout="row" fxLayoutAlign="end center" *ngIf="format === 'input'">
+    <form
+        [formGroup]="searcherForm"
+        class="navbar__search"
+        fxLayout="row"
+        fxLayoutAlign="end center"
+        *ngIf="format === 'input'"
+        #filterMenuTrigger
+        [matMenuTriggerFor]="filterSeacherMenu"
+        (menuClosed)="searchInput.focus()"
+    >
         <mat-form-field appearance="outline">
             <input
+                #searchInput
                 formControlName="search"
-                autocomplete="off"
                 matInput
-                [matAutocomplete]="auto"
                 [placeholder]="labels.search | translate"
+                (keyup.enter)="filter()"
             />
-            <mat-icon matSuffix *ngIf="searching <= 0">search</mat-icon>
-            <mat-spinner matSuffix class="spinner" *ngIf="searching > 0" diameter="20"></mat-spinner>
-            <mat-autocomplete
-                autoActiveFirstOption="false"
-                #auto="matAutocomplete"
-                (optionsScroll)="onScroll()"
-                [panelWidth]="'315px'"
-                class="autocomplete-panel-class"
-                classlist="autocomplete-panel-class"
-            >
-                <div class="fixed-filters">
-                    <mat-form-field
-                        appearance="outline"
-                        class="custom-select-field"
-                        floatLabel="always"
-                        style="width: 300px; margin: 2px"
-                        formControlName="attribute"
-                    >
-                        <mat-label>Atributo</mat-label>
-                        <mat-select>
-                            <mat-option *ngFor="let attr of attributes" [value]="attr">{{ attr }}</mat-option>
-                        </mat-select>
-                    </mat-form-field>
-
-                    <mat-form-field
-                        appearance="outline"
-                        class="custom-select-field"
-                        floatLabel="always"
-                        formControlName="workflow"
-                        style="width: 300px; margin: 2px"
-                    >
-                        <mat-label>Workflow</mat-label>
-                        <mat-select>
-                            <mat-option *ngFor="let workflow of workflows" [value]="workflow">{{ workflow }}</mat-option>
-                        </mat-select>
-                    </mat-form-field>
-                </div>
-                <div class="scrollable-options" ngif="cards.length">
-                    <mat-option
-                        *ngFor="let option of cards; let i = index"
-                        class="search-option-card"
-                        [ngClass]="{
-                            'with-wf-name': showWorkflowName(i),
-                            'with-wf-substate-name': !showWorkflowName(i) && showWorkflowSubstate(i)
-                        }"
-                        [value]="option"
-                        (click)="cardSelected(option)"
-                        [class.fade-in]="true"
-                    >
-                        <div class="search-option-card__wf-name" *ngIf="showWorkflowName(i)">
-                            <div>{{ option.cardInstanceWorkflows[0].workflowName }}</div>
-                        </div>
-                        <div class="search-option-card__wf-name" *ngIf="showWorkflowSubstate(i)">
-                            <div class="workflow-substate">{{ option.cardInstanceWorkflows[0].workflowSubstateName }}</div>
-                        </div>
-
-                        <app-workflow-card
-                            [card]="option"
-                            [disableDrag]="true"
-                            [forceSize]="'size-s'"
-                            [showExtraInfo]="false"
-                            [dateToShow]="getDateToShow(option)"
-                            [dateToShowClass]="'searchPosition'"
-                            [navigationMode]="'absolute'"
-                        >
-                        </app-workflow-card>
-                    </mat-option>
-                    <div class="search-option-spinner" *ngIf="!paginationConfig.last">
-                        <mat-spinner matSuffix class="spinner" diameter="30"></mat-spinner>
-                    </div>
-                </div>
-            </mat-autocomplete>
+            <mat-icon matSuffix (click)="filter(); $event.stopPropagation()">search</mat-icon>
         </mat-form-field>
     </form>
-    <mat-icon *ngIf="format === 'icon'" [matMenuTriggerFor]="cardSearcherMenu">search</mat-icon>
+    <mat-icon *ngIf="format === 'icon'" [matMenuTriggerFor]="filterSeacherMenu">search</mat-icon>
 </div>
-
-<mat-menu #cardSearcherMenu="matMenu" class="user-profile-menu">
+<mat-menu #filterSeacherMenu="matMenu" class="user-profile-menu">
     <div (click)="$event.stopPropagation()">
-        <form
-            [formGroup]="searcherForm"
-            class="navbar__search"
-            fxLayout="row"
-            fxLayoutAlign="end center"
-            *ngIf="format === 'icon'"
-        >
-            <mat-form-field appearance="outline">
-                <input
-                    formControlName="search"
-                    autocomplete="off"
-                    matInput
-                    [matAutocomplete]="auto"
-                    [placeholder]="labels.search | translate"
-                />
-                <mat-icon matSuffix *ngIf="searching <= 0">search</mat-icon>
-                <mat-spinner matSuffix class="spinner" *ngIf="searching > 0" diameter="20"></mat-spinner>
-                <mat-autocomplete
-                    autoActiveFirstOption="false"
-                    #auto="matAutocomplete"
-                    [panelWidth]="'315px'"
-                    class="autocomplete-panel-class"
-                    classlist="autocomplete-panel-class"
-                >
-                    <mat-option
-                        *ngFor="let option of cards; let i = index"
-                        class="search-option-card"
-                        [ngClass]="{ 'with-wf-name': showWorkflowName(i) }"
-                        [value]="option"
-                        (click)="cardSelected(option)"
-                        [ngClass]="{ 'fade-in': true }"
-                    >
-                        <div class="search-option-card__wf-name" *ngIf="showWorkflowName(i)">
-                            {{ option.cardInstanceWorkflows[0].workflowName }}
-                        </div>
-                        <app-workflow-card
-                            [card]="option"
-                            [disableDrag]="true"
-                            [forceSize]="'size-s'"
-                            [showExtraInfo]="false"
-                            [dateToShow]="getDateToShow(option)"
-                            [dateToShowClass]="'searchPosition'"
-                            [navigationMode]="'absolute'"
-                        ></app-workflow-card>
-                    </mat-option>
-                    <div class="search-option-spinner" *ngIf="!paginationConfig.last">
-                        <mat-spinner matSuffix class="spinner" diameter="30"></mat-spinner>
-                    </div>
-                </mat-autocomplete>
+        <form [formGroup]="searcherForm" *ngIf="format === 'icon'">
+            <mat-form-field
+                appearance="outline"
+                floatLabel="always"
+                style="width: 425px; margin: 2px"
+                class="custom-select-field"
+            >
+                <input #searchInput formControlName="search" matInput (keyup.enter)="filter()" />
+                <mat-label>{{ labels.search | translate }}</mat-label>
             </mat-form-field>
         </form>
+        <form [formGroup]="filterForm" class="fixed-filters">
+            <mat-form-field
+                appearance="outline"
+                class="custom-select-field"
+                floatLabel="always"
+                style="width: 425px; margin: 2px"
+            >
+                <mat-label>{{ labels.attr | translate }}</mat-label>
+                <mat-select
+                    formControlName="attribute"
+                    (click)="$event.stopPropagation()"
+                    (selectionChange)="selectorChange($event.value)"
+                >
+                    <mat-option *ngFor="let attr of attributes" [value]="attr" disableRipple>{{
+                        labels[attr] | translate
+                    }}</mat-option>
+                </mat-select>
+            </mat-form-field>
+
+            <mat-form-field
+                appearance="outline"
+                class="custom-select-field"
+                floatLabel="always"
+                style="width: 425px; margin: 2px"
+            >
+                <mat-label>{{ labels.workflow | translate }}</mat-label>
+                <mat-select
+                    formControlName="workflow"
+                    class="capitalize"
+                    (click)="$event.stopPropagation()"
+                    (selectionChange)="selectorChange()"
+                >
+                    <mat-form-field
+                        appearance="outline"
+                        floatLabel="always"
+                        class="smaller-mat-form-fields__no-margin workflow-navbar__selector-filter"
+                        style="width: 100%"
+                    >
+                        <input
+                            matInput
+                            type="text"
+                            matInput
+                            formControlName="workflowSearch"
+                            [placeholder]="labels.filterWorkflow | translate"
+                        />
+                    </mat-form-field>
+
+                    <mat-divider></mat-divider>
+
+                    <mat-select-trigger *ngIf="workflowSelected">
+                        {{ getWorkflowLabel(workflowSelected, true) || "" }}
+                    </mat-select-trigger>
+
+                    <mat-option
+                        *ngFor="let workflow of workflowOptions | async"
+                        [value]="workflow"
+                        class="workflow-name capitalize"
+                    >
+                        {{ getWorkflowLabel(workflow) }}
+                    </mat-option>
+                </mat-select>
+            </mat-form-field>
+            <div style="width: 425px" *ngIf="searchValidationsErrors.length > 0" class="error-messages">
+                <div *ngFor="let error of searchValidationsErrors" class="error-message">- {{ error | translate }}.</div>
+            </div>
+            <button
+                mat-raised-button
+                color="primary"
+                class="search-button"
+                style="width: 425px"
+                (click)="filter()"
+                [disabled]="searchValidationsErrors.length > 0 || searching > 0"
+            >
+                {{ labels.search | translate }}
+            </button>
+        </form>
+        <div class="search-option-spinner" *ngIf="searching > 0">
+            <mat-spinner class="spinner" diameter="20"></mat-spinner>
+        </div>
+        <div class="scrollable-options" *ngIf="cards.length" (scroll)="onScroll()">
+            <mat-option
+                *ngFor="let option of cards; let i = index"
+                class="search-option-card"
+                [ngClass]="{
+                    'with-wf-name': showWorkflowName(i),
+                    'with-wf-substate-name': !showWorkflowName(i) && showWorkflowSubstate(i)
+                }"
+                [value]="option"
+                (click)="cardSelected(option)"
+                [class.fade-in]="true"
+            >
+                <div class="search-option-card__wf-name" *ngIf="showWorkflowName(i)">
+                    <div>{{ option.cardInstanceWorkflows[0].workflowName }}</div>
+                </div>
+                <div class="search-option-card__wf-name" *ngIf="showWorkflowSubstate(i)">
+                    <div class="workflow-substate">{{ option.cardInstanceWorkflows[0].workflowSubstateName }}</div>
+                </div>
+
+                <app-workflow-card
+                    [card]="option"
+                    [disableDrag]="true"
+                    [forceSize]="'size-s'"
+                    [showExtraInfo]="false"
+                    [dateToShow]="getDateToShow(option)"
+                    [dateToShowClass]="'searchPosition'"
+                    [navigationMode]="'absolute'"
+                >
+                </app-workflow-card>
+            </mat-option>
+            <div class="search-option-spinner" *ngIf="!paginationConfig.last">
+                <mat-spinner matSuffix class="spinner" diameter="30"></mat-spinner>
+            </div>
+        </div>
     </div>
 </mat-menu>
