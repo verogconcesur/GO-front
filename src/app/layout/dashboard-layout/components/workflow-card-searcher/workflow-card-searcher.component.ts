@@ -122,6 +122,7 @@ export class WorkflowCardSearcherComponent implements OnInit {
   }
 
   public cardSelected(card: WorkflowCardDTO): void {
+    this.filterMenuTrigger.closeMenu();
     this.searcherForm.get('search').setValue(null);
     this.cards = [];
   }
