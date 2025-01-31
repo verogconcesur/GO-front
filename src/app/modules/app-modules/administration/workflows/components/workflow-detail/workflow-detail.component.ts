@@ -12,6 +12,8 @@ import { ProgressSpinnerDialogService } from '@shared/services/progress-spinner-
 import { take } from 'rxjs/operators';
 import { WorkflowsCreateEditAuxService } from '../../aux-service/workflows-create-edit-aux.service';
 // eslint-disable-next-line max-len
+import { ModulesConstants } from '@app/constants/modules.constants';
+import { AuthenticationService } from '@app/security/authentication.service';
 import { CustomDialogService } from '@shared/modules/custom-dialog/services/custom-dialog.service';
 import {
   CreateEditWorkflowComponent,
@@ -53,7 +55,8 @@ export class WorkflowDetailComponent implements OnInit, OnDestroy, AfterViewInit
     private translateService: TranslateService,
     private spinnerService: ProgressSpinnerDialogService,
     private confirmDialogService: ConfirmDialogService,
-    private globalMessageService: GlobalMessageService
+    private globalMessageService: GlobalMessageService,
+    private authService: AuthenticationService
   ) {}
 
   ngOnInit(): void {
@@ -68,6 +71,11 @@ export class WorkflowDetailComponent implements OnInit, OnDestroy, AfterViewInit
   ngAfterViewInit(): void {
     // eslint-disable-next-line no-underscore-dangle
     this.tabs._handleClick = this.myTabChange.bind(this);
+  }
+
+  public isCardLimitContractedModule(): boolean {
+    const configList = this.authService.getConfigList();
+    return configList.includes(ModulesConstants.CARD_LIMIT);
   }
 
   public initListeners(): void {

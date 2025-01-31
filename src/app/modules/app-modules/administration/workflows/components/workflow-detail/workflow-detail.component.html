@@ -25,19 +25,31 @@
                 label="{{ labels.cards | translate }}"
                 [disabled]="!workflowsCreateEditAuxService.enableTabStep(2)"
             ></mat-tab>
-            <mat-tab label="{{ labels.cardConfig | translate }}" [disabled]="!workflowsCreateEditAuxService.enableTabStep(3)">
-            </mat-tab>
-            <mat-tab label="{{ labels.states | translate }}" [disabled]="!workflowsCreateEditAuxService.enableTabStep(4)">
-            </mat-tab>
-            <mat-tab label="{{ labels.cardsLimit | translate }}" [disabled]="!workflowsCreateEditAuxService.enableTabStep(5)">
-            </mat-tab>
-            <mat-tab label="{{ labels.timeline | translate }}" [disabled]="!workflowsCreateEditAuxService.enableTabStep(6)">
-            </mat-tab>
-            <mat-tab label="{{ labels.budgets | translate }}" [disabled]="!workflowsCreateEditAuxService.enableTabStep(7)">
-            </mat-tab>
+            <mat-tab
+                label="{{ labels.cardConfig | translate }}"
+                [disabled]="!workflowsCreateEditAuxService.enableTabStep(3)"
+            ></mat-tab>
+            <mat-tab
+                label="{{ labels.states | translate }}"
+                [disabled]="!workflowsCreateEditAuxService.enableTabStep(4)"
+            ></mat-tab>
+            <mat-tab
+                *ngIf="isCardLimitContractedModule()"
+                label="{{ labels.cardsLimit | translate }}"
+                [disabled]="!workflowsCreateEditAuxService.enableTabStep(5)"
+            ></mat-tab>
+            <mat-tab
+                label="{{ labels.timeline | translate }}"
+                [disabled]="!workflowsCreateEditAuxService.enableTabStep(isCardLimitContractedModule() ? 6 : 5)"
+            ></mat-tab>
+
+            <mat-tab
+                label="{{ labels.budgets | translate }}"
+                [disabled]="!workflowsCreateEditAuxService.enableTabStep(isCardLimitContractedModule() ? 7 : 6)"
+            ></mat-tab>
         </mat-tab-group>
+
         <div [ngSwitch]="tabIndex">
-            <!-- <app-workflow-calendar [workflowId]="workflowDetail?.id" [stepIndex]="0" *ngSwitchCase="0"></app-workflow-calendar> -->
             <app-workflow-organization
                 [workflowId]="workflowDetail?.id"
                 [stepIndex]="0"
@@ -52,16 +64,28 @@
                 *ngSwitchCase="4"
             ></app-workflow-card-config>
             <app-workflow-states [workflowId]="workflowDetail?.id" [stepIndex]="5" *ngSwitchCase="5"></app-workflow-states>
-            <app-workflow-calendar [workflowId]="workflowDetail?.id" [stepIndex]="6" *ngSwitchCase="6"></app-workflow-calendar>
-            <app-workflow-timeline [workflowId]="workflowDetail?.id" [stepIndex]="7" *ngSwitchCase="7"></app-workflow-timeline>
+            <ng-container *ngIf="isCardLimitContractedModule()">
+                <app-workflow-calendar
+                    [workflowId]="workflowDetail?.id"
+                    [stepIndex]="6"
+                    *ngSwitchCase="6"
+                ></app-workflow-calendar>
+            </ng-container>
+            <app-workflow-timeline
+                [workflowId]="workflowDetail?.id"
+                [stepIndex]="isCardLimitContractedModule() ? 7 : 6"
+                *ngSwitchCase="isCardLimitContractedModule() ? 7 : 6"
+            ></app-workflow-timeline>
+
             <app-workflow-budgets
                 [workflowId]="workflowDetail?.id"
-                [stepIndex]="8"
-                *ngSwitchCase="8"
+                [stepIndex]="isCardLimitContractedModule() ? 8 : 7"
+                *ngSwitchCase="isCardLimitContractedModule() ? 8 : 7"
                 [lastStep]="true"
             ></app-workflow-budgets>
         </div>
     </div>
+
     <div class="wf__footer" fxLayout="row-reverse" fxLayoutAlign="space-between center">
         <button
             mat-flat-button

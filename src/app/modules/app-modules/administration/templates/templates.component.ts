@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { MatTabChangeEvent } from '@angular/material/tabs';
-import { ActivatedRoute, Route, Router } from '@angular/router';
+import { Router } from '@angular/router';
 import { RouteConstants } from '@app/constants/route.constants';
 import { marker } from '@biesbjerg/ngx-translate-extract-marker';
 import TemplatesFilterDTO from '@data/models/templates/templates-filter-dto';
@@ -9,9 +9,12 @@ import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
 // eslint-disable-next-line max-len
 import { AdministrationCommonHeaderSectionClassToExtend } from '@modules/feature-modules/administration-common-header-section/administration-common-header-section-class-to-extend';
 // eslint-disable-next-line max-len
+import { ModulesConstants } from '@app/constants/modules.constants';
+import { AuthenticationService } from '@app/security/authentication.service';
+// eslint-disable-next-line max-len
 import { AdministrationCommonHeaderSectionComponent } from '@modules/feature-modules/administration-common-header-section/administration-common-header-section.component';
 import { FilterDrawerService } from '@modules/feature-modules/filter-drawer/services/filter-drawer.service';
-import { Observable, of } from 'rxjs';
+import { Observable } from 'rxjs';
 import { TemplatesFilterComponent } from './components/templates-filter/templates-filter.component';
 
 @UntilDestroy()
@@ -51,7 +54,11 @@ export class TemplatesComponent implements OnInit {
   private filterValue: TemplatesFilterDTO;
   private routerComponent: AdministrationCommonHeaderSectionClassToExtend;
 
-  constructor(private router: Router, private filterDrawerService: FilterDrawerService) {}
+  constructor(
+    private router: Router,
+    private filterDrawerService: FilterDrawerService,
+    private authService: AuthenticationService
+  ) {}
 
   ngOnInit(): void {
     this.setSidenavFilterDrawerConfiguration();
@@ -59,6 +66,15 @@ export class TemplatesComponent implements OnInit {
 
   public getSearchType(): 'search' | 'filter' {
     return 'search';
+  }
+
+  public isContractedModule(option: string): boolean {
+    const configList = this.authService.getConfigList();
+    if (option === 'checklist') {
+      return configList.includes(ModulesConstants.SMS_SEND);
+    } else if (option === 'accounting') {
+      return configList.includes(ModulesConstants.WHATSAPP_SEND);
+    }
   }
 
   public getSelectedTabIndex(): number {
