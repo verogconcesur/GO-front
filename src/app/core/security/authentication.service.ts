@@ -11,7 +11,7 @@ import RoleDTO from '@data/models/user-permissions/role-dto';
 import { UserService } from '@data/services/user.service';
 import moment from 'moment';
 import { Observable, of, throwError } from 'rxjs';
-import { catchError, take } from 'rxjs/operators';
+import { catchError, map, take } from 'rxjs/operators';
 
 @Injectable({
   providedIn: 'root'
@@ -59,9 +59,10 @@ export class AuthenticationService implements OnDestroy {
   }
 
   public getConfigModules(): Observable<string[]> {
-    return this.http
-      .get<string[]>(`${this.env.apiBaseUrl}${this.CONFIG_MODULES}`)
-      .pipe(catchError((error) => throwError(error as ConcenetError)));
+    return this.http.get<string[]>(`${this.env.apiBaseUrl}${this.CONFIG_MODULES}`).pipe(
+      map((response: string[] | null) => response || []),
+      catchError((error) => throwError(error as ConcenetError))
+    );
   }
 
   public keepTokenAlive(): void {
