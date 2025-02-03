@@ -156,7 +156,7 @@ export class ModalRepairOrderComponent extends ComponentToExtendForCustomDialog 
           dueInDatetime: this.convertToMilliseconds(formValue.dueInDatetime).toString(),
           facility: formValue.facility,
           notes: formValue.notes,
-          playerAccount: formValue.plaplayerAccount,
+          playerAccount: formValue.playerAccount,
           jobs: jobNames
         })
         .pipe(
@@ -199,7 +199,7 @@ export class ModalRepairOrderComponent extends ComponentToExtendForCustomDialog 
                 dueInDatetime: this.convertToMilliseconds(formValue.dueInDatetime).toString(),
                 facility: formValue.facility,
                 notes: formValue.notes,
-                playerAccount: formValue.plaplayerAccount,
+                playerAccount: formValue.playerAccount,
                 jobs: jobNames
               })
               .pipe(

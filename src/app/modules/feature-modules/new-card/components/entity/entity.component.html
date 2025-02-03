@@ -61,9 +61,7 @@
         <div class="entity__head__content" fxLayout="column" *ngIf="showContent()">
             <div *ngFor="let tabItem of tabItems.controls" class="entity__head__content__item" fxLayout="column">
                 <span class="entity__head__content__item__label capitalize">{{ tabItem.value.label }}</span>
-                <span class="entity__head__content__item__value" *ngIf="tabItem.valid">{{
-                    tabItem.value.value ? tabItem.value.value : "---"
-                }}</span>
+                <span class="entity__head__content__item__value" *ngIf="tabItem.valid">{{ getDataValue(tabItem) }}</span>
                 <span class="entity__head__content__item__error" *ngIf="tabItem.invalid">{{ labels.required | translate }}</span>
             </div>
         </div>
