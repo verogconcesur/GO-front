@@ -134,7 +134,6 @@ export class ModalVehicleComponent extends ComponentToExtendForCustomDialog impl
   }
 
   public openModalAddCustomer() {
-    console.log('entra');
     this.entitySearcher.openEntitySearcher(null, this.vehicleForm.controls.facility.value, 'CUSTOMER').then((data) => {
       if (data) {
         const newVehicle: CustomerVehicles = {
@@ -144,16 +143,10 @@ export class ModalVehicleComponent extends ComponentToExtendForCustomDialog impl
           relationship: null
         };
         const customerArray = this.vehicleForm.get('vehicleCustomers') as FormArray;
-        // Verifica si el cliente ya existe en el FormArray
-        const yaExiste = customerArray.value.some(
-          (userExist: CustomerVehicles) => userExist.customer.id === newVehicle.customer.id
-        );
-        if (!yaExiste) {
-          customerArray.push(this.createCustomerFormGroup(newVehicle));
-          this.vehicleCustomersList = [...this.vehicleCustomersList, newVehicle];
-        }
+
+        customerArray.push(this.createCustomerFormGroup(newVehicle));
+        this.vehicleCustomersList = [...this.vehicleCustomersList, newVehicle];
       }
-      console.log(this.vehicleForm.get('vehicleCustomers')?.value);
     });
   }
 
@@ -404,18 +397,12 @@ export class ModalVehicleComponent extends ComponentToExtendForCustomDialog impl
     return of(true);
   }
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  public onSelectionChange(event: any, element: any): void {
+  public onSelectionChange(event: any, element: any, index: number): void {
     const selectedValue = event.value;
-    const customerIndex = this.vehicleCustomersArray.controls.findIndex((control) => control.value.id === element.id);
-    if (customerIndex !== -1) {
-      const customerFormGroup = this.vehicleCustomersArray.at(customerIndex) as FormGroup;
-
-      customerFormGroup.get('relationship')?.setValue(selectedValue);
-
-      const customerInArrayIndex = this.vehicleCustomersList.findIndex((customer) => customer.id === element.id);
-      if (customerInArrayIndex !== -1) {
-        this.vehicleCustomersList[customerInArrayIndex].relationship = selectedValue;
-      }
+    const customerFormGroup = this.vehicleCustomersArray.at(index) as FormGroup;
+    customerFormGroup.get('relationship')?.setValue(selectedValue);
+    if (this.vehicleCustomersList[index].id === element.id) {
+      this.vehicleCustomersList[index].relationship = selectedValue;
     }
   }
 

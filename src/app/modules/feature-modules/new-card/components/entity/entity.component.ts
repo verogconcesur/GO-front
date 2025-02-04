@@ -1,3 +1,4 @@
+import { DatePipe } from '@angular/common';
 import { Component, Input, OnInit } from '@angular/core';
 import { FormArray, FormBuilder, FormGroup } from '@angular/forms';
 import { marker } from '@biesbjerg/ngx-translate-extract-marker';
@@ -77,7 +78,8 @@ export class EntityComponent implements OnInit {
     private spinnerService: ProgressSpinnerDialogService,
     private globalMessageService: GlobalMessageService,
     private customDialogService: CustomDialogService,
-    private steperService: StepColumnService
+    private steperService: StepColumnService,
+    private datePipe: DatePipe
   ) {}
   get tabItems(): FormArray {
     return this.formTab.get('tabItems') as FormArray;
@@ -113,6 +115,35 @@ export class EntityComponent implements OnInit {
       default:
         return '';
     }
+  }
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  public getDataValue(data: any): string | number {
+    const value = data.value.value.variable.value;
+    if (!value) {
+      return '----';
+    }
+    const dataType = data.value.value.variable.dataType.toUpperCase();
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const correctDateFormat = (dateValue: any): string => {
+      if (typeof dateValue === 'string') {
+        const dateParts = dateValue.split('/');
+        if (dateParts.length === 3) {
+          return `${dateParts[1]}/${dateParts[0]}/${dateParts[2]}`;
+        }
+      }
+      return dateValue;
+    };
+    if (dataType === 'DATE' || dataType === 'DATETIME' || dataType === 'TIME') {
+      const correctedDate = correctDateFormat(value);
+      if (dataType === 'DATE') {
+        return this.datePipe.transform(new Date(correctedDate), 'dd-MM-yyyy');
+      } else if (dataType === 'DATETIME') {
+        return this.datePipe.transform(new Date(correctedDate), 'dd-MM-yyyy, HH:mm');
+      } else if (dataType === 'TIME') {
+        return this.datePipe.transform(new Date(correctedDate), 'HH:mm');
+      }
+    }
+    return value;
   }
   public getImportEntityButtonLabel(): string {
     switch (this.formTab.get('contentSourceId').value) {
@@ -339,7 +370,7 @@ export class EntityComponent implements OnInit {
         tabItems.forEach((tabItem) => {
           this.tabItems.controls.forEach((tabItemControl) => {
             if (tabItemControl.get('id').value === tabItem.id) {
-              tabItemControl.get('value').setValue(tabItem.tabItemConfigVariable.variable.value);
+              tabItemControl.get('value').setValue(tabItem.tabItemConfigVariable);
             }
           });
         });
