@@ -123,7 +123,9 @@ export class ModalCustomerComponent extends ComponentToExtendForCustomDialog imp
 
   public confirmCreateCustomer = () => {
     const formValue = this.customerForm.value;
-    if (this.showBusnesType === true) {
+    const configList = this.authService.getConfigList();
+    const isWriteKeyloopEnabled = configList.includes('WRITE_KEYLOOP');
+    if (this.showBusnesType === true && isWriteKeyloopEnabled) {
       this.confirmationDialog
         .open({
           title: this.translateService.instant(marker('common.warning')),
@@ -272,6 +274,8 @@ export class ModalCustomerComponent extends ComponentToExtendForCustomDialog imp
     }
   }
   public isAutoline(firstLoad: boolean) {
+    const configList = this.authService.getConfigList();
+    const isWriteKeyloopEnabled = configList.includes('WRITE_KEYLOOP');
     const facilitySelected = this.facilityList.find((facility) => facility?.id === this.form.facility?.value?.id);
     if (facilitySelected) {
       if (facilitySelected.configApiExtDmsType === 'AUTOLINE') {
@@ -295,7 +299,9 @@ export class ModalCustomerComponent extends ComponentToExtendForCustomDialog imp
         this.customerForm.get('reference').enable();
       }
     } else {
-      this.customerForm.get('reference').enable();
+      if (!isWriteKeyloopEnabled) {
+        this.customerForm.get('reference').enable();
+      }
     }
   }
   public setAndGetFooterConfig(): CustomDialogFooterConfigI | null {
