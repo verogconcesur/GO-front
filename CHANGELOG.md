@@ -2,6 +2,60 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [1.1.10](https://github.com/Delivery-Projects/concesur/concenet_front/-/compare/v1.1.9...v1.1.10) (2025-02-04)
+
+
+### Features
+
+* add selects accounting in checklist ([59e2aa2](https://github.com/Delivery-Projects/concesur/concenet_front/-/commit/59e2aa251be022d852bb7b11e68eafc82e822544))
+* ajustar select opciones texto largas ([ca19bb5](https://github.com/Delivery-Projects/concesur/concenet_front/-/commit/ca19bb55d389b6accb1054df62325e5eaeae70ab))
+* ampliar inputs variables ([5d82471](https://github.com/Delivery-Projects/concesur/concenet_front/-/commit/5d8247156dc70d3132b13810ffafdb4e8fc6d0b3))
+* buildOptimizer false for all environments ([d85bde6](https://github.com/Delivery-Projects/concesur/concenet_front/-/commit/d85bde694f9c4b3f8e475005a7d0f2e4c6e096d4))
+* busqueda rápida con filtro por atributo y wId ([8f90952](https://github.com/Delivery-Projects/concesur/concenet_front/-/commit/8f909520c40439f94a14768db76e76a1ce00eb48))
+* cerrar menu  busqueda rápida al seleccionar tarjeta ([3619f6c](https://github.com/Delivery-Projects/concesur/concenet_front/-/commit/3619f6c836389efbdf49d3d95247b87a6eb8e3e1))
+* check list contabilidad ([1a22ddd](https://github.com/Delivery-Projects/concesur/concenet_front/-/commit/1a22ddd983ef40f655014db141c6e4a509721349))
+* checklist custom variables ([c64b466](https://github.com/Delivery-Projects/concesur/concenet_front/-/commit/c64b466822dc4f23e4d89a09669c63e7fc3447c6))
+* deploy dir as parameter ([af58ed6](https://github.com/Delivery-Projects/concesur/concenet_front/-/commit/af58ed67476f0218047b35a0edda45a4cbe25670))
+* deshabiliatr sabados en calendario si saturdayExcluded ([3f73a13](https://github.com/Delivery-Projects/concesur/concenet_front/-/commit/3f73a136988a9ef3daa2bd5bf10b31c1e70ef706))
+* evolutivo excluir sabados en la ficha ([5cbfd36](https://github.com/Delivery-Projects/concesur/concenet_front/-/commit/5cbfd3661e512bd67841975d8dbd02a6c2759546))
+* funcionaliad saturday+inicio busqueda rapida ([9e6ba97](https://github.com/Delivery-Projects/concesur/concenet_front/-/commit/9e6ba97dba4d9721f98b675f793bb73da903fca4))
+* habilitar opcion contabilidad checklist ([c2164c5](https://github.com/Delivery-Projects/concesur/concenet_front/-/commit/c2164c5faabc5e94c32f7843d83aa8ae8938145e))
+* improve jenkinsfile to move files between directories ([82072b0](https://github.com/Delivery-Projects/concesur/concenet_front/-/commit/82072b022f599c1b4d0cb7586bcb035114da1c56))
+* jenkinsfile ([fb4beec](https://github.com/Delivery-Projects/concesur/concenet_front/-/commit/fb4beec8f32c82f11a6ce19345976f18844cf971))
+* jenkinsfile use source-map ([db069e3](https://github.com/Delivery-Projects/concesur/concenet_front/-/commit/db069e35d25969517c7e279632ed58ab8c2749e3))
+* more size in check dragable ([5b0f9d0](https://github.com/Delivery-Projects/concesur/concenet_front/-/commit/5b0f9d0246c7a488f50f26137a09a973a137edb2))
+* new attribute exclude saturdays ([0fb686c](https://github.com/Delivery-Projects/concesur/concenet_front/-/commit/0fb686c1ddb2d6a61068dc815acec4231ad1c64c))
+* nuevas variables custom en comunicacion ([a731651](https://github.com/Delivery-Projects/concesur/concenet_front/-/commit/a7316512f2dc19f2bec668a61fdd4804845192f4))
+* ocultar contabilidad ([5717b28](https://github.com/Delivery-Projects/concesur/concenet_front/-/commit/5717b28ebe4e79993813fc69f8f423783819f556))
+* ocultar contabilidad arreglo ([b63d261](https://github.com/Delivery-Projects/concesur/concenet_front/-/commit/b63d26160005fee6ed8980a4152d01af0cfd94ef))
+* pom configuration ([7999307](https://github.com/Delivery-Projects/concesur/concenet_front/-/commit/799930781eb7a8e32538766061fb27644f963d69))
+* pom install with logs ([c28ecb4](https://github.com/Delivery-Projects/concesur/concenet_front/-/commit/c28ecb4c96803a4cdeeabd889f79924fc1014ff4))
+* pre buildoptimizer false ([275196b](https://github.com/Delivery-Projects/concesur/concenet_front/-/commit/275196b1eccb713989ed59594f060ec4aa3b6c7e))
+* quitar limitación de espacio (puede que reservar tanto espacio esté dando otro error) ([c312573](https://github.com/Delivery-Projects/concesur/concenet_front/-/commit/c3125733ed2baf9d8448101a5bb41e3d8e396c3c))
+* selectores checklist contabilidad individual ([e4226af](https://github.com/Delivery-Projects/concesur/concenet_front/-/commit/e4226af4e3511a271bd2a2b7a734b32c050b48d1))
+* servicios checklist contabilidad ([90cff28](https://github.com/Delivery-Projects/concesur/concenet_front/-/commit/90cff283e5c4eb0f482a8db988d1ac9917621b45))
+* test PRE without optimization ([6768218](https://github.com/Delivery-Projects/concesur/concenet_front/-/commit/6768218d4598927b5d38c0c49ebf41892606971b))
+* test version for maven 3.5.2 ([53880c7](https://github.com/Delivery-Projects/concesur/concenet_front/-/commit/53880c75447f7d5210708353d240df5ffcbe2f51))
+* traducciones, arreglo no carga lista al crear checklist, arreglo pdfviwer ([401bb22](https://github.com/Delivery-Projects/concesur/concenet_front/-/commit/401bb226ac0b0f6cdd7a1a8b2facb4ac8fb9172f))
+* trying to force npm registry ([36d3d8f](https://github.com/Delivery-Projects/concesur/concenet_front/-/commit/36d3d8fb72005595520014719294c0e58ae10968))
+
+
+### Bug Fixes
+
+* add build options to improve performance ([973afc8](https://github.com/Delivery-Projects/concesur/concenet_front/-/commit/973afc8652300dce6251882d48e8eee1fc6c0ef2))
+* buscador rápido wf placeholder ([384a88c](https://github.com/Delivery-Projects/concesur/concenet_front/-/commit/384a88c48df1c9cb26457198175640bdc9787c64))
+* busqueda rápida la seleccion de wf no es obligatoria ([f8d32ce](https://github.com/Delivery-Projects/concesur/concenet_front/-/commit/f8d32cef95c0c5be0492d112646f9fb634283e65))
+* duplicacion de items en checklist ([305bd1a](https://github.com/Delivery-Projects/concesur/concenet_front/-/commit/305bd1aa6e8f2731d429013f19677bce9c80fa75))
+* ensure we have the assets folders ([9cd9348](https://github.com/Delivery-Projects/concesur/concenet_front/-/commit/9cd93489cb48293f89837ce40b81140b461a5484))
+* jenkins default branch develop ([a206e3f](https://github.com/Delivery-Projects/concesur/concenet_front/-/commit/a206e3f9b6bbc1622b3ca4677e861523a68b3448))
+* mandar solo ids en communication ([54f1d36](https://github.com/Delivery-Projects/concesur/concenet_front/-/commit/54f1d36c9ec3500c3dd01742f3225e68d89fa141))
+* npmrc just not necessary ([61a1109](https://github.com/Delivery-Projects/concesur/concenet_front/-/commit/61a110941f6c84b64a0f45434f222e6f08c0bebd))
+* pom ([39ea9ac](https://github.com/Delivery-Projects/concesur/concenet_front/-/commit/39ea9aca5200643312df21464e36d9abd53397eb))
+* se cambian los name por los fullName ([d64490c](https://github.com/Delivery-Projects/concesur/concenet_front/-/commit/d64490cf12f3a29be5064b8a121989f44e88382f))
+* show build logs ([438a331](https://github.com/Delivery-Projects/concesur/concenet_front/-/commit/438a3316281385b06a2b309c690fbc22ec8f6099))
+* ticket soporte 386809 ([68d5c93](https://github.com/Delivery-Projects/concesur/concenet_front/-/commit/68d5c931abc00747cbe5a9eaa013a00941ccde70))
+* try to increase memory npm to 20gb ([1c0751e](https://github.com/Delivery-Projects/concesur/concenet_front/-/commit/1c0751ee7c3890ed9529c99a045d7cb16d6f876c))
+
 ### [1.1.9](https://github.com/Delivery-Projects/concesur/concenet_front/-/compare/v1.1.8...v1.1.9) (2024-12-18)
 
 
