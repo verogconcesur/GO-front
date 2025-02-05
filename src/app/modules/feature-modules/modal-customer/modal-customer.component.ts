@@ -125,7 +125,7 @@ export class ModalCustomerComponent extends ComponentToExtendForCustomDialog imp
   public confirmCreateCustomer = () => {
     const formValue = this.customerForm.value;
     const configList = this.authService.getConfigList();
-    const isWriteKeyloopEnabled = configList.includes('WRITE_KEYLOOP');
+    const isWriteKeyloopEnabled = configList.includes(ModulesConstants.WRITE_KEYLOOP);
     if (this.showBusnesType === true && isWriteKeyloopEnabled) {
       this.confirmationDialog
         .open({
@@ -276,7 +276,7 @@ export class ModalCustomerComponent extends ComponentToExtendForCustomDialog imp
   }
   public isAutoline(firstLoad: boolean) {
     const configList = this.authService.getConfigList();
-    const isWriteKeyloopEnabled = configList.includes('WRITE_KEYLOOP');
+    const isWriteKeyloopEnabled = configList.includes(ModulesConstants.WRITE_KEYLOOP);
     const facilitySelected = this.facilityList.find((facility) => facility?.id === this.form.facility?.value?.id);
     if (facilitySelected) {
       if (facilitySelected.configApiExtDmsType === 'AUTOLINE') {

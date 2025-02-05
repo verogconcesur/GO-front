@@ -295,7 +295,7 @@ export class ModalVehicleComponent extends ComponentToExtendForCustomDialog impl
 
   public createVehicle = () => {
     const configList = this.authService.getConfigList();
-    const isWriteKeyloopEnabled = configList.includes('WRITE_KEYLOOP');
+    const isWriteKeyloopEnabled = configList.includes(ModulesConstants.WRITE_KEYLOOP);
     const formValue = this.vehicleForm.getRawValue();
     const hasComissionNumber = !!formValue.commissionNumber;
     const body: VehicleEntityDTO = {

@@ -137,7 +137,7 @@ export class ModalRepairOrderComponent extends ComponentToExtendForCustomDialog 
 
   public confirmCreateOrderRepair = () => {
     const configList = this.authService.getConfigList();
-    const isWriteKeyloopEnabled = configList.includes('WRITE_KEYLOOP');
+    const isWriteKeyloopEnabled = configList.includes(ModulesConstants.WRITE_KEYLOOP);
     const formValue = this.repairOrderForm.getRawValue();
     const jobNames: string[] = [];
     const linesArray = this.repairOrderForm.get('lines') as FormArray;
