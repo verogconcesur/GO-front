@@ -294,6 +294,8 @@ export class ModalVehicleComponent extends ComponentToExtendForCustomDialog impl
   }
 
   public createVehicle = () => {
+    const configList = this.authService.getConfigList();
+    const isWriteKeyloopEnabled = configList.includes('WRITE_KEYLOOP');
     const formValue = this.vehicleForm.getRawValue();
     const hasComissionNumber = !!formValue.commissionNumber;
     const body: VehicleEntityDTO = {
@@ -325,7 +327,7 @@ export class ModalVehicleComponent extends ComponentToExtendForCustomDialog impl
         storeId: formValue.facility ? formValue.facility.configStockStoreId : null
       });
     }
-    if (formValue.commissionNumber) {
+    if (formValue.commissionNumber || !isWriteKeyloopEnabled) {
       const spinner = this.spinnerService.show();
       return this.entitiesService
         .createVehicle(body, this.vehicleToEdit && this.vehicleToEdit.cardInstanceId ? this.vehicleToEdit.cardInstanceId : null)
