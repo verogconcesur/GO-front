@@ -2,7 +2,6 @@ import { Component, Inject, OnDestroy, OnInit } from '@angular/core';
 import { UntypedFormBuilder, UntypedFormGroup } from '@angular/forms';
 import { ActivatedRoute, ChildActivationEnd, NavigationEnd, Router } from '@angular/router';
 import { ENV } from '@app/constants/global.constants';
-import { ModulesConstants } from '@app/constants/modules.constants';
 import { RouteConstants } from '@app/constants/route.constants';
 import { AuthenticationService } from '@app/security/authentication.service';
 import { RxStompService } from '@app/services/rx-stomp.service';
@@ -128,15 +127,6 @@ export class WorkflowNavbarComponent implements OnInit, OnDestroy {
           );
         }
       }
-    }
-  }
-
-  public isContractedModule(option: string): boolean {
-    const configList = this.authService.getConfigList();
-    if (option === 'listView') {
-      return configList.includes(ModulesConstants.LIST_VIEW);
-    } else if (option === 'calendarView') {
-      return configList.includes(ModulesConstants.CALENDAR_VIEW);
     }
   }
 

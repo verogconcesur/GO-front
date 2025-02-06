@@ -2,7 +2,6 @@
 import { Component, Input, OnInit, ViewChild } from '@angular/core';
 import { UntypedFormBuilder, UntypedFormGroup, Validators } from '@angular/forms';
 import { MatMenuTrigger } from '@angular/material/menu';
-import { ModulesConstants } from '@app/constants/modules.constants';
 import { AuthenticationService } from '@app/security/authentication.service';
 import { ConcenetError } from '@app/types/error';
 import { marker } from '@biesbjerg/ngx-translate-extract-marker';
@@ -128,15 +127,6 @@ export class WorkflowCardConfigComponent extends WorkflowStepAbstractClass imple
         field1: this.getFieldFormGroup('DETAIL', 1, dataByViewType.DETAIL?.length >= 1 ? dataByViewType.DETAIL[0] : null)
       })
     });
-  }
-
-  public isContractedModule(option: string): boolean {
-    const configList = this.authService.getConfigList();
-    if (option === 'listView') {
-      return configList.includes(ModulesConstants.LIST_VIEW);
-    } else if (option === 'calendarView') {
-      return configList.includes(ModulesConstants.CALENDAR_VIEW);
-    }
   }
 
   public selectAttribute(node: CardColumnTabItemDTO): void {

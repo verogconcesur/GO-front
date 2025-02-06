@@ -108,12 +108,7 @@
         <app-workflow-navbar-filter></app-workflow-navbar-filter>
         <mat-divider [vertical]="true"></mat-divider>
         <div class="workflow-navbar__view-options">
-            <mat-icon
-                *ngIf="isContractedModule('listView')"
-                class="opt-view table-view"
-                (click)="goToView('tableView')"
-                [ngClass]="{ active: isView('tableView') }"
-            >
+            <mat-icon class="opt-view table-view" (click)="goToView('tableView')" [ngClass]="{ active: isView('tableView') }">
                 menu
             </mat-icon>
             <mat-icon class="opt-view board-view" (click)="goToView('boardView')" [ngClass]="{ active: isView('boardView') }">
@@ -121,7 +116,6 @@
             </mat-icon>
             <mat-icon
                 class="opt-view calendar-view"
-                *ngIf="isContractedModule('calendarView')"
                 (click)="goToView('calendarView')"
                 [ngClass]="{ active: isView('calendarView') }"
             >
