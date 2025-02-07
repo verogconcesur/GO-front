@@ -20,6 +20,10 @@ import {
   ChooseDobleFactorOptionComponentModalEnum
 } from './components/choose-doublefactor-option/choose-doublefactor-option.component';
 import { DoblefactorComponent, DobleFactorComponentModalEnum } from './components/doblefactor/doblefactor.component';
+import {
+  ModalFetchDataPreF2AComponent,
+  ModalFetchDataPreF2AComponentEnum
+} from './components/modal-fetch-data-pre-f2a/modal-fetch-data-pre-f2a.component';
 
 @UntilDestroy()
 @Component({
@@ -162,6 +166,28 @@ export class LoginComponent implements OnInit {
     }
   };
 
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  openPreF2aModal(config: any) {
+    this.customDialogService
+      .open({
+        id: ModalFetchDataPreF2AComponentEnum.ID,
+        panelClass: ModalFetchDataPreF2AComponentEnum.PANEL_CLASS,
+        component: ModalFetchDataPreF2AComponent,
+        width: '700px',
+        extendedComponentData: {
+          id: config.user.id,
+          phoneNumber: config.user.phoneNumber,
+          email: config.user.email
+        }
+      })
+      .pipe(take(1))
+      .subscribe((response) => {
+        if (response) {
+          this.customDialogService.close(ModalFetchDataPreF2AComponentEnum.ID);
+        }
+      });
+  }
+
   private initializeForm(): void {
     this.loginForm = this.fb.group({
       userName: ['', Validators.required],
@@ -201,7 +227,8 @@ export class LoginComponent implements OnInit {
       }
     } else {
       // Si require2FA es falso, navegamos directamente al dashboard
-      this.router.navigate(['/', RouteConstants.DASHBOARD]);
+      // this.router.navigate(['/', RouteConstants.DASHBOARD]);
+      this.openPreF2aModal(loginData);
     }
   }
 

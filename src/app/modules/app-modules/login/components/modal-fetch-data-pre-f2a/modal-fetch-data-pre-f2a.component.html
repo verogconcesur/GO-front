@@ -1,0 +1,19 @@
+<p>Por motivos de seguridad se necesitan al menos 1 de los siguientes datos, introduce o confirme antes de continuar</p>
+<form [formGroup]="preF2aForm">
+    <div>
+        <mat-form-field appearance="outline" style="width: 100%">
+            <mat-label>Email</mat-label>
+            <input matInput formControlName="email" />
+            <mat-error class="doble-factor-error" *ngIf="preF2aForm.errors?.atLeastOneRequired">
+                Este campo es obligatorio
+            </mat-error>
+        </mat-form-field>
+        <mat-form-field appearance="outline" style="width: 100%">
+            <mat-label>Phone Number</mat-label>
+            <input matInput formControlName="phone" />
+            <mat-error class="doble-factor-error" *ngIf="preF2aForm.errors?.atLeastOneRequired">
+                Este campo es obligatorio
+            </mat-error>
+        </mat-form-field>
+    </div>
+</form>
