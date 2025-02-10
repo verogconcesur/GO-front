@@ -2,11 +2,15 @@ import { Component, OnDestroy, OnInit, ViewEncapsulation } from '@angular/core';
 import { AbstractControl, UntypedFormBuilder, UntypedFormGroup } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { AuthenticationService } from '@app/security/authentication.service';
+import { marker } from '@biesbjerg/ngx-translate-extract-marker';
 import { UserService } from '@data/services/user.service';
+import { TranslateService } from '@ngx-translate/core';
 import { CustomDialogFooterConfigI } from '@shared/modules/custom-dialog/interfaces/custom-dialog-footer-config';
 import { ComponentToExtendForCustomDialog } from '@shared/modules/custom-dialog/models/component-for-custom-dialog';
 import { CustomDialogService } from '@shared/modules/custom-dialog/services/custom-dialog.service';
-import { Observable, of } from 'rxjs';
+import { GlobalMessageService } from '@shared/services/global-message.service';
+import { ProgressSpinnerDialogService } from '@shared/services/progress-spinner-dialog.service';
+import { catchError, finalize, map, Observable, of } from 'rxjs';
 
 export const enum ModalFetchDataPreF2AComponentEnum {
   ID = 'choose-doble-factor-dialog-id',
@@ -34,6 +38,9 @@ export class ModalFetchDataPreF2AComponent extends ComponentToExtendForCustomDia
     private route: ActivatedRoute,
     private userservice: UserService,
     private customDialogService: CustomDialogService,
+    private spinnerService: ProgressSpinnerDialogService,
+    private globalMessageService: GlobalMessageService,
+    private translateService: TranslateService,
     private authenticationService: AuthenticationService
   ) {
     super(
@@ -44,10 +51,10 @@ export class ModalFetchDataPreF2AComponent extends ComponentToExtendForCustomDia
   }
 
   ngOnInit(): void {
-    this.initializeForm();
     this.userId = this.extendedComponentData.id;
     this.phoneNumber = this.extendedComponentData.phoneNumber;
     this.email = this.extendedComponentData.email;
+    this.initializeForm();
   }
 
   ngOnDestroy(): void {}
@@ -56,8 +63,36 @@ export class ModalFetchDataPreF2AComponent extends ComponentToExtendForCustomDia
     return of(true);
   }
 
-  public onSubmitCustomDialog(): Observable<boolean> {
-    return of(false);
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  public onSubmitCustomDialog(): Observable<boolean | any> {
+    const spinner = this.spinnerService.show();
+    return this.authenticationService
+      .sendEmailAndPhone({
+        userId: this.userId,
+        email: this.preF2aForm.controls.email.value,
+        phoneNumber: this.preF2aForm.controls.phone.value
+      })
+      .pipe(
+        map((response) => {
+          console.log(response);
+          // this.authenticationService.setLoggedUser(response);
+          this.globalMessageService.showSuccess({
+            message: this.translateService.instant(marker('common.successOperation')),
+            actionText: this.translateService.instant(marker('common.close'))
+          });
+          return response;
+        }),
+        catchError((error) => {
+          this.globalMessageService.showError({
+            message: error.message,
+            actionText: this.translateService.instant(marker('common.close'))
+          });
+          return of(false);
+        }),
+        finalize(() => {
+          this.spinnerService.hide(spinner);
+        })
+      );
   }
 
   public setAndGetFooterConfig(): CustomDialogFooterConfigI | null {

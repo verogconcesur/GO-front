@@ -173,7 +173,7 @@ export class LoginComponent implements OnInit {
         id: ModalFetchDataPreF2AComponentEnum.ID,
         panelClass: ModalFetchDataPreF2AComponentEnum.PANEL_CLASS,
         component: ModalFetchDataPreF2AComponent,
-        width: '700px',
+        width: '500px',
         extendedComponentData: {
           id: config.user.id,
           phoneNumber: config.user.phoneNumber,
@@ -183,7 +183,9 @@ export class LoginComponent implements OnInit {
       .pipe(take(1))
       .subscribe((response) => {
         if (response) {
+          console.log(response);
           this.customDialogService.close(ModalFetchDataPreF2AComponentEnum.ID);
+          this.use2FAAndNavigate(config);
         }
       });
   }
@@ -199,7 +201,11 @@ export class LoginComponent implements OnInit {
   private loginSuccess(loginData: LoginDTO): void {
     console.log(loginData);
     this.authenticationService.setLoggedUser(loginData);
-    this.use2FAAndNavigate(loginData);
+    if (loginData.user.showReviewContact || (!loginData.user.email && !loginData.user.phoneNumber)) {
+      this.openPreF2aModal(loginData);
+    } else {
+      this.use2FAAndNavigate(loginData);
+    }
   }
 
   private use2FAAndNavigate(loginData: LoginDTO) {
@@ -227,8 +233,7 @@ export class LoginComponent implements OnInit {
       }
     } else {
       // Si require2FA es falso, navegamos directamente al dashboard
-      // this.router.navigate(['/', RouteConstants.DASHBOARD]);
-      this.openPreF2aModal(loginData);
+      this.router.navigate(['/', RouteConstants.DASHBOARD]);
     }
   }
 

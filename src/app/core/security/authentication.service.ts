@@ -10,7 +10,7 @@ import PermissionsDTO from '@data/models/user-permissions/permissions-dto';
 import RoleDTO from '@data/models/user-permissions/role-dto';
 import { UserService } from '@data/services/user.service';
 import moment from 'moment';
-import { Observable, of, throwError } from 'rxjs';
+import { Observable, throwError } from 'rxjs';
 import { catchError, take } from 'rxjs/operators';
 
 @Injectable({
@@ -21,7 +21,7 @@ export class AuthenticationService implements OnDestroy {
   public readonly REFRESH_TOKEN_PATH = '/api/users/refreshToken';
   public readonly GET_F2A_PATH = '/api/users/sendPass2FA';
   private readonly USER_CHECK2FA_PATH = '/api/users/checkUser2FA';
-
+  private readonly UPDATE_CONTACT = '/api/users/updateContact';
   private readonly ACCESS_TOKEN = 'access_token';
   private readonly EXPIRES_IN = 'expires_in';
   private readonly PROJECT_VERSION = 'project_version';
@@ -84,46 +84,10 @@ export class AuthenticationService implements OnDestroy {
     }
   }
 
-  getF2AConfig(): Observable<{
-    userId: number;
-    f2a: boolean;
-    a2aPredefined: string | null;
-    sms: string;
-    email: string;
-    isNewBrowser: boolean;
-    last30days: boolean;
-  }> {
-    const configF2A = {
-      userId: 1,
-      f2a: true,
-      // @ts-ignore
-      a2aPredefined: null,
-      // @ts-ignore
-      sms: null,
-      // @ts-ignore
-      email: null,
-      isNewBrowser: false,
-      last30days: false
-    };
-
-    return of(configF2A);
-  }
-
-  sendAuthentication(
-    userId: number,
-    type: string
-  ): Observable<{
-    qr: string;
-  }> {
-    const resp = {
-      userId: 1,
-      qr: 'https://upload.wikimedia.org/wikipedia/commons/d/d7/Commons_QR_code.png'
-    };
-    if (type === 'SMS' || type === 'EMAIL') {
-      return of(null);
-    } else {
-      return of(resp);
-    }
+  sendEmailAndPhone(smsAndEmail: { userId: number; email: string; phoneNumber: string }) {
+    return this.http
+      .post(`${this.env.apiBaseUrl}${this.UPDATE_CONTACT}`, smsAndEmail)
+      .pipe(catchError((error) => throwError(error as ConcenetError)));
   }
 
   public refreshToken(): Observable<LoginDTO> {
