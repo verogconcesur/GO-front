@@ -1,0 +1,19 @@
+<p class="description">{{ labels.description | translate }}</p>
+<form [formGroup]="preF2aForm">
+    <div>
+        <mat-form-field appearance="outline" floatLabel="always" style="width: 100%">
+            <mat-label> {{ labels.email | translate }}</mat-label>
+            <input matInput formControlName="email" />
+            <mat-error class="doble-factor-error" *ngIf="preF2aForm.errors?.atLeastOneRequired">
+                {{ labels.error | translate }}
+            </mat-error>
+        </mat-form-field>
+        <mat-form-field appearance="outline" floatLabel="always" style="width: 100%">
+            <mat-label> {{ labels.sms | translate }}</mat-label>
+            <input matInput formControlName="phone" />
+            <mat-error class="doble-factor-error" *ngIf="preF2aForm.errors?.atLeastOneRequired">
+                {{ labels.error | translate }}
+            </mat-error>
+        </mat-form-field>
+    </div>
+</form>

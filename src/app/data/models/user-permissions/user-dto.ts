@@ -17,6 +17,7 @@ export default interface UserDTO {
   departments?: DepartmentDTO[];
   specialties?: SpecialtyDTO[];
   phoneNumber?: string;
+  showReviewContact?: boolean;
   role?: RoleDTO;
   email?: string;
   userName?: string;
