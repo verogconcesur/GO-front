@@ -985,6 +985,13 @@
         "pages": "Páginas",
         "prevPage": "Página previa"
     },
+    "preF2a": {
+        "description": "Revisa tus datos de contacto. Debes tener al menos email o teléfono para acceder al sistema.",
+        "email": "Email",
+        "error": "Este campo es obligatorio",
+        "sms": "Teléfono",
+        "title": "Datos de seguridad"
+    },
     "prepareMovement": {
         "extraMovement": "Movimiento asociado",
         "extraMovementQuestion": "Marque esta casilla si desea mover la tarjeta a {destination} dentro del workflow original.",

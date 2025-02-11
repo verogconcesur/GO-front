@@ -987,6 +987,13 @@
     "pdf": {
         "viewer": "Pdf Viewer"
     },
+    "preF2a": {
+        "description": "Check your contact information. You must have at least an email or phone number to access the system.",
+        "email": "Email",
+        "error": "This field is required",
+        "sms": "Phone",
+        "title": "Security data"
+    },
     "prepareMovement": {
         "extraMovement": "Move associated",
         "extraMovementQuestion": "Do you want to excute the associated move to {destination}?",

@@ -84,9 +84,9 @@ export class AuthenticationService implements OnDestroy {
     }
   }
 
-  sendEmailAndPhone(smsAndEmail: { userId: number; email: string; phoneNumber: string }) {
+  sendEmailAndPhone(smsAndEmail: { userId: number; email: string; phoneNumber: string }): Observable<LoginDTO> {
     return this.http
-      .post(`${this.env.apiBaseUrl}${this.UPDATE_CONTACT}`, smsAndEmail)
+      .post<LoginDTO>(`${this.env.apiBaseUrl}${this.UPDATE_CONTACT}`, smsAndEmail)
       .pipe(catchError((error) => throwError(error as ConcenetError)));
   }
 

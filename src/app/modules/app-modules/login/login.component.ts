@@ -105,7 +105,6 @@ export class LoginComponent implements OnInit {
   }
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   public openChooseDobleFactorDialog = (config: any): void => {
-    console.log(config);
     this.customDialogService
       .open({
         id: ChooseDobleFactorOptionComponentModalEnum.ID,
@@ -183,7 +182,6 @@ export class LoginComponent implements OnInit {
       .pipe(take(1))
       .subscribe((response) => {
         if (response) {
-          console.log(response);
           this.customDialogService.close(ModalFetchDataPreF2AComponentEnum.ID);
           this.use2FAAndNavigate(config);
         }
@@ -199,7 +197,6 @@ export class LoginComponent implements OnInit {
   }
 
   private loginSuccess(loginData: LoginDTO): void {
-    console.log(loginData);
     this.authenticationService.setLoggedUser(loginData);
     if (loginData.user.showReviewContact || (!loginData.user.email && !loginData.user.phoneNumber)) {
       this.openPreF2aModal(loginData);

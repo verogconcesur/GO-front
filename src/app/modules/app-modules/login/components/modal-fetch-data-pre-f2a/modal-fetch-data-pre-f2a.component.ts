@@ -3,6 +3,7 @@ import { AbstractControl, UntypedFormBuilder, UntypedFormGroup } from '@angular/
 import { ActivatedRoute, Router } from '@angular/router';
 import { AuthenticationService } from '@app/security/authentication.service';
 import { marker } from '@biesbjerg/ngx-translate-extract-marker';
+import LoginDTO from '@data/models/user-permissions/login-dto';
 import { UserService } from '@data/services/user.service';
 import { TranslateService } from '@ngx-translate/core';
 import { CustomDialogFooterConfigI } from '@shared/modules/custom-dialog/interfaces/custom-dialog-footer-config';
@@ -13,9 +14,9 @@ import { ProgressSpinnerDialogService } from '@shared/services/progress-spinner-
 import { catchError, finalize, map, Observable, of } from 'rxjs';
 
 export const enum ModalFetchDataPreF2AComponentEnum {
-  ID = 'choose-doble-factor-dialog-id',
-  PANEL_CLASS = 'choose-doble-factor-dialog',
-  TITLE = 'Introduce datos'
+  ID = 'modal-pre-f2a-dialog-id',
+  PANEL_CLASS = 'modal-pre-f2a-dialog',
+  TITLE = 'preF2a.title'
 }
 
 @Component({
@@ -25,7 +26,12 @@ export const enum ModalFetchDataPreF2AComponentEnum {
   encapsulation: ViewEncapsulation.None
 })
 export class ModalFetchDataPreF2AComponent extends ComponentToExtendForCustomDialog implements OnInit, OnDestroy {
-  public labels = {};
+  public labels = {
+    sms: marker('preF2a.sms'),
+    description: marker('preF2a.description'),
+    email: marker('preF2a.email'),
+    error: marker('preF2a.error')
+  };
 
   public userId: number;
   public email: string;
@@ -63,8 +69,7 @@ export class ModalFetchDataPreF2AComponent extends ComponentToExtendForCustomDia
     return of(true);
   }
 
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  public onSubmitCustomDialog(): Observable<boolean | any> {
+  public onSubmitCustomDialog(): Observable<boolean | LoginDTO> {
     const spinner = this.spinnerService.show();
     return this.authenticationService
       .sendEmailAndPhone({
@@ -74,8 +79,9 @@ export class ModalFetchDataPreF2AComponent extends ComponentToExtendForCustomDia
       })
       .pipe(
         map((response) => {
-          console.log(response);
-          // this.authenticationService.setLoggedUser(response);
+          if (response) {
+            this.authenticationService.setLoggedUser(response);
+          }
           this.globalMessageService.showSuccess({
             message: this.translateService.instant(marker('common.successOperation')),
             actionText: this.translateService.instant(marker('common.close'))
