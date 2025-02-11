@@ -20,6 +20,10 @@ import {
   ChooseDobleFactorOptionComponentModalEnum
 } from './components/choose-doublefactor-option/choose-doublefactor-option.component';
 import { DoblefactorComponent, DobleFactorComponentModalEnum } from './components/doblefactor/doblefactor.component';
+import {
+  ModalFetchDataPreF2AComponent,
+  ModalFetchDataPreF2AComponentEnum
+} from './components/modal-fetch-data-pre-f2a/modal-fetch-data-pre-f2a.component';
 
 @UntilDestroy()
 @Component({
@@ -101,7 +105,6 @@ export class LoginComponent implements OnInit {
   }
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   public openChooseDobleFactorDialog = (config: any): void => {
-    console.log(config);
     this.customDialogService
       .open({
         id: ChooseDobleFactorOptionComponentModalEnum.ID,
@@ -162,6 +165,29 @@ export class LoginComponent implements OnInit {
     }
   };
 
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  openPreF2aModal(config: any) {
+    this.customDialogService
+      .open({
+        id: ModalFetchDataPreF2AComponentEnum.ID,
+        panelClass: ModalFetchDataPreF2AComponentEnum.PANEL_CLASS,
+        component: ModalFetchDataPreF2AComponent,
+        width: '500px',
+        extendedComponentData: {
+          id: config.user.id,
+          phoneNumber: config.user.phoneNumber,
+          email: config.user.email
+        }
+      })
+      .pipe(take(1))
+      .subscribe((response) => {
+        if (response) {
+          this.customDialogService.close(ModalFetchDataPreF2AComponentEnum.ID);
+          this.use2FAAndNavigate(config);
+        }
+      });
+  }
+
   private initializeForm(): void {
     this.loginForm = this.fb.group({
       userName: ['', Validators.required],
@@ -171,9 +197,12 @@ export class LoginComponent implements OnInit {
   }
 
   private loginSuccess(loginData: LoginDTO): void {
-    console.log(loginData);
     this.authenticationService.setLoggedUser(loginData);
-    this.use2FAAndNavigate(loginData);
+    if (loginData.user.showReviewContact || (!loginData.user.email && !loginData.user.phoneNumber)) {
+      this.openPreF2aModal(loginData);
+    } else {
+      this.use2FAAndNavigate(loginData);
+    }
   }
 
   private use2FAAndNavigate(loginData: LoginDTO) {
