@@ -71,9 +71,13 @@ export class TemplatesComponent implements OnInit {
   public isContractedModule(option: string): boolean {
     const configList = this.authService.getConfigList();
     if (option === 'checklist') {
-      return configList.includes(ModulesConstants.SMS_SEND);
+      return configList.includes(ModulesConstants.CHECK_LIST);
     } else if (option === 'accounting') {
-      return configList.includes(ModulesConstants.WHATSAPP_SEND);
+      return configList.includes(ModulesConstants.ACCOUNTING);
+    } else if (option === 'timeline') {
+      return configList.includes(ModulesConstants.TIME_LINE);
+    } else if (option === 'budget') {
+      return configList.includes(ModulesConstants.BUDGET);
     }
   }
 
