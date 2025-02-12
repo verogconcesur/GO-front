@@ -90,7 +90,7 @@ export class ModalFetchDataPreF2AComponent extends ComponentToExtendForCustomDia
         }),
         catchError((error) => {
           this.globalMessageService.showError({
-            message: error.message,
+            message: error.error.message,
             actionText: this.translateService.instant(marker('common.close'))
           });
           return of(false);
