@@ -800,7 +800,7 @@
             </div>
 
             <!-- TPV Configuration -->
-            <div class="facility-data__section">
+            <div *ngIf="isContractedModule('tpv')" class="facility-data__section">
                 <div class="facility-data__section__title">
                     {{ labels.confTpv | translate }}
                 </div>

@@ -264,6 +264,8 @@ export class CreateEditFacilityComponent extends ComponentToExtendForCustomDialo
       return configList.includes(ModulesConstants.SMS_SEND);
     } else if (option === 'whatsapp') {
       return configList.includes(ModulesConstants.WHATSAPP_SEND);
+    }else if(option==='tpv'){
+      return configList.includes(ModulesConstants.TPV);
     }
   }
 
