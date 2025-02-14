@@ -1,6 +1,7 @@
 import { Component, OnDestroy, OnInit, ViewEncapsulation } from '@angular/core';
 import { AbstractControl, UntypedFormBuilder, UntypedFormGroup } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
+import { ModulesConstants } from '@app/constants/modules.constants';
 import { AuthenticationService } from '@app/security/authentication.service';
 import { marker } from '@biesbjerg/ngx-translate-extract-marker';
 import LoginDTO from '@data/models/user-permissions/login-dto';
@@ -30,7 +31,8 @@ export class ModalFetchDataPreF2AComponent extends ComponentToExtendForCustomDia
     sms: marker('preF2a.sms'),
     description: marker('preF2a.description'),
     email: marker('preF2a.email'),
-    error: marker('preF2a.error')
+    error: marker('preF2a.error'),
+    descriptionWithOutModule: marker('preF2a.descriptionWithOutModule')
   };
 
   public userId: number;
@@ -67,6 +69,11 @@ export class ModalFetchDataPreF2AComponent extends ComponentToExtendForCustomDia
 
   public confirmCloseCustomDialog(): Observable<boolean> {
     return of(true);
+  }
+
+  public isSMSContractedModule(): boolean {
+    const configList = this.authenticationService.getConfigList();
+    return configList.includes(ModulesConstants.SMS_SEND);
   }
 
   public onSubmitCustomDialog(): Observable<boolean | LoginDTO> {

@@ -1010,6 +1010,7 @@
     },
     "preF2a": {
         "description": "Check your contact information. You must have at least an email or phone number to access the system.",
+        "descriptionWithOutModule": "Check your contact information. You must have at least an email to access the system.",
         "email": "Email",
         "error": "This field is required",
         "sms": "Phone",
