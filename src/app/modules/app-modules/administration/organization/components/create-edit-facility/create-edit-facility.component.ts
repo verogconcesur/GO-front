@@ -567,6 +567,7 @@ export class CreateEditFacilityComponent extends ComponentToExtendForCustomDialo
                 postalCode: formValue.postalCode,
                 town: formValue.town,
                 requireConfigApiExt: formValue.requireConfigApiExt,
+                configApiExtDmsType: formValue.configApiExtDmsType,
                 code: formValue.code,
                 enterpriseId: formValue.enterpriseId,
                 storeId: formValue.storeId,
