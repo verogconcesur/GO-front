@@ -1,9 +1,13 @@
 import { Component, Input } from '@angular/core';
 import { FormArray, FormControl, FormGroup, UntypedFormBuilder, Validators } from '@angular/forms';
+import { ModulesConstants } from '@app/constants/modules.constants';
+import { AuthenticationService } from '@app/security/authentication.service';
 import { ConcenetError } from '@app/types/error';
 import { marker } from '@biesbjerg/ngx-translate-extract-marker';
+import { TemplateAtachmentItemsDTO } from '@data/models/templates/templates-attachment-dto';
 import TemplatesCommonDTO from '@data/models/templates/templates-common-dto';
 import TemplatesTimelineDTO, { TemplatesTimelineItemsDTO } from '@data/models/templates/templates-timeline-dto';
+import { WorkflowAttachmentTimelineDTO } from '@data/models/workflow-admin/workflow-attachment-timeline-dto';
 import { WorkflowSubstateTimelineItemDTO, WorkflowTimelineDTO } from '@data/models/workflow-admin/workflow-timeline-dto';
 import WorkflowStateDTO from '@data/models/workflows/workflow-state-dto';
 import WorkflowSubstateDTO from '@data/models/workflows/workflow-substate-dto';
@@ -18,8 +22,6 @@ import { forkJoin } from 'rxjs';
 import { finalize, take } from 'rxjs/operators';
 import { WorkflowsCreateEditAuxService } from '../../../aux-service/workflows-create-edit-aux.service';
 import { WorkflowStepAbstractClass } from '../workflow-step-abstract-class';
-import { WorkflowAttachmentTimelineDTO } from '@data/models/workflow-admin/workflow-attachment-timeline-dto';
-import { TemplateAtachmentItemsDTO } from '@data/models/templates/templates-attachment-dto';
 
 @Component({
   selector: 'app-workflow-timeline',
@@ -51,7 +53,8 @@ export class WorkflowTimelineComponent extends WorkflowStepAbstractClass {
     public workflowService: WorkflowAdministrationService,
     public workflowStateService: WorkflowAdministrationStatesSubstatesService,
     public timelineService: TemplatesTimelineService,
-    private globalMessageService: GlobalMessageService
+    private globalMessageService: GlobalMessageService,
+    private authenticationService: AuthenticationService
   ) {
     super(workflowsCreateEditAuxService, confirmationDialog, translateService);
   }
@@ -101,6 +104,10 @@ export class WorkflowTimelineComponent extends WorkflowStepAbstractClass {
       templateTimelineItem: [],
       workflowSubstate: [substate]
     });
+  }
+  public isLandingContractedModule(): boolean {
+    const configList = this.authenticationService.getConfigList();
+    return configList.includes(ModulesConstants.TIME_LINE);
   }
   public setSubstateDragging(substate: WorkflowSubstateDTO): void {
     this.substateDragging = substate;

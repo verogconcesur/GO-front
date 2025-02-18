@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
+import { ModulesConstants } from '@app/constants/modules.constants';
 import { RouteConstants } from '@app/constants/route.constants';
 import { AuthenticationService } from '@app/security/authentication.service';
 import { ConcenetError } from '@app/types/error';
@@ -81,6 +82,11 @@ export class AdministrationLayoutComponent implements OnInit {
           }
         });
     }
+  }
+
+  public isLandingContractedModule(): boolean {
+    const configList = this.authenticationService.getConfigList();
+    return configList.includes(ModulesConstants.TIME_LINE);
   }
 
   public exitAdministration(): void {

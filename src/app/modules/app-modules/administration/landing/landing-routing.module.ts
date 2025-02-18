@@ -1,18 +1,20 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
+import { ModulesConstants } from '@app/constants/modules.constants';
 import { RouteConstants, RoutePermissionConstants } from '@app/constants/route.constants';
 import { AuthGuardService } from '@app/security/guards/authentication.guard';
-import { LandingComponent } from './landing.component';
+import { ModularizationGuard } from '@app/security/guards/modularization.guard';
+import { LandingBannersComponent } from './components/landing-banners/landing-banners.component';
 import { LandingConfigComponent } from './components/landing-config/landing-config.component';
 import { LandingLinksComponent } from './components/landing-links/landing-links.component';
-import { LandingBannersComponent } from './components/landing-banners/landing-banners.component';
+import { LandingComponent } from './landing.component';
 
 const routes: Routes = [
   {
     path: RouteConstants.EMPTY,
     component: LandingComponent,
-    canActivate: [AuthGuardService],
-    data: { permissions: RoutePermissionConstants.ADMINISTRATION },
+    canActivate: [AuthGuardService, ModularizationGuard],
+    data: { permissions: RoutePermissionConstants.ADMINISTRATION, requiredModule: ModulesConstants.TIME_LINE },
     children: [
       {
         path: RouteConstants.ADM_LANDING_GLOBAL_CONFIG,

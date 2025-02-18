@@ -30,12 +30,16 @@
             </mat-select>
         </mat-form-field>
     </div>
-    <div class="timeline-container__section" fxLayout="row wrap">
+    <div *ngIf="isLandingContractedModule()" class="timeline-container__section" fxLayout="row wrap">
         <div class="timeline-container__section__title">
             <h1>{{ labels.selectAttachmentTab | translate }}</h1>
         </div>
     </div>
-    <div class="timeline-container__section smaller-mat-form-fields" [formGroup]="form" *ngIf="originalData?.attachmentTemplates">
+    <div
+        class="timeline-container__section smaller-mat-form-fields"
+        [formGroup]="form"
+        *ngIf="originalData?.attachmentTemplates && isLandingContractedModule()"
+    >
         <!-- Attachment tab -->
         <mat-form-field appearance="outline" floatLabel="always">
             <mat-label>{{ labels.attachmentTab | translate }}</mat-label>

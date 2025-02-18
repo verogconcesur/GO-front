@@ -1,5 +1,6 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
+import { ModulesConstants } from '@app/constants/modules.constants';
 import { RouteConstants } from '@app/constants/route.constants';
 import { AuthGuardService } from '@app/security/guards/authentication.guard';
 import { ModularizationGuard } from '@app/security/guards/modularization.guard';
@@ -9,6 +10,9 @@ const routes: Routes = [
   {
     path: RouteConstants.EMPTY,
     canActivate: [AuthGuardService, ModularizationGuard],
+    data: {
+      requiredModule: ModulesConstants.ADVANCED_SEARCH
+    },
     component: AdvancedSearchComponent,
     children: [
       {
