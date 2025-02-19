@@ -47,6 +47,9 @@ export class WorkflowCardColumnComponent implements OnInit {
     if (!this.isPaymentMouleModule()) {
       this.column.tabs = this.column.tabs.filter((tab: CardColumnTabDTO) => !(tab.colId === 2 && tab.contentTypeId === 9));
     }
+    if (!this.isBudgetContractedModule()) {
+      this.column.tabs = this.column.tabs.filter((tab: CardColumnTabDTO) => !(tab.colId === 2 && tab.contentTypeId === 4));
+    }
     if (!this.isLandingContractedModule()) {
       this.column.tabs = this.column.tabs.filter((tab: CardColumnTabDTO) => !(tab.id === 2 && tab.type === 'CLIENT_MESSAGES'));
     }
@@ -67,6 +70,11 @@ export class WorkflowCardColumnComponent implements OnInit {
   public isLandingContractedModule(): boolean {
     const configList = this.authService.getConfigList();
     return configList.includes(ModulesConstants.TIME_LINE);
+  }
+
+  public isBudgetContractedModule(): boolean {
+    const configList = this.authService.getConfigList();
+    return configList.includes(ModulesConstants.BUDGET);
   }
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -163,7 +171,12 @@ export class WorkflowCardColumnComponent implements OnInit {
       show = true;
     } else if (column === 'CUSTOMIZABLE_CUSTOM' && this.tabToShow.type === 'CUSTOMIZABLE' && this.tabToShow.contentTypeId === 3) {
       show = true;
-    } else if (column === 'TEMPLATE_BUDGETS' && this.tabToShow.type === 'TEMPLATE' && this.tabToShow.contentTypeId === 4) {
+    } else if (
+      column === 'TEMPLATE_BUDGETS' &&
+      this.tabToShow.type === 'TEMPLATE' &&
+      this.tabToShow.contentTypeId === 4 &&
+      this.isBudgetContractedModule()
+    ) {
       show = true;
     } else if (column === 'TEMPLATE_ATTACHMENTS' && this.tabToShow.type === 'TEMPLATE' && this.tabToShow.contentTypeId === 5) {
       show = true;
