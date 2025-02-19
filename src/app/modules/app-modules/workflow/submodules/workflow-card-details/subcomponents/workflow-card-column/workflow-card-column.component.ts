@@ -47,6 +47,9 @@ export class WorkflowCardColumnComponent implements OnInit {
     if (!this.isPaymentMouleModule()) {
       this.column.tabs = this.column.tabs.filter((tab: CardColumnTabDTO) => !(tab.colId === 2 && tab.contentTypeId === 9));
     }
+    if (!this.isLandingContractedModule()) {
+      this.column.tabs = this.column.tabs.filter((tab: CardColumnTabDTO) => !(tab.id === 2 && tab.type === 'CLIENT_MESSAGES'));
+    }
     this.tabsInfo = [...this.column.tabs].map((tab: CardColumnTabDTO) => ({
       id: tab.id,
       label: tab.name,
@@ -59,6 +62,11 @@ export class WorkflowCardColumnComponent implements OnInit {
   public isPaymentMouleModule(): boolean {
     const configList = this.authService.getConfigList();
     return configList.includes(ModulesConstants.PAYMENTS);
+  }
+
+  public isLandingContractedModule(): boolean {
+    const configList = this.authService.getConfigList();
+    return configList.includes(ModulesConstants.TIME_LINE);
   }
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -176,7 +184,7 @@ export class WorkflowCardColumnComponent implements OnInit {
       show = true;
     } else if (column === 'COMMENTS' && this.tabToShow.type === 'COMMENTS') {
       show = true;
-    } else if (column === 'CLIENT_MESSAGES' && this.tabToShow.type === 'CLIENT_MESSAGES') {
+    } else if (column === 'CLIENT_MESSAGES' && this.tabToShow.type === 'CLIENT_MESSAGES' && this.isLandingContractedModule()) {
       show = true;
     }
     return show;
