@@ -157,6 +157,8 @@ export class MessageClientDialogComponent extends ComponentToExtendForCustomDial
       return configList.includes(ModulesConstants.SMS_SEND);
     } else if (option === 'whatsapp') {
       return configList.includes(ModulesConstants.WHATSAPP_SEND);
+    } else if (option === 'customerArea') {
+      return configList.includes(ModulesConstants.TIME_LINE);
     }
   }
   public openAttachmentsModal(messageClient: FormGroup): void {

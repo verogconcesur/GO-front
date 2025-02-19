@@ -49,7 +49,10 @@
                         <!-- <div class="messageChannelImessage-datad__section__group" *ngIf="item.value.messageChannelId === 2"> -->
                         <div
                             class="messageChannelImessage-datad__section__group"
-                            *ngIf="item.value.messageChannelId === 1 || item.value.messageChannelId === 2"
+                            *ngIf="
+                                (item.value.messageChannelId === 1 && isContractedModule('customerArea')) ||
+                                item.value.messageChannelId === 2
+                            "
                         >
                             <div class="messageChannelImessage-datad__section__group__title">
                                 {{ labels.attachments | translate }}
