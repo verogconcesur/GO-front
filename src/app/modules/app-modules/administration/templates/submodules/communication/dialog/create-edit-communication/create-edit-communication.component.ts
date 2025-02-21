@@ -116,8 +116,7 @@ export class CreateEditCommunicationComponent extends ComponentToExtendForCustom
       const messageChannelId = control.value.messageChannel.id;
       const allowSms = !(messageChannelId === 3 && !this.isContractedModule('sms'));
       const allowWhatsapp = !(messageChannelId === 4 && !this.isContractedModule('whatsapp'));
-      const allowCustomerArea = !(messageChannelId === 1 && !this.isContractedModule('customerArea'));
-      return allowSms && allowWhatsapp && allowCustomerArea;
+      return allowSms && allowWhatsapp;
     });
     return new FormArray(filteredItems);
   }
@@ -152,8 +151,6 @@ export class CreateEditCommunicationComponent extends ComponentToExtendForCustom
       return configList.includes(ModulesConstants.SMS_SEND);
     } else if (option === 'whatsapp') {
       return configList.includes(ModulesConstants.WHATSAPP_SEND);
-    } else if (option === 'customerArea') {
-      return configList.includes(ModulesConstants.TIME_LINE);
     }
   }
   public changeComunicationType(): void {

@@ -104,8 +104,7 @@ export class MessageClientDialogComponent extends ComponentToExtendForCustomDial
       const messageChannelId = control.value.messageChannel.id;
       const allowSms = !(messageChannelId === 3 && !this.isContractedModule('sms'));
       const allowWhatsapp = !(messageChannelId === 4 && !this.isContractedModule('whatsapp'));
-      const allowClientMesagge = !(messageChannelId === 1 && !this.isContractedModule('customerArea'));
-      return allowSms && allowWhatsapp && allowClientMesagge;
+      return allowSms && allowWhatsapp;
     });
     return new FormArray(filteredChannels);
   }
@@ -376,7 +375,7 @@ export class MessageClientDialogComponent extends ComponentToExtendForCustomDial
       (this.messageForm.get('messageChannels') as FormArray).push(
         this.fb.group({
           messageChannel: [channel],
-          selected: [this.isContractedModule('customerArea') ? channel.id === 1 : channel.id === 2]
+          selected: [channel.id === 1]
         })
       );
     });
