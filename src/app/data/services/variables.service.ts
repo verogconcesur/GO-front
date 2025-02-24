@@ -14,6 +14,7 @@ import { catchError } from 'rxjs/operators';
 export class VariablesService {
   private readonly GET_VARIABLE_PATH = '/api/variables';
   private readonly GET_CUSTOM_VARIABLE_PATH = '/api/cards/tabItemsCustom';
+  private readonly GET_TEMPLATE_VARIABLE_PATH = '/contextTemplate';
   constructor(@Inject(ENV) private env: Env, private http: HttpClient) {}
 
   public searchVariables(): Observable<VariablesDTO[]> {
@@ -21,9 +22,21 @@ export class VariablesService {
       .get<VariablesDTO[]>(`${this.env.apiBaseUrl}${this.GET_VARIABLE_PATH}`)
       .pipe(catchError((error) => throwError(error as ConcenetError)));
   }
+
+  public searchTemplateVariables(): Observable<VariablesDTO[]> {
+    return this.http
+      .get<VariablesDTO[]>(`${this.env.apiBaseUrl}${this.GET_VARIABLE_PATH}${this.GET_TEMPLATE_VARIABLE_PATH}`)
+      .pipe(catchError((error) => throwError(error as ConcenetError)));
+  }
   public searchVariablesSlots(): Observable<WorkflowCardSlotDTO[]> {
     return this.http
       .get<WorkflowCardSlotDTO[]>(`${this.env.apiBaseUrl}${this.GET_VARIABLE_PATH}`)
+      .pipe(catchError((error) => throwError(error as ConcenetError)));
+  }
+
+  public searchVariablesTemplateSlots(): Observable<WorkflowCardSlotDTO[]> {
+    return this.http
+      .get<WorkflowCardSlotDTO[]>(`${this.env.apiBaseUrl}${this.GET_VARIABLE_PATH}${this.GET_TEMPLATE_VARIABLE_PATH}`)
       .pipe(catchError((error) => throwError(error as ConcenetError)));
   }
 
