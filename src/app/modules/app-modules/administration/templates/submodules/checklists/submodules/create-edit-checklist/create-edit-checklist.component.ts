@@ -134,7 +134,7 @@ export class CreateEditChecklistComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
-    const variablesRequest = this.variablesService.searchVariablesSlots();
+    const variablesRequest = this.variablesService.searchVariablesTemplateSlots();
     const customVariableRequest = this.variablesService.searchCustomVariablesSlots();
     if (this.isContractedModule('budget')) {
       this.getAccountingTemplates();

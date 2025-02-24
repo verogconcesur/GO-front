@@ -350,7 +350,7 @@ export class CreateEditCommunicationComponent extends ComponentToExtendForCustom
   // }
   private getVariable(): void {
     forkJoin({
-      variables: this.variablesService.searchVariables().pipe(take(1)),
+      variables: this.variablesService.searchTemplateVariables().pipe(take(1)),
       customVariables: this.variablesService.searchCustomVariables().pipe(take(1))
     }).subscribe((res) => {
       const variables = res.variables.map((variable) => ({ ...variable, type: 'variable' }));
