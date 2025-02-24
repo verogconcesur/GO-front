@@ -69,12 +69,15 @@
             </mat-select>
         </mat-form-field>
     </div>
-    <div class="timeline-container__section" fxLayout="row wrap">
+    <div *ngIf="isLandingContractedModule()" class="timeline-container__section" fxLayout="row wrap">
         <div class="timeline-container__section__title">
             <h1>{{ labels.title | translate }}</h1>
         </div>
     </div>
-    <div class="timeline-container__section smaller-mat-form-fields" *ngIf="templateForm && originalData?.timelineTemplates">
+    <div
+        class="timeline-container__section smaller-mat-form-fields"
+        *ngIf="templateForm && originalData?.timelineTemplates && isLandingContractedModule()"
+    >
         <!-- template -->
         <mat-form-field appearance="outline" floatLabel="always">
             <mat-label>{{ labels.label | translate }}</mat-label>
@@ -93,7 +96,14 @@
     </div>
     <div
         class="timeline-container__section"
-        *ngIf="templateForm && templateForm.value && form && form.value && form.value.templateTimelineDTO"
+        *ngIf="
+            templateForm &&
+            templateForm.value &&
+            form &&
+            form.value &&
+            form.value.templateTimelineDTO &&
+            isLandingContractedModule()
+        "
     >
         <div class="timeline-container__section__title">
             <h1>{{ labels.timelineStates | translate }}</h1>

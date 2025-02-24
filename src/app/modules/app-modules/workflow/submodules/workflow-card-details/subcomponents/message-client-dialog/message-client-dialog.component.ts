@@ -376,9 +376,14 @@ export class MessageClientDialogComponent extends ComponentToExtendForCustomDial
         this.fb.group({
           messageChannel: [channel],
           selected: [
-            !this.isContractedModule('customerArea') && !this.isContractedModule('whatsapp') && !this.isContractedModule('sms')
-              ? [channel.id === 1, channel.id === 2]
-              : [channel.id === 1]
+            (!this.isContractedModule('customerArea') &&
+              !this.isContractedModule('whatsapp') &&
+              !this.isContractedModule('sms') &&
+              (channel.id === 1 || channel.id === 2)) ||
+              ((this.isContractedModule('customerArea') ||
+                this.isContractedModule('whatsapp') ||
+                this.isContractedModule('sms')) &&
+                channel.id === 1)
           ]
         })
       );
