@@ -9,7 +9,7 @@
                 {{ getUserFullname(message) }}
             </div>
             <div class="icons" *ngIf="message.sender === 'USER'">
-                <mat-icon *ngIf="checkMessageChannel(message, 1)">person_pin</mat-icon>
+                <mat-icon *ngIf="checkMessageChannel(message, 1) && isClientAreaContractedModule()">person_pin</mat-icon>
                 <mat-icon *ngIf="checkMessageChannel(message, 2)">alternate_email</mat-icon>
                 <mat-icon *ngIf="checkMessageChannel(message, 3)">message</mat-icon>
                 <mat-icon fontSet="concenet" class="whatsapp" *ngIf="checkMessageChannel(message, 4)">whatsapp</mat-icon>

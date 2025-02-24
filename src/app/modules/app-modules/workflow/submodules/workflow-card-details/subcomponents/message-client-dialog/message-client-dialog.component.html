@@ -9,9 +9,18 @@
                 <div class="message-data__section__title first-child">{{ labels.chanels | translate }}</div>
                 <div class="message-data__section__group" fxLayout="row" fxLayoutAlign="start start">
                     <section *ngFor="let messageChannel of messageChannelsForm.controls" [formGroup]="messageChannel">
-                        <mat-checkbox formControlName="selected" (change)="selectMessageChannel()">{{
-                            messageChannel.value.messageChannel.name
-                        }}</mat-checkbox>
+                        <mat-checkbox
+                            [disabled]="
+                                !this.isContractedModule('customerArea') &&
+                                !this.isContractedModule('whatsapp') &&
+                                !this.isContractedModule('sms')
+                                    ? messageChannel.value.messageChannel.id === 1 || messageChannel.value.messageChannel.id === 2
+                                    : messageChannel.value.messageChannel.id === 1
+                            "
+                            formControlName="selected"
+                            (change)="selectMessageChannel()"
+                            >{{ messageChannel.value.messageChannel.name }}</mat-checkbox
+                        >
                     </section>
                 </div>
             </div>

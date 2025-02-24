@@ -1,7 +1,9 @@
-import { Component, EventEmitter, Inject, Input, OnDestroy, OnInit, Output } from '@angular/core';
+import { Component, EventEmitter, Inject, OnDestroy, OnInit, Output } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { ActivatedRoute } from '@angular/router';
 import { ENV } from '@app/constants/global.constants';
+import { ModulesConstants } from '@app/constants/modules.constants';
+import { AuthenticationService } from '@app/security/authentication.service';
 import { RxStompService } from '@app/services/rx-stomp.service';
 import { Env } from '@app/types/env';
 import { marker } from '@biesbjerg/ngx-translate-extract-marker';
@@ -38,7 +40,8 @@ export class WorkflowColumnClientMessagesComponent implements OnInit, OnDestroy 
     private translateService: TranslateService,
     private notificationSoundService: NotificationSoundService,
     private rxStompService: RxStompService,
-    private dialog: MatDialog
+    private dialog: MatDialog,
+    private authenticationService: AuthenticationService
   ) {}
 
   ngOnInit(): void {
@@ -61,6 +64,11 @@ export class WorkflowColumnClientMessagesComponent implements OnInit, OnDestroy 
     if (this.interval) {
       clearInterval(this.interval);
     }
+  }
+
+  public isClientAreaContractedModule(): boolean {
+    const configList = this.authenticationService.getConfigList();
+    return configList.includes(ModulesConstants.TIME_LINE);
   }
 
   public getData(fromSockets = false): void {

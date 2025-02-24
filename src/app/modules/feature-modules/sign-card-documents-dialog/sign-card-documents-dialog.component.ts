@@ -1,16 +1,18 @@
+import { Location } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { Location } from '@angular/common';
-import { ProgressSpinnerDialogService } from '@shared/services/progress-spinner-dialog.service';
-import { ConfirmDialogService } from '@shared/services/confirm-dialog.service';
-import { TranslateService } from '@ngx-translate/core';
+import { ModulesConstants } from '@app/constants/modules.constants';
+import { AuthenticationService } from '@app/security/authentication.service';
 import { marker } from '@biesbjerg/ngx-translate-extract-marker';
-import { finalize, take } from 'rxjs/operators';
-import TemplatesChecklistsDTO, { SignDocumentExchangeDTO } from '@data/models/templates/templates-checklists-dto';
 import { AttachmentDTO } from '@data/models/cards/card-attachments-dto';
-import { CardAttachmentsService } from '@data/services/card-attachments.service';
-import { GlobalMessageService } from '@shared/services/global-message.service';
 import CardInstanceRemoteSignatureDTO from '@data/models/cards/card-instance-remote-signature-dto';
+import TemplatesChecklistsDTO, { SignDocumentExchangeDTO } from '@data/models/templates/templates-checklists-dto';
+import { CardAttachmentsService } from '@data/services/card-attachments.service';
+import { TranslateService } from '@ngx-translate/core';
+import { ConfirmDialogService } from '@shared/services/confirm-dialog.service';
+import { GlobalMessageService } from '@shared/services/global-message.service';
+import { ProgressSpinnerDialogService } from '@shared/services/progress-spinner-dialog.service';
+import { finalize, take } from 'rxjs/operators';
 
 @Component({
   selector: 'app-sign-card-documents-dialog',
@@ -39,7 +41,8 @@ export class SignCardDocumentsDialogComponent implements OnInit {
     private confirmDialogService: ConfirmDialogService,
     private cardAttachmentService: CardAttachmentsService,
     private translateService: TranslateService,
-    private globalMessageService: GlobalMessageService
+    private globalMessageService: GlobalMessageService,
+    private authenticationService: AuthenticationService
   ) {}
 
   ngOnInit(): void {
@@ -52,6 +55,14 @@ export class SignCardDocumentsDialogComponent implements OnInit {
       this.wCardId = parseInt(this.route?.snapshot?.params?.idCard, 10);
       this.wCardUserId = parseInt(this.route?.snapshot?.params?.idUser, 10);
     }
+    if (!this.isClientAreaContractedModule()) {
+      this.modeSelected('NO_REMOTE');
+    }
+  }
+
+  public isClientAreaContractedModule(): boolean {
+    const configList = this.authenticationService.getConfigList();
+    return configList.includes(ModulesConstants.TIME_LINE);
   }
 
   public getTitle(): string {

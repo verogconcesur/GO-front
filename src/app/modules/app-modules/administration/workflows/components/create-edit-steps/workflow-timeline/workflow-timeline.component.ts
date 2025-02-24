@@ -109,6 +109,11 @@ export class WorkflowTimelineComponent extends WorkflowStepAbstractClass {
     const configList = this.authenticationService.getConfigList();
     return configList.includes(ModulesConstants.TIME_LINE);
   }
+
+  public isWhatSappContractedModule(): boolean {
+    const configList = this.authenticationService.getConfigList();
+    return configList.includes(ModulesConstants.WHATSAPP_SEND);
+  }
   public setSubstateDragging(substate: WorkflowSubstateDTO): void {
     this.substateDragging = substate;
   }

@@ -73,9 +73,15 @@ export class WorkflowDetailComponent implements OnInit, OnDestroy, AfterViewInit
     this.tabs._handleClick = this.myTabChange.bind(this);
   }
 
-  public isCardLimitContractedModule(): boolean {
+  public isContractedModule(option: string): boolean {
     const configList = this.authService.getConfigList();
-    return configList.includes(ModulesConstants.CARD_LIMIT);
+    if (option === 'cardlimit') {
+      return configList.includes(ModulesConstants.CARD_LIMIT);
+    } else if (option === 'timeline') {
+      return configList.includes(ModulesConstants.TIME_LINE) || configList.includes(ModulesConstants.WHATSAPP_SEND);
+    } else if (option === 'budget') {
+      return configList.includes(ModulesConstants.BUDGET);
+    }
   }
 
   public initListeners(): void {
@@ -84,6 +90,31 @@ export class WorkflowDetailComponent implements OnInit, OnDestroy, AfterViewInit
         this.tabIndex++;
       }
     });
+  }
+  getCardsLimitIndex(): number {
+    return 6;
+  }
+
+  getTimelineIndex(): number {
+    const baseIndex = this.isContractedModule('cardlimit') ? 7 : 6;
+    if (!this.isContractedModule('timeline')) {
+      return -1;
+    }
+    return baseIndex;
+  }
+
+  getBudgetsIndex(): number {
+    let baseIndex = 6;
+    if (this.isContractedModule('cardlimit') && this.isContractedModule('timeline')) {
+      baseIndex = 8;
+    } else if (this.isContractedModule('cardlimit') || this.isContractedModule('timeline')) {
+      baseIndex = 7;
+    }
+    if (!this.isContractedModule('budget')) {
+      return -1;
+    }
+
+    return baseIndex;
   }
 
   public getWorkflowInfo() {
