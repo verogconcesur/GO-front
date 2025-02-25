@@ -2,6 +2,8 @@ import { CdkDragDrop } from '@angular/cdk/drag-drop';
 import { Component, Input, OnInit } from '@angular/core';
 import { UntypedFormArray, UntypedFormBuilder, UntypedFormGroup, Validators } from '@angular/forms';
 import { actionsTabItems } from '@app/constants/actionsTabItems.constants';
+import { ModulesConstants } from '@app/constants/modules.constants';
+import { AuthenticationService } from '@app/security/authentication.service';
 import { marker } from '@biesbjerg/ngx-translate-extract-marker';
 import CardColumnDTO from '@data/models/cards/card-column-dto';
 import CardColumnTabDTO from '@data/models/cards/card-column-tab-dto';
@@ -52,7 +54,8 @@ export class CustomActionsComponent implements OnInit {
     private confirmationDialog: ConfirmDialogService,
     private variablesService: VariablesService,
     private spinnerService: ProgressSpinnerDialogService,
-    private customDialogService: CustomDialogService
+    private customDialogService: CustomDialogService,
+    private authService: AuthenticationService
   ) {}
   get form() {
     return this.formCol.controls;
@@ -60,9 +63,30 @@ export class CustomActionsComponent implements OnInit {
   get tabs(): UntypedFormArray {
     return this.formCol.get('tabs') as UntypedFormArray;
   }
-  get tabItems() {
+  get tabItems(): UntypedFormArray {
     const tabsArray = this.formCol.controls.tabs as UntypedFormArray;
-    return tabsArray.at(0).get('tabItems') as UntypedFormArray;
+    const tabItemsArray = tabsArray.at(0).get('tabItems') as UntypedFormArray;
+    console.log(tabItemsArray);
+    for (let i = tabItemsArray.length - 1; i >= 0; i--) {
+      const control = tabItemsArray.at(i) as UntypedFormGroup;
+      const actionType = control.get('tabItemConfigAction')?.get('actionType')?.value;
+      if (
+        (actionType === 'START_CON' && !this.isContractedModule('whatsapp')) ||
+        (actionType === 'SIGN_DOC' && !this.isContractedModule('checklist'))
+      ) {
+        tabItemsArray.removeAt(i);
+      }
+    }
+    return tabItemsArray;
+  }
+
+  public isContractedModule(option: string): boolean {
+    const configList = this.authService.getConfigList();
+    if (option === 'checklist') {
+      return configList.includes(ModulesConstants.CHECK_LIST);
+    } else if (option === 'whatsapp') {
+      return configList.includes(ModulesConstants.WHATSAPP_SEND);
+    }
   }
   public deleteTab(tabItem: UntypedFormGroup) {
     this.confirmationDialog
