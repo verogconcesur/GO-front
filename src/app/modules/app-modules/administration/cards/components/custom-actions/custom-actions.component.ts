@@ -66,7 +66,6 @@ export class CustomActionsComponent implements OnInit {
   get tabItems(): UntypedFormArray {
     const tabsArray = this.formCol.controls.tabs as UntypedFormArray;
     const tabItemsArray = tabsArray.at(0).get('tabItems') as UntypedFormArray;
-    console.log(tabItemsArray);
     for (let i = tabItemsArray.length - 1; i >= 0; i--) {
       const control = tabItemsArray.at(i) as UntypedFormGroup;
       const actionType = control.get('tabItemConfigAction')?.get('actionType')?.value;
@@ -108,7 +107,11 @@ export class CustomActionsComponent implements OnInit {
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   public dropLink(event: CdkDragDrop<string[]>) {
-    moveItemInFormArray(this.tabItems, event.previousIndex + 4, event.currentIndex + 4);
+    moveItemInFormArray(
+      this.tabItems,
+      event.previousIndex + this.actionsTabItems.length,
+      event.currentIndex + this.actionsTabItems.length
+    );
   }
   public showTabAction(tabItem: UntypedFormGroup) {
     const visible = tabItem.get('tabItemConfigAction').get('visible');
@@ -163,6 +166,13 @@ export class CustomActionsComponent implements OnInit {
     if (tab) {
       tab.tabItems.forEach((tabItem) => {
         if (tabItem.typeItem === 'ACTION') {
+          const actionType = tabItem.tabItemConfigAction.actionType;
+          if (
+            (actionType === 'SIGN_DOC' && !this.isContractedModule('checklist')) ||
+            (actionType === 'START_CON' && !this.isContractedModule('whatsapp'))
+          ) {
+            return;
+          }
           arrayForm.push(
             this.fb.group({
               id: [tabItem.id],
@@ -326,6 +336,7 @@ export class CustomActionsComponent implements OnInit {
   }
 
   ngOnInit(): void {
+    this.filterActionsTabItems();
     this.getVariable();
     if (this.colEdit) {
       this.colEdit.tabs.forEach((tab) => {
@@ -334,6 +345,18 @@ export class CustomActionsComponent implements OnInit {
     } else {
       this.tabs.push(this.newTab());
     }
+  }
+
+  private filterActionsTabItems(): void {
+    this.actionsTabItems = this.actionsTabItems.filter((actionItem) => {
+      if (
+        (actionItem.actionType === 'SIGN_DOC' && !this.isContractedModule('checklist')) ||
+        (actionItem.actionType === 'START_CON' && !this.isContractedModule('whatsapp'))
+      ) {
+        return false;
+      }
+      return true;
+    });
   }
 
   private getVariable(): void {
