@@ -54,7 +54,10 @@ export class StepWorkflowComponent implements OnInit {
     private authService: AuthenticationService
   ) {}
   public initialiceList(): void {
-    if ((this.formWorkflow.get('workflow').value as WorkflowCreateCardDTO)?.workflowCardsLimit?.cardsLimit) {
+    if (
+      (this.formWorkflow.get('workflow').value as WorkflowCreateCardDTO)?.workflowCardsLimit?.cardsLimit &&
+      this.isContractedModule('cardlimit')
+    ) {
       this.formWorkflow.get('cardsLimit').setValue(true);
     } else {
       this.formWorkflow.get('cardsLimit').setValue(false);

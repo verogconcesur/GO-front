@@ -28,7 +28,7 @@
             <mat-form-field
                 appearance="outline"
                 floatLabel="always"
-                *ngIf="formWorkflow.controls?.workflow?.value?.workflowCardsLimit?.cardsLimit"
+                *ngIf="formWorkflow.controls?.workflow?.value?.workflowCardsLimit?.cardsLimit && isContractedModule('cardlimit')"
             >
                 <mat-label>{{ labels.deadLineDate | translate }}</mat-label>
                 <input
@@ -54,7 +54,7 @@
             <mat-form-field
                 appearance="outline"
                 floatLabel="always"
-                *ngIf="formWorkflow.controls?.workflow?.value?.workflowCardsLimit?.cardsLimit"
+                *ngIf="formWorkflow.controls?.workflow?.value?.workflowCardsLimit?.cardsLimit && isContractedModule('cardlimit')"
             >
                 <mat-label>{{ labels.deadLineHour | translate }}</mat-label>
                 <mat-select formControlName="deadLineHour" (selectionChange)="changeDeadLine()">
