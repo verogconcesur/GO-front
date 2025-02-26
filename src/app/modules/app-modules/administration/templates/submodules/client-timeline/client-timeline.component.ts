@@ -8,7 +8,7 @@ import FacilityDTO from '@data/models/organization/facility-dto';
 import SpecialtyDTO from '@data/models/organization/specialty-dto';
 import TemplatesFilterDTO from '@data/models/templates/templates-filter-dto';
 import TemplatesTimelineDTO from '@data/models/templates/templates-timeline-dto';
-import { untilDestroyed } from '@ngneat/until-destroy';
+import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
 import { TranslateService } from '@ngx-translate/core';
 // eslint-disable-next-line max-len
 import TemplatesCommonDTO from '@data/models/templates/templates-common-dto';
@@ -26,7 +26,7 @@ import {
   CreateEditTimelineComponent,
   CreateEditTimelineComponentModalEnum
 } from './dialog/create-edit-timeline/create-edit-timeline.component';
-
+@UntilDestroy()
 @Component({
   selector: 'app-client-timeline',
   templateUrl: './client-timeline.component.html',
