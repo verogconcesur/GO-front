@@ -9,7 +9,7 @@ import {
   HttpSentEvent,
   HttpUserEvent
 } from '@angular/common/http';
-import { Inject, Injectable } from '@angular/core';
+import { forwardRef, Inject, Injectable, Injector } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { Router } from '@angular/router';
 import { ENV } from '@app/constants/global.constants';
@@ -32,17 +32,25 @@ export class TokenInterceptor implements HttpInterceptor {
   private static readonly AUTHORIZATION = 'Authorization';
   private static readonly CACHE = 'Cache-Control';
   private static readonly OFFSET = 'Offset';
+  private $router: Router;
 
   private readonly BYPASS_URLS: string[] = ['/assets/', 'accounts.logout'];
 
   constructor(
+    private injector: Injector,
     @Inject(ENV) private env: Env,
-    private router: Router,
     private authenticationService: AuthenticationService,
     private translateService: TranslateService,
     private globalMessage: GlobalMessageService,
     private dialog: MatDialog
   ) {}
+
+  private get router(): Router {
+    if (!this.$router) {
+      this.$router = this.injector.get(Router);
+    }
+    return this.$router;
+  }
 
   intercept(req: HttpRequest<unknown>, next: HttpHandler): ObservableResponse {
     if (this.bypassInterceptor(req)) {
