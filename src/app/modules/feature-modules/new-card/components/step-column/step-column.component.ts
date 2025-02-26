@@ -1,8 +1,8 @@
 import { Component, Input, OnDestroy, OnInit } from '@angular/core';
 import { FormGroup, UntypedFormArray } from '@angular/forms';
-import { untilDestroyed } from '@ngneat/until-destroy';
+import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
 import { StepColumnService } from './step-column.service';
-
+@UntilDestroy()
 @Component({
   selector: 'app-step-column',
   templateUrl: './step-column.component.html',
