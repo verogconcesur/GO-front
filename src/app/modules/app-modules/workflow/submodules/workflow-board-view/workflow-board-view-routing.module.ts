@@ -26,7 +26,7 @@ const routes: Routes = [
       },
       {
         path: RouteConstants.OTHER,
-        canActivate: [AuthGuardService],
+        pathMatch: 'full',
         redirectTo: RouteConstants.EMPTY
       }
     ]

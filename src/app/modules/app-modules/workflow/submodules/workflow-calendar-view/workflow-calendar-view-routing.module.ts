@@ -11,6 +11,7 @@ const routes: Routes = [
     component: WorkflowCalendarViewComponent,
     children: [
       {
+        canActivate: [AuthGuardService],
         // eslint-disable-next-line max-len
         path: `${RouteConstants.WORKFLOWS_ID_CARD}/${RouteConstants.ID_CARD}/${RouteConstants.WORKFLOWS_ID_USER}/${RouteConstants.ID_USER}`,
         outlet: RouteConstants.WORKFLOWS_CARD,
@@ -19,7 +20,7 @@ const routes: Routes = [
       },
       {
         path: RouteConstants.OTHER,
-        canActivate: [AuthGuardService],
+        pathMatch: 'full',
         redirectTo: RouteConstants.EMPTY
       }
     ]
