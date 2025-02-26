@@ -14,7 +14,7 @@ import { DepartmentService } from '@data/services/deparment.service';
 import { FacilityService } from '@data/services/facility.sevice';
 import { SpecialtyService } from '@data/services/specialty.service';
 import { WorkflowAdministrationService } from '@data/services/workflow-administration.service';
-import { untilDestroyed } from '@ngneat/until-destroy';
+import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
 import { TranslateService } from '@ngx-translate/core';
 import { ConfirmDialogService } from '@shared/services/confirm-dialog.service';
 import { GlobalMessageService } from '@shared/services/global-message.service';
@@ -23,7 +23,7 @@ import { NGXLogger } from 'ngx-logger';
 import { finalize, take } from 'rxjs/operators';
 import { WorkflowsCreateEditAuxService } from '../../../aux-service/workflows-create-edit-aux.service';
 import { WorkflowStepAbstractClass } from '../workflow-step-abstract-class';
-
+@UntilDestroy()
 @Component({
   selector: 'app-workflow-organization',
   templateUrl: './workflow-organization.component.html',

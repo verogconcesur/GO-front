@@ -6,7 +6,7 @@ import { marker } from '@biesbjerg/ngx-translate-extract-marker';
 import { AdvancedSearchItem } from '@data/models/adv-search/adv-search-dto';
 import AdvSearchOperatorDTO from '@data/models/adv-search/adv-search-operator-dto';
 import { AdvSearchService } from '@data/services/adv-search.service';
-import { untilDestroyed } from '@ngneat/until-destroy';
+import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
 import { TranslateService } from '@ngx-translate/core';
 import { CustomDialogFooterConfigI } from '@shared/modules/custom-dialog/interfaces/custom-dialog-footer-config';
 import { ComponentToExtendForCustomDialog } from '@shared/modules/custom-dialog/models/component-for-custom-dialog';
@@ -20,7 +20,7 @@ export const enum AdvSearchCriteriaEditionDialogComponentModalEnum {
   PANEL_CLASS = 'adv-search-criteria-edition-dialog',
   TITLE = 'common.advSearch.criteriaEdition'
 }
-
+@UntilDestroy()
 @Component({
   selector: 'app-adv-search-criteria-edition-dialog',
   templateUrl: './adv-search-criteria-edition-dialog.component.html',
