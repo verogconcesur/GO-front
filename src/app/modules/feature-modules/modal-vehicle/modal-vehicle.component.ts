@@ -133,7 +133,7 @@ export class ModalVehicleComponent extends ComponentToExtendForCustomDialog impl
   }
 
   public openModalAddCustomer() {
-    this.entitySearcher.openEntitySearcher(null, this.vehicleForm.controls.facility.value, 'CUSTOMER').then((data) => {
+    this.entitySearcher.openEntitySearcher(null, this.vehicleForm.controls.facility.value.id, 'CUSTOMER').then((data) => {
       if (data) {
         const newVehicle: CustomerVehicles = {
           id: null,
