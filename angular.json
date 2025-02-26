@@ -149,7 +149,7 @@
                             "namedChunks": true
                         }
                     },
-                    "defaultConfiguration": ""
+                    "defaultConfiguration": "dev"
                 },
                 "serve": {
                     "builder": "@angular-devkit/build-angular:dev-server",
@@ -166,7 +166,8 @@
                         "dev": {
                             "browserTarget": "Concenet_Front:build:dev"
                         }
-                    }
+                    },
+                    "defaultConfiguration": "dev"
                 },
                 "extract-i18n": {
                     "builder": "@angular-devkit/build-angular:extract-i18n",
