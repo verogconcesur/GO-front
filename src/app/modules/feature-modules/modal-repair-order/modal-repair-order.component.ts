@@ -7,7 +7,7 @@ import RepairOrderEntityDTO from '@data/models/entities/repair-order-entity-dto'
 import FacilityDTO from '@data/models/organization/facility-dto';
 import { EntitiesService } from '@data/services/entities.service';
 import { FacilityService } from '@data/services/facility.sevice';
-import { untilDestroyed } from '@ngneat/until-destroy';
+import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
 import { TranslateService } from '@ngx-translate/core';
 import { CustomDialogFooterConfigI } from '@shared/modules/custom-dialog/interfaces/custom-dialog-footer-config';
 import { ComponentToExtendForCustomDialog } from '@shared/modules/custom-dialog/models/component-for-custom-dialog';
@@ -35,7 +35,7 @@ interface CustomDateObject {
   _isUTC: boolean;
   _isValid: boolean;
 }
-
+@UntilDestroy()
 @Component({
   selector: 'app-modal-repair-order',
   templateUrl: './modal-repair-order.component.html',

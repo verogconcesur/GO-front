@@ -6,7 +6,7 @@ import { marker } from '@biesbjerg/ngx-translate-extract-marker';
 import WorkflowStateDTO from '@data/models/workflows/workflow-state-dto';
 import WorkflowSubstateDTO from '@data/models/workflows/workflow-substate-dto';
 import { WorkflowAdministrationStatesSubstatesService } from '@data/services/workflow-administration-states-substates.service';
-import { untilDestroyed } from '@ngneat/until-destroy';
+import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
 import { TranslateService } from '@ngx-translate/core';
 import { CustomDialogService } from '@shared/modules/custom-dialog/services/custom-dialog.service';
 import { ConfirmDialogService } from '@shared/services/confirm-dialog.service';
@@ -27,7 +27,7 @@ import {
   WfEditSubstateDialogComponent
 } from './modals/wf-edit-substate-dialog/wf-edit-substate-dialog.component';
 import WorkflowStateSubstatesLengthValidator from './validators/workflow-states-substates-length.validator';
-
+@UntilDestroy()
 @Component({
   selector: 'app-workflow-states',
   templateUrl: './workflow-states.component.html',

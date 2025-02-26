@@ -12,20 +12,19 @@ import CardColumnTabDTO from '@data/models/cards/card-column-tab-dto';
 import CardColumnTabItemDTO from '@data/models/cards/card-column-tab-item-dto';
 import CardCreateDTO from '@data/models/cards/card-create-dto';
 import CardDTO from '@data/models/cards/card-dto';
-import WorkflowCreateCardDTO from '@data/models/workflows/workflow-create-card-dto';
 import WorkflowDTO from '@data/models/workflows/workflow-dto';
 import WorkflowSubstateDTO from '@data/models/workflows/workflow-substate-dto';
 import WorkflowSubstateEventDTO from '@data/models/workflows/workflow-substate-event-dto';
 import { CardService } from '@data/services/cards.service';
 import { WorkflowsService } from '@data/services/workflows.service';
-import { untilDestroyed } from '@ngneat/until-destroy';
+import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
 import { TranslateService } from '@ngx-translate/core';
 import { ConfirmDialogService } from '@shared/services/confirm-dialog.service';
 import { GlobalMessageService } from '@shared/services/global-message.service';
 import { ProgressSpinnerDialogService } from '@shared/services/progress-spinner-dialog.service';
 import CombinedRequiredFieldsValidator from '@shared/validators/combined-required-fields.validator';
 import { NGXLogger } from 'ngx-logger';
-import { take, finalize } from 'rxjs/operators';
+import { finalize, take } from 'rxjs/operators';
 import { StepWorkflowComponent } from './components/step-workflow/step-workflow.component';
 
 export const enum NewCardComponentModalEnum {
@@ -33,6 +32,7 @@ export const enum NewCardComponentModalEnum {
   PANEL_CLASS = 'remove-padding',
   TITLE = 'newCard.create'
 }
+@UntilDestroy()
 @Component({
   selector: 'app-new-card',
   templateUrl: './new-card.component.html',
