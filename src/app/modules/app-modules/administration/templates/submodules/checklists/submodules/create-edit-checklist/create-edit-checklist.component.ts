@@ -2,29 +2,32 @@
 /* eslint-disable @typescript-eslint/member-ordering */
 /* eslint-disable max-len */
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { Component, ViewEncapsulation, OnInit, ElementRef, ViewChild } from '@angular/core';
+import { Component, ElementRef, OnInit, ViewChild, ViewEncapsulation } from '@angular/core';
 import { FormControl, UntypedFormArray, UntypedFormBuilder, UntypedFormGroup } from '@angular/forms';
+import { ActivatedRoute, Router } from '@angular/router';
+import { RouteConstants } from '@app/constants/route.constants';
+import { ConcenetError } from '@app/types/error';
+import { marker } from '@biesbjerg/ngx-translate-extract-marker';
+import { TemplatesAccountingDTO } from '@data/models/templates/templates-accounting-dto';
 import TemplatesChecklistsDTO, {
   AuxChecklistItemsGroupBySyncDTO,
   AuxChecklistItemsGroupByTypeDTO,
   TemplateChecklistItemDTO
 } from '@data/models/templates/templates-checklists-dto';
+import WorkflowCardSlotDTO from '@data/models/workflows/workflow-card-slot-dto';
+import { CardService } from '@data/services/cards.service';
+import { TemplatesAccountingsService } from '@data/services/templates-accountings.service';
+import { TemplatesChecklistsService } from '@data/services/templates-checklists.service';
+import { VariablesService } from '@data/services/variables.service';
 import { TranslateService } from '@ngx-translate/core';
-import { marker } from '@biesbjerg/ngx-translate-extract-marker';
 import { ConfirmDialogService } from '@shared/services/confirm-dialog.service';
 import { GlobalMessageService } from '@shared/services/global-message.service';
 import { ProgressSpinnerDialogService } from '@shared/services/progress-spinner-dialog.service';
 import $ from 'jquery';
 import 'jqueryui';
 import { forkJoin, Subject } from 'rxjs';
-import { VariablesService } from '@data/services/variables.service';
-import { finalize, take } from 'rxjs/operators';
-import WorkflowCardSlotDTO from '@data/models/workflows/workflow-card-slot-dto';
+import { finalize, map, switchMap, take } from 'rxjs/operators';
 import { CreateEditChecklistAuxService } from './create-edit-checklist-aux.service';
-import { ActivatedRoute, ActivatedRouteSnapshot, Router } from '@angular/router';
-import { RouteConstants } from '@app/constants/route.constants';
-import { TemplatesChecklistsService } from '@data/services/templates-checklists.service';
-import { ConcenetError } from '@app/types/error';
 
 @Component({
   selector: 'app-create-edit-checklist',
@@ -45,7 +48,29 @@ export class CreateEditChecklistComponent implements OnInit {
   public itemListToShow: AuxChecklistItemsGroupByTypeDTO[] = [];
   public expansionPanelOpened: any = {};
   public listVariables: WorkflowCardSlotDTO[] = [];
+  public customListVariables: WorkflowCardSlotDTO[] = [];
+  public allList: WorkflowCardSlotDTO[] = [];
   public pagesSelectedToAddItem: FormControl = new FormControl(null);
+  public listTemplates: TemplatesAccountingDTO[];
+  public templateAccountingItem: TemplatesAccountingDTO;
+  public blockAttributes = [
+    { id: 'NAME', name: this.translateService.instant(marker('administration.templates.checklists.nameBlock')) }, //'Nombre'
+    { id: 'TYPE', name: this.translateService.instant(marker('administration.templates.checklists.typeBlock')) }, //'Tipo'
+    { id: 'LINE', name: this.translateService.instant(marker('administration.templates.checklists.lineBlock')) }, //'Línea'
+    { id: 'TYPE_TAX', name: this.translateService.instant(marker('administration.templates.checklists.typeIvaBlock')) }, //'Tipo IVA'
+    { id: 'TOTAL', name: this.translateService.instant(marker('administration.templates.checklists.totalBlock')) }, //'Total'
+    { id: 'TOTAL_TAX', name: this.translateService.instant(marker('administration.templates.checklists.totalIvaBlock')) }, //'Total IVA'
+    { id: 'TOTAL_PLUS_TAX', name: this.translateService.instant(marker('administration.templates.checklists.totalplusIvaBlock')) } //'Total con IVA'
+  ];
+  public lineAttributes = [
+    { id: 'NAME', name: this.translateService.instant(marker('administration.templates.checklists.nameLine')) }, //'Nombre'
+    { id: 'TYPE', name: this.translateService.instant(marker('administration.templates.checklists.typeLine')) }, //'Tipo'
+    { id: 'TYPE_TAX', name: this.translateService.instant(marker('administration.templates.checklists.typeIvaLine')) }, //'Tipo IVA'
+    { id: 'AMOUNT', name: this.translateService.instant(marker('administration.templates.checklists.amountLine')) } //'Importe'
+  ];
+  public allBlocksMap: Map<string, any[]> = new Map();
+  selectedType: string | null = null;
+  showTypeSelect = false;
   public labels: any = {
     newCheckList: marker('administration.templates.checklists.new'),
     cheklistConfig: marker('administration.templates.checklists.config'),
@@ -58,9 +83,15 @@ export class CreateEditChecklistComponent implements OnInit {
     drawing: marker('administration.templates.checklists.freeDraw'),
     check: marker('administration.templates.checklists.check'),
     variable: marker('administration.templates.checklists.var'),
+    accounting: marker('administration.templates.checklists.accounting'),
     image: marker('administration.templates.checklists.image'),
     name: marker('administration.templates.checklists.name'),
     nameRequired: marker('userProfile.nameRequired'),
+    templates: marker('administration.templates.checklists.templates'),
+    selectBlock: marker('administration.templates.checklists.selectBlock'),
+    attrBlock: marker('administration.templates.checklists.attrBlock'),
+    selectLine: marker('administration.templates.checklists.selectLine'),
+    attrLine: marker('administration.templates.checklists.attrLine'),
     includeFile: marker('administration.templates.checklists.includeFile'),
     remoteSignature: marker('administration.templates.checklists.remoteSignature'),
     dropHere: marker('administration.templates.checklists.dropHere'),
@@ -94,23 +125,34 @@ export class CreateEditChecklistComponent implements OnInit {
     private createEditChecklistAuxService: CreateEditChecklistAuxService,
     private router: Router,
     private templatesChecklistsService: TemplatesChecklistsService,
-    private route: ActivatedRoute
+    private route: ActivatedRoute,
+    private cardService: CardService,
+    private templateAccountingService: TemplatesAccountingsService
   ) {}
 
   ngOnInit(): void {
-    const variablesRequest = this.variablesService.searchVariablesSlots();
-
+    const variablesRequest = this.variablesService.searchVariablesTemplateSlots();
+    const customVariableRequest = this.variablesService.searchCustomVariablesSlots();
+    this.getAccountingTemplates();
     if (this.route?.snapshot?.params?.id) {
       const spinner = this.spinnerService.show();
-      forkJoin([variablesRequest, this.templatesChecklistsService.findChecklistById(this.route.snapshot.params.id)])
+      forkJoin([
+        variablesRequest,
+        this.templatesChecklistsService.findChecklistById(this.route.snapshot.params.id),
+        customVariableRequest
+      ])
         .pipe(
           take(1),
           finalize(() => this.spinnerService.hide(spinner))
         )
         .subscribe(
-          (responses: [WorkflowCardSlotDTO[], TemplatesChecklistsDTO]) => {
-            this.listVariables = responses[0];
+          (responses: [WorkflowCardSlotDTO[], TemplatesChecklistsDTO, WorkflowCardSlotDTO[]]) => {
+            this.listVariables = [...responses[0], ...responses[2]].sort((a, b) => {
+              return a.name.localeCompare(b.name);
+            });
             this.checklistToEdit = responses[1];
+
+            // Cálculo de uniqueIdOrder
             this.uniqueIdOrder = this.checklistToEdit.templateChecklistItems?.reduce(
               (prev: number, curr: TemplateChecklistItemDTO) => {
                 if (curr.orderNumber > prev) {
@@ -120,11 +162,14 @@ export class CreateEditChecklistComponent implements OnInit {
               },
               0
             );
+
+            // Inicializamos el formulario y refrescamos
             this.initForm();
             this.fileTemplateBase64.next(this.checklistForm.get('templateFile').get('content').value);
             this.refreshItemsAndPdf();
           },
           (errors) => {
+            // Manejo de errores
             this.globalMessageService.showError({
               message: this.translateService.instant(errors[1]?.message),
               actionText: this.translateService.instant(marker('common.close'))
@@ -133,10 +178,15 @@ export class CreateEditChecklistComponent implements OnInit {
           }
         );
     } else {
-      variablesRequest.pipe(take(1)).subscribe((res) => {
-        this.listVariables = res;
-      });
-      this.initForm();
+      forkJoin([variablesRequest, customVariableRequest])
+        .pipe(take(1))
+        .subscribe(([variablesRes, customVariablesRes]) => {
+          this.listVariables = [...variablesRes, ...customVariablesRes];
+          this.listVariables = [...variablesRes, ...customVariablesRes].sort((a, b) => {
+            return a.name.localeCompare(b.name);
+          });
+          this.initForm();
+        });
     }
   }
 
@@ -153,7 +203,33 @@ export class CreateEditChecklistComponent implements OnInit {
     }
     return this.translateService.instant(this.labels.newCheckList);
   }
-
+  public getAccountingTemplates() {
+    this.templateAccountingService
+      .findAccountingTemplates()
+      .pipe(
+        take(1),
+        switchMap((templates) => {
+          this.listTemplates = templates;
+          const accountingItemsRequests = templates.map((template) =>
+            this.templateAccountingService.findById(template.template.id).pipe(
+              map((resp) => {
+                return {
+                  templateId: template.id,
+                  allBlocks: resp.templateAccountingItems || []
+                };
+              })
+            )
+          );
+          return forkJoin(accountingItemsRequests);
+        })
+      )
+      .subscribe((allBlocksList) => {
+        this.allBlocksMap = new Map<string, any[]>();
+        allBlocksList.forEach((item) => {
+          this.allBlocksMap.set(item.templateId.toString(), item.allBlocks);
+        });
+      });
+  }
   public setItemListToShow(): void {
     let items: TemplateChecklistItemDTO[] = this.checklistForm?.get('templateChecklistItems').getRawValue();
     if (this.isRemoteSign()) {
@@ -187,6 +263,11 @@ export class CreateEditChecklistComponent implements OnInit {
             typeItem: item.typeItem,
             typeSign: item.typeSign,
             variable: item.variable,
+            templateAccountingId: item.templateAccountingId,
+            templateAccountingItemId: item.templateAccountingItemId,
+            accountingItemAttributeType: item.accountingItemAttributeType,
+            templateAccountingItemLineId: item.templateAccountingItemLineId,
+            accountingItemLineAttributeType: item.accountingItemLineAttributeType,
             syncronized: false,
             templateChecklistItems: this.fb.array([
               (this.checklistForm.get('templateChecklistItems') as UntypedFormArray).at(index)
@@ -210,6 +291,11 @@ export class CreateEditChecklistComponent implements OnInit {
               typeItem: item.typeItem,
               typeSign: item.typeSign,
               variable: item.variable,
+              templateAccountingId: item.templateAccountingId,
+              templateAccountingItemId: item.templateAccountingItemId,
+              accountingItemAttributeType: item.accountingItemAttributeType,
+              templateAccountingItemLineId: item.templateAccountingItemLineId,
+              accountingItemLineAttributeType: item.accountingItemLineAttributeType,
               syncronized: false,
               templateChecklistItems: this.fb.array([
                 (this.checklistForm.get('templateChecklistItems') as UntypedFormArray).at(index)
@@ -320,18 +406,16 @@ export class CreateEditChecklistComponent implements OnInit {
       $('.checklistItemToDrag.dropped').remove();
     }
     if (this.checklistForm?.value?.templateChecklistItems?.length > 0) {
-      setTimeout(() => {
-        this.checklistForm.value.templateChecklistItems.forEach((item: TemplateChecklistItemDTO, index: number) => {
-          if (page && item.numPage === page) {
-            this.printItemInPdfPage(
-              (this.checklistForm.get('templateChecklistItems') as UntypedFormArray).at(index) as UntypedFormGroup
-            );
-          } else if (!page) {
-            this.printItemInPdfPage(
-              (this.checklistForm.get('templateChecklistItems') as UntypedFormArray).at(index) as UntypedFormGroup
-            );
-          }
-        });
+      this.checklistForm.value.templateChecklistItems.forEach((item: TemplateChecklistItemDTO, index: number) => {
+        if (page && item.numPage === page) {
+          this.printItemInPdfPage(
+            (this.checklistForm.get('templateChecklistItems') as UntypedFormArray).at(index) as UntypedFormGroup
+          );
+        } else if (!page) {
+          this.printItemInPdfPage(
+            (this.checklistForm.get('templateChecklistItems') as UntypedFormArray).at(index) as UntypedFormGroup
+          );
+        }
       });
     }
   }
@@ -600,6 +684,55 @@ export class CreateEditChecklistComponent implements OnInit {
     return errores;
   }
 
+  public getLines(syncGroup: AuxChecklistItemsGroupBySyncDTO): any[] {
+    const templateChecklistItems = this.checklistForm.get('templateChecklistItems').value;
+    const selectedBlock = templateChecklistItems[syncGroup.selectedItem - 1];
+    const templateId = selectedBlock.templateAccountingId;
+    const blocks = this.allBlocksMap.get(templateId.toString());
+    if (blocks) {
+      const block = blocks.find((b) => b.id === selectedBlock.templateAccountingItemId);
+      if (block && block.templateAccountingItemLines) {
+        return block.templateAccountingItemLines;
+      }
+    }
+    return [];
+  }
+
+  public getAllBlocks(syncGroup: AuxChecklistItemsGroupBySyncDTO): any[] {
+    const index = syncGroup.selectedItem - 1;
+    const templateChecklistItems = this.checklistForm.get('templateChecklistItems') as UntypedFormArray;
+    const templateId = templateChecklistItems.at(index).value.templateAccountingId;
+    return this.allBlocksMap.get(templateId?.toString()) || [];
+  }
+
+  public isTemplateSelected(syncGroup: any): boolean {
+    const index = syncGroup.selectedItem - 1;
+    const templateChecklistItems = this.checklistForm.get('templateChecklistItems') as UntypedFormArray;
+    const templateId = templateChecklistItems.at(index)?.value.templateAccountingId;
+    return !!templateId;
+  }
+
+  public isBlockSelected(syncGroup: any): boolean {
+    const index = syncGroup.selectedItem - 1;
+    const templateChecklistItems = this.checklistForm.get('templateChecklistItems') as UntypedFormArray;
+    const blockId = templateChecklistItems.at(index)?.value.templateAccountingItemId;
+    return !!blockId;
+  }
+
+  public isLineSelected(syncGroup: any): boolean {
+    const index = syncGroup.selectedItem - 1;
+    const templateChecklistItems = this.checklistForm.get('templateChecklistItems') as UntypedFormArray;
+    const accountingItemAttributeType = templateChecklistItems.at(index)?.value.accountingItemAttributeType;
+    return accountingItemAttributeType === 'LINE';
+  }
+
+  public isLineAttibuteSelected(syncGroup: any): boolean {
+    const index = syncGroup.selectedItem - 1;
+    const templateChecklistItems = this.checklistForm.get('templateChecklistItems') as UntypedFormArray;
+    const templateAccountingItemLineId = templateChecklistItems.at(index)?.value.templateAccountingItemLineId;
+    return !!templateAccountingItemLineId;
+  }
+
   public save(): void {
     this.confirmDialogService
       .open({
@@ -633,7 +766,12 @@ export class CreateEditChecklistComponent implements OnInit {
           data.templateChecklistItems.map((item: any) => {
             item.sincronizedItems = item.sincronizedItems.length === 1 || item.staticValue ? null : item.sincronizedItems;
             if (item.typeItem === 'VARIABLE') {
-              item.variable = { id: item.variable.id };
+              if (item.variable.tabId) {
+                item.tabItem = { id: item.variable.id };
+                delete item.variable;
+              } else {
+                item.variable = { id: item.variable.id };
+              }
             }
             if (
               (item.staticValue || item.defaultValue) &&

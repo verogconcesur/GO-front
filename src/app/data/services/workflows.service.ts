@@ -95,6 +95,8 @@ export class WorkflowsService {
    */
   public searchCardsInWorkflowsPaged(
     search: string,
+    typeFilterCard: string,
+    workflowId: number | null,
     pagination?: PaginationRequestI
   ): Observable<PaginationResponseI<WorkflowCardDTO>> {
     return this.http
@@ -102,7 +104,7 @@ export class WorkflowsService {
         `${this.env.apiBaseUrl}${this.GET_WORKFLOWS_PATH}${this.GET_WORKFLOWS_INSTANCE_PATH}${
           this.GET_WORKFLOWS_SEARCH_PAGED_PATH
         }${getPaginationUrlGetParams(pagination, true)}`,
-        { search }
+        { search, typeFilterCard, workflowId }
       )
       .pipe(catchError((error) => throwError(error.error as ConcenetError)));
   }

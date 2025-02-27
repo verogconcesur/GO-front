@@ -10,7 +10,7 @@ import { TemplatesAttachmentDTO } from '@data/models/templates/templates-attachm
 import TemplatesCommonDTO from '@data/models/templates/templates-common-dto';
 import TemplatesFilterDTO from '@data/models/templates/templates-filter-dto';
 import { TemplatesAttachmentService } from '@data/services/templates-attachment.service';
-import { untilDestroyed } from '@ngneat/until-destroy';
+import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
 import { TranslateService } from '@ngx-translate/core';
 // eslint-disable-next-line max-len
 import { AdministrationCommonHeaderSectionClassToExtend } from '@modules/feature-modules/administration-common-header-section/administration-common-header-section-class-to-extend';
@@ -25,6 +25,7 @@ import {
   CreateEditAttachmentComponent,
   CreateEditAttachmentComponentModalEnum
 } from './dialog/create-edit-attachment/create-edit-attachment.component';
+@UntilDestroy()
 @Component({
   selector: 'app-attachments',
   templateUrl: './attachments.component.html',

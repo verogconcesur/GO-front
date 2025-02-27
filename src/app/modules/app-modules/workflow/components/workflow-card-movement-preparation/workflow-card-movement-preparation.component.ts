@@ -2,7 +2,7 @@ import { DatePipe } from '@angular/common';
 import { Component, Inject, OnInit, ViewEncapsulation } from '@angular/core';
 import { FormBuilder, UntypedFormArray, UntypedFormControl, UntypedFormGroup, Validators } from '@angular/forms';
 import { MatCalendarCellClassFunction } from '@angular/material/datepicker';
-import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
+import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { AuthenticationService } from '@app/security/authentication.service';
 import { marker } from '@biesbjerg/ngx-translate-extract-marker';
 import { TemplateComunicationItemsDTO } from '@data/models/templates/templates-communication-dto';
@@ -304,7 +304,8 @@ export class WorkflowCardMovementPreparationComponent implements OnInit {
         (d.getFullYear() === new Date().getFullYear() &&
           d.getMonth() === new Date().getMonth() &&
           d.getDate() < new Date().getDate()) ||
-        d.getDay() === 0
+        d.getDay() === 0 ||
+        (this.data.workflowCardsLimit?.saturdayExcluded && d.getDay() === 6)
       ) {
         return '';
       }
@@ -343,7 +344,11 @@ export class WorkflowCardMovementPreparationComponent implements OnInit {
   datesLimitFilter = (d: Date | null): boolean => {
     d = d ? d : new Date();
     // Prevent Sunday from being selected.
-    if (d.getDay() === 0 || !this.minDaysAdvanceNotice(d)) {
+    if (
+      d.getDay() === 0 ||
+      (this.data.workflowCardsLimit?.saturdayExcluded && d.getDay() === 6) ||
+      !this.minDaysAdvanceNotice(d)
+    ) {
       return false;
     }
     if (this.workflowCardsLimit?.cardsLimit && !this.allowOverLimit()) {

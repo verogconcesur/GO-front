@@ -1,64 +1,101 @@
 pipeline {
   agent any
+  tools {
+    nodejs 'node 16.15.0'
+  }
+  parameters {
+    string(name: 'DEPLOY_BRANCH', defaultValue: 'develop', description: 'Branch to deploy')
+    string(name: 'ENV', defaultValue: 'dev', description: 'Environment for build (dev, pre or production)')
+    string(name: 'DEPLOY_DIR', defaultValue: '/sftp/DEV', description: 'SFTP path to deploy (/sftp/DEV or /sftp/PRE)')
+  }
   stages {
     stage('Dependencies') {
       steps {
-        sh 'npm install --no-progress'
-        sh 'npm run generate:api'
-      }
-    }
-
-    stage('Lint') {
-      steps {
-        sh 'npm run lint'
-      }
-    }
-
-    stage('Test') {
-      steps {
-        withEnv(overrides: ["CHROME_BIN=/usr/bin/chromium-browser"]) {
-          sh 'npm run test:ci'
-        }
-
-      }
-    }
-
-    stage('SonarQube') {
-      steps {
-        sh 'npm run sonar'
+        sh 'npm cache clean --force && export NODE_OPTIONS="--max-old-space-size=4096" && npm install --force'
       }
     }
 
     stage('Build: dist files') {
       steps {
-        sh "npm run --silent build -- --configuration=${params.ENV} --no-progress"
+        sh """
+        node --max_old_space_size=4096 ./node_modules/@angular/cli/bin/ng build --configuration=${params.ENV}
+        """
+      }
+    }
+
+    stage('Deploy: uploading files') {
+      steps {
         script {
-          zip archive: true, dir: 'dist/Concenet_Front', glob: '', zipFile: 'Concenet_Front.zip'
+          sh """
+          echo "Uploading files..."
+          export SSHPASS=\$SFTP_PASSWORD
+          sshpass -e sftp -o StrictHostKeyChecking=no \$SFTP_USER@${DEPLOY_HOST} <<EOF
+          cd ${DEPLOY_DIR}/new
+          mkdir assets
+          mrm *
+          lcd dist
+          put -r *
+          bye
+          EOF
+          """
         }
       }
     }
 
-    stage('Build: Docker image') {
-        steps {
-            script {
-              GIT_COMMIT_HASH = sh (script: "echo -n `git rev-parse --short HEAD`", returnStdout: true)
-              APP_VERSION = sh (script: "node -p \"require('./package.json').version\"", returnStdout: true)
+    stage('Post-Deploy: Backup and Cleanup') {
+      steps {
+        script {
+          def timestamp = new Date().format('yyyyMMdd_HHmm')
 
-              sh "docker build --build-arg APP=Concenet_Front --build-arg ENV=${params.ENV} -t webfront/Concenet_Front:${GIT_COMMIT_HASH} ."
-              sh "docker tag webfront/Concenet_Front:${GIT_COMMIT_HASH} webfront/Concenet_Front:${APP_VERSION}"
-              sh "docker tag webfront/Concenet_Front:${GIT_COMMIT_HASH} webfront/Concenet_Front:latest"
-            }
+          sh """
+          echo "Creating backup and reorganizing deployment using SFTP..."
+          export SSHPASS=$SFTP_PASSWORD
+          sshpass -e sftp -o StrictHostKeyChecking=no $SFTP_USER@${DEPLOY_HOST} <<EOF
+          cd ${DEPLOY_DIR}
+
+          # Create a new backup directory with the current timestamp
+          mkdir -p backup/${timestamp}
+          mkdir -p backup/${timestamp}/assets
+
+          # Move files except ./config, ./new, and ./backup to the new backup directory
+          mget *
+          mput -r backup/${timestamp}
+          rm -r !('config'|'new'|'backup')
+
+          # Ensure we have the assets folder to avoid problems
+          mkdir -p assets
+
+          # Move new deployment files to /sftp/DEV
+          cd new
+          mput * ../
+
+          # Cleanup backups if more than 3 exist
+          cd ../backup
+          ls -1 | sort | head -n -3 | xargs rm -rf
+          bye
+          EOF
+          """
         }
+      }
     }
 
   }
   post {
-    cleanup {
-      deleteDir()
+    always {
+        // echo 'One way or another, I have finished'
+        deleteDir() 
     }
-
-  }
-  parameters {
-    string(name: 'ENV', defaultValue: 'production', description: 'Environment to build the Angular app')
+    success {
+        echo 'I succeeded!'
+    }
+    unstable {
+        echo 'I am unstable :/'
+    }
+    failure {
+        echo 'I failed :('
+    }
+    changed {
+        echo 'Things were different before...'
+    }
   }
 }

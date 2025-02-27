@@ -3,4 +3,5 @@ export default interface VariablesDTO {
   entityName: string;
   id: number;
   name: string;
+  fullName?: string;
 }
