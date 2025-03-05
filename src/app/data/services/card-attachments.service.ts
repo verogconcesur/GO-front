@@ -1,13 +1,13 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { HttpClient, HttpResponse } from '@angular/common/http';
+import { HttpClient } from '@angular/common/http';
 import { Inject, Injectable } from '@angular/core';
 import { ENV } from '@app/constants/global.constants';
 import { Env } from '@app/types/env';
 import { ConcenetError } from '@app/types/error';
-import { AttachmentDTO, CardAttachmentsDTO, CardInstanceAttachmentDTO } from '@data/models/cards/card-attachments-dto';
+import { AttachmentDTO, CardAttachmentsDTO } from '@data/models/cards/card-attachments-dto';
 import CardInstanceRemoteSignatureDTO from '@data/models/cards/card-instance-remote-signature-dto';
 import { Observable, Subject, throwError } from 'rxjs';
-import { catchError, map } from 'rxjs/operators';
+import { catchError } from 'rxjs/operators';
 
 @Injectable({
   providedIn: 'root'
@@ -101,7 +101,23 @@ export class CardAttachmentsService {
       )
       .pipe(catchError((error) => throwError(error.error as ConcenetError)));
   }
-
+  public addClientAttachments(
+    clientId: number,
+    templateAttachmentItemId: number,
+    files: { name: string; type: string; size: number; content: string }[]
+  ): Observable<any> {
+    return this.http
+      .post<any>(
+        `${this.env.apiBaseUrl}${this.GET_CARD_INSTANCE_PATH}${this.DETAIL_PATH}/` + `${clientId}${this.ATTACHMETS_PATH}`,
+        {
+          templateAttachmentItem: {
+            id: templateAttachmentItemId
+          },
+          attachments: files
+        }
+      )
+      .pipe(catchError((error) => throwError(error.error as ConcenetError)));
+  }
   public sendRemoteSignature(
     cardInstanceWorkflowId: number,
     templateChecklistId: number,
@@ -130,6 +146,16 @@ export class CardAttachmentsService {
       .delete<any>(
         `${this.env.apiBaseUrl}${this.GET_CARD_INSTANCE_PATH}${this.DETAIL_PATH}/` +
           `${cardInstanceWorkflowId}${this.ATTACHMETS_PATH}/${tabId}${this.DELETE_PATH}/${fileId}`
+      )
+      .pipe(catchError((error) => throwError(error.error as ConcenetError)));
+  }
+
+  //TODO Completar cuando este listo back
+  public moveAttachment(fileId: number, clientId: number): Observable<any> {
+    return this.http
+      .get<any>(
+        `${this.env.apiBaseUrl}${this.GET_CARD_INSTANCE_PATH}${this.DETAIL_PATH}/` +
+          `${clientId}${this.ATTACHMETS_PATH}/${this.DELETE_PATH}/${fileId}`
       )
       .pipe(catchError((error) => throwError(error.error as ConcenetError)));
   }

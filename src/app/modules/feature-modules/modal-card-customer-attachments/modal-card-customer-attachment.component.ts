@@ -158,8 +158,7 @@ export class ModalCardCustomerAttachmentsComponent extends ComponentToExtendForC
           type: 'submit',
           label: marker('common.save'),
           design: 'raised',
-          color: 'primary',
-          hiddenFn: () => !this.showAddAttchment
+          color: 'primary'
         }
       ]
     };

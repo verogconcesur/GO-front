@@ -30,6 +30,7 @@ export class ModalCustomerAttachmentsComponent extends ComponentToExtendForCusto
     activeAttachments: marker('entities.customers.activeAttachments'),
     oldAttachments: marker('entities.customers.oldAttachments')
   };
+  public clientId: number = null;
   public configTab1: CardInstanceAttachmentsConfig;
   public configTab2: CardInstanceAttachmentsConfig;
   public attachmentsDataTab1: CardAttachmentsDTO[] = [];
@@ -52,6 +53,8 @@ export class ModalCustomerAttachmentsComponent extends ComponentToExtendForCusto
   }
   ngOnInit(): void {
     this.fetchAttachments();
+    this.clientId = this.extendedComponentData;
+    console.log(this.clientId);
     this.configTab1 = {
       tabId: 1,
       wcId: 1,

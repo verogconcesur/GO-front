@@ -110,6 +110,14 @@
                             >visibility_off</mat-icon
                         >
                         <mat-icon
+                            class="bottom-left"
+                            *ngIf="isClientMode"
+                            (click)="moveAttachment(item)"
+                            matTooltip="Mover a antiguos"
+                            matTooltipPosition="above"
+                            >arrow_forward</mat-icon
+                        >
+                        <mat-icon
                             class="top-right"
                             *ngIf="
                                 !cardInstanceAttachmentsConfig.disableIndividualDownloadAction &&

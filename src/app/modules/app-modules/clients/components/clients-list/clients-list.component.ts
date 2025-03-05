@@ -87,12 +87,13 @@ export class ClientsListComponent implements OnInit {
       });
   };
 
-  public openEditAttachmentModal() {
+  public openEditAttachmentModal(clientId: number) {
     this.customDialogService
       .open({
         id: editCustomerAttachmentsComponentModalEnum.ID,
         panelClass: editCustomerAttachmentsComponentModalEnum.PANEL_CLASS,
         component: ModalCustomerAttachmentsComponent,
+        extendedComponentData: clientId ? clientId : null,
         disableClose: true,
         width: '900px'
       })

@@ -38,6 +38,7 @@ export class CardInstanceAttachmentsComponent implements OnInit, OnChanges {
   @Input() cardInstanceWorkflowId: number = null;
   @Input() tabId: number = null;
   @Input() isClientMode = false;
+  @Input() clientId: number = null;
   @Output() reload: EventEmitter<boolean> = new EventEmitter<boolean>();
   @Output() selectionChange: EventEmitter<AttachmentDTO[]> = new EventEmitter<AttachmentDTO[]>();
   public selectedAttachments: AttachmentDTO[] = [];
@@ -250,6 +251,38 @@ export class CardInstanceAttachmentsComponent implements OnInit, OnChanges {
       });
   }
 
+  public moveAttachment(item: AttachmentDTO): void {
+    this.confirmationDialog
+      .open({
+        title: this.translateService.instant(marker('common.warning')),
+        message: `Esta seguro de querer mover este adjunto a antiguos?`
+      })
+      .pipe(take(1))
+      .subscribe((ok: boolean) => {
+        if (ok) {
+          const spinner = this.spinnerService.show();
+          this.attachmentService
+            .moveAttachment(this.clientId, item.id)
+            .pipe(take(1))
+            .subscribe(
+              (data) => {
+                this.reload.emit(true);
+                this.spinnerService.hide(spinner);
+              },
+              (error: ConcenetError) => {
+                this.spinnerService.hide(spinner);
+                this.logger.error(error);
+
+                this.globalMessageService.showError({
+                  message: error.message,
+                  actionText: this.translateService.instant(marker('common.close'))
+                });
+              }
+            );
+        }
+      });
+  }
+
   public editAttachmentName(item: AttachmentDTO, template: CardAttachmentsDTO): void {
     if (!this.cardInstanceAttachmentsConfig.disableEditFileName) {
       let attachmentsNames: string[] = [];
@@ -395,7 +428,24 @@ export class CardInstanceAttachmentsComponent implements OnInit, OnChanges {
           }
         );
     } else {
-      //Todo Llamar al endpoint para aniadir adjuntos en cliente
+      this.attachmentService
+        .addClientAttachments(this.clientId, template.templateAttachmentItem.id, filesToSend)
+        .pipe(take(1))
+        .subscribe(
+          (data) => {
+            this.reload.emit(true);
+            this.spinnerService.hide(spinner);
+          },
+          (error: ConcenetError) => {
+            this.spinnerService.hide(spinner);
+            this.logger.error(error);
+
+            this.globalMessageService.showError({
+              message: error.message,
+              actionText: this.translateService.instant(marker('common.close'))
+            });
+          }
+        );
     }
   }
 }
