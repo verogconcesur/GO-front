@@ -830,6 +830,22 @@
                             {{ labels.required | translate }}
                         </mat-error>
                     </mat-form-field>
+                    <mat-form-field appearance="outline" floatLabel="always">
+                        <mat-label>Tab de adjuntos</mat-label>
+                        <mat-select formControlName="tpvAttachmentsTab">
+                            <mat-option *ngFor="let country of countryAsyncList | async" [value]="country">{{
+                                country.name
+                            }}</mat-option>
+                        </mat-select>
+                    </mat-form-field>
+                    <mat-form-field appearance="outline" floatLabel="always">
+                        <mat-label>Categoria de adjuntos</mat-label>
+                        <mat-select formControlName="tpvAttachmentsCategory">
+                            <mat-option *ngFor="let country of countryAsyncList | async" [value]="country">{{
+                                country.name
+                            }}</mat-option>
+                        </mat-select>
+                    </mat-form-field>
                 </div>
             </div>
 
