@@ -1,6 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { Component, OnDestroy, OnInit } from '@angular/core';
-import { FormGroup, UntypedFormBuilder, UntypedFormGroup } from '@angular/forms';
+import { AbstractControl, FormArray, FormGroup, UntypedFormBuilder, UntypedFormGroup } from '@angular/forms';
+import { MatSelectChange } from '@angular/material/select';
 import { ConcenetError } from '@app/types/error';
 import { marker } from '@biesbjerg/ngx-translate-extract-marker';
 import { AttachmentDTO, CardAttachmentsDTO } from '@data/models/cards/card-attachments-dto';
@@ -44,7 +45,7 @@ export class ModalCardCustomerAttachmentsComponent extends ComponentToExtendForC
   public attachmentsForm: FormGroup;
   public form: UntypedFormGroup;
   public workflowId: number;
-  private apiUrl = 'https://concenet-dev.sdos.es/concenet-rest/api/cardInstanceWorkflow/detail/1846/attachments/11';
+  private apiUrl = 'https://concenet-dev.sdos.es/concenet-rest/api/cardInstanceWorkflow/detail/1800/attachments/11';
 
   constructor(
     private fb: UntypedFormBuilder,
@@ -65,20 +66,16 @@ export class ModalCardCustomerAttachmentsComponent extends ComponentToExtendForC
   }
 
   // Convenience getter for easy access to form fields
-  get formAttachments() {
-    return this.attachmentsForm.controls;
+  get attachmentsArray(): FormArray {
+    return this.attachmentsForm?.get('attachments') as FormArray;
   }
 
   ngOnInit(): void {
+    this.initializeForm();
     this.attachmentTemplates = this.extendedComponentData.attachmentTemplates;
     this.showAddAttchment = this.extendedComponentData.showAddAttchment;
-    this.form = this.fb.group({
-      option1: [''],
-      option2: ['']
-    });
     this.fetchAttachments();
     this.getAttachmentsData();
-    this.initializeForm();
   }
 
   ngOnDestroy(): void {}
@@ -122,14 +119,15 @@ export class ModalCardCustomerAttachmentsComponent extends ComponentToExtendForC
     return this.attachmentItemsMap[templateId] || [];
   }
 
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  public onTemplateChange(event: any) {
+  public onTemplateChange(event: MatSelectChange, attachmentControl: AbstractControl): void {
     const selectedTemplateId = event.value;
-    this.form.get('option2')?.setValue(null);
+    // Reseteamos 'attachmentsCategory' para que el usuario seleccione nuevamente la categoría
+    attachmentControl.get('attachmentsCategory')?.setValue(null);
     this.updateAttachmentItems(selectedTemplateId);
   }
 
-  public updateAttachmentItems(templateId: number) {
+  public updateAttachmentItems(templateId: number): void {
+    // Filtramos los items de 'attachmentsCategory' según el templateId seleccionado
     const items = this.attachmentItemsMap[templateId] || [];
     this.filteredAttachmentItems = items;
   }
@@ -141,6 +139,7 @@ export class ModalCardCustomerAttachmentsComponent extends ComponentToExtendForC
       (data) => {
         this.spinnerService.hide(spinner);
         this.data = data;
+        this.populateFormWithAttachments();
       },
       (error) => {
         this.spinnerService.hide(spinner);
@@ -148,7 +147,12 @@ export class ModalCardCustomerAttachmentsComponent extends ComponentToExtendForC
       }
     );
   }
-
+  clearSelection(attachmentControl: AbstractControl, event: MouseEvent): void {
+    // Resetea los valores de attachmentsTab y attachmentsCategory
+    attachmentControl.get('attachmentsTab')?.setValue(null);
+    attachmentControl.get('attachmentsCategory')?.setValue(null);
+    event.stopPropagation();
+  }
   public setAndGetFooterConfig(): CustomDialogFooterConfigI | null {
     return {
       show: true,
@@ -206,6 +210,16 @@ export class ModalCardCustomerAttachmentsComponent extends ComponentToExtendForC
     this.addFiles(items);
   }
 
+  public clearSelect(index: number): void {
+    const attachmentGroup = this.attachmentsArray.at(index) as FormGroup;
+    attachmentGroup.get('option1').setValue('');
+    attachmentGroup.get('option2').setValue('');
+  }
+  public toggleSelects(attachmentControl: AbstractControl): void {
+    console.log('entra');
+    const currentState = attachmentControl.get('enabled')?.value;
+    attachmentControl.get('enabled')?.setValue(!currentState);
+  }
   public downloadAttachment(item: AttachmentDTO, list: AttachmentDTO[]): void {
     const spinner = this.spinnerService.show();
 
@@ -231,6 +245,31 @@ export class ModalCardCustomerAttachmentsComponent extends ComponentToExtendForC
           });
         }
       );
+  }
+
+  private addAttachment(attachment: AttachmentDTO): void {
+    const attachmentFormGroup = this.fb.group({
+      content: [attachment.content],
+      id: [attachment.id],
+      name: [attachment.name],
+      size: [attachment.size],
+      thumbnail: [attachment.thumbnail],
+      type: [attachment.type],
+      showInLanding: [attachment.showInLanding],
+      attachmentsTab: [attachment.attachmentsTab || ''],
+      attachmentsCategory: [attachment.attachmentsCategory || ''],
+      enabled: [false]
+    });
+
+    this.attachmentsArray.push(attachmentFormGroup);
+  }
+
+  private populateFormWithAttachments(): void {
+    this.data.forEach((template) => {
+      template.attachments?.forEach((attachment) => {
+        this.addAttachment(attachment);
+      });
+    });
   }
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -298,9 +337,7 @@ export class ModalCardCustomerAttachmentsComponent extends ComponentToExtendForC
 
   private initializeForm = (): void => {
     this.attachmentsForm = this.fb.group({
-      attachments: [[]],
-      tabAttachment: [''],
-      categoryAttachment: ['']
+      attachments: this.fb.array([])
     });
   };
 }

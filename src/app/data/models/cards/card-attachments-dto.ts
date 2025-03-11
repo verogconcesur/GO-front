@@ -10,6 +10,8 @@ export interface AttachmentDTO {
   thumbnail?: string;
   type: string;
   showInLanding?: boolean;
+  attachmentsTab?: string;
+  attachmentsCategory?: string;
 }
 
 export interface CardAttachmentsDTO {
