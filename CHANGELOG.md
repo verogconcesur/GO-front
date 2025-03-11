@@ -2,6 +2,19 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [1.1.11](https://github.com/Delivery-Projects/concesur/concenet_front/-/compare/v1.1.10...v1.1.11) (2025-03-10)
+
+
+### Features
+
+* decoradores faltantes para destroy ([e5b0a15](https://github.com/Delivery-Projects/concesur/concenet_front/-/commit/e5b0a1528d0fd1b5cfeb089c777b8f5174de9870))
+* nuevo servicio variables en plantillas y checklist ([57943f7](https://github.com/Delivery-Projects/concesur/concenet_front/-/commit/57943f7309b97ceb842891bf9bbd2556be93b1ac))
+
+
+### Bug Fixes
+
+* arreglar error no se envia campo tipo dms en instalacion ([8ad0dcd](https://github.com/Delivery-Projects/concesur/concenet_front/-/commit/8ad0dcdea30a3daee3ea44ad0a8499dbc09b4d25))
+
 ### [1.1.10](https://github.com/Delivery-Projects/concesur/concenet_front/-/compare/v1.1.9...v1.1.10) (2025-02-04)
 
 
