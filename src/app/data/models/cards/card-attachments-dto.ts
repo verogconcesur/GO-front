@@ -13,6 +13,36 @@ export interface AttachmentDTO {
   attachmentsTab?: string;
   attachmentsCategory?: string;
 }
+export interface CustomerAttachmentDTO {
+  active?: boolean;
+  auto?: boolean;
+  createDate?: string;
+  createdByFullName?: string;
+  customerId?: number;
+  file?: {
+    content: string;
+    id?: number;
+    name: string;
+    size?: number;
+    thumbnail?: string;
+    type: string;
+    showInLanding?: boolean;
+  };
+  id?: number;
+  updateDate?: string;
+  updatedByFullName?: string;
+}
+export interface ConfigEntityCardAttachmentsDTO {
+  attachments?: CustomerAttachmentDTO[];
+  templateAttachmentItem?: {
+    id: number;
+    name: string;
+    orderNumber: number;
+  };
+  permissionType?: PermissionConstants;
+  tabId?: number;
+  tabName?: string;
+}
 
 export interface CardAttachmentsDTO {
   attachments: AttachmentDTO[];

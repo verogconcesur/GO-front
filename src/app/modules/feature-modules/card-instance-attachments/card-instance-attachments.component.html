@@ -63,6 +63,9 @@
                     matTooltipPosition="above"
                     [matTooltipDisabled]="!item.showInLanding"
                 >
+                    <mat-icon *ngIf="isClientMode && item.auto && item.active" class="green-check" (click)="autoCharge(item)">
+                        check_box
+                    </mat-icon>
                     <div class="actions-wrapper">
                         <mat-icon
                             class="top-left"
@@ -97,6 +100,9 @@
                             (click)="downloadAttachment(item, template.attachments)"
                             >vertical_align_bottom</mat-icon
                         >
+                        <mat-icon *ngIf="isClientMode && item.active" class="bottom-right" (click)="autoCharge(item)">
+                            {{ item.auto ? "check_box" : "check_box_outline_blank" }}
+                        </mat-icon>
                         <mat-icon
                             class="bottom-left shared-in-landing"
                             *ngIf="
@@ -111,7 +117,7 @@
                         >
                         <mat-icon
                             class="bottom-left"
-                            *ngIf="isClientMode"
+                            *ngIf="isClientMode && item.active"
                             (click)="moveAttachment(item)"
                             matTooltip="Mover a antiguos"
                             matTooltipPosition="above"
@@ -149,11 +155,21 @@
                         >
                     </div>
                     <div
+                        *ngIf="!isClientMode"
                         class="file-name"
                         [ngClass]="{ editable: !cardInstanceAttachmentsConfig.disableEditFileName }"
                         (click)="template.permissionType === 'EDIT' && editAttachmentName(item, template)"
                     >
                         {{ item.name }}
+                        <mat-icon *ngIf="template.permissionType === 'EDIT'">edit</mat-icon>
+                    </div>
+                    <div
+                        *ngIf="isClientMode"
+                        class="file-name"
+                        [ngClass]="{ editable: !cardInstanceAttachmentsConfig.disableEditFileName }"
+                        (click)="template.permissionType === 'EDIT' && editAttachmentName(item, template)"
+                    >
+                        {{ item.file.name }}
                         <mat-icon *ngIf="template.permissionType === 'EDIT'">edit</mat-icon>
                     </div>
                 </div>

@@ -152,7 +152,7 @@ export class EntityComponent implements OnInit {
           attachmentTemplates: this.attachmentTemplates ? this.attachmentTemplates : null,
           showAddAttchment: true
         },
-        width: '900px'
+        width: '1000px'
       })
       .pipe(take(1))
       .subscribe((response) => {

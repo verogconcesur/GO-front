@@ -5,7 +5,12 @@ import { PermissionConstants } from '@app/constants/permission.constants';
 import { AuthenticationService } from '@app/security/authentication.service';
 import { ConcenetError } from '@app/types/error';
 import { marker } from '@biesbjerg/ngx-translate-extract-marker';
-import { AttachmentDTO, CardAttachmentsDTO } from '@data/models/cards/card-attachments-dto';
+import {
+  AttachmentDTO,
+  CardAttachmentsDTO,
+  ConfigEntityCardAttachmentsDTO,
+  CustomerAttachmentDTO
+} from '@data/models/cards/card-attachments-dto';
 import { CardAttachmentsService } from '@data/services/card-attachments.service';
 import { WorkflowRequiredFieldsAuxService } from '@modules/app-modules/workflow/aux-service/workflow-required-fields-aux.service';
 import { TranslateService } from '@ngx-translate/core';
@@ -33,7 +38,7 @@ export const enum CardInstanceAttachmentsComponentEnum {
 })
 export class CardInstanceAttachmentsComponent implements OnInit, OnChanges {
   @Input() cardInstanceAttachmentsConfig: CardInstanceAttachmentsConfig;
-  @Input() data: CardAttachmentsDTO[] = [];
+  @Input() data: CardAttachmentsDTO[] | ConfigEntityCardAttachmentsDTO[] = [];
   @Input() selected: AttachmentDTO[] = [];
   @Input() cardInstanceWorkflowId: number = null;
   @Input() tabId: number = null;
@@ -112,19 +117,35 @@ export class CardInstanceAttachmentsComponent implements OnInit, OnChanges {
     }
     return false;
   }
-
-  public getItemBgImage(item: AttachmentDTO): string {
-    if (item.thumbnail && item.type) {
-      return `url("data:${item.type} ;base64,${item.thumbnail}")`;
-    } else if (item.type) {
-      if (item.type.indexOf('pdf') >= 0) {
-        return `url(/assets/img/pdf.png)`;
-      } else if (item.type.indexOf('audio') >= 0 || item.type.indexOf('mp3') >= 0) {
-        return `url(/assets/img/audio-file.png)`;
-      } else if (item.type.indexOf('video') >= 0) {
-        return `url(/assets/img/video-file.png)`;
-      } else if (item.type.indexOf('image') >= 0) {
-        return `url(/assets/img/image-file.png)`;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  public getItemBgImage(item: any): string {
+    if (this.isClientMode) {
+      if (item.file.thumbnail && item.file.type) {
+        return `url("data:${item.file.type} ;base64,${item.file.thumbnail}")`;
+      } else if (item.file.type) {
+        if (item.file.type.indexOf('pdf') >= 0) {
+          return `url(/assets/img/pdf.png)`;
+        } else if (item.file.type.indexOf('audio') >= 0 || item.file.type.indexOf('mp3') >= 0) {
+          return `url(/assets/img/audio-file.png)`;
+        } else if (item.file.type.indexOf('video') >= 0) {
+          return `url(/assets/img/video-file.png)`;
+        } else if (item.file.type.indexOf('image') >= 0) {
+          return `url(/assets/img/image-file.png)`;
+        }
+      }
+    } else {
+      if (item.thumbnail && item.type) {
+        return `url("data:${item.type} ;base64,${item.thumbnail}")`;
+      } else if (item.type) {
+        if (item.type.indexOf('pdf') >= 0) {
+          return `url(/assets/img/pdf.png)`;
+        } else if (item.type.indexOf('audio') >= 0 || item.type.indexOf('mp3') >= 0) {
+          return `url(/assets/img/audio-file.png)`;
+        } else if (item.type.indexOf('video') >= 0) {
+          return `url(/assets/img/video-file.png)`;
+        } else if (item.type.indexOf('image') >= 0) {
+          return `url(/assets/img/image-file.png)`;
+        }
       }
     }
     return `url(/assets/img/unknown.svg)`;
@@ -133,17 +154,51 @@ export class CardInstanceAttachmentsComponent implements OnInit, OnChanges {
   public hasUerPermissionToDeleteFiles(): boolean {
     return !!this.authService.getUserPermissions().find((permission) => permission.code === PermissionConstants.ALLOWDELETEFILES);
   }
-
-  public hasPreview(item: AttachmentDTO): boolean {
-    if (
-      item?.type?.toLowerCase().indexOf('pdf') >= 0 ||
-      item.type.indexOf('audio') >= 0 ||
-      item.type.indexOf('video') >= 0 ||
-      item.type.indexOf('image') >= 0
-    ) {
-      return true;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  public hasPreview(item: any): boolean {
+    if (this.isClientMode) {
+      if (
+        item?.file?.type?.toLowerCase().indexOf('pdf') >= 0 ||
+        item?.file?.type?.indexOf('audio') >= 0 ||
+        item?.file?.type?.indexOf('video') >= 0 ||
+        item?.file?.type?.indexOf('image') >= 0
+      ) {
+        return true;
+      }
+    } else {
+      if (
+        item?.type?.toLowerCase().indexOf('pdf') >= 0 ||
+        item?.type?.indexOf('audio') >= 0 ||
+        item?.type?.indexOf('video') >= 0 ||
+        item?.type?.indexOf('image') >= 0
+      ) {
+        return true;
+      }
     }
     return false;
+  }
+
+  public autoCharge(item: CustomerAttachmentDTO) {
+    const autoValue = !item.auto;
+    const spinner = this.spinnerService.show();
+    this.attachmentService
+      .autoCustomerAttachments(693, item.id, autoValue)
+      .pipe(take(1))
+      .subscribe(
+        (data) => {
+          this.reload.emit(true);
+          this.spinnerService.hide(spinner);
+        },
+        (error: ConcenetError) => {
+          this.spinnerService.hide(spinner);
+          this.logger.error(error);
+
+          this.globalMessageService.showError({
+            message: error.message,
+            actionText: this.translateService.instant(marker('common.close'))
+          });
+        }
+      );
   }
 
   public stopSharingFileInLanding(item: AttachmentDTO): void {
@@ -251,7 +306,8 @@ export class CardInstanceAttachmentsComponent implements OnInit, OnChanges {
       });
   }
 
-  public moveAttachment(item: AttachmentDTO): void {
+  public moveAttachment(item: CustomerAttachmentDTO): void {
+    const activeValue = !item.active;
     this.confirmationDialog
       .open({
         title: this.translateService.instant(marker('common.warning')),
@@ -262,7 +318,7 @@ export class CardInstanceAttachmentsComponent implements OnInit, OnChanges {
         if (ok) {
           const spinner = this.spinnerService.show();
           this.attachmentService
-            .moveAttachment(this.clientId, item.id)
+            .moveAttachment(item.id, 693, activeValue)
             .pipe(take(1))
             .subscribe(
               (data) => {
@@ -398,6 +454,7 @@ export class CardInstanceAttachmentsComponent implements OnInit, OnChanges {
       });
     });
     const arrayOfBase64 = await this.fileListToBase64(files);
+    console.log(arrayOfBase64);
     Array.from(files).forEach((file: File, i: number) => {
       const fileInfo = {
         name: filesName.indexOf(file.name) === -1 ? file.name : `${+new Date()}_${file.name}`,
@@ -428,8 +485,19 @@ export class CardInstanceAttachmentsComponent implements OnInit, OnChanges {
           }
         );
     } else {
+      const customerIdValue: number = null;
+      const customerFilesToSend = filesToSend.map((file) => ({
+        id: customerIdValue,
+        customerId: customerIdValue,
+        file: {
+          name: file.name,
+          type: file.type,
+          size: file.size,
+          content: file.content
+        }
+      }));
       this.attachmentService
-        .addClientAttachments(this.clientId, template.templateAttachmentItem.id, filesToSend)
+        .addClientAttachments(693, customerFilesToSend)
         .pipe(take(1))
         .subscribe(
           (data) => {

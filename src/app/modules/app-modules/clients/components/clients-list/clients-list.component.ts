@@ -95,7 +95,7 @@ export class ClientsListComponent implements OnInit {
         component: ModalCustomerAttachmentsComponent,
         extendedComponentData: clientId ? clientId : null,
         disableClose: true,
-        width: '900px'
+        width: '950px'
       })
       .pipe(take(1))
       .subscribe((response) => {

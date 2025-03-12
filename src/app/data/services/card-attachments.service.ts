@@ -18,6 +18,9 @@ export class CardAttachmentsService {
   private readonly GET_CARD_INSTANCE_PATH = '/api/cardInstanceWorkflow';
   private readonly DETAIL_PATH = '/detail';
   private readonly ATTACHMETS_PATH = '/attachments';
+  private readonly CUSTOMERS_PATH = '/api/customers';
+  private readonly CUSTOMER_AUTO = '/editAuto';
+  private readonly CUSTOMER_ACTIVE = '/editActive';
   private readonly EDIT_PATH = '/edit';
   private readonly DELETE_PATH = '/delete';
   private readonly DOWNLOAD_PATH = '/download';
@@ -81,6 +84,14 @@ export class CardAttachmentsService {
       )
       .pipe(catchError((error) => throwError(error.error as ConcenetError)));
   }
+  public autoCustomerAttachments(customerId: number, attachmentId: number, auto: boolean) {
+    return this.http
+      .get(
+        `${this.env.apiBaseUrl}${this.CUSTOMERS_PATH}/` +
+          `${customerId}${this.ATTACHMETS_PATH}/${attachmentId}${this.CUSTOMER_AUTO}/${auto}`
+      )
+      .pipe(catchError((error) => throwError(error.error as ConcenetError)));
+  }
 
   public addAttachments(
     cardInstanceWorkflowId: number,
@@ -101,21 +112,9 @@ export class CardAttachmentsService {
       )
       .pipe(catchError((error) => throwError(error.error as ConcenetError)));
   }
-  public addClientAttachments(
-    clientId: number,
-    templateAttachmentItemId: number,
-    files: { name: string; type: string; size: number; content: string }[]
-  ): Observable<any> {
+  public addClientAttachments(clientId: number, files: any): Observable<any> {
     return this.http
-      .post<any>(
-        `${this.env.apiBaseUrl}${this.GET_CARD_INSTANCE_PATH}${this.DETAIL_PATH}/` + `${clientId}${this.ATTACHMETS_PATH}`,
-        {
-          templateAttachmentItem: {
-            id: templateAttachmentItemId
-          },
-          attachments: files
-        }
-      )
+      .post<any>(`${this.env.apiBaseUrl}${this.CUSTOMERS_PATH}/` + `${clientId}${this.ATTACHMETS_PATH}`, files)
       .pipe(catchError((error) => throwError(error.error as ConcenetError)));
   }
   public sendRemoteSignature(
@@ -150,12 +149,11 @@ export class CardAttachmentsService {
       .pipe(catchError((error) => throwError(error.error as ConcenetError)));
   }
 
-  //TODO Completar cuando este listo back
-  public moveAttachment(fileId: number, clientId: number): Observable<any> {
+  public moveAttachment(attachmentId: number, customerId: number, active: boolean): Observable<any> {
     return this.http
-      .get<any>(
-        `${this.env.apiBaseUrl}${this.GET_CARD_INSTANCE_PATH}${this.DETAIL_PATH}/` +
-          `${clientId}${this.ATTACHMETS_PATH}/${this.DELETE_PATH}/${fileId}`
+      .get(
+        `${this.env.apiBaseUrl}${this.CUSTOMERS_PATH}/` +
+          `${customerId}${this.ATTACHMETS_PATH}/${attachmentId}${this.CUSTOMER_ACTIVE}/${active}`
       )
       .pipe(catchError((error) => throwError(error.error as ConcenetError)));
   }

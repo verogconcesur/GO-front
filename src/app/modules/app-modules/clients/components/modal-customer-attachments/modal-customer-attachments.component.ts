@@ -3,9 +3,11 @@ import { Component, OnDestroy, OnInit } from '@angular/core';
 import { UntypedFormBuilder } from '@angular/forms';
 import { MatTabChangeEvent } from '@angular/material/tabs';
 import { marker } from '@biesbjerg/ngx-translate-extract-marker';
-import { CardAttachmentsDTO } from '@data/models/cards/card-attachments-dto';
+import { ConfigEntityCardAttachmentsDTO, CustomerAttachmentDTO } from '@data/models/cards/card-attachments-dto';
 import { CustomDialogFooterConfigI } from '@shared/modules/custom-dialog/interfaces/custom-dialog-footer-config';
 import { ComponentToExtendForCustomDialog } from '@shared/modules/custom-dialog/models/component-for-custom-dialog';
+// eslint-disable-next-line max-len
+import { PermissionConstants } from '@app/constants/permission.constants';
 // eslint-disable-next-line max-len
 import CardInstanceAttachmentsConfig from '@modules/feature-modules/card-instance-attachments/card-instance-attachments-config-interface';
 import { TranslateService } from '@ngx-translate/core';
@@ -33,9 +35,9 @@ export class ModalCustomerAttachmentsComponent extends ComponentToExtendForCusto
   public clientId: number = null;
   public configTab1: CardInstanceAttachmentsConfig;
   public configTab2: CardInstanceAttachmentsConfig;
-  public attachmentsDataTab1: CardAttachmentsDTO[] = [];
-  public attachmentsDataTab2: CardAttachmentsDTO[] = [];
-  private apiUrl = 'https://concenet-dev.sdos.es/concenet-rest/api/cardInstanceWorkflow/detail/1846/attachments/11';
+  public attachmentsDataTab1: ConfigEntityCardAttachmentsDTO[] = [];
+  public attachmentsDataTab2: ConfigEntityCardAttachmentsDTO[] = [];
+  private apiUrl = 'https://concenet-dev.sdos.es/concenet-rest/api/customers/693/attachments';
 
   constructor(
     private fb: UntypedFormBuilder,
@@ -56,10 +58,10 @@ export class ModalCustomerAttachmentsComponent extends ComponentToExtendForCusto
     this.clientId = this.extendedComponentData;
     console.log(this.clientId);
     this.configTab1 = {
-      tabId: 1,
-      wcId: 1,
+      tabId: null,
+      wcId: null,
       permission: 'EDIT',
-      disableAttachmentsSelection: false,
+      disableAttachmentsSelection: true,
       disableLandingAction: false,
       disableEditFileName: true,
       disableIndividualDeleteAction: false,
@@ -67,27 +69,55 @@ export class ModalCustomerAttachmentsComponent extends ComponentToExtendForCusto
     };
 
     this.configTab2 = {
-      tabId: 2,
-      wcId: 2,
+      tabId: null,
+      wcId: null,
       permission: 'EDIT',
-      disableAttachmentsSelection: false,
+      disableAttachmentsSelection: true,
       disableLandingAction: false,
       disableEditFileName: true,
-      disableIndividualDeleteAction: false,
+      disableIndividualDeleteAction: true,
       disableAttachmentsAddition: true
     };
   }
   ngOnDestroy(): void {}
 
-  fetchAttachments(): void {
+  public fetchAttachments(): void {
     this.attachmentsDataTab1 = [];
     this.attachmentsDataTab2 = [];
     const spinner = this.spinnerService.show();
-    this.httpClient.get<CardAttachmentsDTO[]>(this.apiUrl).subscribe(
+
+    this.httpClient.get<CustomerAttachmentDTO[]>(this.apiUrl).subscribe(
       (data) => {
         this.spinnerService.hide(spinner);
-        this.attachmentsDataTab1 = data;
-        this.attachmentsDataTab2 = data;
+        const activeAttachments = data.filter((item) => item.active === true);
+        const inactiveAttachments = data.filter((item) => item.active === false);
+
+        this.attachmentsDataTab1 = [
+          {
+            attachments: activeAttachments,
+            templateAttachmentItem: {
+              id: 0,
+              name: '',
+              orderNumber: 0
+            },
+            permissionType: PermissionConstants.EDIT,
+            tabId: 0,
+            tabName: ''
+          }
+        ];
+        this.attachmentsDataTab2 = [
+          {
+            attachments: inactiveAttachments,
+            templateAttachmentItem: {
+              id: 0,
+              name: '',
+              orderNumber: 0
+            },
+            permissionType: PermissionConstants.EDIT,
+            tabId: 0,
+            tabName: ''
+          }
+        ];
       },
       (error) => {
         this.spinnerService.hide(spinner);

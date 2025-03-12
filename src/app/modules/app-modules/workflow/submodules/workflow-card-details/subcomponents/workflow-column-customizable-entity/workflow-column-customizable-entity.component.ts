@@ -253,7 +253,7 @@ export class WorkflowColumnCustomizableEntityComponent implements OnInit, OnChan
           attachmentTemplates: this.attachmentTemplates ? this.attachmentTemplates : null,
           showAddAttchment: false
         },
-        width: '900px'
+        width: '1000px'
       })
       .pipe(take(1))
       .subscribe((response) => {

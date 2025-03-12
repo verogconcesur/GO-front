@@ -114,7 +114,6 @@
           max-width: 248px;
           min-width: 100px;
           max-height: 188px;
-          //Añadir medias queries
           width: 248px;
           height: 188px;
           background-color: mat-color($background, background-administration);
@@ -166,6 +165,18 @@
             .actions-wrapper {
               opacity: 1;
             }
+          }
+          mat-icon.green-check {
+            position: absolute;
+            bottom: 15px;
+            right: 15px;
+            color: mat-color($concenet-theme);
+            opacity: 1;
+          }
+
+          /* Ocultar el ícono cuando el cursor pase por encima del contenedor */
+          &:hover .green-check {
+            opacity: 0;
           }
 
           .file-name {
