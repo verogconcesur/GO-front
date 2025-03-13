@@ -159,6 +159,18 @@
                 left: 15px;
               }
             }
+            span {
+              position: absolute;
+              color: white;
+              &.middle-top {
+                top: 50px;
+                left: 30px;
+              }
+              &.middle-bottom {
+                bottom: 50px;
+                left: 30px;
+              }
+            }
           }
           &.selected,
           &:hover {

@@ -100,7 +100,13 @@
                             (click)="downloadAttachment(item, template.attachments)"
                             >vertical_align_bottom</mat-icon
                         >
-                        <mat-icon *ngIf="isClientMode && item.active" class="bottom-right" (click)="autoCharge(item)">
+                        <mat-icon
+                            *ngIf="isClientMode && item.active"
+                            class="bottom-right"
+                            matTooltip="Carga automatica"
+                            matTooltipPosition="above"
+                            (click)="autoCharge(item)"
+                        >
                             {{ item.auto ? "check_box" : "check_box_outline_blank" }}
                         </mat-icon>
                         <mat-icon
@@ -122,6 +128,14 @@
                             matTooltip="Mover a antiguos"
                             matTooltipPosition="above"
                             >arrow_forward</mat-icon
+                        >
+                        <mat-icon
+                            class="bottom-left"
+                            *ngIf="isClientMode && !item.active"
+                            (click)="moveAttachment(item)"
+                            matTooltip="Mover a activos"
+                            matTooltipPosition="above"
+                            >arrow_back</mat-icon
                         >
                         <mat-icon
                             class="top-right"
@@ -152,6 +166,12 @@
                             "
                             (click)="downloadAttachment(item, template.attachments)"
                             >search</mat-icon
+                        >
+                        <span *ngIf="isClientMode" class="middle-top"
+                            >Creacion: {{ item.createDate | date }} por {{ item.createdByFullName }}</span
+                        >
+                        <span *ngIf="isClientMode" class="middle-bottom"
+                            >Edicion: {{ item.updateDate | date }} por {{ item.updatedByFullName }}</span
                         >
                     </div>
                     <div

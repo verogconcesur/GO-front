@@ -311,7 +311,9 @@ export class CardInstanceAttachmentsComponent implements OnInit, OnChanges {
     this.confirmationDialog
       .open({
         title: this.translateService.instant(marker('common.warning')),
-        message: `Esta seguro de querer mover este adjunto a antiguos?`
+        message: item.active
+          ? `Esta seguro de querer mover este adjunto a antiguos?`
+          : `Esta seguro de querer mover este adjunto a activos?`
       })
       .pipe(take(1))
       .subscribe((ok: boolean) => {
@@ -339,30 +341,60 @@ export class CardInstanceAttachmentsComponent implements OnInit, OnChanges {
       });
   }
 
-  public editAttachmentName(item: AttachmentDTO, template: CardAttachmentsDTO): void {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  public editAttachmentName(item: any, template: CardAttachmentsDTO): void {
     if (!this.cardInstanceAttachmentsConfig.disableEditFileName) {
-      let attachmentsNames: string[] = [];
-      this.data.forEach((aGroup: CardAttachmentsDTO) => {
-        attachmentsNames = [...attachmentsNames, ...aGroup.attachments.map((a: AttachmentDTO) => a.name)];
-      });
-      // console.log(attachmentsNames);
-      this.dialog
-        .open(RenameAttachmentComponent, {
-          data: {
-            attachmentsNames,
-            attachment: item,
-            tabId: this.tabId,
-            cardInstanceWorkflowId: this.cardInstanceWorkflowId,
-            templateAttachmentItemId: template.templateAttachmentItem.id
-          }
-        })
-        .afterClosed()
-        .pipe(take(1))
-        .subscribe((response) => {
-          if (response) {
-            this.reload.emit(true);
-          }
+      if (!this.isClientMode) {
+        let attachmentsNames: string[] = [];
+        this.data.forEach((aGroup: CardAttachmentsDTO) => {
+          attachmentsNames = [...attachmentsNames, ...aGroup.attachments.map((a: AttachmentDTO) => a.name)];
         });
+        console.log(attachmentsNames);
+        this.dialog
+          .open(RenameAttachmentComponent, {
+            data: {
+              attachmentsNames,
+              attachment: item,
+              tabId: this.tabId,
+              cardInstanceWorkflowId: this.cardInstanceWorkflowId,
+              templateAttachmentItemId: template.templateAttachmentItem.id,
+              isClientMode: this.isClientMode,
+              clientId: null
+            }
+          })
+          .afterClosed()
+          .pipe(take(1))
+          .subscribe((response) => {
+            if (response) {
+              this.reload.emit(true);
+            }
+          });
+      } else {
+        let attachmentsNames: string[] = [];
+        this.data.forEach((aGroup: ConfigEntityCardAttachmentsDTO) => {
+          attachmentsNames = [...attachmentsNames, ...aGroup.attachments.map((a: CustomerAttachmentDTO) => a.file.name)];
+        });
+        console.log(attachmentsNames);
+        this.dialog
+          .open(RenameAttachmentComponent, {
+            data: {
+              attachmentsNames,
+              attachment: item,
+              tabId: null,
+              cardInstanceWorkflowId: null,
+              templateAttachmentItemId: null,
+              isClientMode: this.isClientMode,
+              clientId: this.clientId
+            }
+          })
+          .afterClosed()
+          .pipe(take(1))
+          .subscribe((response) => {
+            if (response) {
+              this.reload.emit(true);
+            }
+          });
+      }
     }
   }
 

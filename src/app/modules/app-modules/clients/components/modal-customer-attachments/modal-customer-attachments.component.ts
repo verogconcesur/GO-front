@@ -63,7 +63,7 @@ export class ModalCustomerAttachmentsComponent extends ComponentToExtendForCusto
       permission: 'EDIT',
       disableAttachmentsSelection: true,
       disableLandingAction: false,
-      disableEditFileName: true,
+      disableEditFileName: false,
       disableIndividualDeleteAction: false,
       disableAttachmentsAddition: false
     };
