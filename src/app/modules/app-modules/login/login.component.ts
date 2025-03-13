@@ -8,11 +8,22 @@ import { Env } from '@app/types/env';
 import { ConcenetError } from '@app/types/error';
 import { marker } from '@biesbjerg/ngx-translate-extract-marker';
 import LoginDTO from '@data/models/user-permissions/login-dto';
+import { UserService } from '@data/services/user.service';
 import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
 import { TranslateService } from '@ngx-translate/core';
+import { CustomDialogService } from '@shared/modules/custom-dialog/services/custom-dialog.service';
 import { GlobalMessageService } from '@shared/services/global-message.service';
 import { ProgressSpinnerDialogService } from '@shared/services/progress-spinner-dialog.service';
-import { finalize } from 'rxjs/operators';
+import { finalize, take } from 'rxjs/operators';
+import {
+  ChooseDoblefactorComponent,
+  ChooseDobleFactorOptionComponentModalEnum
+} from './components/choose-doublefactor-option/choose-doublefactor-option.component';
+import { DoblefactorComponent, DobleFactorComponentModalEnum } from './components/doblefactor/doblefactor.component';
+import {
+  ModalFetchDataPreF2AComponent,
+  ModalFetchDataPreF2AComponentEnum
+} from './components/modal-fetch-data-pre-f2a/modal-fetch-data-pre-f2a.component';
 
 @UntilDestroy()
 @Component({
@@ -33,6 +44,7 @@ export class LoginComponent implements OnInit {
   };
 
   public loginForm: UntypedFormGroup;
+  public fingerprint: string;
 
   constructor(
     @Inject(ENV) private env: Env,
@@ -42,7 +54,9 @@ export class LoginComponent implements OnInit {
     private spinnerService: ProgressSpinnerDialogService,
     private authenticationService: AuthenticationService,
     private globalMessageService: GlobalMessageService,
-    private translateService: TranslateService
+    private translateService: TranslateService,
+    private customDialogService: CustomDialogService,
+    private userService: UserService
   ) {}
 
   public get appVersion(): string {
@@ -56,6 +70,7 @@ export class LoginComponent implements OnInit {
     if (this.authenticationService.isUserLogged()) {
       this.router.navigate(['/', RouteConstants.DASHBOARD]);
     } else {
+      this.fingerprint = this.authenticationService.generateBrowserFingerprint();
       this.authenticationService.logout();
       this.initializeForm();
     }
@@ -68,8 +83,8 @@ export class LoginComponent implements OnInit {
   }
 
   public doLogin(): void {
+    this.loginForm.get('deviceSignature').setValue(this.fingerprint);
     const spinner = this.spinnerService.show();
-
     this.authenticationService
       .signIn(this.loginForm.value)
       .pipe(
@@ -80,6 +95,7 @@ export class LoginComponent implements OnInit {
       )
       .subscribe({
         next: (response: LoginDTO) => {
+          sessionStorage.setItem('userName', response.user.userName);
           this.loginSuccess(response);
         },
         error: (error: ConcenetError) => {
@@ -87,17 +103,135 @@ export class LoginComponent implements OnInit {
         }
       });
   }
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  public openChooseDobleFactorDialog = (config: any): void => {
+    this.customDialogService
+      .open({
+        id: ChooseDobleFactorOptionComponentModalEnum.ID,
+        panelClass: ChooseDobleFactorOptionComponentModalEnum.PANEL_CLASS,
+        component: ChooseDoblefactorComponent,
+        width: '700px',
+        extendedComponentData: {
+          id: config.user.id,
+          phoneNumber: config.user.phoneNumber,
+          email: config.user.email,
+          fingerprint: this.fingerprint
+        }
+      })
+      .pipe(take(1))
+      .subscribe((response) => {
+        if (response) {
+          this.customDialogService.close(ChooseDobleFactorOptionComponentModalEnum.ID);
+        }
+      });
+  };
+
+  public openDobleFactorDialog = (userId: number, fingerprint: string, type: string): void => {
+    if (type !== 'AUTHENTICATOR') {
+      this.authenticationService
+        .sendF2APass(userId, type)
+        .pipe(take(1))
+        .subscribe((resp) => {
+          this.customDialogService
+            .open({
+              id: DobleFactorComponentModalEnum.ID,
+              panelClass: DobleFactorComponentModalEnum.PANEL_CLASS,
+              component: DoblefactorComponent,
+              width: '500px',
+              extendedComponentData: { userId, type, fingerprint, qr: resp || null }
+            })
+            .pipe(take(1))
+            .subscribe((response) => {
+              if (response) {
+                this.customDialogService.close(DobleFactorComponentModalEnum.ID);
+              }
+            });
+        });
+    } else {
+      this.customDialogService
+        .open({
+          id: DobleFactorComponentModalEnum.ID,
+          panelClass: DobleFactorComponentModalEnum.PANEL_CLASS,
+          component: DoblefactorComponent,
+          width: '500px',
+          extendedComponentData: { userId, type, fingerprint, qr: null }
+        })
+        .pipe(take(1))
+        .subscribe((response) => {
+          if (response) {
+            this.customDialogService.close(DobleFactorComponentModalEnum.ID);
+          }
+        });
+    }
+  };
+
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  openPreF2aModal(config: any) {
+    this.customDialogService
+      .open({
+        id: ModalFetchDataPreF2AComponentEnum.ID,
+        panelClass: ModalFetchDataPreF2AComponentEnum.PANEL_CLASS,
+        component: ModalFetchDataPreF2AComponent,
+        width: '500px',
+        extendedComponentData: {
+          id: config.user.id,
+          phoneNumber: config.user.phoneNumber,
+          email: config.user.email
+        }
+      })
+      .pipe(take(1))
+      .subscribe((response) => {
+        if (response) {
+          this.customDialogService.close(ModalFetchDataPreF2AComponentEnum.ID);
+          this.use2FAAndNavigate(config);
+        }
+      });
+  }
 
   private initializeForm(): void {
     this.loginForm = this.fb.group({
       userName: ['', Validators.required],
-      password: ['', Validators.required]
+      password: ['', Validators.required],
+      deviceSignature: [null]
     });
   }
 
   private loginSuccess(loginData: LoginDTO): void {
     this.authenticationService.setLoggedUser(loginData);
-    this.router.navigate(['/', RouteConstants.DASHBOARD]);
+    if (loginData.user.showReviewContact || (!loginData.user.email && !loginData.user.phoneNumber)) {
+      this.openPreF2aModal(loginData);
+    } else {
+      this.use2FAAndNavigate(loginData);
+    }
+  }
+
+  private use2FAAndNavigate(loginData: LoginDTO) {
+    // Extraemos las propiedades necesarias de loginData
+    const { require2FA, defaultMode2FA, user } = loginData;
+    const email = user.email;
+    const phoneNumber = user.phoneNumber;
+    if (require2FA) {
+      let isPredefinedValid = true;
+      // Validamos el modo de 2FA predefinido
+      if (defaultMode2FA === 'EMAIL' && !email) {
+        isPredefinedValid = false; // Si es EMAIL pero no hay email, es inválido
+      } else if (defaultMode2FA === 'SMS' && !phoneNumber) {
+        isPredefinedValid = false; // Si es SMS pero no hay número de teléfono, es inválido
+      } else if (defaultMode2FA === 'AUTHENTICATOR' && !email) {
+        isPredefinedValid = false; //Si es AUTHENTICATOR pero no hay email, es inválido
+      }
+      // Si no hay defaultMode2FA o no es válido (ni EMAIL ni SMS válidos)
+      if (!defaultMode2FA || !isPredefinedValid) {
+        // Abrimos el modal para que el usuario elija el método de doble factor
+        this.openChooseDobleFactorDialog(loginData);
+      } else {
+        // Abrimos el modal para introducir el código según el método predefinido
+        this.openDobleFactorDialog(loginData.user.id, this.fingerprint, defaultMode2FA);
+      }
+    } else {
+      // Si require2FA es falso, navegamos directamente al dashboard
+      this.router.navigate(['/', RouteConstants.DASHBOARD]);
+    }
   }
 
   private loginError(error: ConcenetError): void {

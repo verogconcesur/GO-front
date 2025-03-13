@@ -13,6 +13,7 @@ export default interface UserDetailsDTO {
   fullName?: string;
   role: RoleDTO;
   email: string;
+  phoneNumber: string;
   code: string;
   userName: string;
   password: string;
@@ -23,4 +24,5 @@ export default interface UserDetailsDTO {
   specialties: SpecialtyDTO[];
   signature: string;
   signatureContentType: string;
+  userType: string;
 }

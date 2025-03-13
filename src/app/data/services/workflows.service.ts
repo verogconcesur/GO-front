@@ -3,27 +3,27 @@
 import { HttpClient } from '@angular/common/http';
 import { Inject, Injectable } from '@angular/core';
 import { ENV } from '@app/constants/global.constants';
+import { RouteConstants } from '@app/constants/route.constants';
 import { Env } from '@app/types/env';
 import { ConcenetError } from '@app/types/error';
+import PaginationRequestI from '@data/interfaces/pagination-request';
+import PaginationResponseI from '@data/interfaces/pagination-response';
 import FacilityDTO from '@data/models/organization/facility-dto';
+import { CardLimitSlotByDayDTO } from '@data/models/workflow-admin/workflow-card-limit-dto';
+import WorkflowCalendarBodyDTO from '@data/models/workflows/workflow-calendar-body-dto';
 import WorkflowCardDTO from '@data/models/workflows/workflow-card-dto';
 import WorkflowCardInstanceDTO from '@data/models/workflows/workflow-card-instance-dto';
 import WorkflowCreateCardDTO from '@data/models/workflows/workflow-create-card-dto';
-import WorkflowSubstateEventDTO from '@data/models/workflows/workflow-substate-event-dto';
 import WorkflowDTO from '@data/models/workflows/workflow-dto';
+import { WorkflowSearchFilterDTO } from '@data/models/workflows/workflow-filter-dto';
 import WorkflowMoveDTO from '@data/models/workflows/workflow-move-dto';
 import WorkflowStateDTO from '@data/models/workflows/workflow-state-dto';
+import WorkflowSubstateEventDTO from '@data/models/workflows/workflow-substate-event-dto';
 import WorkflowSubstateUserDTO from '@data/models/workflows/workflow-substate-user-dto';
-import { WorkflowFilterService } from '@modules/app-modules/workflow/aux-service/workflow-filter.service';
-import { BehaviorSubject, Observable, Subject, of, throwError } from 'rxjs';
-import { catchError, map } from 'rxjs/operators';
-import { WorkflowSearchFilterDTO } from '@data/models/workflows/workflow-filter-dto';
-import PaginationRequestI from '@data/interfaces/pagination-request';
 import { getPaginationUrlGetParams } from '@data/utils/pagination-aux';
-import PaginationResponseI from '@data/interfaces/pagination-response';
-import { RouteConstants } from '@app/constants/route.constants';
-import { CardLimitSlotByDayDTO } from '@data/models/workflow-admin/workflow-card-limit-dto';
-import WorkflowCalendarBodyDTO from '@data/models/workflows/workflow-calendar-body-dto';
+import { WorkflowFilterService } from '@modules/app-modules/workflow/aux-service/workflow-filter.service';
+import { BehaviorSubject, Observable, Subject, throwError } from 'rxjs';
+import { catchError, map } from 'rxjs/operators';
 
 @Injectable({
   providedIn: 'root'
@@ -71,6 +71,17 @@ export class WorkflowsService {
   public getWorkflowsList(): Observable<WorkflowDTO[]> {
     return this.http
       .get<WorkflowDTO[]>(`${this.env.apiBaseUrl}${this.GET_WORKFLOWS_PATH}${this.GET_WORKFLOWS_LIST_PATH}`)
+      .pipe(catchError((error) => throwError(error.error as ConcenetError)));
+  }
+
+  /**
+   * Devuelve el listado de workflow del usuario pasado por parametro userId.
+   *
+   * @returns WorkflowDTO[]
+   */
+  public getWorkflowsListByUserId(userId: number): Observable<WorkflowDTO[]> {
+    return this.http
+      .get<WorkflowDTO[]>(`${this.env.apiBaseUrl}${this.GET_WORKFLOWS_PATH}${this.GET_WORKFLOWS_LIST_PATH}/${userId}`)
       .pipe(catchError((error) => throwError(error.error as ConcenetError)));
   }
 

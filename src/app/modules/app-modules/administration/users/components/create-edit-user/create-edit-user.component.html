@@ -47,6 +47,11 @@
                             <span *ngIf="userForm.controls.email.errors.email">{{ labels.emailError | translate }}</span>
                         </mat-error>
                     </mat-form-field>
+                    <!-- Telefono -->
+                    <mat-form-field appearance="outline" floatLabel="always">
+                        <mat-label>{{ labels.phoneNumber | translate }}</mat-label>
+                        <input matInput formControlName="phoneNumber" />
+                    </mat-form-field>
                     <!-- Code -->
                     <mat-form-field appearance="outline" floatLabel="always">
                         <mat-label>{{ labels.code | translate }}</mat-label>
@@ -72,6 +77,15 @@
                         <mat-error *ngIf="userForm.controls?.role.invalid && userForm.controls?.role.touched">
                             <span *ngIf="userForm.controls.role.errors.required">{{ labels.required | translate }}</span>
                         </mat-error>
+                    </mat-form-field>
+
+                    <mat-form-field appearance="outline" floatLabel="always">
+                        <mat-label>{{ labels.userType | translate }}</mat-label>
+                        <mat-select formControlName="userType">
+                            <mat-option *ngFor="let userType of userTypeList" [value]="userType.value">{{
+                                userType.name
+                            }}</mat-option>
+                        </mat-select>
                     </mat-form-field>
 
                     <!-- newPassword -->
@@ -121,6 +135,22 @@
                         #OrganizationLevelsNestedCombos
                         [form]="userForm"
                     ></app-organization-levels-nested-combos>
+                </div>
+            </div>
+
+            <!-- Workflows -->
+            <div
+                class="user-data__section"
+                style="height: 200px"
+                [style.display]="userToEdit !== null && nombresWF.length ? 'block' : 'none'"
+            >
+                <div class="user-data__section__title">
+                    {{ labels.userWorkflow | translate }}
+                    <div class="user-data__workflows-container">
+                        <ol>
+                            <li *ngFor="let nombreWF of nombresWF">{{ nombreWF.name }}</li>
+                        </ol>
+                    </div>
                 </div>
             </div>
 

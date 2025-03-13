@@ -438,7 +438,6 @@ export class CreateEditFacilityComponent extends ComponentToExtendForCustomDialo
         configMailerPass: formValue.configMailerPass,
         senderSms: formValue.senderSms,
         whatsappPhoneNumber: formValue.whatsappPhoneNumber,
-        whatsappSender: formValue.whatsappSender,
         keyCommerce: formValue.keyCommerce,
         tpvCode: formValue.tpvCode,
         tpvTerminal: formValue.tpvTerminal
@@ -599,7 +598,6 @@ export class CreateEditFacilityComponent extends ComponentToExtendForCustomDialo
                 configMailerPass: formValue.configMailerPass,
                 senderSms: formValue.senderSms,
                 whatsappPhoneNumber: formValue.whatsappPhoneNumber,
-                whatsappSender: formValue.whatsappSender,
                 keyCommerce: formValue.keyCommerce,
                 tpvCode: formValue.tpvCode,
                 tpvTerminal: formValue.tpvTerminal
@@ -972,10 +970,6 @@ export class CreateEditFacilityComponent extends ComponentToExtendForCustomDialo
         ],
         whatsappPhoneNumber: [
           this.facilityToEdit && this.facilityToEdit.whatsappPhoneNumber ? this.facilityToEdit.whatsappPhoneNumber : null
-        ],
-        whatsappSender: [
-          this.facilityToEdit && this.facilityToEdit.whatsappSender ? this.facilityToEdit.whatsappSender : null,
-          [Validators.minLength(this.minLength), Validators.maxLength(this.maxLength)]
         ],
         keyCommerce: [this.facilityToEdit && this.facilityToEdit.keyCommerce ? this.facilityToEdit.keyCommerce : null],
         tpvCode: [this.facilityToEdit && this.facilityToEdit.tpvCode ? this.facilityToEdit.tpvCode : null],

@@ -800,17 +800,6 @@
                             {{ labels.required | translate }}
                         </mat-error>
                     </mat-form-field>
-                    <!-- senderWhatsapp -->
-                    <mat-form-field appearance="outline" floatLabel="always">
-                        <mat-label>{{ labels.senderWhatsapp | translate }} </mat-label>
-                        <input matInput formControlName="whatsappSender" />
-                        <mat-error
-                            *ngIf="facilityForm.controls.whatsappSender.invalid && facilityForm.controls.whatsappSender.touched"
-                        >
-                            {{ labels.minLength | translate : { length: this.minLength } }},
-                            {{ labels.maxLength | translate : { length: this.maxLength } }}
-                        </mat-error>
-                    </mat-form-field>
                 </div>
             </div>
 
