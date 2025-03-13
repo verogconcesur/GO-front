@@ -1,13 +1,13 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { HttpClient, HttpResponse } from '@angular/common/http';
+import { HttpClient } from '@angular/common/http';
 import { Inject, Injectable } from '@angular/core';
 import { ENV } from '@app/constants/global.constants';
 import { Env } from '@app/types/env';
 import { ConcenetError } from '@app/types/error';
-import { AttachmentDTO, CardAttachmentsDTO, CardInstanceAttachmentDTO } from '@data/models/cards/card-attachments-dto';
+import { AttachmentDTO, CardAttachmentsDTO } from '@data/models/cards/card-attachments-dto';
 import CardInstanceRemoteSignatureDTO from '@data/models/cards/card-instance-remote-signature-dto';
 import { Observable, Subject, throwError } from 'rxjs';
-import { catchError, map } from 'rxjs/operators';
+import { catchError } from 'rxjs/operators';
 
 @Injectable({
   providedIn: 'root'
@@ -18,6 +18,9 @@ export class CardAttachmentsService {
   private readonly GET_CARD_INSTANCE_PATH = '/api/cardInstanceWorkflow';
   private readonly DETAIL_PATH = '/detail';
   private readonly ATTACHMETS_PATH = '/attachments';
+  private readonly CUSTOMERS_PATH = '/api/customers';
+  private readonly CUSTOMER_AUTO = '/editAuto';
+  private readonly CUSTOMER_ACTIVE = '/editActive';
   private readonly EDIT_PATH = '/edit';
   private readonly DELETE_PATH = '/delete';
   private readonly DOWNLOAD_PATH = '/download';
@@ -81,6 +84,14 @@ export class CardAttachmentsService {
       )
       .pipe(catchError((error) => throwError(error.error as ConcenetError)));
   }
+  public autoCustomerAttachments(customerId: number, attachmentId: number, auto: boolean) {
+    return this.http
+      .get(
+        `${this.env.apiBaseUrl}${this.CUSTOMERS_PATH}/` +
+          `${customerId}${this.ATTACHMETS_PATH}/${attachmentId}${this.CUSTOMER_AUTO}/${auto}`
+      )
+      .pipe(catchError((error) => throwError(error.error as ConcenetError)));
+  }
 
   public addAttachments(
     cardInstanceWorkflowId: number,
@@ -101,7 +112,11 @@ export class CardAttachmentsService {
       )
       .pipe(catchError((error) => throwError(error.error as ConcenetError)));
   }
-
+  public addClientAttachments(clientId: number, files: any): Observable<any> {
+    return this.http
+      .post<any>(`${this.env.apiBaseUrl}${this.CUSTOMERS_PATH}/` + `${clientId}${this.ATTACHMETS_PATH}`, files)
+      .pipe(catchError((error) => throwError(error.error as ConcenetError)));
+  }
   public sendRemoteSignature(
     cardInstanceWorkflowId: number,
     templateChecklistId: number,
@@ -130,6 +145,15 @@ export class CardAttachmentsService {
       .delete<any>(
         `${this.env.apiBaseUrl}${this.GET_CARD_INSTANCE_PATH}${this.DETAIL_PATH}/` +
           `${cardInstanceWorkflowId}${this.ATTACHMETS_PATH}/${tabId}${this.DELETE_PATH}/${fileId}`
+      )
+      .pipe(catchError((error) => throwError(error.error as ConcenetError)));
+  }
+
+  public moveAttachment(attachmentId: number, customerId: number, active: boolean): Observable<any> {
+    return this.http
+      .get(
+        `${this.env.apiBaseUrl}${this.CUSTOMERS_PATH}/` +
+          `${customerId}${this.ATTACHMETS_PATH}/${attachmentId}${this.CUSTOMER_ACTIVE}/${active}`
       )
       .pipe(catchError((error) => throwError(error.error as ConcenetError)));
   }

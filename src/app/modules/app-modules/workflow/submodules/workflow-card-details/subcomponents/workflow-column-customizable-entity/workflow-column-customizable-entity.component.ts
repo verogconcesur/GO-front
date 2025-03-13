@@ -26,6 +26,13 @@ import {
   CreateEditVehicleComponentModalEnum,
   ModalVehicleComponent
 } from '@modules/feature-modules/modal-vehicle/modal-vehicle.component';
+// eslint-disable-next-line max-len
+import { WorkflowAttachmentTimelineDTO } from '@data/models/workflow-admin/workflow-attachment-timeline-dto';
+import { WorkflowAdministrationService } from '@data/services/workflow-administration.service';
+import {
+  ModalCardCustomerAttachmentsComponent,
+  modalCardCustomerAttachmentsComponentModalEnum
+} from '@modules/feature-modules/modal-card-customer-attachments/modal-card-customer-attachment.component';
 import { CustomDialogService } from '@shared/modules/custom-dialog/services/custom-dialog.service';
 
 @Component({
@@ -39,6 +46,7 @@ export class WorkflowColumnCustomizableEntityComponent implements OnInit, OnChan
   @Output() setShowLoading: EventEmitter<boolean> = new EventEmitter(false);
   public workflowId: number;
   public idCard: number;
+  public attachmentTemplates: WorkflowAttachmentTimelineDTO[];
 
   public labels = {
     noDataToShow: marker('errors.noDataToShow'),
@@ -68,12 +76,14 @@ export class WorkflowColumnCustomizableEntityComponent implements OnInit, OnChan
     private entitySearcher: EntitiesSearcherDialogService,
     private prepareAndMoveService: WorkflowPrepareAndMoveService,
     private entitiesService: EntitiesService,
-    private customDialogService: CustomDialogService
+    private customDialogService: CustomDialogService,
+    private workflowadministrationService: WorkflowAdministrationService
   ) {}
 
   ngOnInit(): void {
     this.workflowId = parseInt(this.route.parent.parent.snapshot.params.wId, 10);
     this.idCard = parseInt(this.route?.snapshot?.params?.idCard, 10);
+    this.getAttachmentsData();
   }
 
   ngOnChanges(changes: SimpleChanges): void {
@@ -221,6 +231,38 @@ export class WorkflowColumnCustomizableEntityComponent implements OnInit, OnChan
           );
       })
       .finally(() => this.setShowLoading.emit(false));
+  }
+  public getAttachmentsData() {
+    this.workflowadministrationService
+      .getWorkflowTimelineAttachments(this.workflowId)
+      .pipe(take(1))
+      .subscribe((attachments) => {
+        this.attachmentTemplates = attachments;
+      });
+  }
+
+  public customerAttachments() {
+    this.customDialogService
+      .open({
+        id: modalCardCustomerAttachmentsComponentModalEnum.ID,
+        panelClass: modalCardCustomerAttachmentsComponentModalEnum.PANEL_CLASS,
+        component: ModalCardCustomerAttachmentsComponent,
+        disableClose: true,
+        extendedComponentData: {
+          attachmentTemplates: this.attachmentTemplates ? this.attachmentTemplates : null,
+          showAddAttchment: false
+        },
+        width: '1000px'
+      })
+      .pipe(take(1))
+      .subscribe((response) => {
+        if (response) {
+          this.globalMessageService.showSuccess({
+            message: this.translateService.instant(marker('common.successOperation')),
+            actionText: this.translateService.instant(marker('common.close'))
+          });
+        }
+      });
   }
 
   public editEntity(): void {

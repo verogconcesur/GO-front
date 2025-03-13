@@ -1,0 +1,136 @@
+@import 'utils/core';
+@import 'utils/theme';
+.modal-card-customer-attachments {
+  min-height: 400px;
+  max-height: 600px;
+  .attachments__content__templates__header {
+    margin: 10px;
+    z-index: 1;
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    color: mat-color($foreground, secondary-text);
+    padding: 5px 10px;
+  }
+
+  .attachments-and-selects-container {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 20px;
+    width: 100%;
+  }
+
+  .attachment-item {
+    display: contents;
+  }
+
+  .attachments__content__templates__content__item {
+    max-width: 248px;
+    min-width: 100px;
+    max-height: 188px;
+    width: 100%;
+    height: 188px;
+    background-color: mat-color($background, background-administration);
+    position: relative;
+    margin: 5px 0;
+    border-radius: 15px;
+    background-position: center;
+    background-size: contain;
+    background-repeat: no-repeat;
+    border: 1px solid rgba(0, 0, 0, 0);
+
+    &.shared-in-landing {
+      border: 1px solid mat-color($primary, statusSuccess);
+    }
+
+    &.selected,
+    &:hover {
+      .actions-wrapper {
+        opacity: 1;
+      }
+    }
+
+    .file-info {
+      position: relative;
+      width: 100%;
+      height: 100%;
+      border-radius: 15px;
+
+      .actions-wrapper {
+        position: absolute;
+        border-radius: 15px;
+        top: 0px;
+        left: 0px;
+        width: 100%;
+        height: 100%;
+        background-color: rgba(mat-contrast($primary, 100), 0.7);
+        opacity: 0;
+        transition: opacity 0.5s ease;
+
+        mat-icon {
+          color: mat-contrast($primary, 400);
+          cursor: pointer;
+          position: absolute;
+          &.top-left {
+            top: 15px;
+            left: 15px;
+          }
+          &.top-right {
+            top: 15px;
+            right: 15px;
+          }
+          &.bottom-right {
+            bottom: 15px;
+            right: 15px;
+          }
+          &.bottom-left {
+            bottom: 15px;
+            left: 15px;
+          }
+        }
+      }
+      &.selected,
+      &:hover {
+        .actions-wrapper {
+          opacity: 1;
+        }
+      }
+
+      .file-name {
+        position: absolute;
+        bottom: -25px;
+        width: 100%;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        text-align: center;
+        cursor: default;
+        white-space: nowrap;
+        mat-icon {
+          position: absolute;
+          display: none;
+          color: mat-color($primary, 700);
+          top: -2px;
+          right: 0px;
+        }
+        &.editable {
+          cursor: pointer;
+          &:hover {
+            border: 1px solid mat-color($primary, 200);
+            border-radius: 5px;
+            mat-icon {
+              display: block;
+            }
+          }
+        }
+      }
+    }
+  }
+
+  .selects-container {
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    gap: 10px;
+    width: 100%;
+  }
+}
