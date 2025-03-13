@@ -118,7 +118,7 @@
         <div class="search-option-spinner" *ngIf="searching > 0">
             <mat-spinner class="spinner" diameter="20"></mat-spinner>
         </div>
-        <div class="scrollable-options" *ngIf="cards.length" (scroll)="onScroll()">
+        <div class="scrollable-options" *ngIf="cards.length" (scroll)="onScroll($event)">
             <mat-option
                 *ngFor="let option of cards; let i = index"
                 class="search-option-card"
