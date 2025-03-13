@@ -159,8 +159,21 @@ export class WorkflowCardSearcherComponent implements OnInit {
     return true;
   }
 
-  public onScroll(): void {
-    if (!this.paginationConfig.last && this.paginationConfig.page < this.paginationConfig.totalPages) {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  public onScroll(event: any): void {
+    //Accedemos a las propiedades del html
+    const scrollContainer = event.target as HTMLElement;
+    // Dejamos un umbral de 100 antes de llegar al final del contenedor
+    const threshold = 100;
+    // Se calcula la posicion actual del scroll
+    const position = scrollContainer.scrollTop + scrollContainer.clientHeight;
+    // Obtenemos la altura total del contenido dentro del contenedor desplazable
+    const height = scrollContainer.scrollHeight;
+
+    // Si la posición actual del scroll está dentro del umbral de 100 píxeles del final
+    // del contenedor, y no estamos en la última página de resultados ni ya buscando
+    // entonces incrementamos la página actual y solicitamos más datos.
+    if (position > height - threshold && !this.paginationConfig.last && !this.searching) {
       this.searching++;
       this.paginationConfig.page++;
       this.fetchData();
