@@ -987,7 +987,17 @@ export class CreateEditFacilityComponent extends ComponentToExtendForCustomDialo
         ],
         keyCommerce: [this.facilityToEdit && this.facilityToEdit.keyCommerce ? this.facilityToEdit.keyCommerce : null],
         tpvCode: [this.facilityToEdit && this.facilityToEdit.tpvCode ? this.facilityToEdit.tpvCode : null],
-        tpvTerminal: [this.facilityToEdit && this.facilityToEdit.tpvTerminal ? this.facilityToEdit.tpvTerminal : null]
+        tpvTerminal: [this.facilityToEdit && this.facilityToEdit.tpvTerminal ? this.facilityToEdit.tpvTerminal : null],
+        configApiTpvAttachmentsTab: [
+          this.facilityToEdit && this.facilityToEdit.configApiTpvAttachmentsTab
+            ? this.facilityToEdit.configApiTpvAttachmentsTab
+            : null
+        ],
+        configApiTtpvAttachmentsCategory: [
+          this.facilityToEdit && this.facilityToEdit.configApiTtpvAttachmentsCategory
+            ? this.facilityToEdit.configApiTtpvAttachmentsCategory
+            : null
+        ]
       },
       {
         validators: [
