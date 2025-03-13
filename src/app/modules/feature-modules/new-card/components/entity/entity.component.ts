@@ -7,8 +7,15 @@ import CustomerEntityDTO from '@data/models/entities/customer-entity-dto';
 import RepairOrderEntityDTO from '@data/models/entities/repair-order-entity-dto';
 import UserEntityDTO from '@data/models/entities/user-entity-dto';
 import VehicleEntityDTO, { InventoryVehicle } from '@data/models/entities/vehicle-entity-dto';
+import { WorkflowAttachmentTimelineDTO } from '@data/models/workflow-admin/workflow-attachment-timeline-dto';
 import { CardService } from '@data/services/cards.service';
 import { EntitiesService } from '@data/services/entities.service';
+import { WorkflowAdministrationService } from '@data/services/workflow-administration.service';
+// eslint-disable-next-line max-len
+import {
+  ModalCardCustomerAttachmentsComponent,
+  modalCardCustomerAttachmentsComponentModalEnum
+} from '@modules/feature-modules/modal-card-customer-attachments/modal-card-customer-attachment.component';
 import {
   CreateEditCustomerExternalApiComponentModalEnum,
   ModalCustomerExternalApiComponent
@@ -70,6 +77,7 @@ export class EntityComponent implements OnInit {
   public searching = false;
   public entityList: VehicleEntityDTO[] | UserEntityDTO[] | CustomerEntityDTO[] | RepairOrderEntityDTO[] = [];
   public inventoryList: InventoryVehicle[] = [];
+  public attachmentTemplates: WorkflowAttachmentTimelineDTO[];
   constructor(
     private fb: FormBuilder,
     private cardsService: CardService,
@@ -79,7 +87,8 @@ export class EntityComponent implements OnInit {
     private globalMessageService: GlobalMessageService,
     private customDialogService: CustomDialogService,
     private steperService: StepColumnService,
-    private datePipe: DatePipe
+    private datePipe: DatePipe,
+    private workflowadministrationService: WorkflowAdministrationService
   ) {}
   get tabItems(): FormArray {
     return this.formTab.get('tabItems') as FormArray;
@@ -156,6 +165,37 @@ export class EntityComponent implements OnInit {
       default:
         return '';
     }
+  }
+  // public getAttachmentsData() {
+  //   this.workflowadministrationService
+  //     .getWorkflowTimelineAttachments(this.workflowId)
+  //     .pipe(take(1))
+  //     .subscribe((attachments) => {
+  //       this.attachmentTemplates = attachments;
+  //     });
+  // }
+  public openClientAttachments() {
+    this.customDialogService
+      .open({
+        id: modalCardCustomerAttachmentsComponentModalEnum.ID,
+        panelClass: modalCardCustomerAttachmentsComponentModalEnum.PANEL_CLASS,
+        component: ModalCardCustomerAttachmentsComponent,
+        disableClose: true,
+        extendedComponentData: {
+          attachmentTemplates: this.attachmentTemplates ? this.attachmentTemplates : null,
+          showAddAttchment: true
+        },
+        width: '1000px'
+      })
+      .pipe(take(1))
+      .subscribe((response) => {
+        if (response) {
+          this.globalMessageService.showSuccess({
+            message: this.translateService.instant(marker('common.successOperation')),
+            actionText: this.translateService.instant(marker('common.close'))
+          });
+        }
+      });
   }
   public createEntity(importEntity?: boolean) {
     switch (this.formTab.get('contentSourceId').value) {

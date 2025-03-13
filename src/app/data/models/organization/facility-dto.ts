@@ -52,6 +52,8 @@ export default interface FacilityDTO {
   keyCommerce?: string;
   tpvCode?: string;
   tpvTerminal?: string;
+  configApiTpvAttachmentsTab?: string;
+  configApiTtpvAttachmentsCategory?: string;
 }
 
 export interface ConfigStockSubstate {

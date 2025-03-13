@@ -18,6 +18,10 @@ import {
   CreateEditCustomerComponentModalEnum,
   ModalCustomerComponent
 } from '../../../../feature-modules/modal-customer/modal-customer.component';
+import {
+  editCustomerAttachmentsComponentModalEnum,
+  ModalCustomerAttachmentsComponent
+} from '../modal-customer-attachments/modal-customer-attachments.component';
 
 @Component({
   selector: 'app-clients-list',
@@ -82,6 +86,27 @@ export class ClientsListComponent implements OnInit {
         }
       });
   };
+
+  public openEditAttachmentModal(clientId: number) {
+    this.customDialogService
+      .open({
+        id: editCustomerAttachmentsComponentModalEnum.ID,
+        panelClass: editCustomerAttachmentsComponentModalEnum.PANEL_CLASS,
+        component: ModalCustomerAttachmentsComponent,
+        extendedComponentData: clientId ? clientId : null,
+        disableClose: true,
+        width: '950px'
+      })
+      .pipe(take(1))
+      .subscribe((response) => {
+        if (response) {
+          this.globalMessageService.showSuccess({
+            message: this.translateService.instant(marker('common.successOperation')),
+            actionText: this.translateService.instant(marker('common.close'))
+          });
+        }
+      });
+  }
 
   public getCustomer = (pageEvent?: PageEvent): void => {
     const spinner = this.spinnerService.show();

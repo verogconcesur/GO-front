@@ -1,0 +1,28 @@
+<div class="modal-customer-attachments">
+    <mat-tab-group mat-stretch-tabs="false" mat-align-tabs="center" (selectedTabChange)="onTabChange($event)">
+        <mat-tab label="{{ labels.activeAttachments | translate }}">
+            <div class="tab-content">
+                <app-card-instance-attachments
+                    [cardInstanceAttachmentsConfig]="configTab1"
+                    [data]="attachmentsDataTab1"
+                    [isClientMode]="true"
+                    [clientId]="clientId"
+                    (reload)="fetchAttachments()"
+                >
+                </app-card-instance-attachments>
+            </div>
+        </mat-tab>
+        <mat-tab label="{{ labels.oldAttachments | translate }}">
+            <div class="tab-content">
+                <app-card-instance-attachments
+                    [cardInstanceAttachmentsConfig]="configTab2"
+                    [data]="attachmentsDataTab2"
+                    [isClientMode]="true"
+                    [clientId]="clientId"
+                    (reload)="fetchAttachments()"
+                >
+                </app-card-instance-attachments>
+            </div>
+        </mat-tab>
+    </mat-tab-group>
+</div>

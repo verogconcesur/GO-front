@@ -1,0 +1,76 @@
+<div class="modal-card-customer-attachments" [formGroup]="attachmentsForm">
+    <div *ngIf="showAddAttchment" class="attachments__content__templates__header">
+        <label>Examinar</label>
+        <button mat-icon-button color="primary" class="v-align-bottom no-padding" (click)="fileInputRef.click()">
+            <mat-icon>add</mat-icon>
+        </button>
+    </div>
+
+    <input type="file" style="display: none" #fileInputRef multiple (change)="fileBrowseHandler($event.target.files)" />
+
+    <div class="attachments-and-selects-container">
+        <div *ngFor="let attachmentControl of attachmentsArray.controls; let i = index" class="attachment-item">
+            <!-- Columna del documento -->
+            <div
+                class="attachments__content__templates__content__item"
+                [ngClass]="{
+                    selected: isItemSelected(attachmentControl.value),
+                    'shared-in-landing': attachmentControl.value.showInLanding
+                }"
+                [ngStyle]="{ 'background-image': getItemBgImage(attachmentControl.value) }"
+                matTooltip=""
+                matTooltipPosition="above"
+                [matTooltipDisabled]="!attachmentControl.value.showInLanding"
+            >
+                <div class="file-info">
+                    <div class="file-name">
+                        {{ attachmentControl.value.name }}
+                    </div>
+                    <div class="actions-wrapper">
+                        <mat-icon
+                            class="top-right"
+                            *ngIf="hasPreview(attachmentControl.value)"
+                            (click)="downloadAttachment(attachmentControl.value, i)"
+                        >
+                            search
+                        </mat-icon>
+                        <mat-icon class="bottom-right" (click)="toggleSelects(attachmentControl)">
+                            {{ attachmentControl.get("enabled")?.value ? "check_box" : "check_box_outline_blank" }}
+                        </mat-icon>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Columna de los selectores -->
+            <div class="selects-container">
+                <mat-form-field appearance="outline" floatLabel="always">
+                    <mat-label>Tab Adjunto</mat-label>
+                    <mat-select
+                        [formControl]="attachmentControl.get('attachmentsTab')"
+                        [disabled]="!attachmentControl.get('enabled')?.value"
+                        (selectionChange)="onTemplateChange($event, attachmentControl)"
+                    >
+                        <mat-option *ngFor="let template of attachmentTemplates" [value]="template.id">
+                            {{ template.name }}
+                        </mat-option>
+                    </mat-select>
+                    <button matSuffix mat-icon-button aria-label="Clear" (click)="clearSelection(attachmentControl, $event)">
+                        <mat-icon>close</mat-icon>
+                    </button>
+                </mat-form-field>
+
+                <mat-form-field appearance="outline" floatLabel="always">
+                    <mat-label>Categoria</mat-label>
+                    <mat-select
+                        [formControl]="attachmentControl.get('attachmentsCategory')"
+                        [disabled]="!attachmentControl.get('enabled')?.value"
+                    >
+                        <mat-option *ngFor="let item of filteredAttachmentItems" [value]="item.id">
+                            {{ item.name }}
+                        </mat-option>
+                    </mat-select>
+                </mat-form-field>
+            </div>
+        </div>
+    </div>
+</div>
