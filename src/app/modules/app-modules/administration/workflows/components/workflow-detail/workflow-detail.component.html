@@ -42,7 +42,6 @@
             ></mat-tab>
             <!-- Condición para mostrar/ocultar el tab de timeline -->
             <mat-tab
-                *ngIf="isContractedModule('timeline')"
                 label="{{ labels.timeline | translate }}"
                 [disabled]="!workflowsCreateEditAuxService.enableTabStep(getTimelineIndex() - 1)"
             ></mat-tab>
@@ -78,13 +77,11 @@
                 ></app-workflow-calendar>
             </ng-container>
 
-            <ng-container *ngIf="isContractedModule('timeline')">
-                <app-workflow-timeline
-                    [workflowId]="workflowDetail?.id"
-                    [stepIndex]="getTimelineIndex()"
-                    *ngSwitchCase="getTimelineIndex()"
-                ></app-workflow-timeline>
-            </ng-container>
+            <app-workflow-timeline
+                [workflowId]="workflowDetail?.id"
+                [stepIndex]="getTimelineIndex()"
+                *ngSwitchCase="getTimelineIndex()"
+            ></app-workflow-timeline>
 
             <ng-container *ngIf="isContractedModule('budget')">
                 <app-workflow-budgets
@@ -104,28 +101,11 @@
             [disabled]="!workflowsCreateEditAuxService.getFormGroupByStep(tabIndex)?.valid"
             (click)="saveAndGoNextStep()"
         >
-            <div
-                *ngIf="
-                    tabIndex !==
-                    (isContractedModule('cardlimit') || isContractedModule('timeline') || isContractedModule('budget') ? 5 : 4)
-                "
-            >
-                {{ labels.save | translate }}
-            </div>
-            <div
-                *ngIf="
-                    tabIndex ===
-                    (isContractedModule('cardlimit') || isContractedModule('timeline') || isContractedModule('budget') ? 5 : 4)
-                "
-            >
-                {{ labels.next | translate }}
-            </div>
+            <div *ngIf="tabIndex !== 5">{{ labels.save | translate }}</div>
+            <div *ngIf="tabIndex === 5">{{ labels.next | translate }}</div>
         </button>
         <button
-            *ngIf="
-                tabIndex !==
-                (isContractedModule('cardlimit') || isContractedModule('timeline') || isContractedModule('budget') ? 5 : 4)
-            "
+            *ngIf="tabIndex !== 5"
             mat-stroked-button
             color="warn"
             [disabled]="!workflowsCreateEditAuxService.getFormGroupByStep(tabIndex)?.dirty"

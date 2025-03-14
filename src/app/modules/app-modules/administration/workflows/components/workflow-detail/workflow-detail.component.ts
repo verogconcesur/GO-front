@@ -96,24 +96,14 @@ export class WorkflowDetailComponent implements OnInit, OnDestroy, AfterViewInit
   }
 
   getTimelineIndex(): number {
-    const baseIndex = this.isContractedModule('cardlimit') ? 7 : 6;
-    if (!this.isContractedModule('timeline')) {
-      return -1;
-    }
-    return baseIndex;
+    return this.isContractedModule('cardlimit') ? 7 : 6;
   }
 
   getBudgetsIndex(): number {
-    let baseIndex = 6;
-    if (this.isContractedModule('cardlimit') && this.isContractedModule('timeline')) {
-      baseIndex = 8;
-    } else if (this.isContractedModule('cardlimit') || this.isContractedModule('timeline')) {
-      baseIndex = 7;
-    }
+    const baseIndex = this.isContractedModule('cardlimit') ? 8 : 7;
     if (!this.isContractedModule('budget')) {
       return -1;
     }
-
     return baseIndex;
   }
 

@@ -34,7 +34,7 @@
             </mat-select>
         </mat-form-field>
     </div>
-    <div *ngIf="isLandingContractedModule()" class="timeline-container__section" fxLayout="row wrap">
+    <div class="timeline-container__section" fxLayout="row wrap">
         <div class="timeline-container__section__title">
             <h1>Seleccione una categoría para los adjuntos del Cliente</h1>
         </div>
@@ -65,7 +65,7 @@
             </mat-select>
         </mat-form-field>
     </div>
-    <div class="timeline-container__section" fxLayout="row wrap">
+    <div *ngIf="isLandingContractedModule()" class="timeline-container__section" fxLayout="row wrap">
         <div class="timeline-container__section__title">
             <h1>{{ labels.selectAttachmentTab | translate }}</h1>
         </div>
