@@ -2,8 +2,10 @@ import { Component, Input } from '@angular/core';
 import { FormArray, FormControl, FormGroup, UntypedFormBuilder, Validators } from '@angular/forms';
 import { ConcenetError } from '@app/types/error';
 import { marker } from '@biesbjerg/ngx-translate-extract-marker';
+import { TemplateAtachmentItemsDTO } from '@data/models/templates/templates-attachment-dto';
 import TemplatesCommonDTO from '@data/models/templates/templates-common-dto';
 import TemplatesTimelineDTO, { TemplatesTimelineItemsDTO } from '@data/models/templates/templates-timeline-dto';
+import { WorkflowAttachmentTimelineDTO } from '@data/models/workflow-admin/workflow-attachment-timeline-dto';
 import { WorkflowSubstateTimelineItemDTO, WorkflowTimelineDTO } from '@data/models/workflow-admin/workflow-timeline-dto';
 import WorkflowStateDTO from '@data/models/workflows/workflow-state-dto';
 import WorkflowSubstateDTO from '@data/models/workflows/workflow-substate-dto';
@@ -18,8 +20,6 @@ import { forkJoin } from 'rxjs';
 import { finalize, take } from 'rxjs/operators';
 import { WorkflowsCreateEditAuxService } from '../../../aux-service/workflows-create-edit-aux.service';
 import { WorkflowStepAbstractClass } from '../workflow-step-abstract-class';
-import { WorkflowAttachmentTimelineDTO } from '@data/models/workflow-admin/workflow-attachment-timeline-dto';
-import { TemplateAtachmentItemsDTO } from '@data/models/templates/templates-attachment-dto';
 
 @Component({
   selector: 'app-workflow-timeline',
@@ -79,7 +79,9 @@ export class WorkflowTimelineComponent extends WorkflowStepAbstractClass {
       tabId: [data?.workflowTimeline?.tabId],
       templateAttachmentItemId: [data?.workflowTimeline?.templateAttachmentItemId],
       whatsappTabId: [data?.workflowTimeline?.whatsappTabId],
-      whatsappTemplateAttachmentItemId: [data?.workflowTimeline?.whatsappTemplateAttachmentItemId]
+      whatsappTemplateAttachmentItemId: [data?.workflowTimeline?.whatsappTemplateAttachmentItemId],
+      customerAttachTabId: [data?.workflowTimeline?.customerAttachTabId],
+      customerAttachTemplateAttachmentItemId: [data?.workflowTimeline?.customerAttachTemplateAttachmentItemId]
     });
     if (data?.workflowTimeline?.workflowSubstateTimelineItems?.length > 0) {
       data.workflowTimeline.workflowSubstateTimelineItems.forEach((timelineItem: WorkflowSubstateTimelineItemDTO) => {
@@ -141,16 +143,19 @@ export class WorkflowTimelineComponent extends WorkflowStepAbstractClass {
     this.form.markAsTouched();
     this.form.markAsDirty();
   }
-  public removeAttachmentTab(type: 'whatsapp' | 'landing'): void {
+  public removeAttachmentTab(type: 'whatsapp' | 'landing' | 'customers'): void {
     if (type === 'whatsapp') {
       this.form.get('whatsappTabId').setValue(null);
       this.form.get('whatsappTemplateAttachmentItemId').setValue(null);
-    } else {
+    } else if (type === 'landing') {
       this.form.get('tabId').setValue(null);
       this.form.get('templateAttachmentItemId').setValue(null);
+    } else if (type === 'customers') {
+      this.form.get('customerAttachTabId').setValue(null);
+      this.form.get('customerAttachTemplateAttachmentItemId').setValue(null);
     }
   }
-  public getAttachmentItems(type: 'whatsapp' | 'landing'): TemplateAtachmentItemsDTO[] {
+  public getAttachmentItems(type: 'whatsapp' | 'landing' | 'customers'): TemplateAtachmentItemsDTO[] {
     if (type === 'whatsapp') {
       if (this.form.get('whatsappTabId')?.value) {
         const attachmentTimeline = this.originalData.attachmentTemplates.find(
@@ -162,10 +167,21 @@ export class WorkflowTimelineComponent extends WorkflowStepAbstractClass {
       } else {
         return [];
       }
-    } else {
+    } else if (type === 'landing') {
       if (this.form.get('tabId')?.value) {
         const attachmentTimeline = this.originalData.attachmentTemplates.find(
           (attTime: WorkflowAttachmentTimelineDTO) => attTime.id === this.form.get('tabId')?.value
+        );
+        return attachmentTimeline?.template?.templateAttachmentItems?.length
+          ? attachmentTimeline.template.templateAttachmentItems
+          : [];
+      } else {
+        return [];
+      }
+    } else if (type === 'customers') {
+      if (this.form.get('customerAttachTabId')?.value) {
+        const attachmentTimeline = this.originalData.attachmentTemplates.find(
+          (attTime: WorkflowAttachmentTimelineDTO) => attTime.id === this.form.get('customerAttachTabId')?.value
         );
         return attachmentTimeline?.template?.templateAttachmentItems?.length
           ? attachmentTimeline.template.templateAttachmentItems
@@ -206,12 +222,14 @@ export class WorkflowTimelineComponent extends WorkflowStepAbstractClass {
         });
     }
   }
-  public selectAttachmentTab(type: 'whatsapp' | 'landing') {
+  public selectAttachmentTab(type: 'whatsapp' | 'landing' | 'customers') {
     const tabItems = this.getAttachmentItems(type);
     if (type === 'whatsapp') {
       this.form.get('whatsappTemplateAttachmentItemId').setValue(tabItems.length ? tabItems[0] : null);
-    } else {
+    } else if (type === 'landing') {
       this.form.get('templateAttachmentItemId').setValue(tabItems.length ? tabItems[0] : null);
+    } else if (type === 'customers') {
+      this.form.get('customerAttachTemplateAttachmentItemId').setValue(tabItems.length ? tabItems[0] : null);
     }
   }
   public async getWorkflowStepData(): Promise<boolean> {
