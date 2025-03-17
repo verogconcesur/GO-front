@@ -1,20 +1,22 @@
-import { HttpClient } from '@angular/common/http';
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { UntypedFormBuilder } from '@angular/forms';
 import { MatTabChangeEvent } from '@angular/material/tabs';
 import { marker } from '@biesbjerg/ngx-translate-extract-marker';
-import { ConfigEntityCardAttachmentsDTO, CustomerAttachmentDTO } from '@data/models/cards/card-attachments-dto';
+import { ConfigEntityCardAttachmentsDTO } from '@data/models/cards/card-attachments-dto';
 import { CustomDialogFooterConfigI } from '@shared/modules/custom-dialog/interfaces/custom-dialog-footer-config';
 import { ComponentToExtendForCustomDialog } from '@shared/modules/custom-dialog/models/component-for-custom-dialog';
 // eslint-disable-next-line max-len
 import { PermissionConstants } from '@app/constants/permission.constants';
+// eslint-disable-next-line max-len
+import { ConcenetError } from '@app/types/error';
+import { CardAttachmentsService } from '@data/services/card-attachments.service';
 // eslint-disable-next-line max-len
 import CardInstanceAttachmentsConfig from '@modules/feature-modules/card-instance-attachments/card-instance-attachments-config-interface';
 import { TranslateService } from '@ngx-translate/core';
 import { ConfirmDialogService } from '@shared/services/confirm-dialog.service';
 import { GlobalMessageService } from '@shared/services/global-message.service';
 import { ProgressSpinnerDialogService } from '@shared/services/progress-spinner-dialog.service';
-import { Observable, of } from 'rxjs';
+import { finalize, Observable, of, take } from 'rxjs';
 
 export const enum editCustomerAttachmentsComponentModalEnum {
   ID = 'modal-customer-attachments-id',
@@ -37,7 +39,6 @@ export class ModalCustomerAttachmentsComponent extends ComponentToExtendForCusto
   public configTab2: CardInstanceAttachmentsConfig;
   public attachmentsDataTab1: ConfigEntityCardAttachmentsDTO[] = [];
   public attachmentsDataTab2: ConfigEntityCardAttachmentsDTO[] = [];
-  private apiUrl = 'https://concenet-dev.sdos.es/concenet-rest/api/customers/693/attachments';
 
   constructor(
     private fb: UntypedFormBuilder,
@@ -45,7 +46,7 @@ export class ModalCustomerAttachmentsComponent extends ComponentToExtendForCusto
     private confirmDialogService: ConfirmDialogService,
     private translateService: TranslateService,
     private globalMessageService: GlobalMessageService,
-    private httpClient: HttpClient
+    private attachmentService: CardAttachmentsService
   ) {
     super(
       editCustomerAttachmentsComponentModalEnum.ID,
@@ -54,9 +55,8 @@ export class ModalCustomerAttachmentsComponent extends ComponentToExtendForCusto
     );
   }
   ngOnInit(): void {
-    this.fetchAttachments();
     this.clientId = this.extendedComponentData;
-    console.log(this.clientId);
+    this.fetchAttachments();
     this.configTab1 = {
       tabId: null,
       wcId: null,
@@ -85,49 +85,54 @@ export class ModalCustomerAttachmentsComponent extends ComponentToExtendForCusto
     this.attachmentsDataTab1 = [];
     this.attachmentsDataTab2 = [];
     const spinner = this.spinnerService.show();
+    this.attachmentService
+      .getCustomerAttachments(this.clientId)
+      .pipe(
+        take(1),
+        finalize(() => this.spinnerService.hide(spinner))
+      )
+      .subscribe({
+        next: (data) => {
+          const activeAttachments = data.filter((item) => item.active === true);
+          const inactiveAttachments = data.filter((item) => item.active === false);
 
-    this.httpClient.get<CustomerAttachmentDTO[]>(this.apiUrl).subscribe(
-      (data) => {
-        this.spinnerService.hide(spinner);
-        const activeAttachments = data.filter((item) => item.active === true);
-        const inactiveAttachments = data.filter((item) => item.active === false);
-
-        this.attachmentsDataTab1 = [
-          {
-            attachments: activeAttachments,
-            templateAttachmentItem: {
-              id: 0,
-              name: '',
-              orderNumber: 0
-            },
-            permissionType: PermissionConstants.EDIT,
-            tabId: 0,
-            tabName: ''
-          }
-        ];
-        this.attachmentsDataTab2 = [
-          {
-            attachments: inactiveAttachments,
-            templateAttachmentItem: {
-              id: 0,
-              name: '',
-              orderNumber: 0
-            },
-            permissionType: PermissionConstants.EDIT,
-            tabId: 0,
-            tabName: ''
-          }
-        ];
-      },
-      (error) => {
-        this.spinnerService.hide(spinner);
-        console.error('Error fetching attachments', error);
-      }
-    );
+          this.attachmentsDataTab1 = [
+            {
+              attachments: activeAttachments,
+              templateAttachmentItem: {
+                id: 0,
+                name: '',
+                orderNumber: 0
+              },
+              permissionType: PermissionConstants.EDIT,
+              tabId: 0,
+              tabName: ''
+            }
+          ];
+          this.attachmentsDataTab2 = [
+            {
+              attachments: inactiveAttachments,
+              templateAttachmentItem: {
+                id: 0,
+                name: '',
+                orderNumber: 0
+              },
+              permissionType: PermissionConstants.EDIT,
+              tabId: 0,
+              tabName: ''
+            }
+          ];
+        },
+        error: (err: ConcenetError) => {
+          this.globalMessageService.showError({
+            message: err.message,
+            actionText: this.translateService.instant(marker('common.close'))
+          });
+        }
+      });
   }
 
   onTabChange(event: MatTabChangeEvent) {
-    console.log('Selected tab index: ', event.index);
     this.fetchAttachments();
   }
 
