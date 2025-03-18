@@ -52,6 +52,8 @@ export class WorkflowColumnCustomizableEntityComponent implements OnInit, OnChan
   public workflowId: number;
   public idCard: number;
   public attachmentTemplates: WorkflowAttachmentTimelineDTO[];
+  public customerAttachTabId: number;
+  public customerAttachTemplateAttachmentItemId: number;
 
   public labels = {
     noDataToShow: marker('errors.noDataToShow'),
@@ -89,6 +91,7 @@ export class WorkflowColumnCustomizableEntityComponent implements OnInit, OnChan
     this.workflowId = parseInt(this.route.parent.parent.snapshot.params.wId, 10);
     this.idCard = parseInt(this.route?.snapshot?.params?.idCard, 10);
     this.getAttachmentsData();
+    this.getDefaultTabAndCategoryForAttachments();
   }
 
   ngOnChanges(changes: SimpleChanges): void {
@@ -241,6 +244,15 @@ export class WorkflowColumnCustomizableEntityComponent implements OnInit, OnChan
         this.attachmentTemplates = attachments;
       });
   }
+  public getDefaultTabAndCategoryForAttachments() {
+    this.workflowadministrationService
+      .getWorkflowTimeline(this.workflowId)
+      .pipe(take(1))
+      .subscribe((data) => {
+        this.customerAttachTabId = data.customerAttachTabId;
+        this.customerAttachTemplateAttachmentItemId = data.customerAttachTemplateAttachmentItemId;
+      });
+  }
 
   public customerAttachments() {
     this.customDialogService
@@ -251,7 +263,13 @@ export class WorkflowColumnCustomizableEntityComponent implements OnInit, OnChan
         disableClose: true,
         extendedComponentData: {
           attachmentTemplates: this.attachmentTemplates ? this.attachmentTemplates : null,
-          showAddAttchment: false
+          showAddAttchment: false,
+          idCard: this.idCard ? this.idCard : null,
+          clientId: this.cardInstance.cardInstanceWorkflow.cardInstance.customerId,
+          customerAttachTabId: this.customerAttachTabId ? this.customerAttachTabId : null,
+          customerAttachTemplateAttachmentItemId: this.customerAttachTemplateAttachmentItemId
+            ? this.customerAttachTemplateAttachmentItemId
+            : null
         },
         width: '1000px'
       })

@@ -27,6 +27,7 @@ export class CardAttachmentsService {
   private readonly HIDE_LANDING_PATH = '/hideLanding';
   private readonly SEND_REMOTE_SIGNATURE_PATH = '/sendRemoteSignature';
   private readonly CANCEL_REMOTE_SIGNATURE_PATH = '/cancelRemoteSignature';
+  private readonly ATTACHMENTS_CUSTOMER_PATH = 'attachmentsCustomer';
 
   constructor(@Inject(ENV) private env: Env, private http: HttpClient) {}
 
@@ -90,6 +91,15 @@ export class CardAttachmentsService {
             name: newName
           }
         }
+      )
+      .pipe(catchError((error) => throwError(error.error as ConcenetError)));
+  }
+
+  public saveAttachmentsCustomers(clienId: number, attachments: any) {
+    return this.http
+      .post<any>(
+        `${this.env.apiBaseUrl}${this.GET_CARD_INSTANCE_PATH}${this.DETAIL_PATH}/${clienId}/${this.ATTACHMENTS_CUSTOMER_PATH}`,
+        attachments
       )
       .pipe(catchError((error) => throwError(error.error as ConcenetError)));
   }

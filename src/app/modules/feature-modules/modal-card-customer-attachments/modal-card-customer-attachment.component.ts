@@ -1,22 +1,20 @@
-import { HttpClient } from '@angular/common/http';
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { AbstractControl, FormArray, FormGroup, UntypedFormBuilder, UntypedFormGroup } from '@angular/forms';
 import { MatSelectChange } from '@angular/material/select';
 import { ConcenetError } from '@app/types/error';
 import { marker } from '@biesbjerg/ngx-translate-extract-marker';
-import { AttachmentDTO, CardAttachmentsDTO } from '@data/models/cards/card-attachments-dto';
+import { AttachmentDTO, CustomerAttachmentDTO } from '@data/models/cards/card-attachments-dto';
 import { WorkflowAttachmentTimelineDTO } from '@data/models/workflow-admin/workflow-attachment-timeline-dto';
 import { CardAttachmentsService } from '@data/services/card-attachments.service';
 import { TranslateService } from '@ngx-translate/core';
 import { CustomDialogFooterConfigI } from '@shared/modules/custom-dialog/interfaces/custom-dialog-footer-config';
 import { ComponentToExtendForCustomDialog } from '@shared/modules/custom-dialog/models/component-for-custom-dialog';
-import { ConfirmDialogService } from '@shared/services/confirm-dialog.service';
+import { CustomDialogService } from '@shared/modules/custom-dialog/services/custom-dialog.service';
 import { GlobalMessageService } from '@shared/services/global-message.service';
 import { ProgressSpinnerDialogService } from '@shared/services/progress-spinner-dialog.service';
 import { saveAs } from 'file-saver';
 import { Observable, of } from 'rxjs';
-import { finalize, take } from 'rxjs/operators';
-import { WorkflowAdministrationService } from '../../../data/services/workflow-administration.service';
+import { catchError, finalize, map, take } from 'rxjs/operators';
 import { MediaViewerService } from '../media-viewer-dialog/media-viewer.service';
 
 export const enum modalCardCustomerAttachmentsComponentModalEnum {
@@ -38,25 +36,25 @@ export class ModalCardCustomerAttachmentsComponent extends ComponentToExtendForC
   attachmentItemsMap: { [key: number]: any[] } = {};
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   public filteredAttachmentItems: any[] = [];
-  public data: CardAttachmentsDTO[] = [];
+  public data: CustomerAttachmentDTO[] = [];
   public selectedAttachments: AttachmentDTO[] = [];
   public cardInstanceWorkflowId: number;
   public tabId: number;
   public attachmentsForm: FormGroup;
   public form: UntypedFormGroup;
-  public workflowId: number;
-  private apiUrl = 'https://concenet-dev.sdos.es/concenet-rest/api/cardInstanceWorkflow/detail/1800/attachments/11';
+  public idCard: number;
+  public clientId: number;
+  public customerAttachTabId: number;
+  public customerAttachTemplateAttachmentItemId: number;
 
   constructor(
     private fb: UntypedFormBuilder,
     private spinnerService: ProgressSpinnerDialogService,
-    private confirmDialogService: ConfirmDialogService,
     private translateService: TranslateService,
     private globalMessageService: GlobalMessageService,
-    private httpClient: HttpClient,
     private attachmentService: CardAttachmentsService,
     private mediaViewerService: MediaViewerService,
-    private workflowadministrationService: WorkflowAdministrationService
+    private customDialogService: CustomDialogService
   ) {
     super(
       modalCardCustomerAttachmentsComponentModalEnum.ID,
@@ -71,9 +69,14 @@ export class ModalCardCustomerAttachmentsComponent extends ComponentToExtendForC
   }
 
   ngOnInit(): void {
-    this.initializeForm();
     this.attachmentTemplates = this.extendedComponentData.attachmentTemplates;
+    this.customerAttachTabId = this.extendedComponentData.customerAttachTabId;
+    this.customerAttachTemplateAttachmentItemId = this.extendedComponentData.customerAttachTemplateAttachmentItemId;
+    this.idCard = this.extendedComponentData.idCard;
+    console.log(this.attachmentTemplates);
     this.showAddAttchment = this.extendedComponentData.showAddAttchment;
+    this.clientId = this.extendedComponentData.clientId;
+    this.initializeForm();
     this.fetchAttachments();
     this.getAttachmentsData();
   }
@@ -81,28 +84,38 @@ export class ModalCardCustomerAttachmentsComponent extends ComponentToExtendForC
   ngOnDestroy(): void {}
 
   public onSubmitCustomDialog(): Observable<boolean | AttachmentDTO[]> {
-    // const formValue = this.customerForm.value;
+    const formValue = this.attachmentsForm.value;
+    console.log(formValue);
+    const attachmentsResp = formValue.attachments
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      .filter((item: any) => item.enabled)
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      .map((item: any) => ({
+        tabId: item.attachmentsTab,
+        templateAttachmentItemId: item.attachmentsCategory,
+        customerAttachmentId: item.id
+      }));
     const spinner = this.spinnerService.show();
-    // return this.entitiesService.createCustomer(formValue).pipe(
-    //   map((response) => {
-    //     this.globalMessageService.showSuccess({
-    //       message: this.translateService.instant(marker('common.successOperation')),
-    //       actionText: this.translateService.instant(marker('common.close'))
-    //     });
-    //     return response;
-    //   }),
-    //   catchError((error) => {
-    //     this.globalMessageService.showError({
-    //       message: error.message,
-    //       actionText: this.translateService.instant(marker('common.close'))
-    //     });
-    //     return of(false);
-    //   }),
-    //   finalize(() => {
-    //     this.spinnerService.hide(spinner);
-    //   })
-    // );
-    return of(true);
+    return this.attachmentService.saveAttachmentsCustomers(this.idCard, attachmentsResp).pipe(
+      map((response) => {
+        this.globalMessageService.showSuccess({
+          message: this.translateService.instant(marker('common.successOperation')),
+          actionText: this.translateService.instant(marker('common.close'))
+        });
+        this.customDialogService.close(modalCardCustomerAttachmentsComponentModalEnum.ID);
+        return response;
+      }),
+      catchError((error) => {
+        this.globalMessageService.showError({
+          message: error.message,
+          actionText: this.translateService.instant(marker('common.close'))
+        });
+        return of(false);
+      }),
+      finalize(() => {
+        this.spinnerService.hide(spinner);
+      })
+    );
   }
 
   confirmCloseCustomDialog(): Observable<boolean> {
@@ -123,29 +136,33 @@ export class ModalCardCustomerAttachmentsComponent extends ComponentToExtendForC
     const selectedTemplateId = event.value;
     // Reseteamos 'attachmentsCategory' para que el usuario seleccione nuevamente la categoría
     attachmentControl.get('attachmentsCategory')?.setValue(null);
-    this.updateAttachmentItems(selectedTemplateId);
   }
 
-  public updateAttachmentItems(templateId: number): void {
-    // Filtramos los items de 'attachmentsCategory' según el templateId seleccionado
-    const items = this.attachmentItemsMap[templateId] || [];
-    this.filteredAttachmentItems = items;
+  getItemsByTemplate(templateId: number) {
+    return this.attachmentItemsMap[templateId] || [];
   }
 
   fetchAttachments(): void {
     this.data = [];
     const spinner = this.spinnerService.show();
-    this.httpClient.get<CardAttachmentsDTO[]>(this.apiUrl).subscribe(
-      (data) => {
-        this.spinnerService.hide(spinner);
-        this.data = data;
-        this.populateFormWithAttachments();
-      },
-      (error) => {
-        this.spinnerService.hide(spinner);
-        console.error('Error fetching attachments', error);
-      }
-    );
+    this.attachmentService
+      .getCustomerAttachments(this.clientId)
+      .pipe(
+        take(1),
+        finalize(() => this.spinnerService.hide(spinner))
+      )
+      .subscribe({
+        next: (data) => {
+          this.data = data;
+          this.populateFormWithAttachments();
+        },
+        error: (err: ConcenetError) => {
+          this.globalMessageService.showError({
+            message: err.message,
+            actionText: this.translateService.instant(marker('common.close'))
+          });
+        }
+      });
   }
   clearSelection(attachmentControl: AbstractControl, event: MouseEvent): void {
     // Resetea los valores de attachmentsTab y attachmentsCategory
@@ -168,30 +185,21 @@ export class ModalCardCustomerAttachmentsComponent extends ComponentToExtendForC
     };
   }
 
-  public selectItem(item: AttachmentDTO): void {
-    const index = this.selectedAttachments.indexOf(item);
-    if (index >= 0) {
-      this.selectedAttachments.splice(index, 1);
-    } else {
-      this.selectedAttachments.push(item);
-    }
-  }
-
   public isItemSelected(item: AttachmentDTO): boolean {
     return this.selectedAttachments.indexOf(item) >= 0;
   }
 
-  public getItemBgImage(item: AttachmentDTO): string {
-    if (item.thumbnail && item.type) {
-      return `url("data:${item.type};base64,${item.thumbnail}")`;
-    } else if (item.type) {
-      if (item.type.indexOf('pdf') >= 0) {
+  public getItemBgImage(item: CustomerAttachmentDTO): string {
+    if (item.file.thumbnail && item.file.type) {
+      return `url("data:${item.file.type} ;base64,${item.file.thumbnail}")`;
+    } else if (item.file.type) {
+      if (item.file.type.indexOf('pdf') >= 0) {
         return `url(/assets/img/pdf.png)`;
-      } else if (item.type.indexOf('audio') >= 0 || item.type.indexOf('mp3') >= 0) {
+      } else if (item.file.type.indexOf('audio') >= 0 || item.file.type.indexOf('mp3') >= 0) {
         return `url(/assets/img/audio-file.png)`;
-      } else if (item.type.indexOf('video') >= 0) {
+      } else if (item.file.type.indexOf('video') >= 0) {
         return `url(/assets/img/video-file.png)`;
-      } else if (item.type.indexOf('image') >= 0) {
+      } else if (item.file.type.indexOf('image') >= 0) {
         return `url(/assets/img/image-file.png)`;
       }
     }
@@ -247,28 +255,35 @@ export class ModalCardCustomerAttachmentsComponent extends ComponentToExtendForC
       );
   }
 
-  private addAttachment(attachment: AttachmentDTO): void {
+  private addAttachment(attachment: CustomerAttachmentDTO): void {
     const attachmentFormGroup = this.fb.group({
-      content: [attachment.content],
+      active: [attachment.active],
       id: [attachment.id],
-      name: [attachment.name],
-      size: [attachment.size],
-      thumbnail: [attachment.thumbnail],
-      type: [attachment.type],
-      showInLanding: [attachment.showInLanding],
-      attachmentsTab: [attachment.attachmentsTab || ''],
-      attachmentsCategory: [attachment.attachmentsCategory || ''],
+      auto: [attachment.auto],
+      createDate: [attachment.createDate],
+      createdByFullName: [attachment.createdByFullName],
+      customerId: [attachment.customerId],
+      file: {
+        content: [attachment.file.content],
+        id: [attachment.file.id],
+        name: [attachment.file.name],
+        size: [attachment.file.size],
+        thumbnail: [attachment.file.thumbnail],
+        type: [attachment.file.type],
+        showInLanding: [attachment.file.showInLanding]
+      },
+      updateDate: [attachment.updateDate],
+      updatedByFullName: [attachment.updatedByFullName],
+      attachmentsTab: [this.customerAttachTabId ? this.customerAttachTabId : null],
+      attachmentsCategory: [this.customerAttachTemplateAttachmentItemId ? this.customerAttachTemplateAttachmentItemId : null],
       enabled: [false]
     });
-
     this.attachmentsArray.push(attachmentFormGroup);
   }
 
   private populateFormWithAttachments(): void {
-    this.data.forEach((template) => {
-      template.attachments?.forEach((attachment) => {
-        this.addAttachment(attachment);
-      });
+    this.data.forEach((attachment) => {
+      this.addAttachment(attachment);
     });
   }
 
@@ -295,27 +310,24 @@ export class ModalCardCustomerAttachmentsComponent extends ComponentToExtendForC
 
   private async addFiles(files: FileList): Promise<void> {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const filesToSend: any[] = [];
-    const filesName: string[] = [];
-
-    this.data.forEach((cardAttachment: CardAttachmentsDTO) => {
-      cardAttachment.attachments.forEach((attachment: AttachmentDTO) => {
-        filesName.push(attachment.name);
-      });
-    });
-
-    const arrayOfBase64 = await this.fileListToBase64(files);
-    Array.from(files).forEach((file: File, i: number) => {
-      const fileInfo = {
-        name: filesName.indexOf(file.name) === -1 ? file.name : `${+new Date()}_${file.name}`,
-        type: file.type,
-        size: file.size,
-        content: arrayOfBase64[i].split(';base64,')[1]
-      };
-      filesToSend.push(fileInfo);
-    });
-
-    const spinner = this.spinnerService.show();
+    // const filesToSend: any[] = [];
+    // const filesName: string[] = [];
+    // this.data.forEach((cardAttachment: CardAttachmentsDTO) => {
+    //   cardAttachment.attachments.forEach((attachment: AttachmentDTO) => {
+    //     filesName.push(attachment.name);
+    //   });
+    // });
+    // const arrayOfBase64 = await this.fileListToBase64(files);
+    // Array.from(files).forEach((file: File, i: number) => {
+    //   const fileInfo = {
+    //     name: filesName.indexOf(file.name) === -1 ? file.name : `${+new Date()}_${file.name}`,
+    //     type: file.type,
+    //     size: file.size,
+    //     content: arrayOfBase64[i].split(';base64,')[1]
+    //   };
+    //   filesToSend.push(fileInfo);
+    // });
+    // const spinner = this.spinnerService.show();
     //TODO Nuevo servicio para adjuntar archivos
     // this.attachmentService
     //   .addAttachments(this.cardInstanceWorkflowId, this.tabId, filesToSend)

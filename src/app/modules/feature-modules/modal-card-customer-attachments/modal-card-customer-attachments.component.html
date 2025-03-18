@@ -9,7 +9,7 @@
     <input type="file" style="display: none" #fileInputRef multiple (change)="fileBrowseHandler($event.target.files)" />
 
     <div class="attachments-and-selects-container">
-        <div *ngFor="let attachmentControl of attachmentsArray.controls; let i = index" class="attachment-item">
+        <div *ngFor="let attachmentControl of attachmentsArray?.controls; let i = index" class="attachment-item">
             <!-- Columna del documento -->
             <div
                 class="attachments__content__templates__content__item"
@@ -24,7 +24,7 @@
             >
                 <div class="file-info">
                     <div class="file-name">
-                        {{ attachmentControl.value.name }}
+                        {{ attachmentControl.value.file.name }}
                     </div>
                     <div class="actions-wrapper">
                         <mat-icon
@@ -54,7 +54,13 @@
                             {{ template.name }}
                         </mat-option>
                     </mat-select>
-                    <button matSuffix mat-icon-button aria-label="Clear" (click)="clearSelection(attachmentControl, $event)">
+                    <button
+                        [disabled]="!attachmentControl.get('enabled')?.value"
+                        matSuffix
+                        mat-icon-button
+                        aria-label="Clear"
+                        (click)="clearSelection(attachmentControl, $event)"
+                    >
                         <mat-icon>close</mat-icon>
                     </button>
                 </mat-form-field>
@@ -65,7 +71,10 @@
                         [formControl]="attachmentControl.get('attachmentsCategory')"
                         [disabled]="!attachmentControl.get('enabled')?.value"
                     >
-                        <mat-option *ngFor="let item of filteredAttachmentItems" [value]="item.id">
+                        <mat-option
+                            *ngFor="let item of getItemsByTemplate(attachmentControl.get('attachmentsTab')?.value)"
+                            [value]="item.id"
+                        >
                             {{ item.name }}
                         </mat-option>
                     </mat-select>
