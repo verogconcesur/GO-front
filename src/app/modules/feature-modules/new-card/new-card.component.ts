@@ -10,11 +10,12 @@ import { marker } from '@biesbjerg/ngx-translate-extract-marker';
 import CardColumnDTO from '@data/models/cards/card-column-dto';
 import CardColumnTabDTO from '@data/models/cards/card-column-tab-dto';
 import CardColumnTabItemDTO from '@data/models/cards/card-column-tab-item-dto';
-import CardCreateDTO from '@data/models/cards/card-create-dto';
+import CardCreateDTO, { CardCustomersAttachmentsDTO } from '@data/models/cards/card-create-dto';
 import CardDTO from '@data/models/cards/card-dto';
 import WorkflowDTO from '@data/models/workflows/workflow-dto';
 import WorkflowSubstateDTO from '@data/models/workflows/workflow-substate-dto';
 import WorkflowSubstateEventDTO from '@data/models/workflows/workflow-substate-event-dto';
+import { CardAttachmentsService } from '@data/services/card-attachments.service';
 import { CardService } from '@data/services/cards.service';
 import { WorkflowsService } from '@data/services/workflows.service';
 import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
@@ -67,6 +68,7 @@ export class NewCardComponent implements OnInit {
   public formWorkflow: FormGroup;
   public formStep1: FormGroup;
   public formStep2: FormGroup;
+  public attachmentsData: CardCustomersAttachmentsDTO[];
   constructor(
     public dialogRef: MatDialogRef<NewCardComponent>,
     private fb: FormBuilder,
@@ -78,7 +80,8 @@ export class NewCardComponent implements OnInit {
     private logger: NGXLogger,
     private workflowService: WorkflowsService,
     private route: ActivatedRoute,
-    private router: Router
+    private router: Router,
+    private attachmentService: CardAttachmentsService
   ) {}
 
   ngOnInit() {
@@ -86,6 +89,9 @@ export class NewCardComponent implements OnInit {
     this.initializeWorkflowForm();
     this.workflowService.workflowSelectedSubject$.pipe(untilDestroyed(this)).subscribe((workflow: WorkflowDTO) => {
       this.currentWorkflowId = workflow?.id;
+    });
+    this.attachmentService.attachmentsForm$.pipe(untilDestroyed(this)).subscribe((data) => {
+      this.attachmentsData = data;
     });
   }
 
@@ -100,6 +106,7 @@ export class NewCardComponent implements OnInit {
   }
 
   public onSubmitCustomDialog(): void {
+    console.log(this.attachmentsData);
     this.confirmationDialog
       .open({
         title: this.translateService.instant(marker('common.warning')),
@@ -121,7 +128,8 @@ export class NewCardComponent implements OnInit {
               userId: null,
               repairOrderId: null
             },
-            cardInstanceWorkflowUsers: []
+            cardInstanceWorkflowUsers: [],
+            customerCardInstanceAttachments: this.attachmentsData
           };
           if (this.formWorkflow.get('subStateUser').value) {
             cardBody.cardInstanceWorkflowUsers.push({ user: { id: this.formWorkflow.get('subStateUser').value.id } });

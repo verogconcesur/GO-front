@@ -6,7 +6,7 @@ import { Env } from '@app/types/env';
 import { ConcenetError } from '@app/types/error';
 import { AttachmentDTO, CardAttachmentsDTO, CustomerAttachmentDTO } from '@data/models/cards/card-attachments-dto';
 import CardInstanceRemoteSignatureDTO from '@data/models/cards/card-instance-remote-signature-dto';
-import { Observable, Subject, throwError } from 'rxjs';
+import { BehaviorSubject, Observable, Subject, throwError } from 'rxjs';
 import { catchError } from 'rxjs/operators';
 
 @Injectable({
@@ -14,7 +14,8 @@ import { catchError } from 'rxjs/operators';
 })
 export class CardAttachmentsService {
   public remoteSignatureSubject$: Subject<CardInstanceRemoteSignatureDTO> = new Subject();
-
+  public attachmentsFormSource = new BehaviorSubject<any>(null);
+  public attachmentsForm$ = this.attachmentsFormSource.asObservable();
   private readonly GET_CARD_INSTANCE_PATH = '/api/cardInstanceWorkflow';
   private readonly DETAIL_PATH = '/detail';
   private readonly ATTACHMETS_PATH = '/attachments';
@@ -28,7 +29,6 @@ export class CardAttachmentsService {
   private readonly SEND_REMOTE_SIGNATURE_PATH = '/sendRemoteSignature';
   private readonly CANCEL_REMOTE_SIGNATURE_PATH = '/cancelRemoteSignature';
   private readonly ATTACHMENTS_CUSTOMER_PATH = 'attachmentsCustomer';
-
   constructor(@Inject(ENV) private env: Env, private http: HttpClient) {}
 
   /**
@@ -239,5 +239,8 @@ export class CardAttachmentsService {
           `${cardInstanceWorkflowId}${this.ATTACHMETS_PATH}${this.DOWNLOAD_PATH}/${fileId}`
       )
       .pipe(catchError((error) => throwError(error.error as ConcenetError)));
+  }
+  public updateAttachmentsForm(data: any) {
+    this.attachmentsFormSource.next(data);
   }
 }

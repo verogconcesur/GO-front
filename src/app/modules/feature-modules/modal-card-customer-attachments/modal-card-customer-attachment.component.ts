@@ -73,7 +73,6 @@ export class ModalCardCustomerAttachmentsComponent extends ComponentToExtendForC
     this.customerAttachTabId = this.extendedComponentData.customerAttachTabId;
     this.customerAttachTemplateAttachmentItemId = this.extendedComponentData.customerAttachTemplateAttachmentItemId;
     this.idCard = this.extendedComponentData.idCard;
-    console.log(this.attachmentTemplates);
     this.showAddAttchment = this.extendedComponentData.showAddAttchment;
     this.clientId = this.extendedComponentData.clientId;
     this.initializeForm();
@@ -85,7 +84,6 @@ export class ModalCardCustomerAttachmentsComponent extends ComponentToExtendForC
 
   public onSubmitCustomDialog(): Observable<boolean | AttachmentDTO[]> {
     const formValue = this.attachmentsForm.value;
-    console.log(formValue);
     const attachmentsResp = formValue.attachments
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       .filter((item: any) => item.enabled)
@@ -95,27 +93,32 @@ export class ModalCardCustomerAttachmentsComponent extends ComponentToExtendForC
         templateAttachmentItemId: item.attachmentsCategory,
         customerAttachmentId: item.id
       }));
-    const spinner = this.spinnerService.show();
-    return this.attachmentService.saveAttachmentsCustomers(this.idCard, attachmentsResp).pipe(
-      map((response) => {
-        this.globalMessageService.showSuccess({
-          message: this.translateService.instant(marker('common.successOperation')),
-          actionText: this.translateService.instant(marker('common.close'))
-        });
-        this.customDialogService.close(modalCardCustomerAttachmentsComponentModalEnum.ID);
-        return response;
-      }),
-      catchError((error) => {
-        this.globalMessageService.showError({
-          message: error.message,
-          actionText: this.translateService.instant(marker('common.close'))
-        });
-        return of(false);
-      }),
-      finalize(() => {
-        this.spinnerService.hide(spinner);
-      })
-    );
+    if (!this.showAddAttchment) {
+      const spinner = this.spinnerService.show();
+      return this.attachmentService.saveAttachmentsCustomers(this.idCard, attachmentsResp).pipe(
+        map((response) => {
+          this.globalMessageService.showSuccess({
+            message: this.translateService.instant(marker('common.successOperation')),
+            actionText: this.translateService.instant(marker('common.close'))
+          });
+          this.customDialogService.close(modalCardCustomerAttachmentsComponentModalEnum.ID);
+          return response;
+        }),
+        catchError((error) => {
+          this.globalMessageService.showError({
+            message: error.message,
+            actionText: this.translateService.instant(marker('common.close'))
+          });
+          return of(false);
+        }),
+        finalize(() => {
+          this.spinnerService.hide(spinner);
+        })
+      );
+    } else {
+      this.attachmentService.updateAttachmentsForm(attachmentsResp);
+      return of(true);
+    }
   }
 
   confirmCloseCustomDialog(): Observable<boolean> {
