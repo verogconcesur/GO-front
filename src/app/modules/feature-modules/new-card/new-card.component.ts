@@ -1,5 +1,5 @@
 import { STEPPER_GLOBAL_OPTIONS } from '@angular/cdk/stepper';
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { FormArray, FormBuilder, FormGroup, UntypedFormArray, Validators } from '@angular/forms';
 import { MatDialogRef } from '@angular/material/dialog';
 import { MatStepper } from '@angular/material/stepper';
@@ -45,7 +45,7 @@ export const enum NewCardComponentModalEnum {
     }
   ]
 })
-export class NewCardComponent implements OnInit {
+export class NewCardComponent implements OnInit, OnDestroy {
   @ViewChild('stepper') stepper: MatStepper;
   @ViewChild('step1') step1: StepWorkflowComponent;
   public labels = {
@@ -94,7 +94,9 @@ export class NewCardComponent implements OnInit {
       this.attachmentsData = data;
     });
   }
-
+  ngOnDestroy(): void {
+    this.attachmentService.updateAttachmentsForm(null);
+  }
   public getCardDateLimit(): number {
     if (this.formWorkflow.get('cardsLimit').value) {
       const date = this.formWorkflow.get('deadLineDate').value as Date;

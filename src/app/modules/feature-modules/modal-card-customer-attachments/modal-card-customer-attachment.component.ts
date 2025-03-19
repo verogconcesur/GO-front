@@ -137,7 +137,6 @@ export class ModalCardCustomerAttachmentsComponent extends ComponentToExtendForC
 
   public onTemplateChange(event: MatSelectChange, attachmentControl: AbstractControl): void {
     const selectedTemplateId = event.value;
-    // Reseteamos 'attachmentsCategory' para que el usuario seleccione nuevamente la categoría
     attachmentControl.get('attachmentsCategory')?.setValue(null);
   }
 
@@ -157,6 +156,7 @@ export class ModalCardCustomerAttachmentsComponent extends ComponentToExtendForC
       .subscribe({
         next: (data) => {
           this.data = data;
+          this.attachmentsArray.clear();
           this.populateFormWithAttachments();
         },
         error: (err: ConcenetError) => {
@@ -193,24 +193,32 @@ export class ModalCardCustomerAttachmentsComponent extends ComponentToExtendForC
   }
 
   public getItemBgImage(item: CustomerAttachmentDTO): string {
-    if (item.file.thumbnail && item.file.type) {
-      return `url("data:${item.file.type} ;base64,${item.file.thumbnail}")`;
-    } else if (item.file.type) {
-      if (item.file.type.indexOf('pdf') >= 0) {
+    if (item.file.thumbnail[0] && item.file.type[0]) {
+      return `url("data:${item.file.type[0]} ;base64,${item.file.thumbnail[0]}")`;
+    } else if (item.file.type[0]) {
+      if (item.file.type[0].indexOf('pdf') >= 0) {
         return `url(/assets/img/pdf.png)`;
-      } else if (item.file.type.indexOf('audio') >= 0 || item.file.type.indexOf('mp3') >= 0) {
+      } else if (item.file.type[0].indexOf('audio') >= 0 || item.file.type[0].indexOf('mp3') >= 0) {
         return `url(/assets/img/audio-file.png)`;
-      } else if (item.file.type.indexOf('video') >= 0) {
+      } else if (item.file.type[0].indexOf('video') >= 0) {
         return `url(/assets/img/video-file.png)`;
-      } else if (item.file.type.indexOf('image') >= 0) {
+      } else if (item.file.type[0].indexOf('image') >= 0) {
         return `url(/assets/img/image-file.png)`;
       }
     }
     return `url(/assets/img/unknown.svg)`;
   }
 
-  public hasPreview(item: AttachmentDTO): boolean {
-    return ['pdf', 'audio', 'video', 'image'].some((type) => item?.type?.toLowerCase().includes(type));
+  public hasPreview(item: CustomerAttachmentDTO): boolean {
+    if (
+      item?.file?.type[0]?.toLowerCase().indexOf('pdf') >= 0 ||
+      item?.file?.type[0]?.indexOf('audio') >= 0 ||
+      item?.file?.type[0]?.indexOf('video') >= 0 ||
+      item?.file?.type[0]?.indexOf('image') >= 0
+    ) {
+      return true;
+    }
+    return false;
   }
 
   public fileBrowseHandler(items: FileList): void {
@@ -227,26 +235,27 @@ export class ModalCardCustomerAttachmentsComponent extends ComponentToExtendForC
     attachmentGroup.get('option2').setValue('');
   }
   public toggleSelects(attachmentControl: AbstractControl): void {
-    console.log('entra');
     const currentState = attachmentControl.get('enabled')?.value;
     attachmentControl.get('enabled')?.setValue(!currentState);
   }
-  public downloadAttachment(item: AttachmentDTO, list: AttachmentDTO[]): void {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  public downloadAttachment(item: AttachmentDTO, list: FormArray<any>): void {
+    const listAttachments: AttachmentDTO[] = Object.values(list);
     const spinner = this.spinnerService.show();
-
+    //window.open(this.attachmentService.getDownloadAttachmentUrl(this.cardInstanceWorkflowId, this.tabId, item.id), '_blank');
     this.attachmentService
-      .downloadAttachment(this.cardInstanceWorkflowId, this.tabId, item.id)
+      .downloadCustomerAttachment(this.clientId, item.id)
       .pipe(
         take(1),
         finalize(() => this.spinnerService.hide(spinner))
       )
       .subscribe(
-        (data: AttachmentDTO) => {
+        (data: CustomerAttachmentDTO) => {
           if (this.hasPreview(item)) {
-            const listFiltered = list.filter((att: AttachmentDTO) => this.hasPreview(att));
-            this.mediaViewerService.openMediaViewerMúltiple(data, listFiltered, this.cardInstanceWorkflowId, this.tabId);
+            const listFiltered = listAttachments.filter((att: CustomerAttachmentDTO) => this.hasPreview(att));
+            this.mediaViewerService.openMediaViewerMúltiple(data, listAttachments, null, null);
           } else {
-            saveAs(`data:${data.type};base64,${data.content}`, data.name);
+            saveAs(`data:${data.file.type};base64,${data.file.content}`, data.file.name);
           }
         },
         (error: ConcenetError) => {
@@ -313,41 +322,50 @@ export class ModalCardCustomerAttachmentsComponent extends ComponentToExtendForC
 
   private async addFiles(files: FileList): Promise<void> {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    // const filesToSend: any[] = [];
-    // const filesName: string[] = [];
-    // this.data.forEach((cardAttachment: CardAttachmentsDTO) => {
-    //   cardAttachment.attachments.forEach((attachment: AttachmentDTO) => {
-    //     filesName.push(attachment.name);
-    //   });
-    // });
-    // const arrayOfBase64 = await this.fileListToBase64(files);
-    // Array.from(files).forEach((file: File, i: number) => {
-    //   const fileInfo = {
-    //     name: filesName.indexOf(file.name) === -1 ? file.name : `${+new Date()}_${file.name}`,
-    //     type: file.type,
-    //     size: file.size,
-    //     content: arrayOfBase64[i].split(';base64,')[1]
-    //   };
-    //   filesToSend.push(fileInfo);
-    // });
-    // const spinner = this.spinnerService.show();
-    //TODO Nuevo servicio para adjuntar archivos
-    // this.attachmentService
-    //   .addAttachments(this.cardInstanceWorkflowId, this.tabId, filesToSend)
-    //   .pipe(take(1))
-    //   .subscribe(
-    //     (data) => {
-    //       this.fetchAttachments(); // Llama a fetchAttachments para recargar la lista
-    //       this.spinnerService.hide(spinner);
-    //     },
-    //     (error: ConcenetError) => {
-    //       this.spinnerService.hide(spinner);
-    //       this.globalMessageService.showError({
-    //         message: error.message,
-    //         actionText: this.translateService.instant(marker('common.close'))
-    //       });
-    //     }
-    //   );
+    const filesToSend: any[] = [];
+    const filesName: string[] = [];
+    this.data.forEach((attachment: CustomerAttachmentDTO) => {
+      filesName.push(attachment.file.name);
+    });
+    const arrayOfBase64 = await this.fileListToBase64(files);
+    console.log(arrayOfBase64);
+    Array.from(files).forEach((file: File, i: number) => {
+      const fileInfo = {
+        name: filesName.indexOf(file.name) === -1 ? file.name : `${+new Date()}_${file.name}`,
+        type: file.type,
+        size: file.size,
+        content: arrayOfBase64[i].split(';base64,')[1]
+      };
+      filesToSend.push(fileInfo);
+    });
+    const spinner = this.spinnerService.show();
+    const customerIdValue: number = null;
+    const customerFilesToSend = filesToSend.map((file) => ({
+      id: customerIdValue,
+      customerId: customerIdValue,
+      file: {
+        name: file.name,
+        type: file.type,
+        size: file.size,
+        content: file.content
+      }
+    }));
+    this.attachmentService
+      .addClientAttachments(this.clientId, customerFilesToSend)
+      .pipe(take(1))
+      .subscribe(
+        (data) => {
+          this.fetchAttachments();
+          this.spinnerService.hide(spinner);
+        },
+        (error: ConcenetError) => {
+          this.spinnerService.hide(spinner);
+          this.globalMessageService.showError({
+            message: error.message,
+            actionText: this.translateService.instant(marker('common.close'))
+          });
+        }
+      );
   }
 
   private initializeForm = (): void => {
