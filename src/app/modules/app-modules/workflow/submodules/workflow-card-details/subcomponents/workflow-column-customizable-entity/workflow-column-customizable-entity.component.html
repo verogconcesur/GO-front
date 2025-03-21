@@ -21,7 +21,7 @@
         </button>
 
         <button mat-stroked-button *ngIf="showEditEntity() && tab.contentSourceId === 1" (click)="customerAttachments()">
-            Adjuntos cliente
+            {{ labels.customerAttachments | translate }}
         </button>
 
         <button mat-stroked-button *ngIf="showChangeOrAsignEntity()" (click)="changeEntity()">

@@ -67,7 +67,8 @@ export class WorkflowColumnCustomizableEntityComponent implements OnInit, OnChan
     setUser: marker('workflows.setUser'),
     setVehicle: marker('workflows.setVehicle'),
     setCustomer: marker('workflows.setCustomer'),
-    setRepairOrder: marker('workflows.setRepairOrder')
+    setRepairOrder: marker('workflows.setRepairOrder'),
+    customerAttachments: marker('entities.customers.customerAttachments')
   };
 
   public entityData: WorkflowCardTabItemDTO[] = [];

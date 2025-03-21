@@ -31,8 +31,8 @@ export const enum editCustomerAttachmentsComponentModalEnum {
 })
 export class ModalCustomerAttachmentsComponent extends ComponentToExtendForCustomDialog implements OnInit, OnDestroy {
   public labels = {
-    activeAttachments: marker('entities.customers.activeAttachments'),
-    oldAttachments: marker('entities.customers.oldAttachments')
+    activeAttachments: marker('entities.customers.attachments.activeAttachments'),
+    oldAttachments: marker('entities.customers.attachments.oldAttachments')
   };
   public clientId: number = null;
   public configTab1: CardInstanceAttachmentsConfig;

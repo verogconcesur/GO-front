@@ -707,7 +707,20 @@
     },
     "entities": {
         "customers": {
-            "activeAttachments": "Activos",
+            "attachments": {
+                "activeAttachments": "Activos",
+                "attachmentsTab": "Tab adjuntos",
+                "automaticCharge": "Carga automática",
+                "by": "por",
+                "category": "Categoría",
+                "creation": "Creación",
+                "edition": "Edición",
+                "moveToActives": "Mover a activos",
+                "moveToArchived": "Mover a antiguos",
+                "oldAttachments": "Antiguos",
+                "sureMoveToActives": "¿Esta seguro de querer mover este adjunto a antiguos?",
+                "sureMoveToArchived": "¿Esta seguro de querer mover este adjunto a activos?"
+            },
             "create": "Crear cliente",
             "customer": "Cliente",
             "customerAttachments": "Adjuntos cliente",
@@ -718,7 +731,6 @@
             "isCompany": "Es empresa",
             "lastName": "Segundo apellido",
             "name": "Nombre",
-            "oldAttachments": "Antiguos",
             "notValidPattern": "El formato no es válido",
             "phone": "Teléfono",
             "reference": "Referencia",

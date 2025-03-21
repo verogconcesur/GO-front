@@ -54,7 +54,15 @@ export class CardInstanceAttachmentsComponent implements OnInit, OnChanges {
     dropHere: marker('common.dropHere'),
     deleteConfirmation: marker('common.deleteConfirmation'),
     fileSharedWithCustomerInLanding: marker('landing.fileSharedWithCustomerInLanding'),
-    stopSharingFileWithCustomerInLanding: marker('landing.stopSharingFileWithCustomerInLanding')
+    stopSharingFileWithCustomerInLanding: marker('landing.stopSharingFileWithCustomerInLanding'),
+    sureMoveToActives: marker('entities.customers.attachments.sureMoveToActives'),
+    sureMoveToArchived: marker('entities.customers.attachments.sureMoveToArchived'),
+    moveToActives: marker('entities.customers.attachments.moveToActives'),
+    moveToArchived: marker('entities.customers.attachments.moveToArchived'),
+    automaticCharge: marker('entities.customers.attachments.automaticCharge'),
+    creation: marker('entities.customers.attachments.creation'),
+    edition: marker('entities.customers.attachments.edition'),
+    by: marker('entities.customers.attachments.by')
   };
   public modalMode = false;
   public title: string = marker('common.attachments');
@@ -352,8 +360,8 @@ export class CardInstanceAttachmentsComponent implements OnInit, OnChanges {
       .open({
         title: this.translateService.instant(marker('common.warning')),
         message: item.active
-          ? `Esta seguro de querer mover este adjunto a antiguos?`
-          : `Esta seguro de querer mover este adjunto a activos?`
+          ? `${this.translateService.instant(this.labels.sureMoveToArchived)}`
+          : `${this.translateService.instant(this.labels.sureMoveToActives)}`
       })
       .pipe(take(1))
       .subscribe((ok: boolean) => {

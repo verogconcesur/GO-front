@@ -69,7 +69,8 @@ export class EntityComponent implements OnInit {
     customerNotFound: marker('newCard.errors.customerNotFound'),
     repairOrderNotFound: marker('newCard.errors.repairOrderNotFound'),
     dataNotFound: marker('newCard.errors.dataNotFound'),
-    required: marker('errors.required')
+    required: marker('errors.required'),
+    customerAttachments: marker('entities.customers.customerAttachments')
   };
   public searchForm: FormGroup;
   public searching = false;

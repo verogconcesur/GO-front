@@ -30,7 +30,10 @@ export const enum modalCardCustomerAttachmentsComponentModalEnum {
 })
 export class ModalCardCustomerAttachmentsComponent extends ComponentToExtendForCustomDialog implements OnInit, OnDestroy {
   public showAddAttchment: boolean;
-  public labels = {};
+  public labels = {
+    attachmentsTab: marker('entities.customers.attachments.attachmentsTab'),
+    category: marker('entities.customers.attachments.category')
+  };
   public attachmentTemplates: WorkflowAttachmentTimelineDTO[];
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   attachmentItemsMap: { [key: number]: any[] } = {};
@@ -182,7 +185,8 @@ export class ModalCardCustomerAttachmentsComponent extends ComponentToExtendForC
           type: 'submit',
           label: marker('common.save'),
           design: 'raised',
-          color: 'primary'
+          color: 'primary',
+          disabledFn: () => !this.isAttachmentFormValid()
         }
       ]
     };
@@ -265,6 +269,15 @@ export class ModalCardCustomerAttachmentsComponent extends ComponentToExtendForC
           });
         }
       );
+  }
+
+  isAttachmentFormValid(): boolean {
+    return this.attachmentsArray?.controls?.some((attachmentGroup: FormGroup) => {
+      const enabled = attachmentGroup.get('enabled')?.value;
+      const attachmentsTab = attachmentGroup.get('attachmentsTab')?.value;
+      const attachmentsCategory = attachmentGroup.get('attachmentsCategory')?.value;
+      return enabled && attachmentsTab && attachmentsCategory;
+    });
   }
 
   private addAttachment(attachment: CustomerAttachmentDTO): void {
