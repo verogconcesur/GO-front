@@ -360,8 +360,8 @@ export class CardInstanceAttachmentsComponent implements OnInit, OnChanges {
       .open({
         title: this.translateService.instant(marker('common.warning')),
         message: item.active
-          ? `${this.translateService.instant(this.labels.sureMoveToArchived)}`
-          : `${this.translateService.instant(this.labels.sureMoveToActives)}`
+          ? `${this.translateService.instant(this.labels.sureMoveToActives)}`
+          : `${this.translateService.instant(this.labels.sureMoveToArchived)}`
       })
       .pipe(take(1))
       .subscribe((ok: boolean) => {
