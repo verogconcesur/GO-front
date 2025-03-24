@@ -308,7 +308,9 @@ export class ModalCardCustomerAttachmentsComponent extends ComponentToExtendForC
 
   private populateFormWithAttachments(): void {
     this.data.forEach((attachment) => {
-      this.addAttachment(attachment);
+      if (attachment.active) {
+        this.addAttachment(attachment);
+      }
     });
   }
 
