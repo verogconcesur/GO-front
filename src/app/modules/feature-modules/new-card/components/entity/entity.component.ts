@@ -70,13 +70,16 @@ export class EntityComponent implements OnInit {
     customerNotFound: marker('newCard.errors.customerNotFound'),
     repairOrderNotFound: marker('newCard.errors.repairOrderNotFound'),
     dataNotFound: marker('newCard.errors.dataNotFound'),
-    required: marker('errors.required')
+    required: marker('errors.required'),
+    customerAttachments: marker('entities.customers.customerAttachments')
   };
   public searchForm: FormGroup;
   public searching = false;
   public entityList: VehicleEntityDTO[] | UserEntityDTO[] | CustomerEntityDTO[] | RepairOrderEntityDTO[] = [];
   public inventoryList: InventoryVehicle[] = [];
   public attachmentTemplates: WorkflowAttachmentTimelineDTO[];
+  public customerAttachTabId: number;
+  public customerAttachTemplateAttachmentItemId: number;
   constructor(
     private fb: FormBuilder,
     private cardsService: CardService,
@@ -135,15 +138,25 @@ export class EntityComponent implements OnInit {
         return '';
     }
   }
-  // public getAttachmentsData() {
-  //   this.workflowadministrationService
-  //     .getWorkflowTimelineAttachments(this.workflowId)
-  //     .pipe(take(1))
-  //     .subscribe((attachments) => {
-  //       this.attachmentTemplates = attachments;
-  //     });
-  // }
+  public getAttachmentsData() {
+    this.workflowadministrationService
+      .getWorkflowTimelineAttachments(this.formWorkflow.controls.workflow.value.id)
+      .pipe(take(1))
+      .subscribe((attachments) => {
+        this.attachmentTemplates = attachments;
+      });
+  }
+  public getDefaultTabAndCategoryForAttachments() {
+    this.workflowadministrationService
+      .getWorkflowTimeline(this.formWorkflow.controls.workflow.value.id)
+      .pipe(take(1))
+      .subscribe((data) => {
+        this.customerAttachTabId = data.customerAttachTabId;
+        this.customerAttachTemplateAttachmentItemId = data.customerAttachTemplateAttachmentItemId;
+      });
+  }
   public openClientAttachments() {
+    console.log(this.formTab.controls.customerId.value);
     this.customDialogService
       .open({
         id: modalCardCustomerAttachmentsComponentModalEnum.ID,
@@ -152,7 +165,13 @@ export class EntityComponent implements OnInit {
         disableClose: true,
         extendedComponentData: {
           attachmentTemplates: this.attachmentTemplates ? this.attachmentTemplates : null,
-          showAddAttchment: true
+          showAddAttchment: true,
+          idCard: null,
+          clientId: this.formTab.controls.customerId.value,
+          customerAttachTabId: this.customerAttachTabId ? this.customerAttachTabId : null,
+          customerAttachTemplateAttachmentItemId: this.customerAttachTemplateAttachmentItemId
+            ? this.customerAttachTemplateAttachmentItemId
+            : null
         },
         width: '1000px'
       })
@@ -564,5 +583,7 @@ export class EntityComponent implements OnInit {
   }
   ngOnInit(): void {
     this.initializeForm();
+    this.getAttachmentsData();
+    this.getDefaultTabAndCategoryForAttachments();
   }
 }

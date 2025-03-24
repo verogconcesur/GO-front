@@ -2,6 +2,8 @@ import TemplatesTimelineDTO, { TemplatesTimelineItemsDTO } from '../templates/te
 import WorkflowSubstateDTO from '../workflows/workflow-substate-dto';
 
 export interface WorkflowTimelineDTO {
+  customerAttachTabId?: number;
+  customerAttachTemplateAttachmentItemId?: number;
   templateTimelineDTO?: TemplatesTimelineDTO;
   workflowSubstateTimelineItems?: WorkflowSubstateTimelineItemDTO[];
   templateAttachmentItemId: number;

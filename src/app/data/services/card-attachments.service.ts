@@ -4,9 +4,9 @@ import { Inject, Injectable } from '@angular/core';
 import { ENV } from '@app/constants/global.constants';
 import { Env } from '@app/types/env';
 import { ConcenetError } from '@app/types/error';
-import { AttachmentDTO, CardAttachmentsDTO } from '@data/models/cards/card-attachments-dto';
+import { AttachmentDTO, CardAttachmentsDTO, CustomerAttachmentDTO } from '@data/models/cards/card-attachments-dto';
 import CardInstanceRemoteSignatureDTO from '@data/models/cards/card-instance-remote-signature-dto';
-import { Observable, Subject, throwError } from 'rxjs';
+import { BehaviorSubject, Observable, Subject, throwError } from 'rxjs';
 import { catchError } from 'rxjs/operators';
 
 @Injectable({
@@ -14,7 +14,8 @@ import { catchError } from 'rxjs/operators';
 })
 export class CardAttachmentsService {
   public remoteSignatureSubject$: Subject<CardInstanceRemoteSignatureDTO> = new Subject();
-
+  public attachmentsFormSource = new BehaviorSubject<any>(null);
+  public attachmentsForm$ = this.attachmentsFormSource.asObservable();
   private readonly GET_CARD_INSTANCE_PATH = '/api/cardInstanceWorkflow';
   private readonly DETAIL_PATH = '/detail';
   private readonly ATTACHMETS_PATH = '/attachments';
@@ -27,7 +28,7 @@ export class CardAttachmentsService {
   private readonly HIDE_LANDING_PATH = '/hideLanding';
   private readonly SEND_REMOTE_SIGNATURE_PATH = '/sendRemoteSignature';
   private readonly CANCEL_REMOTE_SIGNATURE_PATH = '/cancelRemoteSignature';
-
+  private readonly ATTACHMENTS_CUSTOMER_PATH = 'attachmentsCustomer';
   constructor(@Inject(ENV) private env: Env, private http: HttpClient) {}
 
   /**
@@ -61,6 +62,15 @@ export class CardAttachmentsService {
       .pipe(catchError((error) => throwError(error.error as ConcenetError)));
   }
 
+  public getCustomerAttachments(clientId: number): Observable<CustomerAttachmentDTO[]> {
+    return this.http
+      .get<CustomerAttachmentDTO[]>(
+        // eslint-disable-next-line max-len
+        `${this.env.apiBaseUrl}${this.CUSTOMERS_PATH}/${clientId}${this.ATTACHMETS_PATH}`
+      )
+      .pipe(catchError((error) => throwError(error.error as ConcenetError)));
+  }
+
   public editAttachment(
     cardInstanceWorkflowId: number,
     tabId: number,
@@ -78,6 +88,28 @@ export class CardAttachmentsService {
           },
           file: {
             id: fileId,
+            name: newName
+          }
+        }
+      )
+      .pipe(catchError((error) => throwError(error.error as ConcenetError)));
+  }
+
+  public saveAttachmentsCustomers(clienId: number, attachments: any) {
+    return this.http
+      .post<any>(
+        `${this.env.apiBaseUrl}${this.GET_CARD_INSTANCE_PATH}${this.DETAIL_PATH}/${clienId}/${this.ATTACHMENTS_CUSTOMER_PATH}`,
+        attachments
+      )
+      .pipe(catchError((error) => throwError(error.error as ConcenetError)));
+  }
+
+  public editCustomerAttachment(customerId: number, fileId: number, newName: string): Observable<any> {
+    return this.http
+      .post<any>(
+        `${this.env.apiBaseUrl}${this.CUSTOMERS_PATH}/` + `${customerId}${this.ATTACHMETS_PATH}/${fileId}${this.EDIT_PATH}`,
+        {
+          file: {
             name: newName
           }
         }
@@ -149,6 +181,14 @@ export class CardAttachmentsService {
       .pipe(catchError((error) => throwError(error.error as ConcenetError)));
   }
 
+  public deleteCustomerAttachment(customerId: number, fileId: number): Observable<any> {
+    return this.http
+      .delete<any>(
+        `${this.env.apiBaseUrl}${this.CUSTOMERS_PATH}/` + `${customerId}${this.ATTACHMETS_PATH}/${fileId}${this.DELETE_PATH}`
+      )
+      .pipe(catchError((error) => throwError(error.error as ConcenetError)));
+  }
+
   public moveAttachment(attachmentId: number, customerId: number, active: boolean): Observable<any> {
     return this.http
       .get(
@@ -186,6 +226,12 @@ export class CardAttachmentsService {
     return this.http.get<AttachmentDTO>(url).pipe(catchError((error) => throwError(error.error as ConcenetError)));
   }
 
+  public downloadCustomerAttachment(customerId: number, fileId: number): Observable<CustomerAttachmentDTO> {
+    const url =
+      `${this.env.apiBaseUrl}${this.CUSTOMERS_PATH}/` + `${customerId}${this.ATTACHMETS_PATH}/${fileId}${this.DOWNLOAD_PATH}`;
+    return this.http.get<CustomerAttachmentDTO>(url).pipe(catchError((error) => throwError(error.error as ConcenetError)));
+  }
+
   public downloadAttachmentByCardInstance(cardInstanceWorkflowId: number, fileId: number): Observable<AttachmentDTO> {
     return this.http
       .get<AttachmentDTO>(
@@ -193,5 +239,8 @@ export class CardAttachmentsService {
           `${cardInstanceWorkflowId}${this.ATTACHMETS_PATH}${this.DOWNLOAD_PATH}/${fileId}`
       )
       .pipe(catchError((error) => throwError(error.error as ConcenetError)));
+  }
+  public updateAttachmentsForm(data: any) {
+    this.attachmentsFormSource.next(data);
   }
 }

@@ -54,7 +54,15 @@ export class CardInstanceAttachmentsComponent implements OnInit, OnChanges {
     dropHere: marker('common.dropHere'),
     deleteConfirmation: marker('common.deleteConfirmation'),
     fileSharedWithCustomerInLanding: marker('landing.fileSharedWithCustomerInLanding'),
-    stopSharingFileWithCustomerInLanding: marker('landing.stopSharingFileWithCustomerInLanding')
+    stopSharingFileWithCustomerInLanding: marker('landing.stopSharingFileWithCustomerInLanding'),
+    sureMoveToActives: marker('entities.customers.attachments.sureMoveToActives'),
+    sureMoveToArchived: marker('entities.customers.attachments.sureMoveToArchived'),
+    moveToActives: marker('entities.customers.attachments.moveToActives'),
+    moveToArchived: marker('entities.customers.attachments.moveToArchived'),
+    automaticCharge: marker('entities.customers.attachments.automaticCharge'),
+    creation: marker('entities.customers.attachments.creation'),
+    edition: marker('entities.customers.attachments.edition'),
+    by: marker('entities.customers.attachments.by')
   };
   public modalMode = false;
   public title: string = marker('common.attachments');
@@ -182,7 +190,7 @@ export class CardInstanceAttachmentsComponent implements OnInit, OnChanges {
     const autoValue = !item.auto;
     const spinner = this.spinnerService.show();
     this.attachmentService
-      .autoCustomerAttachments(693, item.id, autoValue)
+      .autoCustomerAttachments(this.clientId, item.id, autoValue)
       .pipe(take(1))
       .subscribe(
         (data) => {
@@ -266,7 +274,30 @@ export class CardInstanceAttachmentsComponent implements OnInit, OnChanges {
           }
         );
     } else {
-      //Todo Llamar endpoint para visualizar documentos en cliente
+      this.attachmentService
+        .downloadCustomerAttachment(this.clientId, item.id)
+        .pipe(
+          take(1),
+          finalize(() => this.spinnerService.hide(spinner))
+        )
+        .subscribe(
+          (data: CustomerAttachmentDTO) => {
+            if (this.hasPreview(item)) {
+              const listFiltered = list.filter((att: CustomerAttachmentDTO) => this.hasPreview(att));
+              this.mediaViewerService.openMediaViewerMúltiple(data, listFiltered, null, null);
+            } else {
+              saveAs(`data:${data.file.type};base64,${data.file.content}`, data.file.name);
+            }
+          },
+          (error: ConcenetError) => {
+            this.logger.error(error);
+
+            this.globalMessageService.showError({
+              message: error.message,
+              actionText: this.translateService.instant(marker('common.close'))
+            });
+          }
+        );
     }
   }
 
@@ -300,7 +331,24 @@ export class CardInstanceAttachmentsComponent implements OnInit, OnChanges {
                 }
               );
           } else {
-            //TODO Llamar al servicio para eliminar adjuntos en cliente
+            this.attachmentService
+              .deleteCustomerAttachment(this.clientId, item.id)
+              .pipe(take(1))
+              .subscribe(
+                (data) => {
+                  this.reload.emit(true);
+                  this.spinnerService.hide(spinner);
+                },
+                (error: ConcenetError) => {
+                  this.spinnerService.hide(spinner);
+                  this.logger.error(error);
+
+                  this.globalMessageService.showError({
+                    message: error.message,
+                    actionText: this.translateService.instant(marker('common.close'))
+                  });
+                }
+              );
           }
         }
       });
@@ -312,15 +360,15 @@ export class CardInstanceAttachmentsComponent implements OnInit, OnChanges {
       .open({
         title: this.translateService.instant(marker('common.warning')),
         message: item.active
-          ? `Esta seguro de querer mover este adjunto a antiguos?`
-          : `Esta seguro de querer mover este adjunto a activos?`
+          ? `${this.translateService.instant(this.labels.sureMoveToActives)}`
+          : `${this.translateService.instant(this.labels.sureMoveToArchived)}`
       })
       .pipe(take(1))
       .subscribe((ok: boolean) => {
         if (ok) {
           const spinner = this.spinnerService.show();
           this.attachmentService
-            .moveAttachment(item.id, 693, activeValue)
+            .moveAttachment(item.id, this.clientId, activeValue)
             .pipe(take(1))
             .subscribe(
               (data) => {
@@ -529,7 +577,7 @@ export class CardInstanceAttachmentsComponent implements OnInit, OnChanges {
         }
       }));
       this.attachmentService
-        .addClientAttachments(693, customerFilesToSend)
+        .addClientAttachments(this.clientId, customerFilesToSend)
         .pipe(take(1))
         .subscribe(
           (data) => {
