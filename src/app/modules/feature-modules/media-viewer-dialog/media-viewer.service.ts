@@ -1,6 +1,6 @@
 import { Injectable, OnDestroy } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
-import { AttachmentDTO } from '@data/models/cards/card-attachments-dto';
+import { AttachmentDTO, CustomerAttachmentDTO } from '@data/models/cards/card-attachments-dto';
 import { take } from 'rxjs/operators';
 import { MediaViewerDialogComponent } from './media-viewer-dialog.component';
 
@@ -33,7 +33,12 @@ export class MediaViewerService implements OnDestroy {
       .afterClosed()
       .pipe(take(1));
   }
-  public openMediaViewerMúltiple(current: AttachmentDTO, list: AttachmentDTO[], cardInstanceId: number, tabId: number): void {
+  public openMediaViewerMúltiple(
+    current: AttachmentDTO | CustomerAttachmentDTO,
+    list: AttachmentDTO[],
+    cardInstanceId: number,
+    tabId: number
+  ): void {
     const data = {
       current,
       list,

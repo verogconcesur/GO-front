@@ -9,7 +9,7 @@
     <input type="file" style="display: none" #fileInputRef multiple (change)="fileBrowseHandler($event.target.files)" />
 
     <div class="attachments-and-selects-container">
-        <div *ngFor="let attachmentControl of attachmentsArray.controls; let i = index" class="attachment-item">
+        <div *ngFor="let attachmentControl of attachmentsArray?.controls; let i = index" class="attachment-item">
             <!-- Columna del documento -->
             <div
                 class="attachments__content__templates__content__item"
@@ -24,13 +24,13 @@
             >
                 <div class="file-info">
                     <div class="file-name">
-                        {{ attachmentControl.value.name }}
+                        {{ attachmentControl.value.file.name }}
                     </div>
                     <div class="actions-wrapper">
                         <mat-icon
                             class="top-right"
                             *ngIf="hasPreview(attachmentControl.value)"
-                            (click)="downloadAttachment(attachmentControl.value, i)"
+                            (click)="downloadAttachment(attachmentControl.value, attachmentsArray)"
                         >
                             search
                         </mat-icon>
@@ -44,7 +44,7 @@
             <!-- Columna de los selectores -->
             <div class="selects-container">
                 <mat-form-field appearance="outline" floatLabel="always">
-                    <mat-label>Tab Adjunto</mat-label>
+                    <mat-label>{{ labels.attachmentsTab | translate }}</mat-label>
                     <mat-select
                         [formControl]="attachmentControl.get('attachmentsTab')"
                         [disabled]="!attachmentControl.get('enabled')?.value"
@@ -54,18 +54,27 @@
                             {{ template.name }}
                         </mat-option>
                     </mat-select>
-                    <button matSuffix mat-icon-button aria-label="Clear" (click)="clearSelection(attachmentControl, $event)">
+                    <button
+                        [disabled]="!attachmentControl.get('enabled')?.value"
+                        matSuffix
+                        mat-icon-button
+                        aria-label="Clear"
+                        (click)="clearSelection(attachmentControl, $event)"
+                    >
                         <mat-icon>close</mat-icon>
                     </button>
                 </mat-form-field>
 
                 <mat-form-field appearance="outline" floatLabel="always">
-                    <mat-label>Categoria</mat-label>
+                    <mat-label>{{ labels.category | translate }}</mat-label>
                     <mat-select
                         [formControl]="attachmentControl.get('attachmentsCategory')"
                         [disabled]="!attachmentControl.get('enabled')?.value"
                     >
-                        <mat-option *ngFor="let item of filteredAttachmentItems" [value]="item.id">
+                        <mat-option
+                            *ngFor="let item of getItemsByTemplate(attachmentControl.get('attachmentsTab')?.value)"
+                            [value]="item.id"
+                        >
                             {{ item.name }}
                         </mat-option>
                     </mat-select>

@@ -32,8 +32,13 @@
                 <button mat-stroked-button *ngIf="showCreateEntity()" (click)="createEntity(true)">
                     {{ getImportEntityButtonLabel() | translate }}
                 </button>
-                <button mat-stroked-button *ngIf="formTab.get('contentSourceId').value === 1" (click)="openClientAttachments()">
-                    Adjuntos cliente
+                <button
+                    [disabled]="!formTab.controls.customerId.value"
+                    mat-stroked-button
+                    *ngIf="formTab.get('contentSourceId').value === 1"
+                    (click)="openClientAttachments()"
+                >
+                    {{ labels.customerAttachments | translate }}
                 </button>
             </div>
         </form>

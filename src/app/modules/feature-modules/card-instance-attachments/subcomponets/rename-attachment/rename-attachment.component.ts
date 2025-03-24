@@ -62,7 +62,7 @@ export class RenameAttachmentComponent implements OnInit {
       tabId: number;
       templateAttachmentItemId: number;
       attachmentsNames: string[];
-      customerId: number;
+      clientId: number;
       isClientMode: boolean;
     },
     private fb: FormBuilder
@@ -74,7 +74,7 @@ export class RenameAttachmentComponent implements OnInit {
 
   ngOnInit(): void {
     this.isClientMode = this.data.isClientMode;
-    this.clientId = this.data.customerId;
+    this.clientId = this.data.clientId;
     this.attachment = this.data.attachment;
     this.tabId = this.data.tabId;
     this.cardInstanceWorkflowId = this.data.cardInstanceWorkflowId;
@@ -142,7 +142,23 @@ export class RenameAttachmentComponent implements OnInit {
           }
         );
     } else {
-      //TODO Metodo para editar nombre de archivo de cliente
+      this.attachmentService
+        .editCustomerAttachment(this.clientId, this.attachment.id, this.form.name.value)
+        .pipe(take(1))
+        .subscribe(
+          (data) => {
+            this.spinnerService.hide(spinner);
+            this.dialogRef.close(true);
+          },
+          (error: ConcenetError) => {
+            this.spinnerService.hide(spinner);
+            this.logger.error(error);
+            this.globalMessageService.showError({
+              message: error.message,
+              actionText: this.translateService.instant(marker('common.close'))
+            });
+          }
+        );
     }
   }
 

@@ -47,6 +47,8 @@ export class WorkflowColumnCustomizableEntityComponent implements OnInit, OnChan
   public workflowId: number;
   public idCard: number;
   public attachmentTemplates: WorkflowAttachmentTimelineDTO[];
+  public customerAttachTabId: number;
+  public customerAttachTemplateAttachmentItemId: number;
 
   public labels = {
     noDataToShow: marker('errors.noDataToShow'),
@@ -60,7 +62,8 @@ export class WorkflowColumnCustomizableEntityComponent implements OnInit, OnChan
     setUser: marker('workflows.setUser'),
     setVehicle: marker('workflows.setVehicle'),
     setCustomer: marker('workflows.setCustomer'),
-    setRepairOrder: marker('workflows.setRepairOrder')
+    setRepairOrder: marker('workflows.setRepairOrder'),
+    customerAttachments: marker('entities.customers.customerAttachments')
   };
 
   public entityData: WorkflowCardTabItemDTO[] = [];
@@ -83,7 +86,10 @@ export class WorkflowColumnCustomizableEntityComponent implements OnInit, OnChan
   ngOnInit(): void {
     this.workflowId = parseInt(this.route.parent.parent.snapshot.params.wId, 10);
     this.idCard = parseInt(this.route?.snapshot?.params?.idCard, 10);
+    console.log(this.cardInstance);
+    console.log(this.workflowId);
     this.getAttachmentsData();
+    this.getDefaultTabAndCategoryForAttachments();
   }
 
   ngOnChanges(changes: SimpleChanges): void {
@@ -234,10 +240,19 @@ export class WorkflowColumnCustomizableEntityComponent implements OnInit, OnChan
   }
   public getAttachmentsData() {
     this.workflowadministrationService
-      .getWorkflowTimelineAttachments(this.workflowId)
+      .getWorkflowTimelineAttachments(this.cardInstance.workflowId)
       .pipe(take(1))
       .subscribe((attachments) => {
         this.attachmentTemplates = attachments;
+      });
+  }
+  public getDefaultTabAndCategoryForAttachments() {
+    this.workflowadministrationService
+      .getWorkflowTimeline(this.cardInstance.workflowId)
+      .pipe(take(1))
+      .subscribe((data) => {
+        this.customerAttachTabId = data.customerAttachTabId;
+        this.customerAttachTemplateAttachmentItemId = data.customerAttachTemplateAttachmentItemId;
       });
   }
 
@@ -250,7 +265,13 @@ export class WorkflowColumnCustomizableEntityComponent implements OnInit, OnChan
         disableClose: true,
         extendedComponentData: {
           attachmentTemplates: this.attachmentTemplates ? this.attachmentTemplates : null,
-          showAddAttchment: false
+          showAddAttchment: false,
+          idCard: this.cardInstance.cardInstanceWorkflow.id,
+          clientId: this.cardInstance.cardInstanceWorkflow.cardInstance.customerId,
+          customerAttachTabId: this.customerAttachTabId ? this.customerAttachTabId : null,
+          customerAttachTemplateAttachmentItemId: this.customerAttachTemplateAttachmentItemId
+            ? this.customerAttachTemplateAttachmentItemId
+            : null
         },
         width: '1000px'
       })
