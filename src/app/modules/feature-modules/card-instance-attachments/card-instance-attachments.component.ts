@@ -163,6 +163,10 @@ export class CardInstanceAttachmentsComponent implements OnInit, OnChanges {
     return !!this.authService.getUserPermissions().find((permission) => permission.code === PermissionConstants.ALLOWDELETEFILES);
   }
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  public isFileCreator(item: any): boolean {
+    return this.authService.getLoggedUser().user_full_name === item.createdByFullName;
+  }
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   public hasPreview(item: any): boolean {
     if (this.isClientMode) {
       if (

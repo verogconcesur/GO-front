@@ -2,6 +2,37 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [1.1.12](https://github.com/Delivery-Projects/concesur/concenet_front/-/compare/v1.1.11...v1.1.12) (2025-03-24)
+
+
+### Features
+
+* bypass f2a ([cbbaeb3](https://github.com/Delivery-Projects/concesur/concenet_front/-/commit/cbbaeb365b14710eb55a16f5cf644056bda13e53))
+* cambiar f2a preferido, identificador de sesion unico ([2556f8e](https://github.com/Delivery-Projects/concesur/concenet_front/-/commit/2556f8e9500d6602538aed9e3b1545decc7be748))
+* componente seleccionar opcion dfa ([865eae0](https://github.com/Delivery-Projects/concesur/concenet_front/-/commit/865eae0ef245d35fa3df79b67c60d066fc88beb0))
+* config sms twilio ([d940aaa](https://github.com/Delivery-Projects/concesur/concenet_front/-/commit/d940aaab3b73fc533a6de608e80cc2dab8118b93))
+* deshabilitar campos y estilos ([5d9f5ae](https://github.com/Delivery-Projects/concesur/concenet_front/-/commit/5d9f5ae23633743bf66a0e9b328c691238d60f22))
+* deshabilitar qr ([3a0cd00](https://github.com/Delivery-Projects/concesur/concenet_front/-/commit/3a0cd004eee001bf5bba40318c3b863d05715168))
+* doble factor dialog component ([65d4439](https://github.com/Delivery-Projects/concesur/concenet_front/-/commit/65d44391bfc1623e5f6a5aa30f323ed42db7d29a))
+* generar fingerprint unica ([9ddfe13](https://github.com/Delivery-Projects/concesur/concenet_front/-/commit/9ddfe132b29a8c653129057a387bc313d3d01777))
+* modal para inroducir datos antes de la f2a(en progreso) ([8279992](https://github.com/Delivery-Projects/concesur/concenet_front/-/commit/827999254a42ad90d2699544763e6bf0ed515bd2))
+* nueva logica modales, nuevas variables editar usuario y perfil ([a334112](https://github.com/Delivery-Projects/concesur/concenet_front/-/commit/a334112d277f486e96d4ab5f55e6c1a859b580f4))
+* ocultar workflow usuarios si esta vacio ([1f7bb91](https://github.com/Delivery-Projects/concesur/concenet_front/-/commit/1f7bb912e09ca69bc2dc1ec48370d5e6987e5d95))
+* servicio pedir email y sms ([d50dc9c](https://github.com/Delivery-Projects/concesur/concenet_front/-/commit/d50dc9c40ccff0cd386974c0730446928ed89f40))
+* servicios authenticator, arreglar errores headers ([a46057b](https://github.com/Delivery-Projects/concesur/concenet_front/-/commit/a46057b7990344107525e4af939dbae07af3aa17))
+* servicios f2a en perfil ([d1dd9a4](https://github.com/Delivery-Projects/concesur/concenet_front/-/commit/d1dd9a45680b276b245099ab43a7fce77cffbb7f))
+* servicios f2a sms y email ([33ee5a7](https://github.com/Delivery-Projects/concesur/concenet_front/-/commit/33ee5a73b82d745d4786c63325548188d57c6de7))
+* traducciones ([18d7445](https://github.com/Delivery-Projects/concesur/concenet_front/-/commit/18d744526f3869ecef558e354f4f5ad1d3b07eb0))
+* traducciones y servicios terminados modal email y sms ([76aa5a7](https://github.com/Delivery-Projects/concesur/concenet_front/-/commit/76aa5a7ab2157abe8c272e3090b03e6a1a0ad129))
+
+
+### Bug Fixes
+
+*  volver a predeterminado si no se tiene email en authenticator ([ec27c5e](https://github.com/Delivery-Projects/concesur/concenet_front/-/commit/ec27c5eb59b3c769b535e5b6cadfaa9b8c030b0f))
+* arreglar multiples llamadas buscador rapido ([0877ab9](https://github.com/Delivery-Projects/concesur/concenet_front/-/commit/0877ab9bd520ab94610db32de647d548508c5d69))
+* arreglos securizacion ([8d09a00](https://github.com/Delivery-Projects/concesur/concenet_front/-/commit/8d09a00998b625da2160025578283be892ca7eb2))
+* mostrar error en el formato de los datos ([f6d3c04](https://github.com/Delivery-Projects/concesur/concenet_front/-/commit/f6d3c044d329314fa33b6ee45c8cebe3bd1c3607))
+
 ### [1.1.11](https://github.com/Delivery-Projects/concesur/concenet_front/-/compare/v1.1.10...v1.1.11) (2025-03-10)
 
 
