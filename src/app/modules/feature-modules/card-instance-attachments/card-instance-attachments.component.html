@@ -80,7 +80,7 @@
                         >
                         <mat-icon
                             class="top-left"
-                            *ngIf="isClientMode && hasUerPermissionToDeleteFiles()"
+                            *ngIf="isClientMode && hasUerPermissionToDeleteFiles() && isFileCreator(item)"
                             (click)="deleteAttachment(item)"
                             >delete</mat-icon
                         >
