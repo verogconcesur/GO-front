@@ -38,10 +38,7 @@ export class ModalCardCustomerAttachmentsComponent extends ComponentToExtendForC
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   attachmentItemsMap: { [key: number]: any[] } = {};
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  public filteredAttachmentItems: any[] = [];
   public data: CustomerAttachmentDTO[] = [];
-  public selectedAttachments: AttachmentDTO[] = [];
-  public cardInstanceWorkflowId: number;
   public tabId: number;
   public attachmentsForm: FormGroup;
   public form: UntypedFormGroup;
@@ -171,7 +168,6 @@ export class ModalCardCustomerAttachmentsComponent extends ComponentToExtendForC
       });
   }
   clearSelection(attachmentControl: AbstractControl, event: MouseEvent): void {
-    // Resetea los valores de attachmentsTab y attachmentsCategory
     attachmentControl.get('attachmentsTab')?.setValue(null);
     attachmentControl.get('attachmentsCategory')?.setValue(null);
     event.stopPropagation();
@@ -190,10 +186,6 @@ export class ModalCardCustomerAttachmentsComponent extends ComponentToExtendForC
         }
       ]
     };
-  }
-
-  public isItemSelected(item: AttachmentDTO): boolean {
-    return this.selectedAttachments.indexOf(item) >= 0;
   }
 
   public getItemBgImage(item: CustomerAttachmentDTO): string {
@@ -229,10 +221,6 @@ export class ModalCardCustomerAttachmentsComponent extends ComponentToExtendForC
     this.addFiles(items);
   }
 
-  public fileDropped(items: FileList): void {
-    this.addFiles(items);
-  }
-
   public clearSelect(index: number): void {
     const attachmentGroup = this.attachmentsArray.at(index) as FormGroup;
     attachmentGroup.get('option1').setValue('');
@@ -246,7 +234,6 @@ export class ModalCardCustomerAttachmentsComponent extends ComponentToExtendForC
   public downloadAttachment(item: AttachmentDTO, list: FormArray<any>): void {
     const listAttachments: AttachmentDTO[] = Object.values(list);
     const spinner = this.spinnerService.show();
-    //window.open(this.attachmentService.getDownloadAttachmentUrl(this.cardInstanceWorkflowId, this.tabId, item.id), '_blank');
     this.attachmentService
       .downloadCustomerAttachment(this.clientId, item.id)
       .pipe(
