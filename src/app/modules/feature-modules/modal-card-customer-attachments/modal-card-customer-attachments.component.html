@@ -13,10 +13,6 @@
             <!-- Columna del documento -->
             <div
                 class="attachments__content__templates__content__item"
-                [ngClass]="{
-                    selected: isItemSelected(attachmentControl.value),
-                    'shared-in-landing': attachmentControl.value.showInLanding
-                }"
                 [ngStyle]="{ 'background-image': getItemBgImage(attachmentControl.value) }"
                 matTooltip=""
                 matTooltipPosition="above"
