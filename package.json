@@ -1,6 +1,6 @@
 {
     "name": "Concenet_Front",
-    "version": "1.1.11",
+    "version": "1.1.12",
     "jenga_FrontVersion": "1.3.1",
     "scripts": {
         "ng": "ng",
@@ -126,5 +126,5 @@
         "ts-node": "^8.10.2",
         "typescript": "~4.8.3"
     },
-    "Concenet_FrontVersion": "1.1.11"
+    "Concenet_FrontVersion": "1.1.12"
 }
