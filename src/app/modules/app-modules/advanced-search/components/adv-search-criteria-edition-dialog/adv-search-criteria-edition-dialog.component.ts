@@ -81,15 +81,15 @@ export class AdvSearchCriteriaEditionDialogComponent extends ComponentToExtendFo
   }
 
   get criteria(): AdvancedSearchItem {
-    return this.criteriaFormGroup.value;
+    return this.criteriaFormGroup?.value ?? null;
   }
 
   get criteriaName(): string {
     let name = '';
     const criteria = this.criteria;
-    if (criteria.tabItem) {
+    if (criteria?.tabItem) {
       name = criteria.tabItem.name;
-    } else {
+    } else if (criteria?.variable) {
       name = criteria.variable.name;
     }
     return name;

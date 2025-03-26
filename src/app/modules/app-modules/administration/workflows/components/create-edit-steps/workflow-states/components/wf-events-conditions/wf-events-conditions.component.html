@@ -1,0 +1,41 @@
+<mat-accordion>
+    <mat-expansion-panel>
+        <mat-expansion-panel-header>
+            <mat-panel-title>
+                Condiciones inactivas para evento
+                <button mat-button class="delete-button" (click)="addCriteriaFilter()">
+                    Añadir condición
+                    <mat-icon>add</mat-icon>
+                </button>
+            </mat-panel-title>
+        </mat-expansion-panel-header>
+
+        <div class="wf-events-conditions__content" cdkDropListGroup>
+            <div class="wf-events-conditions__content__columns criteria-columns">
+                <div
+                    cdkDrag
+                    class="custom-actions-item mat-elevation-z2"
+                    *ngFor="let criteria of criteria.controls; let i = index"
+                >
+                    <div fxLayout="row" fxLayoutAlign="space-between center" class="custom-actions-item-nameContainer">
+                        <div class="left-side" fxLayout="row" fxLayoutAlign="start center">
+                            <mat-icon cdkDragHandle>drag_indicator</mat-icon>
+                            <div class="criteria-info">
+                                <div>{{ getCriteriaName(criteria) }}</div>
+                                <div *ngIf="!errorInCriteriaConfig(criteria)">{{ getCriteriaInfo(criteria) }}</div>
+                                <div class="error" *ngIf="errorInCriteriaConfig(criteria)">
+                                    <mat-icon>warning</mat-icon> {{ errorInCriteriaConfig(criteria) }}
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="right-side">
+                            <mat-icon (click)="deleteCriteria(criteria); $event.stopPropagation()">delete</mat-icon>
+                            <mat-icon (click)="editCriteria(criteria); $event.stopPropagation()">edit</mat-icon>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </mat-expansion-panel>
+</mat-accordion>

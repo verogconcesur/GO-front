@@ -37,6 +37,11 @@ import { WebserviceUrlValidator } from '@shared/validators/web-service.validator
 import { forkJoin, Observable, of } from 'rxjs';
 import { catchError, finalize, map, take } from 'rxjs/operators';
 import { WEditSubstateFormAuxService } from '../wf-edit-substate-dialog/aux-service/wf-edit-substate-aux.service';
+import { WorkflowsEventsConditionsAuxService } from '../../components/wf-events-conditions/wf-events-conditions-aux.service';
+import { AdvSearchService } from '@data/services/adv-search.service';
+import AdvancedSearchOptionsDTO from '@data/models/adv-search/adv-search-options-dto';
+import AdvSearchOperatorDTO from '@data/models/adv-search/adv-search-operator-dto';
+import { ConcenetError } from '@app/types/error';
 export const enum WfEditSubstateEventsComponentModalEnum {
   ID = 'edit-state-dialog-id',
   PANEL_CLASS = 'edit-state-dialog',
@@ -123,6 +128,9 @@ export class WfEditSubstateEventsDialogComponent extends ComponentToExtendForCus
   public groupNames: string[] = [];
   public filteredGroupNames: Observable<string[]>;
   public listVariables: VariablesDTO[];
+  public criteriaOptions: AdvancedSearchOptionsDTO = { cards: {}, entities: {} };
+  public operators: AdvSearchOperatorDTO[] = [];
+  public escapedValue = '';
 
   constructor(
     private fb: FormBuilder,
@@ -136,7 +144,9 @@ export class WfEditSubstateEventsDialogComponent extends ComponentToExtendForCus
     private workflowService: WorkflowAdministrationService,
     private customDialogService: CustomDialogService,
     private variablesService: VariablesService,
-    private administrationService: WorkflowAdministrationService
+    private administrationService: WorkflowAdministrationService,
+    private wfEventsConditiosAuxService: WorkflowsEventsConditionsAuxService,
+    private advSearchService: AdvSearchService
   ) {
     super(
       WfEditSubstateEventsComponentModalEnum.ID,
@@ -150,6 +160,7 @@ export class WfEditSubstateEventsDialogComponent extends ComponentToExtendForCus
     this.getVariable();
     this.getInfoFromExtendedComponentData(true);
     await this.getTemplatesAndFields();
+    await this.getCriteriaOptions();
     if (this.move) {
       this.initForm(this.move);
     }
@@ -337,7 +348,14 @@ export class WfEditSubstateEventsDialogComponent extends ComponentToExtendForCus
                           return prev;
                         }, null)
                       : null
-                  ]
+                  ],
+                  criteriaConditions: wem?.criteriaConditions
+                    ? this.fb.array(
+                        wem.criteriaConditions.map((cc, index) => {
+                          this.wfEventsConditiosAuxService.getCriteriaFormGroup(cc, index);
+                        })
+                      )
+                    : this.fb.array([])
                 })
               )
             )
@@ -461,6 +479,9 @@ export class WfEditSubstateEventsDialogComponent extends ComponentToExtendForCus
         ]
       }
     );
+    this.form.valueChanges.subscribe((value) => {
+      console.log('El form cambió:', value);
+    });
     this.formIntialized.emit(true);
   }
 
@@ -472,7 +493,8 @@ export class WfEditSubstateEventsDialogComponent extends ComponentToExtendForCus
         sendMailTemplate: [null],
         receiverTypes: [[]],
         receiverEmails: [[]],
-        receiverRole: [null]
+        receiverRole: [null],
+        criteriaConditions: this.fb.array([])
       })
     );
   }
@@ -798,6 +820,30 @@ export class WfEditSubstateEventsDialogComponent extends ComponentToExtendForCus
       return this.form.controls.workflowEventMails as UntypedFormArray;
     }
     return this.fb.array([]);
+  }
+
+  private async getCriteriaOptions(): Promise<void> {
+    return new Promise((resolve, reject) => {
+      const resquests = [
+        this.advSearchService.getCriteria().pipe(take(1)),
+        this.advSearchService.getAdvSearchOperators().pipe(take(1))
+      ];
+      forkJoin(resquests).subscribe({
+        next: (responses: [AdvancedSearchOptionsDTO, AdvSearchOperatorDTO[]]) => {
+          this.criteriaOptions = responses[0] ? responses[0] : { cards: {}, entities: {} };
+          this.escapedValue = responses[0]?.escapedValue ? responses[0].escapedValue : '';
+          this.operators = responses[1] ? responses[1] : [];
+          resolve();
+        },
+        error: (error: ConcenetError) => {
+          this.globalMessageService.showError({
+            message: error.message,
+            actionText: this.translateService.instant(marker('common.close'))
+          });
+          resolve();
+        }
+      });
+    });
   }
 
   private async getTemplatesAndFields(): Promise<boolean> {

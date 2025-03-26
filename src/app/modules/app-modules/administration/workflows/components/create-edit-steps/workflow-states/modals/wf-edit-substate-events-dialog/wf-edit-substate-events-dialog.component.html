@@ -116,6 +116,12 @@
                                     [errorPatternMessage]="labels.errorPatternMessage"
                                 ></app-mat-chips-input-form-field>
                             </section>
+                            <app-wf-events-conditions
+                                [criteria]="mailEvent.get('criteriaConditions')"
+                                [criteriaOptions]="criteriaOptions"
+                                [operators]="operators"
+                                [escapedValue]="escapedValue"
+                            ></app-wf-events-conditions>
                         </mat-expansion-panel>
                     </mat-accordion>
                 </div>

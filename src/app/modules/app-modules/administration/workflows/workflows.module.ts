@@ -36,6 +36,8 @@ import { WfEditSubstateEventsDialogComponent } from './components/create-edit-st
 import { WorkflowsCreateEditAuxService } from './aux-service/workflows-create-edit-aux.service';
 import { MatChipsInputFormFieldModule } from '@modules/feature-modules/mat-chips-input-form-field/mat-chips-input-form-field.module';
 import { WorkflowCalendarComponent } from './components/create-edit-steps/workflow-calendar/workflow-calendar.component';
+import { WfEventsConditionsComponent } from './components/create-edit-steps/workflow-states/components/wf-events-conditions/wf-events-conditions.component';
+import { WorkflowsEventsConditionsAuxService } from './components/create-edit-steps/workflow-states/components/wf-events-conditions/wf-events-conditions-aux.service';
 
 @NgModule({
   declarations: [
@@ -60,7 +62,8 @@ import { WorkflowCalendarComponent } from './components/create-edit-steps/workfl
     WfEditSubstateEventsTabComponent,
     WfEditPermissionsTabComponent,
     WfEditSubstateEventsDialogComponent,
-    WorkflowCalendarComponent
+    WorkflowCalendarComponent,
+    WfEventsConditionsComponent
   ],
   imports: [
     CommonModule,
@@ -73,6 +76,6 @@ import { WorkflowCalendarComponent } from './components/create-edit-steps/workfl
     GenericTreeNodeSearcherModule,
     MatChipsInputFormFieldModule
   ],
-  providers: [WorkflowsCreateEditAuxService]
+  providers: [WorkflowsCreateEditAuxService, WorkflowsEventsConditionsAuxService]
 })
 export class WorkflowsModule {}
