@@ -159,7 +159,7 @@ export class WfEventsConditionsComponent implements OnInit {
       .pipe(take(1))
       .subscribe((ok: boolean) => {
         if (ok) {
-          removeItemInFormArray(this.criteria, criteria.value.orderNumber - 1);
+          removeItemInFormArray(this.criteria, criteria.value.orderNumber - 1, true);
         }
       });
   }
@@ -184,6 +184,8 @@ export class WfEventsConditionsComponent implements OnInit {
               data.value.map((i: any) => (i?.id ? i.id : i)).join(this.escapedValue)
             : data.value;
           criteria.get('value').setValue(value);
+          criteria.markAsDirty();
+          criteria.markAsTouched();
         }
       });
   }
@@ -191,12 +193,14 @@ export class WfEventsConditionsComponent implements OnInit {
   addCriteria(value: AdvancedSearchItem): void {
     if (this.criteria) {
       this.criteria.push(this.wfEventsConditiosAuxService.getCriteriaFormGroup(value, this.criteria.length + 1));
+      this.criteria.markAsDirty();
+      this.criteria.markAsTouched();
     }
   }
   removeCriteriaOrColFromFormArray = (formArray: FormArray, ids: string[]): void => {
     const nextId = ids.shift();
     const control = formArray.controls.find((c: FormGroup) => this.getCrirteriaCustomId(c.value) === nextId);
-    removeItemInFormArray(formArray, control.value.orderNumber - 1);
+    removeItemInFormArray(formArray, control.value.orderNumber - 1, true);
     //Verificar y corregir los ordeNumbers de los elementos restantes
     formArray.controls.forEach((c: FormGroup, index: number) => {
       c.get('orderNumber').setValue(index + 1);

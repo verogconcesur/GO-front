@@ -479,9 +479,6 @@ export class WfEditSubstateEventsDialogComponent extends ComponentToExtendForCus
         ]
       }
     );
-    this.form.valueChanges.subscribe((value) => {
-      console.log('El form cambió:', value);
-    });
     this.formIntialized.emit(true);
   }
 
