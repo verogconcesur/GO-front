@@ -1,4 +1,4 @@
-import { Component, OnInit, Input } from '@angular/core';
+import { Component, Input, OnInit } from '@angular/core';
 import { FormArray, FormGroup } from '@angular/forms';
 import { marker } from '@biesbjerg/ngx-translate-extract-marker';
 import { AdvancedSearchItem } from '@data/models/adv-search/adv-search-dto';
@@ -30,6 +30,7 @@ export class WfEventsConditionsComponent implements OnInit {
   @Input() criteriaOptions: AdvancedSearchOptionsDTO = { cards: {}, entities: {} };
   @Input() operators: AdvSearchOperatorDTO[] = [];
   @Input() escapedValue = '';
+  @Input() title = '';
 
   constructor(
     private customDialogService: CustomDialogService,

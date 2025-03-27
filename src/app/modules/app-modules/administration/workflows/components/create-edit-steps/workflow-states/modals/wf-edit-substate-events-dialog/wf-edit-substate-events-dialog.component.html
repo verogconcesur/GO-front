@@ -126,10 +126,17 @@
                     </mat-accordion>
                 </div>
 
-                <div>
+                <div [ngClass]="{ bordered: form.get('requiredSize')?.value }">
                     <mat-checkbox color="primary" formControlName="requiredSize"
                         >{{ labels.requiredSize | translate }}
                     </mat-checkbox>
+                    <app-wf-events-conditions
+                        *ngIf="form.get('requiredSize')?.value"
+                        [criteria]="form.get('requiredSizeCriteriaConditions')"
+                        [criteriaOptions]="criteriaOptions"
+                        [operators]="operators"
+                        [escapedValue]="escapedValue"
+                    ></app-wf-events-conditions>
                 </div>
 
                 <div>
@@ -156,8 +163,13 @@
                         *ngIf="form.get('requiredFields').value"
                     >
                         <mat-label>{{ labels.requiredFieldsList | translate }}</mat-label>
-                        <mat-select formControlName="requiredFieldsList" multiple>
-                            <mat-option *ngFor="let field of fieldsList" [value]="field">{{ field.name | translate }}</mat-option>
+                        <mat-select formControlName="requiredFieldsList" multiple [compareWith]="compareFields">
+                            <mat-option
+                                *ngFor="let field of fieldsList"
+                                [value]="field"
+                                (onSelectionChange)="onOptionSelectionChange($event, field)"
+                                >{{ field.name | translate }}</mat-option
+                            >
                         </mat-select>
                         <mat-error *ngIf="form.controls?.requiredFieldsList.invalid">
                             <span *ngIf="form.controls.requiredFieldsList.errors.required">{{
@@ -165,6 +177,17 @@
                             }}</span>
                         </mat-error>
                     </mat-form-field>
+                    <div *ngIf="form.get('requiredFields')?.value && form.get('requiredFieldsList')?.value">
+                        <div *ngFor="let field of form.get('requiredFieldsList').value; let i = index">
+                            <app-wf-events-conditions
+                                [title]="field.name"
+                                [criteria]="field.criteriaConditions"
+                                [criteriaOptions]="criteriaOptions"
+                                [operators]="operators"
+                                [escapedValue]="escapedValue"
+                            ></app-wf-events-conditions>
+                        </div>
+                    </div>
                 </div>
 
                 <div>
