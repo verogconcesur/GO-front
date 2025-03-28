@@ -44,6 +44,9 @@ export class AdvSearchCriteriaDialogComponent extends ComponentToExtendForCustom
     } else {
       super.MODAL_TITLE = marker('advSearch.criteria.title');
     }
+    if (this.extendedComponentData.title) {
+      this.MODAL_TITLE = this.extendedComponentData.title;
+    }
     this.mode = this.extendedComponentData.mode === 'COLUMNS' ? this.extendedComponentData.mode : 'CRITERIA';
     const options: AdvancedSearchOptionsDTO = this.extendedComponentData.options;
     const selected: AdvancedSearchItem[] = this.extendedComponentData.selected ? [...this.extendedComponentData.selected] : [];

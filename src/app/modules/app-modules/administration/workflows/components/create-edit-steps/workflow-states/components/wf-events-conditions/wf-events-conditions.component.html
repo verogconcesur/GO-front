@@ -1,25 +1,31 @@
 <mat-accordion>
     <mat-expansion-panel>
         <mat-expansion-panel-header>
-            <mat-panel-title>
-                Condiciones inactivas para evento
-                <button mat-button class="delete-button" (click)="addCriteriaFilter()">
-                    Añadir condición
+            <mat-panel-title fxLayout="row" fxLayoutAlign="space-between center">
+                <span *ngIf="criteria.controls?.length > 0">
+                    {{ labels.conditionsTitle | translate : { count: criteria.controls?.length } }}
+                </span>
+
+                <span *ngIf="!criteria.controls?.length">
+                    {{ labels.noConditionsTitle | translate }}
+                </span>
+
+                <button
+                    mat-button
+                    class="delete-button"
+                    (click)="addCriteriaFilter(); $event.stopPropagation(); $event.preventDefault()"
+                >
+                    {{ labels.addCriteriaButton | translate }}
                     <mat-icon>add</mat-icon>
                 </button>
             </mat-panel-title>
         </mat-expansion-panel-header>
 
-        <div class="wf-events-conditions__content" cdkDropListGroup>
+        <div class="wf-events-conditions__content">
             <div class="wf-events-conditions__content__columns criteria-columns">
-                <div
-                    cdkDrag
-                    class="custom-actions-item mat-elevation-z2"
-                    *ngFor="let criteria of criteria.controls; let i = index"
-                >
+                <div class="custom-actions-item mat-elevation-z2" *ngFor="let criteria of criteria.controls; let i = index">
                     <div fxLayout="row" fxLayoutAlign="space-between center" class="custom-actions-item-nameContainer">
                         <div class="left-side" fxLayout="row" fxLayoutAlign="start center">
-                            <mat-icon cdkDragHandle>drag_indicator</mat-icon>
                             <div class="criteria-info">
                                 <div>{{ getCriteriaName(criteria) }}</div>
                                 <div *ngIf="!errorInCriteriaConfig(criteria)">{{ getCriteriaInfo(criteria) }}</div>

@@ -100,6 +100,9 @@ export class AdvSearchCriteriaEditionDialogComponent extends ComponentToExtendFo
   }
 
   ngOnInit(): void {
+    if (this.extendedComponentData.title) {
+      this.MODAL_TITLE = this.extendedComponentData.title;
+    }
     this.criteriaFormGroup = this.extendedComponentData.criteria;
     this.valueOptions.next(null);
     let settingValueOptions = false;

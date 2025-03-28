@@ -1,4 +1,4 @@
-import { Component, OnInit, Input } from '@angular/core';
+import { Component, OnInit, Input, ViewChild } from '@angular/core';
 import { FormArray, FormGroup } from '@angular/forms';
 import { marker } from '@biesbjerg/ngx-translate-extract-marker';
 import { AdvancedSearchItem } from '@data/models/adv-search/adv-search-dto';
@@ -19,6 +19,7 @@ import { ConfirmDialogService } from '@shared/services/confirm-dialog.service';
 import { removeItemInFormArray } from '@shared/utils/removeItemInFormArray';
 import { take } from 'rxjs';
 import { WorkflowsEventsConditionsAuxService } from './wf-events-conditions-aux.service';
+import { MatAccordion } from '@angular/material/expansion';
 
 @Component({
   selector: 'app-wf-events-conditions',
@@ -30,6 +31,12 @@ export class WfEventsConditionsComponent implements OnInit {
   @Input() criteriaOptions: AdvancedSearchOptionsDTO = { cards: {}, entities: {} };
   @Input() operators: AdvSearchOperatorDTO[] = [];
   @Input() escapedValue = '';
+
+  public labels = {
+    noConditionsTitle: marker('workflows.conditionalEvents.noConditionsTitle'),
+    conditionsTitle: marker('workflows.conditionalEvents.conditionsTitle'),
+    addCriteriaButton: marker('workflows.conditionalEvents.addCriteriaButton')
+  };
 
   constructor(
     private customDialogService: CustomDialogService,
@@ -58,7 +65,8 @@ export class WfEventsConditionsComponent implements OnInit {
         extendedComponentData: {
           options: this.criteriaOptions,
           selected: this.criteria.value,
-          mode: 'CRITERIA'
+          mode: 'CRITERIA',
+          title: marker('workflows.conditionalEvents.addConditionalCriteria')
         },
         id: AdvSearchCriteriaDialogComponentModalEnum.ID,
         panelClass: AdvSearchCriteriaDialogComponentModalEnum.PANEL_CLASS,
@@ -131,7 +139,7 @@ export class WfEventsConditionsComponent implements OnInit {
       value = criteriaValue.value;
     }
     if (criteriaValue.advancedSearchOperator?.name && value) {
-      return `${criteriaValue.advancedSearchOperator.name} ${value}`;
+      return `${criteriaValue.advancedSearchOperator.name}: ${value}`;
     } else if (criteriaValue.advancedSearchOperator?.name) {
       return criteriaValue.advancedSearchOperator.name;
     }
@@ -168,7 +176,12 @@ export class WfEventsConditionsComponent implements OnInit {
     this.customDialogService
       .open({
         component: AdvSearchCriteriaEditionDialogComponent,
-        extendedComponentData: { operators: this.operators, criteria, escapedValue: this.escapedValue },
+        extendedComponentData: {
+          operators: this.operators,
+          criteria,
+          escapedValue: this.escapedValue,
+          title: marker('workflows.conditionalEvents.editConditionalCriteria')
+        },
         id: AdvSearchCriteriaEditionDialogComponentModalEnum.ID,
         panelClass: AdvSearchCriteriaEditionDialogComponentModalEnum.PANEL_CLASS,
         disableClose: true,

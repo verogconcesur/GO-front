@@ -1,0 +1,39 @@
+@import 'utils/core';
+@import 'utils/theme';
+.wf-events-conditions {
+  &__content {
+    height: calc(100% - 10px);
+    overflow-y: auto;
+    padding: 5px;
+    box-sizing: border-box;
+    width: 100%;
+    &__columns {
+      width: 100%;
+      &.criteria-columns {
+        .custom-actions-item {
+          width: auto;
+          height: auto;
+          min-height: 50px;
+          .custom-actions-item-nameContainer {
+            min-height: 50px;
+          }
+        }
+        .left-side {
+          .criteria-info {
+            .error {
+              display: flex;
+              justify-content: flex-start;
+              align-items: center;
+              mat-icon {
+                color: mat-color($primary, statusError);
+              }
+            }
+          }
+        }
+        .right-side {
+          min-width: 68px;
+        }
+      }
+    }
+  }
+}

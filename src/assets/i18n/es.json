@@ -1206,6 +1206,13 @@
         "changeRepairOrder": "Cambiar orden de reparación",
         "changeUser": "Cambiar asesor",
         "changeVehicle": "Cambiar vehículo",
+        "conditionalEvents": {
+            "addConditionalCriteria": "Seleccionar criterio a aplicar",
+            "addCriteriaButton": "Añadir condición",
+            "conditionsTitle": "{count} {count, plural, one{condición} other{condiciones}} {count, plural, one{aplicada} other{aplicadas}}",
+            "editConditionalCriteria": "Editar criterio condicional",
+            "noConditionsTitle": "Sin condiciones aplicadas"
+        },
         "configMoveEvent": "Ajustes de movimiento",
         "configMovementEvents": "Ajustes de movimiento",
         "confirmSave": "¿Desea guardar los cambios de la pestaña?",
