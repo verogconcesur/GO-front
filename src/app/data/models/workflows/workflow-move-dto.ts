@@ -1,3 +1,4 @@
+import { AdvancedSearchItem } from '../adv-search/adv-search-dto';
 import CardColumnTabItemDTO from '../cards/card-column-tab-item-dto';
 import TemplatesCommunicationDTO from '../templates/templates-communication-dto';
 import RoleDTO from '../user-permissions/role-dto';
@@ -50,6 +51,7 @@ export default interface WorkflowMoveDTO {
   requiredAttachments?: boolean;
   workflowSubstateEventRequiredAttachments?: WorkflowSubstateEventRequiredAttachment[];
   workflowMovementRequiredAttachments?: WorkflowSubstateEventRequiredAttachment[];
+  requiredSizeCriteriaConditions?: AdvancedSearchItem[];
 }
 export interface WorkflowSubstateEventRequiredAttachment {
   tab: { id: number };

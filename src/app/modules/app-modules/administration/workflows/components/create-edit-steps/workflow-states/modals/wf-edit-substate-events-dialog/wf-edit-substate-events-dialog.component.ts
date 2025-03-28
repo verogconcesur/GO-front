@@ -1,9 +1,13 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { Component, EventEmitter, Input, OnChanges, OnInit, Output, SimpleChanges, ViewChild } from '@angular/core';
 import { FormBuilder, UntypedFormArray, UntypedFormControl, UntypedFormGroup, ValidatorFn, Validators } from '@angular/forms';
+import { MatOptionSelectionChange } from '@angular/material/core';
 import { MatMenuTrigger } from '@angular/material/menu';
+import { ConcenetError } from '@app/types/error';
 import { marker } from '@biesbjerg/ngx-translate-extract-marker';
 import TreeNode from '@data/interfaces/tree-node';
+import AdvSearchOperatorDTO from '@data/models/adv-search/adv-search-operator-dto';
+import AdvancedSearchOptionsDTO from '@data/models/adv-search/adv-search-options-dto';
 import CardColumnDTO from '@data/models/cards/card-column-dto';
 import CardColumnTabDTO from '@data/models/cards/card-column-tab-dto';
 import CardColumnTabItemDTO from '@data/models/cards/card-column-tab-item-dto';
@@ -16,6 +20,7 @@ import WorkflowEventMailDTO, { WorkflowEventMailReceiverDTO } from '@data/models
 import WorkflowMoveDTO from '@data/models/workflows/workflow-move-dto';
 import WorkflowStateDTO from '@data/models/workflows/workflow-state-dto';
 import WorkflowSubstateDTO from '@data/models/workflows/workflow-substate-dto';
+import { AdvSearchService } from '@data/services/adv-search.service';
 import { CardService } from '@data/services/cards.service';
 import { VariablesService } from '@data/services/variables.service';
 import { WorkflowAdministrationStatesSubstatesService } from '@data/services/workflow-administration-states-substates.service';
@@ -36,12 +41,8 @@ import CombinedRequiredFieldsValidator from '@shared/validators/combined-require
 import { WebserviceUrlValidator } from '@shared/validators/web-service.validator';
 import { forkJoin, Observable, of } from 'rxjs';
 import { catchError, finalize, map, take } from 'rxjs/operators';
-import { WEditSubstateFormAuxService } from '../wf-edit-substate-dialog/aux-service/wf-edit-substate-aux.service';
 import { WorkflowsEventsConditionsAuxService } from '../../components/wf-events-conditions/wf-events-conditions-aux.service';
-import { AdvSearchService } from '@data/services/adv-search.service';
-import AdvancedSearchOptionsDTO from '@data/models/adv-search/adv-search-options-dto';
-import AdvSearchOperatorDTO from '@data/models/adv-search/adv-search-operator-dto';
-import { ConcenetError } from '@app/types/error';
+import { WEditSubstateFormAuxService } from '../wf-edit-substate-dialog/aux-service/wf-edit-substate-aux.service';
 export const enum WfEditSubstateEventsComponentModalEnum {
   ID = 'edit-state-dialog-id',
   PANEL_CLASS = 'edit-state-dialog',
@@ -233,6 +234,9 @@ export class WfEditSubstateEventsDialogComponent extends ComponentToExtendForCus
         this.move?.workflowSubstateTarget?.workflowState?.workflow?.id
     );
   }
+  public compareFields(field1: any, field2: any): boolean {
+    return field1 && field2 ? field1.id === field2.id : field1 === field2;
+  }
 
   public nodeSelected(node: WorkflowSubstateDTO): void {
     this.form.get('workflowSubstateTargetExtra').setValue(node);
@@ -362,6 +366,13 @@ export class WfEditSubstateEventsDialogComponent extends ComponentToExtendForCus
           : this.fb.array([]),
         //Asignar peso a la ficha
         requiredSize: [data?.requiredSize ? true : false],
+        requiredSizeCriteriaConditions: data?.requiredSizeCriteriaConditions
+          ? this.fb.array(
+              data.requiredSizeCriteriaConditions.map((cc, i) => {
+                this.wfEventsConditiosAuxService.getCriteriaFormGroup(cc, i);
+              })
+            )
+          : this.fb.array([]),
         //Asignar usuario - excluyente
         //Autoasignar usuario - excluyente
         requiredUser: [data?.requiredUser ? data.requiredUser : false],
@@ -370,7 +381,21 @@ export class WfEditSubstateEventsDialogComponent extends ComponentToExtendForCus
         requiredFields: [data?.requiredFields ? true : false],
         requiredFieldsList: [
           data?.requiredFieldsList && this.fieldsList
-            ? this.fieldsList.filter((field) => data.requiredFieldsList.find((f) => f.id === field.id))
+            ? this.fieldsList
+                .filter((field) => data.requiredFieldsList.find((f) => f.id === field.id))
+                .map((field, index) => {
+                  const dataField = data.requiredFieldsList.find((f) => f.id === field.id);
+                  return {
+                    ...field,
+                    criteriaConditions: dataField?.criteriaConditions
+                      ? this.fb.array(
+                          dataField.criteriaConditions.map((cc, i) => {
+                            this.wfEventsConditiosAuxService.getCriteriaFormGroup(cc, i);
+                          })
+                        )
+                      : this.fb.array([])
+                  };
+                })
             : []
         ],
         //Attachments required for events
@@ -479,7 +504,31 @@ export class WfEditSubstateEventsDialogComponent extends ComponentToExtendForCus
         ]
       }
     );
+    console.log(this.form);
     this.formIntialized.emit(true);
+  }
+  onOptionSelectionChange(event: MatOptionSelectionChange, field: any): void {
+    const requiredFieldsListControl = this.form.get('requiredFieldsList');
+    const currentList = requiredFieldsListControl?.value || [];
+    if (event.isUserInput && event.source.selected) {
+      const existingField = currentList.find((item: any) => item.id === field.id && item.tabId === field.tabId);
+
+      if (existingField) {
+        if (!existingField.criteriaConditions) {
+          existingField.criteriaConditions = [];
+        }
+      } else {
+        const newField = {
+          ...field,
+          criteriaConditions: this.fb.array([])
+        };
+        const updatedList = [...currentList, newField];
+        requiredFieldsListControl.setValue(updatedList);
+      }
+    } else if (event.isUserInput && !event.source.selected) {
+      const updatedList = currentList.filter((item: any) => item.id !== field.id);
+      requiredFieldsListControl.setValue(updatedList);
+    }
   }
 
   public addWorkflowEventMails(): void {

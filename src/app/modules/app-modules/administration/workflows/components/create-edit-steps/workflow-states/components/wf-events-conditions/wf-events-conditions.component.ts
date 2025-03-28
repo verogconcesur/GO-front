@@ -31,6 +31,7 @@ export class WfEventsConditionsComponent implements OnInit {
   @Input() criteriaOptions: AdvancedSearchOptionsDTO = { cards: {}, entities: {} };
   @Input() operators: AdvSearchOperatorDTO[] = [];
   @Input() escapedValue = '';
+  @Input() title = '';
 
   public labels = {
     noConditionsTitle: marker('workflows.conditionalEvents.noConditionsTitle'),

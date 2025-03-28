@@ -1,7 +1,8 @@
 import TreeNode from '@data/interfaces/tree-node';
 import { Moment } from 'moment';
-import WorkflowCardTabitemInstanceDTO from '../workflows/workflow-card-tabitem-instance-dto';
+import { AdvancedSearchItem } from '../adv-search/adv-search-dto';
 import VariablesDTO from '../variables-dto';
+import WorkflowCardTabitemInstanceDTO from '../workflows/workflow-card-tabitem-instance-dto';
 export const TabItemsCustomTypes = ['TITLE', 'TEXT', 'INPUT', 'OPTION', 'LIST'];
 export const InputDataTypes = [
   { value: 'STRING', label: 'cards.column.dataType.string' },
@@ -35,6 +36,7 @@ export default interface CardColumnTabItemDTO extends TreeNode {
   tabItemConfigTitle?: TabItemConfigTitleDTO;
   tabItemConfigVariable?: TabItemConfigVariableDTO;
   frontName?: string;
+  criteriaConditions?: AdvancedSearchItem[];
 }
 export interface TabItemConfigActionDTO {
   id?: number;
