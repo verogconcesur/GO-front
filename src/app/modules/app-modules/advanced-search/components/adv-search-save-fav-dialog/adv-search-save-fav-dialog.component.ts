@@ -212,7 +212,7 @@ export class AdvSearchSaveFavDialogComponent extends ComponentToExtendForCustomD
       }),
       catchError((error) => {
         this.globalMessageService.showError({
-          message: error.error.message,
+          message: error.message,
           actionText: this.translateService.instant(marker('common.close'))
         });
         return of(false);
