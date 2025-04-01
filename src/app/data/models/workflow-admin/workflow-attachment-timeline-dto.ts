@@ -1,3 +1,4 @@
+import { AdvancedSearchItem } from '../adv-search/adv-search-dto';
 import { TemplatesAttachmentDTO } from '../templates/templates-attachment-dto';
 
 export interface WorkflowAttachmentTimelineDTO {
@@ -7,4 +8,5 @@ export interface WorkflowAttachmentTimelineDTO {
   templateId?: number;
   templateAttachmentItemId?: number;
   numberInput?: number;
+  criteriaConditions?: AdvancedSearchItem[];
 }

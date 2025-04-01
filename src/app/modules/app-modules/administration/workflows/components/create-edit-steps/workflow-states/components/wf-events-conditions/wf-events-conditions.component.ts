@@ -1,4 +1,4 @@
-import { Component, OnInit, Input, ViewChild } from '@angular/core';
+import { Component, Input, OnInit } from '@angular/core';
 import { FormArray, FormGroup } from '@angular/forms';
 import { marker } from '@biesbjerg/ngx-translate-extract-marker';
 import { AdvancedSearchItem } from '@data/models/adv-search/adv-search-dto';
@@ -19,7 +19,6 @@ import { ConfirmDialogService } from '@shared/services/confirm-dialog.service';
 import { removeItemInFormArray } from '@shared/utils/removeItemInFormArray';
 import { take } from 'rxjs';
 import { WorkflowsEventsConditionsAuxService } from './wf-events-conditions-aux.service';
-import { MatAccordion } from '@angular/material/expansion';
 
 @Component({
   selector: 'app-wf-events-conditions',
@@ -31,7 +30,7 @@ export class WfEventsConditionsComponent implements OnInit {
   @Input() criteriaOptions: AdvancedSearchOptionsDTO = { cards: {}, entities: {} };
   @Input() operators: AdvSearchOperatorDTO[] = [];
   @Input() escapedValue = '';
-  @Input() title = '';
+  @Input() title: string = null;
 
   public labels = {
     noConditionsTitle: marker('workflows.conditionalEvents.noConditionsTitle'),

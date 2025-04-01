@@ -1,5 +1,5 @@
 <mat-accordion>
-    {{ title }}
+    <div class="title" *ngIf="title">{{ title }}</div>
     <mat-expansion-panel>
         <mat-expansion-panel-header>
             <mat-panel-title fxLayout="row" fxLayoutAlign="space-between center">

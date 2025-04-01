@@ -52,9 +52,13 @@ export default interface WorkflowMoveDTO {
   workflowSubstateEventRequiredAttachments?: WorkflowSubstateEventRequiredAttachment[];
   workflowMovementRequiredAttachments?: WorkflowSubstateEventRequiredAttachment[];
   requiredSizeCriteriaConditions?: AdvancedSearchItem[];
+  webserviceCriteriaConditions?: AdvancedSearchItem[];
+  requiredMyselfCriteriaConditions?: AdvancedSearchItem[];
+  requiredUserCriteriaConditions?: AdvancedSearchItem[];
 }
 export interface WorkflowSubstateEventRequiredAttachment {
   tab: { id: number };
   templateAttachmentItem: { id: number };
   numMinAttachRequired: number;
+  criteriaConditions?: AdvancedSearchItem[];
 }

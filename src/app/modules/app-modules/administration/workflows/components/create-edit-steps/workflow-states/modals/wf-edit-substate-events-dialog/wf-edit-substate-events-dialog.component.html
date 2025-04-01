@@ -139,16 +139,30 @@
                     ></app-wf-events-conditions>
                 </div>
 
-                <div>
+                <div [ngClass]="{ bordered: form.get('requiredUser')?.value }">
                     <mat-checkbox color="primary" formControlName="requiredUser" (change)="requiredUserChange('user')"
                         >{{ labels.requiredUser | translate }}
                     </mat-checkbox>
+                    <app-wf-events-conditions
+                        *ngIf="form.get('requiredUser')?.value"
+                        [criteria]="form.get('requiredUserCriteriaConditions')"
+                        [criteriaOptions]="criteriaOptions"
+                        [operators]="operators"
+                        [escapedValue]="escapedValue"
+                    ></app-wf-events-conditions>
                 </div>
 
-                <div>
+                <div [ngClass]="{ bordered: form.get('requiredMyself')?.value }">
                     <mat-checkbox color="primary" formControlName="requiredMyself" (change)="requiredUserChange('myself')"
                         >{{ labels.requiredMyself | translate }}
                     </mat-checkbox>
+                    <app-wf-events-conditions
+                        *ngIf="form.get('requiredMyself')?.value"
+                        [criteria]="form.get('requiredMyselfCriteriaConditions')"
+                        [criteriaOptions]="criteriaOptions"
+                        [operators]="operators"
+                        [escapedValue]="escapedValue"
+                    ></app-wf-events-conditions>
                 </div>
 
                 <div [ngClass]="{ bordered: form.get('requiredFields')?.value }">
@@ -190,13 +204,20 @@
                     </div>
                 </div>
 
-                <div>
+                <div [ngClass]="{ bordered: form.get('webservice')?.value }">
                     <mat-checkbox color="primary" formControlName="webservice"
                         >{{ labels.webservice | translate }}
                         <button mat-icon-button *ngIf="form.get('webservice')?.value" (click)="editWebService()">
                             <mat-icon>edit</mat-icon>
                         </button>
                     </mat-checkbox>
+                    <app-wf-events-conditions
+                        *ngIf="form.get('webservice')?.value"
+                        [criteria]="form.get('webserviceCriteriaConditions')"
+                        [criteriaOptions]="criteriaOptions"
+                        [operators]="operators"
+                        [escapedValue]="escapedValue"
+                    ></app-wf-events-conditions>
                 </div>
 
                 <div [ngClass]="{ bordered: form.get('requiredAttachments')?.value }">
@@ -216,7 +237,11 @@
                             multiple
                             [compareWith]="compareAttachments"
                         >
-                            <mat-option *ngFor="let field of attachmentList" [value]="field">
+                            <mat-option
+                                *ngFor="let field of attachmentList"
+                                [value]="field"
+                                (onSelectionChange)="updateCriteriaConditions($event, field)"
+                            >
                                 <div
                                     class="option-with-input"
                                     style="display: flex; align-items: center; justify-content: space-between"
@@ -242,6 +267,21 @@
                             }}</span>
                         </mat-error>
                     </mat-form-field>
+                    <div
+                        *ngIf="
+                            form.get('workflowSubstateEventRequiredAttachments')?.value && form.get('requiredAttachments')?.value
+                        "
+                    >
+                        <div *ngFor="let field of form.get('workflowSubstateEventRequiredAttachments').value; let i = index">
+                            <app-wf-events-conditions
+                                [title]="field.templateName + '-' + field.itemName"
+                                [criteria]="field.criteriaConditions"
+                                [criteriaOptions]="criteriaOptions"
+                                [operators]="operators"
+                                [escapedValue]="escapedValue"
+                            ></app-wf-events-conditions>
+                        </div>
+                    </div>
                 </div>
             </div>
         </section>

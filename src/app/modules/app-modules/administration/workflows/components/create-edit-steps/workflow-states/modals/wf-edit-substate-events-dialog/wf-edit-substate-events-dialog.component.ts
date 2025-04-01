@@ -297,7 +297,11 @@ export class WfEditSubstateEventsDialogComponent extends ComponentToExtendForCus
           (f) => f.tab.id === attachment.id && f.templateAttachmentItem.id === attachment.templateAttachmentItemId
         );
         if (matchingBackendAttachment) {
-          return { ...attachment, numberInput: matchingBackendAttachment.numMinAttachRequired };
+          return {
+            ...attachment,
+            numberInput: matchingBackendAttachment.numMinAttachRequired,
+            criteriaConditions: matchingBackendAttachment.criteriaConditions
+          };
         }
         return attachment;
       });
@@ -307,7 +311,11 @@ export class WfEditSubstateEventsDialogComponent extends ComponentToExtendForCus
           (f) => f.tab.id === attachment.id && f.templateAttachmentItem.id === attachment.templateAttachmentItemId
         );
         if (matchingBackendAttachment) {
-          return { ...attachment, numberInput: matchingBackendAttachment.numMinAttachRequired };
+          return {
+            ...attachment,
+            numberInput: matchingBackendAttachment.numMinAttachRequired,
+            criteriaConditions: matchingBackendAttachment.criteriaConditions
+          };
         }
         return attachment;
       });
@@ -376,7 +384,21 @@ export class WfEditSubstateEventsDialogComponent extends ComponentToExtendForCus
         //Asignar usuario - excluyente
         //Autoasignar usuario - excluyente
         requiredUser: [data?.requiredUser ? data.requiredUser : false],
+        requiredUserCriteriaConditions: data?.requiredUserCriteriaConditions
+          ? this.fb.array(
+              data.requiredSizeCriteriaConditions.map((cc, i) => {
+                this.wfEventsConditiosAuxService.getCriteriaFormGroup(cc, i);
+              })
+            )
+          : this.fb.array([]),
         requiredMyself: [data?.requiredMyself ? data.requiredMyself : false],
+        requiredMyselfCriteriaConditions: data?.requiredMyselfCriteriaConditions
+          ? this.fb.array(
+              data.requiredSizeCriteriaConditions.map((cc, i) => {
+                this.wfEventsConditiosAuxService.getCriteriaFormGroup(cc, i);
+              })
+            )
+          : this.fb.array([]),
         //Rellenar campo
         requiredFields: [data?.requiredFields ? true : false],
         requiredFieldsList: [
@@ -412,6 +434,7 @@ export class WfEditSubstateEventsDialogComponent extends ComponentToExtendForCus
                   );
                 })
                 .map((attachment) => {
+                  console.log('entra', attachment);
                   const attachments = Array.isArray(data.workflowSubstateEventRequiredAttachments)
                     ? data.workflowSubstateEventRequiredAttachments
                     : [data.workflowSubstateEventRequiredAttachments];
@@ -420,13 +443,27 @@ export class WfEditSubstateEventsDialogComponent extends ComponentToExtendForCus
                     ...attachment,
                     numberInput: attachments.find(
                       (f) => f.tab.id === attachment.id && f.templateAttachmentItem.id === attachment.templateAttachmentItemId
-                    )?.numMinAttachRequired
+                    )?.numMinAttachRequired,
+                    criteriaConditions: attachment?.criteriaConditions?.length
+                      ? this.fb.array(
+                          attachment.criteriaConditions.map((cc, i) =>
+                            this.wfEventsConditiosAuxService.getCriteriaFormGroup(cc, i)
+                          )
+                        )
+                      : this.fb.array([])
                   };
                 })
             : []
         ],
         //webservice
         webservice: [data?.webservice ? true : false],
+        webserviceCriteriaConditions: data?.webserviceCriteriaConditions
+          ? this.fb.array(
+              data.requiredSizeCriteriaConditions.map((cc, i) => {
+                this.wfEventsConditiosAuxService.getCriteriaFormGroup(cc, i);
+              })
+            )
+          : this.fb.array([]),
         workflowEventWebserviceConfig: this.fb.group(
           {
             authAttributeToken: [
@@ -504,8 +541,8 @@ export class WfEditSubstateEventsDialogComponent extends ComponentToExtendForCus
         ]
       }
     );
-    console.log(this.form);
     this.formIntialized.emit(true);
+    console.log(this.form);
   }
   onOptionSelectionChange(event: MatOptionSelectionChange, field: any): void {
     const requiredFieldsListControl = this.form.get('requiredFieldsList');
@@ -543,6 +580,34 @@ export class WfEditSubstateEventsDialogComponent extends ComponentToExtendForCus
         criteriaConditions: this.fb.array([])
       })
     );
+  }
+  updateCriteriaConditions(event: MatOptionSelectionChange, attachment: any): void {
+    const formControl = this.form.get('workflowSubstateEventRequiredAttachments');
+    const currentList = formControl?.value || [];
+
+    if (event.isUserInput && event.source.selected) {
+      const existingAttachment = currentList.find(
+        (item: any) => item.id === attachment.id && item.templateAttachmentItemId === attachment.templateAttachmentItemId
+      );
+
+      if (existingAttachment) {
+        if (!existingAttachment.criteriaConditions || Array.isArray(existingAttachment.criteriaConditions)) {
+          existingAttachment.criteriaConditions = this.fb.array([]);
+        }
+      } else {
+        const newAttachment = {
+          ...attachment,
+          criteriaConditions: this.fb.array([])
+        };
+        const updatedList = [...currentList, newAttachment];
+        formControl.setValue(updatedList);
+      }
+    } else if (event.isUserInput && !event.source.selected) {
+      const updatedList = currentList.filter(
+        (item: any) => item.id !== attachment.id || item.templateAttachmentItemId !== attachment.templateAttachmentItemId
+      );
+      formControl.setValue(updatedList);
+    }
   }
 
   public deleteEmailEvent(position: number): void {
@@ -923,7 +988,8 @@ export class WfEditSubstateEventsDialogComponent extends ComponentToExtendForCus
                 templateAttachmentItemId: item.id,
                 templateName: attachment.name,
                 itemName: item.name,
-                numberInput: 1
+                numberInput: 1,
+                criteriaConditions: []
               });
             });
           });
