@@ -26,6 +26,7 @@
             </div>
             <div
                 class="attachments__content__templates__content"
+                [ngStyle]="{ 'min-height.px': isClientMode ? 250 : 50 }"
                 [ngClass]="{ fileoverCdk: hoverTemplate === template }"
                 appDropZone
                 [disableDropZone]="cardInstanceAttachmentsConfig.disableAttachmentsAddition"
