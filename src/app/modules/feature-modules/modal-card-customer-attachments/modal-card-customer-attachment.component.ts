@@ -32,7 +32,9 @@ export class ModalCardCustomerAttachmentsComponent extends ComponentToExtendForC
   public showAddAttchment: boolean;
   public labels = {
     attachmentsTab: marker('entities.customers.attachments.attachmentsTab'),
-    category: marker('entities.customers.attachments.category')
+    category: marker('entities.customers.attachments.category'),
+    numberSelectedAttachments: marker('entities.customers.attachments.numberSelectedAttachments'),
+    browse: marker('entities.customers.attachments.browse')
   };
   public attachmentTemplates: WorkflowAttachmentTimelineDTO[];
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -81,6 +83,10 @@ export class ModalCardCustomerAttachmentsComponent extends ComponentToExtendForC
   }
 
   ngOnDestroy(): void {}
+
+  public getEnabledAttachmentsCount(): number {
+    return this.attachmentsArray.controls.filter((control) => control.get('enabled')?.value === true).length;
+  }
 
   public onSubmitCustomDialog(): Observable<boolean | AttachmentDTO[]> {
     const formValue = this.attachmentsForm.value;
@@ -288,7 +294,7 @@ export class ModalCardCustomerAttachmentsComponent extends ComponentToExtendForC
       updatedByFullName: [attachment.updatedByFullName],
       attachmentsTab: [this.customerAttachTabId ? this.customerAttachTabId : null],
       attachmentsCategory: [this.customerAttachTemplateAttachmentItemId ? this.customerAttachTemplateAttachmentItemId : null],
-      enabled: [false]
+      enabled: [attachment.auto]
     });
     this.attachmentsArray.push(attachmentFormGroup);
   }
