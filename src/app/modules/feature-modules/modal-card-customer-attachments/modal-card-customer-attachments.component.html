@@ -1,6 +1,11 @@
 <div class="modal-card-customer-attachments" [formGroup]="attachmentsForm">
-    <div *ngIf="showAddAttchment" class="attachments__content__templates__header">
-        <label>Examinar</label>
+    <div class="attachments__content__templates__header">
+        <div class="attachments__info">
+            <span *ngIf="attachmentsArray.length > 0"
+                >{{ labels.numberSelectedAttachments | translate }} {{ getEnabledAttachmentsCount() }}</span
+            >
+        </div>
+        <label>{{ labels.browse | translate }}</label>
         <button mat-icon-button color="primary" class="v-align-bottom no-padding" (click)="fileInputRef.click()">
             <mat-icon>add</mat-icon>
         </button>
