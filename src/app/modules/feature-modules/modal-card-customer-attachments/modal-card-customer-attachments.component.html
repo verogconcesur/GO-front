@@ -1,4 +1,4 @@
-<div class="modal-card-customer-attachments" [formGroup]="attachmentsForm">
+<div class="modal-card-customer-attachments" [formGroup]="attachmentsForm" cdkDropListGroup cdkScrollable>
     <div class="attachments__content__templates__header">
         <div class="attachments__info">
             <span *ngIf="attachmentsArray.length > 0"
@@ -13,7 +13,18 @@
 
     <input type="file" style="display: none" #fileInputRef multiple (change)="fileBrowseHandler($event.target.files)" />
 
-    <div class="attachments-and-selects-container">
+    <div
+        class="attachments-and-selects-container"
+        appDropZone
+        (dragenter)="onDragEnter()"
+        (dragleave)="onDragLeave()"
+        (drop)="onDrop()"
+        (fileDropped)="fileDropped($event)"
+    >
+        <div class="fileover-placeholder" *ngIf="isDragging">
+            <p>{{ labels.dropHere | translate }}</p>
+        </div>
+
         <div *ngFor="let attachmentControl of attachmentsArray?.controls; let i = index" class="attachment-item">
             <!-- Columna del documento -->
             <div
@@ -27,6 +38,7 @@
                     <div class="file-name">
                         {{ attachmentControl.value.file.name }}
                     </div>
+                    <mat-icon *ngIf="attachmentControl.value.enabled" class="green-check"> check_box </mat-icon>
                     <div class="actions-wrapper">
                         <mat-icon
                             class="top-right"
