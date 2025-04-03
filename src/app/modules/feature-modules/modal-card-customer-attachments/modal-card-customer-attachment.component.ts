@@ -30,17 +30,21 @@ export const enum modalCardCustomerAttachmentsComponentModalEnum {
 })
 export class ModalCardCustomerAttachmentsComponent extends ComponentToExtendForCustomDialog implements OnInit, OnDestroy {
   public showAddAttchment: boolean;
+  public isDragging = false;
   public labels = {
     attachmentsTab: marker('entities.customers.attachments.attachmentsTab'),
     category: marker('entities.customers.attachments.category'),
     numberSelectedAttachments: marker('entities.customers.attachments.numberSelectedAttachments'),
-    browse: marker('entities.customers.attachments.browse')
+    browse: marker('entities.customers.attachments.browse'),
+    dropHere: marker('common.dropHere')
   };
   public attachmentTemplates: WorkflowAttachmentTimelineDTO[];
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   attachmentItemsMap: { [key: number]: any[] } = {};
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   public data: CustomerAttachmentDTO[] = [];
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  public draggingTimer: any = null;
   public tabId: number;
   public attachmentsForm: FormGroup;
   public form: UntypedFormGroup;
@@ -131,7 +135,7 @@ export class ModalCardCustomerAttachmentsComponent extends ComponentToExtendForC
     return of(true);
   }
 
-  getAttachmentsData() {
+  public getAttachmentsData() {
     this.attachmentTemplates?.forEach((template) => {
       this.attachmentItemsMap[template.id] = template.template.templateAttachmentItems;
     });
@@ -225,6 +229,35 @@ export class ModalCardCustomerAttachmentsComponent extends ComponentToExtendForC
 
   public fileBrowseHandler(items: FileList): void {
     this.addFiles(items);
+  }
+  onDragEnter(): void {
+    if (this.draggingTimer) {
+      return;
+    }
+
+    this.draggingTimer = setTimeout(() => {
+      this.isDragging = true;
+      this.draggingTimer = null;
+    }, 10);
+  }
+
+  onDragLeave(): void {
+    if (this.draggingTimer) {
+      return;
+    }
+    this.draggingTimer = setTimeout(() => {
+      this.isDragging = false;
+      this.draggingTimer = null;
+    }, 10);
+  }
+
+  onDrop(): void {
+    this.isDragging = false;
+  }
+
+  public fileDropped(files: FileList): void {
+    this.fileBrowseHandler(files);
+    this.isDragging = false;
   }
 
   public clearSelect(index: number): void {
