@@ -26,6 +26,7 @@
             </div>
             <div
                 class="attachments__content__templates__content"
+                [ngStyle]="{ 'min-height.px': isClientMode ? 250 : 50 }"
                 [ngClass]="{ fileoverCdk: hoverTemplate === template }"
                 appDropZone
                 [disableDropZone]="cardInstanceAttachmentsConfig.disableAttachmentsAddition"
@@ -63,14 +64,24 @@
                     matTooltipPosition="above"
                     [matTooltipDisabled]="!item.showInLanding"
                 >
+                    <mat-icon *ngIf="isClientMode && item.auto && item.active" class="green-check" (click)="autoCharge(item)">
+                        check_box
+                    </mat-icon>
                     <div class="actions-wrapper">
                         <mat-icon
                             class="top-left"
                             *ngIf="
+                                !isClientMode &&
                                 (!cardInstanceAttachmentsConfig.disableIndividualDeleteAction ||
                                     hasUerPermissionToDeleteFiles()) &&
                                 template.permissionType === 'EDIT'
                             "
+                            (click)="deleteAttachment(item)"
+                            >delete</mat-icon
+                        >
+                        <mat-icon
+                            class="top-left"
+                            *ngIf="isClientMode && hasUerPermissionToDeleteFiles() && isFileCreator(item)"
                             (click)="deleteAttachment(item)"
                             >delete</mat-icon
                         >
@@ -97,6 +108,15 @@
                             >vertical_align_bottom</mat-icon
                         >
                         <mat-icon
+                            *ngIf="isClientMode && item.active"
+                            class="bottom-right"
+                            matTooltip="{{ labels.automaticCharge | translate }}"
+                            matTooltipPosition="above"
+                            (click)="autoCharge(item)"
+                        >
+                            {{ item.auto ? "check_box" : "check_box_outline_blank" }}
+                        </mat-icon>
+                        <mat-icon
                             class="bottom-left shared-in-landing"
                             *ngIf="
                                 !cardInstanceAttachmentsConfig.disableLandingAction &&
@@ -107,6 +127,22 @@
                             matTooltip="{{ labels.stopSharingFileWithCustomerInLanding | translate }}"
                             matTooltipPosition="above"
                             >visibility_off</mat-icon
+                        >
+                        <mat-icon
+                            class="bottom-left"
+                            *ngIf="isClientMode && item.active"
+                            (click)="moveAttachment(item)"
+                            matTooltip="{{ labels.moveToArchived | translate }}"
+                            matTooltipPosition="above"
+                            >arrow_forward</mat-icon
+                        >
+                        <mat-icon
+                            class="bottom-left"
+                            *ngIf="isClientMode && !item.active"
+                            (click)="moveAttachment(item)"
+                            matTooltip="{{ labels.moveToActives | translate }}"
+                            matTooltipPosition="above"
+                            >arrow_back</mat-icon
                         >
                         <mat-icon
                             class="top-right"
@@ -138,13 +174,31 @@
                             (click)="downloadAttachment(item, template.attachments)"
                             >search</mat-icon
                         >
+                        <span *ngIf="isClientMode" class="middle-top"
+                            >{{ labels.creation | translate }}: {{ item.createDate | date }} {{ labels.by | translate }}
+                            {{ item.createdByFullName }}</span
+                        >
+                        <span *ngIf="isClientMode" class="middle-bottom"
+                            >{{ labels.edition | translate }}: {{ item.updateDate | date }} {{ labels.by | translate }}
+                            {{ item.updatedByFullName }}</span
+                        >
                     </div>
                     <div
+                        *ngIf="!isClientMode"
                         class="file-name"
                         [ngClass]="{ editable: !cardInstanceAttachmentsConfig.disableEditFileName }"
                         (click)="template.permissionType === 'EDIT' && editAttachmentName(item, template)"
                     >
                         {{ item.name }}
+                        <mat-icon *ngIf="template.permissionType === 'EDIT'">edit</mat-icon>
+                    </div>
+                    <div
+                        *ngIf="isClientMode"
+                        class="file-name"
+                        [ngClass]="{ editable: !cardInstanceAttachmentsConfig.disableEditFileName }"
+                        (click)="template.permissionType === 'EDIT' && editAttachmentName(item, template)"
+                    >
+                        {{ item.file.name }}
                         <mat-icon *ngIf="template.permissionType === 'EDIT'">edit</mat-icon>
                     </div>
                 </div>

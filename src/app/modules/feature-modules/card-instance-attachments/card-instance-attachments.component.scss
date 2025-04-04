@@ -114,7 +114,6 @@
           max-width: 248px;
           min-width: 100px;
           max-height: 188px;
-          //Añadir medias queries
           width: 248px;
           height: 188px;
           background-color: mat-color($background, background-administration);
@@ -160,12 +159,35 @@
                 left: 15px;
               }
             }
+            span {
+              position: absolute;
+              color: white;
+              &.middle-top {
+                top: 50px;
+                left: 30px;
+              }
+              &.middle-bottom {
+                bottom: 50px;
+                left: 30px;
+              }
+            }
           }
           &.selected,
           &:hover {
             .actions-wrapper {
               opacity: 1;
             }
+          }
+          mat-icon.green-check {
+            position: absolute;
+            bottom: 15px;
+            right: 15px;
+            color: mat-color($concenet-theme);
+            opacity: 1;
+          }
+
+          &:hover .green-check {
+            opacity: 0;
           }
 
           .file-name {

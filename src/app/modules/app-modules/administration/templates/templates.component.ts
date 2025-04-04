@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { MatTabChangeEvent } from '@angular/material/tabs';
-import { ActivatedRoute, Route, Router } from '@angular/router';
+import { Router } from '@angular/router';
 import { RouteConstants } from '@app/constants/route.constants';
 import { marker } from '@biesbjerg/ngx-translate-extract-marker';
 import TemplatesFilterDTO from '@data/models/templates/templates-filter-dto';
@@ -9,9 +9,12 @@ import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
 // eslint-disable-next-line max-len
 import { AdministrationCommonHeaderSectionClassToExtend } from '@modules/feature-modules/administration-common-header-section/administration-common-header-section-class-to-extend';
 // eslint-disable-next-line max-len
+import { ModulesConstants } from '@app/constants/modules.constants';
+import { AuthenticationService } from '@app/security/authentication.service';
+// eslint-disable-next-line max-len
 import { AdministrationCommonHeaderSectionComponent } from '@modules/feature-modules/administration-common-header-section/administration-common-header-section.component';
 import { FilterDrawerService } from '@modules/feature-modules/filter-drawer/services/filter-drawer.service';
-import { Observable, of } from 'rxjs';
+import { Observable } from 'rxjs';
 import { TemplatesFilterComponent } from './components/templates-filter/templates-filter.component';
 
 @UntilDestroy()
@@ -46,14 +49,22 @@ export class TemplatesComponent implements OnInit {
     createAccounting: marker('administration.templates.accounting.create'),
     create: marker('common.create')
   };
+  public tabs: { route: string; label: string }[] = [];
 
   private lastFilterSearch: string;
   private filterValue: TemplatesFilterDTO;
   private routerComponent: AdministrationCommonHeaderSectionClassToExtend;
+  private configList: string[] = [];
 
-  constructor(private router: Router, private filterDrawerService: FilterDrawerService) {}
+  constructor(
+    private router: Router,
+    private filterDrawerService: FilterDrawerService,
+    private authService: AuthenticationService
+  ) {}
 
   ngOnInit(): void {
+    this.configList = this.authService.getConfigList();
+    this.setTabsToShow();
     this.setSidenavFilterDrawerConfiguration();
   }
 
@@ -61,22 +72,22 @@ export class TemplatesComponent implements OnInit {
     return 'search';
   }
 
+  public isContractedModule(option: string): boolean {
+    if (option === 'checklist') {
+      return this.configList.includes(ModulesConstants.CHECK_LIST);
+    } else if (option === 'accounting') {
+      return this.configList.includes(ModulesConstants.ACCOUNTING);
+    } else if (option === 'timeline') {
+      return this.configList.includes(ModulesConstants.TIME_LINE);
+    } else if (option === 'budget') {
+      return this.configList.includes(ModulesConstants.BUDGET);
+    }
+    return true;
+  }
+
   public getSelectedTabIndex(): number {
     this.setSelectedTab();
-    switch (this.selectedTab) {
-      case RouteConstants.COMMUNICATIONS:
-        return 0;
-      case RouteConstants.BUDGETS:
-        return 1;
-      case RouteConstants.CHECKLISTS:
-        return 2;
-      case RouteConstants.ATTACHMENTS:
-        return 3;
-      case RouteConstants.CLIENT_TIMELINE:
-        return 4;
-      case RouteConstants.ACCOUNTING:
-        return 5;
-    }
+    return this.tabs.findIndex((tab) => tab.route === this.selectedTab);
   }
 
   public getHeaderCreateButtonLabel(type?: 'small'): string {
@@ -125,31 +136,9 @@ export class TemplatesComponent implements OnInit {
       console.log('lastFilterSearch todo?', this.lastFilterSearch);
       // this.buttonSearchAction(null);
     }
-    switch (tab.index) {
-      case 1:
-        this.selectedTab = RouteConstants.BUDGETS;
-        this.router.navigate([RouteConstants.ADMINISTRATION, RouteConstants.TEMPLATES, RouteConstants.BUDGETS]);
-        break;
-      case 2:
-        this.selectedTab = RouteConstants.CHECKLISTS;
-        this.router.navigate([RouteConstants.ADMINISTRATION, RouteConstants.TEMPLATES, RouteConstants.CHECKLISTS]);
-        break;
-      case 3:
-        this.selectedTab = RouteConstants.ATTACHMENTS;
-        this.router.navigate([RouteConstants.ADMINISTRATION, RouteConstants.TEMPLATES, RouteConstants.ATTACHMENTS]);
-        break;
-      case 4:
-        this.selectedTab = RouteConstants.CLIENT_TIMELINE;
-        this.router.navigate([RouteConstants.ADMINISTRATION, RouteConstants.TEMPLATES, RouteConstants.CLIENT_TIMELINE]);
-        break;
-      case 5:
-        this.selectedTab = RouteConstants.ACCOUNTING;
-        this.router.navigate([RouteConstants.ADMINISTRATION, RouteConstants.TEMPLATES, RouteConstants.ACCOUNTING]);
-        break;
-      default:
-        this.selectedTab = RouteConstants.COMMUNICATIONS;
-        this.router.navigate([RouteConstants.ADMINISTRATION, RouteConstants.TEMPLATES, RouteConstants.COMMUNICATIONS]);
-    }
+    const tabSelected = this.tabs[tab.index];
+    this.selectedTab = tabSelected.route as any;
+    this.router.navigate([RouteConstants.ADMINISTRATION, RouteConstants.TEMPLATES, tabSelected.route]);
   }
 
   public areFiltersSettedAndActive(): boolean {
@@ -187,4 +176,23 @@ export class TemplatesComponent implements OnInit {
       this.filterValue = filterValue;
     });
   };
+
+  private setTabsToShow(): void {
+    this.tabs = [{ label: this.labels.communication, route: RouteConstants.COMMUNICATIONS }];
+    if (this.isContractedModule('budget')) {
+      this.tabs.push({ label: this.labels.budgets, route: RouteConstants.BUDGETS });
+    }
+    if (this.isContractedModule('checklist')) {
+      this.tabs.push({ label: this.labels.checklists, route: RouteConstants.CHECKLISTS });
+    }
+    if (this.isContractedModule('attachment')) {
+      this.tabs.push({ label: this.labels.attachments, route: RouteConstants.ATTACHMENTS });
+    }
+    if (this.isContractedModule('timeline')) {
+      this.tabs.push({ label: this.labels.clientTimeline, route: RouteConstants.CLIENT_TIMELINE });
+    }
+    if (this.isContractedModule('accounting')) {
+      this.tabs.push({ label: this.labels.accounting, route: RouteConstants.ACCOUNTING });
+    }
+  }
 }

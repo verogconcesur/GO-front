@@ -1,4 +1,6 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import { ModulesConstants } from '@app/constants/modules.constants';
+import { AuthenticationService } from '@app/security/authentication.service';
 import { marker } from '@biesbjerg/ngx-translate-extract-marker';
 import CardColumnDTO from '@data/models/cards/card-column-dto';
 import CardColumnTabDTO from '@data/models/cards/card-column-tab-dto';
@@ -37,10 +39,17 @@ export class WorkflowCardColumnComponent implements OnInit {
     private prepareAndMoveService: WorkflowPrepareAndMoveService,
     private confirmationDialog: ConfirmDialogService,
     private translateService: TranslateService,
-    private globalMessageService: GlobalMessageService
+    private globalMessageService: GlobalMessageService,
+    private authService: AuthenticationService
   ) {}
 
   ngOnInit(): void {
+    if (!this.isPaymentMouleModule()) {
+      this.column.tabs = this.column.tabs.filter((tab: CardColumnTabDTO) => !(tab.colId === 2 && tab.contentTypeId === 9));
+    }
+    if (!this.isBudgetContractedModule()) {
+      this.column.tabs = this.column.tabs.filter((tab: CardColumnTabDTO) => !(tab.colId === 2 && tab.contentTypeId === 4));
+    }
     this.tabsInfo = [...this.column.tabs].map((tab: CardColumnTabDTO) => ({
       id: tab.id,
       label: tab.name,
@@ -48,6 +57,16 @@ export class WorkflowCardColumnComponent implements OnInit {
       type: tab.type,
       colId: this.column.id
     }));
+  }
+
+  public isPaymentMouleModule(): boolean {
+    const configList = this.authService.getConfigList();
+    return configList.includes(ModulesConstants.PAYMENTS);
+  }
+
+  public isBudgetContractedModule(): boolean {
+    const configList = this.authService.getConfigList();
+    return configList.includes(ModulesConstants.BUDGET);
   }
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -144,7 +163,12 @@ export class WorkflowCardColumnComponent implements OnInit {
       show = true;
     } else if (column === 'CUSTOMIZABLE_CUSTOM' && this.tabToShow.type === 'CUSTOMIZABLE' && this.tabToShow.contentTypeId === 3) {
       show = true;
-    } else if (column === 'TEMPLATE_BUDGETS' && this.tabToShow.type === 'TEMPLATE' && this.tabToShow.contentTypeId === 4) {
+    } else if (
+      column === 'TEMPLATE_BUDGETS' &&
+      this.tabToShow.type === 'TEMPLATE' &&
+      this.tabToShow.contentTypeId === 4 &&
+      this.isBudgetContractedModule()
+    ) {
       show = true;
     } else if (column === 'TEMPLATE_ATTACHMENTS' && this.tabToShow.type === 'TEMPLATE' && this.tabToShow.contentTypeId === 5) {
       show = true;
@@ -154,7 +178,12 @@ export class WorkflowCardColumnComponent implements OnInit {
       show = true;
     } else if (column === 'PREFIXED_TASKS' && this.tabToShow.type === 'PREFIXED' && this.tabToShow.contentTypeId === 8) {
       show = true;
-    } else if (column === 'TEMPLATE_PAYMENTS' && this.tabToShow.type === 'TEMPLATE' && this.tabToShow.contentTypeId === 9) {
+    } else if (
+      column === 'TEMPLATE_PAYMENTS' &&
+      this.tabToShow.type === 'TEMPLATE' &&
+      this.tabToShow.contentTypeId === 9 &&
+      this.isPaymentMouleModule()
+    ) {
       show = true;
     } else if (column === 'TEMPLATE_ACCOUNTING' && this.tabToShow.type === 'TEMPLATE' && this.tabToShow.contentTypeId === 10) {
       show = true;

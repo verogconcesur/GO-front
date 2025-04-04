@@ -5,7 +5,12 @@ import { PermissionConstants } from '@app/constants/permission.constants';
 import { AuthenticationService } from '@app/security/authentication.service';
 import { ConcenetError } from '@app/types/error';
 import { marker } from '@biesbjerg/ngx-translate-extract-marker';
-import { AttachmentDTO, CardAttachmentsDTO } from '@data/models/cards/card-attachments-dto';
+import {
+  AttachmentDTO,
+  CardAttachmentsDTO,
+  ConfigEntityCardAttachmentsDTO,
+  CustomerAttachmentDTO
+} from '@data/models/cards/card-attachments-dto';
 import { CardAttachmentsService } from '@data/services/card-attachments.service';
 import { WorkflowRequiredFieldsAuxService } from '@modules/app-modules/workflow/aux-service/workflow-required-fields-aux.service';
 import { TranslateService } from '@ngx-translate/core';
@@ -33,10 +38,12 @@ export const enum CardInstanceAttachmentsComponentEnum {
 })
 export class CardInstanceAttachmentsComponent implements OnInit, OnChanges {
   @Input() cardInstanceAttachmentsConfig: CardInstanceAttachmentsConfig;
-  @Input() data: CardAttachmentsDTO[] = [];
+  @Input() data: CardAttachmentsDTO[] | ConfigEntityCardAttachmentsDTO[] = [];
   @Input() selected: AttachmentDTO[] = [];
   @Input() cardInstanceWorkflowId: number = null;
   @Input() tabId: number = null;
+  @Input() isClientMode = false;
+  @Input() clientId: number = null;
   @Output() reload: EventEmitter<boolean> = new EventEmitter<boolean>();
   @Output() selectionChange: EventEmitter<AttachmentDTO[]> = new EventEmitter<AttachmentDTO[]>();
   public selectedAttachments: AttachmentDTO[] = [];
@@ -47,7 +54,15 @@ export class CardInstanceAttachmentsComponent implements OnInit, OnChanges {
     dropHere: marker('common.dropHere'),
     deleteConfirmation: marker('common.deleteConfirmation'),
     fileSharedWithCustomerInLanding: marker('landing.fileSharedWithCustomerInLanding'),
-    stopSharingFileWithCustomerInLanding: marker('landing.stopSharingFileWithCustomerInLanding')
+    stopSharingFileWithCustomerInLanding: marker('landing.stopSharingFileWithCustomerInLanding'),
+    sureMoveToActives: marker('entities.customers.attachments.sureMoveToActives'),
+    sureMoveToArchived: marker('entities.customers.attachments.sureMoveToArchived'),
+    moveToActives: marker('entities.customers.attachments.moveToActives'),
+    moveToArchived: marker('entities.customers.attachments.moveToArchived'),
+    automaticCharge: marker('entities.customers.attachments.automaticCharge'),
+    creation: marker('entities.customers.attachments.creation'),
+    edition: marker('entities.customers.attachments.edition'),
+    by: marker('entities.customers.attachments.by')
   };
   public modalMode = false;
   public title: string = marker('common.attachments');
@@ -70,7 +85,7 @@ export class CardInstanceAttachmentsComponent implements OnInit, OnChanges {
   ) {}
 
   ngOnInit(): void {
-    if (this.dialogData) {
+    if (this.dialogData && !this.isClientMode) {
       this.modalMode = true;
       this.cardInstanceAttachmentsConfig = this.dialogData.cardInstanceAttachmentsConfig;
       this.data = this.dialogData.data;
@@ -110,19 +125,35 @@ export class CardInstanceAttachmentsComponent implements OnInit, OnChanges {
     }
     return false;
   }
-
-  public getItemBgImage(item: AttachmentDTO): string {
-    if (item.thumbnail && item.type) {
-      return `url("data:${item.type} ;base64,${item.thumbnail}")`;
-    } else if (item.type) {
-      if (item.type.indexOf('pdf') >= 0) {
-        return `url(/assets/img/pdf.png)`;
-      } else if (item.type.indexOf('audio') >= 0 || item.type.indexOf('mp3') >= 0) {
-        return `url(/assets/img/audio-file.png)`;
-      } else if (item.type.indexOf('video') >= 0) {
-        return `url(/assets/img/video-file.png)`;
-      } else if (item.type.indexOf('image') >= 0) {
-        return `url(/assets/img/image-file.png)`;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  public getItemBgImage(item: any): string {
+    if (this.isClientMode) {
+      if (item.file.thumbnail && item.file.type) {
+        return `url("data:${item.file.type} ;base64,${item.file.thumbnail}")`;
+      } else if (item.file.type) {
+        if (item.file.type.indexOf('pdf') >= 0) {
+          return `url(/assets/img/pdf.png)`;
+        } else if (item.file.type.indexOf('audio') >= 0 || item.file.type.indexOf('mp3') >= 0) {
+          return `url(/assets/img/audio-file.png)`;
+        } else if (item.file.type.indexOf('video') >= 0) {
+          return `url(/assets/img/video-file.png)`;
+        } else if (item.file.type.indexOf('image') >= 0) {
+          return `url(/assets/img/image-file.png)`;
+        }
+      }
+    } else {
+      if (item.thumbnail && item.type) {
+        return `url("data:${item.type} ;base64,${item.thumbnail}")`;
+      } else if (item.type) {
+        if (item.type.indexOf('pdf') >= 0) {
+          return `url(/assets/img/pdf.png)`;
+        } else if (item.type.indexOf('audio') >= 0 || item.type.indexOf('mp3') >= 0) {
+          return `url(/assets/img/audio-file.png)`;
+        } else if (item.type.indexOf('video') >= 0) {
+          return `url(/assets/img/video-file.png)`;
+        } else if (item.type.indexOf('image') >= 0) {
+          return `url(/assets/img/image-file.png)`;
+        }
       }
     }
     return `url(/assets/img/unknown.svg)`;
@@ -131,17 +162,55 @@ export class CardInstanceAttachmentsComponent implements OnInit, OnChanges {
   public hasUerPermissionToDeleteFiles(): boolean {
     return !!this.authService.getUserPermissions().find((permission) => permission.code === PermissionConstants.ALLOWDELETEFILES);
   }
-
-  public hasPreview(item: AttachmentDTO): boolean {
-    if (
-      item?.type?.toLowerCase().indexOf('pdf') >= 0 ||
-      item.type.indexOf('audio') >= 0 ||
-      item.type.indexOf('video') >= 0 ||
-      item.type.indexOf('image') >= 0
-    ) {
-      return true;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  public isFileCreator(item: any): boolean {
+    return this.authService.getLoggedUser().user_full_name === item.createdByFullName;
+  }
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  public hasPreview(item: any): boolean {
+    if (this.isClientMode) {
+      if (
+        item?.file?.type?.toLowerCase().indexOf('pdf') >= 0 ||
+        item?.file?.type?.indexOf('audio') >= 0 ||
+        item?.file?.type?.indexOf('video') >= 0 ||
+        item?.file?.type?.indexOf('image') >= 0
+      ) {
+        return true;
+      }
+    } else {
+      if (
+        item?.type?.toLowerCase().indexOf('pdf') >= 0 ||
+        item?.type?.indexOf('audio') >= 0 ||
+        item?.type?.indexOf('video') >= 0 ||
+        item?.type?.indexOf('image') >= 0
+      ) {
+        return true;
+      }
     }
     return false;
+  }
+
+  public autoCharge(item: CustomerAttachmentDTO) {
+    const autoValue = !item.auto;
+    const spinner = this.spinnerService.show();
+    this.attachmentService
+      .autoCustomerAttachments(this.clientId, item.id, autoValue)
+      .pipe(take(1))
+      .subscribe(
+        (data) => {
+          this.reload.emit(true);
+          this.spinnerService.hide(spinner);
+        },
+        (error: ConcenetError) => {
+          this.spinnerService.hide(spinner);
+          this.logger.error(error);
+
+          this.globalMessageService.showError({
+            message: error.message,
+            actionText: this.translateService.instant(marker('common.close'))
+          });
+        }
+      );
   }
 
   public stopSharingFileInLanding(item: AttachmentDTO): void {
@@ -183,30 +252,57 @@ export class CardInstanceAttachmentsComponent implements OnInit, OnChanges {
   public downloadAttachment(item: AttachmentDTO, list: AttachmentDTO[]): void {
     const spinner = this.spinnerService.show();
     //window.open(this.attachmentService.getDownloadAttachmentUrl(this.cardInstanceWorkflowId, this.tabId, item.id), '_blank');
-    this.attachmentService
-      .downloadAttachment(this.cardInstanceWorkflowId, this.tabId, item.id)
-      .pipe(
-        take(1),
-        finalize(() => this.spinnerService.hide(spinner))
-      )
-      .subscribe(
-        (data: AttachmentDTO) => {
-          if (this.hasPreview(item)) {
-            const listFiltered = list.filter((att: AttachmentDTO) => this.hasPreview(att));
-            this.mediaViewerService.openMediaViewerMúltiple(data, listFiltered, this.cardInstanceWorkflowId, this.tabId);
-          } else {
-            saveAs(`data:${data.type};base64,${data.content}`, data.name);
-          }
-        },
-        (error: ConcenetError) => {
-          this.logger.error(error);
+    if (!this.isClientMode) {
+      this.attachmentService
+        .downloadAttachment(this.cardInstanceWorkflowId, this.tabId, item.id)
+        .pipe(
+          take(1),
+          finalize(() => this.spinnerService.hide(spinner))
+        )
+        .subscribe(
+          (data: AttachmentDTO) => {
+            if (this.hasPreview(item)) {
+              const listFiltered = list.filter((att: AttachmentDTO) => this.hasPreview(att));
+              this.mediaViewerService.openMediaViewerMúltiple(data, listFiltered, this.cardInstanceWorkflowId, this.tabId);
+            } else {
+              saveAs(`data:${data.type};base64,${data.content}`, data.name);
+            }
+          },
+          (error: ConcenetError) => {
+            this.logger.error(error);
 
-          this.globalMessageService.showError({
-            message: error.message,
-            actionText: this.translateService.instant(marker('common.close'))
-          });
-        }
-      );
+            this.globalMessageService.showError({
+              message: error.message,
+              actionText: this.translateService.instant(marker('common.close'))
+            });
+          }
+        );
+    } else {
+      this.attachmentService
+        .downloadCustomerAttachment(this.clientId, item.id)
+        .pipe(
+          take(1),
+          finalize(() => this.spinnerService.hide(spinner))
+        )
+        .subscribe(
+          (data: CustomerAttachmentDTO) => {
+            if (this.hasPreview(item)) {
+              const listFiltered = list.filter((att: CustomerAttachmentDTO) => this.hasPreview(att));
+              this.mediaViewerService.openMediaViewerMúltiple(data, listFiltered, null, null);
+            } else {
+              saveAs(`data:${data.file.type};base64,${data.file.content}`, data.file.name);
+            }
+          },
+          (error: ConcenetError) => {
+            this.logger.error(error);
+
+            this.globalMessageService.showError({
+              message: error.message,
+              actionText: this.translateService.instant(marker('common.close'))
+            });
+          }
+        );
+    }
   }
 
   public deleteAttachment(item: AttachmentDTO): void {
@@ -219,8 +315,64 @@ export class CardInstanceAttachmentsComponent implements OnInit, OnChanges {
       .subscribe((ok: boolean) => {
         if (ok) {
           const spinner = this.spinnerService.show();
+          if (!this.isClientMode) {
+            this.attachmentService
+              .deleteAttachment(this.cardInstanceWorkflowId, this.tabId, item.id)
+              .pipe(take(1))
+              .subscribe(
+                (data) => {
+                  this.reload.emit(true);
+                  this.spinnerService.hide(spinner);
+                },
+                (error: ConcenetError) => {
+                  this.spinnerService.hide(spinner);
+                  this.logger.error(error);
+
+                  this.globalMessageService.showError({
+                    message: error.message,
+                    actionText: this.translateService.instant(marker('common.close'))
+                  });
+                }
+              );
+          } else {
+            this.attachmentService
+              .deleteCustomerAttachment(this.clientId, item.id)
+              .pipe(take(1))
+              .subscribe(
+                (data) => {
+                  this.reload.emit(true);
+                  this.spinnerService.hide(spinner);
+                },
+                (error: ConcenetError) => {
+                  this.spinnerService.hide(spinner);
+                  this.logger.error(error);
+
+                  this.globalMessageService.showError({
+                    message: error.message,
+                    actionText: this.translateService.instant(marker('common.close'))
+                  });
+                }
+              );
+          }
+        }
+      });
+  }
+
+  public moveAttachment(item: CustomerAttachmentDTO): void {
+    const activeValue = !item.active;
+    this.confirmationDialog
+      .open({
+        title: this.translateService.instant(marker('common.warning')),
+        message: item.active
+          ? `${this.translateService.instant(this.labels.sureMoveToActives)}`
+          : `${this.translateService.instant(this.labels.sureMoveToArchived)}`
+      })
+      .pipe(take(1))
+      .subscribe((ok: boolean) => {
+        if (ok) {
+          const spinner = this.spinnerService.show();
           this.attachmentService
-            .deleteAttachment(this.cardInstanceWorkflowId, this.tabId, item.id)
+            .moveAttachment(item.id, this.clientId, activeValue)
             .pipe(take(1))
             .subscribe(
               (data) => {
@@ -241,30 +393,60 @@ export class CardInstanceAttachmentsComponent implements OnInit, OnChanges {
       });
   }
 
-  public editAttachmentName(item: AttachmentDTO, template: CardAttachmentsDTO): void {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  public editAttachmentName(item: any, template: CardAttachmentsDTO): void {
     if (!this.cardInstanceAttachmentsConfig.disableEditFileName) {
-      let attachmentsNames: string[] = [];
-      this.data.forEach((aGroup: CardAttachmentsDTO) => {
-        attachmentsNames = [...attachmentsNames, ...aGroup.attachments.map((a: AttachmentDTO) => a.name)];
-      });
-      // console.log(attachmentsNames);
-      this.dialog
-        .open(RenameAttachmentComponent, {
-          data: {
-            attachmentsNames,
-            attachment: item,
-            tabId: this.tabId,
-            cardInstanceWorkflowId: this.cardInstanceWorkflowId,
-            templateAttachmentItemId: template.templateAttachmentItem.id
-          }
-        })
-        .afterClosed()
-        .pipe(take(1))
-        .subscribe((response) => {
-          if (response) {
-            this.reload.emit(true);
-          }
+      if (!this.isClientMode) {
+        let attachmentsNames: string[] = [];
+        this.data.forEach((aGroup: CardAttachmentsDTO) => {
+          attachmentsNames = [...attachmentsNames, ...aGroup.attachments.map((a: AttachmentDTO) => a.name)];
         });
+        console.log(attachmentsNames);
+        this.dialog
+          .open(RenameAttachmentComponent, {
+            data: {
+              attachmentsNames,
+              attachment: item,
+              tabId: this.tabId,
+              cardInstanceWorkflowId: this.cardInstanceWorkflowId,
+              templateAttachmentItemId: template.templateAttachmentItem.id,
+              isClientMode: this.isClientMode,
+              clientId: null
+            }
+          })
+          .afterClosed()
+          .pipe(take(1))
+          .subscribe((response) => {
+            if (response) {
+              this.reload.emit(true);
+            }
+          });
+      } else {
+        let attachmentsNames: string[] = [];
+        this.data.forEach((aGroup: ConfigEntityCardAttachmentsDTO) => {
+          attachmentsNames = [...attachmentsNames, ...aGroup.attachments.map((a: CustomerAttachmentDTO) => a.file.name)];
+        });
+        console.log(attachmentsNames);
+        this.dialog
+          .open(RenameAttachmentComponent, {
+            data: {
+              attachmentsNames,
+              attachment: item,
+              tabId: null,
+              cardInstanceWorkflowId: null,
+              templateAttachmentItemId: null,
+              isClientMode: this.isClientMode,
+              clientId: this.clientId
+            }
+          })
+          .afterClosed()
+          .pipe(take(1))
+          .subscribe((response) => {
+            if (response) {
+              this.reload.emit(true);
+            }
+          });
+      }
     }
   }
 
@@ -356,6 +538,7 @@ export class CardInstanceAttachmentsComponent implements OnInit, OnChanges {
       });
     });
     const arrayOfBase64 = await this.fileListToBase64(files);
+    console.log(arrayOfBase64);
     Array.from(files).forEach((file: File, i: number) => {
       const fileInfo = {
         name: filesName.indexOf(file.name) === -1 ? file.name : `${+new Date()}_${file.name}`,
@@ -366,23 +549,55 @@ export class CardInstanceAttachmentsComponent implements OnInit, OnChanges {
       filesToSend.push(fileInfo);
     });
     const spinner = this.spinnerService.show();
-    this.attachmentService
-      .addAttachments(this.cardInstanceWorkflowId, this.tabId, template.templateAttachmentItem.id, filesToSend)
-      .pipe(take(1))
-      .subscribe(
-        (data) => {
-          this.reload.emit(true);
-          this.spinnerService.hide(spinner);
-        },
-        (error: ConcenetError) => {
-          this.spinnerService.hide(spinner);
-          this.logger.error(error);
+    if (!this.isClientMode) {
+      this.attachmentService
+        .addAttachments(this.cardInstanceWorkflowId, this.tabId, template.templateAttachmentItem.id, filesToSend)
+        .pipe(take(1))
+        .subscribe(
+          (data) => {
+            this.reload.emit(true);
+            this.spinnerService.hide(spinner);
+          },
+          (error: ConcenetError) => {
+            this.spinnerService.hide(spinner);
+            this.logger.error(error);
 
-          this.globalMessageService.showError({
-            message: error.message,
-            actionText: this.translateService.instant(marker('common.close'))
-          });
+            this.globalMessageService.showError({
+              message: error.message,
+              actionText: this.translateService.instant(marker('common.close'))
+            });
+          }
+        );
+    } else {
+      const customerIdValue: number = null;
+      const customerFilesToSend = filesToSend.map((file) => ({
+        id: customerIdValue,
+        customerId: customerIdValue,
+        file: {
+          name: file.name,
+          type: file.type,
+          size: file.size,
+          content: file.content
         }
-      );
+      }));
+      this.attachmentService
+        .addClientAttachments(this.clientId, customerFilesToSend)
+        .pipe(take(1))
+        .subscribe(
+          (data) => {
+            this.reload.emit(true);
+            this.spinnerService.hide(spinner);
+          },
+          (error: ConcenetError) => {
+            this.spinnerService.hide(spinner);
+            this.logger.error(error);
+
+            this.globalMessageService.showError({
+              message: error.message,
+              actionText: this.translateService.instant(marker('common.close'))
+            });
+          }
+        );
+    }
   }
 }

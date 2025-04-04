@@ -2,6 +2,7 @@ import { DatePipe } from '@angular/common';
 import { Component, Input, OnInit, ViewEncapsulation } from '@angular/core';
 import { FormGroup, Validators } from '@angular/forms';
 import { MatCalendarCellClassFunction } from '@angular/material/datepicker';
+import { ModulesConstants } from '@app/constants/modules.constants';
 import { AuthenticationService } from '@app/security/authentication.service';
 import { ConcenetError } from '@app/types/error';
 import { marker } from '@biesbjerg/ngx-translate-extract-marker';
@@ -53,7 +54,10 @@ export class StepWorkflowComponent implements OnInit {
     private authService: AuthenticationService
   ) {}
   public initialiceList(): void {
-    if ((this.formWorkflow.get('workflow').value as WorkflowCreateCardDTO)?.workflowCardsLimit?.cardsLimit) {
+    if (
+      (this.formWorkflow.get('workflow').value as WorkflowCreateCardDTO)?.workflowCardsLimit?.cardsLimit &&
+      this.isContractedModule('cardlimit')
+    ) {
       this.formWorkflow.get('cardsLimit').setValue(true);
     } else {
       this.formWorkflow.get('cardsLimit').setValue(false);
@@ -65,10 +69,14 @@ export class StepWorkflowComponent implements OnInit {
         this.facilityList.find((facility: { id: number; name: string }) => facility.id === selectedFacility.id),
         { emitEvent: false }
       );
-      this.initialiceLimitDates();
+      if (this.isContractedModule('cardlimit')) {
+        this.initialiceLimitDates();
+      }
     } else if (this.facilityList.length === 1) {
       this.formWorkflow.get('facility').setValue(this.facilityList[0], { emitEvent: false });
-      this.initialiceLimitDates();
+      if (this.isContractedModule('cardlimit')) {
+        this.initialiceLimitDates();
+      }
     }
     this.setStateAndSubstate();
   }
@@ -100,6 +108,12 @@ export class StepWorkflowComponent implements OnInit {
       this.initialiceSubStates(cardsLimitMode);
     }
   }
+  public isContractedModule(option: string): boolean {
+    const configList = this.authService.getConfigList();
+    if (option === 'cardlimit') {
+      return configList.includes(ModulesConstants.CARD_LIMIT);
+    }
+  }
   public changeDeadLine(): void {
     const date: Date = this.formWorkflow.get('deadLineDate').value;
     const slot: CardLimitSlotDTO = this.formWorkflow.get('deadLineHour').value;
@@ -113,50 +127,52 @@ export class StepWorkflowComponent implements OnInit {
     }
   }
   public initialiceLimitDates(): void {
-    this.maxCardsByHour = (this.formWorkflow.get('workflow').value as WorkflowCreateCardDTO).workflowCardsLimit?.numCardsByHour;
-    const wId = this.formWorkflow.get('workflow').value?.id;
-    const fId = this.formWorkflow.get('facility').value?.id;
-    this.cardsLimits = [];
-    this.formWorkflow.get('deadLineDate').setValue(null);
-    this.formWorkflow.get('deadLineHour').setValue(null);
-    if (wId && fId) {
-      const spinner = this.spinnerService.show();
-      this.workflowsService
-        .getCardLimitsCreatecardList(wId, fId)
-        .pipe(
-          take(1),
-          finalize(() => {
-            this.spinnerService.hide(spinner);
-          })
-        )
-        .subscribe({
-          next: (data: CardLimitSlotByDayDTO[]) => {
-            this.cardsLimits = data ? data : [];
-            const wf: WorkflowCreateCardDTO = this.formWorkflow.get('workflow').value;
-            this.cardsLimits.forEach((cl) => {
-              const newSlots: CardLimitSlotDTO[] = [];
-              for (let x = wf.workflowCardsLimit.initTime; x <= wf.workflowCardsLimit.endTime; x++) {
-                let slot: CardLimitSlotDTO = cl.carLimitSlots.find((c) => c.hourFrom === x);
-                slot = slot
-                  ? slot
-                  : {
-                      cards: 0,
-                      hourFrom: x,
-                      hourTo: x + 1
-                    };
-                slot.maxReached = false;
-                if (slot.cards >= wf.workflowCardsLimit.numCardsByHour) {
-                  slot.maxReached = true;
+    if (this.isContractedModule('cardlimit')) {
+      this.maxCardsByHour = (this.formWorkflow.get('workflow').value as WorkflowCreateCardDTO).workflowCardsLimit?.numCardsByHour;
+      const wId = this.formWorkflow.get('workflow').value?.id;
+      const fId = this.formWorkflow.get('facility').value?.id;
+      this.cardsLimits = [];
+      this.formWorkflow.get('deadLineDate').setValue(null);
+      this.formWorkflow.get('deadLineHour').setValue(null);
+      if (wId && fId) {
+        const spinner = this.spinnerService.show();
+        this.workflowsService
+          .getCardLimitsCreatecardList(wId, fId)
+          .pipe(
+            take(1),
+            finalize(() => {
+              this.spinnerService.hide(spinner);
+            })
+          )
+          .subscribe({
+            next: (data: CardLimitSlotByDayDTO[]) => {
+              this.cardsLimits = data ? data : [];
+              const wf: WorkflowCreateCardDTO = this.formWorkflow.get('workflow').value;
+              this.cardsLimits.forEach((cl) => {
+                const newSlots: CardLimitSlotDTO[] = [];
+                for (let x = wf.workflowCardsLimit.initTime; x <= wf.workflowCardsLimit.endTime; x++) {
+                  let slot: CardLimitSlotDTO = cl.carLimitSlots.find((c) => c.hourFrom === x);
+                  slot = slot
+                    ? slot
+                    : {
+                        cards: 0,
+                        hourFrom: x,
+                        hourTo: x + 1
+                      };
+                  slot.maxReached = false;
+                  if (slot.cards >= wf.workflowCardsLimit.numCardsByHour) {
+                    slot.maxReached = true;
+                  }
+                  newSlots.push(slot);
                 }
-                newSlots.push(slot);
-              }
-              cl.carLimitSlots = newSlots;
-            });
-          },
-          error: (e: ConcenetError) => {
-            console.log(e);
-          }
-        });
+                cl.carLimitSlots = newSlots;
+              });
+            },
+            error: (e: ConcenetError) => {
+              console.log(e);
+            }
+          });
+      }
     }
   }
   public initialiceSubStates(cardsLimitMode?: boolean): void {

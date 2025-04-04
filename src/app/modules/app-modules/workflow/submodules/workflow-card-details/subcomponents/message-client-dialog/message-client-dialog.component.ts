@@ -1,6 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { FormArray, FormControl, FormGroup, UntypedFormBuilder, UntypedFormGroup, Validators } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
+import { ModulesConstants } from '@app/constants/modules.constants';
+import { AuthenticationService } from '@app/security/authentication.service';
 import { marker } from '@biesbjerg/ngx-translate-extract-marker';
 import { AttachmentDTO, CardAttachmentsDTO } from '@data/models/cards/card-attachments-dto';
 import CardInstanceDTO from '@data/models/cards/card-instance-dto';
@@ -80,7 +82,8 @@ export class MessageClientDialogComponent extends ComponentToExtendForCustomDial
     private cardService: CardMessagesService,
     private globalMessageService: GlobalMessageService,
     private cardAttachmentsService: CardAttachmentsService,
-    private dialog: MatDialog
+    private dialog: MatDialog,
+    private authService: AuthenticationService
   ) {
     super(
       MessageClientDialogComponentModalEnum.ID,
@@ -92,8 +95,18 @@ export class MessageClientDialogComponent extends ComponentToExtendForCustomDial
   get form() {
     return this.messageForm.controls;
   }
-  get messageChannelsForm() {
-    return this.messageForm.get('messageChannels') as FormArray;
+  // get messageChannelsForm() {
+  //   return this.messageForm.get('messageChannels') as FormArray;
+  // }
+  get messageChannelsForm(): FormArray {
+    const formArray = this.messageForm.get('messageChannels') as FormArray;
+    const filteredChannels = formArray.controls.filter((control) => {
+      const messageChannelId = control.value.messageChannel.id;
+      const allowSms = !(messageChannelId === 3 && !this.isContractedModule('sms'));
+      const allowWhatsapp = !(messageChannelId === 4 && !this.isContractedModule('whatsapp'));
+      return allowSms && allowWhatsapp;
+    });
+    return new FormArray(filteredChannels);
   }
   get messageClientsForm() {
     return this.messageForm.get('messageClients') as FormArray;
@@ -137,6 +150,16 @@ export class MessageClientDialogComponent extends ComponentToExtendForCustomDial
       return marker('cards.messages.signatureTitle');
     }
     return this.labels.title;
+  }
+  public isContractedModule(option: string): boolean {
+    const configList = this.authService.getConfigList();
+    if (option === 'sms') {
+      return configList.includes(ModulesConstants.SMS_SEND);
+    } else if (option === 'whatsapp') {
+      return configList.includes(ModulesConstants.WHATSAPP_SEND);
+    } else if (option === 'customerArea') {
+      return configList.includes(ModulesConstants.TIME_LINE);
+    }
   }
   public openAttachmentsModal(messageClient: FormGroup): void {
     const data: CardInstanceAttachmentsModalVersionConfig = {
@@ -352,7 +375,16 @@ export class MessageClientDialogComponent extends ComponentToExtendForCustomDial
       (this.messageForm.get('messageChannels') as FormArray).push(
         this.fb.group({
           messageChannel: [channel],
-          selected: [channel.id === 1]
+          selected: [
+            (!this.isContractedModule('customerArea') &&
+              !this.isContractedModule('whatsapp') &&
+              !this.isContractedModule('sms') &&
+              (channel.id === 1 || channel.id === 2)) ||
+              ((this.isContractedModule('customerArea') ||
+                this.isContractedModule('whatsapp') ||
+                this.isContractedModule('sms')) &&
+                channel.id === 1)
+          ]
         })
       );
     });

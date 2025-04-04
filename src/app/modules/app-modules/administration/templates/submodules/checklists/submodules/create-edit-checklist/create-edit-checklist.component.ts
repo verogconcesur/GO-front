@@ -5,7 +5,9 @@
 import { Component, ElementRef, OnInit, ViewChild, ViewEncapsulation } from '@angular/core';
 import { FormControl, UntypedFormArray, UntypedFormBuilder, UntypedFormGroup } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
+import { ModulesConstants } from '@app/constants/modules.constants';
 import { RouteConstants } from '@app/constants/route.constants';
+import { AuthenticationService } from '@app/security/authentication.service';
 import { ConcenetError } from '@app/types/error';
 import { marker } from '@biesbjerg/ngx-translate-extract-marker';
 import { TemplatesAccountingDTO } from '@data/models/templates/templates-accounting-dto';
@@ -127,13 +129,16 @@ export class CreateEditChecklistComponent implements OnInit {
     private templatesChecklistsService: TemplatesChecklistsService,
     private route: ActivatedRoute,
     private cardService: CardService,
-    private templateAccountingService: TemplatesAccountingsService
+    private templateAccountingService: TemplatesAccountingsService,
+    private authenticationService: AuthenticationService
   ) {}
 
   ngOnInit(): void {
     const variablesRequest = this.variablesService.searchVariablesTemplateSlots();
     const customVariableRequest = this.variablesService.searchCustomVariablesSlots();
-    this.getAccountingTemplates();
+    if (this.isContractedModule('budget')) {
+      this.getAccountingTemplates();
+    }
     if (this.route?.snapshot?.params?.id) {
       const spinner = this.spinnerService.show();
       forkJoin([
@@ -150,8 +155,14 @@ export class CreateEditChecklistComponent implements OnInit {
             this.listVariables = [...responses[0], ...responses[2]].sort((a, b) => {
               return a.name.localeCompare(b.name);
             });
-            this.checklistToEdit = responses[1];
-
+            if (this.isContractedModule('budget')) {
+              this.checklistToEdit = responses[1];
+            } else {
+              this.checklistToEdit = {
+                ...responses[1],
+                templateChecklistItems: responses[1].templateChecklistItems.filter((item) => item.typeItem !== 'ACCOUNTING')
+              };
+            }
             // Cálculo de uniqueIdOrder
             this.uniqueIdOrder = this.checklistToEdit.templateChecklistItems?.reduce(
               (prev: number, curr: TemplateChecklistItemDTO) => {
@@ -202,6 +213,14 @@ export class CreateEditChecklistComponent implements OnInit {
       return this.translateService.instant(this.labels.newCheckList) + ': ' + this.checklistForm.value.template.name;
     }
     return this.translateService.instant(this.labels.newCheckList);
+  }
+  public isContractedModule(option: string): boolean {
+    const configList = this.authenticationService.getConfigList();
+    if (option === 'budget') {
+      return configList.includes(ModulesConstants.BUDGET);
+    } else if (option === 'customerArea') {
+      return configList.includes(ModulesConstants.TIME_LINE);
+    }
   }
   public getAccountingTemplates() {
     this.templateAccountingService

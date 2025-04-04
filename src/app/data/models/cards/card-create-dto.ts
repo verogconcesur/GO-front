@@ -14,4 +14,10 @@ export default interface CardCreateDTO {
   cardInstanceWorkflowUsers?: WorkflowSubstateUserDTO[];
   workflowSubstateId: number;
   facilityId: number;
+  customerCardInstanceAttachments: CardCustomersAttachmentsDTO[];
+}
+export interface CardCustomersAttachmentsDTO {
+  tabId: number;
+  templateAttachmentItemId: number;
+  customerAttachmentId: number;
 }

@@ -20,12 +20,7 @@
         [selectedIndex]="getSelectedTabIndex()"
         (selectedTabChange)="changeSelectedTab($event)"
     >
-        <mat-tab label="{{ labels.communication | translate }}"></mat-tab>
-        <mat-tab label="{{ labels.budgets | translate }}"></mat-tab>
-        <mat-tab label="{{ labels.checklists | translate }}"></mat-tab>
-        <mat-tab label="{{ labels.attachments | translate }}"></mat-tab>
-        <mat-tab label="{{ labels.clientTimeline | translate }}"></mat-tab>
-        <mat-tab label="{{ labels.accounting | translate }}"></mat-tab>
+        <mat-tab *ngFor="let tab of tabs" label="{{ tab.label | translate }}"></mat-tab>
     </mat-tab-group>
     <router-outlet (activate)="onActivate($event)"></router-outlet>
 </div>

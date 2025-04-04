@@ -12,6 +12,8 @@ import { ProgressSpinnerDialogService } from '@shared/services/progress-spinner-
 import { take } from 'rxjs/operators';
 import { WorkflowsCreateEditAuxService } from '../../aux-service/workflows-create-edit-aux.service';
 // eslint-disable-next-line max-len
+import { ModulesConstants } from '@app/constants/modules.constants';
+import { AuthenticationService } from '@app/security/authentication.service';
 import { CustomDialogService } from '@shared/modules/custom-dialog/services/custom-dialog.service';
 import {
   CreateEditWorkflowComponent,
@@ -53,7 +55,8 @@ export class WorkflowDetailComponent implements OnInit, OnDestroy, AfterViewInit
     private translateService: TranslateService,
     private spinnerService: ProgressSpinnerDialogService,
     private confirmDialogService: ConfirmDialogService,
-    private globalMessageService: GlobalMessageService
+    private globalMessageService: GlobalMessageService,
+    private authService: AuthenticationService
   ) {}
 
   ngOnInit(): void {
@@ -70,12 +73,38 @@ export class WorkflowDetailComponent implements OnInit, OnDestroy, AfterViewInit
     this.tabs._handleClick = this.myTabChange.bind(this);
   }
 
+  public isContractedModule(option: string): boolean {
+    const configList = this.authService.getConfigList();
+    if (option === 'cardlimit') {
+      return configList.includes(ModulesConstants.CARD_LIMIT);
+    } else if (option === 'timeline') {
+      return configList.includes(ModulesConstants.TIME_LINE) || configList.includes(ModulesConstants.WHATSAPP_SEND);
+    } else if (option === 'budget') {
+      return configList.includes(ModulesConstants.BUDGET);
+    }
+  }
+
   public initListeners(): void {
     this.workflowsCreateEditAuxService.nextStep$.pipe(untilDestroyed(this)).subscribe((goNext: boolean) => {
       if (goNext && this.tabIndex < 8) {
         this.tabIndex++;
       }
     });
+  }
+  getCardsLimitIndex(): number {
+    return 6;
+  }
+
+  getTimelineIndex(): number {
+    return this.isContractedModule('cardlimit') ? 7 : 6;
+  }
+
+  getBudgetsIndex(): number {
+    const baseIndex = this.isContractedModule('cardlimit') ? 8 : 7;
+    if (!this.isContractedModule('budget')) {
+      return -1;
+    }
+    return baseIndex;
   }
 
   public getWorkflowInfo() {

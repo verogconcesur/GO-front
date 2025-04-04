@@ -287,7 +287,6 @@
                             {{ labels.required | translate }}
                         </mat-error>
                     </mat-form-field>
-
                     <button
                         class="button-csv"
                         *ngIf="
@@ -747,7 +746,7 @@
             </div>
 
             <!-- Sms Configuration -->
-            <div class="facility-data__section">
+            <div *ngIf="isContractedModule('sms')" class="facility-data__section">
                 <div class="facility-data__section__title">
                     {{ labels.confSms | translate }}
                 </div>
@@ -766,7 +765,7 @@
             </div>
 
             <!-- Whatsapp Configuration -->
-            <div class="facility-data__section">
+            <div *ngIf="isContractedModule('whatsapp')" class="facility-data__section">
                 <div class="facility-data__section__title">
                     {{ labels.confWhatsapp | translate }}
                 </div>
@@ -789,7 +788,7 @@
             </div>
 
             <!-- TPV Configuration -->
-            <div class="facility-data__section">
+            <div *ngIf="isContractedModule('tpv')" class="facility-data__section">
                 <div class="facility-data__section__title">
                     {{ labels.confTpv | translate }}
                 </div>

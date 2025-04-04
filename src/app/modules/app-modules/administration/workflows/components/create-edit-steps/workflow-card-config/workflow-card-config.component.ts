@@ -1,7 +1,9 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { Component, Input, OnInit, ViewChild, ViewEncapsulation } from '@angular/core';
+import { Component, Input, OnInit, ViewChild } from '@angular/core';
 import { UntypedFormBuilder, UntypedFormGroup, Validators } from '@angular/forms';
 import { MatMenuTrigger } from '@angular/material/menu';
+import { ModulesConstants } from '@app/constants/modules.constants';
+import { AuthenticationService } from '@app/security/authentication.service';
 import { ConcenetError } from '@app/types/error';
 import { marker } from '@biesbjerg/ngx-translate-extract-marker';
 import TreeNode from '@data/interfaces/tree-node';
@@ -57,7 +59,8 @@ export class WorkflowCardConfigComponent extends WorkflowStepAbstractClass imple
     public translateService: TranslateService,
     public workflowService: WorkflowAdministrationService,
     private globalMessageService: GlobalMessageService,
-    private logger: NGXLogger
+    private logger: NGXLogger,
+    private authService: AuthenticationService
   ) {
     super(workflowsCreateEditAuxService, confirmationDialog, translateService);
   }
@@ -125,6 +128,11 @@ export class WorkflowCardConfigComponent extends WorkflowStepAbstractClass imple
         field1: this.getFieldFormGroup('DETAIL', 1, dataByViewType.DETAIL?.length >= 1 ? dataByViewType.DETAIL[0] : null)
       })
     });
+  }
+
+  public isLandingContractedModule(): boolean {
+    const configList = this.authService.getConfigList();
+    return configList.includes(ModulesConstants.TIME_LINE);
   }
 
   public selectAttribute(node: CardColumnTabItemDTO): void {

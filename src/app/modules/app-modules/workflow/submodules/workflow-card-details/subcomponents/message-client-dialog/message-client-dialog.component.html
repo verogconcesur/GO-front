@@ -10,9 +10,15 @@
                 <div class="message-data__section__group" fxLayout="row" fxLayoutAlign="start start">
                     <section *ngFor="let messageChannel of messageChannelsForm.controls" [formGroup]="messageChannel">
                         <mat-checkbox
+                            [disabled]="
+                                !this.isContractedModule('customerArea') &&
+                                !this.isContractedModule('whatsapp') &&
+                                !this.isContractedModule('sms')
+                                    ? messageChannel.value.messageChannel.id === 1 || messageChannel.value.messageChannel.id === 2
+                                    : messageChannel.value.messageChannel.id === 1
+                            "
                             formControlName="selected"
                             (change)="selectMessageChannel()"
-                            [disabled]="messageChannel.value.messageChannel.id === 1"
                             >{{ messageChannel.value.messageChannel.name }}</mat-checkbox
                         >
                     </section>
@@ -49,7 +55,10 @@
                         <!-- <div class="messageChannelImessage-datad__section__group" *ngIf="item.value.messageChannelId === 2"> -->
                         <div
                             class="messageChannelImessage-datad__section__group"
-                            *ngIf="item.value.messageChannelId === 1 || item.value.messageChannelId === 2"
+                            *ngIf="
+                                (item.value.messageChannelId === 1 && isContractedModule('customerArea')) ||
+                                item.value.messageChannelId === 2
+                            "
                         >
                             <div class="messageChannelImessage-datad__section__group__title">
                                 {{ labels.attachments | translate }}

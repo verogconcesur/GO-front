@@ -20,6 +20,10 @@
             {{ getEditEntityButtonLabel() | translate }}
         </button>
 
+        <button mat-stroked-button *ngIf="showEditEntity() && tab.contentSourceId === 1" (click)="customerAttachments()">
+            {{ labels.customerAttachments | translate }}
+        </button>
+
         <button mat-stroked-button *ngIf="showChangeOrAsignEntity()" (click)="changeEntity()">
             {{ getChangeOrAsignEntityButtonLabel() | translate }}
         </button>

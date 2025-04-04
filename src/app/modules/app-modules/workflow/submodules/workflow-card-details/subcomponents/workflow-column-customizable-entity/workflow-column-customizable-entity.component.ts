@@ -12,7 +12,6 @@ import { take } from 'rxjs/operators';
 // eslint-disable-next-line max-len
 import CardInstanceDTO from '@data/models/cards/card-instance-dto';
 import CustomerEntityDTO from '@data/models/entities/customer-entity-dto';
-import RepairOrderEntityDTO from '@data/models/entities/repair-order-entity-dto';
 import VehicleEntityDTO from '@data/models/entities/vehicle-entity-dto';
 import { EntitiesService } from '@data/services/entities.service';
 import { WorkflowPrepareAndMoveService } from '@modules/app-modules/workflow/aux-service/workflow-prepare-and-move-aux.service';
@@ -24,13 +23,16 @@ import {
   ModalCustomerComponent
 } from '@modules/feature-modules/modal-customer/modal-customer.component';
 import {
-  CreateEditRepairOrderComponentModalEnum,
-  ModalRepairOrderComponent
-} from '@modules/feature-modules/modal-repair-order/modal-repair-order.component';
-import {
   CreateEditVehicleComponentModalEnum,
   ModalVehicleComponent
 } from '@modules/feature-modules/modal-vehicle/modal-vehicle.component';
+// eslint-disable-next-line max-len
+import { WorkflowAttachmentTimelineDTO } from '@data/models/workflow-admin/workflow-attachment-timeline-dto';
+import { WorkflowAdministrationService } from '@data/services/workflow-administration.service';
+import {
+  ModalCardCustomerAttachmentsComponent,
+  modalCardCustomerAttachmentsComponentModalEnum
+} from '@modules/feature-modules/modal-card-customer-attachments/modal-card-customer-attachment.component';
 import { CustomDialogService } from '@shared/modules/custom-dialog/services/custom-dialog.service';
 
 @Component({
@@ -44,6 +46,9 @@ export class WorkflowColumnCustomizableEntityComponent implements OnInit, OnChan
   @Output() setShowLoading: EventEmitter<boolean> = new EventEmitter(false);
   public workflowId: number;
   public idCard: number;
+  public attachmentTemplates: WorkflowAttachmentTimelineDTO[];
+  public customerAttachTabId: number;
+  public customerAttachTemplateAttachmentItemId: number;
 
   public labels = {
     noDataToShow: marker('errors.noDataToShow'),
@@ -57,7 +62,8 @@ export class WorkflowColumnCustomizableEntityComponent implements OnInit, OnChan
     setUser: marker('workflows.setUser'),
     setVehicle: marker('workflows.setVehicle'),
     setCustomer: marker('workflows.setCustomer'),
-    setRepairOrder: marker('workflows.setRepairOrder')
+    setRepairOrder: marker('workflows.setRepairOrder'),
+    customerAttachments: marker('entities.customers.customerAttachments')
   };
 
   public entityData: WorkflowCardTabItemDTO[] = [];
@@ -73,12 +79,17 @@ export class WorkflowColumnCustomizableEntityComponent implements OnInit, OnChan
     private entitySearcher: EntitiesSearcherDialogService,
     private prepareAndMoveService: WorkflowPrepareAndMoveService,
     private entitiesService: EntitiesService,
-    private customDialogService: CustomDialogService
+    private customDialogService: CustomDialogService,
+    private workflowadministrationService: WorkflowAdministrationService
   ) {}
 
   ngOnInit(): void {
     this.workflowId = parseInt(this.route.parent.parent.snapshot.params.wId, 10);
     this.idCard = parseInt(this.route?.snapshot?.params?.idCard, 10);
+    console.log(this.cardInstance);
+    console.log(this.workflowId);
+    this.getAttachmentsData();
+    this.getDefaultTabAndCategoryForAttachments();
   }
 
   ngOnChanges(changes: SimpleChanges): void {
@@ -90,7 +101,7 @@ export class WorkflowColumnCustomizableEntityComponent implements OnInit, OnChan
   }
 
   public showEditEntity(): boolean {
-    if (this.tab.permissionType === 'EDIT' && [1, 2, 6].indexOf(this.tab.contentSourceId) >= 0 && this.entityData?.length) {
+    if (this.tab.permissionType === 'EDIT' && [1, 2].indexOf(this.tab.contentSourceId) >= 0 && this.entityData?.length) {
       return true;
     }
     return false;
@@ -102,8 +113,6 @@ export class WorkflowColumnCustomizableEntityComponent implements OnInit, OnChan
         return this.labels.editCustomer;
       case 2:
         return this.labels.editVehicle;
-      case 6:
-        return this.labels.editRepairOrder;
       default:
         return '';
     }
@@ -204,7 +213,13 @@ export class WorkflowColumnCustomizableEntityComponent implements OnInit, OnChan
     }
     this.setShowLoading.emit(true);
     this.entitySearcher
-      .openEntitySearcher(this.workflowId, this.cardInstance.cardInstanceWorkflow.facilityId, mode)
+      .openEntitySearcher(
+        this.workflowId,
+        this.cardInstance.cardInstanceWorkflow.facilityId,
+        mode,
+        this.cardInstance.cardInstanceWorkflow.cardInstance.customerId,
+        this.cardInstance.cardInstanceWorkflow.cardInstance.vehicleId
+      )
       .then((data) => {
         this.cardService
           .setEntityToTab(this.idCard, this.tab.id, data.entity.id, data.vehicleInventoryId)
@@ -222,6 +237,53 @@ export class WorkflowColumnCustomizableEntityComponent implements OnInit, OnChan
           );
       })
       .finally(() => this.setShowLoading.emit(false));
+  }
+  public getAttachmentsData() {
+    this.workflowadministrationService
+      .getWorkflowTimelineAttachments(this.cardInstance.workflowId)
+      .pipe(take(1))
+      .subscribe((attachments) => {
+        this.attachmentTemplates = attachments;
+      });
+  }
+  public getDefaultTabAndCategoryForAttachments() {
+    this.workflowadministrationService
+      .getWorkflowTimeline(this.cardInstance.workflowId)
+      .pipe(take(1))
+      .subscribe((data) => {
+        this.customerAttachTabId = data.customerAttachTabId;
+        this.customerAttachTemplateAttachmentItemId = data.customerAttachTemplateAttachmentItemId;
+      });
+  }
+
+  public customerAttachments() {
+    this.customDialogService
+      .open({
+        id: modalCardCustomerAttachmentsComponentModalEnum.ID,
+        panelClass: modalCardCustomerAttachmentsComponentModalEnum.PANEL_CLASS,
+        component: ModalCardCustomerAttachmentsComponent,
+        disableClose: true,
+        extendedComponentData: {
+          attachmentTemplates: this.attachmentTemplates ? this.attachmentTemplates : null,
+          showAddAttchment: false,
+          idCard: this.cardInstance.cardInstanceWorkflow.id,
+          clientId: this.cardInstance.cardInstanceWorkflow.cardInstance.customerId,
+          customerAttachTabId: this.customerAttachTabId ? this.customerAttachTabId : null,
+          customerAttachTemplateAttachmentItemId: this.customerAttachTemplateAttachmentItemId
+            ? this.customerAttachTemplateAttachmentItemId
+            : null
+        },
+        width: '1000px'
+      })
+      .pipe(take(1))
+      .subscribe((response) => {
+        if (response) {
+          this.globalMessageService.showSuccess({
+            message: this.translateService.instant(marker('common.successOperation')),
+            actionText: this.translateService.instant(marker('common.close'))
+          });
+        }
+      });
   }
 
   public editEntity(): void {
@@ -268,34 +330,6 @@ export class WorkflowColumnCustomizableEntityComponent implements OnInit, OnChan
                 id: CreateEditVehicleComponentModalEnum.ID,
                 panelClass: CreateEditVehicleComponentModalEnum.PANEL_CLASS,
                 component: ModalVehicleComponent,
-                extendedComponentData: data ? data : null,
-                disableClose: true,
-                width: '900px'
-              })
-              .pipe(take(1))
-              .subscribe((response) => {
-                if (response) {
-                  this.globalMessageService.showSuccess({
-                    message: this.translateService.instant(marker('common.successOperation')),
-                    actionText: this.translateService.instant(marker('common.close'))
-                  });
-                  this.prepareAndMoveService.reloadData$.next('UPDATE_INFORMATION');
-                }
-              });
-          });
-        break;
-      case 6:
-        //'Repair Order';
-        this.entitiesService
-          .getRepairOrder(this.cardInstance.cardInstanceWorkflow.cardInstance.repairOrderId)
-          .pipe(take(1))
-          .subscribe((data: RepairOrderEntityDTO) => {
-            this.setShowLoading.emit(false);
-            this.customDialogService
-              .open({
-                id: CreateEditRepairOrderComponentModalEnum.ID,
-                panelClass: CreateEditRepairOrderComponentModalEnum.PANEL_CLASS,
-                component: ModalRepairOrderComponent,
                 extendedComponentData: data ? data : null,
                 disableClose: true,
                 width: '900px'

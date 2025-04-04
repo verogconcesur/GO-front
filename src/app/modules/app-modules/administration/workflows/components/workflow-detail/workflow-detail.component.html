@@ -5,6 +5,7 @@
             <mat-icon class="edit-name-icon">edit</mat-icon>
         </h1>
     </div>
+
     <div class="wf__tabs">
         <mat-tab-group
             #tabGroup
@@ -25,19 +26,34 @@
                 label="{{ labels.cards | translate }}"
                 [disabled]="!workflowsCreateEditAuxService.enableTabStep(2)"
             ></mat-tab>
-            <mat-tab label="{{ labels.cardConfig | translate }}" [disabled]="!workflowsCreateEditAuxService.enableTabStep(3)">
-            </mat-tab>
-            <mat-tab label="{{ labels.states | translate }}" [disabled]="!workflowsCreateEditAuxService.enableTabStep(4)">
-            </mat-tab>
-            <mat-tab label="{{ labels.cardsLimit | translate }}" [disabled]="!workflowsCreateEditAuxService.enableTabStep(5)">
-            </mat-tab>
-            <mat-tab label="{{ labels.timeline | translate }}" [disabled]="!workflowsCreateEditAuxService.enableTabStep(6)">
-            </mat-tab>
-            <mat-tab label="{{ labels.budgets | translate }}" [disabled]="!workflowsCreateEditAuxService.enableTabStep(7)">
-            </mat-tab>
+            <mat-tab
+                label="{{ labels.cardConfig | translate }}"
+                [disabled]="!workflowsCreateEditAuxService.enableTabStep(3)"
+            ></mat-tab>
+            <mat-tab
+                label="{{ labels.states | translate }}"
+                [disabled]="!workflowsCreateEditAuxService.enableTabStep(4)"
+            ></mat-tab>
+            <!-- Tab de Cards Limit -->
+            <mat-tab
+                *ngIf="isContractedModule('cardlimit')"
+                label="{{ labels.cardsLimit | translate }}"
+                [disabled]="!workflowsCreateEditAuxService.enableTabStep(5)"
+            ></mat-tab>
+            <!-- Condición para mostrar/ocultar el tab de timeline -->
+            <mat-tab
+                label="{{ labels.timeline | translate }}"
+                [disabled]="!workflowsCreateEditAuxService.enableTabStep(getTimelineIndex() - 1)"
+            ></mat-tab>
+            <!-- Condición para mostrar/ocultar el tab de budgets -->
+            <mat-tab
+                *ngIf="isContractedModule('budget')"
+                label="{{ labels.budgets | translate }}"
+                [disabled]="!workflowsCreateEditAuxService.enableTabStep(getBudgetsIndex() - 1)"
+            ></mat-tab>
         </mat-tab-group>
+
         <div [ngSwitch]="tabIndex">
-            <!-- <app-workflow-calendar [workflowId]="workflowDetail?.id" [stepIndex]="0" *ngSwitchCase="0"></app-workflow-calendar> -->
             <app-workflow-organization
                 [workflowId]="workflowDetail?.id"
                 [stepIndex]="0"
@@ -52,16 +68,32 @@
                 *ngSwitchCase="4"
             ></app-workflow-card-config>
             <app-workflow-states [workflowId]="workflowDetail?.id" [stepIndex]="5" *ngSwitchCase="5"></app-workflow-states>
-            <app-workflow-calendar [workflowId]="workflowDetail?.id" [stepIndex]="6" *ngSwitchCase="6"></app-workflow-calendar>
-            <app-workflow-timeline [workflowId]="workflowDetail?.id" [stepIndex]="7" *ngSwitchCase="7"></app-workflow-timeline>
-            <app-workflow-budgets
+
+            <ng-container *ngIf="isContractedModule('cardlimit')">
+                <app-workflow-calendar
+                    [workflowId]="workflowDetail?.id"
+                    [stepIndex]="getCardsLimitIndex()"
+                    *ngSwitchCase="getCardsLimitIndex()"
+                ></app-workflow-calendar>
+            </ng-container>
+
+            <app-workflow-timeline
                 [workflowId]="workflowDetail?.id"
-                [stepIndex]="8"
-                *ngSwitchCase="8"
-                [lastStep]="true"
-            ></app-workflow-budgets>
+                [stepIndex]="getTimelineIndex()"
+                *ngSwitchCase="getTimelineIndex()"
+            ></app-workflow-timeline>
+
+            <ng-container *ngIf="isContractedModule('budget')">
+                <app-workflow-budgets
+                    [workflowId]="workflowDetail?.id"
+                    [stepIndex]="getBudgetsIndex()"
+                    *ngSwitchCase="getBudgetsIndex()"
+                    [lastStep]="true"
+                ></app-workflow-budgets>
+            </ng-container>
         </div>
     </div>
+
     <div class="wf__footer" fxLayout="row-reverse" fxLayoutAlign="space-between center">
         <button
             mat-flat-button

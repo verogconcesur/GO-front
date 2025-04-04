@@ -8,6 +8,8 @@ import FacilityDTO, { ConfigStockSubstate } from '@data/models/organization/faci
 import { FacilityService } from '@data/services/facility.sevice';
 // eslint-disable-next-line max-len
 import { MatMenuTrigger } from '@angular/material/menu';
+import { ModulesConstants } from '@app/constants/modules.constants';
+import { AuthenticationService } from '@app/security/authentication.service';
 import TreeNode from '@data/interfaces/tree-node';
 import CountryDTO from '@data/models/location/country-dto';
 import ProvinceDTO from '@data/models/location/province-dto';
@@ -157,7 +159,8 @@ export class CreateEditFacilityComponent extends ComponentToExtendForCustomDialo
     private customDialogService: CustomDialogService,
     private globalMessageService: GlobalMessageService,
     private substatesService: WorkflowAdministrationStatesSubstatesService,
-    private logger: NGXLogger
+    private logger: NGXLogger,
+    private authService: AuthenticationService
   ) {
     super(
       CreateEditFacilityComponentModalEnum.ID,
@@ -253,6 +256,17 @@ export class CreateEditFacilityComponent extends ComponentToExtendForCustomDialo
     }
 
     this.facilityForm.get('configApiExtType').updateValueAndValidity();
+  }
+
+  public isContractedModule(option: string): boolean {
+    const configList = this.authService.getConfigList();
+    if (option === 'sms') {
+      return configList.includes(ModulesConstants.SMS_SEND);
+    } else if (option === 'whatsapp') {
+      return configList.includes(ModulesConstants.WHATSAPP_SEND);
+    } else if (option === 'tpv') {
+      return configList.includes(ModulesConstants.PAYMENTS);
+    }
   }
 
   public requiredConfigChangeStock(checked: boolean): void {

@@ -1,27 +1,28 @@
 import { Component, Inject, OnDestroy, OnInit } from '@angular/core';
 import { UntypedFormBuilder, UntypedFormGroup } from '@angular/forms';
+import { ActivatedRoute, ChildActivationEnd, NavigationEnd, Router } from '@angular/router';
+import { ENV } from '@app/constants/global.constants';
 import { RouteConstants } from '@app/constants/route.constants';
+import { AuthenticationService } from '@app/security/authentication.service';
+import { RxStompService } from '@app/services/rx-stomp.service';
+import { Env } from '@app/types/env';
 import { marker } from '@biesbjerg/ngx-translate-extract-marker';
+import FacilityDTO from '@data/models/organization/facility-dto';
 import WorkflowDTO from '@data/models/workflows/workflow-dto';
 import WorkflowListByFacilityDTO from '@data/models/workflows/workflow-list-by-facility-dto';
+import WorkflowSocketMoveDTO from '@data/models/workflows/workflow-socket-move-dto';
 import { WorkflowsService } from '@data/services/workflows.service';
+import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
 import { TranslateService } from '@ngx-translate/core';
+import { ConfirmDialogService } from '@shared/services/confirm-dialog.service';
+import { GlobalMessageService } from '@shared/services/global-message.service';
 import { ProgressSpinnerDialogService } from '@shared/services/progress-spinner-dialog.service';
+import { IMessage } from '@stomp/stompjs';
 import { NGXLogger } from 'ngx-logger';
 import { Observable, Subscription } from 'rxjs';
-import { take, startWith, map, finalize } from 'rxjs/operators';
+import { finalize, map, startWith, take } from 'rxjs/operators';
 import { WorkflowDragAndDropService } from '../../aux-service/workflow-drag-and-drop.service';
-import { ActivatedRoute, ChildActivationEnd, NavigationEnd, Router } from '@angular/router';
-import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
-import FacilityDTO from '@data/models/organization/facility-dto';
 import { WorkflowPrepareAndMoveService } from '../../aux-service/workflow-prepare-and-move-aux.service';
-import { ConfirmDialogService } from '@shared/services/confirm-dialog.service';
-import WorkflowSocketMoveDTO from '@data/models/workflows/workflow-socket-move-dto';
-import { RxStompService } from '@app/services/rx-stomp.service';
-import { IMessage } from '@stomp/stompjs';
-import { GlobalMessageService } from '@shared/services/global-message.service';
-import { ENV } from '@app/constants/global.constants';
-import { Env } from '@app/types/env';
 
 @UntilDestroy()
 @Component({
@@ -64,7 +65,8 @@ export class WorkflowNavbarComponent implements OnInit, OnDestroy {
     private router: Router,
     private confirmationDialog: ConfirmDialogService,
     private rxStompService: RxStompService,
-    private globalMessageService: GlobalMessageService
+    private globalMessageService: GlobalMessageService,
+    private authService: AuthenticationService
   ) {}
 
   ngOnInit(): void {

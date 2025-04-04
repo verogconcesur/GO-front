@@ -60,6 +60,17 @@
                             <span *ngIf="userForm.controls.code.errors.required">{{ labels.required | translate }}</span>
                         </mat-error>
                     </mat-form-field>
+                    <!-- userId -->
+                    <mat-form-field appearance="outline" floatLabel="always">
+                        <mat-label>{{ labels.userId | translate }}</mat-label>
+                        <input matInput formControlName="externalUserId" />
+                        <mat-error *ngIf="userForm.controls?.externalUserId.invalid && userForm.controls?.externalUserId.touched">
+                            <span *ngIf="userForm.controls.externalUserId.errors.required">{{
+                                labels.required | translate
+                            }}</span>
+                        </mat-error>
+                    </mat-form-field>
+
                     <!-- userName -->
                     <mat-form-field appearance="outline" floatLabel="always">
                         <mat-label>{{ labels.userName | translate }}</mat-label>

@@ -10,27 +10,44 @@
                     {{ labels.data | translate }}
                 </div>
                 <div class="customer-data__section__group">
-                    <!-- Name -->
                     <mat-form-field appearance="outline" floatLabel="always">
                         <mat-label>{{ labels.name | translate }}</mat-label>
                         <input matInput formControlName="name" />
                     </mat-form-field>
-                    <!-- FirstName -->
                     <mat-form-field appearance="outline" floatLabel="always">
                         <mat-label>{{ labels.firstName | translate }}</mat-label>
                         <input matInput formControlName="firstName" />
                     </mat-form-field>
-                    <!-- SecondName -->
                     <mat-form-field appearance="outline" floatLabel="always">
                         <mat-label>{{ labels.lastName | translate }}</mat-label>
                         <input matInput formControlName="secondName" />
                     </mat-form-field>
-                    <!-- Reference -->
                     <mat-form-field appearance="outline" floatLabel="always">
-                        <mat-label>{{ labels.reference | translate }}</mat-label>
-                        <input matInput formControlName="reference" />
+                        <mat-label>{{ labels.gender | translate }}</mat-label>
+                        <mat-select formControlName="gender">
+                            <mat-option *ngFor="let gender of genderList" [value]="gender.value">{{ gender.name }}</mat-option>
+                        </mat-select>
+                        <mat-error
+                            class="facility-data__error"
+                            *ngIf="customerForm.controls.gender.invalid && customerForm.controls.gender.touched"
+                        >
+                            <span *ngIf="customerForm.controls.gender.errors.required">{{ labels.required | translate }}</span>
+                        </mat-error>
                     </mat-form-field>
-                    <!-- SocialSecurityId -->
+                    <mat-form-field appearance="outline" floatLabel="always">
+                        <mat-label>{{ labels.addressPostalCode | translate }}</mat-label>
+                        <input matInput formControlName="addressPostalCode" />
+                        <mat-error
+                            class="facility-data__error"
+                            *ngIf="
+                                customerForm.controls.addressPostalCode.invalid && customerForm.controls.addressPostalCode.touched
+                            "
+                        >
+                            <span *ngIf="customerForm.controls.addressPostalCode.errors.required">{{
+                                labels.required | translate
+                            }}</span>
+                        </mat-error>
+                    </mat-form-field>
                     <mat-form-field appearance="outline" floatLabel="always">
                         <mat-label>{{ labels.socialSecurityId | translate }}</mat-label>
                         <input matInput formControlName="socialSecurityId" />
@@ -43,7 +60,37 @@
                             </span>
                         </mat-error>
                     </mat-form-field>
-                    <!-- Phone -->
+                    <mat-form-field appearance="outline" floatLabel="always">
+                        <mat-label>{{ labels.reference | translate }}</mat-label>
+                        <input matInput formControlName="reference" />
+                    </mat-form-field>
+                    <mat-checkbox [disabled]="customerToEdit" formControlName="isCompany">
+                        {{ labels.isCompany | translate }}</mat-checkbox
+                    >
+                </div>
+
+                <div class="customer-data__section__group">
+                    <!-- Información de Contacto -->
+                    <div class="customer-data__section__title first-child">
+                        {{ labels.contactInfo | translate }}
+                    </div>
+                    <mat-form-field appearance="outline" floatLabel="always">
+                        <mat-label>{{ labels.communicationPreferredPhone | translate }}</mat-label>
+                        <mat-select formControlName="communicationPreferredPhone">
+                            <mat-option *ngFor="let phone of phoneList" [value]="phone.value">{{ phone.name }}</mat-option>
+                        </mat-select>
+                        <mat-error
+                            class="facility-data__error"
+                            *ngIf="
+                                customerForm.controls.communicationPreferredPhone.invalid &&
+                                customerForm.controls.communicationPreferredPhone.touched
+                            "
+                        >
+                            <span *ngIf="customerForm.controls.communicationPreferredPhone.errors.required">{{
+                                labels.required | translate
+                            }}</span>
+                        </mat-error>
+                    </mat-form-field>
                     <mat-form-field appearance="outline" floatLabel="always">
                         <mat-label>{{ labels.phone | translate }}</mat-label>
                         <input matInput formControlName="phone" />
@@ -51,7 +98,27 @@
                             <span *ngIf="customerForm.controls.phone.errors.required">{{ labels.required | translate }}</span>
                         </mat-error>
                     </mat-form-field>
-                    <!-- Email -->
+                    <mat-form-field appearance="outline" floatLabel="always">
+                        <mat-label>{{ labels.communicationLandline | translate }}</mat-label>
+                        <input matInput formControlName="communicationLandline" />
+                        <mat-error *ngIf="customerForm.hasError('atLeastOneRequired')">
+                            {{ labels.required | translate }}
+                        </mat-error>
+                    </mat-form-field>
+                    <mat-form-field appearance="outline" floatLabel="always">
+                        <mat-label>{{ labels.communicationWorkMobile | translate }}</mat-label>
+                        <input matInput formControlName="communicationWorkMobile" />
+                        <mat-error *ngIf="customerForm.hasError('atLeastOneRequired')">
+                            {{ labels.required | translate }}
+                        </mat-error>
+                    </mat-form-field>
+                    <mat-form-field appearance="outline" floatLabel="always">
+                        <mat-label>{{ labels.communicationWorkLandline | translate }}</mat-label>
+                        <input matInput formControlName="communicationWorkLandline" />
+                        <mat-error *ngIf="customerForm.hasError('atLeastOneRequired')">
+                            {{ labels.required | translate }}
+                        </mat-error>
+                    </mat-form-field>
                     <mat-form-field appearance="outline" floatLabel="always">
                         <mat-label>{{ labels.email | translate }}</mat-label>
                         <input matInput formControlName="email" />
@@ -64,7 +131,44 @@
                             </span>
                         </mat-error>
                     </mat-form-field>
-                    <mat-checkbox formControlName="isCompany"> {{ labels.isCompany | translate }}</mat-checkbox>
+                </div>
+                <div class="customer-data__section__group">
+                    <!-- Información de Negocio -->
+                    <div class="customer-data__section__title first-child">
+                        {{ labels.businessInfo | translate }}
+                    </div>
+                    <mat-form-field appearance="outline" floatLabel="always">
+                        <mat-label>{{ labels.facility | translate }}</mat-label>
+                        <mat-select formControlName="facility">
+                            <mat-option *ngFor="let facility of facilityAsyncList | async" [value]="facility">{{
+                                facility.name
+                            }}</mat-option>
+                        </mat-select>
+                        <mat-error
+                            class="facility-data__error"
+                            *ngIf="customerForm.controls.facility.invalid && customerForm.controls.facility.touched"
+                        >
+                            <span *ngIf="customerForm.controls.facility.errors.required">{{ labels.required | translate }}</span>
+                        </mat-error>
+                    </mat-form-field>
+                    <mat-form-field appearance="outline" floatLabel="always">
+                        <mat-label>{{ labels.businessTypeCode | translate }}</mat-label>
+                        <mat-select formControlName="businessTypeCode">
+                            <mat-option *ngFor="let business of allBusiness" [value]="business">{{
+                                business.description
+                            }}</mat-option>
+                        </mat-select>
+                        <mat-error
+                            class="facility-data__error"
+                            *ngIf="
+                                customerForm.controls.businessTypeCode.invalid && customerForm.controls.businessTypeCode.touched
+                            "
+                        >
+                            <span *ngIf="customerForm.controls.businessTypeCode.errors.required">{{
+                                labels.required | translate
+                            }}</span>
+                        </mat-error>
+                    </mat-form-field>
                 </div>
             </div>
         </form>

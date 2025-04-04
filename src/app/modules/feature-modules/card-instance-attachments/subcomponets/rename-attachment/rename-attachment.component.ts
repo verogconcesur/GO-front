@@ -1,9 +1,9 @@
 import { Component, Inject, OnInit } from '@angular/core';
-import { FormBuilder, FormGroup, UntypedFormGroup, Validators } from '@angular/forms';
-import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
+import { FormBuilder, UntypedFormGroup, Validators } from '@angular/forms';
+import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { ConcenetError } from '@app/types/error';
 import { marker } from '@biesbjerg/ngx-translate-extract-marker';
-import { AttachmentDTO } from '@data/models/cards/card-attachments-dto';
+import { AttachmentDTO, CustomerAttachmentDTO } from '@data/models/cards/card-attachments-dto';
 import { CardAttachmentsService } from '@data/services/card-attachments.service';
 import { TranslateService } from '@ngx-translate/core';
 import { ConfirmDialogService } from '@shared/services/confirm-dialog.service';
@@ -36,12 +36,15 @@ export class RenameAttachmentComponent implements OnInit {
   public maxLength = 40;
   public minLength = 3;
   public attachmentForm: UntypedFormGroup;
-  public attachment: AttachmentDTO = null;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  public attachment: any = null;
   public extension: string;
   public originalName: string;
   public tabId: number;
   public cardInstanceWorkflowId: number;
   public templateAttachmentItemId: number;
+  public isClientMode: boolean;
+  public clientId: number;
   private usedNames: string[] = [];
 
   constructor(
@@ -54,11 +57,13 @@ export class RenameAttachmentComponent implements OnInit {
     private spinnerService: ProgressSpinnerDialogService,
     @Inject(MAT_DIALOG_DATA)
     public data: {
-      attachment: AttachmentDTO;
+      attachment: AttachmentDTO | CustomerAttachmentDTO;
       cardInstanceWorkflowId: number;
       tabId: number;
       templateAttachmentItemId: number;
       attachmentsNames: string[];
+      clientId: number;
+      isClientMode: boolean;
     },
     private fb: FormBuilder
   ) {}
@@ -68,13 +73,21 @@ export class RenameAttachmentComponent implements OnInit {
   }
 
   ngOnInit(): void {
+    this.isClientMode = this.data.isClientMode;
+    this.clientId = this.data.clientId;
     this.attachment = this.data.attachment;
     this.tabId = this.data.tabId;
     this.cardInstanceWorkflowId = this.data.cardInstanceWorkflowId;
     this.templateAttachmentItemId = this.data.templateAttachmentItemId;
     this.usedNames = this.data.attachmentsNames;
-    this.extension = this.attachment.name.split('.')[1];
-    this.originalName = this.attachment.name;
+    if (!this.isClientMode) {
+      this.extension = this.attachment.name.split('.')[1];
+      this.originalName = this.attachment.name;
+    } else {
+      this.extension = this.attachment.file.name.split('.')[1];
+      this.originalName = this.attachment.file.name;
+    }
+
     this.initForm();
   }
 
@@ -104,43 +117,78 @@ export class RenameAttachmentComponent implements OnInit {
 
   private setAttachmentName() {
     const spinner = this.spinnerService.show();
-    this.attachmentService
-      .editAttachment(
-        this.cardInstanceWorkflowId,
-        this.tabId,
-        this.attachment.id,
-        this.form.name.value,
-        this.templateAttachmentItemId
-      )
-      .pipe(take(1))
-      .subscribe(
-        (data) => {
-          this.spinnerService.hide(spinner);
-          this.dialogRef.close(true);
-        },
-        (error: ConcenetError) => {
-          this.spinnerService.hide(spinner);
-          this.logger.error(error);
-          this.globalMessageService.showError({
-            message: error.message,
-            actionText: this.translateService.instant(marker('common.close'))
-          });
-        }
-      );
+    if (!this.isClientMode) {
+      this.attachmentService
+        .editAttachment(
+          this.cardInstanceWorkflowId,
+          this.tabId,
+          this.attachment.id,
+          this.form.name.value,
+          this.templateAttachmentItemId
+        )
+        .pipe(take(1))
+        .subscribe(
+          (data) => {
+            this.spinnerService.hide(spinner);
+            this.dialogRef.close(true);
+          },
+          (error: ConcenetError) => {
+            this.spinnerService.hide(spinner);
+            this.logger.error(error);
+            this.globalMessageService.showError({
+              message: error.message,
+              actionText: this.translateService.instant(marker('common.close'))
+            });
+          }
+        );
+    } else {
+      this.attachmentService
+        .editCustomerAttachment(this.clientId, this.attachment.id, this.form.name.value)
+        .pipe(take(1))
+        .subscribe(
+          (data) => {
+            this.spinnerService.hide(spinner);
+            this.dialogRef.close(true);
+          },
+          (error: ConcenetError) => {
+            this.spinnerService.hide(spinner);
+            this.logger.error(error);
+            this.globalMessageService.showError({
+              message: error.message,
+              actionText: this.translateService.instant(marker('common.close'))
+            });
+          }
+        );
+    }
   }
 
   private initForm(): void {
-    this.attachmentForm = this.fb.group({
-      id: [this.attachment ? this.attachment.id : null],
-      name: [
-        this.attachment ? this.attachment.name : '',
-        Validators.compose([
-          Validators.required,
-          Validators.maxLength(this.maxLength),
-          Validators.minLength(this.minLength),
-          FilenameValidator.validate(this.usedNames)
-        ])
-      ]
-    });
+    if (!this.isClientMode) {
+      this.attachmentForm = this.fb.group({
+        id: [this.attachment ? this.attachment.id : null],
+        name: [
+          this.attachment ? this.attachment.name : '',
+          Validators.compose([
+            Validators.required,
+            Validators.maxLength(this.maxLength),
+            Validators.minLength(this.minLength),
+            FilenameValidator.validate(this.usedNames)
+          ])
+        ]
+      });
+    } else {
+      this.attachmentForm = this.fb.group({
+        id: [this.attachment ? this.attachment.id : null],
+        name: [
+          this.attachment ? this.attachment.file.name : '',
+          Validators.compose([
+            Validators.required,
+            Validators.maxLength(this.maxLength),
+            Validators.minLength(this.minLength),
+            FilenameValidator.validate(this.usedNames)
+          ])
+        ]
+      });
+    }
   }
 }

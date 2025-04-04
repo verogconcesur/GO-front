@@ -15,6 +15,7 @@ export default interface UserDetailsDTO {
   email: string;
   phoneNumber: string;
   code: string;
+  externalUserId: string;
   userName: string;
   password: string;
   permissions: PermissionsDTO[];
