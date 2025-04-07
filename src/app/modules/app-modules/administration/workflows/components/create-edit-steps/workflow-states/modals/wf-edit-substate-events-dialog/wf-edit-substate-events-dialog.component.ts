@@ -793,7 +793,7 @@ export class WfEditSubstateEventsDialogComponent extends ComponentToExtendForCus
     }
 
     // Construir los campos condicionales
-    const workflowSubstateEventRequiredAttachments = this.form.value.workflowSubstateEventRequiredAttachments?.map(
+    const workflowSubstateEventRequiredAttachmentsForm = this.form.value.workflowSubstateEventRequiredAttachments?.map(
       (field: any) => ({
         tab: { id: field.id },
         templateAttachmentItem: { id: field.templateAttachmentItemId },
@@ -801,11 +801,13 @@ export class WfEditSubstateEventsDialogComponent extends ComponentToExtendForCus
       })
     );
 
-    const workflowMovementRequiredAttachments = this.form.value.workflowSubstateEventRequiredAttachments?.map((field: any) => ({
-      tab: { id: field.id },
-      templateAttachmentItem: { id: field.templateAttachmentItemId },
-      numMinAttachRequired: field.numberInput || 1
-    }));
+    const workflowMovementRequiredAttachmentsForm = this.form.value.workflowSubstateEventRequiredAttachments?.map(
+      (field: any) => ({
+        tab: { id: field.id },
+        templateAttachmentItem: { id: field.templateAttachmentItemId },
+        numMinAttachRequired: field.numberInput || 1
+      })
+    );
 
     // Crear formValue base
     const formValue = {
@@ -823,14 +825,26 @@ export class WfEditSubstateEventsDialogComponent extends ComponentToExtendForCus
         : []
     };
 
-    // Añadir el campo correspondiente en función del eventType
-    if (this.eventType === 'MOV') {
-      formValue.workflowMovementRequiredAttachments = workflowMovementRequiredAttachments;
-    } else {
-      formValue.workflowSubstateEventRequiredAttachments = workflowSubstateEventRequiredAttachments;
-    }
+    let formValueFinal: any;
 
-    return formValue;
+    if (this.eventType === 'MOV') {
+      const { workflowSubstateEventRequiredAttachments, ...rest } = formValue;
+      formValueFinal = {
+        ...rest,
+        ...(value.requiredAttachments && {
+          workflowMovementRequiredAttachments: workflowMovementRequiredAttachmentsForm
+        })
+      };
+    } else {
+      const { workflowMovementRequiredAttachments, ...rest } = formValue;
+      formValueFinal = {
+        ...rest,
+        ...(value.requiredAttachments && {
+          workflowSubstateEventRequiredAttachments: workflowSubstateEventRequiredAttachmentsForm
+        })
+      };
+    }
+    return formValueFinal;
   }
 
   public onSubmitCustomDialog(): Observable<boolean> {
