@@ -136,7 +136,8 @@ export class CardPaymentDialogFormComponent extends ComponentToExtendForCustomDi
     if (
       (this.form?.paymentType?.value?.id === 5 && this.form?.paymentStatus?.value?.id === 3) ||
       (this.form?.paymentType?.value?.id === 9 && this.form?.paymentStatus?.value?.id === 3) ||
-      (this.form?.paymentType?.value?.id === 10 && this.form?.paymentStatus?.value?.id === 3)
+      (this.form?.paymentType?.value?.id === 10 && this.form?.paymentStatus?.value?.id === 3) ||
+      (this.form?.paymentType?.value?.id === 11 && this.form?.paymentStatus?.value?.id === 3)
     ) {
       const desiredIds = [3, 7];
       this.paymentStatus = this.paymentStatus.filter((item) => desiredIds.includes(item.id));
@@ -147,6 +148,7 @@ export class CardPaymentDialogFormComponent extends ComponentToExtendForCustomDi
       this.form?.paymentType?.value?.id === 5 ||
       this.form?.paymentType?.value?.id === 9 ||
       this.form?.paymentType?.value?.id === 10 ||
+      this.form?.paymentType?.value?.id === 11 ||
       this.form?.paymentStatus?.value?.id === 6
     ) {
       return true;
@@ -176,7 +178,7 @@ export class CardPaymentDialogFormComponent extends ComponentToExtendForCustomDi
       this.paymentLineForm
         .get('paymentStatus')
         .setValue(this.paymentStatus.find((p) => p.id === this.paymentLine.paymentStatus.id));
-    } else if (type.id === 5 || type.id === 9 || type.id === 10) {
+    } else if (type.id === 5 || type.id === 9 || type.id === 10 || type.id === 11) {
       this.paymentLineForm.get('paymentStatus').setValue(this.paymentStatus.find((p) => p.id === 1));
     } else {
       this.paymentLineForm.get('paymentStatus').setValue(null);

@@ -180,6 +180,34 @@ export class CardInstancePaymentsComponent implements OnInit {
         }
       });
   }
+  public sendPaymentByPepper(payment: CardPaymentLineDTO): void {
+    this.confirmationDialog
+      .open({
+        title: this.translateService.instant(marker('common.warning')),
+        message: this.translateService.instant(marker('cardDetail.payments.sendConfirmationByPepper'))
+      })
+      .pipe(take(1))
+      .subscribe((ok: boolean) => {
+        if (ok) {
+          this.cardMessageService
+            .sendPaymentMessageByPepper(this.cardInstanceWorkflowId, this.tabId, payment.id)
+            .pipe(take(1))
+            .subscribe(
+              (data) => {
+                this.reload.emit(true);
+              },
+              (error: ConcenetError) => {
+                this.logger.error(error);
+
+                this.globalMessageService.showError({
+                  message: error.message,
+                  actionText: this.translateService.instant(marker('common.close'))
+                });
+              }
+            );
+        }
+      });
+  }
   public saveTotalDetail(totalDetail: UntypedFormGroup): void {
     this.confirmationDialog
       .open({

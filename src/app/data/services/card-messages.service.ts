@@ -22,6 +22,7 @@ export class CardMessagesService {
   private readonly CHANNELS = '/channels';
   private readonly SEND = '/send';
   private readonly SENDLINE = '/sendLine';
+  private readonly SENDLINEPEPPER = '/sendLinePepper';
   private readonly BUDGET = '/budget';
   private readonly WHATSAPP_PATH = '/whatsapp';
   private readonly PAYMENT = '/payment';
@@ -138,6 +139,21 @@ export class CardMessagesService {
       .get<unknown>(
         // eslint-disable-next-line max-len
         `${this.env.apiBaseUrl}${this.GET_CARD_INSTANCE_PATH}${this.GET_DETAIL_PATH}/${cardWfId}${this.PAYMENTS}/${tabId}${this.SENDLINE}/${paymentLineId}`,
+        {}
+      )
+      .pipe(catchError((error) => throwError(error.error as ConcenetError)));
+  }
+
+  /**
+   * Envía línea de pago pepper
+   *
+   * @returns unknown
+   */
+  public sendPaymentMessageByPepper(cardWfId: number, tabId: number, paymentLineId: number): Observable<unknown> {
+    return this.http
+      .get<unknown>(
+        // eslint-disable-next-line max-len
+        `${this.env.apiBaseUrl}${this.GET_CARD_INSTANCE_PATH}${this.GET_DETAIL_PATH}/${cardWfId}${this.PAYMENTS}/${tabId}${this.SENDLINEPEPPER}/${paymentLineId}`,
         {}
       )
       .pipe(catchError((error) => throwError(error.error as ConcenetError)));

@@ -348,6 +348,7 @@
             "send": "Enviar pago al área de clientes",
             "sendConfirmation": "¿Está seguro que quiere enviar esta línea de pago al área de cliente?",
             "sendConfirmationByEmail": "¿Está seguro que quiere enviar esta línea de pago por email?",
+            "sendConfirmationByPepper": "¿Está seguro que quiere enviar esta línea de pago por Pepper?",
             "sendConfirmationBySms": "¿Está seguro que quiere enviar esta línea de pago por SMS?",
             "sendEmail": "Enviar pago por email",
             "sendSms": "Enviar pago por SMS",
@@ -708,13 +709,6 @@
     "entities": {
         "customers": {
             "addressPostalCode": "Cód.postal",
-            "businessInfo": "Información de Negocio",
-            "businessTypeCode": "Tipos de negocio",
-            "communicationLandline": "Línea fija personal",
-            "communicationPreferredPhone": "Preferencia de contacto",
-            "communicationWorkLandline": "Línea fija de Trabajo",
-            "communicationWorkMobile": "Móvil de trabajo",
-            "contactInfo": "Información de contacto",
             "attachments": {
                 "activeAttachments": "Activos",
                 "attachmentsTab": "Tab adjuntos",
@@ -731,6 +725,13 @@
                 "sureMoveToActives": "¿Esta seguro de querer mover este adjunto a antiguos?",
                 "sureMoveToArchived": "¿Esta seguro de querer mover este adjunto a activos?"
             },
+            "businessInfo": "Información de Negocio",
+            "businessTypeCode": "Tipos de negocio",
+            "communicationLandline": "Línea fija personal",
+            "communicationPreferredPhone": "Preferencia de contacto",
+            "communicationWorkLandline": "Línea fija de Trabajo",
+            "communicationWorkMobile": "Móvil de trabajo",
+            "contactInfo": "Información de contacto",
             "create": "Crear cliente",
             "createTitle": "El cliente se va a crear en su DMS",
             "customer": "Cliente",

@@ -202,6 +202,16 @@
                         send
                     </mat-icon>
                     <mat-icon
+                        [color]="editingTotal ? '' : 'primary'"
+                        style="cursor: pointer"
+                        (click)="!editingTotal && sendPaymentByPepper(payment)"
+                        matTooltip="{{ getSendLabelBySmsOrEmail(payment) | translate }}"
+                        matTooltipPosition="above"
+                        *ngIf="payment.paymentType?.id === 11 && payment.paymentStatus?.id === 1"
+                    >
+                        send
+                    </mat-icon>
+                    <mat-icon
                         style="cursor: pointer; color: green"
                         [matBadge]="payment.attachments?.length"
                         matBadgePosition="before"
