@@ -351,6 +351,7 @@
             "sendConfirmationByPepper": "Are you sure you want to send this payment line by Pepper?",
             "sendConfirmationBySms": "Are you sure you want to send this payment line by SMS?",
             "sendEmail": "Send payment by email",
+            "sendPepper": "Send payment by Pepper",
             "sendSms": "Send payment by SMS",
             "summation": "Summation",
             "summationPayed": "Summation payed",

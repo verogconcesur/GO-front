@@ -351,6 +351,7 @@
             "sendConfirmationByPepper": "¿Está seguro que quiere enviar esta línea de pago por Pepper?",
             "sendConfirmationBySms": "¿Está seguro que quiere enviar esta línea de pago por SMS?",
             "sendEmail": "Enviar pago por email",
+            "sendPepper": "Enviar pago por Pepper",
             "sendSms": "Enviar pago por SMS",
             "summation": "Sumatorio",
             "summationPayed": "Cantidad pagada",
