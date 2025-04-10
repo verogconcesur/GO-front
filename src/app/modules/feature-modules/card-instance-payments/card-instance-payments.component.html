@@ -185,7 +185,7 @@
                         (click)="!editingTotal && sendPayment(payment)"
                         matTooltip="{{ getSendLabel(payment) | translate }}"
                         matTooltipPosition="above"
-                        *ngIf="payment.paymentType?.id === 5 && payment.paymentStatus?.id === 1"
+                        *ngIf="payment.paymentType?.id === 5 && payment.paymentStatus?.id === 1 && isContractedModule('timeline')"
                     >
                         send
                     </mat-icon>
@@ -205,9 +205,9 @@
                         [color]="editingTotal ? '' : 'primary'"
                         style="cursor: pointer"
                         (click)="!editingTotal && sendPaymentByPepper(payment)"
-                        matTooltip="{{ getSendLabelBySmsOrEmail(payment) | translate }}"
+                        matTooltip="{{ getSendLabelByPepper(payment) | translate }}"
                         matTooltipPosition="above"
-                        *ngIf="payment.paymentType?.id === 11 && payment.paymentStatus?.id === 1"
+                        *ngIf="payment.paymentType?.id === 11 && payment.paymentStatus?.id === 1 && isContractedModule('pepper')"
                     >
                         send
                     </mat-icon>
@@ -216,7 +216,11 @@
                         [matBadge]="payment.attachments?.length"
                         matBadgePosition="before"
                         (click)="!editingTotal && editPayment(payment, i)"
-                        *ngIf="payment.attachments?.length"
+                        *ngIf="
+                            payment.attachments?.length &&
+                            !(payment.paymentType.id === 11 && !isContractedModule('pepper')) &&
+                            !(payment.paymentType.id === 5 && !isContractedModule('timeline'))
+                        "
                     >
                         attach_file
                     </mat-icon>
@@ -224,7 +228,11 @@
                         [color]="editingTotal ? '' : 'primary'"
                         style="cursor: pointer"
                         (click)="!editingTotal && editPayment(payment, i)"
-                        *ngIf="!payment.attachments?.length"
+                        *ngIf="
+                            !payment.attachments?.length &&
+                            !(payment.paymentType.id === 11 && !isContractedModule('pepper')) &&
+                            !(payment.paymentType.id === 5 && !isContractedModule('timeline'))
+                        "
                     >
                         attach_file
                     </mat-icon>
@@ -232,7 +240,11 @@
                         [color]="editingTotal ? '' : 'primary'"
                         style="cursor: pointer"
                         (click)="!editingTotal && editPayment(payment, i)"
-                        *ngIf="!cardInstancePaymentsConfig.disableIndividualDeleteAction"
+                        *ngIf="
+                            !cardInstancePaymentsConfig.disableIndividualDeleteAction &&
+                            !(payment.paymentType.id === 11 && !isContractedModule('pepper')) &&
+                            !(payment.paymentType.id === 5 && !isContractedModule('timeline'))
+                        "
                     >
                         edit
                     </mat-icon>

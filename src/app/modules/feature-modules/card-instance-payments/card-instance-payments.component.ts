@@ -4,6 +4,8 @@ import { ConcenetError } from '@app/types/error';
 import { marker } from '@biesbjerg/ngx-translate-extract-marker';
 import { AttachmentDTO, CardAttachmentsDTO, CardInstanceAttachmentDTO } from '@data/models/cards/card-attachments-dto';
 // eslint-disable-next-line max-len
+import { ModulesConstants } from '@app/constants/modules.constants';
+import { AuthenticationService } from '@app/security/authentication.service';
 import CardInstanceDTO from '@data/models/cards/card-instance-dto';
 import {
   CardPaymentLineDTO,
@@ -64,6 +66,7 @@ export class CardInstancePaymentsComponent implements OnInit {
     sendPayment: marker('cardDetail.payments.send'),
     sendPaymentBySms: marker('cardDetail.payments.sendSms'),
     sendPaymentByEmail: marker('cardDetail.payments.sendEmail'),
+    sendPaymentByPepper: marker('cardDetail.payments.sendPepper'),
     resendPayment: marker('cardDetail.payments.resend'),
     attachments: marker('common.attachments'),
     deleteConfirmation: marker('common.deleteConfirmation'),
@@ -98,7 +101,8 @@ export class CardInstancePaymentsComponent implements OnInit {
     private globalMessageService: GlobalMessageService,
     private customDialogService: CustomDialogService,
     private attachmentService: CardAttachmentsService,
-    private cardMessageService: CardMessagesService
+    private cardMessageService: CardMessagesService,
+    private authenticationService: AuthenticationService
   ) {}
   public compareAttachments(object1: CardInstanceAttachmentDTO, object2: CardInstanceAttachmentDTO) {
     return object1 && object2 && object1.file.id === object2.file.id;
@@ -116,6 +120,21 @@ export class CardInstancePaymentsComponent implements OnInit {
       return this.labels.sendPaymentBySms;
     } else if (payment.paymentStatus.id === 1 && payment.paymentType.id === 10) {
       return this.labels.sendPaymentByEmail;
+    }
+  }
+
+  public getSendLabelByPepper(payment: CardPaymentLineDTO): string {
+    if (payment.paymentStatus.id === 1 && payment.paymentType.id === 11) {
+      return this.labels.sendPaymentBySms;
+    }
+  }
+
+  public isContractedModule(module: string): boolean {
+    const configList = this.authenticationService.getConfigList();
+    if (module === 'timeline') {
+      return configList.includes(ModulesConstants.TIME_LINE);
+    } else if (module === 'pepper') {
+      return configList.includes(ModulesConstants.PEPPER);
     }
   }
   public sendPayment(payment: CardPaymentLineDTO): void {
