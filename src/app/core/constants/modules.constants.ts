@@ -9,5 +9,5 @@ export enum ModulesConstants {
   TIME_LINE = 'CUSTOMER_AREA',
   BUDGET = 'TEMPLATE_BUDGETS',
   PAYMENTS = 'PAYMENTS',
-  PEPPER = 'ROLE_PEPPER'
+  PEPPER = 'PEPPER'
 }
