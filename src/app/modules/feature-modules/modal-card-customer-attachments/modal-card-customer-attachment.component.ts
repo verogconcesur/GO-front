@@ -1,4 +1,4 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Component, ElementRef, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { AbstractControl, FormArray, FormGroup, UntypedFormBuilder, UntypedFormGroup } from '@angular/forms';
 import { MatSelectChange } from '@angular/material/select';
 import { ConcenetError } from '@app/types/error';
@@ -29,6 +29,7 @@ export const enum modalCardCustomerAttachmentsComponentModalEnum {
   styleUrls: ['./modal-card-customer-attachments.component.scss']
 })
 export class ModalCardCustomerAttachmentsComponent extends ComponentToExtendForCustomDialog implements OnInit, OnDestroy {
+  @ViewChild('fileInputRef') fileInputRef: ElementRef<HTMLInputElement>;
   public showAddAttchment: boolean;
   public isDragging = false;
   public labels = {
@@ -283,7 +284,7 @@ export class ModalCardCustomerAttachmentsComponent extends ComponentToExtendForC
         (data: CustomerAttachmentDTO) => {
           if (this.hasPreview(item)) {
             const listFiltered = listAttachments.filter((att: CustomerAttachmentDTO) => this.hasPreview(att));
-            this.mediaViewerService.openMediaViewerMúltiple(data, listAttachments, null, null);
+            this.mediaViewerService.openMediaViewerMúltiple(data, listFiltered, null, null);
           } else {
             saveAs(`data:${data.file.type};base64,${data.file.content}`, data.file.name);
           }
@@ -398,6 +399,10 @@ export class ModalCardCustomerAttachmentsComponent extends ComponentToExtendForC
         (data) => {
           this.fetchAttachments();
           this.spinnerService.hide(spinner);
+          const input = this.fileInputRef.nativeElement;
+          if (input) {
+            input.value = '';
+          }
         },
         (error: ConcenetError) => {
           this.spinnerService.hide(spinner);
@@ -405,6 +410,10 @@ export class ModalCardCustomerAttachmentsComponent extends ComponentToExtendForC
             message: error.message,
             actionText: this.translateService.instant(marker('common.close'))
           });
+          const input = this.fileInputRef.nativeElement;
+          if (input) {
+            input.value = '';
+          }
         }
       );
   }
