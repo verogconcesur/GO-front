@@ -52,6 +52,8 @@ export default interface FacilityDTO {
   keyCommerce?: string;
   tpvCode?: string;
   tpvTerminal?: string;
+  locate?: string;
+  timeZone?: string;
 }
 
 export interface ConfigStockSubstate {
