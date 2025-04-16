@@ -820,7 +820,36 @@
                     </mat-form-field>
                 </div>
             </div>
+            <div *ngIf="isContractedModule('pepper')" class="facility-data__section">
+                <div class="facility-data__section__title">{{ labels.configPepper | translate }}</div>
 
+                <div class="facility-data__section__group">
+                    <!-- pepperUser -->
+                    <mat-form-field appearance="outline" floatLabel="always">
+                        <mat-label>{{ labels.configMailerUserName | translate }} </mat-label>
+                        <input matInput formControlName="pepperUser" />
+                        <mat-error *ngIf="facilityForm.controls.pepperUser.invalid">
+                            {{ labels.required | translate }}
+                        </mat-error>
+                    </mat-form-field>
+                    <!-- pepperPass -->
+                    <mat-form-field appearance="outline" floatLabel="always">
+                        <mat-label>{{ labels.configMailerPass | translate }} </mat-label>
+                        <input matInput formControlName="pepperPass" />
+                        <mat-error *ngIf="facilityForm.controls.pepperPass.invalid">
+                            {{ labels.required | translate }}
+                        </mat-error>
+                    </mat-form-field>
+                    <!-- pepperSecret -->
+                    <mat-form-field appearance="outline" floatLabel="always">
+                        <mat-label>{{ labels.userSecret | translate }} </mat-label>
+                        <input matInput formControlName="pepperSecret" />
+                        <mat-error *ngIf="facilityForm.controls.pepperSecret.invalid">
+                            {{ labels.required | translate }}
+                        </mat-error>
+                    </mat-form-field>
+                </div>
+            </div>
             <!-- Emails -->
             <div class="facility-data__section">
                 <div class="facility-data__section__title">

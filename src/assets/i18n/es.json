@@ -972,6 +972,7 @@
             "configApiExtDefault": "Instalación a usar por defecto en la actualización con Autoline",
             "configApiExtDmsType": "Tipo DMS",
             "configApiExtType": "Tipo",
+            "configPepper": "Configuración Pepper",
             "configStockCsvDirectory": "Directorio",
             "configStockCsvHost": "Host",
             "configStockCsvPass": "Contraseña",
@@ -1004,6 +1005,7 @@
             "substateConfigNew": "Nuevos",
             "substateConfigUsed": "Usados",
             "title": "Instalaciones",
+            "userSecret": "Client secret",
             "workflow": "Workflow"
         },
         "specialties": {
