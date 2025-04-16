@@ -32,6 +32,7 @@ import { ProgressSpinnerDialogService } from '@shared/services/progress-spinner-
 import { haveArraysSameValues } from '@shared/utils/array-comparation-function';
 import CombinedRequiredFieldsValidator from '@shared/validators/combined-required-fields.validator';
 import { validateConfigMailers } from '@shared/validators/configEmail-required-fields.validator';
+import { PepperFieldsValidator } from '@shared/validators/pepperFields.validator';
 import { NGXLogger } from 'ngx-logger';
 import { Observable, of } from 'rxjs';
 import { catchError, finalize, map, take, tap } from 'rxjs/operators';
@@ -88,6 +89,8 @@ export class CreateEditFacilityComponent extends ComponentToExtendForCustomDialo
     workflowSubstateNew: marker('organizations.facilities.substateConfigNew'),
     workflowSubstateUsed: marker('organizations.facilities.substateConfigUsed'),
     saveAndLoadCsvFile: marker('organizations.facilities.saveAndLoadCsvFile'),
+    configPepper: marker('organizations.facilities.configPepper'),
+    userSecret: marker('organizations.facilities.userSecret'),
     postalCode: marker('common.postalCode'),
     brands: marker('common.brands'),
     cif: marker('common.cif'),
@@ -266,6 +269,8 @@ export class CreateEditFacilityComponent extends ComponentToExtendForCustomDialo
       return configList.includes(ModulesConstants.WHATSAPP_SEND);
     } else if (option === 'tpv') {
       return configList.includes(ModulesConstants.PAYMENTS);
+    } else if (option === 'pepper') {
+      return configList.includes(ModulesConstants.PEPPER);
     }
   }
 
@@ -446,6 +451,9 @@ export class CreateEditFacilityComponent extends ComponentToExtendForCustomDialo
         configStockSubstates: formValue.requireConfigStockApiExt
           ? this.checkAndFilterConfigStockSubstates(formValue.configStockSubstates)
           : null,
+        pepperUser: formValue.pepperUser,
+        pepperPass: formValue.pepperPass,
+        pepperSecret: formValue.pepperSecret,
         configMailerHost: formValue.configMailerHost,
         configMailerPort: formValue.configMailerPort,
         configMailerUserName: formValue.configMailerUserName,
@@ -606,6 +614,9 @@ export class CreateEditFacilityComponent extends ComponentToExtendForCustomDialo
                 configStockSubstates: formValue.requireConfigStockApiExt
                   ? this.checkAndFilterConfigStockSubstates(formValue.configStockSubstates)
                   : null,
+                pepperUser: formValue.pepperUser,
+                pepperPass: formValue.pepperPass,
+                pepperSecret: formValue.pepperSecret,
                 configMailerHost: formValue.configMailerHost,
                 configMailerPort: formValue.configMailerPort,
                 configMailerUserName: formValue.configMailerUserName,
@@ -966,6 +977,9 @@ export class CreateEditFacilityComponent extends ComponentToExtendForCustomDialo
             this.facilityToEdit.configStockSubstates.find((state) => state.inventoryType === 'USED')?.workflowSubstate) ||
             null
         ],
+        pepperUser: [this.facilityToEdit && this.facilityToEdit.pepperUser ? this.facilityToEdit.pepperUser : null],
+        pepperPass: [this.facilityToEdit && this.facilityToEdit.pepperPass ? this.facilityToEdit.pepperPass : null],
+        pepperSecret: [this.facilityToEdit && this.facilityToEdit.pepperSecret ? this.facilityToEdit.pepperSecret : null],
         configMailerHost: [
           this.facilityToEdit && this.facilityToEdit.configMailerHost ? this.facilityToEdit.configMailerHost : null
         ],
@@ -992,6 +1006,7 @@ export class CreateEditFacilityComponent extends ComponentToExtendForCustomDialo
       {
         validators: [
           validateConfigMailers,
+          PepperFieldsValidator.validate(),
           CombinedRequiredFieldsValidator.field1RequiredIfFieldsConditions('keyCommerce', [
             { control: 'tpvCode', operation: 'diff', value: null }
           ]),

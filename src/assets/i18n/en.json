@@ -971,6 +971,7 @@
             "configApiExtDefault": "Facility to be used by default in the update with Autoline",
             "configApiExtDmsType": "Type DMS",
             "configApiExtType": "Type",
+            "configPepper": "Pepper configuration",
             "configStockCsvDirectory": "Directory",
             "configStockCsvHost": "Host",
             "configStockCsvPass": "Password",
@@ -1003,6 +1004,7 @@
             "substateConfigNew": "New",
             "substateConfigUsed": "Used",
             "title": "Facilities",
+            "userSecret": "User secret",
             "workflow": "Workflow"
         },
         "specialties": {
