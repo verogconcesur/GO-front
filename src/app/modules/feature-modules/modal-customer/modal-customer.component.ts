@@ -279,7 +279,7 @@ export class ModalCustomerComponent extends ComponentToExtendForCustomDialog imp
     const isWriteKeyloopEnabled = configList.includes(ModulesConstants.WRITE_KEYLOOP);
     const facilitySelected = this.facilityList.find((facility) => facility?.id === this.form.facility?.value?.id);
     if (facilitySelected) {
-      if (facilitySelected.configApiExtDmsType === 'AUTOLINE') {
+      if (facilitySelected.configApiExtDmsType === 'AUTOLINE' && isWriteKeyloopEnabled) {
         this.showReference = false;
         this.showBusnesType = true;
         if (!firstLoad) {
