@@ -992,6 +992,8 @@
             "integration": "Integration",
             "modalLabelSaveAndLoadCsvFile": "The changes will be saved and the file will be loaded",
             "numFacilities": "{numItems} {numItems, plural, =0{facilities} one{facility} other{facilities}}",
+            "pepperUrlKo": "Url Error",
+            "pepperUrlOk": "Url Ok",
             "requireConfigApiExt": "requires external API configuration",
             "requireConfigEmail": "Requires all fields of email configuration be completed",
             "requireConfigStockApiExt": "Requires configuration for stock",

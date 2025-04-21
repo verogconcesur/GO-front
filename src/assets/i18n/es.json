@@ -993,6 +993,8 @@
             "integration": "Integración",
             "modalLabelSaveAndLoadCsvFile": "Se guardarán los cambios y se lanzará la carga del fichero",
             "numFacilities": "{numItems} {numItems, plural, =0{instalaciones} one{instalación} other{instalaciones}}",
+            "pepperUrlKo": "Url Error",
+            "pepperUrlOk": "Url Ok",
             "requireConfigApiExt": "Requiere configuración de API externa",
             "requireConfigEmail": "La configuración de correo requiere rellenar todos los campos para continuar",
             "requireConfigStockApiExt": "Requiere configuración para stock",

@@ -51,6 +51,8 @@ export default interface FacilityDTO {
   pepperUser?: string;
   pepperPass?: string;
   pepperSecret?: string;
+  pepperUrlOk?: string;
+  pepperUrlKo?: string;
   //TPV config
   keyCommerce?: string;
   tpvCode?: string;
