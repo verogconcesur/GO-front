@@ -848,6 +848,14 @@
                             {{ labels.required | translate }}
                         </mat-error>
                     </mat-form-field>
+                    <mat-form-field appearance="outline" floatLabel="always">
+                        <mat-label>{{ labels.pepperUrlOk | translate }}</mat-label>
+                        <input matInput formControlName="pepperUrlOk" />
+                    </mat-form-field>
+                    <mat-form-field appearance="outline" floatLabel="always">
+                        <mat-label>{{ labels.pepperUrlKo | translate }}</mat-label>
+                        <input matInput formControlName="pepperUrlKo" />
+                    </mat-form-field>
                 </div>
             </div>
             <!-- Emails -->

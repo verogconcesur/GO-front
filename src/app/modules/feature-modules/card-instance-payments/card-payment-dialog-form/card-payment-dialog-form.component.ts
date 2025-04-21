@@ -121,6 +121,7 @@ export class CardPaymentDialogFormComponent extends ComponentToExtendForCustomDi
     }
     // Si ya está pagada o denegada se deshabilita
     if (
+      this.form?.paymentStatus?.value?.id === 2 ||
       this.form?.paymentStatus?.value?.id === 3 ||
       this.form?.paymentStatus?.value?.id === 6 ||
       this.form?.paymentStatus?.value?.id === 7
