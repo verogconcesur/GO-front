@@ -125,7 +125,7 @@ export class CardInstancePaymentsComponent implements OnInit {
 
   public getSendLabelByPepper(payment: CardPaymentLineDTO): string {
     if (payment.paymentStatus.id === 1 && payment.paymentType.id === 11) {
-      return this.labels.sendPaymentBySms;
+      return this.labels.sendPaymentByPepper;
     }
   }
 
