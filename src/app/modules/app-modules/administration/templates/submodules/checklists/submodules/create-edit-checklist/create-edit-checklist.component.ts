@@ -56,19 +56,19 @@ export class CreateEditChecklistComponent implements OnInit {
   public listTemplates: TemplatesAccountingDTO[];
   public templateAccountingItem: TemplatesAccountingDTO;
   public blockAttributes = [
-    { id: 'NAME', name: this.translateService.instant(marker('administration.templates.checklists.nameBlock')) }, //'Nombre'
-    { id: 'TYPE', name: this.translateService.instant(marker('administration.templates.checklists.typeBlock')) }, //'Tipo'
-    { id: 'LINE', name: this.translateService.instant(marker('administration.templates.checklists.lineBlock')) }, //'Línea'
-    { id: 'TYPE_TAX', name: this.translateService.instant(marker('administration.templates.checklists.typeIvaBlock')) }, //'Tipo IVA'
-    { id: 'TOTAL', name: this.translateService.instant(marker('administration.templates.checklists.totalBlock')) }, //'Total'
-    { id: 'TOTAL_TAX', name: this.translateService.instant(marker('administration.templates.checklists.totalIvaBlock')) }, //'Total IVA'
-    { id: 'TOTAL_PLUS_TAX', name: this.translateService.instant(marker('administration.templates.checklists.totalplusIvaBlock')) } //'Total con IVA'
+    { id: 'NAME', name: this.translateService.instant(marker('administration.templates.checklists.nameBlock')) },
+    { id: 'TYPE', name: this.translateService.instant(marker('administration.templates.checklists.typeBlock')) },
+    { id: 'LINE', name: this.translateService.instant(marker('administration.templates.checklists.lineBlock')) },
+    { id: 'TYPE_TAX', name: this.translateService.instant(marker('administration.templates.checklists.typeIvaBlock')) },
+    { id: 'TOTAL', name: this.translateService.instant(marker('administration.templates.checklists.totalBlock')) },
+    { id: 'TOTAL_TAX', name: this.translateService.instant(marker('administration.templates.checklists.totalIvaBlock')) },
+    { id: 'TOTAL_PLUS_TAX', name: this.translateService.instant(marker('administration.templates.checklists.totalplusIvaBlock')) }
   ];
   public lineAttributes = [
-    { id: 'NAME', name: this.translateService.instant(marker('administration.templates.checklists.nameLine')) }, //'Nombre'
-    { id: 'TYPE', name: this.translateService.instant(marker('administration.templates.checklists.typeLine')) }, //'Tipo'
-    { id: 'TYPE_TAX', name: this.translateService.instant(marker('administration.templates.checklists.typeIvaLine')) }, //'Tipo IVA'
-    { id: 'AMOUNT', name: this.translateService.instant(marker('administration.templates.checklists.amountLine')) } //'Importe'
+    { id: 'NAME', name: this.translateService.instant(marker('administration.templates.checklists.nameLine')) },
+    { id: 'TYPE', name: this.translateService.instant(marker('administration.templates.checklists.typeLine')) },
+    { id: 'TYPE_TAX', name: this.translateService.instant(marker('administration.templates.checklists.typeIvaLine')) },
+    { id: 'AMOUNT', name: this.translateService.instant(marker('administration.templates.checklists.amountLine')) }
   ];
   public allBlocksMap: Map<string, any[]> = new Map();
   selectedType: string | null = null;
@@ -136,7 +136,7 @@ export class CreateEditChecklistComponent implements OnInit {
   ngOnInit(): void {
     const variablesRequest = this.variablesService.searchVariablesTemplateSlots();
     const customVariableRequest = this.variablesService.searchCustomVariablesSlots();
-    if (this.isContractedModule('budget')) {
+    if (this.isContractedModule('accounting')) {
       this.getAccountingTemplates();
     }
     if (this.route?.snapshot?.params?.id) {
@@ -216,8 +216,8 @@ export class CreateEditChecklistComponent implements OnInit {
   }
   public isContractedModule(option: string): boolean {
     const configList = this.authenticationService.getConfigList();
-    if (option === 'budget') {
-      return configList.includes(ModulesConstants.BUDGET);
+    if (option === 'accounting') {
+      return configList.includes(ModulesConstants.ACCOUNTING);
     } else if (option === 'customerArea') {
       return configList.includes(ModulesConstants.TIME_LINE);
     }

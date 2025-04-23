@@ -34,7 +34,7 @@
         class="login-content__link"
         fxLayout="row"
         fxLayoutAlign="start center"
-        [ngClass]="{ disabled: !phoneNumber || !isSMSContractedModule() }"
+        [ngClass]="{ disabled: !phoneNumber }"
         (click)="phoneNumber ? selectOption('SMS') : null"
     >
         <div class="login-content__icon-container">

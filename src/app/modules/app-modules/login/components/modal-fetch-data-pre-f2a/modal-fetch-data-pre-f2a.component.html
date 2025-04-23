@@ -1,5 +1,5 @@
-<p *ngIf="isSMSContractedModule()" class="description">{{ labels.description | translate }}</p>
-<p *ngIf="!isSMSContractedModule()" class="description">{{ labels.descriptionWithOutModule | translate }}</p>
+<p class="description">{{ labels.description | translate }}</p>
+
 <form [formGroup]="preF2aForm">
     <div>
         <mat-form-field appearance="outline" floatLabel="always" style="width: 100%">
