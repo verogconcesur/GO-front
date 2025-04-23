@@ -89,7 +89,7 @@
             <span class="budgets__main__create__item" (click)="newLine()">+ {{ labels.newLine | translate }}</span>
         </div>
     </div>
-    <div class="budgets__button" fxLayout="row" fxLayoutAlign="end end">
+    <div *ngIf="isLandingContractedModule()" class="budgets__button" fxLayout="row" fxLayoutAlign="end end">
         <button mat-stroked-button [disabled]="!enableSendButton()" (click)="sendBudgets()">
             {{ labels.publish | translate }}
         </button>
