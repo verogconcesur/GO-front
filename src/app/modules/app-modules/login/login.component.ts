@@ -2,7 +2,6 @@ import { Component, Inject, OnInit } from '@angular/core';
 import { UntypedFormBuilder, UntypedFormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { ENV } from '@app/constants/global.constants';
-import { ModulesConstants } from '@app/constants/modules.constants';
 import { RouteConstants } from '@app/constants/route.constants';
 import { AuthenticationService } from '@app/security/authentication.service';
 import { Env } from '@app/types/env';
@@ -127,11 +126,6 @@ export class LoginComponent implements OnInit {
       });
   };
 
-  public isSMSContractedModule(): boolean {
-    const configList = this.authenticationService.getConfigList();
-    return configList.includes(ModulesConstants.SMS_SEND);
-  }
-
   public openDobleFactorDialog = (userId: number, fingerprint: string, type: string): void => {
     if (type !== 'AUTHENTICATOR') {
       this.authenticationService
@@ -210,11 +204,7 @@ export class LoginComponent implements OnInit {
       .subscribe((resp) => {
         this.authenticationService.setConfigList(resp);
       });
-    if (
-      loginData.user.showReviewContact ||
-      (!loginData.user.email && !loginData.user.phoneNumber) ||
-      (!loginData.user.email && !this.isSMSContractedModule())
-    ) {
+    if (loginData.user.showReviewContact || (!loginData.user.email && !loginData.user.phoneNumber)) {
       this.openPreF2aModal(loginData);
     } else {
       this.use2FAAndNavigate(loginData);

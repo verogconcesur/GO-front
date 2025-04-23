@@ -1,5 +1,7 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { FormArray, FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { ModulesConstants } from '@app/constants/modules.constants';
+import { AuthenticationService } from '@app/security/authentication.service';
 import { ConcenetError } from '@app/types/error';
 import { marker } from '@biesbjerg/ngx-translate-extract-marker';
 import { AttachmentDTO, CardBudgetAttachmentsDTO } from '@data/models/cards/card-attachments-dto';
@@ -64,7 +66,8 @@ export class CardInstanceBudgetsComponent implements OnInit {
     private globalMessageService: GlobalMessageService,
     private customDialogService: CustomDialogService,
     private attachmentService: CardAttachmentsService,
-    private messagesServices: CardMessagesService
+    private messagesServices: CardMessagesService,
+    private authenticationService: AuthenticationService
   ) {}
   public compareAttachments(object1: CardBudgetAttachmentsDTO, object2: CardBudgetAttachmentsDTO) {
     return object1 && object2 && object1.file.id === object2.file.id;
@@ -77,6 +80,10 @@ export class CardInstanceBudgetsComponent implements OnInit {
       this.formBudgets.removeAt(index);
     }
     this.editing = false;
+  }
+  public isLandingContractedModule(): boolean {
+    const configList = this.authenticationService.getConfigList();
+    return configList.includes(ModulesConstants.TIME_LINE);
   }
   public enableSendButton(): boolean {
     return (

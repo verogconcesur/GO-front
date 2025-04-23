@@ -1,7 +1,6 @@
 import { Component, OnDestroy, OnInit, ViewEncapsulation } from '@angular/core';
 import { UntypedFormBuilder, UntypedFormGroup } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
-import { ModulesConstants } from '@app/constants/modules.constants';
 import { AuthenticationService } from '@app/security/authentication.service';
 import { marker } from '@biesbjerg/ngx-translate-extract-marker';
 import { UserService } from '@data/services/user.service';
@@ -76,11 +75,6 @@ export class ChooseDoblefactorComponent extends ComponentToExtendForCustomDialog
 
   public confirmCloseCustomDialog(): Observable<boolean> {
     return of(true);
-  }
-
-  public isSMSContractedModule(): boolean {
-    const configList = this.authService.getConfigList();
-    return configList.includes(ModulesConstants.SMS_SEND);
   }
 
   public selectOption = (type: 'SMS' | 'EMAIL' | 'AUTHENTICATOR'): void => {
