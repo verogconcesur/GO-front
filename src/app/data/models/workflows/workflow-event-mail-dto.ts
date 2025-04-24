@@ -16,5 +16,10 @@ export default interface WorkflowEventMailDTO {
   workflowEventMailReceivers: WorkflowEventMailReceiverDTO[];
   processedEmail?: string;
   templateComunication?: TemplatesCommunicationDTO;
-  criteriaConditions?: AdvancedSearchItem[];
+  workflowEventCondition?: {
+    id: number;
+    workflowEventType: string;
+    workflowEventConditionItems: AdvancedSearchItem[];
+    workflowEventMailId: number;
+  };
 }

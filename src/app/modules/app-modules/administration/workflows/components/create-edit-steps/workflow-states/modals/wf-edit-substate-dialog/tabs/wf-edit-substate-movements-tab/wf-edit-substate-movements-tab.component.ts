@@ -180,6 +180,7 @@ export class WfEditSubstateMovementsTabComponent extends WfEditSubstateAbstractT
   };
 
   public editMoveEvent = (movefg: UntypedFormGroup) => {
+    console.log(movefg);
     this.customDialogService
       .open({
         component: WfEditSubstateEventsDialogComponent,
@@ -314,7 +315,8 @@ export class WfEditSubstateMovementsTabComponent extends WfEditSubstateAbstractT
       workflowMovement: [attachment.workflowMovement || null],
       tab: [attachment.tab || null],
       templateAttachmentItem: [attachment.templateAttachmentItem || null],
-      numMinAttachRequired: [attachment.numMinAttachRequired || null]
+      numMinAttachRequired: [attachment.numMinAttachRequired || null],
+      workflowEventCondition: [attachment.workflowEventCondition || null]
     });
   }
 
@@ -384,7 +386,8 @@ export class WfEditSubstateMovementsTabComponent extends WfEditSubstateAbstractT
                 id: [wem.id ? wem.id : null],
                 sendMailAuto: [wem.sendMailAuto ? wem.sendMailAuto : false],
                 sendMailTemplate: [wem?.sendMailTemplate ? wem.sendMailTemplate : null],
-                workflowEventMailReceivers: [wem?.workflowEventMailReceivers ? wem.workflowEventMailReceivers : []]
+                workflowEventMailReceivers: [wem?.workflowEventMailReceivers ? wem.workflowEventMailReceivers : []],
+                workflowEventCondition: [wem?.workflowEventCondition ? wem.workflowEventCondition : null]
               })
             )
           )

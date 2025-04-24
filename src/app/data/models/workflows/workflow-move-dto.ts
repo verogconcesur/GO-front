@@ -60,5 +60,10 @@ export interface WorkflowSubstateEventRequiredAttachment {
   tab: { id: number };
   templateAttachmentItem: { id: number };
   numMinAttachRequired: number;
-  criteriaConditions?: AdvancedSearchItem[];
+  workflowEventCondition?: {
+    id: number;
+    workflowEventType: string;
+    workflowEventConditionItems: AdvancedSearchItem[];
+    workflowMovementRequiredAttachmentId: number;
+  };
 }

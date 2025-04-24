@@ -117,7 +117,7 @@
                                 ></app-mat-chips-input-form-field>
                             </section>
                             <app-wf-events-conditions
-                                [criteria]="mailEvent.get('criteriaConditions')"
+                                [criteria]="mailEvent.get('workflowEventCondition.workflowEventConditionItems').value"
                                 [criteriaOptions]="criteriaOptions"
                                 [operators]="operators"
                                 [escapedValue]="escapedValue"

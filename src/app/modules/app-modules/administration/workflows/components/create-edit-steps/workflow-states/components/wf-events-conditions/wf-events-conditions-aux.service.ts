@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { FormArray, FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { AdvancedSearchItem } from '@data/models/adv-search/adv-search-dto';
 
 @Injectable({
@@ -13,6 +13,7 @@ export class WorkflowsEventsConditionsAuxService {
       id: [value.id ? value.id : null],
       tabItem: [value.tabItem ? value.tabItem : null],
       variable: [value.variable ? value.variable : null],
+      workflowEventConditionId: [value.workflowEventConditionId ? value.workflowEventConditionId : null],
       orderNumber: [value.orderNumber ? value.orderNumber : orderNumber],
       advancedSearchOperator: [value.advancedSearchOperator ? value.advancedSearchOperator : null, Validators.required],
       value: [

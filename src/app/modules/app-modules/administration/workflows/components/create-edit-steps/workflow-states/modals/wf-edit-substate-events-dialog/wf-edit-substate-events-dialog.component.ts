@@ -300,7 +300,13 @@ export class WfEditSubstateEventsDialogComponent extends ComponentToExtendForCus
           return {
             ...attachment,
             numberInput: matchingBackendAttachment.numMinAttachRequired,
-            criteriaConditions: matchingBackendAttachment.criteriaConditions
+            workflowEventCondition: {
+              id: matchingBackendAttachment?.workflowEventCondition?.id,
+              workflowEventType: matchingBackendAttachment?.workflowEventCondition?.workflowEventType,
+              workflowEventConditionItems: matchingBackendAttachment?.workflowEventCondition?.workflowEventConditionItems,
+              workflowMovementRequiredAttachmentId:
+                matchingBackendAttachment?.workflowEventCondition?.workflowMovementRequiredAttachmentId
+            }
           };
         }
         return attachment;
@@ -314,13 +320,19 @@ export class WfEditSubstateEventsDialogComponent extends ComponentToExtendForCus
           return {
             ...attachment,
             numberInput: matchingBackendAttachment.numMinAttachRequired,
-            criteriaConditions: matchingBackendAttachment.criteriaConditions
+            workflowEventCondition: {
+              id: matchingBackendAttachment.workflowEventCondition.id,
+              workflowEventType: matchingBackendAttachment.workflowEventCondition.workflowEventType,
+              workflowEventConditionItems: matchingBackendAttachment.workflowEventCondition.workflowEventConditionItems,
+              workflowMovementRequiredAttachmentId:
+                matchingBackendAttachment.workflowEventCondition.workflowMovementRequiredAttachmentId
+            }
           };
         }
         return attachment;
       });
     }
-
+    console.log(data);
     this.form = this.fb.group(
       {
         //Mandar email
@@ -361,13 +373,20 @@ export class WfEditSubstateEventsDialogComponent extends ComponentToExtendForCus
                         }, null)
                       : null
                   ],
-                  criteriaConditions: wem?.criteriaConditions
-                    ? this.fb.array(
-                        wem.criteriaConditions.map((cc, index) => {
-                          this.wfEventsConditiosAuxService.getCriteriaFormGroup(cc, index);
-                        })
-                      )
-                    : this.fb.array([])
+                  workflowEventCondition: this.fb.group({
+                    id: [wem?.workflowEventCondition?.id ?? null],
+                    workflowEventType: ['EMAIL'],
+                    workflowEventMailId: [wem?.workflowEventCondition?.workflowEventMailId ?? null],
+                    workflowEventConditionItems: [
+                      wem?.workflowEventCondition?.workflowEventConditionItems
+                        ? this.fb.array(
+                            wem.workflowEventCondition.workflowEventConditionItems.map((cc, index) =>
+                              this.wfEventsConditiosAuxService.getCriteriaFormGroup(cc, index)
+                            )
+                          )
+                        : this.fb.array([])
+                    ]
+                  })
                 })
               )
             )
@@ -434,7 +453,6 @@ export class WfEditSubstateEventsDialogComponent extends ComponentToExtendForCus
                   );
                 })
                 .map((attachment) => {
-                  console.log('entra', attachment);
                   const attachments = Array.isArray(data.workflowSubstateEventRequiredAttachments)
                     ? data.workflowSubstateEventRequiredAttachments
                     : [data.workflowSubstateEventRequiredAttachments];
@@ -444,9 +462,15 @@ export class WfEditSubstateEventsDialogComponent extends ComponentToExtendForCus
                     numberInput: attachments.find(
                       (f) => f.tab.id === attachment.id && f.templateAttachmentItem.id === attachment.templateAttachmentItemId
                     )?.numMinAttachRequired,
-                    criteriaConditions: attachment?.criteriaConditions?.length
+                    workflowEventConditionId: attachment?.workflowEventCondition?.id
+                      ? attachment?.workflowEventCondition?.id
+                      : null,
+                    workflowMovementRequiredAttachmentId: attachment?.workflowEventCondition?.workflowMovementRequiredAttachmentId
+                      ? attachment?.workflowEventCondition?.workflowMovementRequiredAttachmentId
+                      : null,
+                    criteriaConditions: attachment?.workflowEventCondition?.workflowEventConditionItems?.length
                       ? this.fb.array(
-                          attachment.criteriaConditions.map((cc, i) =>
+                          attachment.workflowEventCondition.workflowEventConditionItems.map((cc, i) =>
                             this.wfEventsConditiosAuxService.getCriteriaFormGroup(cc, i)
                           )
                         )
@@ -542,7 +566,6 @@ export class WfEditSubstateEventsDialogComponent extends ComponentToExtendForCus
       }
     );
     this.formIntialized.emit(true);
-    console.log(this.form);
   }
   onOptionSelectionChange(event: MatOptionSelectionChange, field: any): void {
     const requiredFieldsListControl = this.form.get('requiredFieldsList');
@@ -577,7 +600,12 @@ export class WfEditSubstateEventsDialogComponent extends ComponentToExtendForCus
         receiverTypes: [[]],
         receiverEmails: [[]],
         receiverRole: [null],
-        criteriaConditions: this.fb.array([])
+        workflowEventCondition: this.fb.group({
+          id: [null],
+          workflowEventType: ['EMAIL'],
+          workflowEventConditionItems: this.fb.array([]),
+          workflowMovementRequiredAttachmentId: [null]
+        })
       })
     );
   }
@@ -736,7 +764,13 @@ export class WfEditSubstateEventsDialogComponent extends ComponentToExtendForCus
       id: mailEvent.id ? mailEvent.id : null,
       sendMailAuto: mailEvent.sendMailAuto,
       sendMailTemplate: mailEvent.sendMailTemplate,
-      workflowEventMailReceivers: (workflowEventMailReceivers as WorkflowEventMailReceiverDTO[]).filter((d) => d)
+      workflowEventMailReceivers: (workflowEventMailReceivers as WorkflowEventMailReceiverDTO[]).filter((d) => d),
+      workflowEventCondition: mailEvent.workflowEventCondition?.workflowEventConditionItems?.length
+        ? {
+            ...mailEvent.workflowEventCondition,
+            workflowEventConditionItems: mailEvent.workflowEventCondition.workflowEventConditionItems?.value
+          }
+        : null
     };
     return workflowEventMail;
   }
@@ -797,7 +831,15 @@ export class WfEditSubstateEventsDialogComponent extends ComponentToExtendForCus
       (field: any) => ({
         tab: { id: field.id },
         templateAttachmentItem: { id: field.templateAttachmentItemId },
-        numMinAttachRequired: field.numberInput || 1
+        numMinAttachRequired: field.numberInput || 1,
+        workflowEventCondition: field.criteriaConditions.length
+          ? {
+              id: field.workflowEventConditionId || null,
+              workflowEventType: 'REQ_ATTACH',
+              workflowEventConditionItems: field.criteriaConditions.controls.map((control: any) => control.value),
+              workflowMovementRequiredAttachmentId: field.workflowMovementRequiredAttachmentId || null
+            }
+          : null
       })
     );
 
@@ -805,7 +847,15 @@ export class WfEditSubstateEventsDialogComponent extends ComponentToExtendForCus
       (field: any) => ({
         tab: { id: field.id },
         templateAttachmentItem: { id: field.templateAttachmentItemId },
-        numMinAttachRequired: field.numberInput || 1
+        numMinAttachRequired: field.numberInput || 1,
+        workflowEventCondition: field.criteriaConditions.length
+          ? {
+              id: field.workflowEventConditionId || null,
+              workflowEventType: 'REQ_ATTACH',
+              workflowEventConditionItems: field.criteriaConditions.controls.map((control: any) => control.value),
+              workflowMovementRequiredAttachmentId: field.workflowMovementRequiredAttachmentId || null
+            }
+          : null
       })
     );
 
@@ -848,7 +898,9 @@ export class WfEditSubstateEventsDialogComponent extends ComponentToExtendForCus
   }
 
   public onSubmitCustomDialog(): Observable<boolean> {
+    console.log('entra');
     const formValue = this.getFormValue();
+    console.log(formValue);
     const spinner = this.spinnerService.show();
 
     if (this.eventType === 'MOV') {

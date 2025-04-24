@@ -8,5 +8,10 @@ export interface WorkflowAttachmentTimelineDTO {
   templateId?: number;
   templateAttachmentItemId?: number;
   numberInput?: number;
-  criteriaConditions?: AdvancedSearchItem[];
+  workflowEventCondition?: {
+    id: number;
+    workflowEventType: string;
+    workflowEventConditionItems: AdvancedSearchItem[];
+    workflowMovementRequiredAttachmentId: number;
+  };
 }
