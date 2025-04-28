@@ -49,6 +49,13 @@ export default interface WorkflowMoveDTO {
   movementExtraConfirm?: boolean;
   requiredMovementExtra?: boolean;
   requiredAttachments?: boolean;
+  workflowEventConditions?: {
+    id: number;
+    workflowEventType: string;
+    workflowMovementId?: number;
+    workflowSubstateId?: number;
+    workflowEventConditionItems: AdvancedSearchItem[];
+  }[];
   workflowSubstateEventRequiredAttachments?: WorkflowSubstateEventRequiredAttachment[];
   workflowMovementRequiredAttachments?: WorkflowSubstateEventRequiredAttachment[];
   requiredSizeCriteriaConditions?: AdvancedSearchItem[];
@@ -64,6 +71,7 @@ export interface WorkflowSubstateEventRequiredAttachment {
     id: number;
     workflowEventType: string;
     workflowEventConditionItems: AdvancedSearchItem[];
-    workflowMovementRequiredAttachmentId: number;
+    workflowMovementRequiredAttachmentId?: number;
+    workflowSubstateEventRequiredAttachmentId?: number;
   };
 }

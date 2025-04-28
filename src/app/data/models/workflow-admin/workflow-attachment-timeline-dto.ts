@@ -12,6 +12,7 @@ export interface WorkflowAttachmentTimelineDTO {
     id: number;
     workflowEventType: string;
     workflowEventConditionItems: AdvancedSearchItem[];
-    workflowMovementRequiredAttachmentId: number;
+    workflowMovementRequiredAttachmentId?: number;
+    workflowSubstateEventRequiredAttachmentId?: number;
   };
 }

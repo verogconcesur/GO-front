@@ -132,7 +132,7 @@
                     </mat-checkbox>
                     <app-wf-events-conditions
                         *ngIf="form.get('requiredSize')?.value"
-                        [criteria]="form.get('requiredSizeCriteriaConditions')"
+                        [criteria]="form.get('requiredSizeCriteriaConditions.workflowEventConditionItems').value"
                         [criteriaOptions]="criteriaOptions"
                         [operators]="operators"
                         [escapedValue]="escapedValue"
@@ -145,7 +145,7 @@
                     </mat-checkbox>
                     <app-wf-events-conditions
                         *ngIf="form.get('requiredUser')?.value"
-                        [criteria]="form.get('requiredUserCriteriaConditions')"
+                        [criteria]="form.get('requiredUserCriteriaConditions.workflowEventConditionItems').value"
                         [criteriaOptions]="criteriaOptions"
                         [operators]="operators"
                         [escapedValue]="escapedValue"
@@ -158,7 +158,7 @@
                     </mat-checkbox>
                     <app-wf-events-conditions
                         *ngIf="form.get('requiredMyself')?.value"
-                        [criteria]="form.get('requiredMyselfCriteriaConditions')"
+                        [criteria]="form.get('requiredMyselfCriteriaConditions.workflowEventConditionItems').value"
                         [criteriaOptions]="criteriaOptions"
                         [operators]="operators"
                         [escapedValue]="escapedValue"
@@ -213,7 +213,7 @@
                     </mat-checkbox>
                     <app-wf-events-conditions
                         *ngIf="form.get('webservice')?.value"
-                        [criteria]="form.get('webserviceCriteriaConditions')"
+                        [criteria]="form.get('webserviceCriteriaConditions.workflowEventConditionItems').value"
                         [criteriaOptions]="criteriaOptions"
                         [operators]="operators"
                         [escapedValue]="escapedValue"
