@@ -154,7 +154,7 @@ export class CreateEditFacilityComponent extends ComponentToExtendForCustomDialo
   ];
   locateList = [
     { name: this.translateService.instant(this.labels.esEs), value: 'es-ES' },
-    { name: this.translateService.instant(this.labels.caEs), value: 'ca_ES' }
+    { name: this.translateService.instant(this.labels.caEs), value: 'ca-ES' }
   ];
 
   timeZoneList = [{ name: this.translateService.instant(this.labels.europeMadrid), value: 'Europe/Madrid' }];
@@ -876,8 +876,8 @@ export class CreateEditFacilityComponent extends ComponentToExtendForCustomDialo
         cif: [this.facilityToEdit ? this.facilityToEdit.cif : null],
         email: [this.facilityToEdit ? this.facilityToEdit.email : null, Validators.email],
         footer: [this.facilityToEdit ? this.facilityToEdit.footer : null],
-        locate: [this.facilityToEdit ? this.facilityToEdit.locate : this.locateList[0]],
-        timeZone: [this.facilityToEdit ? this.facilityToEdit.timeZone : this.timeZoneList[0]],
+        locate: [this.facilityToEdit ? this.facilityToEdit.locate : this.locateList[0].value],
+        timeZone: [this.facilityToEdit ? this.facilityToEdit.timeZone : this.timeZoneList[0].value],
         header: [this.facilityToEdit ? this.facilityToEdit.header : null],
         id: [this.facilityToEdit ? this.facilityToEdit.id : null],
         name: [
