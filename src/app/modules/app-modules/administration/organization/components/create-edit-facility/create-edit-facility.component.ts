@@ -90,6 +90,11 @@ export class CreateEditFacilityComponent extends ComponentToExtendForCustomDialo
     brands: marker('common.brands'),
     cif: marker('common.cif'),
     email: marker('userProfile.email'),
+    timeZone: marker('userProfile.timeZone'),
+    esEs: marker('userProfile.esEs'),
+    caEs: marker('userProfile.caEs'),
+    europeMadrid: marker('userProfile.europeMadrid'),
+    locate: marker('userProfile.locate'),
     country: marker('common.country'),
     province: marker('common.province'),
     town: marker('common.town'),
@@ -145,7 +150,12 @@ export class CreateEditFacilityComponent extends ComponentToExtendForCustomDialo
     { name: 'KEYLOOP', value: 'AUTOLINE' },
     { name: 'SPIGA', value: 'SPIGA' }
   ];
+  locateList = [
+    { name: this.translateService.instant(this.labels.esEs), value: 'es-ES' },
+    { name: this.translateService.instant(this.labels.caEs), value: 'ca_ES' }
+  ];
 
+  timeZoneList = [{ name: this.translateService.instant(this.labels.europeMadrid), value: 'Europe/Madrid' }];
   constructor(
     private fb: UntypedFormBuilder,
     private facilityService: FacilityService,
@@ -397,6 +407,8 @@ export class CreateEditFacilityComponent extends ComponentToExtendForCustomDialo
         cif: formValue.cif,
         email: formValue.email,
         footer: formValue.footer ? formValue.footer : null,
+        locate: formValue.locate ? formValue.locate : null,
+        timeZone: formValue.timeZone ? formValue.timeZone : null,
         header: formValue.header ? formValue.header : null,
         id: formValue.id,
         name: formValue.name,
@@ -559,6 +571,8 @@ export class CreateEditFacilityComponent extends ComponentToExtendForCustomDialo
                 cif: formValue.cif,
                 email: formValue.email,
                 footer: formValue.footer ? formValue.footer : null,
+                locate: formValue.locate ? formValue.locate : null,
+                timeZone: formValue.timeZone ? formValue.timeZone : null,
                 header: formValue.header ? formValue.header : null,
                 id: formValue.id,
                 name: formValue.name,
@@ -848,6 +862,8 @@ export class CreateEditFacilityComponent extends ComponentToExtendForCustomDialo
         cif: [this.facilityToEdit ? this.facilityToEdit.cif : null],
         email: [this.facilityToEdit ? this.facilityToEdit.email : null, Validators.email],
         footer: [this.facilityToEdit ? this.facilityToEdit.footer : null],
+        locate: [this.facilityToEdit ? this.facilityToEdit.locate : this.locateList[0]],
+        timeZone: [this.facilityToEdit ? this.facilityToEdit.timeZone : this.timeZoneList[0]],
         header: [this.facilityToEdit ? this.facilityToEdit.header : null],
         id: [this.facilityToEdit ? this.facilityToEdit.id : null],
         name: [

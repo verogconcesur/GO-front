@@ -111,6 +111,20 @@
                             {{ labels.emailError | translate }}
                         </mat-error>
                     </mat-form-field>
+                    <mat-form-field appearance="outline" floatLabel="always">
+                        <mat-label> {{ labels.locate | translate }}</mat-label>
+                        <mat-select formControlName="locate">
+                            <mat-option *ngFor="let locate of locateList" [value]="locate.value">{{ locate.name }}</mat-option>
+                        </mat-select>
+                    </mat-form-field>
+                    <mat-form-field appearance="outline" floatLabel="always">
+                        <mat-label> {{ labels.timeZone | translate }}</mat-label>
+                        <mat-select formControlName="timeZone">
+                            <mat-option *ngFor="let timeZone of timeZoneList" [value]="timeZone.value">{{
+                                timeZone.name
+                            }}</mat-option>
+                        </mat-select>
+                    </mat-form-field>
                 </div>
             </div>
             <!-- Integration Data -->
