@@ -92,6 +92,7 @@ export class CreateEditFacilityComponent extends ComponentToExtendForCustomDialo
     email: marker('userProfile.email'),
     timeZone: marker('userProfile.timeZone'),
     esEs: marker('userProfile.esEs'),
+    caEs: marker('userProfile.caEs'),
     europeMadrid: marker('userProfile.europeMadrid'),
     locate: marker('userProfile.locate'),
     country: marker('common.country'),
@@ -149,7 +150,10 @@ export class CreateEditFacilityComponent extends ComponentToExtendForCustomDialo
     { name: 'KEYLOOP', value: 'AUTOLINE' },
     { name: 'SPIGA', value: 'SPIGA' }
   ];
-  locateList = [{ name: this.translateService.instant(this.labels.esEs), value: 'es-ES' }];
+  locateList = [
+    { name: this.translateService.instant(this.labels.esEs), value: 'es-ES' },
+    { name: this.translateService.instant(this.labels.caEs), value: 'ca_ES' }
+  ];
 
   timeZoneList = [{ name: this.translateService.instant(this.labels.europeMadrid), value: 'Europe/Madrid' }];
   constructor(

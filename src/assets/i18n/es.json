@@ -1100,6 +1100,7 @@
     },
     "userProfile": {
         "brand": "Marca",
+        "caEs": "Catalán (España)",
         "changePassword": "Cambiar contraseña",
         "code": "Código",
         "data": "Datos generales",

@@ -1102,6 +1102,7 @@
     },
     "userProfile": {
         "brand": "Brand",
+        "caEs": "Catalan (Spain)",
         "changePassword": "Change password",
         "code": "Code",
         "data": "General data",
