@@ -1,6 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { Component, EventEmitter, Input, OnChanges, OnInit, Output, SimpleChanges, ViewChild } from '@angular/core';
 import {
+  AbstractControl,
   FormArray,
   FormBuilder,
   FormGroup,
@@ -26,7 +27,7 @@ import VariablesDTO from '@data/models/variables-dto';
 import { WorkflowAttachmentTimelineDTO } from '@data/models/workflow-admin/workflow-attachment-timeline-dto';
 import WorkflowRoleDTO from '@data/models/workflow-admin/workflow-role-dto';
 import WorkflowEventMailDTO, { WorkflowEventMailReceiverDTO } from '@data/models/workflows/workflow-event-mail-dto';
-import WorkflowMoveDTO from '@data/models/workflows/workflow-move-dto';
+import WorkflowMoveDTO, { workflowSubstateRequiredCondition } from '@data/models/workflows/workflow-move-dto';
 import WorkflowStateDTO from '@data/models/workflows/workflow-state-dto';
 import WorkflowSubstateDTO from '@data/models/workflows/workflow-substate-dto';
 import { AdvSearchService } from '@data/services/adv-search.service';
@@ -243,8 +244,8 @@ export class WfEditSubstateEventsDialogComponent extends ComponentToExtendForCus
         this.move?.workflowSubstateTarget?.workflowState?.workflow?.id
     );
   }
-  public compareFields(field1: any, field2: any): boolean {
-    return field1 && field2 ? field1.id === field2.id : field1 === field2;
+  public compareFields(a: any, b: any): boolean {
+    return a?.id === b?.id;
   }
 
   public nodeSelected(node: WorkflowSubstateDTO): void {
@@ -538,21 +539,36 @@ export class WfEditSubstateEventsDialogComponent extends ComponentToExtendForCus
           data?.requiredFieldsList && this.fieldsList
             ? this.fieldsList
                 .filter((field) => data.requiredFieldsList.find((f) => f.id === field.id))
-                .map((field, index) => {
-                  const dataField = data.requiredFieldsList.find((f) => f.id === field.id);
+                .map((field) => {
+                  const matchedCondition = data.workflowEventConditionsReqFields?.find((wem) => wem.tabItemId === field.id);
                   return {
-                    ...field,
-                    criteriaConditions: dataField?.criteriaConditions
-                      ? this.fb.array(
-                          dataField.criteriaConditions.map((cc, i) => {
-                            this.wfEventsConditiosAuxService.getCriteriaFormGroup(cc, i);
-                          })
-                        )
-                      : this.fb.array([])
+                    ...field
                   };
                 })
             : []
         ],
+        workflowEventConditionsReqFields: data?.workflowEventConditionsReqFields?.length
+          ? this.fb.array(
+              data.workflowEventConditionsReqFields.map((wem: workflowSubstateRequiredCondition) =>
+                this.fb.group({
+                  id: [wem.id ? wem.id : null],
+                  workflowEventType: [wem.workflowEventType ? wem.workflowEventType : 'REQ_FIELD '],
+                  tabItemId: [wem.tabItemId ? wem.tabItemId : null],
+                  workflowMovementId: [wem.workflowMovementId ? wem.workflowMovementId : null],
+                  workflowSubstateId: [wem.workflowSubstateId ? wem.workflowSubstateId : null],
+                  workflowEventConditionItems: [
+                    wem?.workflowEventConditionItems
+                      ? this.fb.array(
+                          wem.workflowEventConditionItems.map((cc, index) =>
+                            this.wfEventsConditiosAuxService.getCriteriaFormGroup(cc, index)
+                          )
+                        )
+                      : this.fb.array([])
+                  ]
+                })
+              )
+            )
+          : this.fb.array([]),
         //Attachments required for events
         requiredAttachments: [data?.requiredAttachments ? true : false],
         workflowSubstateEventRequiredAttachments: [
@@ -678,29 +694,52 @@ export class WfEditSubstateEventsDialogComponent extends ComponentToExtendForCus
       }
     );
     this.formIntialized.emit(true);
+    this.syncConditionsFromRequiredFields();
+    console.log(this.form);
   }
-  onOptionSelectionChange(event: MatOptionSelectionChange, field: any): void {
-    const requiredFieldsListControl = this.form.get('requiredFieldsList');
-    const currentList = requiredFieldsListControl?.value || [];
-    if (event.isUserInput && event.source.selected) {
-      const existingField = currentList.find((item: any) => item.id === field.id && item.tabId === field.tabId);
 
-      if (existingField) {
-        if (!existingField.criteriaConditions) {
-          existingField.criteriaConditions = [];
-        }
-      } else {
-        const newField = {
-          ...field,
-          criteriaConditions: this.fb.array([])
-        };
-        const updatedList = [...currentList, newField];
-        requiredFieldsListControl.setValue(updatedList);
-      }
-    } else if (event.isUserInput && !event.source.selected) {
-      const updatedList = currentList.filter((item: any) => item.id !== field.id);
-      requiredFieldsListControl.setValue(updatedList);
+  onOptionSelectionChange(event: MatOptionSelectionChange): void {
+    if (event.isUserInput) {
+      setTimeout(() => {
+        this.syncConditionsFromRequiredFields();
+      }, 0);
     }
+  }
+  public getFieldNameFromTabId(tabId: number): string {
+    const requiredFields = this.form.get('requiredFieldsList')?.value || [];
+    const match = requiredFields.find((field: any) => field.id === tabId);
+    return match?.name || '';
+  }
+
+  public syncConditionsFromRequiredFields(): void {
+    const requiredFields: any[] = this.form.get('requiredFieldsList')?.value || [];
+    console.log(requiredFields);
+    const conditionsArray = this.form.get('workflowEventConditionsReqFields') as FormArray;
+    const existingConditions = conditionsArray.controls.map((ctrl) => ctrl.get('tabItemId')?.value);
+
+    requiredFields.forEach((field) => {
+      if (!existingConditions.includes(field.id)) {
+        const newConditionGroup = this.fb.group({
+          id: [null],
+          workflowEventType: ['REQ_FIELD'],
+          tabItemId: [field.id],
+          workflowMovementId: [null],
+          workflowSubstateId: [null],
+          workflowEventConditionItems: [this.fb.array([])]
+        });
+
+        conditionsArray.push(newConditionGroup);
+      }
+    });
+
+    for (let i = conditionsArray.length - 1; i >= 0; i--) {
+      const conditionTabId = conditionsArray.at(i).get('tabItemId')?.value;
+      const stillExists = requiredFields.some((field) => field.id === conditionTabId);
+      if (!stillExists) {
+        conditionsArray.removeAt(i);
+      }
+    }
+    console.log(this.form);
   }
 
   public addWorkflowEventMails(): void {
@@ -1084,6 +1123,31 @@ export class WfEditSubstateEventsDialogComponent extends ComponentToExtendForCus
         });
       }
     }
+    const reqFieldConditionsControl = this.form.get('workflowEventConditionsReqFields') as FormArray;
+
+    if (reqFieldConditionsControl?.length) {
+      const transformedReqFieldConditions = reqFieldConditionsControl.controls
+        .map((group: AbstractControl) => {
+          const valueRequiredField = group.value;
+          const itemsControlValue = group.get('workflowEventConditionItems')?.value;
+
+          if (!itemsControlValue || itemsControlValue.length === 0) {
+            return null;
+          }
+
+          return {
+            id: valueRequiredField.id ?? null,
+            workflowEventType: 'REQ_FIELD',
+            tabItemId: valueRequiredField.tabItemId,
+            workflowMovementId: this.eventType === 'MOV' ? valueRequiredField.workflowMovementId ?? null : undefined,
+            workflowSubstateId: this.eventType !== 'MOV' ? valueRequiredField.workflowSubstateId ?? null : undefined,
+            workflowEventConditionItems: itemsControlValue.controls.map((c: any) => c.value)
+          };
+        })
+        .filter((entry) => entry !== null);
+      formValue.workflowEventConditionsReqFields = transformedReqFieldConditions;
+      console.log(transformedReqFieldConditions);
+    }
     if (this.eventType === 'MOV') {
       const { workflowSubstateEventRequiredAttachments, ...rest } = formValue;
       const {
@@ -1117,14 +1181,13 @@ export class WfEditSubstateEventsDialogComponent extends ComponentToExtendForCus
         workflowEventConditions: workflowEventConditionsFinal
       };
     }
+    console.log(formValueFinal);
 
     return formValueFinal;
   }
 
   public onSubmitCustomDialog(): Observable<boolean> {
-    console.log('entra');
     const formValue = this.getFormValue();
-    console.log(formValue);
     const spinner = this.spinnerService.show();
 
     if (this.eventType === 'MOV') {

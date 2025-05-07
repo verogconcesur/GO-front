@@ -181,8 +181,9 @@
                             <mat-option
                                 *ngFor="let field of fieldsList"
                                 [value]="field"
-                                (onSelectionChange)="onOptionSelectionChange($event, field)"
-                                >{{ field.name | translate }}</mat-option
+                                (onSelectionChange)="onOptionSelectionChange($event)"
+                            >
+                                {{ field.name | translate }}</mat-option
                             >
                         </mat-select>
                         <mat-error *ngIf="form.controls?.requiredFieldsList.invalid">
@@ -192,10 +193,10 @@
                         </mat-error>
                     </mat-form-field>
                     <div *ngIf="form.get('requiredFields')?.value && form.get('requiredFieldsList')?.value">
-                        <div *ngFor="let field of form.get('requiredFieldsList').value; let i = index">
+                        <div *ngFor="let field of form.get('workflowEventConditionsReqFields').value; let i = index">
                             <app-wf-events-conditions
-                                [title]="field.name"
-                                [criteria]="field.criteriaConditions"
+                                [title]="getFieldNameFromTabId(field.tabItemId)"
+                                [criteria]="field.workflowEventConditionItems"
                                 [criteriaOptions]="criteriaOptions"
                                 [operators]="operators"
                                 [escapedValue]="escapedValue"
