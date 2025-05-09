@@ -1,4 +1,4 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { FormArray, FormGroup } from '@angular/forms';
 import { marker } from '@biesbjerg/ngx-translate-extract-marker';
 import { AdvancedSearchItem } from '@data/models/adv-search/adv-search-dto';
@@ -26,6 +26,7 @@ import { WorkflowsEventsConditionsAuxService } from './wf-events-conditions-aux.
   styleUrls: ['./wf-events-conditions.component.scss']
 })
 export class WfEventsConditionsComponent implements OnInit {
+  @Output() changed = new EventEmitter<void>();
   @Input() criteria: FormArray = new FormArray([]);
   @Input() criteriaOptions: AdvancedSearchOptionsDTO = { cards: {}, entities: {} };
   @Input() operators: AdvSearchOperatorDTO[] = [];
@@ -46,6 +47,9 @@ export class WfEventsConditionsComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {}
+  public emitChange() {
+    this.changed.emit();
+  }
 
   criteriaErrors(): boolean {
     let error = false;
@@ -168,6 +172,7 @@ export class WfEventsConditionsComponent implements OnInit {
       .subscribe((ok: boolean) => {
         if (ok) {
           removeItemInFormArray(this.criteria, criteria.value.orderNumber - 1, true);
+          this.emitChange();
         }
       });
   }
@@ -199,6 +204,7 @@ export class WfEventsConditionsComponent implements OnInit {
           criteria.get('value').setValue(value);
           criteria.markAsDirty();
           criteria.markAsTouched();
+          this.emitChange();
         }
       });
   }

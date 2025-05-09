@@ -85,6 +85,7 @@ export class WfEditSubstateMovementsTabComponent extends WfEditSubstateAbstractT
         this.groupNames.push(move.groupName);
       }
       fa.push(this.createMovementFormGroup(move));
+      console.log(this.form);
     });
     this.groupNames = this.groupNames.sort(this.sortService.alphaNumericSort);
     const form = this.fb.group({
@@ -331,9 +332,14 @@ export class WfEditSubstateMovementsTabComponent extends WfEditSubstateAbstractT
       requiredFieldsList: [move?.requiredFieldsList ? move.requiredFieldsList : []],
       requiredHistoryComment: [move?.requiredHistoryComment ? move.requiredHistoryComment : false],
       requiredMyself: [move?.requiredMyself ? move.requiredMyself : false],
+      requiredMyselfCriteriaConditions: [move?.requiredMyselfCriteriaConditions ? move.requiredMyselfCriteriaConditions : []],
       requiredSize: [move?.requiredSize ? move.requiredSize : false],
+      requiredSizeCriteriaConditions: [move?.requiredSizeCriteriaConditions ? move.requiredSizeCriteriaConditions : []],
       requiredUser: [move?.requiredUser ? move.requiredUser : false],
+      requiredUserCriteriaConditions: [move?.requiredUserCriteriaConditions ? move.requiredUserCriteriaConditions : []],
       webservice: [move?.webservice ? move.webservice : false],
+      workflowEventConditions: [move?.workflowEventConditions ? move.workflowEventConditions : []],
+      webserviceCriteriaConditions: [move?.webserviceCriteriaConditions ? move.webserviceCriteriaConditions : []],
       workflowSubstateEventRequiredAttachments: this.initAttachmentsArray(move?.workflowMovementRequiredAttachments || []),
       workflowEventWebserviceConfig: this.fb.group(
         {

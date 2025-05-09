@@ -695,7 +695,12 @@ export class WfEditSubstateEventsDialogComponent extends ComponentToExtendForCus
     );
     this.formIntialized.emit(true);
     this.syncConditionsFromRequiredFields();
-    console.log(this.form);
+  }
+
+  onCriteriaChanged() {
+    this.form.markAsTouched();
+    this.form.markAsDirty();
+    this.form.updateValueAndValidity();
   }
 
   onOptionSelectionChange(event: MatOptionSelectionChange): void {
@@ -713,7 +718,6 @@ export class WfEditSubstateEventsDialogComponent extends ComponentToExtendForCus
 
   public syncConditionsFromRequiredFields(): void {
     const requiredFields: any[] = this.form.get('requiredFieldsList')?.value || [];
-    console.log(requiredFields);
     const conditionsArray = this.form.get('workflowEventConditionsReqFields') as FormArray;
     const existingConditions = conditionsArray.controls.map((ctrl) => ctrl.get('tabItemId')?.value);
 
@@ -739,7 +743,6 @@ export class WfEditSubstateEventsDialogComponent extends ComponentToExtendForCus
         conditionsArray.removeAt(i);
       }
     }
-    console.log(this.form);
   }
 
   public addWorkflowEventMails(): void {
@@ -754,7 +757,7 @@ export class WfEditSubstateEventsDialogComponent extends ComponentToExtendForCus
         workflowEventCondition: this.fb.group({
           id: [null],
           workflowEventType: ['EMAIL'],
-          workflowEventConditionItems: this.fb.array([]),
+          workflowEventConditionItems: [this.fb.array([])],
           workflowMovementRequiredAttachmentId: [null]
         })
       })
@@ -1038,10 +1041,10 @@ export class WfEditSubstateEventsDialogComponent extends ComponentToExtendForCus
     const conditionMySelfItemsControl = myselfConditionGroup?.get('workflowEventConditionItems') as FormArray;
     const webServiceConditionGroup = this.form.get('webserviceCriteriaConditions') as FormGroup;
     const webserviceConditionValue = webServiceConditionGroup?.value;
-    const conditionWebServiceItemsControl = myselfConditionGroup?.get('workflowEventConditionItems') as FormArray;
+    const conditionWebServiceItemsControl = webServiceConditionGroup?.get('workflowEventConditionItems') as FormArray;
     const workflowEventConditionsFinal: any[] = [];
     if (this.eventType === 'MOV') {
-      if (conditionSizeItemsControl?.value?.length) {
+      if (conditionSizeItemsControl?.value?.length && value.requiredSize) {
         workflowEventConditionsFinal.push({
           id: sizeConditionValue.id ?? null,
           workflowEventType: 'SIZE',
@@ -1051,7 +1054,7 @@ export class WfEditSubstateEventsDialogComponent extends ComponentToExtendForCus
           )
         });
       }
-      if (conditionUserItemsControl?.value?.length) {
+      if (conditionUserItemsControl?.value?.length && value.requiredUser) {
         workflowEventConditionsFinal.push({
           id: userConditionValue.id ?? null,
           workflowEventType: 'USER',
@@ -1061,7 +1064,7 @@ export class WfEditSubstateEventsDialogComponent extends ComponentToExtendForCus
           )
         });
       }
-      if (conditionMySelfItemsControl?.value?.length) {
+      if (conditionMySelfItemsControl?.value?.length && value.requiredMyself) {
         workflowEventConditionsFinal.push({
           id: myselfConditionValue.id ?? null,
           workflowEventType: 'MYSELF',
@@ -1071,7 +1074,7 @@ export class WfEditSubstateEventsDialogComponent extends ComponentToExtendForCus
           )
         });
       }
-      if (conditionWebServiceItemsControl?.value?.length) {
+      if (conditionWebServiceItemsControl?.value?.length && value.webservice) {
         workflowEventConditionsFinal.push({
           id: webserviceConditionValue.id ?? null,
           workflowEventType: 'WEBSERVICE',
@@ -1082,7 +1085,7 @@ export class WfEditSubstateEventsDialogComponent extends ComponentToExtendForCus
         });
       }
     } else {
-      if (conditionSizeItemsControl?.value?.length) {
+      if (conditionSizeItemsControl?.value?.length && value.requiredSize) {
         workflowEventConditionsFinal.push({
           id: sizeConditionValue.id ?? null,
           workflowEventType: 'SIZE',
@@ -1092,7 +1095,7 @@ export class WfEditSubstateEventsDialogComponent extends ComponentToExtendForCus
           )
         });
       }
-      if (conditionUserItemsControl?.value?.length) {
+      if (conditionUserItemsControl?.value?.length && value.requiredUser) {
         workflowEventConditionsFinal.push({
           id: userConditionValue.id ?? null,
           workflowEventType: 'USER',
@@ -1102,7 +1105,7 @@ export class WfEditSubstateEventsDialogComponent extends ComponentToExtendForCus
           )
         });
       }
-      if (conditionMySelfItemsControl?.value?.length) {
+      if (conditionMySelfItemsControl?.value?.length && value.requiredMyself) {
         workflowEventConditionsFinal.push({
           id: myselfConditionValue.id ?? null,
           workflowEventType: 'MYSELF',
@@ -1112,7 +1115,7 @@ export class WfEditSubstateEventsDialogComponent extends ComponentToExtendForCus
           )
         });
       }
-      if (conditionWebServiceItemsControl?.value?.length) {
+      if (conditionWebServiceItemsControl?.value?.length && value.webservice) {
         workflowEventConditionsFinal.push({
           id: webserviceConditionValue.id ?? null,
           workflowEventType: 'WEBSERVICE',
@@ -1146,7 +1149,6 @@ export class WfEditSubstateEventsDialogComponent extends ComponentToExtendForCus
         })
         .filter((entry) => entry !== null);
       formValue.workflowEventConditionsReqFields = transformedReqFieldConditions;
-      console.log(transformedReqFieldConditions);
     }
     if (this.eventType === 'MOV') {
       const { workflowSubstateEventRequiredAttachments, ...rest } = formValue;
@@ -1181,8 +1183,6 @@ export class WfEditSubstateEventsDialogComponent extends ComponentToExtendForCus
         workflowEventConditions: workflowEventConditionsFinal
       };
     }
-    console.log(formValueFinal);
-
     return formValueFinal;
   }
 
@@ -1289,7 +1289,7 @@ export class WfEditSubstateEventsDialogComponent extends ComponentToExtendForCus
   private async getCriteriaOptions(): Promise<void> {
     return new Promise((resolve, reject) => {
       const resquests = [
-        this.advSearchService.getCriteria().pipe(take(1)),
+        this.advSearchService.getCriteriaConditions(this.workflowId).pipe(take(1)),
         this.advSearchService.getAdvSearchOperators().pipe(take(1))
       ];
       forkJoin(resquests).subscribe({
