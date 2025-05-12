@@ -452,13 +452,13 @@ export class WfEditSubstateEventsDialogComponent extends ComponentToExtendForCus
         if (matchingBackendAttachment) {
           return {
             ...attachment,
-            numberInput: matchingBackendAttachment.numMinAttachRequired,
+            numberInput: matchingBackendAttachment?.numMinAttachRequired,
             workflowEventCondition: {
-              id: matchingBackendAttachment.workflowEventCondition.id,
-              workflowEventType: matchingBackendAttachment.workflowEventCondition.workflowEventType,
-              workflowEventConditionItems: matchingBackendAttachment.workflowEventCondition.workflowEventConditionItems,
+              id: matchingBackendAttachment?.workflowEventCondition?.id,
+              workflowEventType: matchingBackendAttachment?.workflowEventCondition?.workflowEventType,
+              workflowEventConditionItems: matchingBackendAttachment?.workflowEventCondition?.workflowEventConditionItems,
               workflowMovementRequiredAttachmentId:
-                matchingBackendAttachment.workflowEventCondition.workflowMovementRequiredAttachmentId,
+                matchingBackendAttachment?.workflowEventCondition?.workflowMovementRequiredAttachmentId,
               workflowSubstateEventRequiredAttachmentId:
                 matchingBackendAttachment?.workflowEventCondition?.workflowSubstateEventRequiredAttachmentId
             }
@@ -966,7 +966,11 @@ export class WfEditSubstateEventsDialogComponent extends ComponentToExtendForCus
   }
 
   public getFormValue(): any {
-    const value = this.form.value;
+    const {
+      workflowSubstateEventRequiredAttachments: ignoredWorkflowSubstateEventRequiredAttachments,
+      workflowMovementRequiredAttachments: ignoredWorkflowMovementRequiredAttachments,
+      ...value
+    } = this.form.value;
     const formArray = this.form.value.workflowSubstateEventRequiredAttachments;
     if (formArray && this.attachmentList) {
       //@ts-ignore
@@ -980,25 +984,27 @@ export class WfEditSubstateEventsDialogComponent extends ComponentToExtendForCus
       });
     }
 
-    // Construir los campos condicionales
-    const workflowSubstateEventRequiredAttachmentsForm = this.form.value.workflowSubstateEventRequiredAttachments?.map(
-      (field: any) => ({
-        tab: { id: field.id },
-        templateAttachmentItem: { id: field.templateAttachmentItemId },
-        numMinAttachRequired: field.numberInput || 1,
-        workflowEventCondition: field.criteriaConditions.length
-          ? {
-              id: field.workflowEventConditionId || null,
-              workflowEventType: 'REQ_ATTACH',
-              workflowEventConditionItems: field.criteriaConditions.controls.map((control: any) => control.value),
-              workflowSubstateEventRequiredAttachmentId: field.workflowSubstateEventRequiredAttachmentId || null
-            }
-          : null
-      })
-    );
+    let workflowSubstateEventRequiredAttachmentsForm = null;
+    let workflowMovementRequiredAttachmentsForm = null;
 
-    const workflowMovementRequiredAttachmentsForm = this.form.value.workflowSubstateEventRequiredAttachments?.map(
-      (field: any) => ({
+    if (this.form.value.requiredAttachments) {
+      workflowSubstateEventRequiredAttachmentsForm = this.form.value.workflowSubstateEventRequiredAttachments?.map(
+        (field: any) => ({
+          tab: { id: field.id },
+          templateAttachmentItem: { id: field.templateAttachmentItemId },
+          numMinAttachRequired: field.numberInput || 1,
+          workflowEventCondition: field.criteriaConditions.length
+            ? {
+                id: field.workflowEventConditionId || null,
+                workflowEventType: 'REQ_ATTACH',
+                workflowEventConditionItems: field.criteriaConditions.controls.map((control: any) => control.value),
+                workflowSubstateEventRequiredAttachmentId: field.workflowSubstateEventRequiredAttachmentId || null
+              }
+            : null
+        })
+      );
+
+      workflowMovementRequiredAttachmentsForm = this.form.value.workflowSubstateEventRequiredAttachments?.map((field: any) => ({
         tab: { id: field.id },
         templateAttachmentItem: { id: field.templateAttachmentItemId },
         numMinAttachRequired: field.numberInput || 1,
@@ -1010,15 +1016,13 @@ export class WfEditSubstateEventsDialogComponent extends ComponentToExtendForCus
               workflowMovementRequiredAttachmentId: field.workflowMovementRequiredAttachmentId || null
             }
           : null
-      })
-    );
+      }));
+    }
 
     // Crear formValue base
     const formValue = {
       ...value,
-      requiredFieldsList: this.form.value.requiredFieldsList
-        ? this.form.value.requiredFieldsList.map((field: any) => ({ id: field.id }))
-        : [],
+      requiredFieldsList: value.requiredFieldsList ? value.requiredFieldsList.map((field: any) => ({ id: field.id })) : [],
       roles: this.form.get('roles')?.value.filter((role: RoleDTO) => role.selected),
       workflowEventMails: value.sendMail
         ? value.workflowEventMails
@@ -1183,6 +1187,7 @@ export class WfEditSubstateEventsDialogComponent extends ComponentToExtendForCus
         workflowEventConditions: workflowEventConditionsFinal
       };
     }
+    console.log(formValueFinal);
     return formValueFinal;
   }
 
