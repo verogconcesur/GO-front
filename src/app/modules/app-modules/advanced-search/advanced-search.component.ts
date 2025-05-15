@@ -2,6 +2,7 @@
 import { CdkDragDrop } from '@angular/cdk/drag-drop';
 import { Component, OnInit, ViewChild, ViewEncapsulation } from '@angular/core';
 import { AbstractControl, FormArray, FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { MatMenuTrigger } from '@angular/material/menu';
 import { MatDrawer } from '@angular/material/sidenav';
 import { PermissionConstants } from '@app/constants/permission.constants';
 import { AuthenticationService } from '@app/security/authentication.service';
@@ -10,6 +11,8 @@ import { marker } from '@biesbjerg/ngx-translate-extract-marker';
 import AdvSearchDTO, { AdvancedSearchContext, AdvancedSearchItem } from '@data/models/adv-search/adv-search-dto';
 import AdvSearchOperatorDTO from '@data/models/adv-search/adv-search-operator-dto';
 import AdvancedSearchOptionsDTO from '@data/models/adv-search/adv-search-options-dto';
+import { AttachmentDTO } from '@data/models/cards/card-attachments-dto';
+import WarningDTO from '@data/models/notifications/warning-dto';
 import FacilityDTO from '@data/models/organization/facility-dto';
 import WorkflowCreateCardDTO from '@data/models/workflows/workflow-create-card-dto';
 import WorkflowStateDTO from '@data/models/workflows/workflow-state-dto';
@@ -25,6 +28,7 @@ import { ProgressSpinnerDialogService } from '@shared/services/progress-spinner-
 import { haveArraysSameValues } from '@shared/utils/array-comparation-function';
 import { moveItemInFormArray } from '@shared/utils/moveItemInFormArray';
 import { removeItemInFormArray } from '@shared/utils/removeItemInFormArray';
+import saveAs from 'file-saver';
 import _ from 'lodash';
 import moment from 'moment';
 import { NGXLogger } from 'ngx-logger';
@@ -55,6 +59,7 @@ export class AdvancedSearchComponent implements OnInit {
   @ViewChild('searchTable') table: AdvSearchCardTableComponent;
   @ViewChild('favDrawer') favDrawer: MatDrawer;
   @ViewChild('drawerCont') drawerCont: MatDrawer;
+  @ViewChild('downloadTrigger') downloadTrigger: MatMenuTrigger;
   public labels = {
     favSearch: marker('advSearch.favSearch'),
     savedSearch: marker('advSearch.savedSearch'),
@@ -83,9 +88,13 @@ export class AdvancedSearchComponent implements OnInit {
     current_month: marker('advSearch.current_month'),
     last_month: marker('advSearch.last_month'),
     custom: marker('advSearch.custom'),
-    presetDateType: marker('advSearch.presetDateType')
+    presetDateType: marker('advSearch.presetDateType'),
+    files: marker('common.files')
   };
   public isAdmin = false;
+  public infoWarning: WarningDTO = null;
+  public searchExportForm: FormArray;
+  public intervalExport: NodeJS.Timeout;
   public showDateRangePicker = false;
   public advSearchFav: AdvSearchDTO[] = [];
   public facilityList: FacilityDTO[] = [];
@@ -660,6 +669,22 @@ export class AdvancedSearchComponent implements OnInit {
     return !this.columns.length || this.criteriaErrors() || this.contextErrors();
   }
 
+  public showDownload(): void {
+    this.infoWarning.newFileDownloading = false;
+    this.authService.setWarningStatus(this.infoWarning);
+  }
+
+  public highLightDownload(): boolean {
+    return this.infoWarning.newFileDownloading;
+  }
+
+  public downloadFile(fileAsyn: FormGroup): void {
+    saveAs(this.getDataBase64(fileAsyn.value.attachment), fileAsyn.value.attachment.name);
+  }
+  public getDataBase64(attach: AttachmentDTO): string {
+    return `data:${attach.type};base64,${attach.content}`;
+  }
+
   saveFav(): void {
     this.customDialogService
       .open({
@@ -679,6 +704,9 @@ export class AdvancedSearchComponent implements OnInit {
       });
   }
   ngOnInit(): void {
+    this.infoWarning = this.authService.getWarningStatus();
+    this.initWarningInformationValue();
+    this.initExportSearchSubscription();
     this.isAdmin = this.authService.getUserPermissions().find((permission) => permission.code === PermissionConstants.ISADMIN)
       ? true
       : false;
@@ -871,4 +899,68 @@ export class AdvancedSearchComponent implements OnInit {
         );
     }
   };
+  private initExportSearchSubscription(): void {
+    this.searchExportForm = this.fb.array([]);
+    this.advSearchService.newSearchExport$.subscribe((res) => {
+      if (res) {
+        this.advSearchService
+          .exportAdvSearch(res)
+          .pipe(take(1))
+          .subscribe({
+            next: (fileAsync) => {
+              if (fileAsync.error) {
+                console.log(fileAsync.error);
+              } else {
+                this.searchExportForm.push(
+                  this.fb.group({
+                    advSearch: [res],
+                    fileData: [fileAsync.fileData],
+                    id: [fileAsync.id],
+                    name: [fileAsync.name],
+                    process: [fileAsync.process],
+                    attachment: []
+                  })
+                );
+                this.infoWarning.newFileDownloading = true;
+                this.authService.setWarningStatus(this.infoWarning);
+
+                this.downloadTrigger?.openMenu();
+              }
+            },
+            error: (error: ConcenetError) => {
+              this.globalMessageService.showError({
+                message: error.message,
+                actionText: this.translateService.instant(marker('common.close'))
+              });
+            }
+          });
+      }
+    });
+    this.intervalExport = setInterval(() => {
+      this.searchExportForm.controls.forEach((formSearch, index) => {
+        if (!formSearch.value.attachment) {
+          this.advSearchService
+            .finishExportAdvSearch(formSearch.value.id)
+            .pipe(take(1))
+            .subscribe({
+              next: (attch) => {
+                if (attch) {
+                  formSearch.get('attachment').setValue(attch);
+                }
+              },
+              error: (error: ConcenetError) => {
+                this.globalMessageService.showError({
+                  message: error.message,
+                  actionText: this.translateService.instant(marker('common.close'))
+                });
+                removeItemInFormArray(this.searchExportForm, index);
+              }
+            });
+        }
+      });
+    }, 10000);
+  }
+  private initWarningInformationValue(): void {
+    this.infoWarning = this.authService.getWarningStatus();
+  }
 }

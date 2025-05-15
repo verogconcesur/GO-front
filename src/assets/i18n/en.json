@@ -947,6 +947,7 @@
             "create": "Create brand",
             "delete": "Delete brand",
             "deleteConfirmation": "Do you really want to delete this brand?",
+            "deleteDuplicateConfirmation": "Do you really want to duplicate this brand?",
             "edit": "Edit brand",
             "multiBrands": "Multibrand",
             "name": "Brand name",

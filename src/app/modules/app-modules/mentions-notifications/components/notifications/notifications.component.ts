@@ -3,6 +3,7 @@ import { Component, OnInit } from '@angular/core';
 import { PageEvent } from '@angular/material/paginator';
 import { Router } from '@angular/router';
 import { RouteConstants } from '@app/constants/route.constants';
+import { AuthenticationService } from '@app/security/authentication.service';
 import { marker } from '@biesbjerg/ngx-translate-extract-marker';
 import PaginationResponseI from '@data/interfaces/pagination-response';
 import NotificationDataListDTO from '@data/models/notifications/notification-data-list-dto';
@@ -42,6 +43,7 @@ export class NotificationsComponent implements OnInit {
   public displayedColumns = ['col1', 'col2', 'col3', 'information', 'actions'];
   public dataSource: NotificationDataListDTO[] = [];
   private filterValue: NotificationFilterDTO;
+  private notificationFilter: NotificationFilterDTO = null;
 
   constructor(
     private notificationService: NotificationService,
@@ -51,10 +53,17 @@ export class NotificationsComponent implements OnInit {
     private spinnerService: ProgressSpinnerDialogService,
     private logger: NGXLogger,
     private datePipe: DatePipe,
-    private router: Router
+    private router: Router,
+    public authService: AuthenticationService
   ) {}
 
   ngOnInit(): void {
+    this.notificationFilter = {
+      userId: parseInt(this.authService.getUserId(), 10),
+      readFilterType: 'NO_READ',
+      // ['ASIG_USER', 'END_WORK', 'ADD_MESSAGE_CLIENT']
+      notificationTypes: ['ADD_MESSAGE_CLIENT']
+    };
     this.setSidenavFilterDrawerConfiguration();
   }
   public markAsNoRead(item: NotificationDataListDTO): void {
@@ -66,6 +75,7 @@ export class NotificationsComponent implements OnInit {
         () => {
           this.spinnerService.hide(spinner);
           this.getNotifications();
+          this.notificationService.updateUnreadCount(this.notificationFilter);
         },
         (error) => {
           this.logger.error(error);
@@ -85,6 +95,7 @@ export class NotificationsComponent implements OnInit {
         () => {
           this.spinnerService.hide(spinner);
           this.getNotifications();
+          this.notificationService.updateUnreadCount(this.notificationFilter);
         },
         (error) => {
           this.logger.error(error);

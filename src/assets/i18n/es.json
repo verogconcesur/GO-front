@@ -948,6 +948,7 @@
             "create": "Crear marca",
             "delete": "Eliminar marca",
             "deleteConfirmation": "¿Realmente quiere eliminar esta marca?",
+            "deleteDuplicateConfirmation": "¿Realmente quiere duplicar esta marca?",
             "edit": "Editar marca",
             "multiBrands": "Multimarca",
             "name": "Nombre de marca",

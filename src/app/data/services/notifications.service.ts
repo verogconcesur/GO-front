@@ -11,13 +11,21 @@ import NotificationDataListDTO from '@data/models/notifications/notification-dat
 import NotificationFilterDTO from '@data/models/notifications/notification-filter-dto';
 import WarningDTO from '@data/models/notifications/warning-dto';
 import { getPaginationUrlGetParams } from '@data/utils/pagination-aux';
-import { Observable, Subject, throwError } from 'rxjs';
-import { catchError } from 'rxjs/operators';
+import { BehaviorSubject, Observable, throwError } from 'rxjs';
+import { catchError, take } from 'rxjs/operators';
 
 @Injectable({
   providedIn: 'root'
 })
 export class NotificationService {
+  public paginationConfig = {
+    length: 10,
+    pageSize: 10,
+    page: 0,
+    totalPages: 0,
+    first: true,
+    last: false
+  };
   private readonly NOTIFICATIONS_PATH = '/api/notifications';
   private readonly INFO_WARNINGS_PATH = '/infoWarnings';
   private readonly LIST_MENTIONS_PATH = '/listMentions';
@@ -28,6 +36,12 @@ export class NotificationService {
   private readonly NO_READ_NOTIFICATION_PATH = '/noReadNotification';
   private readonly SEARCH_NOTIFICATIONS = '/search';
   private readonly SEARCH_MENTIONS = '/searchMentions';
+  private unreadCountSubject = new BehaviorSubject<number>(0);
+  private unreadMentionsCountSubject = new BehaviorSubject<number>(0);
+  // eslint-disable-next-line @typescript-eslint/member-ordering
+  public unreadNotificationsCount$ = this.unreadCountSubject.asObservable();
+  // eslint-disable-next-line @typescript-eslint/member-ordering
+  public unreadMentionsCount$ = this.unreadMentionsCountSubject.asObservable();
 
   constructor(@Inject(ENV) private env: Env, private http: HttpClient) {}
 
@@ -99,5 +113,27 @@ export class NotificationService {
     return this.http
       .get<boolean>(`${this.env.apiBaseUrl}${this.NOTIFICATIONS_PATH}${this.NO_READ_NOTIFICATION_PATH}/${notificationId}`)
       .pipe(catchError((error) => throwError(error.error as ConcenetError)));
+  }
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  public updateUnreadCount(filter: any): void {
+    this.searchNotifications(filter, this.paginationConfig)
+      .pipe(take(1))
+      .subscribe((data: PaginationResponseI<NotificationDataListDTO>) => {
+        const unread = data.totalElements;
+        this.unreadCountSubject.next(unread);
+      });
+  }
+
+  public updateUnreadMentionsCount(): void {
+    this.searchMentions({ readFilterType: 'NO_READ' }, this.paginationConfig)
+      .pipe(take(1))
+      .subscribe((data: PaginationResponseI<MentionDataListDTO>) => {
+        const unread = data.totalElements;
+        this.unreadMentionsCountSubject.next(unread);
+      });
+  }
+
+  public resetUnreadCount(): void {
+    this.unreadCountSubject.next(0);
   }
 }

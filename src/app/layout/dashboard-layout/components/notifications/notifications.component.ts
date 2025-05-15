@@ -3,6 +3,7 @@ import { Component, OnInit, ViewEncapsulation } from '@angular/core';
 import { FormControl } from '@angular/forms';
 import { AuthenticationService } from '@app/security/authentication.service';
 import { marker } from '@biesbjerg/ngx-translate-extract-marker';
+import PaginationResponseI from '@data/interfaces/pagination-response';
 import NotificationDataListDTO from '@data/models/notifications/notification-data-list-dto';
 import NotificationFilterDTO from '@data/models/notifications/notification-filter-dto';
 import { NotificationService } from '@data/services/notifications.service';
@@ -32,6 +33,7 @@ export class NotificationsComponent implements OnInit {
   public notifications: NotificationDataListDTO[] = [];
   public loading = false;
   public types = new FormControl('');
+  public filterValue: NotificationFilterDTO = null;
   // public typesList: string[] = [
   //   'CHANGE_STATE',
   //   'EDIT_INFO',
@@ -43,6 +45,14 @@ export class NotificationsComponent implements OnInit {
   // ];
   // ['ASIG_USER', 'END_WORK', 'ADD_MESSAGE_CLIENT'];
   public typesList: string[] = ['ADD_MESSAGE_CLIENT'];
+  public paginationConfig = {
+    length: 10,
+    pageSize: 10,
+    page: 0,
+    totalPages: 0,
+    first: true,
+    last: false
+  };
   private originalNotifications: NotificationDataListDTO[] = [];
   private notificationFilter: NotificationFilterDTO = null;
   constructor(
@@ -59,18 +69,65 @@ export class NotificationsComponent implements OnInit {
       notificationTypes: ['ADD_MESSAGE_CLIENT']
     };
   }
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  public onScroll(event: any): void {
+    //Accedemos a las propiedades del html
+    const scrollContainer = event.target as HTMLElement;
+    // Dejamos un umbral de 100 antes de llegar al final del contenedor
+    const threshold = 100;
+    // Se calcula la posicion actual del scroll
+    const position = scrollContainer.scrollTop + scrollContainer.clientHeight;
+    // Obtenemos la altura total del contenido dentro del contenedor desplazable
+    const height = scrollContainer.scrollHeight;
 
-  public getData(): void {
+    // Si la posición actual del scroll está dentro del umbral de 100 píxeles del final
+    // del contenedor, y no estamos en la última página de resultados ni ya buscando
+    // entonces incrementamos la página actual y solicitamos más datos.
+    if (position > height - threshold && !this.paginationConfig.last && !this.loading) {
+      this.paginationConfig.page += 1;
+      this.getData();
+    }
+  }
+
+  // public getData(): void {
+  //   this.loading = true;
+  //   this.notificationService
+  //     .getNotifications(this.notificationFilter)
+  //     .pipe(
+  //       take(1),
+  //       finalize(() => (this.loading = false))
+  //     )
+  //     .subscribe((data: NotificationDataListDTO[]) => {
+  //       this.originalNotifications = data;
+  //       this.filterDataToShow();
+  //     });
+  // }
+
+  public getData() {
     this.loading = true;
     this.notificationService
-      .getNotifications(this.notificationFilter)
+      .searchNotifications(this.notificationFilter, this.paginationConfig)
       .pipe(
         take(1),
-        finalize(() => (this.loading = false))
+        finalize(() => {
+          this.loading = false;
+        })
       )
-      .subscribe((data: NotificationDataListDTO[]) => {
-        this.originalNotifications = data;
-        this.filterDataToShow();
+      .subscribe((data: PaginationResponseI<NotificationDataListDTO>) => {
+        if (data) {
+          this.paginationConfig.length = data.totalElements;
+          this.paginationConfig.first = data.first;
+          this.paginationConfig.last = data.last;
+          this.paginationConfig.page = data.number;
+          this.paginationConfig.totalPages = data.totalPages;
+          this.paginationConfig.first = data.first;
+          if (data.first) {
+            this.notifications = [];
+          }
+          this.notifications = [...this.notifications, ...data.content];
+        } else {
+          this.notifications = [];
+        }
       });
   }
 

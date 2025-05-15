@@ -10,9 +10,9 @@ import { RouteConstants } from '@app/constants/route.constants';
 import { AuthenticationService } from '@app/security/authentication.service';
 import { RxStompService } from '@app/services/rx-stomp.service';
 import { Env } from '@app/types/env';
-import { ConcenetError } from '@app/types/error';
 import { marker } from '@biesbjerg/ngx-translate-extract-marker';
 import { AttachmentDTO } from '@data/models/cards/card-attachments-dto';
+import NotificationFilterDTO from '@data/models/notifications/notification-filter-dto';
 import WarningDTO from '@data/models/notifications/warning-dto';
 import { AdvSearchService } from '@data/services/adv-search.service';
 import { NotificationService } from '@data/services/notifications.service';
@@ -21,7 +21,6 @@ import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
 import { TranslateService } from '@ngx-translate/core';
 import { GlobalMessageService } from '@shared/services/global-message.service';
 import { NotificationSoundService } from '@shared/services/notification-sounds.service';
-import { removeItemInFormArray } from '@shared/utils/removeItemInFormArray';
 import { IMessage } from '@stomp/stompjs';
 import saveAs from 'file-saver';
 import { take } from 'rxjs/operators';
@@ -60,6 +59,9 @@ export class NavbarComponent implements OnInit, OnDestroy {
   public interval: NodeJS.Timeout;
   public searchExportForm: FormArray;
   public intervalExport: NodeJS.Timeout;
+  public unreadNotificationsCount = 0;
+  public unreadMentionsCount = 0;
+  private notificationFilter: NotificationFilterDTO = null;
   constructor(
     @Inject(ENV) private env: Env,
     private router: Router,
@@ -75,10 +77,22 @@ export class NavbarComponent implements OnInit, OnDestroy {
   ) {}
 
   ngOnInit(): void {
+    this.notificationFilter = {
+      userId: parseInt(this.authService.getUserId(), 10),
+      readFilterType: 'NO_READ',
+      notificationTypes: ['ADD_MESSAGE_CLIENT']
+    };
+    this.notificationService.unreadNotificationsCount$.pipe(untilDestroyed(this)).subscribe((count) => {
+      this.unreadNotificationsCount = count;
+    });
+    this.notificationService.unreadMentionsCount$.pipe(untilDestroyed(this)).subscribe((count) => {
+      this.unreadMentionsCount = count;
+    });
     this.infoWarning = this.authService.getWarningStatus();
     this.initWarningInformationValue();
     this.initWebSocketForNotificationsAndMentions();
-    this.initExportSearchSubscription();
+    this.updateUnreadCount();
+    this.updateMentionsUnreadCount();
   }
 
   ngOnDestroy(): void {
@@ -90,6 +104,12 @@ export class NavbarComponent implements OnInit, OnDestroy {
     }
   }
 
+  public updateUnreadCount(): void {
+    this.notificationService.updateUnreadCount(this.notificationFilter);
+  }
+  public updateMentionsUnreadCount(): void {
+    this.notificationService.updateUnreadMentionsCount();
+  }
   public navigateToAdministration(): void {
     this.router.navigate([RouteConstants.ADMINISTRATION]);
   }
@@ -178,6 +198,7 @@ export class NavbarComponent implements OnInit, OnDestroy {
   }
 
   private getInfoWarnings(): void {
+    this.updateUnreadCount();
     this.notificationService
       .getInfoWarnings(this.infoWarning)
       .pipe(take(1))
@@ -192,66 +213,5 @@ export class NavbarComponent implements OnInit, OnDestroy {
         };
         this.authService.setWarningStatus(data);
       });
-  }
-  private initExportSearchSubscription(): void {
-    this.searchExportForm = this.fb.array([]);
-    this.advSearchService.newSearchExport$.subscribe((res) => {
-      if (res) {
-        this.advSearchService
-          .exportAdvSearch(res)
-          .pipe(take(1))
-          .subscribe({
-            next: (fileAsync) => {
-              if (fileAsync.error) {
-                console.log(fileAsync.error);
-              } else {
-                this.searchExportForm.push(
-                  this.fb.group({
-                    advSearch: [res],
-                    fileData: [fileAsync.fileData],
-                    id: [fileAsync.id],
-                    name: [fileAsync.name],
-                    process: [fileAsync.process],
-                    attachment: []
-                  })
-                );
-                this.infoWarning.newFileDownloading = true;
-                this.authService.setWarningStatus(this.infoWarning);
-
-                this.downloadTrigger?.openMenu();
-              }
-            },
-            error: (error: ConcenetError) => {
-              this.globalMessageService.showError({
-                message: error.message,
-                actionText: this.translateService.instant(marker('common.close'))
-              });
-            }
-          });
-      }
-    });
-    this.intervalExport = setInterval(() => {
-      this.searchExportForm.controls.forEach((formSearch, index) => {
-        if (!formSearch.value.attachment) {
-          this.advSearchService
-            .finishExportAdvSearch(formSearch.value.id)
-            .pipe(take(1))
-            .subscribe({
-              next: (attch) => {
-                if (attch) {
-                  formSearch.get('attachment').setValue(attch);
-                }
-              },
-              error: (error: ConcenetError) => {
-                this.globalMessageService.showError({
-                  message: error.message,
-                  actionText: this.translateService.instant(marker('common.close'))
-                });
-                removeItemInFormArray(this.searchExportForm, index);
-              }
-            });
-        }
-      });
-    }, 10000);
   }
 }
