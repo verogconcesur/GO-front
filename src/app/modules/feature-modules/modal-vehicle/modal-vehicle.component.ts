@@ -208,13 +208,17 @@ export class ModalVehicleComponent extends ComponentToExtendForCustomDialog impl
   }
 
   public changeVin() {
+    const configList = this.authService.getConfigList();
+    const isWriteKeyloopEnabled = configList.includes(ModulesConstants.WRITE_KEYLOOP);
     if (this.form.vin.value && !this.form.facility.hasValidator(Validators.required)) {
       this.form.facility.setValidators([Validators.required, Validators.minLength(this.minLength)]);
       this.form.facility.updateValueAndValidity();
       this.vehicleForm.markAsTouched();
       this.vehicleForm.markAsDirty();
-      this.form.make.disable();
-      this.form.model.disable();
+      if (isWriteKeyloopEnabled) {
+        this.form.make.disable();
+        this.form.model.disable();
+      }
     } else if (!this.form.vin.value && this.form.facility.hasValidator(Validators.required)) {
       this.form.facility.setValidators([]);
       this.form.facility.setValue(null);
