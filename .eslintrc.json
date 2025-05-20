@@ -1,6 +1,12 @@
 {
     "root": true,
-    "ignorePatterns": ["projects/**/*", "src/app/app.mock.ts", "src/app/data/api/**", "src/app/shared/modules/**/*"],
+    "ignorePatterns": [
+        "projects/**/*",
+        "src/app/app.mock.ts",
+        "src/app/data/api/**",
+        "src/app/shared/modules/**/*",
+        "update-version-json.js"
+    ],
     "overrides": [
         {
             "files": ["*.ts"],
