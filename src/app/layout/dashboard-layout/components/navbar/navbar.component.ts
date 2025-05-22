@@ -19,6 +19,7 @@ import { NotificationService } from '@data/services/notifications.service';
 import { NewCardComponent, NewCardComponentModalEnum } from '@modules/feature-modules/new-card/new-card.component';
 import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
 import { TranslateService } from '@ngx-translate/core';
+import { ConfirmDialogService } from '@shared/services/confirm-dialog.service';
 import { GlobalMessageService } from '@shared/services/global-message.service';
 import { NotificationSoundService } from '@shared/services/notification-sounds.service';
 import { IMessage } from '@stomp/stompjs';
@@ -73,7 +74,8 @@ export class NavbarComponent implements OnInit, OnDestroy {
     private advSearchService: AdvSearchService,
     private fb: FormBuilder,
     private globalMessageService: GlobalMessageService,
-    private translateService: TranslateService
+    private translateService: TranslateService,
+    private confirmationDialog: ConfirmDialogService
   ) {}
 
   ngOnInit(): void {
@@ -178,6 +180,68 @@ export class NavbarComponent implements OnInit, OnDestroy {
 
   public download(): void {}
 
+  public markAllNotificationsAsRead = (): void => {
+    this.confirmationDialog
+      .open({
+        title: this.translateService.instant(marker('common.warning')),
+        message: this.translateService.instant(marker('common.markAsReadAllNotifications'))
+      })
+      .pipe(take(1))
+      .subscribe((ok: boolean) => {
+        if (ok) {
+          this.notificationService
+            .markAllNotificationsAsRead()
+            .pipe(take(1))
+            .subscribe({
+              next: (response) => {
+                this.globalMessageService.showSuccess({
+                  message: this.translateService.instant(marker('common.successOperation')),
+                  actionText: this.translateService.instant(marker('common.close'))
+                });
+                this.notificationService.resetUnreadCountNotifications();
+              },
+              error: (error) => {
+                this.globalMessageService.showError({
+                  message: error.message,
+                  actionText: this.translateService.instant(marker('common.close'))
+                });
+              }
+            });
+        }
+      });
+  };
+
+  public markAllMentionsAsRead = (): void => {
+    this.confirmationDialog
+      .open({
+        title: this.translateService.instant(marker('common.warning')),
+        message: this.translateService.instant(marker('common.markAsReadAllMentions'))
+      })
+      .pipe(take(1))
+      .subscribe((ok: boolean) => {
+        if (ok) {
+          this.notificationService
+            .markAllMentionsAsRead()
+            .pipe(take(1))
+            .subscribe({
+              next: (response) => {
+                this.globalMessageService.showSuccess({
+                  message: this.translateService.instant(marker('common.successOperation')),
+                  actionText: this.translateService.instant(marker('common.close'))
+                });
+                this.notificationService.resetUnreadCountMentions();
+              },
+              error: (error) => {
+                this.globalMessageService.showError({
+                  message: error.message,
+                  actionText: this.translateService.instant(marker('common.close'))
+                });
+              }
+            });
+        }
+      });
+  };
+
   private initWarningInformationValue(): void {
     this.infoWarning = this.authService.getWarningStatus();
   }
@@ -199,6 +263,7 @@ export class NavbarComponent implements OnInit, OnDestroy {
 
   private getInfoWarnings(): void {
     this.updateUnreadCount();
+    this.updateMentionsUnreadCount();
     this.notificationService
       .getInfoWarnings(this.infoWarning)
       .pipe(take(1))

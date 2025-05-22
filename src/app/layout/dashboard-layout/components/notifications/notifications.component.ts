@@ -165,6 +165,7 @@ export class NotificationsComponent implements OnInit {
         take(1),
         finalize(() => {
           this.loading = false;
+          this.notificationService.updateUnreadCount(this.notificationFilter);
         })
       )
       .subscribe((data) => {

@@ -73,6 +73,7 @@ export class MentionsComponent implements OnInit {
         take(1),
         finalize(() => {
           this.loading = false;
+          this.mentionService.updateUnreadMentionsCount();
         })
       )
       .subscribe((data) => {

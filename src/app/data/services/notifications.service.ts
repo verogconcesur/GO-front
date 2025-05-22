@@ -36,6 +36,8 @@ export class NotificationService {
   private readonly NO_READ_NOTIFICATION_PATH = '/noReadNotification';
   private readonly SEARCH_NOTIFICATIONS = '/search';
   private readonly SEARCH_MENTIONS = '/searchMentions';
+  private readonly ALL_NOTIFICATIONS = '/readAllNotification';
+  private readonly ALL_MENTIONS = '/readAllMention';
   private unreadCountSubject = new BehaviorSubject<number>(0);
   private unreadMentionsCountSubject = new BehaviorSubject<number>(0);
   // eslint-disable-next-line @typescript-eslint/member-ordering
@@ -114,6 +116,18 @@ export class NotificationService {
       .get<boolean>(`${this.env.apiBaseUrl}${this.NOTIFICATIONS_PATH}${this.NO_READ_NOTIFICATION_PATH}/${notificationId}`)
       .pipe(catchError((error) => throwError(error.error as ConcenetError)));
   }
+  /* eslint-disable @typescript-eslint/no-explicit-any */
+  public markAllNotificationsAsRead(): Observable<any> {
+    return this.http
+      .get<any>(`${this.env.apiBaseUrl}${this.NOTIFICATIONS_PATH}${this.ALL_NOTIFICATIONS}`)
+      .pipe(catchError((error) => throwError(error.error as ConcenetError)));
+  }
+  /* eslint-disable @typescript-eslint/no-explicit-any */
+  public markAllMentionsAsRead(): Observable<any> {
+    return this.http
+      .get<any>(`${this.env.apiBaseUrl}${this.NOTIFICATIONS_PATH}${this.ALL_MENTIONS}`)
+      .pipe(catchError((error) => throwError(error.error as ConcenetError)));
+  }
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   public updateUnreadCount(filter: any): void {
     this.searchNotifications(filter, this.paginationConfig)
@@ -133,7 +147,10 @@ export class NotificationService {
       });
   }
 
-  public resetUnreadCount(): void {
+  public resetUnreadCountMentions(): void {
+    this.unreadMentionsCountSubject.next(0);
+  }
+  public resetUnreadCountNotifications(): void {
     this.unreadCountSubject.next(0);
   }
 }

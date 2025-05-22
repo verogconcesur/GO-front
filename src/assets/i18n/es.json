@@ -582,6 +582,8 @@
         "line": "Línea",
         "logo": "Logo",
         "manual": "Manual",
+        "markAsReadAllMentions": "¿Esta seguro de querer marcar como leido todas las menciones?",
+        "markAsReadAllNotifications": "¿Esta seguro de querer marcar como leido todas las notificaciones?",
         "mentions": "Menciones",
         "messages": "Mensajes",
         "more": "Más",

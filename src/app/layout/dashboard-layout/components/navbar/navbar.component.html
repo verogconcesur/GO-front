@@ -117,15 +117,26 @@
             <h2 class="navbar-warning-menu__header">
                 {{ labels.notifications | translate }}
             </h2>
-            <button
-                class="navbar-warning-menu__button"
-                mat-icon-button
-                color="primary"
-                [routerLink]="NOTIFICATIONS_PATH"
-                routerLinkActive="active"
-            >
-                <mat-icon>list</mat-icon>
-            </button>
+            <div fxLayout="row" fxLayoutGap="3px">
+                <button
+                    class="navbar-warning-menu__button"
+                    mat-icon-button
+                    color="primary"
+                    [disabled]="unreadNotificationsCount === 0"
+                    (click)="markAllNotificationsAsRead()"
+                >
+                    <mat-icon>visibility</mat-icon>
+                </button>
+                <button
+                    class="navbar-warning-menu__button"
+                    mat-icon-button
+                    color="primary"
+                    [routerLink]="NOTIFICATIONS_PATH"
+                    routerLinkActive="active"
+                >
+                    <mat-icon>list</mat-icon>
+                </button>
+            </div>
         </div>
         <mat-divider></mat-divider>
         <div class="navbar-warning-menu__content">
@@ -140,15 +151,26 @@
             <h2 class="navbar-warning-menu__header">
                 {{ labels.mentions | translate }}
             </h2>
-            <button
-                class="navbar-warning-menu__button"
-                mat-icon-button
-                color="primary"
-                [routerLink]="MENTIONS_PATH"
-                routerLinkActive="active"
-            >
-                <mat-icon>list</mat-icon>
-            </button>
+            <div fxLayout="row" fxLayoutGap="3px">
+                <button
+                    class="navbar-warning-menu__button"
+                    mat-icon-button
+                    color="primary"
+                    [disabled]="unreadMentionsCount === 0"
+                    (click)="markAllMentionsAsRead()"
+                >
+                    <mat-icon>visibility</mat-icon>
+                </button>
+                <button
+                    class="navbar-warning-menu__button"
+                    mat-icon-button
+                    color="primary"
+                    [routerLink]="MENTIONS_PATH"
+                    routerLinkActive="active"
+                >
+                    <mat-icon>list</mat-icon>
+                </button>
+            </div>
         </div>
         <mat-divider></mat-divider>
         <div class="navbar-warning-menu__content">
