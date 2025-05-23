@@ -2,7 +2,6 @@ import { Component, Input, OnInit } from '@angular/core';
 import { UntypedFormBuilder, Validators } from '@angular/forms';
 import { ConcenetError } from '@app/types/error';
 import { marker } from '@biesbjerg/ngx-translate-extract-marker';
-import PaginationResponseI from '@data/interfaces/pagination-response';
 import BrandDTO from '@data/models/organization/brand-dto';
 import DepartmentDTO from '@data/models/organization/department-dto';
 import FacilityDTO from '@data/models/organization/facility-dto';
@@ -10,6 +9,7 @@ import SpecialtyDTO from '@data/models/organization/specialty-dto';
 import RoleDTO from '@data/models/user-permissions/role-dto';
 import UserDetailsDTO from '@data/models/user-permissions/user-details-dto';
 import { UserFilterByIdsDTO } from '@data/models/user-permissions/user-filter-dto';
+import UserConfigDTO from '@data/models/user-permissions/userConfig';
 import WorkflowOrganizationDTO from '@data/models/workflow-admin/workflow-organization-dto';
 import WorkflowRoleDTO from '@data/models/workflow-admin/workflow-role-dto';
 import WorkflowSubstateUserDTO from '@data/models/workflows/workflow-substate-user-dto';
@@ -28,7 +28,6 @@ import { CustomDialogService } from '@shared/modules/custom-dialog/services/cust
 import { ConfirmDialogService } from '@shared/services/confirm-dialog.service';
 import { GlobalMessageService } from '@shared/services/global-message.service';
 import { ProgressSpinnerDialogService } from '@shared/services/progress-spinner-dialog.service';
-import { forkJoin } from 'rxjs';
 import { finalize, take } from 'rxjs/operators';
 import { WorkflowsCreateEditAuxService } from '../../../aux-service/workflows-create-edit-aux.service';
 import { WorkflowStepAbstractClass } from '../workflow-step-abstract-class';
@@ -110,57 +109,56 @@ export class WorkflowUsersComponent extends WorkflowStepAbstractClass implements
 
   public async getWorkflowStepData(): Promise<boolean> {
     const spinner = this.spinnerService.show();
+
     const organization: WorkflowOrganizationDTO = this.workflowsCreateEditAuxService.getFormGroupByStep(0).value;
     const roles = this.workflowsCreateEditAuxService
-      .getFormOriginalData(1) // Por alguna razón el formulario no está recargando correctamente al guardar en este paso
+      .getFormOriginalData(1)
       .roles.filter((role: WorkflowRoleDTO) => role.selected);
+
     this.usersFilter = {
-      brands: [...(organization.brands ? organization.brands : [])].map((item) => item.id),
-      departments: [...(organization.departments ? organization.departments : [])].map((item) => item.id),
-      facilities: [...(organization.facilities ? organization.facilities : [])].map((item) => item.id),
-      roles: [...(roles ? roles : [])].map((item) => item.id),
-      specialties: [...(organization.specialties ? organization.specialties : [])].map((item) => item.id),
+      brands: [...(organization.brands || [])].map((item) => item.id),
+      departments: [...(organization.departments || [])].map((item) => item.id),
+      facilities: [...(organization.facilities || [])].map((item) => item.id),
+      roles: [...(roles || [])].map((item) => item.id),
+      specialties: [...(organization.specialties || [])].map((item) => item.id),
       email: '',
       search: ''
     };
-    return new Promise((resolve, reject) => {
-      const resquests = [
-        this.workflowService.getWorkflowUsers(this.workflowId).pipe(take(1)),
-        this.userService
-          .searchUsers(this.usersFilter, {
-            page: 0,
-            size: 10000
-          })
-          .pipe(take(1))
-      ];
 
-      forkJoin(resquests).subscribe((responses: [WorkflowSubstateUserDTO[], PaginationResponseI<UserDetailsDTO>]) => {
-        const wUsers = responses[0] ? [...responses[0]] : [];
-        const orUsers = responses[1]?.content
-          ? [...responses[1].content].map((user) => ({
-              user,
-              id: null,
-              extra: false,
-              selected: wUsers.find((wUser) => wUser.user.id === user.id) ? true : false,
-              hideMoveButton: wUsers.find((wUser) => wUser.user.id === user.id)
-                ? wUsers.find((wUser) => wUser.user.id === user.id).hideMoveButton
-                : false,
-              hideSendButton: wUsers.find((wUser) => wUser.user.id === user.id)
-                ? wUsers.find((wUser) => wUser.user.id === user.id).hideSendButton
-                : false
-            }))
-          : [];
-        this.originalData = {
-          //Workflow users
-          wUsers,
-          //All users with organization and roles selected
-          orUsers,
-          //Users by role
-          usersByRole: this.getUsersByRoleAndOtherUsers(orUsers, wUsers)
-        };
-        this.spinnerService.hide(spinner);
-        resolve(true);
-      });
+    console.log(this.usersFilter);
+
+    return new Promise((resolve, reject) => {
+      this.userService
+        .getUsersForWorkflows(this.workflowId, this.usersFilter)
+        .pipe(take(1))
+        .subscribe({
+          next: (userConfigs: UserConfigDTO[]) => {
+            const orUsers = userConfigs.map((config) => ({
+              user: config.user,
+              id: config.id ?? null,
+              extra: config.extra ?? false,
+              selected: config.id != null, // <--- Inferido aquí
+              hideMoveButton: config.hideMoveButton ?? false,
+              hideSendButton: config.hideSendButton ?? false
+            }));
+
+            const wUsers = orUsers.filter((u) => u.selected);
+
+            this.originalData = {
+              wUsers,
+              orUsers,
+              usersByRole: this.getUsersByRoleAndOtherUsers(orUsers, wUsers)
+            };
+
+            this.spinnerService.hide(spinner);
+            resolve(true);
+          },
+          error: (err) => {
+            console.error(err);
+            this.spinnerService.hide(spinner);
+            reject(err);
+          }
+        });
     });
   }
 
