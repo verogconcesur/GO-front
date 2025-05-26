@@ -1,14 +1,13 @@
 @import 'utils/core';
 .navbar {
   mat-divider {
-    margin: 0 15px;
+    margin: 0 5px;
     height: 40px;
   }
   .logo-img {
     height: 100%;
-    height: 71.99px;
-    margin-top: 7px;
-    width: 120px;
+    width: 70px;
+    padding-top: 7px;
   }
 
   &__right {
