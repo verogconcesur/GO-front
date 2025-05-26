@@ -59,17 +59,7 @@ export class WorkflowUsersComponent extends WorkflowStepAbstractClass implements
     withoutPermission: marker('common.withoutPermission')
   };
 
-  public displayedColumns = [
-    'fullName',
-    'permissionsGroup',
-    'brand',
-    'facility',
-    'department',
-    'specialty',
-    'actions',
-    'move',
-    'send'
-  ];
+  public displayedColumns = ['fullName', 'permissionsGroup', 'actions', 'move', 'send'];
   private usersFilter: UserFilterByIdsDTO;
 
   constructor(
@@ -124,8 +114,6 @@ export class WorkflowUsersComponent extends WorkflowStepAbstractClass implements
       email: '',
       search: ''
     };
-
-    console.log(this.usersFilter);
 
     return new Promise((resolve, reject) => {
       this.userService
@@ -253,7 +241,7 @@ export class WorkflowUsersComponent extends WorkflowStepAbstractClass implements
           usersNotFound.forEach((user: UserDetailsDTO) => {
             emptyRoleGroup.users.push({
               user,
-              extra: true, //DGDC TODO: Si extra true ¿no sirve el selected?
+              extra: true,
               id: null,
               selected: true
             });
@@ -282,33 +270,52 @@ export class WorkflowUsersComponent extends WorkflowStepAbstractClass implements
   }
 
   public showUserDetails(user: WorkflowSubstateUserDTO) {
-    this.customDialogService
-      .open({
-        id: CreateEditUserComponentModalEnum.ID,
-        panelClass: CreateEditUserComponentModalEnum.PANEL_CLASS,
-        component: CreateEditUserComponent,
-        extendedComponentData: user ? user.user : null,
-        disableClose: true,
-        width: '900px'
-      })
-      .pipe(take(1))
-      .subscribe(async (response) => {
-        if (response) {
-          this.globalMessageService.showSuccess({
-            message: this.translateService.instant(marker('common.successOperation')),
+    const spinner = this.spinnerService.show();
+
+    this.userService
+      .getUserDetailsById(user.user.id)
+      .pipe(
+        take(1),
+        finalize(() => this.spinnerService.hide(spinner))
+      )
+      .subscribe({
+        next: (detailedUser) => {
+          this.customDialogService
+            .open({
+              id: CreateEditUserComponentModalEnum.ID,
+              panelClass: CreateEditUserComponentModalEnum.PANEL_CLASS,
+              component: CreateEditUserComponent,
+              extendedComponentData: detailedUser,
+              disableClose: true,
+              width: '900px'
+            })
+            .pipe(take(1))
+            .subscribe(async (response) => {
+              if (response) {
+                this.globalMessageService.showSuccess({
+                  message: this.translateService.instant(marker('common.successOperation')),
+                  actionText: this.translateService.instant(marker('common.close'))
+                });
+
+                if (this.form.valid && !this.form.dirty && this.form.untouched) {
+                  await this.getWorkflowStepData();
+                  this.initForm(this.originalData);
+                } else {
+                  setTimeout(() => {
+                    this.globalMessageService.showError({
+                      message: this.translateService.instant(marker('errors.avoidReloadUnsavedChanges')),
+                      actionText: this.translateService.instant(marker('common.close'))
+                    });
+                  }, 1000);
+                }
+              }
+            });
+        },
+        error: (err) => {
+          this.globalMessageService.showError({
+            message: this.translateService.instant(marker('errors.userDetailFetchFailed')),
             actionText: this.translateService.instant(marker('common.close'))
           });
-          if (this.form.valid && !this.form.dirty && this.form.untouched) {
-            await this.getWorkflowStepData();
-            this.initForm(this.originalData);
-          } else {
-            setTimeout(() => {
-              this.globalMessageService.showError({
-                message: this.translateService.instant(marker('errors.avoidReloadUnsavedChanges')),
-                actionText: this.translateService.instant(marker('common.close'))
-              });
-            }, 1000);
-          }
         }
       });
   }
@@ -348,6 +355,10 @@ export class WorkflowUsersComponent extends WorkflowStepAbstractClass implements
       roleData.users.forEach((user) => (user.selected = false));
     }
     this.userSelectionChange();
+  }
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  public areAllUsersNotExtra(users: any[]): boolean {
+    return users.every((user) => user.extra === false);
   }
 
   public getUserOrganizationLabel = (data: BrandDTO[] | FacilityDTO[] | DepartmentDTO[] | SpecialtyDTO[]): string => {
