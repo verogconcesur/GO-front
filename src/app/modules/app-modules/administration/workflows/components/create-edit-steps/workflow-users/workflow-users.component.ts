@@ -356,10 +356,6 @@ export class WorkflowUsersComponent extends WorkflowStepAbstractClass implements
     }
     this.userSelectionChange();
   }
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  public areAllUsersNotExtra(users: any[]): boolean {
-    return users.every((user) => user.extra === false);
-  }
 
   public getUserOrganizationLabel = (data: BrandDTO[] | FacilityDTO[] | DepartmentDTO[] | SpecialtyDTO[]): string => {
     let label = '';
@@ -377,38 +373,29 @@ export class WorkflowUsersComponent extends WorkflowStepAbstractClass implements
     orUsers: WorkflowSubstateUserDTO[],
     wUsers: WorkflowSubstateUserDTO[]
   ): { role: RoleDTO; users: WorkflowSubstateUserDTO[] }[] {
-    const roles = [...orUsers].reduce((prev, curr) => {
+    const normalUsers = orUsers.filter((u) => !u.extra);
+    const roles = normalUsers.reduce((prev, curr) => {
       if (!prev.find((role) => role.id === curr.user.role.id)) {
         prev.push(curr.user.role);
       }
       return prev;
-    }, []);
+    }, [] as RoleDTO[]);
     const usersByRole: { role: RoleDTO; users: WorkflowSubstateUserDTO[] }[] = [];
     roles.forEach((role: RoleDTO) => {
       usersByRole.push({
         role,
-        users: [...orUsers].filter((user) => user.user.role.id === role.id)
+        users: normalUsers.filter((user) => user.user.role.id === role.id)
       });
     });
-    if (wUsers) {
-      const otherUsers: WorkflowSubstateUserDTO[] = [];
-      [...wUsers].forEach((wUser) => {
-        if (!orUsers.find((orUser) => orUser.user.id === wUser.user.id)) {
-          otherUsers.push({
-            ...wUser,
-            selected: true,
-            hideMoveButton: false,
-            hideSendButton: false
-          });
-        }
+    const otherUsers: WorkflowSubstateUserDTO[] = orUsers.filter((u) => u.extra);
+
+    if (otherUsers.length) {
+      usersByRole.push({
+        role: null,
+        users: otherUsers
       });
-      if (otherUsers.length) {
-        usersByRole.push({
-          role: null,
-          users: otherUsers
-        });
-      }
     }
+
     return usersByRole;
   }
 }

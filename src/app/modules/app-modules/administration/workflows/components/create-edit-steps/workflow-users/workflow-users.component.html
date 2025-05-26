@@ -24,11 +24,10 @@
                                 (change)="setRolesUsersSelection($event.checked, roleData)"
                                 (click)="$event.stopPropagation()"
                             ></mat-checkbox>
-                            <span>
-                                &nbsp;&nbsp;{{
-                                    areAllUsersNotExtra(roleData.users) ? roleData.role?.name : (labels.others | translate)
-                                }}
-                                ({{ countUsersSelected(roleData.users) }}/{{ roleData.users.length }})
+                            <span
+                                >&nbsp;&nbsp;{{ roleData.role?.name ? roleData.role?.name : (labels.others | translate) }} ({{
+                                    countUsersSelected(roleData.users)
+                                }}/{{ roleData.users.length }})
                             </span>
                         </mat-panel-title>
                     </mat-expansion-panel-header>
