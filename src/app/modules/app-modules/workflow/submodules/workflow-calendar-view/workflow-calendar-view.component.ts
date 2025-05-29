@@ -2,29 +2,29 @@ import { Component, OnInit, ViewChild } from '@angular/core';
 import { FormBuilder, FormGroup } from '@angular/forms';
 import { MAT_DATE_RANGE_SELECTION_STRATEGY, MatDateRangePicker, MatDatepicker } from '@angular/material/datepicker';
 import { ChildActivationEnd, NavigationEnd, Router } from '@angular/router';
+import { RouteConstants } from '@app/constants/route.constants';
 import { PerformanceService } from '@app/services/performance.service';
+import { ConcenetError } from '@app/types/error';
 import { marker } from '@biesbjerg/ngx-translate-extract-marker';
 import FacilityDTO from '@data/models/organization/facility-dto';
+import WorkflowCalendarBodyDTO from '@data/models/workflows/workflow-calendar-body-dto';
+import WorkflowCalendarHourLineDTO from '@data/models/workflows/workflow-calendar-hour-line-dto';
 import WorkflowCardDTO from '@data/models/workflows/workflow-card-dto';
 import WorkflowDTO from '@data/models/workflows/workflow-dto';
 import WorkflowFilterDTO from '@data/models/workflows/workflow-filter-dto';
 import { WorkflowsService } from '@data/services/workflows.service';
+import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
 import { TranslateService } from '@ngx-translate/core';
 import { GlobalMessageService } from '@shared/services/global-message.service';
 import { ProgressSpinnerDialogService } from '@shared/services/progress-spinner-dialog.service';
+import { haveArraysSameValuesIdObjects } from '@shared/utils/array-comparation-function';
 import { MaxRangeSelectionStrategy } from '@shared/utils/DateRangeWeekSelectionStrategy';
+import _ from 'lodash';
 import moment from 'moment';
 import { NGXLogger } from 'ngx-logger';
 import { Subscription, skip, take } from 'rxjs';
 import { WorkflowFilterService } from '../../aux-service/workflow-filter.service';
 import { WorkflowPrepareAndMoveService } from '../../aux-service/workflow-prepare-and-move-aux.service';
-import { RouteConstants } from '@app/constants/route.constants';
-import { ConcenetError } from '@app/types/error';
-import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
-import { haveArraysSameValuesIdObjects } from '@shared/utils/array-comparation-function';
-import _ from 'lodash';
-import WorkflowCalendarHourLineDTO from '@data/models/workflows/workflow-calendar-hour-line-dto';
-import WorkflowCalendarBodyDTO from '@data/models/workflows/workflow-calendar-body-dto';
 
 @UntilDestroy()
 @Component({
@@ -249,8 +249,8 @@ export class WorkflowCalendarViewComponent implements OnInit {
     );
     this.totalCards = { totalCards: filteredCards.length };
     this.calendarLines = [];
-    const hour = moment().startOf('day');
-    while (hour.isSame(moment(), 'day')) {
+    const hour = moment().startOf('day').hour(4);
+    while (hour.hour() <= 20 && hour.isSame(moment(), 'day')) {
       const hourLine: WorkflowCalendarHourLineDTO = {
         hour: moment(hour),
         days: []

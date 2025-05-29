@@ -1,5 +1,6 @@
 import { Injectable, OnDestroy } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
+import WorkflowCardDTO from '@data/models/workflows/workflow-card-dto';
 import { take } from 'rxjs/operators';
 import { ModalAssociatedCardsComponent } from './modal-associated-cards.component';
 
@@ -11,7 +12,7 @@ export class ModalAssociatedCardsService implements OnDestroy {
 
   ngOnDestroy(): void {}
 
-  public openAssociatedCardsModal(id: number, type: 'customerId' | 'vehicleId'): void {
+  public openAssociatedCardsModal(id: number, type: 'customerId' | 'vehicleId' | 'calendar', cards?: WorkflowCardDTO[]): void {
     const width = '400px';
     const height = 'auto';
     this.dialog
@@ -24,7 +25,8 @@ export class ModalAssociatedCardsService implements OnDestroy {
         disableClose: false,
         data: {
           id,
-          type
+          type,
+          cards
         }
       })
       .afterClosed()

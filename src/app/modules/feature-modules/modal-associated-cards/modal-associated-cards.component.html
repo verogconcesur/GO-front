@@ -19,6 +19,7 @@
                 [disableDrag]="true"
                 [forceSize]="'size-s'"
                 [navigationMode]="'absolute'"
+                [dateToShow]="dialogData?.type === 'calendar' ? item.cardInstanceWorkflows[0].calendarDate : null"
             ></app-workflow-card>
         </div>
     </div>

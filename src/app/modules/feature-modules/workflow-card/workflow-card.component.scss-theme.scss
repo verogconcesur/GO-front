@@ -17,6 +17,10 @@
       border: dotted 3px #999;
       padding: 8px;
     }
+    .workflow-card.size-xs,
+    .workflow-card__placeholder.size-xs {
+      height: 70px;
+    }
     .workflow-card.size-s,
     .workflow-card__placeholder.size-s {
       height: 80px;
@@ -32,6 +36,12 @@
     .workflow-card.size-xl,
     .workflow-card__placeholder.size-xl {
       height: 286px;
+    }
+
+    .workflow-card.expanded.size-xs,
+    .workflow-card.expanded .workflow-card__placeholder.size-xs {
+      min-height: 70px;
+      height: auto;
     }
 
     .workflow-card.expanded.size-s,
@@ -62,6 +72,7 @@
         border: dotted 0px #999;
         padding: 0px;
       }
+      .workflow-card__placeholder.size-xs,
       .workflow-card__placeholder.size-s,
       .workflow-card__placeholder.size-m,
       .workflow-card__placeholder.size-l,

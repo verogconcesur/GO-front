@@ -23,12 +23,14 @@
             }"
         >
             <app-workflow-card
-                class="card-item"
+                class="card-wrapper"
+                [forceSize]="day.cards.length === 1 && mode === 'WEEK' ? 'size-l' : 'size-xs'"
                 *ngFor="let card of day.cards"
                 [card]="card"
                 [disableDrag]="true"
                 [dateToShow]="card.cardInstanceWorkflows[0].calendarDate"
             ></app-workflow-card>
+            <mat-icon class="add-card-icon" *ngIf="day.cards.length > 2" (click)="showCalendarCards(day.cards)">add</mat-icon>
         </div>
         <div class="workflow-calendar-line__hour__time" fxLayout="row" fxLayoutAlign="center center" *ngIf="!first">
             <span>{{ workflowHourLine.hour.format("H:mm") }}</span>
