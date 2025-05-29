@@ -99,7 +99,7 @@
     <button mat-menu-item [routerLink]="ADVANCED_SEARCH_PATH">
         <span>{{ labels.advanceSearch | translate }}</span>
     </button>
-    <button mat-menu-item (click)="navigateToAdministration()">
+    <button *ngIf="isAdmin()" mat-menu-item (click)="navigateToAdministration()">
         <span>{{ labels.administration | translate }}</span>
     </button>
 </mat-menu>
