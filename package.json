@@ -22,9 +22,10 @@
         "sonar": "npm run test:ci && sonar-scanner",
         "extract:translations": "ngx-translate-extract --input ./src --output ./src/assets/i18n/es.json ./src/assets/i18n/en.json --sort --format namespaced-json",
         "release:first": "standard-version --no-verify --first-release",
-        "release:patch": "standard-version --no-verify --release-as patch",
+        "release:patch": "standard-version --no-verify --release-as patch && npm run update-version",
         "release:minor": "standard-version --no-verify --release-as minor",
         "release:major": "standard-version --no-verify --release-as major",
+        "update-version": "node update-version-json.js",
         "prebundle:report": "npm run build_production",
         "bundle:report": "source-map-explorer dist/Concenet_Front/**/*.js"
     },

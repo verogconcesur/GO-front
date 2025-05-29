@@ -1,3 +1,4 @@
+import { HttpClient } from '@angular/common/http';
 import { Component, HostListener, Inject, OnInit } from '@angular/core';
 import { Meta } from '@angular/platform-browser';
 import { ENV } from '@app/constants/global.constants';
@@ -24,7 +25,8 @@ export class AppComponent implements OnInit {
     private logger: NGXLogger,
     private translate: TranslateService,
     private rxStompService: RxStompService,
-    private performanceService: PerformanceService
+    private performanceService: PerformanceService,
+    private http: HttpClient
   ) {}
 
   @HostListener('window:resize', ['$event']) onResize(event: { target: { innerHeight: number } }) {
@@ -32,6 +34,7 @@ export class AppComponent implements OnInit {
   }
 
   ngOnInit() {
+    console.log('entra');
     this.logger.debug('App.component#ngOnInit', this.env.apiBaseUrl);
     this.addBuildInfoMetatag();
     this.performanceService.initTimeoutToReload();
@@ -59,6 +62,14 @@ export class AppComponent implements OnInit {
     }
     const locale = window.navigator.language;
     moment.locale(locale);
+    // if (this.isSessionStorageAvailable()) {
+    //   const alreadyChecked = sessionStorage.getItem('version-check-initial');
+    //   if (!alreadyChecked) {
+    //     this.checkAppVersion();
+    //     sessionStorage.setItem('version-check-initial', 'true');
+    //   }
+    //   setInterval(() => this.checkAppVersion(), 20 * 1000);
+    // }
   }
 
   private setVhProperty(): void {
@@ -82,4 +93,39 @@ export class AppComponent implements OnInit {
       content: `${this.env.appVersion}`
     });
   }
+  private appVersion(): string {
+    if (this.env.appVersion.includes('-')) {
+      return this.env.appVersion.split('-')[0];
+    }
+    return this.env.appVersion;
+  }
+  private isSessionStorageAvailable(): boolean {
+    try {
+      const testKey = '__test__';
+      sessionStorage.setItem(testKey, '1');
+      sessionStorage.removeItem(testKey);
+      return true;
+    } catch (e) {
+      return false;
+    }
+  }
+
+  // private checkAppVersion(): void {
+  //   const url = `/assets/version.json?t=${new Date().getTime()}`;
+
+  //   this.http.get<{ version: string }>(url).subscribe({
+  //     next: (data) => {
+  //       if (data.version !== this.appVersion()) {
+  //         const baseUrl = window.location.href.split('#')[0];
+  //         const hash = window.location.hash;
+  //         window.location.href = `${baseUrl}?v=${new Date().getTime()}${hash}`;
+  //       } else {
+  //         console.log('Versiones coinciden, no se recarga.');
+  //       }
+  //     },
+  //     error: (err) => {
+  //       this.logger.error('No se pudo comprobar la versión.', err);
+  //     }
+  //   });
+  // }
 }
