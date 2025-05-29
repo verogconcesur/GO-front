@@ -62,6 +62,7 @@ export class ModalVehicleComponent extends ComponentToExtendForCustomDialog impl
   public variants: Variants;
   public vehicleCustomersList: CustomerVehicles[] = [];
   public isStockVehicle = false;
+  public previousCommissionValue = '';
   public relationOptions = [
     { value: 'REGISTEREDKEEPER', name: 'Propietario Registrado' },
     { value: 'HOLDER', name: 'Titular' },
@@ -179,13 +180,16 @@ export class ModalVehicleComponent extends ComponentToExtendForCustomDialog impl
     }
   }
   public changeCommissionNumber(): void {
-    if (this.isStockVehicle) {
+    const currentValue = this.vehicleForm.get('commissionNumber')?.value ?? '';
+    const isDeleting = currentValue.length < this.previousCommissionValue.length;
+    if (this.isStockVehicle && !isDeleting) {
       this.globalMessageService.showWarning({
         message: this.translateService.instant(marker('entities.vehicles.isStockVehicle')),
         actionText: this.translateService.instant(marker('common.close'))
       });
       this.isStockVehicle = false;
     }
+    this.previousCommissionValue = currentValue;
     if (this.form.commissionNumber.value && !this.form.facilityStock.hasValidator(Validators.required)) {
       this.form.facilityStock.setValidators([Validators.required, Validators.minLength(this.minLength)]);
       this.form.facilityStock.updateValueAndValidity();
@@ -309,10 +313,10 @@ export class ModalVehicleComponent extends ComponentToExtendForCustomDialog impl
       description: formValue.description ? formValue.description : null,
       vehicleId: formValue.vehicleId ? formValue.vehicleId : null,
       vehicleCustomers: formValue.vehicleCustomers ? formValue.vehicleCustomers : null,
+      facility: formValue.facility ? formValue.facility : null,
       inventories: [],
       ...(hasComissionNumber && formValue.model ? { model: formValue.model } : {}),
       ...(hasComissionNumber && formValue.make ? { make: formValue.make } : {}),
-      ...(!hasComissionNumber && formValue.facility ? { facility: formValue.facility } : {}),
       ...(!hasComissionNumber && formValue.modelCode ? { modelCode: formValue.modelCode } : {}),
       ...(!hasComissionNumber && formValue.makeCode ? { makeCode: formValue.modelCode } : {}),
       ...(!hasComissionNumber && formValue.variantCode ? { variantCode: formValue.variantCode } : {})
