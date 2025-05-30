@@ -253,7 +253,7 @@ export class CreateEditChecklistComponent implements OnInit {
     let items: TemplateChecklistItemDTO[] = this.checklistForm?.get('templateChecklistItems').getRawValue();
     if (this.isRemoteSign()) {
       items = items.filter((item: TemplateChecklistItemDTO) => {
-        return item.typeItem !== 'DRAWING' && item.typeItem !== 'IMAGE';
+        return item.typeItem !== 'DRAWING';
       });
     }
     const groupByType: AuxChecklistItemsGroupByTypeDTO[] = [];
@@ -779,11 +779,15 @@ export class CreateEditChecklistComponent implements OnInit {
           data.template = template;
           if (data.remoteSignature) {
             data.templateChecklistItems = data.templateChecklistItems.filter((item: TemplateChecklistItemDTO) => {
-              return item.typeItem !== 'DRAWING' && item.typeItem !== 'IMAGE';
+              return item.typeItem !== 'DRAWING';
             });
           }
           data.templateChecklistItems.map((item: any) => {
             item.sincronizedItems = item.sincronizedItems.length === 1 || item.staticValue ? null : item.sincronizedItems;
+            if (item.typeItem === 'IMAGE' && this.isRemoteSign()) {
+              item.staticValue = true;
+            }
+
             if (item.typeItem === 'VARIABLE') {
               if (item.variable.tabId) {
                 item.tabItem = { id: item.variable.id };

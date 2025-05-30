@@ -272,10 +272,20 @@
                                                 class="section-margin-bottom"
                                             >
                                                 <mat-checkbox
+                                                    *ngIf="!(groupByType.typeItem === 'IMAGE' && isRemoteSign())"
                                                     formControlName="staticValue"
                                                     (change)="staticOrDefaultValueChange('staticValue', syncGroup.selectedItem)"
-                                                    >{{ labels.staticValue | translate }}</mat-checkbox
                                                 >
+                                                    {{ labels.staticValue | translate }}
+                                                </mat-checkbox>
+
+                                                <mat-checkbox
+                                                    *ngIf="groupByType.typeItem === 'IMAGE' && isRemoteSign()"
+                                                    [checked]="true"
+                                                    disabled
+                                                >
+                                                    {{ labels.staticValue | translate }}
+                                                </mat-checkbox>
                                             </section>
                                             <!-- Default value -->
                                             <section
@@ -332,10 +342,12 @@
                                         <!-- Static value IMAGE-->
                                         <section
                                             *ngIf="
-                                                groupByType.typeItem === 'IMAGE' &&
-                                                (getChecklistItemByOrderNumber(syncGroup.selectedItem).get('staticValue').value ||
-                                                    getChecklistItemByOrderNumber(syncGroup.selectedItem).get('defaultValue')
-                                                        .value)
+                                                (groupByType.typeItem === 'IMAGE' && isRemoteSign()) ||
+                                                (groupByType.typeItem === 'IMAGE' &&
+                                                    (getChecklistItemByOrderNumber(syncGroup.selectedItem).get('staticValue')
+                                                        .value ||
+                                                        getChecklistItemByOrderNumber(syncGroup.selectedItem).get('defaultValue')
+                                                            .value))
                                             "
                                             fxLayoutAlign="space-between center"
                                             class="section-margin-bottom"
@@ -413,7 +425,7 @@
             </mat-accordion>
         </div>
     </div>
-    <div class="checklist-config__column checklist-config__pdf" [ngClass]="{ remoteSign: isRemoteSign() }">
+    <div class="checklist-config__column checklist-config__pdf">
         <ng-container class="checklist-config__pdf__viewer" *ngIf="fileTemplateBase64 | async as base64; else dropZone">
             <ngx-extended-pdf-viewer
                 id="checklistPDF"
@@ -513,12 +525,7 @@
                 </div>
             </div>
         </div>
-        <div
-            class="checklistItemToDrag undropped"
-            id="checklistItemToDrag__image"
-            data-type="IMAGE"
-            [ngClass]="{ hidden: isRemoteSign() }"
-        >
+        <div class="checklistItemToDrag undropped" id="checklistItemToDrag__image" data-type="IMAGE">
             <div class="resizable" style="height: 50px; width: 135px">
                 <div class="checklistItemToDrag__image checklistItemToDrag__label">
                     <label>{{ labels.image | translate }}</label>
