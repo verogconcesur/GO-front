@@ -820,6 +820,7 @@
         "saveTabBeforeChange": "You must save the tab's changes before access to another tab.",
         "unknown": "Unknown error",
         "uploadOnlyOneFile": "You must load only one file",
+        "userDetailFetchFailed": "",
         "valueBetween": "Value between {min} and {max}"
     },
     "landing": {
@@ -1243,6 +1244,7 @@
         },
         "card": {
             "cardTabs": "Tabs of the card",
+            "cardsByCalendar": "Calendar cards",
             "customerAssociatedCards": "Customer's cards",
             "permissionSubtitle": "Select the tabs you want to appear in this workflow. Click on the name of the tabs to customize these permissions by role.",
             "permissionTitle": "Customize permissions on card tabs",

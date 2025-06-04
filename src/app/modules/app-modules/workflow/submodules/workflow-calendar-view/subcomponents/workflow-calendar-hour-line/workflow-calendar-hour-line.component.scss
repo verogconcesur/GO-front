@@ -33,7 +33,7 @@
       position: relative;
       &__cellhour {
         position: relative;
-        min-width: 370px;
+        min-width: 375px;
         width: 100%;
         height: auto;
         overflow: hidden;
@@ -54,7 +54,7 @@
         }
         .add-card-icon {
           position: absolute;
-          right: 5px;
+          right: 12px;
           font-size: 24px;
           background-color: mat-color($primary);
           color: white;

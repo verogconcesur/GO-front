@@ -16,6 +16,7 @@ export class ModalAssociatedCardsComponent implements OnInit {
   public labels = {
     cardsByCustomer: marker('workflows.card.customerAssociatedCards'),
     cardsByVehicle: marker('workflows.card.vehicleAssociatedCards'),
+    cardsByCalendar: marker('workflows.card.cardsByCalendar'),
     reset: marker('common.reset'),
     noData: marker('errors.noDataToShow')
   };
@@ -100,7 +101,7 @@ export class ModalAssociatedCardsComponent implements OnInit {
     } else if (this.dialogData.type === 'vehicleId') {
       return this.translateService.instant(this.labels.cardsByVehicle);
     }
-    return 'Datos calendario';
+    return this.translateService.instant(this.labels.cardsByCalendar);
   }
 
   public close(): void {
