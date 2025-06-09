@@ -1,0 +1,40 @@
+<mat-form-field appearance="outline" floatLabel="always" style="display: block">
+    <mat-label>{{ label }}</mat-label>
+    <mat-select
+        [formControl]="formControl"
+        [multiple]="multiple"
+        [placeholder]="placeholder"
+        (selectionChange)="onSelectionChange($event)"
+        [compareWith]="compareFn"
+    >
+        <!-- filtro de búsqueda -->
+        <mat-form-field
+            appearance="outline"
+            floatLabel="always"
+            *ngIf="enableFilter"
+            class="smaller-mat-form-fields__no-margin selector-filter"
+        >
+            <input
+                matInput
+                type="text"
+                [formControl]="filterControl"
+                placeholder="Buscar..."
+                (keydown.space)="$event.stopPropagation()"
+            />
+        </mat-form-field>
+
+        <mat-divider *ngIf="enableFilter || (selectAll && multiple)"></mat-divider>
+        <ng-container *ngIf="selectAll && multiple">
+            <button mat-button class="mat-button-w-100-left" *ngIf="!hasAllSelected()" (click)="selectAllOptions()">
+                {{ "Seleccionar todo" }}
+            </button>
+            <button mat-button class="mat-button-w-100-left" *ngIf="hasAllSelected()" (click)="unselectAllOptions()">
+                {{ "Deseleccionar todo" }}
+            </button>
+        </ng-container>
+
+        <mat-option *ngFor="let option of filteredOptions$ | async" [value]="option">
+            {{ getDisplayValue(option) }}
+        </mat-option>
+    </mat-select>
+</mat-form-field>

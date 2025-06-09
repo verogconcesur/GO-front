@@ -4,6 +4,7 @@ import { FlexLayoutModule } from '@angular/flex-layout';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { TranslateModule } from '@ngx-translate/core';
 import { ConfirmDialogComponent } from './components/confirm-dialog/confirm-dialog.component';
+import { CustomMatFormFieldComponent } from './components/custom-mat-formfield/custom-mat-formfield.component';
 import { GoBackComponent } from './components/go-back/go-back.component';
 import { ProgressSpinnerDialogComponent } from './components/progress-spinner-dialog/progress-spinner-dialog.component';
 import { ResponsiveTabsComponent } from './components/responsive-tabs/responsive-tabs.component';
@@ -38,7 +39,8 @@ import { TwoDigitDecimalDirective } from './utils/two-digit-decimal.directive';
     TwoDigitDecimalDirective,
     ZoomDirective,
     CardTabItemTypePipePipe,
-    SafeHtmlPipe
+    SafeHtmlPipe,
+    CustomMatFormFieldComponent
   ],
   imports: [
     TranslateModule,
@@ -68,7 +70,8 @@ import { TwoDigitDecimalDirective } from './utils/two-digit-decimal.directive';
     CustomDialogModule,
     TwoDigitDecimalDirective,
     CardTabItemTypePipePipe,
-    SafeHtmlPipe
+    SafeHtmlPipe,
+    CustomMatFormFieldComponent
   ]
 })
 export class SharedModule {}

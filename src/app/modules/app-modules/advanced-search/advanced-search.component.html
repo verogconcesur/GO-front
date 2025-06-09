@@ -190,7 +190,7 @@
                                         <mat-datepicker-toggle matSuffix [for]="pickerEnd"></mat-datepicker-toggle>
                                         <mat-datepicker #pickerEnd></mat-datepicker>
                                     </mat-form-field> -->
-                                    <mat-form-field appearance="outline" floatLabel="always" style="width: 48%">
+                                    <!-- <mat-form-field appearance="outline" floatLabel="always" style="width: 48%">
                                         <mat-label>{{ labels.facilities | translate }}</mat-label>
                                         <mat-select formControlName="facilities" multiple>
                                             <button
@@ -213,8 +213,41 @@
                                                 facility.name
                                             }}</mat-option>
                                         </mat-select>
-                                    </mat-form-field>
-                                    <mat-form-field appearance="outline" floatLabel="always" style="width: 48%">
+                                    </mat-form-field> -->
+                                    <app-custom-mat-formfield
+                                        style="width: 48%"
+                                        [label]="labels.facilities | translate"
+                                        [formControl]="advSearchForm.get('advancedSearchContext.facilities')"
+                                        [options]="facilityList"
+                                        [multiple]="true"
+                                        [enableFilter]="true"
+                                        [selectAll]="true"
+                                        displayProp="name"
+                                    ></app-custom-mat-formfield>
+                                    <app-custom-mat-formfield
+                                        style="width: 48%"
+                                        [label]="labels.workflows | translate"
+                                        [formControl]="advSearchForm.get('advancedSearchContext.workflows')"
+                                        [options]="workflowList"
+                                        [multiple]="true"
+                                        [selectAll]="true"
+                                        [enableFilter]="true"
+                                        [displayProp]="'name'"
+                                        (selectionChange)="changeWorkflow()"
+                                    ></app-custom-mat-formfield>
+                                    <!-- <app-custom-mat-formfield
+                                        style="width: 48%"
+                                        [label]="labels.states | translate"
+                                        [formControl]="advSearchForm.get('advancedSearchContext.states')"
+                                        [options]="statesOptions | async"
+                                        [multiple]="true"
+                                        [enableFilter]="true"
+                                        [selectAll]="true"
+                                        [displayProp]="['workflow.name', 'name']"
+                                        (selectionChange)="changeState()"
+                                    ></app-custom-mat-formfield> -->
+
+                                    <!-- <mat-form-field appearance="outline" floatLabel="always" style="width: 48%">
                                         <mat-label>{{ labels.workflows | translate }}</mat-label>
                                         <mat-select formControlName="workflows" multiple (selectionChange)="changeWorkflow()">
                                             <button
@@ -237,7 +270,7 @@
                                                 workflow.name
                                             }}</mat-option>
                                         </mat-select>
-                                    </mat-form-field>
+                                    </mat-form-field> -->
                                     <mat-form-field appearance="outline" floatLabel="always" style="width: 48%">
                                         <mat-label>{{ labels.states | translate }}</mat-label>
                                         <mat-select formControlName="states" multiple (selectionChange)="changeState()">
