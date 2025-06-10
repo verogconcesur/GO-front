@@ -68,7 +68,7 @@ export class AppComponent implements OnInit {
         this.checkAppVersion();
         sessionStorage.setItem('version-check-initial', 'true');
       }
-      setInterval(() => this.checkAppVersion(), 20 * 1000);
+      setInterval(() => this.checkAppVersion(), 30 * 60 * 1000);
     }
   }
 
