@@ -2,6 +2,15 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [1.1.17](https://github.com/Delivery-Projects/concesur/concenet_front/-/compare/v1.1.16...v1.1.17) (2025-06-10)
+
+
+### Features
+
+* cambiar patter para dni andorrano y activar borrardo cache ([061b234](https://github.com/Delivery-Projects/concesur/concenet_front/-/commit/061b234ddc794cb464ff4b9dd34b5f59c1bbe504))
+* comprobar version para recarga de cache cada 30 min ([438c9f3](https://github.com/Delivery-Projects/concesur/concenet_front/-/commit/438c9f3fc418ee4b9594d4a6f4afcc67318d6de9))
+* up json version ([a5713e7](https://github.com/Delivery-Projects/concesur/concenet_front/-/commit/a5713e7145c120674953f101f481fe8ddcffb386))
+
 ### [1.1.16](https://github.com/Delivery-Projects/concesur/concenet_front/-/compare/v1.1.14...v1.1.16) (2025-06-05)
 
 
