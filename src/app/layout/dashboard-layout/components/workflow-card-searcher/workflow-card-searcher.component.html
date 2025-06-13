@@ -127,6 +127,7 @@
                 {{ labels.search | translate }}
             </button>
         </form>
+        <div *ngIf="!filtersVisible" style="min-width: 380px; margin: 2px"></div>
         <button
             *ngIf="format === 'icon' && !filtersVisible"
             mat-raised-button
@@ -138,7 +139,7 @@
         >
             {{ labels.search | translate }}
         </button>
-        <div class="search-option-spinner" *ngIf="searching > 0">
+        <div class="search-option-spinner" *ngIf="searching > 0 && paginationConfig.first">
             <mat-spinner class="spinner" diameter="20"></mat-spinner>
         </div>
         <div class="scrollable-options" *ngIf="cards.length" (scroll)="onScroll($event)">
