@@ -10,7 +10,7 @@
     padding: 50px 30px;
     .items-list-container {
       box-sizing: border-box;
-      mat-card{
+      mat-card {
         margin-bottom: 6px;
       }
       @include respond-to($tablet-small) {
