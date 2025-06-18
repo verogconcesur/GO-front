@@ -62,14 +62,14 @@ export class AppComponent implements OnInit {
     }
     const locale = window.navigator.language;
     moment.locale(locale);
-    // if (this.isSessionStorageAvailable()) {
-    //   const alreadyChecked = sessionStorage.getItem('version-check-initial');
-    //   if (!alreadyChecked) {
-    //     this.checkAppVersion();
-    //     sessionStorage.setItem('version-check-initial', 'true');
-    //   }
-    //   setInterval(() => this.checkAppVersion(), 20 * 1000);
-    // }
+    if (this.isSessionStorageAvailable()) {
+      const alreadyChecked = sessionStorage.getItem('version-check-initial');
+      if (!alreadyChecked) {
+        this.checkAppVersion();
+        sessionStorage.setItem('version-check-initial', 'true');
+      }
+      setInterval(() => this.checkAppVersion(), 30 * 60 * 1000);
+    }
   }
 
   private setVhProperty(): void {
@@ -110,22 +110,22 @@ export class AppComponent implements OnInit {
     }
   }
 
-  // private checkAppVersion(): void {
-  //   const url = `/assets/version.json?t=${new Date().getTime()}`;
+  private checkAppVersion(): void {
+    const url = `/assets/version.json?t=${new Date().getTime()}`;
 
-  //   this.http.get<{ version: string }>(url).subscribe({
-  //     next: (data) => {
-  //       if (data.version !== this.appVersion()) {
-  //         const baseUrl = window.location.href.split('#')[0];
-  //         const hash = window.location.hash;
-  //         window.location.href = `${baseUrl}?v=${new Date().getTime()}${hash}`;
-  //       } else {
-  //         console.log('Versiones coinciden, no se recarga.');
-  //       }
-  //     },
-  //     error: (err) => {
-  //       this.logger.error('No se pudo comprobar la versión.', err);
-  //     }
-  //   });
-  // }
+    this.http.get<{ version: string }>(url).subscribe({
+      next: (data) => {
+        if (data.version !== this.appVersion()) {
+          const baseUrl = window.location.href.split('#')[0];
+          const hash = window.location.hash;
+          window.location.href = `${baseUrl}?v=${new Date().getTime()}${hash}`;
+        } else {
+          console.log('Versiones coinciden, no se recarga.');
+        }
+      },
+      error: (err) => {
+        this.logger.error('No se pudo comprobar la versión.', err);
+      }
+    });
+  }
 }

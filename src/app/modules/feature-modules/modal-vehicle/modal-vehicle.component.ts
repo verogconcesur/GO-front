@@ -180,9 +180,11 @@ export class ModalVehicleComponent extends ComponentToExtendForCustomDialog impl
     }
   }
   public changeCommissionNumber(): void {
+    const configList = this.authService.getConfigList();
+    const isWriteKeyloopEnabled = configList.includes(ModulesConstants.WRITE_KEYLOOP);
     const currentValue = this.vehicleForm.get('commissionNumber')?.value ?? '';
     const isDeleting = currentValue.length < this.previousCommissionValue.length;
-    if (this.isStockVehicle && !isDeleting) {
+    if (this.isStockVehicle && !isDeleting && isWriteKeyloopEnabled) {
       this.globalMessageService.showWarning({
         message: this.translateService.instant(marker('entities.vehicles.isStockVehicle')),
         actionText: this.translateService.instant(marker('common.close'))
@@ -202,10 +204,12 @@ export class ModalVehicleComponent extends ComponentToExtendForCustomDialog impl
       this.vehicleForm.markAsTouched();
       this.vehicleForm.markAsDirty();
     }
-    this.form.make.setValue(null);
+    if (isWriteKeyloopEnabled) {
+      this.form.make.setValue(null);
+      this.form.model.setValue(null);
+    }
     this.form.variantCode.setValue(null);
     this.form.variantCode.disable();
-    this.form.model.setValue(null);
     this.form.make.enable();
     this.form.model.enable();
     this.cdr.detectChanges();
@@ -314,25 +318,25 @@ export class ModalVehicleComponent extends ComponentToExtendForCustomDialog impl
       vehicleId: formValue.vehicleId ? formValue.vehicleId : null,
       vehicleCustomers: formValue.vehicleCustomers ? formValue.vehicleCustomers : null,
       facility: formValue.facility ? formValue.facility : null,
+      model: formValue.model ? formValue.model : null,
+      make: formValue.make ? formValue.make : null,
       inventories: [],
-      ...(hasComissionNumber && formValue.model ? { model: formValue.model } : {}),
-      ...(hasComissionNumber && formValue.make ? { make: formValue.make } : {}),
-      ...(!hasComissionNumber && formValue.modelCode ? { modelCode: formValue.modelCode } : {}),
-      ...(!hasComissionNumber && formValue.makeCode ? { makeCode: formValue.modelCode } : {}),
+      ...(!hasComissionNumber && formValue.modelCode && isWriteKeyloopEnabled ? { modelCode: formValue.modelCode } : {}),
+      ...(!hasComissionNumber && formValue.makeCode && isWriteKeyloopEnabled ? { makeCode: formValue.makeCode } : {}),
       ...(!hasComissionNumber && formValue.variantCode ? { variantCode: formValue.variantCode } : {})
     };
     if (this.vehicleToEdit && this.vehicleToEdit.inventories && this.vehicleToEdit.inventories.length) {
       body.inventories.push({
         id: this.vehicleToEdit.inventories[this.vehicleToEdit.inventories.length - 1].id,
         commissionNumber: formValue.commissionNumber ? formValue.commissionNumber : null,
-        enterpriseId: formValue.facility ? formValue.facility.configStockEnterpriseId : null,
-        storeId: formValue.facility ? formValue.facility.configStockStoreId : null
+        enterpriseId: formValue.facilityStock ? formValue.facilityStock.enterpriseId : null,
+        storeId: formValue.facilityStock ? formValue.facilityStock.storeId : null
       });
     } else if (formValue.commissionNumber) {
       body.inventories.push({
         commissionNumber: formValue.commissionNumber ? formValue.commissionNumber : null,
-        enterpriseId: formValue.facility ? formValue.facility.configStockEnterpriseId : null,
-        storeId: formValue.facility ? formValue.facility.configStockStoreId : null
+        enterpriseId: formValue.facilityStock ? formValue.facilityStock.enterpriseId : null,
+        storeId: formValue.facilityStock ? formValue.facilityStock.storeId : null
       });
     }
     if (formValue.commissionNumber || !isWriteKeyloopEnabled) {
