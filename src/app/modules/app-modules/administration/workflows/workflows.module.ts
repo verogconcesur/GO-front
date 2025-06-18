@@ -30,6 +30,8 @@ import { WorkflowCardModule } from '../../../feature-modules/workflow-card/workf
 import { WorkflowsCreateEditAuxService } from './aux-service/workflows-create-edit-aux.service';
 import { WorkflowCalendarComponent } from './components/create-edit-steps/workflow-calendar/workflow-calendar.component';
 import { WorkflowCardsPermissionsComponent } from './components/create-edit-steps/workflow-cards/modals/workflow-cards-permissions/workflow-cards-permissions.component';
+import { WorkflowsEventsConditionsAuxService } from './components/create-edit-steps/workflow-states/components/wf-events-conditions/wf-events-conditions-aux.service';
+import { WfEventsConditionsComponent } from './components/create-edit-steps/workflow-states/components/wf-events-conditions/wf-events-conditions.component';
 import { WfEditStateDialogComponent } from './components/create-edit-steps/workflow-states/modals/wf-edit-state-dialog/wf-edit-state-dialog.component';
 import { WfEditPermissionsTabComponent } from './components/create-edit-steps/workflow-states/modals/wf-edit-substate-dialog/tabs/wf-edit-permissions-tab/wf-edit-permissions-tab.component';
 import { WfEditSubstateEventsTabComponent } from './components/create-edit-steps/workflow-states/modals/wf-edit-substate-dialog/tabs/wf-edit-substate-events-tab/wf-edit-substate-events-tab.component';
@@ -61,7 +63,8 @@ import { WfEditSubstateEventsDialogComponent } from './components/create-edit-st
     WfEditSubstateEventsTabComponent,
     WfEditPermissionsTabComponent,
     WfEditSubstateEventsDialogComponent,
-    WorkflowCalendarComponent
+    WorkflowCalendarComponent,
+    WfEventsConditionsComponent
   ],
   imports: [
     CommonModule,
@@ -75,6 +78,6 @@ import { WfEditSubstateEventsDialogComponent } from './components/create-edit-st
     MatChipsInputFormFieldModule,
     WorkflowCardModule
   ],
-  providers: [WorkflowsCreateEditAuxService]
+  providers: [WorkflowsCreateEditAuxService, WorkflowsEventsConditionsAuxService]
 })
 export class WorkflowsModule {}

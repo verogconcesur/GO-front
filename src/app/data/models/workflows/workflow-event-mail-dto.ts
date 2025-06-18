@@ -1,3 +1,4 @@
+import { AdvancedSearchItem } from '../adv-search/adv-search-dto';
 import TemplatesCommunicationDTO from '../templates/templates-communication-dto';
 import RoleDTO from '../user-permissions/role-dto';
 
@@ -15,4 +16,10 @@ export default interface WorkflowEventMailDTO {
   workflowEventMailReceivers: WorkflowEventMailReceiverDTO[];
   processedEmail?: string;
   templateComunication?: TemplatesCommunicationDTO;
+  workflowEventCondition?: {
+    id: number;
+    workflowEventType: string;
+    workflowEventConditionItems: AdvancedSearchItem[];
+    workflowEventMailId: number;
+  };
 }

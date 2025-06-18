@@ -101,6 +101,11 @@ export class AdvSearchService {
       .get<AdvancedSearchOptionsDTO>(`${this.env.apiBaseUrl}${this.GET_ADV_SEARCH_PATH}${this.GET_CRITERIA_PATH}`)
       .pipe(catchError((error) => throwError(error.error as ConcenetError)));
   }
+  public getCriteriaConditions(workflowId: number): Observable<AdvancedSearchOptionsDTO> {
+    return this.http
+      .get<AdvancedSearchOptionsDTO>(`${this.env.apiBaseUrl}${this.GET_ADV_SEARCH_PATH}${this.GET_CRITERIA_PATH}/${workflowId}`)
+      .pipe(catchError((error) => throwError(error.error as ConcenetError)));
+  }
   public getColumns(): Observable<AdvancedSearchOptionsDTO> {
     return this.http
       .get<AdvancedSearchOptionsDTO>(`${this.env.apiBaseUrl}${this.GET_ADV_SEARCH_PATH}${this.GET_COLUMNS_PATH}`)

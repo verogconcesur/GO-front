@@ -1,0 +1,48 @@
+<mat-accordion>
+    <div class="title" *ngIf="title">{{ title }}</div>
+    <mat-expansion-panel>
+        <mat-expansion-panel-header>
+            <mat-panel-title fxLayout="row" fxLayoutAlign="space-between center">
+                <span *ngIf="criteria.controls?.length > 0">
+                    {{ labels.conditionsTitle | translate : { count: criteria.controls?.length } }}
+                </span>
+
+                <span *ngIf="!criteria.controls?.length">
+                    {{ labels.noConditionsTitle | translate }}
+                </span>
+
+                <button
+                    mat-button
+                    class="delete-button"
+                    (click)="addCriteriaFilter(); $event.stopPropagation(); $event.preventDefault()"
+                >
+                    {{ labels.addCriteriaButton | translate }}
+                    <mat-icon>add</mat-icon>
+                </button>
+            </mat-panel-title>
+        </mat-expansion-panel-header>
+
+        <div class="wf-events-conditions__content">
+            <div class="wf-events-conditions__content__columns criteria-columns">
+                <div class="custom-actions-item mat-elevation-z2" *ngFor="let criteria of criteria.controls; let i = index">
+                    <div fxLayout="row" fxLayoutAlign="space-between center" class="custom-actions-item-nameContainer">
+                        <div class="left-side" fxLayout="row" fxLayoutAlign="start center">
+                            <div class="criteria-info">
+                                <div>{{ getCriteriaName(criteria) }}</div>
+                                <div *ngIf="!errorInCriteriaConfig(criteria)">{{ getCriteriaInfo(criteria) }}</div>
+                                <div class="error" *ngIf="errorInCriteriaConfig(criteria)">
+                                    <mat-icon>warning</mat-icon> {{ errorInCriteriaConfig(criteria) }}
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="right-side">
+                            <mat-icon (click)="deleteCriteria(criteria); $event.stopPropagation()">delete</mat-icon>
+                            <mat-icon (click)="editCriteria(criteria); $event.stopPropagation()">edit</mat-icon>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </mat-expansion-panel>
+</mat-accordion>

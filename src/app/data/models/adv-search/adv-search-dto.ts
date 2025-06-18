@@ -31,6 +31,7 @@ export interface AdvancedSearchItem {
   value: string;
   variable: AdvSearchVariableDTO;
   orderNumber?: number;
+  workflowEventConditionId?: number;
 }
 export interface AdvancedSearchContext {
   dateCardFrom?: string;

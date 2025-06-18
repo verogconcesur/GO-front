@@ -1,3 +1,4 @@
+import { AdvancedSearchItem } from '../adv-search/adv-search-dto';
 import CardColumnTabItemDTO from '../cards/card-column-tab-item-dto';
 import TemplatesCommunicationDTO from '../templates/templates-communication-dto';
 import RoleDTO from '../user-permissions/role-dto';
@@ -48,11 +49,38 @@ export default interface WorkflowMoveDTO {
   movementExtraConfirm?: boolean;
   requiredMovementExtra?: boolean;
   requiredAttachments?: boolean;
+  workflowEventConditionsReqFields: workflowSubstateRequiredCondition[];
+  workflowEventConditions?: {
+    id: number;
+    workflowEventType: string;
+    workflowMovementId?: number;
+    workflowSubstateId?: number;
+    workflowEventConditionItems: AdvancedSearchItem[];
+  }[];
   workflowSubstateEventRequiredAttachments?: WorkflowSubstateEventRequiredAttachment[];
   workflowMovementRequiredAttachments?: WorkflowSubstateEventRequiredAttachment[];
+  requiredSizeCriteriaConditions?: AdvancedSearchItem[];
+  webserviceCriteriaConditions?: AdvancedSearchItem[];
+  requiredMyselfCriteriaConditions?: AdvancedSearchItem[];
+  requiredUserCriteriaConditions?: AdvancedSearchItem[];
 }
 export interface WorkflowSubstateEventRequiredAttachment {
   tab: { id: number };
   templateAttachmentItem: { id: number };
   numMinAttachRequired: number;
+  workflowEventCondition?: {
+    id: number;
+    workflowEventType: string;
+    workflowEventConditionItems: AdvancedSearchItem[];
+    workflowMovementRequiredAttachmentId?: number;
+    workflowSubstateEventRequiredAttachmentId?: number;
+  };
+}
+export interface workflowSubstateRequiredCondition {
+  id: number;
+  workflowEventType: string;
+  workflowMovementId?: number;
+  workflowSubstateId?: number;
+  tabItemId: number;
+  workflowEventConditionItems: AdvancedSearchItem[];
 }
