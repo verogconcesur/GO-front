@@ -89,7 +89,12 @@
                     <div class="users-container__section__title">
                         <h1>Listado de clientes del vehiculo</h1>
 
-                        <button (click)="openModalAddCustomer()" mat-raised-button color="primary">
+                        <button
+                            [disabled]="!vehicleForm.get('facility').value"
+                            (click)="openModalAddCustomer()"
+                            mat-raised-button
+                            color="primary"
+                        >
                             + <span class="create-action__normal-label">Añadir cliente</span>
                         </button>
                     </div>

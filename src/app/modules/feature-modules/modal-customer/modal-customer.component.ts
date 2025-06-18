@@ -338,7 +338,7 @@ export class ModalCustomerComponent extends ComponentToExtendForCustomDialog imp
         email: [this.customerToEdit ? this.customerToEdit.email : null, [Validators.email, Validators.required]],
         socialSecurityId: [
           this.customerToEdit ? this.customerToEdit.socialSecurityId : null,
-          [Validators.required, Validators.pattern(/^[A-Za-z0-9]*$/)]
+          [Validators.required, Validators.pattern(/^[A-Za-z0-9\- ]*$/)]
         ],
         phone: [this.customerToEdit ? this.customerToEdit.phone : null, [Validators.required]],
         businessTypeCode: [{ value: this.customerToEdit ? this.customerToEdit.businessTypeCode : null, disabled: true }],
