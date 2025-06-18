@@ -55,62 +55,6 @@
                             <td mat-cell *matCellDef="let element">{{ element.user.role?.name }}</td>
                         </ng-container>
 
-                        <!-- brand Column -->
-                        <ng-container matColumnDef="brand">
-                            <th mat-header-cell *matHeaderCellDef>{{ labels.brand | translate }}</th>
-                            <td
-                                mat-cell
-                                *matCellDef="let element"
-                                matTooltipPosition="above"
-                                [matTooltip]="getUserOrganizationLabel(element.user?.brands)"
-                                appShowIfTruncated
-                            >
-                                {{ getUserOrganizationLabel(element.user?.brands) }}
-                            </td>
-                        </ng-container>
-
-                        <!-- facilities Column -->
-                        <ng-container matColumnDef="facility">
-                            <th mat-header-cell *matHeaderCellDef>{{ labels.facility | translate }}</th>
-                            <td
-                                mat-cell
-                                *matCellDef="let element"
-                                matTooltipPosition="above"
-                                [matTooltip]="getUserOrganizationLabel(element.user?.facilities)"
-                                appShowIfTruncated
-                            >
-                                {{ getUserOrganizationLabel(element.user?.facilities) }}
-                            </td>
-                        </ng-container>
-
-                        <!-- departments Column -->
-                        <ng-container matColumnDef="department">
-                            <th mat-header-cell *matHeaderCellDef>{{ labels.department | translate }}</th>
-                            <td
-                                mat-cell
-                                *matCellDef="let element"
-                                matTooltipPosition="above"
-                                [matTooltip]="getUserOrganizationLabel(element.user?.departments)"
-                                appShowIfTruncated
-                            >
-                                {{ getUserOrganizationLabel(element.user?.departments) }}
-                            </td>
-                        </ng-container>
-
-                        <!-- specialties Column -->
-                        <ng-container matColumnDef="specialty">
-                            <th mat-header-cell *matHeaderCellDef>{{ labels.specialty | translate }}</th>
-                            <td
-                                mat-cell
-                                *matCellDef="let element"
-                                matTooltipPosition="above"
-                                [matTooltip]="getUserOrganizationLabel(element.user?.specialties)"
-                                appShowIfTruncated
-                            >
-                                {{ getUserOrganizationLabel(element.user?.specialties) }}
-                            </td>
-                        </ng-container>
-
                         <!-- actions Column -->
                         <ng-container matColumnDef="actions">
                             <th mat-header-cell *matHeaderCellDef>{{ labels.actions | translate }}</th>

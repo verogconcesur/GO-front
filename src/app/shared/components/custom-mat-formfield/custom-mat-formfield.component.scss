@@ -1,0 +1,15 @@
+.selector-filter {
+  width: 100%;
+  margin: 0;
+  align-items: baseline;
+  box-sizing: border-box;
+  .mat-form-field-infix {
+    padding: 8px 0 !important;
+  }
+}
+.selector-filter input::placeholder {
+  text-align: center;
+  font-weight: bold;
+  color: black;
+  opacity: 1;
+}

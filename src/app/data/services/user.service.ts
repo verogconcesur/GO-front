@@ -8,6 +8,7 @@ import PaginationResponseI from '@data/interfaces/pagination-response';
 import UserDetailsDTO from '@data/models/user-permissions/user-details-dto';
 import UserDTO from '@data/models/user-permissions/user-dto';
 import UserFilterDTO, { UserFilterByIdsDTO } from '@data/models/user-permissions/user-filter-dto';
+import UserConfigDTO from '@data/models/user-permissions/userConfig';
 import { getPaginationUrlGetParams } from '@data/utils/pagination-aux';
 import { BehaviorSubject, Observable, throwError } from 'rxjs';
 import { catchError } from 'rxjs/operators';
@@ -26,6 +27,8 @@ export class UserService {
   private readonly USER_DELETE_PATH = '/api/users';
   private readonly USER_SEND2FA_PATH = '/api/users/sendUser2FA';
   private readonly USER_UPDATEPASS_PATH = '/api/users/updatePassByUser';
+  private readonly WORKFLOWS_PATH = '/api/workflows';
+  private readonly USERSCONFIG_PATH = '/usersConfig';
 
   constructor(@Inject(ENV) private env: Env, private http: HttpClient) {}
 
@@ -88,6 +91,12 @@ export class UserService {
         `${this.env.apiBaseUrl}${this.SEARCH_USERS_PATH}${getPaginationUrlGetParams(pagination, true)}`,
         userFilter
       )
+      .pipe(catchError((error) => throwError(error as ConcenetError)));
+  }
+
+  public getUsersForWorkflows(workFlowId: number, userFilter: UserFilterDTO | UserFilterByIdsDTO): Observable<UserConfigDTO[]> {
+    return this.http
+      .post<UserConfigDTO[]>(`${this.env.apiBaseUrl}${this.WORKFLOWS_PATH}/${workFlowId}${this.USERSCONFIG_PATH}`, userFilter)
       .pipe(catchError((error) => throwError(error as ConcenetError)));
   }
 

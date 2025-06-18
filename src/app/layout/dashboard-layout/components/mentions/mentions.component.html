@@ -1,4 +1,4 @@
-<div class="nav-bar-mentions-menu">
+<div class="nav-bar-mentions-menu" (scroll)="onScroll($event)">
     <div class="loading" *ngIf="loading">
         <mat-spinner diameter="30"></mat-spinner>
     </div>

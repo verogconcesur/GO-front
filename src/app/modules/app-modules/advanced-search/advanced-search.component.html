@@ -71,6 +71,17 @@
                     </div>
                 </div>
                 <div fxLayout="row" fxLayoutAlign="end center" class="adv-search__content__header__sidetitle">
+                    <div class="navbar__right">
+                        <button
+                            mat-icon-button
+                            aria-label="Downloads"
+                            #downloadTrigger="matMenuTrigger"
+                            (click)="showDownload()"
+                            [matMenuTriggerFor]="downloadMenu"
+                        >
+                            <mat-icon [ngClass]="{ active: highLightDownload() }">vertical_align_bottom</mat-icon>
+                        </button>
+                    </div>
                     <div
                         class="custButton"
                         fxLayout="row"
@@ -179,7 +190,7 @@
                                         <mat-datepicker-toggle matSuffix [for]="pickerEnd"></mat-datepicker-toggle>
                                         <mat-datepicker #pickerEnd></mat-datepicker>
                                     </mat-form-field> -->
-                                    <mat-form-field appearance="outline" floatLabel="always" style="width: 48%">
+                                    <!-- <mat-form-field appearance="outline" floatLabel="always" style="width: 48%">
                                         <mat-label>{{ labels.facilities | translate }}</mat-label>
                                         <mat-select formControlName="facilities" multiple>
                                             <button
@@ -202,8 +213,41 @@
                                                 facility.name
                                             }}</mat-option>
                                         </mat-select>
-                                    </mat-form-field>
-                                    <mat-form-field appearance="outline" floatLabel="always" style="width: 48%">
+                                    </mat-form-field> -->
+                                    <app-custom-mat-formfield
+                                        style="width: 48%"
+                                        [label]="labels.facilities | translate"
+                                        [formControl]="advSearchForm.get('advancedSearchContext.facilities')"
+                                        [options]="facilityList"
+                                        [multiple]="true"
+                                        [enableFilter]="true"
+                                        [selectAll]="true"
+                                        displayProp="name"
+                                    ></app-custom-mat-formfield>
+                                    <app-custom-mat-formfield
+                                        style="width: 48%"
+                                        [label]="labels.workflows | translate"
+                                        [formControl]="advSearchForm.get('advancedSearchContext.workflows')"
+                                        [options]="workflowList"
+                                        [multiple]="true"
+                                        [selectAll]="true"
+                                        [enableFilter]="true"
+                                        [displayProp]="'name'"
+                                        (selectionChange)="changeWorkflow()"
+                                    ></app-custom-mat-formfield>
+                                    <!-- <app-custom-mat-formfield
+                                        style="width: 48%"
+                                        [label]="labels.states | translate"
+                                        [formControl]="advSearchForm.get('advancedSearchContext.states')"
+                                        [options]="statesOptions | async"
+                                        [multiple]="true"
+                                        [enableFilter]="true"
+                                        [selectAll]="true"
+                                        [displayProp]="['workflow.name', 'name']"
+                                        (selectionChange)="changeState()"
+                                    ></app-custom-mat-formfield> -->
+
+                                    <!-- <mat-form-field appearance="outline" floatLabel="always" style="width: 48%">
                                         <mat-label>{{ labels.workflows | translate }}</mat-label>
                                         <mat-select formControlName="workflows" multiple (selectionChange)="changeWorkflow()">
                                             <button
@@ -226,7 +270,7 @@
                                                 workflow.name
                                             }}</mat-option>
                                         </mat-select>
-                                    </mat-form-field>
+                                    </mat-form-field> -->
                                     <mat-form-field appearance="outline" floatLabel="always" style="width: 48%">
                                         <mat-label>{{ labels.states | translate }}</mat-label>
                                         <mat-select formControlName="states" multiple (selectionChange)="changeState()">
@@ -446,3 +490,31 @@
         </div>
     </mat-drawer-content>
 </mat-drawer-container>
+<mat-menu #downloadMenu="matMenu" class="notification-mention-menu">
+    <div class="navbar-warning-menu" *ngIf="searchExportForm">
+        <div fxLayout="row" fxLayoutAlign="start center">
+            <h2 class="navbar-warning-menu__header">
+                {{ labels.files | translate }}
+            </h2>
+        </div>
+        <mat-divider></mat-divider>
+        <div class="navbar-warning-menu__content">
+            <div
+                class="navbar-warning-menu__content__item"
+                *ngFor="let fileAsync of searchExportForm.controls"
+                fxLayout="row"
+                fxLayoutAlign="start center"
+            >
+                <div class="navbar-warning-menu__content__item__name" fxLayout="row" fxLayoutAlign="start center">
+                    <span matTooltip="{{ fileAsync.value.name }}" matTooltipPosition="left">{{ fileAsync.value.name }}</span>
+                </div>
+                <div class="navbar-warning-menu__content__item__icon" fxLayout="row" fxLayoutAlign="center center">
+                    <mat-icon *ngIf="fileAsync.value.attachment" (click)="downloadFile(fileAsync)"
+                        >vertical_align_bottom</mat-icon
+                    >
+                    <mat-spinner [diameter]="20" *ngIf="!fileAsync.value.attachment"></mat-spinner>
+                </div>
+            </div>
+        </div>
+    </div>
+</mat-menu>

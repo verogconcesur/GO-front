@@ -66,6 +66,7 @@ export class MentionsComponent implements OnInit {
         () => {
           this.spinnerService.hide(spinner);
           this.getMentions();
+          this.notificationService.updateUnreadMentionsCount();
         },
         (error) => {
           this.logger.error(error);
@@ -85,6 +86,7 @@ export class MentionsComponent implements OnInit {
         () => {
           this.spinnerService.hide(spinner);
           this.getMentions();
+          this.notificationService.updateUnreadMentionsCount();
         },
         (error) => {
           this.logger.error(error);

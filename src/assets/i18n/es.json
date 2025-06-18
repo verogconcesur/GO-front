@@ -582,6 +582,8 @@
         "line": "Línea",
         "logo": "Logo",
         "manual": "Manual",
+        "markAsReadAllMentions": "¿Esta seguro de querer marcar como leido todas las menciones?",
+        "markAsReadAllNotifications": "¿Esta seguro de querer marcar como leido todas las notificaciones?",
         "mentions": "Menciones",
         "messages": "Mensajes",
         "more": "Más",
@@ -819,6 +821,7 @@
         "saveTabBeforeChange": "Debe guardar la información de la pestaña actual antes de poder abrir otra.",
         "unknown": "Error desconocido",
         "uploadOnlyOneFile": "Solo está permitido cargar un único archivo",
+        "userDetailFetchFailed": "",
         "valueBetween": "Valor entre {min} y {max}"
     },
     "landing": {
@@ -948,6 +951,7 @@
             "create": "Crear marca",
             "delete": "Eliminar marca",
             "deleteConfirmation": "¿Realmente quiere eliminar esta marca?",
+            "deleteDuplicateConfirmation": "¿Realmente quiere duplicar esta marca?",
             "edit": "Editar marca",
             "multiBrands": "Multimarca",
             "name": "Nombre de marca",
@@ -1238,6 +1242,7 @@
         },
         "card": {
             "cardTabs": "Pestañas de la ficha",
+            "cardsByCalendar": "Tarjetas del calendario",
             "customerAssociatedCards": "Tarjetas asociadas al cliente",
             "permissionSubtitle": "Selecciona las pestañas que deseas que aparezcan en este workflow. Haz click sobre el nombre de las pestañas para personalizar estos permisos por rol.",
             "permissionTitle": "Personalizar permisos sobre las pestañas de la ficha",
