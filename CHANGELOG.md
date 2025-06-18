@@ -2,6 +2,45 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [1.1.17](https://github.com/Delivery-Projects/concesur/concenet_front/-/compare/v1.1.16...v1.1.17) (2025-06-10)
+
+
+### Features
+
+* cambiar patter para dni andorrano y activar borrardo cache ([061b234](https://github.com/Delivery-Projects/concesur/concenet_front/-/commit/061b234ddc794cb464ff4b9dd34b5f59c1bbe504))
+* comprobar version para recarga de cache cada 30 min ([438c9f3](https://github.com/Delivery-Projects/concesur/concenet_front/-/commit/438c9f3fc418ee4b9594d4a6f4afcc67318d6de9))
+* up json version ([a5713e7](https://github.com/Delivery-Projects/concesur/concenet_front/-/commit/a5713e7145c120674953f101f481fe8ddcffb386))
+
+### [1.1.16](https://github.com/Delivery-Projects/concesur/concenet_front/-/compare/v1.1.14...v1.1.16) (2025-06-05)
+
+
+### Features
+
+* deshabilitar limpiar cache go ([00ea3ac](https://github.com/Delivery-Projects/concesur/concenet_front/-/commit/00ea3ac6c87765635fd54c4a625a8c6aaa81573c))
+* ocultar navegacion si no se tienen permisos en menu desplegable ([0a6c493](https://github.com/Delivery-Projects/concesur/concenet_front/-/commit/0a6c4938089355ec24a169ba8f13c41dd92aefe6))
+* verificar version front, si es dintinta cargar cache de nuevo ([85e4cfa](https://github.com/Delivery-Projects/concesur/concenet_front/-/commit/85e4cfacdd844167b94a42cd1b81f2998af5dccf))
+
+
+### Bug Fixes
+
+* no deshabilitar marca y modelo si no se tiene permisos de escrtitura autoline ([12a8a67](https://github.com/Delivery-Projects/concesur/concenet_front/-/commit/12a8a671524c4717c7c26443d622c0a5dd2b0098))
+* ticket 846996 ([81fc7e0](https://github.com/Delivery-Projects/concesur/concenet_front/-/commit/81fc7e07985576310ebd3faf6622d403e0bdac63))
+
+### [1.1.15](https://github.com/Delivery-Projects/concesur/concenet_front/-/compare/v1.1.14...v1.1.15) (2025-06-05)
+
+
+### Features
+
+* deshabilitar limpiar cache go ([00ea3ac](https://github.com/Delivery-Projects/concesur/concenet_front/-/commit/00ea3ac6c87765635fd54c4a625a8c6aaa81573c))
+* ocultar navegacion si no se tienen permisos en menu desplegable ([0a6c493](https://github.com/Delivery-Projects/concesur/concenet_front/-/commit/0a6c4938089355ec24a169ba8f13c41dd92aefe6))
+* verificar version front, si es dintinta cargar cache de nuevo ([85e4cfa](https://github.com/Delivery-Projects/concesur/concenet_front/-/commit/85e4cfacdd844167b94a42cd1b81f2998af5dccf))
+
+
+### Bug Fixes
+
+* no deshabilitar marca y modelo si no se tiene permisos de escrtitura autoline ([12a8a67](https://github.com/Delivery-Projects/concesur/concenet_front/-/commit/12a8a671524c4717c7c26443d622c0a5dd2b0098))
+* ticket 846996 ([81fc7e0](https://github.com/Delivery-Projects/concesur/concenet_front/-/commit/81fc7e07985576310ebd3faf6622d403e0bdac63))
+
 ### [1.1.14](https://github.com/Delivery-Projects/concesur/concenet_front/-/compare/v1.1.13...v1.1.14) (2025-05-13)
 
 
