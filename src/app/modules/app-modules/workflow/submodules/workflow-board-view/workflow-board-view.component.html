@@ -1,5 +1,10 @@
 <router-outlet name="card"></router-outlet>
-<div class="board-view-wrapper" cdkDropListGroup [cdkDropListGroupDisabled]="!isDragAndDropEnabled" *ngIf="showBoardView">
+<div
+    class="board-view-wrapper"
+    cdkDropListGroup
+    [cdkDropListGroupDisabled]="!isDragAndDropEnabled"
+    *ngIf="showBoardView && !isLoading"
+>
     <!-- anchor state column -->
     <div #AnchorColumn class="board-view-wrapper__anchor-column" *ngIf="wAnchorState" [ngClass]="{ hide: hideAnchorState() }">
         <div class="board-view-wrapper__anchor-column__container">
