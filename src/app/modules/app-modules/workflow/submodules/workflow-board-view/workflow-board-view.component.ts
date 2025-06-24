@@ -265,8 +265,10 @@ export class WorkflowBoardViewComponent implements OnInit {
   }
 
   private defineColumns() {
-    this.wAnchorState = this.wStatesData.find((state) => state.anchor);
-    this.wNormalStates = this.wStatesData.filter((state) => !state.anchor).sort((a, b) => a.orderNumber - b.orderNumber);
+    setTimeout(() => {
+      this.wAnchorState = this.wStatesData.find((state) => state.anchor);
+      this.wNormalStates = this.wStatesData.filter((state) => !state.anchor).sort((a, b) => a.orderNumber - b.orderNumber);
+    });
   }
 
   private getData(): void {
