@@ -356,22 +356,32 @@ export class AdvancedSearchComponent implements OnInit {
       });
   }
   duplicateFavSearch(advSearch: AdvSearchDTO): void {
-    const spinner = this.spinnerService.show();
-    this.advSearchService
-      .duplicateAdvSearch(advSearch.id)
+    this.confirmationDialog
+      .open({
+        title: this.translateService.instant(marker('common.warning')),
+        message: this.translateService.instant(marker('advSearch.duplicateConfirmation'))
+      })
       .pipe(take(1))
-      .subscribe({
-        next: () => {
-          this.spinnerService.hide(spinner);
-          this.refreshFavSearchList();
-        },
-        error: (error: ConcenetError) => {
-          this.spinnerService.hide(spinner);
-          this.logger.error(error);
-          this.globalMessageService.showError({
-            message: error.message,
-            actionText: this.translateService.instant(marker('common.close'))
-          });
+      .subscribe((ok: boolean) => {
+        if (ok) {
+          const spinner = this.spinnerService.show();
+          this.advSearchService
+            .duplicateAdvSearch(advSearch.id)
+            .pipe(take(1))
+            .subscribe({
+              next: () => {
+                this.spinnerService.hide(spinner);
+                this.refreshFavSearchList();
+              },
+              error: (error: ConcenetError) => {
+                this.spinnerService.hide(spinner);
+                this.logger.error(error);
+                this.globalMessageService.showError({
+                  message: error.message,
+                  actionText: this.translateService.instant(marker('common.close'))
+                });
+              }
+            });
         }
       });
   }
