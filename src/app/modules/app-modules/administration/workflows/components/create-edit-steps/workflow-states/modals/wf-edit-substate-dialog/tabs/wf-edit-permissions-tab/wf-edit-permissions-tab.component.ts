@@ -1,6 +1,5 @@
-import { ThisReceiver } from '@angular/compiler';
 import { Component, OnInit } from '@angular/core';
-import { FormArray, FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { FormArray, FormBuilder, FormGroup } from '@angular/forms';
 import { ConcenetError } from '@app/types/error';
 import { marker } from '@biesbjerg/ngx-translate-extract-marker';
 import PermissionsDTO from '@data/models/user-permissions/permissions-dto';
@@ -10,16 +9,16 @@ import { WorkFlowPermissionsEnum } from '@data/models/workflow-admin/workflow-ca
 import WorkflowSubstateUserDTO from '@data/models/workflows/workflow-substate-user-dto';
 import { WorkflowAdministrationStatesSubstatesService } from '@data/services/workflow-administration-states-substates.service';
 import { WorkflowAdministrationService } from '@data/services/workflow-administration.service';
+import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
 import { TranslateService } from '@ngx-translate/core';
 import { GlobalMessageService } from '@shared/services/global-message.service';
 import { ProgressSpinnerDialogService } from '@shared/services/progress-spinner-dialog.service';
 import _ from 'lodash';
 import { NGXLogger } from 'ngx-logger';
-import { forkJoin, Observable, of } from 'rxjs';
+import { forkJoin, Observable } from 'rxjs';
 import { finalize, take } from 'rxjs/operators';
 import { WEditSubstateFormAuxService } from '../../aux-service/wf-edit-substate-aux.service';
 import { WfEditSubstateAbstractTabClass } from '../wf-edit-substate-abstract-tab-class';
-import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
 
 @UntilDestroy()
 @Component({
@@ -59,52 +58,107 @@ export class WfEditPermissionsTabComponent extends WfEditSubstateAbstractTabClas
     return this.form.get('users') ? (this.form.get('users') as FormArray) : null;
   }
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  public initForm(data: [WorkflowSubstateUserDTO[], WorkflowSubstateUserDTO[]]): void {
+  public initForm(data: [WorkflowSubstateUserDTO[], WorkflowSubstateUserDTO[]] | any): void {
     this.roleList = null;
     this.roleSelected = null;
-    this.userPermissions = data[0];
-    this.userList = data[1].map((user: WorkflowSubstateUserDTO) => {
-      user.user.showAll = !!user.user.permissions.find((perm: PermissionsDTO) => perm.code === 'VERTODOPLAN');
-      return user;
-    });
-    const form = this.fb.group({
-      users: this.fb.array([])
-    });
-    this.userList.forEach((userSub: WorkflowSubstateUserDTO) => {
-      const permission = this.userPermissions.find((perm: WorkflowSubstateUserDTO) => perm.workflowUserId === userSub.id);
-      if (permission) {
-        (form.get('users') as FormArray).push(
-          this.fb.group({
-            id: [permission.id],
-            user: [userSub.user],
-            // permissionType: [userSub.user.showAll ? WorkFlowPermissionsEnum.edit : permission.permissionType],
-            permissionType: [permission.permissionType],
-            workflowSubstateId: [permission.workflowSubstateId],
-            workflowUserId: [permission.workflowUserId]
-          })
-        );
-      } else {
-        (form.get('users') as FormArray).push(
-          this.fb.group({
-            id: [],
-            user: [userSub.user],
-            // permissionType: [userSub.user.showAll ? WorkFlowPermissionsEnum.edit : WorkFlowPermissionsEnum.hide],
-            permissionType: [WorkFlowPermissionsEnum.hide],
-            workflowSubstateId: [this.substate.id],
-            workflowUserId: [userSub.id]
-          })
-        );
-      }
-    });
-    this.allPermisionForm = this.fb.group({ permission: [''] });
-    this.roleList = this.userList.map((userSub: WorkflowSubstateUserDTO) => userSub.user.role) as RoleDTO[];
-    this.roleList = _.uniqBy(this.roleList, 'id');
-    this.editSubstateAuxService.setFormGroupByTab(form, this.tabId);
-    this.editSubstateAuxService.setFormOriginalData(this.form.value, this.tabId);
-    this.form.valueChanges.pipe(untilDestroyed(this)).subscribe(() => {
-      this.allPermisionForm.get('permission').setValue('');
-    });
-    this.roleSelected = this.roleList[0];
+    if (!data[1]) {
+      const spinner = this.spinnerService.show();
+      this.workflowService
+        .getWorkflowUsers(this.workflowId)
+        .pipe(
+          take(1),
+          finalize(() => this.spinnerService.hide(spinner))
+        )
+        .subscribe((resp) => {
+          this.userPermissions = data.users;
+          this.userList = resp.map((user: WorkflowSubstateUserDTO) => {
+            user.user.showAll = !!user.user.permissions.find((perm: PermissionsDTO) => perm.code === 'VERTODOPLAN');
+            return user;
+          });
+          const form = this.fb.group({
+            users: this.fb.array([])
+          });
+          this.userList.forEach((userSub: WorkflowSubstateUserDTO) => {
+            const permission = this.userPermissions.find((perm: WorkflowSubstateUserDTO) => perm.workflowUserId === userSub.id);
+            if (permission) {
+              (form.get('users') as FormArray).push(
+                this.fb.group({
+                  id: [permission.id],
+                  user: [userSub.user],
+                  // permissionType: [userSub.user.showAll ? WorkFlowPermissionsEnum.edit : permission.permissionType],
+                  permissionType: [permission.permissionType],
+                  workflowSubstateId: [permission.workflowSubstateId],
+                  workflowUserId: [permission.workflowUserId]
+                })
+              );
+            } else {
+              (form.get('users') as FormArray).push(
+                this.fb.group({
+                  id: [],
+                  user: [userSub.user],
+                  // permissionType: [userSub.user.showAll ? WorkFlowPermissionsEnum.edit : WorkFlowPermissionsEnum.hide],
+                  permissionType: [WorkFlowPermissionsEnum.hide],
+                  workflowSubstateId: [this.substate.id],
+                  workflowUserId: [userSub.id]
+                })
+              );
+            }
+          });
+          this.allPermisionForm = this.fb.group({ permission: [''] });
+          this.roleList = this.userList.map((userSub: WorkflowSubstateUserDTO) => userSub.user.role) as RoleDTO[];
+          this.roleList = _.uniqBy(this.roleList, 'id');
+          this.editSubstateAuxService.setFormGroupByTab(form, this.tabId);
+          this.editSubstateAuxService.setFormOriginalData(this.form.value, this.tabId);
+          this.form.valueChanges.pipe(untilDestroyed(this)).subscribe(() => {
+            this.allPermisionForm.get('permission').setValue('');
+          });
+          this.roleSelected = this.roleList[0];
+        });
+    } else {
+      this.userPermissions = data[0];
+      this.userList = data[1].map((user: WorkflowSubstateUserDTO) => {
+        user.user.showAll = !!user.user.permissions.find((perm: PermissionsDTO) => perm.code === 'VERTODOPLAN');
+        return user;
+      });
+      const form = this.fb.group({
+        users: this.fb.array([])
+      });
+      this.userList.forEach((userSub: WorkflowSubstateUserDTO) => {
+        const permission = this.userPermissions.find((perm: WorkflowSubstateUserDTO) => perm.workflowUserId === userSub.id);
+        if (permission) {
+          (form.get('users') as FormArray).push(
+            this.fb.group({
+              id: [permission.id],
+              user: [userSub.user],
+              // permissionType: [userSub.user.showAll ? WorkFlowPermissionsEnum.edit : permission.permissionType],
+              permissionType: [permission.permissionType],
+              workflowSubstateId: [permission.workflowSubstateId],
+              workflowUserId: [permission.workflowUserId]
+            })
+          );
+        } else {
+          (form.get('users') as FormArray).push(
+            this.fb.group({
+              id: [],
+              user: [userSub.user],
+              // permissionType: [userSub.user.showAll ? WorkFlowPermissionsEnum.edit : WorkFlowPermissionsEnum.hide],
+              permissionType: [WorkFlowPermissionsEnum.hide],
+              workflowSubstateId: [this.substate.id],
+              workflowUserId: [userSub.id]
+            })
+          );
+        }
+      });
+      this.allPermisionForm = this.fb.group({ permission: [''] });
+      this.roleList = this.userList.map((userSub: WorkflowSubstateUserDTO) => userSub.user.role) as RoleDTO[];
+      this.roleList = _.uniqBy(this.roleList, 'id');
+      this.editSubstateAuxService.setFormGroupByTab(form, this.tabId);
+      this.editSubstateAuxService.setFormOriginalData(this.form.value, this.tabId);
+      this.form.valueChanges.pipe(untilDestroyed(this)).subscribe(() => {
+        this.allPermisionForm.get('permission').setValue('');
+      });
+      this.roleSelected = this.roleList[0];
+    }
   }
   public selectRole(role: RoleDTO): void {
     if (role.id !== this.roleSelected.id) {
