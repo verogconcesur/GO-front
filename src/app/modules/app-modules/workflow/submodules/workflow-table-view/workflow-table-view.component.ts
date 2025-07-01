@@ -1,6 +1,9 @@
 import { Component, Inject, OnInit } from '@angular/core';
-import { Router, NavigationEnd, ChildActivationEnd } from '@angular/router';
+import { ChildActivationEnd, NavigationEnd, Router } from '@angular/router';
+import { ENV } from '@app/constants/global.constants';
 import { RouteConstants } from '@app/constants/route.constants';
+import { PerformanceService } from '@app/services/performance.service';
+import { Env } from '@app/types/env';
 import { ConcenetError } from '@app/types/error';
 import { marker } from '@biesbjerg/ngx-translate-extract-marker';
 import FacilityDTO from '@data/models/organization/facility-dto';
@@ -9,6 +12,7 @@ import WorkflowDTO from '@data/models/workflows/workflow-dto';
 import WorkflowFilterDTO from '@data/models/workflows/workflow-filter-dto';
 import WorkflowStateDTO from '@data/models/workflows/workflow-state-dto';
 import WorkflowSubstateDTO from '@data/models/workflows/workflow-substate-dto';
+import WorkflowSubstateEventDTO from '@data/models/workflows/workflow-substate-event-dto';
 import WorkflowSubstateUserDTO from '@data/models/workflows/workflow-substate-user-dto';
 import { WorkflowsService } from '@data/services/workflows.service';
 import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
@@ -16,15 +20,11 @@ import { TranslateService } from '@ngx-translate/core';
 import { GlobalMessageService } from '@shared/services/global-message.service';
 import { ProgressSpinnerDialogService } from '@shared/services/progress-spinner-dialog.service';
 import { haveArraysSameValuesIdObjects } from '@shared/utils/array-comparation-function';
-import lodash from 'lodash';
 import { NGXLogger } from 'ngx-logger';
 import { forkJoin, Subscription } from 'rxjs';
 import { skip, take } from 'rxjs/operators';
 import { WorkflowFilterService } from '../../aux-service/workflow-filter.service';
 import { WorkflowPrepareAndMoveService } from '../../aux-service/workflow-prepare-and-move-aux.service';
-import { PerformanceService } from '@app/services/performance.service';
-import { ENV } from '@app/constants/global.constants';
-import { Env } from '@app/types/env';
 @UntilDestroy()
 @Component({
   selector: 'app-workflow-table-view',
@@ -40,6 +40,7 @@ export class WorkflowTableViewComponent implements OnInit {
   public wAnchorState: WorkflowStateDTO;
   public wNormalStates: WorkflowStateDTO[];
   public showAnchorState = true;
+  public isLoading: boolean;
   public labels = {
     noData: marker('errors.noDataToShow')
   };
@@ -69,6 +70,7 @@ export class WorkflowTableViewComponent implements OnInit {
     if (this.router.url.indexOf(`${RouteConstants.WORKFLOWS}/${RouteConstants.WORKFLOWS_TABLE_VIEW}`) === -1) {
       this.initListeners();
     }
+    this.isLoading = false;
   }
 
   public initListeners(): void {
@@ -130,53 +132,63 @@ export class WorkflowTableViewComponent implements OnInit {
       });
   }
   private mapWorkflowCardsWithInstances(workflowCards: WorkflowCardDTO[]) {
-    this.workflowInstances.forEach((wState: WorkflowStateDTO) => {
+    const substateCardMap = new Map<number, WorkflowCardDTO[]>();
+    for (const card of workflowCards) {
+      const substateId = card.cardInstanceWorkflows?.[0]?.workflowSubstateId;
+      if (substateId !== undefined) {
+        if (!substateCardMap.has(substateId)) {
+          substateCardMap.set(substateId, []);
+        }
+        // eslint-disable-next-line
+        substateCardMap.get(substateId)!.push(card);
+      }
+    }
+    for (const wState of this.workflowInstances) {
       let totalCards = 0;
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      const totalUsers: any = {};
-      wState.workflowSubstates.forEach((wSubstate: WorkflowSubstateDTO) => {
-        wSubstate.cards = this.workflowFilterService.orderCardsByOrderNumber(
-          workflowCards.filter((card: WorkflowCardDTO) => card.cardInstanceWorkflows[0].workflowSubstateId === wSubstate.id)
-        );
-        const subStateCopy = lodash.cloneDeep(wSubstate); //Rompo la recursividad
-        subStateCopy.cards = [];
-        wSubstate.cards = wSubstate.cards.map((card) => {
-          card.workflowSubstate = subStateCopy;
-          return card;
-        });
+      const totalUsers: Record<number, WorkflowSubstateUserDTO> = {};
+      for (const wSubstate of wState.workflowSubstates) {
+        const cards = substateCardMap.get(wSubstate.id) || [];
+        const orderedCards = this.workflowFilterService.orderCardsByOrderNumber(cards);
+        const subStateCopy: WorkflowSubstateDTO = {
+          ...wSubstate,
+          cards: []
+        };
+        wSubstate.cards = orderedCards.map((card) => ({
+          ...card,
+          workflowSubstate: subStateCopy
+        }));
         totalCards += wSubstate.cards.length;
-        wSubstate.workflowSubstateUser.forEach((user: WorkflowSubstateUserDTO) => {
-          const cardsBySubstateId = totalUsers[user.user.id] ? totalUsers[user.user.id].cardsBySubstateId : {};
-          const substateCardsByUser = wSubstate.cards
-            .filter((card: WorkflowCardDTO) => {
-              if (
-                card.cardInstanceWorkflows?.length >= 1 &&
-                card.cardInstanceWorkflows[0].cardInstanceWorkflowUsers?.length >= 1
-              ) {
-                return card.cardInstanceWorkflows[0].cardInstanceWorkflowUsers[0].userId === user.user.id;
-              }
-              return false;
+        for (const user of wSubstate.workflowSubstateUser) {
+          const uid = user.user.id;
+          const userCards = wSubstate.cards
+            .filter((card) => {
+              const ciw = card.cardInstanceWorkflows?.[0];
+              return ciw?.cardInstanceWorkflowUsers?.[0]?.userId === uid;
             })
-            //Rompo recursividad
             .map((card) => ({
               ...card,
               workflowSubstate: {
                 ...card.workflowSubstate,
-                workflowSubstateEvents: [],
-                workflowState: null,
-                workflowSubstateUser: []
+                workflowSubstateEvents: [] as WorkflowSubstateEventDTO[],
+                workflowState: null as WorkflowStateDTO | null,
+                workflowSubstateUser: [] as WorkflowSubstateUserDTO[]
               }
             }));
-          user.cards = this.workflowFilterService.orderCardsByOrderNumber([...substateCardsByUser]);
-          user.cardsBySubstateId = lodash.cloneDeep(cardsBySubstateId);
-          user.cardsBySubstateId[wSubstate.id] = user.cards;
-          totalUsers[user.user.id] = user;
-        });
-      });
+          const orderedUserCards = this.workflowFilterService.orderCardsByOrderNumber(userCards);
+          if (!totalUsers[uid]) {
+            totalUsers[uid] = { ...user, cards: [], cardsBySubstateId: {} };
+          }
+          totalUsers[uid].cards = orderedUserCards;
+          totalUsers[uid].cardsBySubstateId = {
+            ...totalUsers[uid].cardsBySubstateId,
+            [wSubstate.id]: orderedUserCards
+          };
+        }
+      }
       wState.cardCount = totalCards;
       wState.userCount = Object.keys(totalUsers).length;
-      wState.workflowUsers = Object.keys(totalUsers).map((k) => totalUsers[k]);
-    });
+      wState.workflowUsers = Object.values(totalUsers);
+    }
     this.filterData();
   }
 
@@ -191,15 +203,6 @@ export class WorkflowTableViewComponent implements OnInit {
       this.wNormalStates = this.wStatesData
         .filter((state: WorkflowStateDTO) => !state.anchor)
         .sort((a, b) => a.orderNumber - b.orderNumber);
-      // if (this.getDataTimeStamp) {
-      //   this.renderedDataTimeStamp = +new Date();
-      //   console.log('############ TERMINO DE PREPARAR DATOS FRONT', this.renderedDataTimeStamp);
-      //   console.log('####### TIEMPO EN PREPARAR DATOS FRONT=> ', this.renderedDataTimeStamp - this.getDataTimeStamp);
-      //   console.log('####### TIEMPO TOTAL CONSUMIDO=> ', this.renderedDataTimeStamp - this.askForDataTimeStamp);
-
-      //   this.renderedDataTimeStamp = null;
-      //   this.getDataTimeStamp = null;
-      // }
     });
   }
 
@@ -210,6 +213,7 @@ export class WorkflowTableViewComponent implements OnInit {
         this.workflow.id !== this.loadedData.workflow.id ||
         !haveArraysSameValuesIdObjects(this.loadedData.facilities, this.facilities))
     ) {
+      this.isLoading = true;
       this.loadedData = { workflow: this.workflow, facilities: this.facilities };
       const spinner = this.spinnerService.show();
       // this.askForDataTimeStamp = +new Date();
@@ -225,6 +229,7 @@ export class WorkflowTableViewComponent implements OnInit {
           this.spinnerService.hide(spinner);
           this.workflowInstances = data[0];
           this.mapWorkflowCardsWithInstances(data[1]);
+          this.isLoading = false;
           this.cardList = data[1];
           this.subjectSubscription = this.prepareAndMoveService.moveCard$
             .pipe(untilDestroyed(this), skip(1))

@@ -1,5 +1,5 @@
 <router-outlet name="card"></router-outlet>
-<div class="list-view-wrapper" *ngIf="showListView" fxLayout="column">
+<div class="list-view-wrapper" *ngIf="showListView && !isLoading" fxLayout="column">
     <div class="list-view-wrapper_state" *ngIf="wAnchorState">
         <app-workflow-table-state [workflow]="workflow" [wState]="wAnchorState"></app-workflow-table-state>
     </div>
