@@ -2,6 +2,33 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [1.1.18](https://github.com/Delivery-Projects/concesur/concenet_front/-/compare/v1.1.17...v1.1.18) (2025-07-01)
+
+
+### Features
+
+* cargar y guardar elemtos simples y arreglar adjuntos requeridos ([0c215a7](https://github.com/Delivery-Projects/concesur/concenet_front/-/commit/0c215a75504f116679279a63cfdd4518bd6a1752))
+* condiciones en campos requeridos ([86de904](https://github.com/Delivery-Projects/concesur/concenet_front/-/commit/86de9046475eacde9be7ba7438b8d1b2ba989c7d))
+* detect changes and validate events conditions in form ([d491b35](https://github.com/Delivery-Projects/concesur/concenet_front/-/commit/d491b35aa93c1d99a6105d8d856bac77d1dc1ad6))
+* events conditions components in requiredFieldList and requiredsize ([d23d9b3](https://github.com/Delivery-Projects/concesur/concenet_front/-/commit/d23d9b3fc456badb0d22c62a9b6ab2918c6ae49c))
+* logica para campos y adjuntos requeridos y estilos ([3fee20e](https://github.com/Delivery-Projects/concesur/concenet_front/-/commit/3fee20e3014b9f4245eb2dc29289415ca8a886e5))
+* mapeo, cargar y guardar condiciones en adjuntos y email ([8c7c04e](https://github.com/Delivery-Projects/concesur/concenet_front/-/commit/8c7c04e6116f53195865edc954e1ba13ae70f03f))
+* mejorar carga workflow en table view ([af5e584](https://github.com/Delivery-Projects/concesur/concenet_front/-/commit/af5e5844e9467183fdd0ecaaa70891d672c49ef4))
+* modify criteria add and edit modal's tittle ([7112107](https://github.com/Delivery-Projects/concesur/concenet_front/-/commit/7112107996f7b4e78074ea7b2ee47fae5f46bf88))
+* new component wf-events-conditions ([75c2b5e](https://github.com/Delivery-Projects/concesur/concenet_front/-/commit/75c2b5e3b2422a55505b6373ed770b83b5aefec1))
+* refactorizar logica obtener workflows, ocultar tarjetas al cambiar workflow ([8468028](https://github.com/Delivery-Projects/concesur/concenet_front/-/commit/846802880aba0b499e16b99cc9b758b3d05e7f60))
+* up version.json ([5bb3b52](https://github.com/Delivery-Projects/concesur/concenet_front/-/commit/5bb3b522cedb4b91d06aa4ec3e34ce90fbda0624))
+
+
+### Bug Fixes
+
+* arreglar condition required attachments mal formado y error id ([975b67a](https://github.com/Delivery-Projects/concesur/concenet_front/-/commit/975b67a4fb27254b55ac1104d01d49794eb2fcc9))
+* arreglar conflictos ([6a24f0d](https://github.com/Delivery-Projects/concesur/concenet_front/-/commit/6a24f0d1bb30be03eaa4030ce36c5496cf190a27))
+* deshabilitar boton si no se tiene instalacion ([34884b6](https://github.com/Delivery-Projects/concesur/concenet_front/-/commit/34884b6fbe53176303f62da9e95722c99314d451))
+* errores al enviar condiciones y validadores ([f78a2dd](https://github.com/Delivery-Projects/concesur/concenet_front/-/commit/f78a2dd7ead121459fc3d1b00b4a6e57dc25539d))
+* no se guarda marca y modelo, no carga instalacion de inventario ([a5a13c6](https://github.com/Delivery-Projects/concesur/concenet_front/-/commit/a5a13c64c8f5de1fef76c5b6acee90cef0b05a6b))
+* reset permisos workflows ([cf0bf39](https://github.com/Delivery-Projects/concesur/concenet_front/-/commit/cf0bf390a7b5314cc7b2d8f46c0463be38424251))
+
 ### [1.1.17](https://github.com/Delivery-Projects/concesur/concenet_front/-/compare/v1.1.16...v1.1.17) (2025-06-10)
 
 
