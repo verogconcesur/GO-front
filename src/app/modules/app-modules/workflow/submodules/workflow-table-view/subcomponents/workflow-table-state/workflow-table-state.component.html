@@ -22,16 +22,19 @@
         <mat-accordion multi>
             <mat-expansion-panel *ngFor="let substate of wState.workflowSubstates">
                 <mat-expansion-panel-header>
-                    <mat-panel-title> {{ substate.name }} </mat-panel-title>
+                    <mat-panel-title>{{ substate.name }}</mat-panel-title>
                     <mat-panel-description>
                         <span>{{ substate.cards.length }}</span>
                     </mat-panel-description>
                 </mat-expansion-panel-header>
-                <app-workflow-table-substate
-                    [workflow]="workflow"
-                    [wState]="wState"
-                    [wSubstate]="substate"
-                ></app-workflow-table-substate>
+
+                <ng-template matExpansionPanelContent>
+                    <app-workflow-table-substate
+                        [workflow]="workflow"
+                        [wState]="wState"
+                        [wSubstate]="substate"
+                    ></app-workflow-table-substate>
+                </ng-template>
             </mat-expansion-panel>
         </mat-accordion>
     </div>
