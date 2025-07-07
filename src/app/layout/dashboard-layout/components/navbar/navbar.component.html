@@ -169,7 +169,10 @@
                     <span matTooltip="{{ fileAsync.value.name }}" matTooltipPosition="left">{{ fileAsync.value.name }}</span>
                 </div>
                 <div class="navbar-warning-menu__content__item__icon" fxLayout="row" fxLayoutAlign="center center">
-                    <mat-icon *ngIf="fileAsync.value.attachment" (click)="downloadFile(fileAsync)"
+                    <mat-icon
+                        *ngIf="fileAsync.value.attachment"
+                        (keydown.enter)="downloadFile(fileAsync)"
+                        (click)="downloadFile(fileAsync)"
                         >vertical_align_bottom</mat-icon
                     >
                     <mat-spinner [diameter]="20" *ngIf="!fileAsync.value.attachment"></mat-spinner>

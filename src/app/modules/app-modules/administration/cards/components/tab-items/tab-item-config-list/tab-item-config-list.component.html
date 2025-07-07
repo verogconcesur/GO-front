@@ -106,6 +106,7 @@
                 fxLayoutAlign="space-between center"
                 class="tab-item-config-content__form__section__listItem addButton"
                 (click)="newListItem()"
+                (keydown.enter)="newListItem()"
             >
                 <span>{{ labels.addItem | translate }}</span> <mat-icon color="primary">add_box</mat-icon>
             </div>

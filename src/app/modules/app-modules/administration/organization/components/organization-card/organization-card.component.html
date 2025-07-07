@@ -9,7 +9,7 @@
     </button>
     <div class="organization-card__title mat-headline">{{ title | translate }}</div>
     <div class="organization-card__subtitle mat-subheading-2">{{ subtitle | translate }}</div>
-    <img *ngIf="bgImgB64" class="organization-card__bg-img" [src]="bgImgB64" />
+    <img *ngIf="bgImgB64" class="organization-card__bg-img" [src]="bgImgB64" alt="Organización" />
 </div>
 
 <mat-menu #cardMenu="matMenu" class="organization-card__menu dark-theme">

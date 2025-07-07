@@ -14,7 +14,7 @@
         <mat-toolbar color="primary">
             <mat-toolbar-row fxLayoutAlign="space-between center">
                 <div class="mat-toolbar-platform-name">
-                    <mat-icon (click)="menuDrawer.toggle()">menu</mat-icon>
+                    <mat-icon (keydown.enter)="menuDrawer.toggle()" (click)="menuDrawer.toggle()">menu</mat-icon>
                     <span>{{ labels.title | translate }}</span>
                 </div>
 
@@ -30,16 +30,16 @@
                     <div class="mat-toolbar-group__profile">
                         <div fxLayout="row" fxLayoutAlign="center center" class="height-100">
                             <!-- Profile image -->
-                            <div class="user-profile__img" (click)="viewMyProfile()">
+                            <button mat-icon-button class="user-profile__img" (click)="viewMyProfile()">
                                 <mat-icon fontSet="concenet">user-profile</mat-icon>
-                            </div>
+                            </button>
 
                             <!-- User data -->
                             <div class="user-profile-data">
                                 <div class="user-profile__name">
                                     {{ this.userDetails?.name }}&nbsp;{{ this.userDetails?.firstName }}
                                 </div>
-                                <div class="user-profile__view" (click)="viewMyProfile()">
+                                <div class="user-profile__view" (keydown.enter)="viewMyProfile()" (click)="viewMyProfile()">
                                     {{ labels.viewProfile | translate }}
                                 </div>
                             </div>

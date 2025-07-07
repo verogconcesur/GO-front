@@ -15,9 +15,8 @@
                     </div>
                     <div class="custom-tab-drag__type" fxLayout="row" fxLayoutAlign="end center">
                         <span class="custom-tab-drag__type__name">{{ tabItem?.value?.typeItem | cardTabItemTypePipe }}</span>
-                        <!-- <mat-icon>filter_none</mat-icon> -->
-                        <mat-icon (click)="editTabItem(tabItem)">edit</mat-icon>
-                        <mat-icon (click)="deleteTabitem(tabItem)">delete</mat-icon>
+                        <mat-icon (keydown.enter)="editTabItem(tabItem)" (click)="editTabItem(tabItem)">edit</mat-icon>
+                        <mat-icon (keydown.enter)="deleteTabitem(tabItem)" (click)="deleteTabitem(tabItem)">delete</mat-icon>
                     </div>
                 </div>
             </div>
@@ -30,6 +29,7 @@
             fxLayout="row"
             fxLayoutAlign="start center"
             (click)="newTabitem(type)"
+            (keydown.enter)="newTabitem(type)"
         >
             <mat-icon>add</mat-icon>
             <span>{{ type | cardTabItemTypePipe }}</span>

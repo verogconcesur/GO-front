@@ -21,6 +21,7 @@
             (opened)="panelDataOpenState = true"
             (closed)="panelDataOpenState = false"
             (click)="$event.stopPropagation()"
+            (keydown.enter)="$event.stopPropagation()"
         >
             <mat-expansion-panel-header>
                 <mat-panel-title>{{ labels.data | translate }}</mat-panel-title>
@@ -59,6 +60,7 @@
             (opened)="panelOrganizationOpenState = true"
             (closed)="panelOrganizationOpenState = false"
             (click)="$event.stopPropagation()"
+            (keydown.enter)="$event.stopPropagation()"
         >
             <mat-expansion-panel-header>
                 <mat-panel-title>{{ labels.organization | translate }}</mat-panel-title>
@@ -100,6 +102,7 @@
             (opened)="panelSignOpenState = true"
             (closed)="panelSignOpenState = false"
             (click)="$event.stopPropagation()"
+            (keydown.enter)="$event.stopPropagation()"
         >
             <mat-expansion-panel-header>
                 <mat-panel-title>{{ labels.sign | translate }}</mat-panel-title>
@@ -112,8 +115,7 @@
     <div class="actions-divider"></div>
 
     <!-- Actions -->
-    <button mat-menu-item (click)="showEditProfileDialog()" class="edit-profile-btn">
-        <!-- <mat-icon>edit</mat-icon> -->
+    <button mat-menu-item (keydown.enter)="showEditProfileDialog()" (click)="showEditProfileDialog()" class="edit-profile-btn">
         <span>{{ labels.edit | translate }}</span>
     </button>
 
