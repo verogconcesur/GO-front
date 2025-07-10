@@ -49,7 +49,8 @@ export class WorkflowCardSearcherComponent implements OnInit {
     error_workflow: marker('workflow-card-searcher.error_workflow'),
     error_search_length: marker('workflow-card-searcher.error_search_length'),
     filterWorkflow: marker('workflows.filter'),
-    anyOption: marker('common.anyOption')
+    anyOption: marker('common.anyOption'),
+    noSearchResults: marker('common.noSearchResults')
   };
 
   public idWfRouteSelected: number = null;

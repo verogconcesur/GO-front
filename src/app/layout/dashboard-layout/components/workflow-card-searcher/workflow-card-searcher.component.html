@@ -142,6 +142,9 @@
         <div class="search-option-spinner" *ngIf="searching > 0 && paginationConfig.first">
             <mat-spinner class="spinner" diameter="20"></mat-spinner>
         </div>
+        <div *ngIf="!searching && !cards.length && !filtersVisible">
+            <span style="display: block; text-align: center; font-weight: bold">{{ labels.noSearchResults | translate }}</span>
+        </div>
         <div class="scrollable-options" *ngIf="cards.length" (scroll)="onScroll($event)">
             <mat-option
                 *ngFor="let option of cards; let i = index"
