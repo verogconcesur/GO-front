@@ -350,7 +350,7 @@ export class ModalCardCustomerAttachmentsComponent extends ComponentToExtendForC
       updatedByFullName: [attachment.updatedByFullName],
       attachmentsTab: [this.customerAttachTabId ? this.customerAttachTabId : null],
       attachmentsCategory: [this.customerAttachTemplateAttachmentItemId ? this.customerAttachTemplateAttachmentItemId : null],
-      enabled: [attachment.existInCard ? !attachment.existInCard : true]
+      enabled: [attachment.auto && !attachment?.existInCard]
     });
     this.attachmentsArray.push(attachmentFormGroup);
   }
