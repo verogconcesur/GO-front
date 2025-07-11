@@ -13,10 +13,12 @@
             <th mat-header-cell *matHeaderCellDef>{{ labels.actions | translate }}</th>
             <td mat-cell *matCellDef="let element" class="action-buttons no-ellipsis">
                 <button mat-icon-button aria-label="filter_none">
-                    <mat-icon (click)="duplicateCard(element)">filter_none</mat-icon>
+                    <mat-icon (keydown.enter)="duplicateCard(element)" (click)="duplicateCard(element)">filter_none</mat-icon>
                 </button>
                 <button mat-icon-button aria-label="edit">
-                    <mat-icon fontSet="concenet" (click)="createEditCard(element)">edit</mat-icon>
+                    <mat-icon (keydown.enter)="createEditCard(element)" fontSet="concenet" (click)="createEditCard(element)"
+                        >edit</mat-icon
+                    >
                 </button>
                 <button mat-icon-button aria-label="delete" (click)="deleteCard(element)">
                     <mat-icon fontSet="concenet">delete</mat-icon>

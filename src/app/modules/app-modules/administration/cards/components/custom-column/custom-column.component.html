@@ -39,6 +39,7 @@
                             fxLayoutAlign="none center"
                             [ngClass]="{ selected: isTabSelected(tab), invalid: tab.invalid }"
                             (click)="selectTab(tab)"
+                            (keydown.enter)="selectTab(tab)"
                         >
                             <div *cdkDragPlaceholder class="custom-column-placeholder"></div>
                             <div fxLayout="row" fxLayoutAlign="space-between center" class="custom-column-item-nameContainer">
@@ -52,6 +53,7 @@
                     <div
                         class="custom-column-container__header__group__tablist__button mat-elevation-z2"
                         (click)="addTab()"
+                        (keydown.enter)="addTab()"
                         fxLayout="row"
                         fxLayoutAlign="space-between center"
                     >

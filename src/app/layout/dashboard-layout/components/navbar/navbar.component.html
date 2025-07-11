@@ -178,3 +178,35 @@
         </div>
     </div>
 </mat-menu>
+
+<mat-menu #downloadMenu="matMenu" class="notification-mention-menu">
+    <div class="navbar-warning-menu" *ngIf="searchExportForm">
+        <div fxLayout="row" fxLayoutAlign="start center">
+            <h2 class="navbar-warning-menu__header">
+                {{ labels.files | translate }}
+            </h2>
+        </div>
+        <mat-divider></mat-divider>
+        <div class="navbar-warning-menu__content">
+            <div
+                class="navbar-warning-menu__content__item"
+                *ngFor="let fileAsync of searchExportForm.controls"
+                fxLayout="row"
+                fxLayoutAlign="start center"
+            >
+                <div class="navbar-warning-menu__content__item__name" fxLayout="row" fxLayoutAlign="start center">
+                    <span matTooltip="{{ fileAsync.value.name }}" matTooltipPosition="left">{{ fileAsync.value.name }}</span>
+                </div>
+                <div class="navbar-warning-menu__content__item__icon" fxLayout="row" fxLayoutAlign="center center">
+                    <mat-icon
+                        *ngIf="fileAsync.value.attachment"
+                        (keydown.enter)="downloadFile(fileAsync)"
+                        (click)="downloadFile(fileAsync)"
+                        >vertical_align_bottom</mat-icon
+                    >
+                    <mat-spinner [diameter]="20" *ngIf="!fileAsync.value.attachment"></mat-spinner>
+                </div>
+            </div>
+        </div>
+    </div>
+</mat-menu>

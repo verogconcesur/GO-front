@@ -30,6 +30,7 @@
                     <div *ngFor="let col of cols.controls" class="create-cards-container__side__section__column">
                         <span
                             (click)="changeColumn(col.value)"
+                            (keydown.enter)="changeColumn(col.value)"
                             [ngClass]="{
                                 'create-cards-container__side__section__column--selected':
                                     selectedCol === col.value.orderNumber ? true : false,

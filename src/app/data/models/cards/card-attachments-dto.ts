@@ -15,6 +15,7 @@ export interface AttachmentDTO {
 }
 export interface CustomerAttachmentDTO {
   active?: boolean;
+  existInCard?: boolean;
   auto?: boolean;
   createDate?: string;
   createdByFullName?: string;

@@ -158,25 +158,47 @@ export class ModalCardCustomerAttachmentsComponent extends ComponentToExtendForC
   fetchAttachments(): void {
     this.data = [];
     const spinner = this.spinnerService.show();
-    this.attachmentService
-      .getCustomerAttachments(this.clientId)
-      .pipe(
-        take(1),
-        finalize(() => this.spinnerService.hide(spinner))
-      )
-      .subscribe({
-        next: (data) => {
-          this.data = data;
-          this.attachmentsArray.clear();
-          this.populateFormWithAttachments();
-        },
-        error: (err: ConcenetError) => {
-          this.globalMessageService.showError({
-            message: err.message,
-            actionText: this.translateService.instant(marker('common.close'))
-          });
-        }
-      });
+    if (this.idCard) {
+      this.attachmentService
+        .getCustomerAttachmentsByWorkflowId(this.idCard, this.clientId)
+        .pipe(
+          take(1),
+          finalize(() => this.spinnerService.hide(spinner))
+        )
+        .subscribe({
+          next: (data) => {
+            this.data = data;
+            this.attachmentsArray.clear();
+            this.populateFormWithAttachments();
+          },
+          error: (err: ConcenetError) => {
+            this.globalMessageService.showError({
+              message: err.message,
+              actionText: this.translateService.instant(marker('common.close'))
+            });
+          }
+        });
+    } else {
+      this.attachmentService
+        .getCustomerAttachments(this.clientId)
+        .pipe(
+          take(1),
+          finalize(() => this.spinnerService.hide(spinner))
+        )
+        .subscribe({
+          next: (data) => {
+            this.data = data;
+            this.attachmentsArray.clear();
+            this.populateFormWithAttachments();
+          },
+          error: (err: ConcenetError) => {
+            this.globalMessageService.showError({
+              message: err.message,
+              actionText: this.translateService.instant(marker('common.close'))
+            });
+          }
+        });
+    }
   }
   clearSelection(attachmentControl: AbstractControl, event: MouseEvent): void {
     attachmentControl.get('attachmentsTab')?.setValue(null);
@@ -328,7 +350,7 @@ export class ModalCardCustomerAttachmentsComponent extends ComponentToExtendForC
       updatedByFullName: [attachment.updatedByFullName],
       attachmentsTab: [this.customerAttachTabId ? this.customerAttachTabId : null],
       attachmentsCategory: [this.customerAttachTemplateAttachmentItemId ? this.customerAttachTemplateAttachmentItemId : null],
-      enabled: [attachment.auto]
+      enabled: [attachment.existInCard ? !attachment.existInCard : true]
     });
     this.attachmentsArray.push(attachmentFormGroup);
   }

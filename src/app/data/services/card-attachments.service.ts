@@ -71,6 +71,15 @@ export class CardAttachmentsService {
       .pipe(catchError((error) => throwError(error.error as ConcenetError)));
   }
 
+  public getCustomerAttachmentsByWorkflowId(ciwId: number, clientId: number): Observable<CustomerAttachmentDTO[]> {
+    return this.http
+      .get<CustomerAttachmentDTO[]>(
+        // eslint-disable-next-line max-len
+        `${this.env.apiBaseUrl}${this.CUSTOMERS_PATH}/${ciwId}/${clientId}${this.ATTACHMETS_PATH}`
+      )
+      .pipe(catchError((error) => throwError(error.error as ConcenetError)));
+  }
+
   public editAttachment(
     cardInstanceWorkflowId: number,
     tabId: number,
