@@ -209,7 +209,7 @@ export class LandingBannersComponent implements OnInit {
           id: [banner.id],
           orderNumber: [banner.orderNumber, [Validators.required]],
           image: [banner.image, [Validators.required]],
-          fileName: [banner.image.name, [Validators.required]],
+          fileName: [banner?.image?.name, [Validators.required]],
           link: [banner.link, [Validators.required]],
           title: [banner.title, [Validators.required]],
           initDate: [new Date(banner.initDate), [Validators.required]],
