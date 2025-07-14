@@ -171,6 +171,9 @@ export class LandingBannersComponent implements OnInit {
         }
       });
   }
+  public isFormInvalid(): boolean {
+    return this.banner.controls.some((formGroup) => formGroup.invalid);
+  }
   ngOnInit(): void {
     const spinner = this.spinnerService.show();
     this.landingService
