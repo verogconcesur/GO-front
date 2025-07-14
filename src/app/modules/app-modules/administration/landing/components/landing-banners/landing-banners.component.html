@@ -115,7 +115,7 @@
         </div>
     </div>
     <div class="landing-links-container__footer">
-        <button mat-raised-button color="primary" (click)="submit()">
+        <button mat-raised-button color="primary" [disabled]="isFormInvalid()" (click)="submit()">
             {{ labels.save | translate }}
         </button>
     </div>
