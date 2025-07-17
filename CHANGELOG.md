@@ -2,6 +2,38 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [1.1.19](https://github.com/Delivery-Projects/concesur/concenet_front/-/compare/v1.1.18...v1.1.19) (2025-07-17)
+
+
+### Features
+
+* arreglos y mejoras vista calendar, mas iconos GO y arreglo buscador rapido ([9615dd5](https://github.com/Delivery-Projects/concesur/concenet_front/-/commit/9615dd5ca130ad803ae26feda8abb82aa81121cc))
+* cambios pedidos por cliente ([cd8b298](https://github.com/Delivery-Projects/concesur/concenet_front/-/commit/cd8b298e6a108bf8f672d66829e89f92349e130e))
+* habilitar adjuntos clientes ([3309c38](https://github.com/Delivery-Projects/concesur/concenet_front/-/commit/3309c382306e1c3dd3484eed39ce05f83ee93460))
+* imagen estatica en firma remota ([6ebf712](https://github.com/Delivery-Projects/concesur/concenet_front/-/commit/6ebf7120b81a1594e9d7e7e4cc3235408d77ddf4))
+* listado paginado notificaciones y descargar documentos transladado ([30c04c4](https://github.com/Delivery-Projects/concesur/concenet_front/-/commit/30c04c4ce87748d2f82e41bd95abf7e602756fd3))
+* mejorar relacion aspecto filtros vistas ([bee3576](https://github.com/Delivery-Projects/concesur/concenet_front/-/commit/bee3576e9a57e15a2355c67445fd696ae701d988))
+* mejoras calendar view ([bf5d770](https://github.com/Delivery-Projects/concesur/concenet_front/-/commit/bf5d770737992baaa8424b3253dfeec9bd55b924))
+* modificar buscador rapido con icono filtro, servicios marcar todos leidos ([1a19dbc](https://github.com/Delivery-Projects/concesur/concenet_front/-/commit/1a19dbc9930fc3cf11bc15e0ef2fd9ed4eb9f502))
+* nuevo icono sin fondo ([bea983a](https://github.com/Delivery-Projects/concesur/concenet_front/-/commit/bea983a434e80dc8a95a2ef28d7824f904db1265))
+* nuevo servicio adjuntos clientes, nueva propiedad para saber si ya estan en una ficha ([520bd20](https://github.com/Delivery-Projects/concesur/concenet_front/-/commit/520bd2009089bcdb79b534b50b0ee1918f724b27))
+* nuevo servicio y logica para obtener usuarios de un workflow ([0839f13](https://github.com/Delivery-Projects/concesur/concenet_front/-/commit/0839f138952bc2b4396b85509d5d6c4a3235034f))
+* optimizacion y limpieza de codigo ([574806e](https://github.com/Delivery-Projects/concesur/concenet_front/-/commit/574806e02414cdf9ec83181f87e0e5923aa42be2))
+* optimizar workflow usuarios, nuevo icono GO ([d019ad0](https://github.com/Delivery-Projects/concesur/concenet_front/-/commit/d019ad0ac1fefe357be7f477f5c5502f317302de))
+* selector personalizado con filtro ([ad7175c](https://github.com/Delivery-Projects/concesur/concenet_front/-/commit/ad7175c56616346fafb8e010a9a70e184e70cb1a))
+* up version ([b5fb157](https://github.com/Delivery-Projects/concesur/concenet_front/-/commit/b5fb1573ca7ecfd8f68d4714639535e85d5d5d25))
+
+
+### Bug Fixes
+
+* arreglar tabla otros workflow users ([9f339a4](https://github.com/Delivery-Projects/concesur/concenet_front/-/commit/9f339a4db9181de78238ab486499a8c6e84b8fa5))
+* cambiar logica marcar adjuntos como activos ([5ee9fe4](https://github.com/Delivery-Projects/concesur/concenet_front/-/commit/5ee9fe4b06f25ff74d187690456ea6df5b456694))
+* deshabilitar boton de guardar en banners ([a27fccc](https://github.com/Delivery-Projects/concesur/concenet_front/-/commit/a27fccc9b828b7127391c677cfbc016a21732793))
+* no cargan los banners por falta de imagen ([47d795f](https://github.com/Delivery-Projects/concesur/concenet_front/-/commit/47d795f6f36c7d77fbcd2f2254bfc866694a8946))
+* no cargan permisos de usuarios al editar un subestado ([d1b90b8](https://github.com/Delivery-Projects/concesur/concenet_front/-/commit/d1b90b85fd63c733bcde80d7358c76a4966cd3a0))
+* sin resultados de busqueda en buscador rapido ([2918a14](https://github.com/Delivery-Projects/concesur/concenet_front/-/commit/2918a1482fb961375db3c56804f639cfd0720a0e))
+* solucionar error posicionamiento de buscador sin filtros ([3c70a00](https://github.com/Delivery-Projects/concesur/concenet_front/-/commit/3c70a0034180cb776ec1362106d98ecb8990ddd2))
+
 ### [1.1.18](https://github.com/Delivery-Projects/concesur/concenet_front/-/compare/v1.1.17...v1.1.18) (2025-07-01)
 
 
