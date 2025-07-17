@@ -2,7 +2,6 @@ import { Component, OnInit } from '@angular/core';
 import { FormArray, FormBuilder, FormGroup } from '@angular/forms';
 import { ConcenetError } from '@app/types/error';
 import { marker } from '@biesbjerg/ngx-translate-extract-marker';
-import PermissionsDTO from '@data/models/user-permissions/permissions-dto';
 import RoleDTO from '@data/models/user-permissions/role-dto';
 import UserDTO from '@data/models/user-permissions/user-dto';
 import { WorkFlowPermissionsEnum } from '@data/models/workflow-admin/workflow-card-tab-permissions-dto';
@@ -71,10 +70,7 @@ export class WfEditPermissionsTabComponent extends WfEditSubstateAbstractTabClas
         )
         .subscribe((resp) => {
           this.userPermissions = data.users;
-          this.userList = resp.map((user: WorkflowSubstateUserDTO) => {
-            user.user.showAll = !!user.user.permissions.find((perm: PermissionsDTO) => perm.code === 'VERTODOPLAN');
-            return user;
-          });
+          this.userList = resp;
           const form = this.fb.group({
             users: this.fb.array([])
           });
@@ -116,10 +112,7 @@ export class WfEditPermissionsTabComponent extends WfEditSubstateAbstractTabClas
         });
     } else {
       this.userPermissions = data[0];
-      this.userList = data[1].map((user: WorkflowSubstateUserDTO) => {
-        user.user.showAll = !!user.user.permissions.find((perm: PermissionsDTO) => perm.code === 'VERTODOPLAN');
-        return user;
-      });
+      this.userList = data[1];
       const form = this.fb.group({
         users: this.fb.array([])
       });

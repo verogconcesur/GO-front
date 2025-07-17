@@ -130,26 +130,36 @@ export class FacilitiesComponent implements OnInit {
   }
 
   public duplicateAction(item: FacilityDTO): void {
-    const spinner = this.spinnerService.show();
-    this.facilitiesService
-      .duplicateFacility(item.id)
-      .pipe(
-        take(1),
-        finalize(() => this.spinnerService.hide(spinner))
-      )
-      .subscribe({
-        next: (response) => {
-          if (response) {
-            this.getFacilities();
-          }
-        },
-        error: (error: ConcenetError) => {
-          this.logger.error(error);
+    this.confirmationDialog
+      .open({
+        title: this.translateService.instant(marker('common.warning')),
+        message: this.translateService.instant(marker('organizations.brands.deleteDuplicateConfirmation'))
+      })
+      .pipe(take(1))
+      .subscribe((ok: boolean) => {
+        if (ok) {
+          const spinner = this.spinnerService.show();
+          this.facilitiesService
+            .duplicateFacility(item.id)
+            .pipe(
+              take(1),
+              finalize(() => this.spinnerService.hide(spinner))
+            )
+            .subscribe({
+              next: (response) => {
+                if (response) {
+                  this.getFacilities();
+                }
+              },
+              error: (error: ConcenetError) => {
+                this.logger.error(error);
 
-          this.globalMessageService.showError({
-            message: error.message,
-            actionText: this.translateService.instant(marker('common.close'))
-          });
+                this.globalMessageService.showError({
+                  message: error.message,
+                  actionText: this.translateService.instant(marker('common.close'))
+                });
+              }
+            });
         }
       });
   }

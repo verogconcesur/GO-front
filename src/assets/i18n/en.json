@@ -216,6 +216,7 @@
         "deleteColumnConfirmation": "Are you sure you want to delete this column?",
         "deleteConfirmation": "Are you sure you want to delete this saved search?",
         "deleteCriteriaConfirmation": "Are you sure you want to delete this search's criteria?",
+        "duplicateConfirmation": "Are you sure you want to duplicate this saved search?",
         "endDate": "End date",
         "export": "Export",
         "exportConfirmation": "Are you sure you want to export the selected advanced search?",
@@ -582,6 +583,8 @@
         "line": "Line",
         "logo": "Logo",
         "manual": "Manual",
+        "markAsReadAllMentions": "Are you sure you want to mark all mentions as read?",
+        "markAsReadAllNotifications": "Are you sure you want to mark all notifications as read?",
         "mentions": "Mentions",
         "messages": "Messages",
         "more": "More",
@@ -592,6 +595,7 @@
         "newItem": "New item",
         "newLine": "New line",
         "next": "Next",
+        "noSearchResults": "No search results",
         "notifications": "Notifications",
         "observations": "Observations",
         "okClient": "OK Client",
@@ -818,6 +822,7 @@
         "saveTabBeforeChange": "You must save the tab's changes before access to another tab.",
         "unknown": "Unknown error",
         "uploadOnlyOneFile": "You must load only one file",
+        "userDetailFetchFailed": "",
         "valueBetween": "Value between {min} and {max}"
     },
     "landing": {
@@ -947,6 +952,7 @@
             "create": "Create brand",
             "delete": "Delete brand",
             "deleteConfirmation": "Do you really want to delete this brand?",
+            "deleteDuplicateConfirmation": "Do you really want to duplicate this facility?",
             "edit": "Edit brand",
             "multiBrands": "Multibrand",
             "name": "Brand name",
@@ -1240,6 +1246,7 @@
         },
         "card": {
             "cardTabs": "Tabs of the card",
+            "cardsByCalendar": "Calendar cards",
             "customerAssociatedCards": "Customer's cards",
             "permissionSubtitle": "Select the tabs you want to appear in this workflow. Click on the name of the tabs to customize these permissions by role.",
             "permissionTitle": "Customize permissions on card tabs",

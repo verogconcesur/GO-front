@@ -1,4 +1,4 @@
-<div class="nav-bar-notifications-menu smaller-mat-form-fields">
+<div class="nav-bar-notifications-menu smaller-mat-form-fields" (scroll)="onScroll($event)">
     <div class="loading" *ngIf="loading">
         <mat-spinner diameter="30"></mat-spinner>
     </div>

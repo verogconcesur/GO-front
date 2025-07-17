@@ -1,26 +1,38 @@
 <div class="navbar__searcher" [ngClass]="{ centered: format === 'icon' }">
-    <form
-        [formGroup]="searcherForm"
-        class="navbar__search"
-        fxLayout="row"
-        fxLayoutAlign="end center"
-        *ngIf="format === 'input'"
-        #filterMenuTrigger
-        [matMenuTriggerFor]="filterSeacherMenu"
-        (menuClosed)="searchInput.focus()"
-    >
-        <mat-form-field appearance="outline">
-            <input
-                #searchInput
-                formControlName="search"
-                matInput
-                [placeholder]="labels.search | translate"
-                (keyup.enter)="filter()"
-            />
-            <mat-icon matSuffix (click)="filter(); $event.stopPropagation()">search</mat-icon>
-        </mat-form-field>
+    <form [formGroup]="searcherForm" class="navbar__search" fxLayout="row" fxLayoutAlign="end center" *ngIf="format === 'input'">
+        <div style="display: flex; align-items: center">
+            <mat-form-field appearance="outline" style="flex: 1">
+                <input
+                    #searchInput
+                    formControlName="search"
+                    matInput
+                    [placeholder]="labels.search | translate"
+                    (keyup.enter)="onSearchClick(); $event.stopPropagation()"
+                />
+                <mat-icon matSuffix (click)="onSearchClick(); $event.stopPropagation()">search</mat-icon>
+            </mat-form-field>
+
+            <button
+                type="button"
+                #filterMenuTrigger="matMenuTrigger"
+                mat-icon-button
+                [matMenuTriggerFor]="filterSeacherMenu"
+                (click)="openFilterMenu('filter'); $event.stopPropagation()"
+                (keydown.enter)="$event.preventDefault(); $event.stopPropagation()"
+                aria-label="Open filters"
+            >
+                <mat-icon>filter_alt</mat-icon>
+            </button>
+        </div>
     </form>
-    <mat-icon *ngIf="format === 'icon'" [matMenuTriggerFor]="filterSeacherMenu">search</mat-icon>
+    <div *ngIf="format === 'icon'" class="icon-mode-container">
+        <mat-icon [matMenuTriggerFor]="filterSeacherMenu" (click)="openFilterMenu('search'); $event.stopPropagation()"
+            >search</mat-icon
+        >
+        <mat-icon [matMenuTriggerFor]="filterSeacherMenu" (click)="openFilterMenu('filter'); $event.stopPropagation()"
+            >filter_alt</mat-icon
+        >
+    </div>
 </div>
 <mat-menu #filterSeacherMenu="matMenu" class="user-profile-menu">
     <div (click)="$event.stopPropagation()">
@@ -35,7 +47,7 @@
                 <mat-label>{{ labels.search | translate }}</mat-label>
             </mat-form-field>
         </form>
-        <form [formGroup]="filterForm" class="fixed-filters">
+        <form *ngIf="filtersVisible" [formGroup]="filterForm" class="fixed-filters">
             <mat-form-field
                 appearance="outline"
                 class="custom-select-field"
@@ -115,8 +127,23 @@
                 {{ labels.search | translate }}
             </button>
         </form>
-        <div class="search-option-spinner" *ngIf="searching > 0">
+        <div *ngIf="!filtersVisible" style="min-width: 380px; margin: 2px"></div>
+        <button
+            *ngIf="format === 'icon' && !filtersVisible"
+            mat-raised-button
+            color="primary"
+            class="search-button"
+            style="width: 425px; margin: 10px 0"
+            (click)="filter()"
+            [disabled]="searching > 0"
+        >
+            {{ labels.search | translate }}
+        </button>
+        <div class="search-option-spinner" *ngIf="searching > 0 && paginationConfig.first">
             <mat-spinner class="spinner" diameter="20"></mat-spinner>
+        </div>
+        <div *ngIf="!searching && !cards.length && !filtersVisible">
+            <span style="display: block; text-align: center; font-weight: bold">{{ labels.noSearchResults | translate }}</span>
         </div>
         <div class="scrollable-options" *ngIf="cards.length" (scroll)="onScroll($event)">
             <mat-option

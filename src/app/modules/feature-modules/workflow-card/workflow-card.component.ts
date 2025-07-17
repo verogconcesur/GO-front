@@ -28,7 +28,7 @@ export class WorkflowCardComponent implements OnInit {
   @Input() wUserId: number;
   @Input() droppableStates: string[] = [];
   @Input() disableDrag = false;
-  @Input() forceSize: 'size-s' | 'size-m' | 'size-l' | 'size-xl';
+  @Input() forceSize: 'size-xs' | 'size-s' | 'size-m' | 'size-l' | 'size-xl';
   @Input() showExtraInfo = true;
   @Input() navigationMode: 'relative' | 'absolute' = 'relative';
   @Input() additionalInfo: string;

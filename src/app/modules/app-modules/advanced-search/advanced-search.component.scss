@@ -1,5 +1,6 @@
 @import 'utils/core';
 @import 'utils/theme';
+@import '@angular/material/theming';
 .adv-search {
   width: 100%;
   height: calc(100vh - 64px);
@@ -214,6 +215,71 @@
           width: 100%;
           background-color: mat-color($background, background-administration);
         }
+      }
+    }
+  }
+}
+.navbar-warning-menu {
+  width: 280px;
+  height: 100%;
+  &__header {
+    padding: 10px 10px 0 10px;
+  }
+  &__button {
+    margin-bottom: 10px !important;
+  }
+  &__content {
+    padding: 10px;
+    box-sizing: border-box;
+    background-color: mat-contrast($primary, 500);
+    height: calc(100% - 70px);
+    width: 100%;
+    &__item {
+      height: 50px;
+      width: 100%;
+      box-sizing: border-box;
+      padding: 10px;
+      margin-bottom: 10px;
+      border-radius: 6px;
+      background-color: mat-color($background, background);
+      &__name {
+        width: calc(100% - 30px);
+        height: 100%;
+        span {
+          max-width: 100%;
+          white-space: nowrap;
+          overflow: hidden;
+          text-overflow: ellipsis;
+          display: inline-block;
+        }
+      }
+      &__icon {
+        width: 30px;
+        height: 100%;
+        mat-icon {
+          cursor: pointer;
+        }
+      }
+    }
+  }
+}
+.navbar {
+  &__right {
+    .mat-icon.active {
+      animation-name: color-notification;
+      animation-duration: 2s;
+      animation-iteration-count: infinite;
+    }
+
+    @keyframes color-notification {
+      0% {
+        color: mat-contrast($primary, 100);
+      }
+      50% {
+        color: mat-color($primary, statusWarning);
+      }
+      100% {
+        color: mat-contrast($primary, 100);
       }
     }
   }

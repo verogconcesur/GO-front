@@ -49,7 +49,8 @@ export class WorkflowCardSearcherComponent implements OnInit {
     error_workflow: marker('workflow-card-searcher.error_workflow'),
     error_search_length: marker('workflow-card-searcher.error_search_length'),
     filterWorkflow: marker('workflows.filter'),
-    anyOption: marker('common.anyOption')
+    anyOption: marker('common.anyOption'),
+    noSearchResults: marker('common.noSearchResults')
   };
 
   public idWfRouteSelected: number = null;
@@ -66,6 +67,7 @@ export class WorkflowCardSearcherComponent implements OnInit {
   public filterForm: UntypedFormGroup;
   public cards: WorkflowCardDTO[] = [];
   public searchValidationsErrors: string[] = [];
+  public filtersVisible = false;
   public fastSearcherUserPreferences: {
     attribute: string;
     workflow: number;
@@ -100,15 +102,19 @@ export class WorkflowCardSearcherComponent implements OnInit {
       .valueChanges.pipe(untilDestroyed(this))
       .subscribe((value) => {
         this.cards = [];
-        this.checkValidations();
-        this.openFilterMenu();
+        if (this.filtersVisible) {
+          this.checkValidations();
+        }
       });
   }
 
-  public openFilterMenu() {
-    if (!this.filterMenuTrigger.menuOpen) {
-      this.filterMenuTrigger.openMenu();
-    }
+  public openFilterMenu(origin: 'filter' | 'search' = 'filter') {
+    this.filtersVisible = origin === 'filter';
+    setTimeout(() => {
+      if (!this.filterMenuTrigger.menuOpen) {
+        this.filterMenuTrigger.openMenu();
+      }
+    }, 0);
   }
 
   public initForm(): void {
@@ -195,19 +201,30 @@ export class WorkflowCardSearcherComponent implements OnInit {
     }
   }
 
-  public filter(value?: string) {
-    this.openFilterMenu();
-    value = value ? value : this.searcherForm.get('search')?.value;
-    this.checkValidations();
-    if (this.searchValidationsErrors.length > 0) {
-      return;
+  public onSearchClick() {
+    if (this.searcherForm.get('search')?.value) {
+      this.filter();
+      this.openFilterMenu('search');
     }
+  }
+
+  public filter(value?: string) {
+    value = value ? value : this.searcherForm.get('search')?.value;
+    if (this.filtersVisible) {
+      this.checkValidations();
+      if (this.searchValidationsErrors.length > 0) {
+        return;
+      }
+    }
+
     this.filterValue = value && typeof value === 'string' ? value.toString().toLowerCase() : '';
+
     if (this.lastSearch.length === 0) {
       this.searching++;
       this.paginationConfig.page = 0;
       this.fetchData();
     }
+
     this.lastSearch.push(value);
   }
 
@@ -224,8 +241,14 @@ export class WorkflowCardSearcherComponent implements OnInit {
   }
 
   private fetchData() {
-    const attr = this.filterForm.get('attribute')?.value;
-    const wId = this.filterForm.get('workflow')?.value?.id ? this.filterForm.get('workflow')?.value?.id : null;
+    let attr: string | null = null;
+    let wId: number | null = null;
+
+    if (this.filtersVisible) {
+      attr = this.filterForm.get('attribute')?.value;
+      wId = this.filterForm.get('workflow')?.value?.id ?? null;
+    }
+
     this.workflowService
       .searchCardsInWorkflowsPaged(this.filterValue, attr, wId, this.paginationConfig)
       .pipe(
@@ -247,7 +270,6 @@ export class WorkflowCardSearcherComponent implements OnInit {
           this.paginationConfig.last = data.last;
           this.paginationConfig.page = data.number;
           this.paginationConfig.totalPages = data.totalPages;
-          this.paginationConfig.first = data.first;
           if (data.first) {
             this.cards = [];
           }
