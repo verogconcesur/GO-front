@@ -93,8 +93,6 @@ export class NavbarComponent implements OnInit, OnDestroy {
     this.infoWarning = this.authService.getWarningStatus();
     this.initWarningInformationValue();
     this.initWebSocketForNotificationsAndMentions();
-    this.updateUnreadCount();
-    this.updateMentionsUnreadCount();
   }
 
   ngOnDestroy(): void {
@@ -106,11 +104,9 @@ export class NavbarComponent implements OnInit, OnDestroy {
     }
   }
 
-  public updateUnreadCount(): void {
-    this.notificationService.updateUnreadCount(this.notificationFilter);
-  }
-  public updateMentionsUnreadCount(): void {
-    this.notificationService.updateUnreadMentionsCount();
+  public updateUnreadCount(warning: WarningDTO): void {
+    this.notificationService.unreadMentionsCountSubject.next(warning.noReadMention);
+    this.notificationService.unreadCountSubject.next(warning.noReadNotification);
   }
   public navigateToAdministration(): void {
     this.router.navigate([RouteConstants.ADMINISTRATION]);
@@ -262,8 +258,6 @@ export class NavbarComponent implements OnInit, OnDestroy {
   }
 
   private getInfoWarnings(): void {
-    this.updateUnreadCount();
-    this.updateMentionsUnreadCount();
     this.notificationService
       .getInfoWarnings(this.infoWarning)
       .pipe(take(1))
@@ -271,6 +265,7 @@ export class NavbarComponent implements OnInit, OnDestroy {
         if (data?.newNoReadMention || data?.newNoReadNotification) {
           this.notificationSoundService.playSound('NOTIFICATION');
         }
+        this.updateUnreadCount(data);
         this.infoWarning = {
           ...data,
           frontLastHeaderMentionOpenedTime: this.infoWarning.frontLastHeaderMentionOpenedTime,

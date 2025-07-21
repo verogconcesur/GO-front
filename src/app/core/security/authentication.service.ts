@@ -384,7 +384,9 @@ export class AuthenticationService implements OnDestroy {
           newNoReadMention: false,
           newNoReadNotification: false,
           frontLastHeaderMentionOpenedTime: null,
-          frontLastHeaderNotificationOpenedTime: null
+          frontLastHeaderNotificationOpenedTime: null,
+          noReadMention: null,
+          noReadNotification: null
         };
   }
 

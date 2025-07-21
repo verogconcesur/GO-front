@@ -75,7 +75,7 @@ export class NotificationsComponent implements OnInit {
         () => {
           this.spinnerService.hide(spinner);
           this.getNotifications();
-          this.notificationService.updateUnreadCount(this.notificationFilter);
+          this.notificationService.updateUnreadCount();
         },
         (error) => {
           this.logger.error(error);
@@ -95,7 +95,7 @@ export class NotificationsComponent implements OnInit {
         () => {
           this.spinnerService.hide(spinner);
           this.getNotifications();
-          this.notificationService.updateUnreadCount(this.notificationFilter);
+          this.notificationService.updateUnreadCount();
         },
         (error) => {
           this.logger.error(error);

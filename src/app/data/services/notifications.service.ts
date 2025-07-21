@@ -1,6 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { Inject, Injectable } from '@angular/core';
 import { ENV } from '@app/constants/global.constants';
+import { AuthenticationService } from '@app/security/authentication.service';
 import { Env } from '@app/types/env';
 import { ConcenetError } from '@app/types/error';
 import PaginationRequestI from '@data/interfaces/pagination-request';
@@ -38,14 +39,16 @@ export class NotificationService {
   private readonly SEARCH_MENTIONS = '/searchMentions';
   private readonly ALL_NOTIFICATIONS = '/readAllNotification';
   private readonly ALL_MENTIONS = '/readAllMention';
-  private unreadCountSubject = new BehaviorSubject<number>(0);
-  private unreadMentionsCountSubject = new BehaviorSubject<number>(0);
+  // eslint-disable-next-line @typescript-eslint/member-ordering
+  public unreadCountSubject = new BehaviorSubject<number>(0);
+  // eslint-disable-next-line @typescript-eslint/member-ordering
+  public unreadMentionsCountSubject = new BehaviorSubject<number>(0);
   // eslint-disable-next-line @typescript-eslint/member-ordering
   public unreadNotificationsCount$ = this.unreadCountSubject.asObservable();
   // eslint-disable-next-line @typescript-eslint/member-ordering
   public unreadMentionsCount$ = this.unreadMentionsCountSubject.asObservable();
 
-  constructor(@Inject(ENV) private env: Env, private http: HttpClient) {}
+  constructor(@Inject(ENV) private env: Env, private http: HttpClient, private authService: AuthenticationService) {}
 
   public getInfoWarnings(data: WarningDTO): Observable<WarningDTO> {
     return this.http
@@ -129,21 +132,23 @@ export class NotificationService {
       .pipe(catchError((error) => throwError(error.error as ConcenetError)));
   }
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  public updateUnreadCount(filter: any): void {
-    this.searchNotifications(filter, this.paginationConfig)
+  public updateUnreadCount(): void {
+    this.getInfoWarnings(this.authService.getWarningStatus())
       .pipe(take(1))
-      .subscribe((data: PaginationResponseI<NotificationDataListDTO>) => {
-        const unread = data.totalElements;
+      .subscribe((data: WarningDTO) => {
+        const unread = data.noReadNotification;
         this.unreadCountSubject.next(unread);
+        this.authService.setWarningStatus(data);
       });
   }
 
   public updateUnreadMentionsCount(): void {
-    this.searchMentions({ readFilterType: 'NO_READ' }, this.paginationConfig)
+    this.getInfoWarnings(this.authService.getWarningStatus())
       .pipe(take(1))
-      .subscribe((data: PaginationResponseI<MentionDataListDTO>) => {
-        const unread = data.totalElements;
+      .subscribe((data: WarningDTO) => {
+        const unread = data.noReadMention;
         this.unreadMentionsCountSubject.next(unread);
+        this.authService.setWarningStatus(data);
       });
   }
 
