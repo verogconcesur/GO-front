@@ -836,6 +836,21 @@ export class CreateEditChecklistComponent implements OnInit {
       });
   }
 
+  public compareVariables = (a: any, b: any): boolean => {
+    if (!a || !b) {
+      return a === b;
+    }
+
+    // Comparar por ID, entityName y contentSource para distinguir entre tipos
+    return (
+      a.id === b.id &&
+      a.entityName === b.entityName &&
+      a.attributeName === b.attributeName &&
+      a.name === b.name &&
+      !!a.contentSource === !!b.contentSource
+    );
+  };
+
   //Private methods
 
   private newItemDropped(

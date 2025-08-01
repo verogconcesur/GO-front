@@ -169,6 +169,7 @@
                                                     <mat-label>{{ labels.variable | translate }}*</mat-label>
                                                     <mat-select
                                                         formControlName="variable"
+                                                        [compareWith]="compareVariables"
                                                         (selectionChange)="updateValueAndValidityForm()"
                                                     >
                                                         <mat-option

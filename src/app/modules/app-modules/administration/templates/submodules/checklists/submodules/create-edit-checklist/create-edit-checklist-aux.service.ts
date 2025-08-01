@@ -88,9 +88,36 @@ export class CreateEditChecklistAuxService {
         templateAccountingItemLineId: [item.templateAccountingItemLineId ? item.templateAccountingItemLineId : null],
         accountingItemLineAttributeType: [item.accountingItemLineAttributeType ? item.accountingItemLineAttributeType : null],
         variable: [
-          this.listVariables && (item.variable?.id || item.tabItem?.id)
-            ? this.listVariables.find((variable: WorkflowCardSlotDTO) => variable.id === (item.variable?.id || item.tabItem?.id))
-            : item.variable || item.tabItem
+          (() => {
+            // Si el item tiene tabItem, era una variable custom
+            if (item.tabItem?.id) {
+              const found = this.listVariables
+                ? this.listVariables.find(
+                    (variable: WorkflowCardSlotDTO) => variable.id === item.tabItem.id && variable.contentSource !== null
+                  )
+                : null;
+              console.log('Variable custom encontrada:', found);
+              return found || item.tabItem;
+            }
+
+            // Si el item tiene variable, era una variable normal
+            if (item.variable?.id) {
+              const found = this.listVariables
+                ? this.listVariables.find(
+                    (variable: WorkflowCardSlotDTO) =>
+                      variable.id === item.variable.id &&
+                      variable.entityName === item.variable.entityName &&
+                      variable.attributeName === item.variable.attributeName &&
+                      variable.name === item.variable.name &&
+                      !variable.contentSource
+                  )
+                : null;
+              console.log('Variable normal encontrada:', found);
+              return found || item.variable;
+            }
+
+            return null;
+          })()
         ]
       },
       {
