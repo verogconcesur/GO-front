@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/member-ordering */
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { Directive, Input, OnChanges, OnDestroy, OnInit, SimpleChanges } from '@angular/core';
+import { Directive, Input, OnChanges, OnInit, SimpleChanges } from '@angular/core';
 import { UntypedFormGroup } from '@angular/forms';
 import { marker } from '@biesbjerg/ngx-translate-extract-marker';
 import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
@@ -65,7 +65,7 @@ export abstract class WorkflowStepAbstractClass implements OnInit, OnChanges {
   private initListeners(): void {
     //Save action
     this.workflowsCreateEditAuxService.saveAction$.pipe(untilDestroyed(this)).subscribe(async (nextStep) => {
-      if (this.form.valid && this.form.touched && this.form.dirty) {
+      if ((this.form.valid && this.form.touched && this.form.dirty) || (this.form.valid && this.stepIndex === 2)) {
         this.confirmationDialog
           .open({
             title: this.translateService.instant(marker('common.warning')),

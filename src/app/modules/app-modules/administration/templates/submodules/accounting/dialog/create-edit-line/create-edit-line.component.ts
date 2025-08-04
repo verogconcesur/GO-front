@@ -182,6 +182,16 @@ export class CreateEditLineComponent extends ComponentToExtendForCustomDialog im
   }
 
   private filter(desc: string): AccountingLineTypeDTO[] {
+    //   const ctrl = this.lineForm.get('accountingLineType');
+    // const current = ctrl.value;
+    // if (current.description !== desc) {
+    //   ctrl.setValue({
+    //     ...current,
+    //     description: desc
+    //   });
+    //   this.updateValueAndValidityForm();
+    // }
+    //TODO Descomentar lo de arriba y borrar el primer if de abajo cuando se confirme funcionamiento correcto
     if (this.lineForm.get('accountingLineType').value?.description !== desc) {
       this.lineForm.get('accountingLineType').setValue(null);
     }
